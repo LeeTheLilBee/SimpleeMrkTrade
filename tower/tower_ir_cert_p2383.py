@@ -1,188 +1,141 @@
 """
-SEARCHABLE LABEL: TOWER_PACK_2383_IR_CERT
+SEARCHABLE LABEL: TOWER_PACK_2383_ROOM_DECISION_ENVELOPE
 
-Tower area:
-The Tower → Operational Containment
-
-Corridor:
-Tower Beta Incident Response Post-Assurance Certification
-
-Phase:
-Route Certification
-
-Role:
-index
-
-Preview-only and contract-only.
-No real execution or state mutation is performed.
+Pack 2383 — Tower Room Decision Envelope
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 from copy import deepcopy
 from functools import lru_cache
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 
 PACK_ID = "2383"
-PACK_NUMBER = 2383
-PACK_NAME = "Incident Response Certification Pack 2383"
-PACK_PHASE = 'Route Certification'
-PACK_ROLE = 'index'
-
 ENDPOINT = "/tower/ir-cert-v2383.json"
 
-TOWER_AREA = "The Tower"
-TOWER_SECTION = "Operational Containment"
-TOWER_LAYER = 'Tower Beta Incident Response Post-Assurance Certification'
-TOWER_SUBLAYER = 'Route Certification'
-
-SOURCE_PACK = "2382"
-SOURCE_MODULE = 'tower.tower_ir_cert_p2382'
-SOURCE_ENDPOINT = '/tower/ir-cert-v2382.json'
-
-CURRENT_PACKS = "2372-2422"
-SAVE_BLOCK = "2372-2422"
-NEXT_PACK = "2384"
-
-SAFE_TO_CONTINUE_FLAG = "safe_to_continue_to_pack_2384"
-
-PREVIEW_ITEMS = ['source_handoff_verified', 'certification_scope_visible_preview', 'owner_authority_visible_preview', 'route_guard_visible_preview', 'object_permission_visible_preview', 'session_safety_visible_preview', 'step_up_requirement_visible_preview', 'receipt_requirement_visible_preview', 'evidence_linkage_visible_preview', 'blocker_certification_visible_preview', 'lockback_path_visible_preview', 'owner_certification_visible_preview', 'closeout_certification_visible_preview', 'next_pack_handoff_visible_preview', 'no_real_mutation_confirmed']
-BLOCKED_REAL_ACTIONS = ['real_incident_response_execution', 'real_owner_decision_apply', 'real_owner_approval_apply', 'real_account_mutation', 'real_user_access_grant', 'real_user_access_revoke', 'real_user_suspend', 'real_user_lock', 'real_user_unlock', 'real_session_revoke', 'real_route_lock', 'real_route_unlock', 'real_object_permission_mutation', 'real_step_up_challenge_issue', 'real_mfa_enrollment', 'real_setup_email_send', 'real_password_store', 'real_clouds_write', 'real_vault_write', 'real_external_share', 'raw_evidence_reveal']
+DECISION_ENVELOPE_VERSION = (
+    "tower-ob-room-decision-v1.0.0"
+)
 
 
-def _make_rows() -> List[Dict[str, Any]]:
-    rows = []
+def _hash(payload: Dict[str, Any]) -> str:
+    encoded = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
-    for index, item in enumerate(PREVIEW_ITEMS, start=1):
-        rows.append({
-            "row_id": f"pack_2383_preview_{index:03d}",
-            "row_type": "preview_item",
-            "item_id": item,
-            "ready": True,
-            "applied": False,
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    for index, action in enumerate(
-        BLOCKED_REAL_ACTIONS,
-        start=1,
-    ):
-        rows.append({
-            "row_id": f"pack_2383_blocked_{index:03d}",
-            "row_type": "blocked_real_action",
-            "action_id": action,
-            "enabled": False,
-            "result": "blocked_preview_only",
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    return rows
+    return hashlib.sha256(encoded).hexdigest()
 
 
-def _make_checks() -> List[Dict[str, Any]]:
-    labels = [
-        "Source handoff verified",
-        "Phase visible",
-        "Role visible",
-        "Preview-only enforced",
-        "Contract-only enforced",
-        "No real incident execution",
-        "No owner decision application",
-        "No account mutation",
-        "No access mutation",
-        "No route mutation",
-        "No session mutation",
-        "No Clouds write",
-        "No Vault write",
-        "Raw evidence hidden",
-        "Next handoff safe",
-    ]
+def build_room_decision_envelope(
+    *,
+    bridge_request: Dict[str, Any],
+    route_decision: Dict[str, Any],
+    clearance_decision: Dict[str, Any],
+    room_access_decision: Dict[str, Any],
+) -> Dict[str, Any]:
+    allowed = all([
+        bridge_request.get("valid") is True,
+        route_decision.get("allowed") is True,
+        clearance_decision.get("allowed") is True,
+        room_access_decision.get("allowed") is True,
+    ])
 
-    return [
-        {
-            "check_id": f"pack_2383_check_{index:03d}",
-            "label": label,
-            "passed": True,
-            "result": "passed",
-            "writes_state": False,
-        }
-        for index, label in enumerate(labels, start=1)
-    ]
+    if not bridge_request.get("valid"):
+        reason_code = bridge_request.get(
+            "reason_code",
+            "tower_ob_bridge_request_invalid",
+        )
+    elif not route_decision.get("allowed"):
+        reason_code = route_decision.get(
+            "reason_code",
+            "ob_route_unmapped_default_deny",
+        )
+    elif not clearance_decision.get("allowed"):
+        reason_code = clearance_decision.get(
+            "reason_code",
+            "ob_clearance_level_too_low",
+        )
+    else:
+        reason_code = room_access_decision.get(
+            "reason_code",
+            "ob_room_contract_allow",
+        )
+
+    envelope = {
+        "decision_envelope_version": (
+            DECISION_ENVELOPE_VERSION
+        ),
+        "request_id": bridge_request.get("request_id"),
+        "request_integrity_reference": bridge_request.get(
+            "request_integrity_reference"
+        ),
+        "allowed": allowed,
+        "reason_code": reason_code,
+        "room_id": route_decision.get("room_id"),
+        "canonical_path": route_decision.get(
+            "canonical_path"
+        ),
+        "canonical_clearance_value": (
+            clearance_decision.get(
+                "canonical_clearance_value"
+            )
+        ),
+        "canonical_clearance_rank": (
+            clearance_decision.get(
+                "canonical_clearance_rank",
+                0,
+            )
+        ),
+        "clearance_decision_reference": (
+            clearance_decision.get(
+                "clearance_decision_reference"
+            )
+        ),
+        "step_up_reference": room_access_decision.get(
+            "step_up_reference"
+        ),
+        "object_context": deepcopy(
+            route_decision.get("object_context") or {}
+        ),
+        "default_deny": True,
+        "ob_self_authorization": False,
+        "preview_only": True,
+        "contract_only": True,
+        "writes_state": False,
+    }
+
+    envelope["decision_integrity_hash"] = _hash(
+        envelope
+    )
+
+    return envelope
 
 
 @lru_cache(maxsize=1)
 def _build_cached() -> Dict[str, Any]:
-    rows = _make_rows()
-    checks = _make_checks()
-
-    ready = all([
-        all(row["preview_only"] for row in rows),
-        all(row["contract_only"] for row in rows),
-        all(not row["writes_state"] for row in rows),
-        all(check["passed"] for check in checks),
-        all(not check["writes_state"] for check in checks),
-    ])
-
-    summary = {
-        "source_pack": SOURCE_PACK,
-        "row_count": len(rows),
-        "check_count": len(checks),
-        "preview_item_count": len(PREVIEW_ITEMS),
-        "blocked_real_action_count": len(
-            BLOCKED_REAL_ACTIONS
-        ),
-        "all_rows_preview_only": True,
-        "all_rows_contract_only": True,
-        "all_rows_no_writes": True,
-        "all_checks_passed": True,
-        "all_checks_no_writes": True,
-        "tower_pack_2383_ready": ready,
-        "real_incident_response_execution_enabled": False,
-        "real_owner_decision_apply_enabled": False,
-        "real_account_mutation_enabled": False,
-        "real_access_mutation_enabled": False,
-        "real_route_mutation_enabled": False,
-        "real_session_mutation_enabled": False,
-        "real_clouds_write_enabled": False,
-        "real_vault_write_enabled": False,
-        "external_share_enabled": False,
-        "raw_evidence_visible": False,
-    }
-
     return {
         "pack": PACK_ID,
-        "pack_number": PACK_NUMBER,
-        "pack_name": PACK_NAME,
-        "pack_phase": PACK_PHASE,
-        "pack_role": PACK_ROLE,
+        "pack_name": "Tower Room Decision Envelope",
         "status": "ready",
         "readiness": 100,
         "endpoint": ENDPOINT,
-        "tower_area": TOWER_AREA,
-        "tower_section": TOWER_SECTION,
-        "tower_layer": TOWER_LAYER,
-        "tower_sublayer": TOWER_SUBLAYER,
-        "source_pack": SOURCE_PACK,
-        "source_module": SOURCE_MODULE,
-        "source_endpoint": SOURCE_ENDPOINT,
-        "current_packs": CURRENT_PACKS,
-        "save_block": SAVE_BLOCK,
-        "next_pack": NEXT_PACK,
-        "cached": True,
-        "non_recursive": True,
-        "recursion_safe": True,
-        "simulation_only": True,
+        "decision_envelope_version": (
+            DECISION_ENVELOPE_VERSION
+        ),
+        "integrity_hash_required": True,
+        "single_authority": "tower",
+        "ob_decision_override_enabled": False,
+        "default_deny": True,
         "preview_only": True,
         "contract_only": True,
-        "execution_rows": rows,
-        "execution_checks": checks,
-        "tower_pack_2383_summary": summary,
-        SAFE_TO_CONTINUE_FLAG: ready,
+        "writes_state": False,
+        "next_pack": "2384",
+        "safe_to_continue_to_pack_2384": True,
     }
 
 
@@ -190,37 +143,13 @@ def build_ir_cert_p2383_preview() -> Dict[str, Any]:
     return deepcopy(_build_cached())
 
 
-def build_pack_2383_status_bridge() -> Dict[str, Any]:
-    payload = _build_cached()
-
-    return {
-        "pack": payload["pack"],
-        "status": payload["status"],
-        "readiness": payload["readiness"],
-        "endpoint": payload["endpoint"],
-        "next_pack": payload["next_pack"],
-        SAFE_TO_CONTINUE_FLAG: payload[
-            SAFE_TO_CONTINUE_FLAG
-        ],
-    }
-
-
 def prepare_pack_2384_ir_cert_p2384() -> Dict[str, Any]:
-    payload = _build_cached()
-
     return {
-        "ready": payload[SAFE_TO_CONTINUE_FLAG],
+        "ready": True,
         "source_pack": PACK_ID,
-        "next_pack": NEXT_PACK,
-        "name": "Incident Response Certification Pack 2384",
+        "next_pack": "2384",
+        "name": "OB Launch Authorization Validator",
         "preview_only": True,
         "contract_only": True,
         "writes_state": False,
     }
-
-
-__all__ = [
-    "build_ir_cert_p2383_preview",
-    "build_pack_2383_status_bridge",
-    "prepare_pack_2384_ir_cert_p2384",
-]

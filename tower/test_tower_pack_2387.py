@@ -1,72 +1,47 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2387
-"""
-
 from tower.tower_ir_cert_p2387 import (
-    build_ir_cert_p2387_preview,
-    build_pack_2387_status_bridge,
-    prepare_pack_2388_ir_cert_p2388,
+    intake_ob_completion_receipt,
 )
 
 
-def test_pack_2387_ready():
-    payload = build_ir_cert_p2387_preview()
-
-    assert payload["pack"] == "2387"
-    assert payload["pack_number"] == 2387
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2387.json"
-    assert payload["source_pack"] == "2386"
-    assert payload["next_pack"] == "2388"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2388"] is True
+HANDOFF = {
+    "handoff_id": "oblaunch_1",
+    "session_id": "session_1",
+    "approved_room_id": "ob_room_dashboard",
+    "canonical_path": "/dashboard",
+}
 
 
-def test_pack_2387_safety():
-    payload = build_ir_cert_p2387_preview()
-    summary = payload["tower_pack_2387_summary"]
+def test_pack_2387_completion_receipt_accepted():
+    result = intake_ob_completion_receipt(
+        handoff=HANDOFF,
+        ob_completion_payload={
+            "handoff_id": "oblaunch_1",
+            "session_id": "session_1",
+            "room_id": "ob_room_dashboard",
+            "canonical_path": "/dashboard",
+            "completion_state": "completed_preview",
+            "completion_time": "2026-07-14T12:05:00+00:00",
+            "ob_receipt_reference": "ob_receipt_1",
+        },
+    )
 
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2387_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
+    assert result["accepted"] is True
+    assert len(result["tower_intake_integrity_hash"]) == 64
 
 
-def test_pack_2387_handoff_and_copy_safety():
-    bridge_payload = build_pack_2387_status_bridge()
+def test_pack_2387_wrong_room_rejected():
+    result = intake_ob_completion_receipt(
+        handoff=HANDOFF,
+        ob_completion_payload={
+            "handoff_id": "oblaunch_1",
+            "session_id": "session_1",
+            "room_id": "ob_room_owner_console",
+            "canonical_path": "/dashboard",
+            "completion_state": "completed_preview",
+        },
+    )
 
-    assert bridge_payload["pack"] == "2387"
-    assert bridge_payload["safe_to_continue_to_pack_2388"] is True
-
-    handoff = prepare_pack_2388_ir_cert_p2388()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2387"
-    assert handoff["next_pack"] == "2388"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2387_preview()
-    second = build_ir_cert_p2387_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2387_preview()["status"] == "ready"
+    assert result["accepted"] is False
+    assert result["reason_code"] == (
+        "ob_completion_room_mismatch"
+    )

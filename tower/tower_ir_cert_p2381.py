@@ -1,188 +1,141 @@
 """
-SEARCHABLE LABEL: TOWER_PACK_2381_IR_CERT
+SEARCHABLE LABEL: TOWER_PACK_2381_PROTECTED_BRIDGE_REQUEST
 
-Tower area:
-The Tower → Operational Containment
-
-Corridor:
-Tower Beta Incident Response Post-Assurance Certification
-
-Phase:
-Main Certification
-
-Role:
-readiness_bridge
-
-Preview-only and contract-only.
-No real execution or state mutation is performed.
+Pack 2381 — Protected Bridge Request Contract
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 from copy import deepcopy
 from functools import lru_cache
-from typing import Any, Dict, List
+from typing import Any, Dict
+
+from tower.tower_ir_cert_p2372 import (
+    APP_ID,
+    CONTRACT_VERSION,
+    REQUEST_TYPE,
+)
+from tower.tower_ir_cert_p2373 import (
+    normalize_app_id,
+    normalize_request_type,
+)
 
 
 PACK_ID = "2381"
-PACK_NUMBER = 2381
-PACK_NAME = "Incident Response Certification Pack 2381"
-PACK_PHASE = 'Main Certification'
-PACK_ROLE = 'readiness_bridge'
-
 ENDPOINT = "/tower/ir-cert-v2381.json"
 
-TOWER_AREA = "The Tower"
-TOWER_SECTION = "Operational Containment"
-TOWER_LAYER = 'Tower Beta Incident Response Post-Assurance Certification'
-TOWER_SUBLAYER = 'Main Certification'
-
-SOURCE_PACK = "2380"
-SOURCE_MODULE = 'tower.tower_ir_cert_p2380'
-SOURCE_ENDPOINT = '/tower/ir-cert-v2380.json'
-
-CURRENT_PACKS = "2372-2422"
-SAVE_BLOCK = "2372-2422"
-NEXT_PACK = "2382"
-
-SAFE_TO_CONTINUE_FLAG = "safe_to_continue_to_pack_2382"
-
-PREVIEW_ITEMS = ['source_handoff_verified', 'certification_scope_visible_preview', 'owner_authority_visible_preview', 'route_guard_visible_preview', 'object_permission_visible_preview', 'session_safety_visible_preview', 'step_up_requirement_visible_preview', 'receipt_requirement_visible_preview', 'evidence_linkage_visible_preview', 'blocker_certification_visible_preview', 'lockback_path_visible_preview', 'owner_certification_visible_preview', 'closeout_certification_visible_preview', 'next_pack_handoff_visible_preview', 'no_real_mutation_confirmed']
-BLOCKED_REAL_ACTIONS = ['real_incident_response_execution', 'real_owner_decision_apply', 'real_owner_approval_apply', 'real_account_mutation', 'real_user_access_grant', 'real_user_access_revoke', 'real_user_suspend', 'real_user_lock', 'real_user_unlock', 'real_session_revoke', 'real_route_lock', 'real_route_unlock', 'real_object_permission_mutation', 'real_step_up_challenge_issue', 'real_mfa_enrollment', 'real_setup_email_send', 'real_password_store', 'real_clouds_write', 'real_vault_write', 'real_external_share', 'raw_evidence_reveal']
+BRIDGE_REQUEST_VERSION = "tower-ob-bridge-request-v1.0.0"
 
 
-def _make_rows() -> List[Dict[str, Any]]:
-    rows = []
+def _reference(prefix: str, payload: Dict[str, Any]) -> str:
+    encoded = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
-    for index, item in enumerate(PREVIEW_ITEMS, start=1):
-        rows.append({
-            "row_id": f"pack_2381_preview_{index:03d}",
-            "row_type": "preview_item",
-            "item_id": item,
-            "ready": True,
-            "applied": False,
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    for index, action in enumerate(
-        BLOCKED_REAL_ACTIONS,
-        start=1,
-    ):
-        rows.append({
-            "row_id": f"pack_2381_blocked_{index:03d}",
-            "row_type": "blocked_real_action",
-            "action_id": action,
-            "enabled": False,
-            "result": "blocked_preview_only",
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    return rows
+    return prefix + hashlib.sha256(encoded).hexdigest()[:24]
 
 
-def _make_checks() -> List[Dict[str, Any]]:
-    labels = [
-        "Source handoff verified",
-        "Phase visible",
-        "Role visible",
-        "Preview-only enforced",
-        "Contract-only enforced",
-        "No real incident execution",
-        "No owner decision application",
-        "No account mutation",
-        "No access mutation",
-        "No route mutation",
-        "No session mutation",
-        "No Clouds write",
-        "No Vault write",
-        "Raw evidence hidden",
-        "Next handoff safe",
-    ]
+def build_protected_bridge_request(
+    *,
+    request_id: str,
+    requester_id: str,
+    session_id: str,
+    app_id: str,
+    request_type: str,
+    requested_path: str,
+    requested_mode: str,
+    tower_role: str,
+    object_context: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
+    canonical_app_id = normalize_app_id(app_id)
+    canonical_request_type = normalize_request_type(
+        request_type
+    )
 
-    return [
-        {
-            "check_id": f"pack_2381_check_{index:03d}",
-            "label": label,
-            "passed": True,
-            "result": "passed",
-            "writes_state": False,
-        }
-        for index, label in enumerate(labels, start=1)
-    ]
+    request = {
+        "request_id": request_id,
+        "requester_id": requester_id,
+        "session_id": session_id,
+        "app_id": canonical_app_id,
+        "request_type": canonical_request_type,
+        "requested_path": requested_path,
+        "requested_mode": requested_mode,
+        "tower_role": tower_role,
+        "object_context": deepcopy(object_context or {}),
+        "bridge_request_version": BRIDGE_REQUEST_VERSION,
+        "room_contract_version": CONTRACT_VERSION,
+        "default_deny": True,
+        "ob_self_authorization": False,
+        "preview_only": True,
+        "contract_only": True,
+        "writes_state": False,
+    }
+
+    errors = []
+
+    if canonical_app_id != APP_ID:
+        errors.append("ob_app_id_not_supported")
+
+    if canonical_request_type != REQUEST_TYPE:
+        errors.append("ob_request_type_not_supported")
+
+    if not requester_id:
+        errors.append("ob_identity_missing")
+
+    if not session_id:
+        errors.append("tower_session_missing")
+
+    if not requested_path:
+        errors.append("ob_requested_path_missing")
+
+    request["valid"] = not errors
+    request["reason_code"] = (
+        "tower_ob_bridge_request_valid"
+        if not errors
+        else errors[0]
+    )
+    request["validation_errors"] = errors
+    request["request_integrity_reference"] = _reference(
+        "obreq_",
+        request,
+    )
+
+    return request
 
 
 @lru_cache(maxsize=1)
 def _build_cached() -> Dict[str, Any]:
-    rows = _make_rows()
-    checks = _make_checks()
-
-    ready = all([
-        all(row["preview_only"] for row in rows),
-        all(row["contract_only"] for row in rows),
-        all(not row["writes_state"] for row in rows),
-        all(check["passed"] for check in checks),
-        all(not check["writes_state"] for check in checks),
-    ])
-
-    summary = {
-        "source_pack": SOURCE_PACK,
-        "row_count": len(rows),
-        "check_count": len(checks),
-        "preview_item_count": len(PREVIEW_ITEMS),
-        "blocked_real_action_count": len(
-            BLOCKED_REAL_ACTIONS
-        ),
-        "all_rows_preview_only": True,
-        "all_rows_contract_only": True,
-        "all_rows_no_writes": True,
-        "all_checks_passed": True,
-        "all_checks_no_writes": True,
-        "tower_pack_2381_ready": ready,
-        "real_incident_response_execution_enabled": False,
-        "real_owner_decision_apply_enabled": False,
-        "real_account_mutation_enabled": False,
-        "real_access_mutation_enabled": False,
-        "real_route_mutation_enabled": False,
-        "real_session_mutation_enabled": False,
-        "real_clouds_write_enabled": False,
-        "real_vault_write_enabled": False,
-        "external_share_enabled": False,
-        "raw_evidence_visible": False,
-    }
+    preview = build_protected_bridge_request(
+        request_id="request_preview",
+        requester_id="owner_preview",
+        session_id="session_preview",
+        app_id="ob",
+        request_type="ob.protected_room.launch",
+        requested_path="/dashboard",
+        requested_mode="paper",
+        tower_role="owner",
+    )
 
     return {
         "pack": PACK_ID,
-        "pack_number": PACK_NUMBER,
-        "pack_name": PACK_NAME,
-        "pack_phase": PACK_PHASE,
-        "pack_role": PACK_ROLE,
+        "pack_name": "Protected Bridge Request Contract",
         "status": "ready",
         "readiness": 100,
         "endpoint": ENDPOINT,
-        "tower_area": TOWER_AREA,
-        "tower_section": TOWER_SECTION,
-        "tower_layer": TOWER_LAYER,
-        "tower_sublayer": TOWER_SUBLAYER,
-        "source_pack": SOURCE_PACK,
-        "source_module": SOURCE_MODULE,
-        "source_endpoint": SOURCE_ENDPOINT,
-        "current_packs": CURRENT_PACKS,
-        "save_block": SAVE_BLOCK,
-        "next_pack": NEXT_PACK,
-        "cached": True,
-        "non_recursive": True,
-        "recursion_safe": True,
-        "simulation_only": True,
+        "bridge_request_version": BRIDGE_REQUEST_VERSION,
+        "canonical_app_id": APP_ID,
+        "canonical_request_type": REQUEST_TYPE,
+        "preview_request": preview,
+        "default_deny": True,
         "preview_only": True,
         "contract_only": True,
-        "execution_rows": rows,
-        "execution_checks": checks,
-        "tower_pack_2381_summary": summary,
-        SAFE_TO_CONTINUE_FLAG: ready,
+        "writes_state": False,
+        "next_pack": "2382",
+        "safe_to_continue_to_pack_2382": True,
     }
 
 
@@ -190,37 +143,13 @@ def build_ir_cert_p2381_preview() -> Dict[str, Any]:
     return deepcopy(_build_cached())
 
 
-def build_pack_2381_status_bridge() -> Dict[str, Any]:
-    payload = _build_cached()
-
-    return {
-        "pack": payload["pack"],
-        "status": payload["status"],
-        "readiness": payload["readiness"],
-        "endpoint": payload["endpoint"],
-        "next_pack": payload["next_pack"],
-        SAFE_TO_CONTINUE_FLAG: payload[
-            SAFE_TO_CONTINUE_FLAG
-        ],
-    }
-
-
 def prepare_pack_2382_ir_cert_p2382() -> Dict[str, Any]:
-    payload = _build_cached()
-
     return {
-        "ready": payload[SAFE_TO_CONTINUE_FLAG],
+        "ready": True,
         "source_pack": PACK_ID,
-        "next_pack": NEXT_PACK,
-        "name": "Incident Response Certification Pack 2382",
+        "next_pack": "2382",
+        "name": "Pack 101 Bridge Adapter",
         "preview_only": True,
         "contract_only": True,
         "writes_state": False,
     }
-
-
-__all__ = [
-    "build_ir_cert_p2381_preview",
-    "build_pack_2381_status_bridge",
-    "prepare_pack_2382_ir_cert_p2382",
-]

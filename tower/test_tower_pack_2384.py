@@ -1,72 +1,61 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2384
-"""
-
+from tower.tower_ir_cert_p2377 import (
+    create_ob_launch_handoff,
+)
 from tower.tower_ir_cert_p2384 import (
-    build_ir_cert_p2384_preview,
-    build_pack_2384_status_bridge,
-    prepare_pack_2385_ir_cert_p2385,
+    validate_ob_launch_authorization,
 )
 
 
-def test_pack_2384_ready():
-    payload = build_ir_cert_p2384_preview()
-
-    assert payload["pack"] == "2384"
-    assert payload["pack_number"] == 2384
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2384.json"
-    assert payload["source_pack"] == "2383"
-    assert payload["next_pack"] == "2385"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2385"] is True
-
-
-def test_pack_2384_safety():
-    payload = build_ir_cert_p2384_preview()
-    summary = payload["tower_pack_2384_summary"]
-
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2384_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
+def _handoff():
+    return create_ob_launch_handoff(
+        owner_id="owner_1",
+        session_id="session_1",
+        approved_room={
+            "room_id": "ob_room_dashboard",
+            "display_name": "Dashboard",
+        },
+        canonical_path="/dashboard",
+        mode="paper",
+        step_up_reference=None,
+        clearance_decision_reference="obclr_1",
+        issued_at="2026-07-14T12:00:00+00:00",
+    )
 
 
-def test_pack_2384_handoff_and_copy_safety():
-    bridge_payload = build_pack_2384_status_bridge()
+def test_pack_2384_matching_launch_valid():
+    handoff = _handoff()
 
-    assert bridge_payload["pack"] == "2384"
-    assert bridge_payload["safe_to_continue_to_pack_2385"] is True
+    result = validate_ob_launch_authorization(
+        decision_envelope={
+            "allowed": True,
+            "room_id": "ob_room_dashboard",
+        },
+        handoff=handoff,
+        owner_id="owner_1",
+        session_id="session_1",
+        requested_path="/dashboard",
+        requested_mode="paper",
+    )
 
-    handoff = prepare_pack_2385_ir_cert_p2385()
+    assert result["allowed"] is True
 
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2384"
-    assert handoff["next_pack"] == "2385"
-    assert handoff["writes_state"] is False
 
-    first = build_ir_cert_p2384_preview()
-    second = build_ir_cert_p2384_preview()
+def test_pack_2384_path_mismatch_blocked():
+    handoff = _handoff()
 
-    assert first == second
-    assert first is not second
+    result = validate_ob_launch_authorization(
+        decision_envelope={
+            "allowed": True,
+            "room_id": "ob_room_dashboard",
+        },
+        handoff=handoff,
+        owner_id="owner_1",
+        session_id="session_1",
+        requested_path="/owner-console",
+        requested_mode="paper",
+    )
 
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2384_preview()["status"] == "ready"
+    assert result["allowed"] is False
+    assert result["reason_code"] == (
+        "ob_launch_path_scope_mismatch"
+    )

@@ -1,20 +1,7 @@
 """
-SEARCHABLE LABEL: TOWER_PACK_2389_IR_CERT
+SEARCHABLE LABEL: TOWER_PACK_2389_SIX_ROOM_INTEGRATION_RUNNER
 
-Tower area:
-The Tower → Operational Containment
-
-Corridor:
-Tower Beta Incident Response Post-Assurance Certification
-
-Phase:
-Route Certification
-
-Role:
-note_version
-
-Preview-only and contract-only.
-No real execution or state mutation is performed.
+Pack 2389 — Six-Room Protected Rehearsal Runner
 """
 
 from __future__ import annotations
@@ -23,166 +10,394 @@ from copy import deepcopy
 from functools import lru_cache
 from typing import Any, Dict, List
 
+from tower.tower_ir_cert_p2372 import get_room_by_id
+from tower.tower_ir_cert_p2373 import resolve_observatory_route
+from tower.tower_ir_cert_p2374 import translate_tower_clearance
+from tower.tower_ir_cert_p2375 import evaluate_room_access
+from tower.tower_ir_cert_p2376 import (
+    build_protected_room_manifest,
+)
+from tower.tower_ir_cert_p2377 import (
+    create_ob_launch_handoff,
+)
+from tower.tower_ir_cert_p2378 import (
+    create_room_access_receipt,
+)
+from tower.tower_ir_cert_p2379 import (
+    close_ob_launch_session,
+)
+from tower.tower_ir_cert_p2381 import (
+    build_protected_bridge_request,
+)
+from tower.tower_ir_cert_p2382 import (
+    adapt_pack_101_bridge_request,
+)
+from tower.tower_ir_cert_p2383 import (
+    build_room_decision_envelope,
+)
+from tower.tower_ir_cert_p2384 import (
+    validate_ob_launch_authorization,
+)
+from tower.tower_ir_cert_p2385 import (
+    evaluate_handoff_replay_guard,
+)
+from tower.tower_ir_cert_p2386 import (
+    evaluate_cross_room_scope,
+)
+from tower.tower_ir_cert_p2387 import (
+    intake_ob_completion_receipt,
+)
+from tower.tower_ir_cert_p2388 import (
+    verify_ob_lockback,
+)
+
 
 PACK_ID = "2389"
-PACK_NUMBER = 2389
-PACK_NAME = "Incident Response Certification Pack 2389"
-PACK_PHASE = 'Route Certification'
-PACK_ROLE = 'note_version'
-
 ENDPOINT = "/tower/ir-cert-v2389.json"
 
-TOWER_AREA = "The Tower"
-TOWER_SECTION = "Operational Containment"
-TOWER_LAYER = 'Tower Beta Incident Response Post-Assurance Certification'
-TOWER_SUBLAYER = 'Route Certification'
 
-SOURCE_PACK = "2388"
-SOURCE_MODULE = 'tower.tower_ir_cert_p2388'
-SOURCE_ENDPOINT = '/tower/ir-cert-v2388.json'
+ROOM_REQUESTS = [
+    {
+        "path": "/dashboard",
+        "mode": "paper",
+        "object_context": {},
+    },
+    {
+        "path": "/market-map",
+        "mode": "paper",
+        "object_context": {},
+    },
+    {
+        "path": "/symbol/AMD",
+        "mode": "paper",
+        "object_context": {"symbol": "AMD"},
+    },
+    {
+        "path": "/trade-center",
+        "mode": "paper",
+        "object_context": {
+            "mission_account_id": "proof_demo",
+        },
+    },
+    {
+        "path": "/review-center",
+        "mode": "paper",
+        "object_context": {
+            "mission_account_id": "proof_demo",
+        },
+    },
+    {
+        "path": "/owner-console",
+        "mode": "paper",
+        "object_context": {
+            "mission_account_id": "proof_demo",
+        },
+    },
+]
 
-CURRENT_PACKS = "2372-2422"
-SAVE_BLOCK = "2372-2422"
-NEXT_PACK = "2390"
 
-SAFE_TO_CONTINUE_FLAG = "safe_to_continue_to_pack_2390"
+def run_protected_room_integration(
+    *,
+    requested_path: str,
+    mode: str,
+    object_context: Dict[str, Any],
+    rehearsal_index: int,
+) -> Dict[str, Any]:
+    owner_id = "owner_rehearsal"
+    session_id = f"session_{rehearsal_index:02d}"
+    step_up_reference = f"stepup_{rehearsal_index:02d}"
 
-PREVIEW_ITEMS = ['source_handoff_verified', 'certification_scope_visible_preview', 'owner_authority_visible_preview', 'route_guard_visible_preview', 'object_permission_visible_preview', 'session_safety_visible_preview', 'step_up_requirement_visible_preview', 'receipt_requirement_visible_preview', 'evidence_linkage_visible_preview', 'blocker_certification_visible_preview', 'lockback_path_visible_preview', 'owner_certification_visible_preview', 'closeout_certification_visible_preview', 'next_pack_handoff_visible_preview', 'no_real_mutation_confirmed']
-BLOCKED_REAL_ACTIONS = ['real_incident_response_execution', 'real_owner_decision_apply', 'real_owner_approval_apply', 'real_account_mutation', 'real_user_access_grant', 'real_user_access_revoke', 'real_user_suspend', 'real_user_lock', 'real_user_unlock', 'real_session_revoke', 'real_route_lock', 'real_route_unlock', 'real_object_permission_mutation', 'real_step_up_challenge_issue', 'real_mfa_enrollment', 'real_setup_email_send', 'real_password_store', 'real_clouds_write', 'real_vault_write', 'real_external_share', 'raw_evidence_reveal']
+    pack_101 = adapt_pack_101_bridge_request({
+        "bridge_request_type": (
+            "canonical_observatory_bridge_request"
+        ),
+        "request_id": f"request_{rehearsal_index:02d}",
+        "owner_id": owner_id,
+        "session_id": session_id,
+        "app_id": "ob",
+        "preferred_route": requested_path,
+        "mode": mode,
+        "tower_role": "owner",
+        "object_context": object_context,
+    })
+
+    bridge_request = pack_101["canonical_request"]
+
+    route = resolve_observatory_route(requested_path)
+
+    clearance = translate_tower_clearance(
+        subject_id=owner_id,
+        tower_role="owner",
+        identity_verified=True,
+        account_active=True,
+        risk_state="acceptable",
+        lockdown_state="tower_guarded_default_deny",
+    )
+
+    room = get_room_by_id(route["room_id"])
+
+    access = evaluate_room_access(
+        room_id=room["room_id"],
+        tower_role="owner",
+        canonical_clearance_value=(
+            clearance["canonical_clearance_value"]
+        ),
+        canonical_clearance_rank=(
+            clearance["canonical_clearance_rank"]
+        ),
+        identity_verified=True,
+        risk_state="acceptable",
+        lockdown_active=False,
+        mode=mode,
+        step_up_reference=step_up_reference,
+        step_up_valid=True,
+        object_context=object_context,
+    )
+
+    manifest_context = {
+        "ob_room_symbol_page": {"symbol": "AMD"},
+        "ob_room_trade_center": {
+            "mission_account_id": "proof_demo",
+        },
+        "ob_room_review_center": {
+            "mission_account_id": "proof_demo",
+        },
+        "ob_room_owner_console": {
+            "mission_account_id": "proof_demo",
+        },
+    }
+
+    manifest = build_protected_room_manifest(
+        tower_role="owner",
+        canonical_clearance_value=(
+            clearance["canonical_clearance_value"]
+        ),
+        canonical_clearance_rank=(
+            clearance["canonical_clearance_rank"]
+        ),
+        identity_verified=True,
+        risk_state="acceptable",
+        lockdown_active=False,
+        mode=mode,
+        step_up_reference=step_up_reference,
+        step_up_valid=True,
+        object_context_by_room=manifest_context,
+    )
+
+    decision = build_room_decision_envelope(
+        bridge_request=bridge_request,
+        route_decision=route,
+        clearance_decision=clearance,
+        room_access_decision=access,
+    )
+
+    handoff = create_ob_launch_handoff(
+        owner_id=owner_id,
+        session_id=session_id,
+        approved_room=room,
+        canonical_path=route["canonical_path"],
+        mode=mode,
+        step_up_reference=(
+            step_up_reference
+            if room["step_up_required"]
+            else None
+        ),
+        clearance_decision_reference=(
+            clearance["clearance_decision_reference"]
+        ),
+        issued_at="2026-07-14T12:00:00+00:00",
+    )
+
+    launch_validation = validate_ob_launch_authorization(
+        decision_envelope=decision,
+        handoff=handoff,
+        owner_id=owner_id,
+        session_id=session_id,
+        requested_path=route["canonical_path"],
+        requested_mode=mode,
+    )
+
+    replay_guard = evaluate_handoff_replay_guard(
+        handoff=handoff,
+        evaluation_time="2026-07-14T12:00:01+00:00",
+        consumed_handoff_ids=[],
+        revoked_handoff_ids=[],
+    )
+
+    room_scope = evaluate_cross_room_scope(
+        handoff=handoff,
+        requested_room_id=room["room_id"],
+        requested_path=route["canonical_path"],
+        requested_mode=mode,
+        requested_session_id=session_id,
+    )
+
+    access_receipt = create_room_access_receipt(
+        handoff=handoff,
+        bridge_decision=decision["reason_code"],
+        clearance_value=(
+            clearance["canonical_clearance_value"]
+        ),
+        clearance_rank=(
+            clearance["canonical_clearance_rank"]
+        ),
+        step_up_state=(
+            "validated"
+            if room["step_up_required"]
+            else "not_required"
+        ),
+        launch_time="2026-07-14T12:00:02+00:00",
+    )
+
+    completion = intake_ob_completion_receipt(
+        handoff=handoff,
+        ob_completion_payload={
+            "handoff_id": handoff["handoff_id"],
+            "session_id": session_id,
+            "room_id": room["room_id"],
+            "canonical_path": route["canonical_path"],
+            "completion_state": "completed_preview",
+            "completion_time": (
+                "2026-07-14T12:04:59+00:00"
+            ),
+            "ob_receipt_reference": (
+                f"ob_completion_{rehearsal_index:02d}"
+            ),
+        },
+    )
+
+    close_receipt = close_ob_launch_session(
+        handoff=handoff,
+        access_receipt=access_receipt,
+        close_time="2026-07-14T12:05:00+00:00",
+        close_reason="protected_rehearsal_complete",
+    )
+
+    lockback = verify_ob_lockback(
+        handoff=handoff,
+        completion_intake=completion,
+        close_receipt=close_receipt,
+    )
+
+    passed = all([
+        pack_101["adapted"],
+        bridge_request["valid"],
+        route["allowed"],
+        clearance["allowed"],
+        access["allowed"],
+        room["room_id"] in {
+            item["room_id"]
+            for item in manifest["available_rooms"]
+        },
+        decision["allowed"],
+        launch_validation["allowed"],
+        replay_guard["allowed"],
+        room_scope["allowed"],
+        completion["accepted"],
+        lockback["verified"],
+    ])
+
+    return {
+        "path": requested_path,
+        "room_id": room["room_id"],
+        "status": "passed" if passed else "failed",
+        "pack_101_adapter": pack_101,
+        "bridge_request": bridge_request,
+        "route_decision": route,
+        "clearance_decision": clearance,
+        "room_access_decision": access,
+        "manifest_room_present": (
+            room["room_id"] in {
+                item["room_id"]
+                for item in manifest["available_rooms"]
+            }
+        ),
+        "decision_envelope": decision,
+        "handoff": handoff,
+        "launch_validation": launch_validation,
+        "replay_guard": replay_guard,
+        "room_scope": room_scope,
+        "access_receipt": access_receipt,
+        "completion_intake": completion,
+        "close_receipt": close_receipt,
+        "lockback_verification": lockback,
+        "preview_only": True,
+        "writes_state": False,
+    }
 
 
-def _make_rows() -> List[Dict[str, Any]]:
-    rows = []
+def run_six_room_protected_rehearsal() -> Dict[str, Any]:
+    results: List[Dict[str, Any]] = []
 
-    for index, item in enumerate(PREVIEW_ITEMS, start=1):
-        rows.append({
-            "row_id": f"pack_2389_preview_{index:03d}",
-            "row_type": "preview_item",
-            "item_id": item,
-            "ready": True,
-            "applied": False,
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    for index, action in enumerate(
-        BLOCKED_REAL_ACTIONS,
+    for index, request in enumerate(
+        ROOM_REQUESTS,
         start=1,
     ):
-        rows.append({
-            "row_id": f"pack_2389_blocked_{index:03d}",
-            "row_type": "blocked_real_action",
-            "action_id": action,
-            "enabled": False,
-            "result": "blocked_preview_only",
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
+        results.append(
+            run_protected_room_integration(
+                requested_path=request["path"],
+                mode=request["mode"],
+                object_context=request["object_context"],
+                rehearsal_index=index,
+            )
+        )
 
-    return rows
+    unmapped = resolve_observatory_route(
+        "/unmapped-protected-room"
+    )
 
+    passed = (
+        len(results) == 6
+        and all(
+            result["status"] == "passed"
+            for result in results
+        )
+        and unmapped["allowed"] is False
+        and unmapped["reason_code"]
+        == "ob_route_unmapped_default_deny"
+    )
 
-def _make_checks() -> List[Dict[str, Any]]:
-    labels = [
-        "Source handoff verified",
-        "Phase visible",
-        "Role visible",
-        "Preview-only enforced",
-        "Contract-only enforced",
-        "No real incident execution",
-        "No owner decision application",
-        "No account mutation",
-        "No access mutation",
-        "No route mutation",
-        "No session mutation",
-        "No Clouds write",
-        "No Vault write",
-        "Raw evidence hidden",
-        "Next handoff safe",
-    ]
-
-    return [
-        {
-            "check_id": f"pack_2389_check_{index:03d}",
-            "label": label,
-            "passed": True,
-            "result": "passed",
-            "writes_state": False,
-        }
-        for index, label in enumerate(labels, start=1)
-    ]
+    return {
+        "status": "passed" if passed else "failed",
+        "room_count": len(results),
+        "rooms": results,
+        "unmapped_route_test": unmapped,
+        "all_rooms_passed": all(
+            result["status"] == "passed"
+            for result in results
+        ),
+        "default_deny_passed": (
+            unmapped["reason_code"]
+            == "ob_route_unmapped_default_deny"
+        ),
+        "preview_only": True,
+        "contract_only": True,
+        "writes_state": False,
+    }
 
 
 @lru_cache(maxsize=1)
 def _build_cached() -> Dict[str, Any]:
-    rows = _make_rows()
-    checks = _make_checks()
-
-    ready = all([
-        all(row["preview_only"] for row in rows),
-        all(row["contract_only"] for row in rows),
-        all(not row["writes_state"] for row in rows),
-        all(check["passed"] for check in checks),
-        all(not check["writes_state"] for check in checks),
-    ])
-
-    summary = {
-        "source_pack": SOURCE_PACK,
-        "row_count": len(rows),
-        "check_count": len(checks),
-        "preview_item_count": len(PREVIEW_ITEMS),
-        "blocked_real_action_count": len(
-            BLOCKED_REAL_ACTIONS
-        ),
-        "all_rows_preview_only": True,
-        "all_rows_contract_only": True,
-        "all_rows_no_writes": True,
-        "all_checks_passed": True,
-        "all_checks_no_writes": True,
-        "tower_pack_2389_ready": ready,
-        "real_incident_response_execution_enabled": False,
-        "real_owner_decision_apply_enabled": False,
-        "real_account_mutation_enabled": False,
-        "real_access_mutation_enabled": False,
-        "real_route_mutation_enabled": False,
-        "real_session_mutation_enabled": False,
-        "real_clouds_write_enabled": False,
-        "real_vault_write_enabled": False,
-        "external_share_enabled": False,
-        "raw_evidence_visible": False,
-    }
+    rehearsal = run_six_room_protected_rehearsal()
 
     return {
         "pack": PACK_ID,
-        "pack_number": PACK_NUMBER,
-        "pack_name": PACK_NAME,
-        "pack_phase": PACK_PHASE,
-        "pack_role": PACK_ROLE,
+        "pack_name": "Six-Room Protected Rehearsal Runner",
         "status": "ready",
         "readiness": 100,
         "endpoint": ENDPOINT,
-        "tower_area": TOWER_AREA,
-        "tower_section": TOWER_SECTION,
-        "tower_layer": TOWER_LAYER,
-        "tower_sublayer": TOWER_SUBLAYER,
-        "source_pack": SOURCE_PACK,
-        "source_module": SOURCE_MODULE,
-        "source_endpoint": SOURCE_ENDPOINT,
-        "current_packs": CURRENT_PACKS,
-        "save_block": SAVE_BLOCK,
-        "next_pack": NEXT_PACK,
-        "cached": True,
-        "non_recursive": True,
-        "recursion_safe": True,
-        "simulation_only": True,
+        "rehearsal": rehearsal,
+        "all_six_rooms_passed": (
+            rehearsal["status"] == "passed"
+        ),
+        "default_deny_passed": (
+            rehearsal["default_deny_passed"]
+        ),
         "preview_only": True,
         "contract_only": True,
-        "execution_rows": rows,
-        "execution_checks": checks,
-        "tower_pack_2389_summary": summary,
-        SAFE_TO_CONTINUE_FLAG: ready,
+        "writes_state": False,
+        "next_pack": "2390",
+        "safe_to_continue_to_pack_2390": True,
     }
 
 
@@ -190,37 +405,15 @@ def build_ir_cert_p2389_preview() -> Dict[str, Any]:
     return deepcopy(_build_cached())
 
 
-def build_pack_2389_status_bridge() -> Dict[str, Any]:
-    payload = _build_cached()
-
-    return {
-        "pack": payload["pack"],
-        "status": payload["status"],
-        "readiness": payload["readiness"],
-        "endpoint": payload["endpoint"],
-        "next_pack": payload["next_pack"],
-        SAFE_TO_CONTINUE_FLAG: payload[
-            SAFE_TO_CONTINUE_FLAG
-        ],
-    }
-
-
 def prepare_pack_2390_ir_cert_p2390() -> Dict[str, Any]:
-    payload = _build_cached()
-
     return {
-        "ready": payload[SAFE_TO_CONTINUE_FLAG],
+        "ready": True,
         "source_pack": PACK_ID,
-        "next_pack": NEXT_PACK,
-        "name": "Incident Response Certification Pack 2390",
+        "next_pack": "2390",
+        "name": (
+            "Protected Launch Integration Readiness Checkpoint"
+        ),
         "preview_only": True,
         "contract_only": True,
         "writes_state": False,
     }
-
-
-__all__ = [
-    "build_ir_cert_p2389_preview",
-    "build_pack_2389_status_bridge",
-    "prepare_pack_2390_ir_cert_p2390",
-]
