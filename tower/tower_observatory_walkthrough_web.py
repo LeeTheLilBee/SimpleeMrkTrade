@@ -3942,3 +3942,347 @@ def _register_persistence_cert_routes():
 _register_persistence_cert_routes()
 
 # END TOWER OB GUIDED RUN PERSISTENCE AND HISTORY
+
+# BEGIN TOWER OB PERSISTENCE OPERATIONS ROUTES
+
+from tower.tower_observatory_walkthrough_store_ops import (
+    corruption_recovery_assessment as _ops_corruption_assessment,
+    create_backup_snapshot as _ops_create_backup_snapshot,
+    ledger_health_check as _ops_ledger_health_check,
+    owner_export_preview as _ops_owner_export_preview,
+    retention_preview as _ops_retention_preview,
+    validate_hosted_configuration as _ops_validate_configuration,
+)
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations"
+)
+def walkthrough_persistence_operations():
+    require_owner_access()
+
+    configuration = (
+        _ops_validate_configuration()
+    )
+
+    health = _ops_ledger_health_check()
+
+    retention = _ops_retention_preview(
+        owner_id=_owner_id()
+    )
+
+    recovery = (
+        _ops_corruption_assessment()
+    )
+
+    content = f"""
+    <section class="hero">
+        <h1>Walkthrough Storage Operations</h1>
+
+        <p>
+            Tower-owned health, backup, retention, export,
+            and recovery controls for Observatory guided-run
+            evidence.
+        </p>
+
+        <div class="status-row">
+            <span class="status {'good' if health['healthy'] else 'danger'}">
+                Ledger healthy:
+                {health["healthy"]}
+            </span>
+
+            <span class="status {'good' if configuration['ready'] else 'danger'}">
+                Configuration ready:
+                {configuration["ready"]}
+            </span>
+
+            <span class="status">
+                No direct Vault write
+            </span>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="card">
+            <h2>Ledger health</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Database:</strong>
+                    {health["database_path"]}
+                </div>
+
+                <div>
+                    <strong>Runs:</strong>
+                    {health["counts"]["runs"]}
+                </div>
+
+                <div>
+                    <strong>Room receipts:</strong>
+                    {health["counts"]["room_receipts"]}
+                </div>
+
+                <div>
+                    <strong>Final receipts:</strong>
+                    {health["counts"]["final_receipts"]}
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Retention preview</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Retention days:</strong>
+                    {retention["retention_days"]}
+                </div>
+
+                <div>
+                    <strong>Eligible completed runs:</strong>
+                    {retention["eligible_count"]}
+                </div>
+
+                <div>
+                    <strong>Automatic deletion:</strong>
+                    False
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Recovery status</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Recommendation:</strong>
+                    {recovery["recommendation"]}
+                </div>
+
+                <div>
+                    <strong>Verified backups:</strong>
+                    {recovery["verified_backup_count"]}
+                </div>
+
+                <div>
+                    <strong>Automatic restore:</strong>
+                    False
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="card" style="margin-top:22px">
+        <div class="actions">
+            <form
+                method="post"
+                action="/tower/observatory-walkthrough/operations/backup"
+            >
+                <button type="submit">
+                    Create verified backup
+                </button>
+            </form>
+
+            <a
+                class="button secondary"
+                href="/tower/observatory-walkthrough/history"
+            >
+                View run history
+            </a>
+        </div>
+    </section>
+    """
+
+    return render_page(
+        title="Walkthrough Storage Operations",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/backup"
+)
+def walkthrough_persistence_backup():
+    require_owner_access()
+
+    backup = _ops_create_backup_snapshot(
+        label="owner"
+    )
+
+    content = f"""
+    <section class="hero">
+        <h1>Backup Created</h1>
+
+        <p>
+            Tower created a private SQLite snapshot and
+            integrity manifest. Nothing was sent to Vault
+            and no public link was created.
+        </p>
+
+        <div class="status-row">
+            <span class="status good">
+                Snapshot created
+            </span>
+
+            <span class="status good">
+                SHA-256 recorded
+            </span>
+        </div>
+    </section>
+
+    <section class="card receipt" style="margin-top:22px">
+        <div class="meta">
+            <div>
+                <strong>Backup path:</strong>
+                {backup["backup_path"]}
+            </div>
+
+            <div>
+                <strong>Manifest:</strong>
+                {backup["manifest_path"]}
+            </div>
+
+            <div>
+                <strong>SHA-256:</strong>
+                {backup["manifest"]["sha256"]}
+            </div>
+        </div>
+
+        <a
+            class="button"
+            href="/tower/observatory-walkthrough/operations"
+        >
+            Return to operations
+        </a>
+    </section>
+    """
+
+    return render_page(
+        title="Walkthrough Backup Created",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "history/<walkthrough_id>/export-preview.json"
+)
+def walkthrough_history_export_preview_json(
+    walkthrough_id: str,
+):
+    require_owner_access()
+
+    return jsonify(
+        _ops_owner_export_preview(
+            owner_id=_owner_id(),
+            walkthrough_id=walkthrough_id,
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/health.json"
+)
+def walkthrough_operations_health_json():
+    require_owner_access()
+
+    return jsonify(
+        _ops_ledger_health_check()
+    )
+
+
+def _build_persistence_ops_cert_payload(
+    pack: int,
+) -> Dict[str, Any]:
+    from tower.tower_ir_cert_p2463 import (
+        build_ir_cert_p2463_preview,
+    )
+    from tower.tower_ir_cert_p2464 import (
+        build_ir_cert_p2464_preview,
+    )
+    from tower.tower_ir_cert_p2465 import (
+        build_ir_cert_p2465_preview,
+    )
+    from tower.tower_ir_cert_p2466 import (
+        build_ir_cert_p2466_preview,
+    )
+    from tower.tower_ir_cert_p2467 import (
+        build_ir_cert_p2467_preview,
+    )
+    from tower.tower_ir_cert_p2468 import (
+        build_ir_cert_p2468_preview,
+    )
+    from tower.tower_ir_cert_p2469 import (
+        build_ir_cert_p2469_preview,
+    )
+    from tower.tower_ir_cert_p2470 import (
+        build_ir_cert_p2470_preview,
+    )
+    from tower.tower_ir_cert_p2471 import (
+        build_ir_cert_p2471_preview,
+    )
+    from tower.tower_ir_cert_p2472 import (
+        build_ir_cert_p2472_preview,
+    )
+
+    builders = {
+        2463: build_ir_cert_p2463_preview,
+        2464: build_ir_cert_p2464_preview,
+        2465: build_ir_cert_p2465_preview,
+        2466: build_ir_cert_p2466_preview,
+        2467: build_ir_cert_p2467_preview,
+        2468: build_ir_cert_p2468_preview,
+        2469: build_ir_cert_p2469_preview,
+        2470: build_ir_cert_p2470_preview,
+        2471: build_ir_cert_p2471_preview,
+        2472: build_ir_cert_p2472_preview,
+    }
+
+    builder = builders.get(
+        pack
+    )
+
+    if builder is None:
+        abort(404)
+
+    return builder()
+
+
+def _persistence_ops_cert_response(
+    pack: int,
+):
+    require_owner_access()
+
+    return jsonify(
+        _build_persistence_ops_cert_payload(
+            pack
+        )
+    )
+
+
+def _register_persistence_ops_cert_routes():
+    for pack in range(
+        2463,
+        2473,
+    ):
+        tower_ob_walkthrough_bp.add_url_rule(
+            f"/tower/ir-cert-v{pack}.json",
+            endpoint=(
+                f"persistence_ops_cert_pack_{pack}"
+            ),
+            view_func=(
+                lambda selected_pack=pack:
+                _persistence_ops_cert_response(
+                    selected_pack
+                )
+            ),
+            methods=["GET"],
+        )
+
+
+_register_persistence_ops_cert_routes()
+
+# END TOWER OB PERSISTENCE OPERATIONS ROUTES

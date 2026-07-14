@@ -774,3 +774,59 @@ def test_history_verify_json(
 
 
 # END GUIDED RUN PERSISTENCE TESTS
+
+# BEGIN PERSISTENCE OPERATIONS TESTS
+
+def test_operations_page_owner_only(
+    client,
+):
+    response = client.get(
+        "/tower/observatory-walkthrough/operations"
+    )
+
+    assert response.status_code == 403
+
+
+def test_operations_page(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/operations"
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert "Walkthrough Storage Operations" in body
+    assert "Ledger health" in body
+    assert "Retention preview" in body
+    assert "Recovery status" in body
+    assert "No direct Vault write" in body
+
+
+def test_operations_health_json(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/health.json"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload["healthy"] is True
+    assert payload[
+        "direct_vault_write"
+    ] is False
+
+
+# END PERSISTENCE OPERATIONS TESTS
