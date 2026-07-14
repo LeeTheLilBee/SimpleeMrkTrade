@@ -20181,6 +20181,322 @@ def ob_manual_live_owner_first_run_readiness_verify(
 
 # OB_GIANT_PACK_045_OWNER_FIRST_RUN_READINESS_ROUTES_END
 
+# OB_GIANT_PACK_046_TOWER_PROTECTED_LAUNCH_HANDOFF_CONSUMER_ROUTES_START
+
+def _ob_gp046_internal_http_enabled():
+    import os
+
+    return (
+        os.environ.get(
+            "OB_TOWER_LAUNCH_HTTP_INTAKE_ENABLED",
+            "0",
+        )
+        == "1"
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-room-registry.json",
+    methods=["GET"],
+)
+def ob_gp046_tower_protected_launch_room_registry_json():
+    from flask import jsonify
+    from web.ob_tower_protected_launch_handoff_consumer import (
+        room_registry_payload,
+    )
+
+    return jsonify(
+        room_registry_payload()
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-handoffs/status.json",
+    methods=["GET"],
+)
+def ob_gp046_tower_protected_launch_status_json():
+    from flask import jsonify
+    from web.ob_tower_protected_launch_handoff_consumer import (
+        tower_protected_launch_status,
+    )
+
+    payload = tower_protected_launch_status()
+
+    payload[
+        "http_intake_enabled"
+    ] = _ob_gp046_internal_http_enabled()
+
+    return jsonify(payload)
+
+
+@app.route(
+    "/ob/tower-protected-launch-handoffs.json",
+    methods=["GET"],
+)
+def ob_gp046_tower_protected_launch_handoffs_json():
+    from flask import jsonify, request
+    from web.ob_tower_protected_launch_handoff_consumer import (
+        list_tower_protected_launch_handoffs,
+    )
+
+    if not _ob_gp046_internal_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "tower_launch_http_intake_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    decision = request.args.get(
+        "decision"
+    )
+
+    try:
+        limit = int(
+            request.args.get(
+                "limit",
+                "100",
+            )
+        )
+
+    except ValueError:
+        limit = 100
+
+    items = (
+        list_tower_protected_launch_handoffs(
+            decision=decision,
+            limit=limit,
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "items": items,
+            "count": len(items),
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-handoffs/intake.json",
+    methods=["POST"],
+)
+def ob_gp046_tower_protected_launch_intake_json():
+    from flask import jsonify, request
+    from web.ob_tower_protected_launch_handoff_consumer import (
+        intake_tower_protected_launch_handoff,
+    )
+
+    if not _ob_gp046_internal_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "tower_launch_http_intake_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        intake_tower_protected_launch_handoff(
+            payload
+        )
+    )
+
+    if result.get("ok"):
+        status_code = (
+            200
+            if result.get(
+                "idempotent"
+            )
+            else 201
+        )
+
+    else:
+        status_code = 422
+
+    return (
+        jsonify(result),
+        status_code,
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-handoffs/<intake_id>.json",
+    methods=["GET"],
+)
+def ob_gp046_tower_protected_launch_detail_json(
+    intake_id,
+):
+    from flask import jsonify
+    from web.ob_tower_protected_launch_handoff_consumer import (
+        get_tower_protected_launch_handoff,
+    )
+
+    if not _ob_gp046_internal_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "tower_launch_http_intake_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    intake = (
+        get_tower_protected_launch_handoff(
+            intake_id
+        )
+    )
+
+    if intake is None:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "launch_intake_not_found"
+                    ),
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "ok": True,
+            "intake": intake,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-handoffs/<intake_id>/verify.json",
+    methods=["GET"],
+)
+def ob_gp046_tower_protected_launch_verify_json(
+    intake_id,
+):
+    from flask import jsonify
+    from web.ob_tower_protected_launch_handoff_consumer import (
+        verify_tower_protected_launch_handoff,
+    )
+
+    if not _ob_gp046_internal_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "tower_launch_http_intake_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    result = (
+        verify_tower_protected_launch_handoff(
+            intake_id
+        )
+    )
+
+    status_code = (
+        200
+        if result.get(
+            "verified"
+        )
+        else 409
+    )
+
+    return (
+        jsonify(result),
+        status_code,
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-handoffs/<intake_id>/consume.json",
+    methods=["POST"],
+)
+def ob_gp046_tower_protected_launch_consume_json(
+    intake_id,
+):
+    from flask import jsonify, request
+    from web.ob_tower_protected_launch_handoff_consumer import (
+        consume_tower_protected_launch_handoff,
+    )
+
+    if not _ob_gp046_internal_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "tower_launch_http_intake_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        consume_tower_protected_launch_handoff(
+            intake_id,
+            owner_id=payload.get(
+                "owner_id"
+            ),
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+# OB_GIANT_PACK_046_TOWER_PROTECTED_LAUNCH_HANDOFF_CONSUMER_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
