@@ -1,20 +1,7 @@
 """
-SEARCHABLE LABEL: TOWER_PACK_2413_IR_CERT
+SEARCHABLE LABEL: TOWER_PACK_2413_SIX_ROOM_EVIDENCE_MATRIX
 
-Tower area:
-The Tower → Operational Containment
-
-Corridor:
-Tower Beta Incident Response Post-Assurance Certification
-
-Phase:
-Closeout Certification
-
-Role:
-index
-
-Preview-only and contract-only.
-No real execution or state mutation is performed.
+Pack 2413 — Six-Room Certification Evidence Matrix
 """
 
 from __future__ import annotations
@@ -23,166 +10,137 @@ from copy import deepcopy
 from functools import lru_cache
 from typing import Any, Dict, List
 
+from tower.tower_ir_cert_p2372 import ROOMS
+from tower.tower_ir_cert_p2389 import (
+    run_six_room_protected_rehearsal,
+)
+from tower.tower_ir_cert_p2399 import (
+    run_six_room_enforcement_rehearsal,
+)
+from tower.tower_ir_cert_p2408 import (
+    run_six_room_failure_rehearsal,
+)
+
 
 PACK_ID = "2413"
-PACK_NUMBER = 2413
-PACK_NAME = "Incident Response Certification Pack 2413"
-PACK_PHASE = 'Closeout Certification'
-PACK_ROLE = 'index'
-
 ENDPOINT = "/tower/ir-cert-v2413.json"
 
-TOWER_AREA = "The Tower"
-TOWER_SECTION = "Operational Containment"
-TOWER_LAYER = 'Tower Beta Incident Response Post-Assurance Certification'
-TOWER_SUBLAYER = 'Closeout Certification'
 
-SOURCE_PACK = "2412"
-SOURCE_MODULE = 'tower.tower_ir_cert_p2412'
-SOURCE_ENDPOINT = '/tower/ir-cert-v2412.json'
+def build_six_room_certification_matrix() -> Dict[str, Any]:
+    integration = run_six_room_protected_rehearsal()
+    enforcement = run_six_room_enforcement_rehearsal()
+    failure = run_six_room_failure_rehearsal()
 
-CURRENT_PACKS = "2372-2422"
-SAVE_BLOCK = "2372-2422"
-NEXT_PACK = "2414"
+    integration_by_room = {
+        item["room_id"]: item
+        for item in integration["rooms"]
+    }
 
-SAFE_TO_CONTINUE_FLAG = "safe_to_continue_to_pack_2414"
+    enforcement_by_room = {
+        item["room_id"]: item
+        for item in enforcement["rooms"]
+    }
 
-PREVIEW_ITEMS = ['source_handoff_verified', 'certification_scope_visible_preview', 'owner_authority_visible_preview', 'route_guard_visible_preview', 'object_permission_visible_preview', 'session_safety_visible_preview', 'step_up_requirement_visible_preview', 'receipt_requirement_visible_preview', 'evidence_linkage_visible_preview', 'blocker_certification_visible_preview', 'lockback_path_visible_preview', 'owner_certification_visible_preview', 'closeout_certification_visible_preview', 'next_pack_handoff_visible_preview', 'no_real_mutation_confirmed']
-BLOCKED_REAL_ACTIONS = ['real_incident_response_execution', 'real_owner_decision_apply', 'real_owner_approval_apply', 'real_account_mutation', 'real_user_access_grant', 'real_user_access_revoke', 'real_user_suspend', 'real_user_lock', 'real_user_unlock', 'real_session_revoke', 'real_route_lock', 'real_route_unlock', 'real_object_permission_mutation', 'real_step_up_challenge_issue', 'real_mfa_enrollment', 'real_setup_email_send', 'real_password_store', 'real_clouds_write', 'real_vault_write', 'real_external_share', 'raw_evidence_reveal']
+    failure_by_room = {
+        item["room_id"]: item
+        for item in failure["results"]
+    }
 
+    matrix: List[Dict[str, Any]] = []
 
-def _make_rows() -> List[Dict[str, Any]]:
-    rows = []
+    for room in ROOMS:
+        room_id = room["room_id"]
+        integration_item = integration_by_room[room_id]
+        enforcement_item = enforcement_by_room[room_id]
+        failure_item = failure_by_room[room_id]
 
-    for index, item in enumerate(PREVIEW_ITEMS, start=1):
-        rows.append({
-            "row_id": f"pack_2413_preview_{index:03d}",
-            "row_type": "preview_item",
-            "item_id": item,
-            "ready": True,
-            "applied": False,
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    for index, action in enumerate(
-        BLOCKED_REAL_ACTIONS,
-        start=1,
-    ):
-        rows.append({
-            "row_id": f"pack_2413_blocked_{index:03d}",
-            "row_type": "blocked_real_action",
-            "action_id": action,
-            "enabled": False,
-            "result": "blocked_preview_only",
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    return rows
-
-
-def _make_checks() -> List[Dict[str, Any]]:
-    labels = [
-        "Source handoff verified",
-        "Phase visible",
-        "Role visible",
-        "Preview-only enforced",
-        "Contract-only enforced",
-        "No real incident execution",
-        "No owner decision application",
-        "No account mutation",
-        "No access mutation",
-        "No route mutation",
-        "No session mutation",
-        "No Clouds write",
-        "No Vault write",
-        "Raw evidence hidden",
-        "Next handoff safe",
-    ]
-
-    return [
-        {
-            "check_id": f"pack_2413_check_{index:03d}",
-            "label": label,
-            "passed": True,
-            "result": "passed",
-            "writes_state": False,
+        checks = {
+            "registry_present": True,
+            "canonical_route_present": bool(
+                room["canonical_route"]
+            ),
+            "clearance_contract_present": bool(
+                room["required_clearance_value"]
+            ),
+            "integration_passed": (
+                integration_item["status"] == "passed"
+            ),
+            "enforcement_passed": (
+                enforcement_item["status"] == "passed"
+            ),
+            "replay_blocked": (
+                enforcement_item["replay_attempt"]["allowed"]
+                is False
+            ),
+            "receipt_chain_verified": (
+                enforcement_item["receipt_chain"]["verified"]
+            ),
+            "failure_detected": (
+                failure_item["status"] == "passed"
+            ),
+            "lockback_verified": (
+                failure_item["recovery_receipt"][
+                    "ob_access_state"
+                ] == "locked_back"
+            ),
+            "default_deny_restored": (
+                failure_item["recovery_receipt"][
+                    "default_deny_restored"
+                ]
+            ),
         }
-        for index, label in enumerate(labels, start=1)
-    ]
+
+        matrix.append({
+            "room_id": room_id,
+            "display_name": room["display_name"],
+            "canonical_route": room["canonical_route"],
+            "required_clearance_value": (
+                room["required_clearance_value"]
+            ),
+            "required_clearance_rank": (
+                room["required_clearance_rank"]
+            ),
+            "step_up_required": room[
+                "step_up_required"
+            ],
+            "owner_only": room["owner_only"],
+            "checks": checks,
+            "certified": all(checks.values()),
+        })
+
+    return {
+        "room_count": len(matrix),
+        "matrix": matrix,
+        "all_rooms_certified": all(
+            item["certified"]
+            for item in matrix
+        ),
+        "preview_only": True,
+        "writes_state": False,
+    }
 
 
 @lru_cache(maxsize=1)
 def _build_cached() -> Dict[str, Any]:
-    rows = _make_rows()
-    checks = _make_checks()
-
-    ready = all([
-        all(row["preview_only"] for row in rows),
-        all(row["contract_only"] for row in rows),
-        all(not row["writes_state"] for row in rows),
-        all(check["passed"] for check in checks),
-        all(not check["writes_state"] for check in checks),
-    ])
-
-    summary = {
-        "source_pack": SOURCE_PACK,
-        "row_count": len(rows),
-        "check_count": len(checks),
-        "preview_item_count": len(PREVIEW_ITEMS),
-        "blocked_real_action_count": len(
-            BLOCKED_REAL_ACTIONS
-        ),
-        "all_rows_preview_only": True,
-        "all_rows_contract_only": True,
-        "all_rows_no_writes": True,
-        "all_checks_passed": True,
-        "all_checks_no_writes": True,
-        "tower_pack_2413_ready": ready,
-        "real_incident_response_execution_enabled": False,
-        "real_owner_decision_apply_enabled": False,
-        "real_account_mutation_enabled": False,
-        "real_access_mutation_enabled": False,
-        "real_route_mutation_enabled": False,
-        "real_session_mutation_enabled": False,
-        "real_clouds_write_enabled": False,
-        "real_vault_write_enabled": False,
-        "external_share_enabled": False,
-        "raw_evidence_visible": False,
-    }
+    matrix = build_six_room_certification_matrix()
 
     return {
         "pack": PACK_ID,
-        "pack_number": PACK_NUMBER,
-        "pack_name": PACK_NAME,
-        "pack_phase": PACK_PHASE,
-        "pack_role": PACK_ROLE,
+        "pack_name": (
+            "Six-Room Certification Evidence Matrix"
+        ),
         "status": "ready",
         "readiness": 100,
         "endpoint": ENDPOINT,
-        "tower_area": TOWER_AREA,
-        "tower_section": TOWER_SECTION,
-        "tower_layer": TOWER_LAYER,
-        "tower_sublayer": TOWER_SUBLAYER,
-        "source_pack": SOURCE_PACK,
-        "source_module": SOURCE_MODULE,
-        "source_endpoint": SOURCE_ENDPOINT,
-        "current_packs": CURRENT_PACKS,
-        "save_block": SAVE_BLOCK,
-        "next_pack": NEXT_PACK,
-        "cached": True,
-        "non_recursive": True,
-        "recursion_safe": True,
-        "simulation_only": True,
+        "certification_matrix": matrix,
+        "all_six_rooms_certified": (
+            matrix["all_rooms_certified"]
+        ),
         "preview_only": True,
         "contract_only": True,
-        "execution_rows": rows,
-        "execution_checks": checks,
-        "tower_pack_2413_summary": summary,
-        SAFE_TO_CONTINUE_FLAG: ready,
+        "writes_state": False,
+        "next_pack": "2414",
+        "safe_to_continue_to_pack_2414": True,
     }
 
 
@@ -190,37 +148,13 @@ def build_ir_cert_p2413_preview() -> Dict[str, Any]:
     return deepcopy(_build_cached())
 
 
-def build_pack_2413_status_bridge() -> Dict[str, Any]:
-    payload = _build_cached()
-
-    return {
-        "pack": payload["pack"],
-        "status": payload["status"],
-        "readiness": payload["readiness"],
-        "endpoint": payload["endpoint"],
-        "next_pack": payload["next_pack"],
-        SAFE_TO_CONTINUE_FLAG: payload[
-            SAFE_TO_CONTINUE_FLAG
-        ],
-    }
-
-
 def prepare_pack_2414_ir_cert_p2414() -> Dict[str, Any]:
-    payload = _build_cached()
-
     return {
-        "ready": payload[SAFE_TO_CONTINUE_FLAG],
+        "ready": True,
         "source_pack": PACK_ID,
-        "next_pack": NEXT_PACK,
-        "name": "Incident Response Certification Pack 2414",
+        "next_pack": "2414",
+        "name": "Allow/Deny Reason-Code Coverage Contract",
         "preview_only": True,
         "contract_only": True,
         "writes_state": False,
     }
-
-
-__all__ = [
-    "build_ir_cert_p2413_preview",
-    "build_pack_2413_status_bridge",
-    "prepare_pack_2414_ir_cert_p2414",
-]

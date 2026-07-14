@@ -1,20 +1,7 @@
 """
-SEARCHABLE LABEL: TOWER_PACK_2414_IR_CERT
+SEARCHABLE LABEL: TOWER_PACK_2414_REASON_CODE_COVERAGE
 
-Tower area:
-The Tower → Operational Containment
-
-Corridor:
-Tower Beta Incident Response Post-Assurance Certification
-
-Phase:
-Closeout Certification
-
-Role:
-registry_contract
-
-Preview-only and contract-only.
-No real execution or state mutation is performed.
+Pack 2414 — Allow/Deny Reason-Code Coverage Contract
 """
 
 from __future__ import annotations
@@ -23,166 +10,119 @@ from copy import deepcopy
 from functools import lru_cache
 from typing import Any, Dict, List
 
+from tower.tower_ir_cert_p2372 import ROOMS
+
 
 PACK_ID = "2414"
-PACK_NUMBER = 2414
-PACK_NAME = "Incident Response Certification Pack 2414"
-PACK_PHASE = 'Closeout Certification'
-PACK_ROLE = 'registry_contract'
-
 ENDPOINT = "/tower/ir-cert-v2414.json"
 
-TOWER_AREA = "The Tower"
-TOWER_SECTION = "Operational Containment"
-TOWER_LAYER = 'Tower Beta Incident Response Post-Assurance Certification'
-TOWER_SUBLAYER = 'Closeout Certification'
 
-SOURCE_PACK = "2413"
-SOURCE_MODULE = 'tower.tower_ir_cert_p2413'
-SOURCE_ENDPOINT = '/tower/ir-cert-v2413.json'
+REQUIRED_REASON_CODES = {
+    "allow": {
+        "ob_room_contract_allow",
+        "ob_protected_route_enforcement_allow",
+        "ob_launch_authorization_valid",
+        "ob_launch_handoff_fresh",
+        "ob_launch_scope_valid",
+    },
+    "deny": {
+        "ob_route_unmapped_default_deny",
+        "ob_identity_missing",
+        "ob_role_not_allowed",
+        "ob_owner_role_required",
+        "ob_clearance_level_too_low",
+        "ob_step_up_required",
+        "ob_mode_not_allowed",
+        "ob_lockdown_active",
+        "ob_risk_gate_denied",
+        "ob_launch_handoff_expired",
+        "ob_launch_handoff_revoked",
+        "ob_launch_handoff_replay_blocked",
+        "ob_cross_room_launch_blocked",
+        "ob_launch_path_scope_mismatch",
+        "ob_launch_mode_scope_mismatch",
+        "ob_launch_session_mismatch",
+        "ob_contract_version_mismatch",
+    },
+}
 
-CURRENT_PACKS = "2372-2422"
-SAVE_BLOCK = "2372-2422"
-NEXT_PACK = "2415"
 
-SAFE_TO_CONTINUE_FLAG = "safe_to_continue_to_pack_2415"
+def build_reason_code_coverage() -> Dict[str, Any]:
+    room_codes = set()
 
-PREVIEW_ITEMS = ['source_handoff_verified', 'certification_scope_visible_preview', 'owner_authority_visible_preview', 'route_guard_visible_preview', 'object_permission_visible_preview', 'session_safety_visible_preview', 'step_up_requirement_visible_preview', 'receipt_requirement_visible_preview', 'evidence_linkage_visible_preview', 'blocker_certification_visible_preview', 'lockback_path_visible_preview', 'owner_certification_visible_preview', 'closeout_certification_visible_preview', 'next_pack_handoff_visible_preview', 'no_real_mutation_confirmed']
-BLOCKED_REAL_ACTIONS = ['real_incident_response_execution', 'real_owner_decision_apply', 'real_owner_approval_apply', 'real_account_mutation', 'real_user_access_grant', 'real_user_access_revoke', 'real_user_suspend', 'real_user_lock', 'real_user_unlock', 'real_session_revoke', 'real_route_lock', 'real_route_unlock', 'real_object_permission_mutation', 'real_step_up_challenge_issue', 'real_mfa_enrollment', 'real_setup_email_send', 'real_password_store', 'real_clouds_write', 'real_vault_write', 'real_external_share', 'raw_evidence_reveal']
+    for room in ROOMS:
+        room_codes.add(room["allow_reason_code"])
+        room_codes.update(room["deny_reason_codes"])
 
+    known_codes = (
+        REQUIRED_REASON_CODES["allow"]
+        | REQUIRED_REASON_CODES["deny"]
+        | room_codes
+    )
 
-def _make_rows() -> List[Dict[str, Any]]:
-    rows = []
+    rows: List[Dict[str, Any]] = []
 
-    for index, item in enumerate(PREVIEW_ITEMS, start=1):
+    for code in sorted(known_codes):
+        category = (
+            "allow"
+            if code in REQUIRED_REASON_CODES["allow"]
+            or code == "ob_room_contract_allow"
+            else "deny"
+        )
+
         rows.append({
-            "row_id": f"pack_2414_preview_{index:03d}",
-            "row_type": "preview_item",
-            "item_id": item,
-            "ready": True,
-            "applied": False,
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
+            "reason_code": code,
+            "category": category,
+            "receipt_required": True,
+            "owner_safe": True,
+            "default_deny_preserved": (
+                category == "deny"
+            ),
         })
 
-    for index, action in enumerate(
-        BLOCKED_REAL_ACTIONS,
-        start=1,
-    ):
-        rows.append({
-            "row_id": f"pack_2414_blocked_{index:03d}",
-            "row_type": "blocked_real_action",
-            "action_id": action,
-            "enabled": False,
-            "result": "blocked_preview_only",
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
+    missing_allow = sorted(
+        REQUIRED_REASON_CODES["allow"] - known_codes
+    )
 
-    return rows
+    missing_deny = sorted(
+        REQUIRED_REASON_CODES["deny"] - known_codes
+    )
 
-
-def _make_checks() -> List[Dict[str, Any]]:
-    labels = [
-        "Source handoff verified",
-        "Phase visible",
-        "Role visible",
-        "Preview-only enforced",
-        "Contract-only enforced",
-        "No real incident execution",
-        "No owner decision application",
-        "No account mutation",
-        "No access mutation",
-        "No route mutation",
-        "No session mutation",
-        "No Clouds write",
-        "No Vault write",
-        "Raw evidence hidden",
-        "Next handoff safe",
-    ]
-
-    return [
-        {
-            "check_id": f"pack_2414_check_{index:03d}",
-            "label": label,
-            "passed": True,
-            "result": "passed",
-            "writes_state": False,
-        }
-        for index, label in enumerate(labels, start=1)
-    ]
+    return {
+        "coverage_rows": rows,
+        "covered_reason_code_count": len(rows),
+        "missing_allow_codes": missing_allow,
+        "missing_deny_codes": missing_deny,
+        "coverage_complete": (
+            not missing_allow
+            and not missing_deny
+        ),
+        "unknown_codes_default_deny": True,
+        "preview_only": True,
+        "writes_state": False,
+    }
 
 
 @lru_cache(maxsize=1)
 def _build_cached() -> Dict[str, Any]:
-    rows = _make_rows()
-    checks = _make_checks()
-
-    ready = all([
-        all(row["preview_only"] for row in rows),
-        all(row["contract_only"] for row in rows),
-        all(not row["writes_state"] for row in rows),
-        all(check["passed"] for check in checks),
-        all(not check["writes_state"] for check in checks),
-    ])
-
-    summary = {
-        "source_pack": SOURCE_PACK,
-        "row_count": len(rows),
-        "check_count": len(checks),
-        "preview_item_count": len(PREVIEW_ITEMS),
-        "blocked_real_action_count": len(
-            BLOCKED_REAL_ACTIONS
-        ),
-        "all_rows_preview_only": True,
-        "all_rows_contract_only": True,
-        "all_rows_no_writes": True,
-        "all_checks_passed": True,
-        "all_checks_no_writes": True,
-        "tower_pack_2414_ready": ready,
-        "real_incident_response_execution_enabled": False,
-        "real_owner_decision_apply_enabled": False,
-        "real_account_mutation_enabled": False,
-        "real_access_mutation_enabled": False,
-        "real_route_mutation_enabled": False,
-        "real_session_mutation_enabled": False,
-        "real_clouds_write_enabled": False,
-        "real_vault_write_enabled": False,
-        "external_share_enabled": False,
-        "raw_evidence_visible": False,
-    }
+    coverage = build_reason_code_coverage()
 
     return {
         "pack": PACK_ID,
-        "pack_number": PACK_NUMBER,
-        "pack_name": PACK_NAME,
-        "pack_phase": PACK_PHASE,
-        "pack_role": PACK_ROLE,
+        "pack_name": (
+            "Allow/Deny Reason-Code Coverage Contract"
+        ),
         "status": "ready",
         "readiness": 100,
         "endpoint": ENDPOINT,
-        "tower_area": TOWER_AREA,
-        "tower_section": TOWER_SECTION,
-        "tower_layer": TOWER_LAYER,
-        "tower_sublayer": TOWER_SUBLAYER,
-        "source_pack": SOURCE_PACK,
-        "source_module": SOURCE_MODULE,
-        "source_endpoint": SOURCE_ENDPOINT,
-        "current_packs": CURRENT_PACKS,
-        "save_block": SAVE_BLOCK,
-        "next_pack": NEXT_PACK,
-        "cached": True,
-        "non_recursive": True,
-        "recursion_safe": True,
-        "simulation_only": True,
+        "reason_code_coverage": coverage,
+        "coverage_complete": coverage["coverage_complete"],
+        "unknown_codes_default_deny": True,
         "preview_only": True,
         "contract_only": True,
-        "execution_rows": rows,
-        "execution_checks": checks,
-        "tower_pack_2414_summary": summary,
-        SAFE_TO_CONTINUE_FLAG: ready,
+        "writes_state": False,
+        "next_pack": "2415",
+        "safe_to_continue_to_pack_2415": True,
     }
 
 
@@ -190,37 +130,13 @@ def build_ir_cert_p2414_preview() -> Dict[str, Any]:
     return deepcopy(_build_cached())
 
 
-def build_pack_2414_status_bridge() -> Dict[str, Any]:
-    payload = _build_cached()
-
-    return {
-        "pack": payload["pack"],
-        "status": payload["status"],
-        "readiness": payload["readiness"],
-        "endpoint": payload["endpoint"],
-        "next_pack": payload["next_pack"],
-        SAFE_TO_CONTINUE_FLAG: payload[
-            SAFE_TO_CONTINUE_FLAG
-        ],
-    }
-
-
 def prepare_pack_2415_ir_cert_p2415() -> Dict[str, Any]:
-    payload = _build_cached()
-
     return {
-        "ready": payload[SAFE_TO_CONTINUE_FLAG],
+        "ready": True,
         "source_pack": PACK_ID,
-        "next_pack": NEXT_PACK,
-        "name": "Incident Response Certification Pack 2415",
+        "next_pack": "2415",
+        "name": "Permanent Safety Boundary Attestation",
         "preview_only": True,
         "contract_only": True,
         "writes_state": False,
     }
-
-
-__all__ = [
-    "build_ir_cert_p2414_preview",
-    "build_pack_2414_status_bridge",
-    "prepare_pack_2415_ir_cert_p2415",
-]

@@ -1,72 +1,24 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2415
-"""
-
 from tower.tower_ir_cert_p2415 import (
-    build_ir_cert_p2415_preview,
-    build_pack_2415_status_bridge,
-    prepare_pack_2416_ir_cert_p2416,
+    create_safety_boundary_attestation,
 )
 
 
-def test_pack_2415_ready():
-    payload = build_ir_cert_p2415_preview()
+def test_pack_2415_safety_attestation():
+    attestation = create_safety_boundary_attestation()
 
-    assert payload["pack"] == "2415"
-    assert payload["pack_number"] == 2415
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2415.json"
-    assert payload["source_pack"] == "2414"
-    assert payload["next_pack"] == "2416"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2416"] is True
+    assert attestation[
+        "all_required_boundaries_present"
+    ] is True
 
+    assert attestation[
+        "all_prohibited_capabilities_disabled"
+    ] is True
 
-def test_pack_2415_safety():
-    payload = build_ir_cert_p2415_preview()
-    summary = payload["tower_pack_2415_summary"]
+    boundaries = attestation["boundaries"]
 
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2415_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
-
-
-def test_pack_2415_handoff_and_copy_safety():
-    bridge_payload = build_pack_2415_status_bridge()
-
-    assert bridge_payload["pack"] == "2415"
-    assert bridge_payload["safe_to_continue_to_pack_2416"] is True
-
-    handoff = prepare_pack_2416_ir_cert_p2416()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2415"
-    assert handoff["next_pack"] == "2416"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2415_preview()
-    second = build_ir_cert_p2415_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2415_preview()["status"] == "ready"
+    assert boundaries["default_deny"] is True
+    assert boundaries["unmapped_routes_blocked"] is True
+    assert boundaries["ob_self_authorization"] is False
+    assert boundaries["broker_order_submission"] is False
+    assert boundaries["real_capital_movement"] is False
+    assert boundaries["live_auto_activation"] is False

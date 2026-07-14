@@ -1,72 +1,23 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2417
-"""
-
+from tower.tower_ir_cert_p2416 import (
+    build_owner_acceptance_decision_draft,
+)
 from tower.tower_ir_cert_p2417 import (
-    build_ir_cert_p2417_preview,
-    build_pack_2417_status_bridge,
-    prepare_pack_2418_ir_cert_p2418,
+    create_owner_acceptance_receipt,
 )
 
 
-def test_pack_2417_ready():
-    payload = build_ir_cert_p2417_preview()
+def test_pack_2417_preview_acceptance_receipt():
+    draft = build_owner_acceptance_decision_draft()
 
-    assert payload["pack"] == "2417"
-    assert payload["pack_number"] == 2417
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2417.json"
-    assert payload["source_pack"] == "2416"
-    assert payload["next_pack"] == "2418"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2418"] is True
+    receipt = create_owner_acceptance_receipt(
+        owner_id="owner_1",
+        decision_draft=draft,
+        owner_decision="accept_preview_contract",
+        decided_at="2026-07-14T14:00:00+00:00",
+    )
 
-
-def test_pack_2417_safety():
-    payload = build_ir_cert_p2417_preview()
-    summary = payload["tower_pack_2417_summary"]
-
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2417_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
-
-
-def test_pack_2417_handoff_and_copy_safety():
-    bridge_payload = build_pack_2417_status_bridge()
-
-    assert bridge_payload["pack"] == "2417"
-    assert bridge_payload["safe_to_continue_to_pack_2418"] is True
-
-    handoff = prepare_pack_2418_ir_cert_p2418()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2417"
-    assert handoff["next_pack"] == "2418"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2417_preview()
-    second = build_ir_cert_p2417_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2417_preview()["status"] == "ready"
+    assert receipt["decision_valid"] is True
+    assert receipt["preview_contract_accepted"] is True
+    assert receipt["production_authorization_granted"] is False
+    assert receipt["manual_live_authorization_granted"] is False
+    assert receipt["live_auto_authorization_granted"] is False
