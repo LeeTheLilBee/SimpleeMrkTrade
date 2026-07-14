@@ -22289,6 +22289,516 @@ def ob_gp050_readiness_assessment_verify_json(
 
 # OB_GIANT_PACK_050_PROTECTED_LAUNCH_CORRIDOR_READINESS_ROUTES_END
 
+# OB_GIANT_PACK_051_OWNER_PROTECTED_REHEARSAL_MANIFEST_ROUTES_START
+
+def _ob_gp051_http_enabled():
+    import os
+
+    return (
+        os.environ.get(
+            "OB_OWNER_REHEARSAL_HTTP_ENABLED",
+            "0",
+        )
+        == "1"
+    )
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs/status.json",
+    methods=["GET"],
+)
+def ob_gp051_owner_rehearsal_status_json():
+    from flask import jsonify
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        owner_rehearsal_status,
+    )
+
+    payload = (
+        owner_rehearsal_status()
+    )
+
+    payload[
+        "http_run_mutation_enabled"
+    ] = _ob_gp051_http_enabled()
+
+    return jsonify(payload)
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs.json",
+    methods=["GET"],
+)
+def ob_gp051_owner_rehearsal_runs_json():
+    from flask import jsonify, request
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        list_owner_rehearsal_runs,
+    )
+
+    if not _ob_gp051_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_http_disabled"
+                    ),
+                    "tower_launch_authorized": False,
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    owner_id = request.args.get(
+        "owner_id"
+    )
+
+    status = request.args.get(
+        "status"
+    )
+
+    try:
+        limit = int(
+            request.args.get(
+                "limit",
+                "100",
+            )
+        )
+
+    except ValueError:
+        limit = 100
+
+    items = (
+        list_owner_rehearsal_runs(
+            owner_id=owner_id,
+            status=status,
+            limit=limit,
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "items": items,
+            "count": len(items),
+            "tower_launch_authorized": False,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs/create.json",
+    methods=["POST"],
+)
+def ob_gp051_owner_rehearsal_create_json():
+    from flask import jsonify, request
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        create_owner_rehearsal_manifest,
+    )
+
+    if not _ob_gp051_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_http_disabled"
+                    ),
+                    "tower_launch_authorized": False,
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        create_owner_rehearsal_manifest(
+            owner_id=payload.get(
+                "owner_id",
+                "",
+            ),
+            readiness_assessment_id=payload.get(
+                "readiness_assessment_id",
+                "",
+            ),
+            room_id=payload.get(
+                "room_id",
+                "",
+            ),
+        )
+    )
+
+    if not result.get("ok"):
+        status_code = 409
+
+    elif result.get(
+        "idempotent"
+    ):
+        status_code = 200
+
+    else:
+        status_code = 201
+
+    return (
+        jsonify(result),
+        status_code,
+    )
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs/<run_id>.json",
+    methods=["GET"],
+)
+def ob_gp051_owner_rehearsal_detail_json(
+    run_id,
+):
+    from flask import jsonify
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        get_owner_rehearsal_run,
+    )
+
+    if not _ob_gp051_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    run = (
+        get_owner_rehearsal_run(
+            run_id
+        )
+    )
+
+    if run is None:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_run_not_found"
+                    ),
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "ok": True,
+            "run": run,
+            "tower_launch_authorized": False,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs/<run_id>/start.json",
+    methods=["POST"],
+)
+def ob_gp051_owner_rehearsal_start_json(
+    run_id,
+):
+    from flask import jsonify, request
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        start_owner_rehearsal_run,
+    )
+
+    if not _ob_gp051_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        start_owner_rehearsal_run(
+            run_id,
+            owner_id=payload.get(
+                "owner_id",
+                "",
+            ),
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs/<run_id>/advance.json",
+    methods=["POST"],
+)
+def ob_gp051_owner_rehearsal_advance_json(
+    run_id,
+):
+    from flask import jsonify, request
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        advance_owner_rehearsal_step,
+    )
+
+    if not _ob_gp051_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        advance_owner_rehearsal_step(
+            run_id,
+            owner_id=payload.get(
+                "owner_id",
+                "",
+            ),
+            step_code=payload.get(
+                "step_code",
+                "",
+            ),
+            evidence_ref=payload.get(
+                "evidence_ref",
+                "",
+            ),
+            evidence_hash=payload.get(
+                "evidence_hash",
+                "",
+            ),
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs/<run_id>/hold.json",
+    methods=["POST"],
+)
+def ob_gp051_owner_rehearsal_hold_json(
+    run_id,
+):
+    from flask import jsonify, request
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        hold_owner_rehearsal_run,
+    )
+
+    if not _ob_gp051_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        hold_owner_rehearsal_run(
+            run_id,
+            owner_id=payload.get(
+                "owner_id",
+                "",
+            ),
+            reason=payload.get(
+                "reason",
+                "",
+            ),
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs/<run_id>/resume.json",
+    methods=["POST"],
+)
+def ob_gp051_owner_rehearsal_resume_json(
+    run_id,
+):
+    from flask import jsonify, request
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        resume_owner_rehearsal_run,
+    )
+
+    if not _ob_gp051_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        resume_owner_rehearsal_run(
+            run_id,
+            owner_id=payload.get(
+                "owner_id",
+                "",
+            ),
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/owner-rehearsal-runs/<run_id>/verify.json",
+    methods=["GET"],
+)
+def ob_gp051_owner_rehearsal_verify_json(
+    run_id,
+):
+    from flask import jsonify
+
+    from web.ob_owner_protected_rehearsal_manifest import (
+        verify_owner_rehearsal_run,
+    )
+
+    if not _ob_gp051_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_rehearsal_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    result = (
+        verify_owner_rehearsal_run(
+            run_id
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get(
+                "verified"
+            )
+            else 409
+        ),
+    )
+
+# OB_GIANT_PACK_051_OWNER_PROTECTED_REHEARSAL_MANIFEST_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
