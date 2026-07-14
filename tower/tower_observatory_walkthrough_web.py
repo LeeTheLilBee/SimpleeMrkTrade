@@ -2141,6 +2141,10 @@ def _save_guided_progress(
 
     session.modified = True
 
+    _persist_guided_progress(
+        progress
+    )
+
 
 def _guided_expected_room_id(
     progress: Dict[str, Any],
@@ -3358,3 +3362,583 @@ def _register_guided_run_cert_routes():
 _register_guided_run_cert_routes()
 
 # END TOWER OB GUIDED SIX ROOM RUN
+
+# BEGIN TOWER OB GUIDED RUN PERSISTENCE AND HISTORY
+
+from tower.tower_observatory_walkthrough_store import (
+    list_owner_runs as _store_list_owner_runs,
+    load_guided_run as _store_load_guided_run,
+    load_run_evidence as _store_load_run_evidence,
+    save_guided_progress as _store_save_guided_progress,
+    verify_owner_run as _store_verify_owner_run,
+)
+
+
+def _persist_guided_progress(
+    progress: Dict[str, Any],
+) -> Dict[str, Any] | None:
+    owner_id = _owner_id()
+
+    if not owner_id:
+        return None
+
+    return _store_save_guided_progress(
+        owner_id=owner_id,
+        progress=progress,
+    )
+
+
+def _history_status_label(
+    status: str,
+) -> str:
+    return {
+        "completed": "Completed",
+        "in_progress": "In progress",
+    }.get(
+        status,
+        status.replace("_", " ").title(),
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/history"
+)
+def walkthrough_guided_history():
+    require_owner_access()
+
+    runs = _store_list_owner_runs(
+        owner_id=_owner_id(),
+        limit=100,
+    )
+
+    cards = []
+
+    for run in runs:
+        action_label = (
+            "View final evidence"
+            if run["status"] == "completed"
+            else "Resume run"
+        )
+
+        action_url = (
+            "/tower/observatory-walkthrough/"
+            f"history/{run['walkthrough_id']}"
+        )
+
+        cards.append(f"""
+        <section class="card">
+            <h3>
+                {_history_status_label(run["status"])}
+            </h3>
+
+            <div class="meta">
+                <div>
+                    <strong>Run ID:</strong>
+                    {run["walkthrough_id"]}
+                </div>
+
+                <div>
+                    <strong>Progress:</strong>
+                    {run["completed_count"]}
+                    of
+                    {run["total_room_count"]}
+                </div>
+
+                <div>
+                    <strong>Updated:</strong>
+                    {run["updated_at"]}
+                </div>
+
+                <div>
+                    <strong>Next room:</strong>
+                    {run["next_room_id"] or "Complete"}
+                </div>
+            </div>
+
+            <div class="actions">
+                <a
+                    class="button"
+                    href="{action_url}"
+                >
+                    {action_label}
+                </a>
+            </div>
+        </section>
+        """)
+
+    empty_state = """
+    <section class="card">
+        <h2>No saved guided runs</h2>
+
+        <p>
+            Start a guided six-room run and Tower will
+            preserve progress and completion receipts here.
+        </p>
+    </section>
+    """
+
+    content = f"""
+    <section class="hero">
+        <h1>Observatory Run History</h1>
+
+        <p>
+            Tower-owned walkthrough history with durable
+            progress checkpoints, room receipts, final
+            receipts, and integrity verification.
+        </p>
+
+        <div class="status-row">
+            <span class="status good">
+                {len(runs)} saved run{"s" if len(runs) != 1 else ""}
+            </span>
+
+            <span class="status">
+                Owner only
+            </span>
+
+            <span class="status">
+                No direct Vault write
+            </span>
+        </div>
+    </section>
+
+    <div class="grid">
+        {"".join(cards) if cards else empty_state}
+    </div>
+    """
+
+    return render_page(
+        title="Observatory Guided Run History",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "history/<walkthrough_id>"
+)
+def walkthrough_guided_history_detail(
+    walkthrough_id: str,
+):
+    require_owner_access()
+
+    evidence = _store_load_run_evidence(
+        owner_id=_owner_id(),
+        walkthrough_id=walkthrough_id,
+    )
+
+    if evidence is None:
+        abort(404)
+
+    run = evidence["run"]
+
+    room_cards = []
+
+    for receipt in evidence[
+        "room_receipts"
+    ]:
+        payload = receipt["payload"]
+
+        room_cards.append(f"""
+        <section class="card receipt">
+            <h3>
+                {receipt["position"]}.
+                {payload.get("display_name", receipt["room_id"])}
+            </h3>
+
+            <div class="meta">
+                <div>
+                    <strong>Receipt:</strong>
+                    {receipt["receipt_id"]}
+                </div>
+
+                <div>
+                    <strong>Completed:</strong>
+                    {receipt["completed_at"]}
+                </div>
+
+                <div>
+                    <strong>Integrity valid:</strong>
+                    {receipt["integrity_valid"]}
+                </div>
+            </div>
+        </section>
+        """)
+
+    verification = _store_verify_owner_run(
+        owner_id=_owner_id(),
+        walkthrough_id=walkthrough_id,
+    )
+
+    resume_action = ""
+
+    if run["status"] != "completed":
+        resume_action = f"""
+        <form
+            method="post"
+            action="/tower/observatory-walkthrough/history/resume/{walkthrough_id}"
+        >
+            <button type="submit">
+                Resume this run
+            </button>
+        </form>
+        """
+
+    final_detail = ""
+
+    if evidence["final_receipt"]:
+        final_detail = f"""
+        <section class="card receipt" style="margin-top:22px">
+            <h2>Final completion receipt</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Receipt ID:</strong>
+                    {evidence["final_receipt"]["receipt_id"]}
+                </div>
+
+                <div>
+                    <strong>Completed:</strong>
+                    {evidence["final_receipt"]["completed_at"]}
+                </div>
+
+                <div>
+                    <strong>Integrity valid:</strong>
+                    {evidence["final_receipt"]["integrity_valid"]}
+                </div>
+            </div>
+        </section>
+        """
+
+    content = f"""
+    <section class="hero">
+        <h1>Guided Run Evidence</h1>
+
+        <p>
+            Durable Tower record for walkthrough
+            {walkthrough_id}.
+        </p>
+
+        <div class="status-row">
+            <span class="status good">
+                {_history_status_label(run["status"])}
+            </span>
+
+            <span class="status good">
+                Integrity verified:
+                {verification["verified"]}
+            </span>
+
+            <span class="status">
+                {run["completed_count"]}
+                of
+                {run["total_room_count"]}
+            </span>
+        </div>
+
+        <div class="actions">
+            {resume_action}
+
+            <a
+                class="button secondary"
+                href="/tower/observatory-walkthrough/history"
+            >
+                Back to history
+            </a>
+        </div>
+    </section>
+
+    {final_detail}
+
+    <div class="grid">
+        {"".join(room_cards)}
+    </div>
+    """
+
+    return render_page(
+        title="Observatory Guided Run Evidence",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "history/resume/<walkthrough_id>"
+)
+def walkthrough_guided_history_resume(
+    walkthrough_id: str,
+):
+    require_owner_access()
+
+    stored = _store_load_guided_run(
+        owner_id=_owner_id(),
+        walkthrough_id=walkthrough_id,
+    )
+
+    if stored is None:
+        abort(404)
+
+    progress = stored["payload"]
+
+    if progress.get(
+        "status"
+    ) == "completed":
+        session[
+            _GUIDED_PROGRESS_KEY
+        ] = progress
+
+        session[
+            "tower_ob_walkthrough"
+        ] = {
+            "walkthrough_id": walkthrough_id,
+            "owner_id": _owner_id(),
+            "stage": "closed",
+            "mode": "paper",
+            "active_room_id": None,
+            "launch_receipt": None,
+            "close_receipt": None,
+            "default_deny": True,
+            "preview_only": True,
+            "contract_only": True,
+        }
+
+        session.modified = True
+
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_guided_final_receipt"
+            )
+        )
+
+    next_room_id = (
+        _guided_expected_room_id(
+            progress
+        )
+    )
+
+    progress["next_room_id"] = (
+        next_room_id
+    )
+
+    session[
+        _GUIDED_PROGRESS_KEY
+    ] = progress
+
+    session[
+        "tower_ob_walkthrough"
+    ] = {
+        "walkthrough_id": walkthrough_id,
+        "owner_id": _owner_id(),
+        "stage": "room_selection",
+        "mode": "paper",
+        "active_room_id": None,
+        "launch_receipt": None,
+        "close_receipt": None,
+        "default_deny": True,
+        "preview_only": True,
+        "contract_only": True,
+    }
+
+    session.modified = True
+
+    if next_room_id is None:
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_guided_progress"
+            )
+        )
+
+    return redirect(
+        url_for(
+            "tower_ob_walkthrough."
+            "walkthrough_room",
+            room_id=next_room_id,
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "history/<walkthrough_id>/verify.json"
+)
+def walkthrough_guided_history_verify_json(
+    walkthrough_id: str,
+):
+    require_owner_access()
+
+    return jsonify(
+        _store_verify_owner_run(
+            owner_id=_owner_id(),
+            walkthrough_id=walkthrough_id,
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.after_app_request
+def _inject_guided_history_links(
+    response,
+):
+    if response.status_code != 200:
+        return response
+
+    content_type = response.headers.get(
+        "Content-Type",
+        "",
+    )
+
+    if "text/html" not in content_type:
+        return response
+
+    if not owner_access_allowed():
+        return response
+
+    if request.path not in {
+        "/tower",
+        "/tower/",
+        "/tower/observatory-walkthrough",
+    }:
+        return response
+
+    try:
+        html = response.get_data(
+            as_text=True
+        )
+    except Exception:
+        return response
+
+    if "towerObGuidedHistoryLink" in html:
+        return response
+
+    fragment = """
+    <aside
+        id="towerObGuidedHistoryLink"
+        style="
+            position:fixed;
+            right:24px;
+            top:24px;
+            z-index:2147483005;
+            padding:12px;
+            border:1px solid rgba(216,180,254,.24);
+            border-radius:13px;
+            background:rgba(8,10,24,.94);
+            font-family:Inter,system-ui,sans-serif;
+        "
+    >
+        <a
+            href="/tower/observatory-walkthrough/history"
+            style="
+                color:#f5f3ff;
+                text-decoration:none;
+                font-size:12px;
+                font-weight:800;
+            "
+        >
+            Observatory run history
+        </a>
+    </aside>
+    """
+
+    response.set_data(
+        _inject_before_body_close(
+            html,
+            fragment,
+        )
+    )
+
+    return response
+
+
+def _build_persistence_cert_payload(
+    pack: int,
+) -> Dict[str, Any]:
+    from tower.tower_ir_cert_p2453 import (
+        build_ir_cert_p2453_preview,
+    )
+    from tower.tower_ir_cert_p2454 import (
+        build_ir_cert_p2454_preview,
+    )
+    from tower.tower_ir_cert_p2455 import (
+        build_ir_cert_p2455_preview,
+    )
+    from tower.tower_ir_cert_p2456 import (
+        build_ir_cert_p2456_preview,
+    )
+    from tower.tower_ir_cert_p2457 import (
+        build_ir_cert_p2457_preview,
+    )
+    from tower.tower_ir_cert_p2458 import (
+        build_ir_cert_p2458_preview,
+    )
+    from tower.tower_ir_cert_p2459 import (
+        build_ir_cert_p2459_preview,
+    )
+    from tower.tower_ir_cert_p2460 import (
+        build_ir_cert_p2460_preview,
+    )
+    from tower.tower_ir_cert_p2461 import (
+        build_ir_cert_p2461_preview,
+    )
+    from tower.tower_ir_cert_p2462 import (
+        build_ir_cert_p2462_preview,
+    )
+
+    builders = {
+        2453: build_ir_cert_p2453_preview,
+        2454: build_ir_cert_p2454_preview,
+        2455: build_ir_cert_p2455_preview,
+        2456: build_ir_cert_p2456_preview,
+        2457: build_ir_cert_p2457_preview,
+        2458: build_ir_cert_p2458_preview,
+        2459: build_ir_cert_p2459_preview,
+        2460: build_ir_cert_p2460_preview,
+        2461: build_ir_cert_p2461_preview,
+        2462: build_ir_cert_p2462_preview,
+    }
+
+    builder = builders.get(
+        pack
+    )
+
+    if builder is None:
+        abort(404)
+
+    return builder()
+
+
+def _persistence_cert_response(
+    pack: int,
+):
+    require_owner_access()
+
+    return jsonify(
+        _build_persistence_cert_payload(
+            pack
+        )
+    )
+
+
+def _register_persistence_cert_routes():
+    for pack in range(
+        2453,
+        2463,
+    ):
+        tower_ob_walkthrough_bp.add_url_rule(
+            f"/tower/ir-cert-v{pack}.json",
+            endpoint=(
+                f"guided_persistence_cert_pack_{pack}"
+            ),
+            view_func=(
+                lambda selected_pack=pack:
+                _persistence_cert_response(
+                    selected_pack
+                )
+            ),
+            methods=["GET"],
+        )
+
+
+_register_persistence_cert_routes()
+
+# END TOWER OB GUIDED RUN PERSISTENCE AND HISTORY

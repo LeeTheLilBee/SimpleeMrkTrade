@@ -617,3 +617,160 @@ def test_guided_reset(client):
 
 
 # END GUIDED SIX ROOM RUN TESTS
+
+# BEGIN GUIDED RUN PERSISTENCE TESTS
+
+from tower.tower_observatory_walkthrough_store import (
+    list_owner_runs as store_list_owner_runs,
+    load_guided_run as store_load_guided_run,
+)
+
+
+def test_guided_start_persists_run(
+    client,
+):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    with client.session_transaction() as session:
+        progress = session[
+            "tower_ob_guided_progress"
+        ]
+
+        walkthrough_id = progress[
+            "walkthrough_id"
+        ]
+
+    stored = store_load_guided_run(
+        owner_id="owner_test",
+        walkthrough_id=walkthrough_id,
+    )
+
+    assert stored is not None
+    assert stored["status"] == "in_progress"
+    assert stored["integrity_valid"] is True
+
+
+def test_history_page_lists_saved_run(
+    client,
+):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    response = client.get(
+        "/tower/observatory-walkthrough/history"
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert "Observatory Run History" in body
+    assert "In progress" in body
+    assert "Resume run" in body
+
+
+def test_lost_session_resume(
+    client,
+):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    client.post(
+        "/tower/observatory-walkthrough/"
+        "room/ob_room_dashboard/launch"
+    )
+
+    client.post(
+        "/tower/observatory-walkthrough/"
+        "progress/complete/ob_room_dashboard"
+    )
+
+    with client.session_transaction() as session:
+        progress = session[
+            "tower_ob_guided_progress"
+        ]
+
+        walkthrough_id = progress[
+            "walkthrough_id"
+        ]
+
+        session.pop(
+            "tower_ob_guided_progress",
+            None,
+        )
+
+        session.pop(
+            "tower_ob_walkthrough",
+            None,
+        )
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        f"history/resume/{walkthrough_id}"
+    )
+
+    assert response.status_code == 302
+
+    assert response.headers[
+        "Location"
+    ].endswith(
+        "/tower/observatory-walkthrough/"
+        "room/ob_room_market_map"
+    )
+
+    with client.session_transaction() as session:
+        restored = session[
+            "tower_ob_guided_progress"
+        ]
+
+        assert restored[
+            "completed_count"
+        ] == 1
+
+        assert restored[
+            "next_room_id"
+        ] == "ob_room_market_map"
+
+
+def test_history_verify_json(
+    client,
+):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    with client.session_transaction() as session:
+        walkthrough_id = session[
+            "tower_ob_guided_progress"
+        ]["walkthrough_id"]
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        f"history/{walkthrough_id}/verify.json"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload["verified"] is True
+    assert payload["status"] == "in_progress"
+    assert payload["preview_only"] is True
+    assert payload["vault_write_performed"] is False
+
+
+# END GUIDED RUN PERSISTENCE TESTS
