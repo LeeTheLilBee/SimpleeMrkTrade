@@ -1,72 +1,39 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2396
-"""
-
 from tower.tower_ir_cert_p2396 import (
-    build_ir_cert_p2396_preview,
-    build_pack_2396_status_bridge,
-    prepare_pack_2397_ir_cert_p2397,
+    verify_launch_receipt_chain,
 )
 
 
-def test_pack_2396_ready():
-    payload = build_ir_cert_p2396_preview()
+def test_pack_2396_receipt_chain_verified():
+    handoff = {
+        "handoff_id": "oblaunch_1",
+        "owner_id": "owner_1",
+        "session_id": "session_1",
+        "approved_room_id": "ob_room_dashboard",
+        "canonical_path": "/dashboard",
+    }
 
-    assert payload["pack"] == "2396"
-    assert payload["pack_number"] == 2396
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2396.json"
-    assert payload["source_pack"] == "2395"
-    assert payload["next_pack"] == "2397"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2397"] is True
+    result = verify_launch_receipt_chain(
+        handoff=handoff,
+        launch_use_receipt={
+            "handoff_id": "oblaunch_1",
+            "owner_id": "owner_1",
+            "session_id": "session_1",
+            "room_id": "ob_room_dashboard",
+            "canonical_path": "/dashboard",
+            "authorization_consumed": True,
+        },
+        room_access_receipt={
+            "handoff_id": "oblaunch_1",
+        },
+        completion_intake={
+            "handoff_id": "oblaunch_1",
+            "accepted": True,
+        },
+        close_receipt={
+            "handoff_id": "oblaunch_1",
+            "launch_authorization_state": "revoked",
+            "ob_access_state": "locked_back",
+        },
+    )
 
-
-def test_pack_2396_safety():
-    payload = build_ir_cert_p2396_preview()
-    summary = payload["tower_pack_2396_summary"]
-
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2396_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
-
-
-def test_pack_2396_handoff_and_copy_safety():
-    bridge_payload = build_pack_2396_status_bridge()
-
-    assert bridge_payload["pack"] == "2396"
-    assert bridge_payload["safe_to_continue_to_pack_2397"] is True
-
-    handoff = prepare_pack_2397_ir_cert_p2397()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2396"
-    assert handoff["next_pack"] == "2397"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2396_preview()
-    second = build_ir_cert_p2396_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2396_preview()["status"] == "ready"
+    assert result["verified"] is True

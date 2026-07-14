@@ -1,72 +1,34 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2391
-"""
-
+from tower.tower_ir_cert_p2377 import (
+    create_ob_launch_handoff,
+)
 from tower.tower_ir_cert_p2391 import (
-    build_ir_cert_p2391_preview,
-    build_pack_2391_status_bridge,
-    prepare_pack_2392_ir_cert_p2392,
+    build_active_launch_ledger,
 )
 
 
-def test_pack_2391_ready():
-    payload = build_ir_cert_p2391_preview()
+def test_pack_2391_active_ledger():
+    handoff = create_ob_launch_handoff(
+        owner_id="owner_1",
+        session_id="session_1",
+        approved_room={
+            "room_id": "ob_room_dashboard",
+            "display_name": "Dashboard",
+        },
+        canonical_path="/dashboard",
+        mode="paper",
+        step_up_reference=None,
+        clearance_decision_reference="obclr_1",
+        issued_at="2026-07-14T12:00:00+00:00",
+    )
 
-    assert payload["pack"] == "2391"
-    assert payload["pack_number"] == 2391
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2391.json"
-    assert payload["source_pack"] == "2390"
-    assert payload["next_pack"] == "2392"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2392"] is True
+    ledger = build_active_launch_ledger(
+        issued_handoffs=[handoff],
+        consumed_handoff_ids=[],
+        revoked_handoff_ids=[],
+        closed_handoff_ids=[],
+    )
 
-
-def test_pack_2391_safety():
-    payload = build_ir_cert_p2391_preview()
-    summary = payload["tower_pack_2391_summary"]
-
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2391_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
-
-
-def test_pack_2391_handoff_and_copy_safety():
-    bridge_payload = build_pack_2391_status_bridge()
-
-    assert bridge_payload["pack"] == "2391"
-    assert bridge_payload["safe_to_continue_to_pack_2392"] is True
-
-    handoff = prepare_pack_2392_ir_cert_p2392()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2391"
-    assert handoff["next_pack"] == "2392"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2391_preview()
-    second = build_ir_cert_p2391_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2391_preview()["status"] == "ready"
+    assert ledger["active_count"] == 1
+    assert ledger["entries"][0][
+        "authorization_state"
+    ] == "active_preview"
