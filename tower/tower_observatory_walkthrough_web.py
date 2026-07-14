@@ -4286,3 +4286,374 @@ def _register_persistence_ops_cert_routes():
 _register_persistence_ops_cert_routes()
 
 # END TOWER OB PERSISTENCE OPERATIONS ROUTES
+
+# BEGIN TOWER OB HOSTED PERSISTENCE ASSURANCE ROUTES
+
+from tower.tower_observatory_walkthrough_hosted_assurance import (
+    backup_rotation_inventory as _assurance_backup_inventory,
+    create_retention_approval_preview as _assurance_create_retention_approval,
+    create_storage_incident_receipt as _assurance_create_incident,
+    hosted_operations_readiness as _assurance_readiness,
+    hosted_runtime_gate as _assurance_runtime_gate,
+    startup_fail_closed_decision as _assurance_startup_decision,
+)
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/assurance"
+)
+def walkthrough_hosted_assurance_board():
+    require_owner_access()
+
+    runtime = _assurance_runtime_gate()
+
+    startup = _assurance_startup_decision()
+
+    backups = _assurance_backup_inventory()
+
+    readiness = _assurance_readiness()
+
+    blocker_rows = "".join(
+        f"""
+        <li>{blocker}</li>
+        """
+        for blocker in (
+            readiness["blockers"]
+        )
+    )
+
+    if not blocker_rows:
+        blocker_rows = """
+        <li>No current readiness blockers.</li>
+        """
+
+    content = f"""
+    <section class="hero">
+        <h1>Hosted Persistence Assurance</h1>
+
+        <p>
+            Owner view of runtime configuration, fail-closed
+            startup, backup cadence, restore readiness,
+            retention approval, and storage incidents.
+        </p>
+
+        <div class="status-row">
+            <span class="status {'good' if readiness['ready'] else 'danger'}">
+                {readiness["decision"]}
+            </span>
+
+            <span class="status {'good' if startup['allowed'] else 'danger'}">
+                Startup allowed:
+                {startup["allowed"]}
+            </span>
+
+            <span class="status">
+                Fail closed
+            </span>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="card">
+            <h2>Runtime gate</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Ready:</strong>
+                    {runtime["ready"]}
+                </div>
+
+                <div>
+                    <strong>Hosted mode:</strong>
+                    {runtime["hosted_mode"]}
+                </div>
+
+                <div>
+                    <strong>Database environment:</strong>
+                    {runtime["database_environment_present"]}
+                </div>
+
+                <div>
+                    <strong>Backup environment:</strong>
+                    {runtime["backup_environment_present"]}
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Backup cadence</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Backups:</strong>
+                    {backups["backup_count"]}
+                </div>
+
+                <div>
+                    <strong>Verified:</strong>
+                    {backups["verified_backup_count"]}
+                </div>
+
+                <div>
+                    <strong>Cadence ready:</strong>
+                    {backups["cadence_ready"]}
+                </div>
+
+                <div>
+                    <strong>Maximum age:</strong>
+                    {backups["maximum_age_hours"]}
+                    hours
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Readiness blockers</h2>
+
+            <ul>
+                {blocker_rows}
+            </ul>
+        </section>
+    </div>
+
+    <section class="card" style="margin-top:22px">
+        <div class="actions">
+            <form
+                method="post"
+                action="/tower/observatory-walkthrough/operations/assurance/retention-preview"
+            >
+                <button type="submit">
+                    Create retention approval preview
+                </button>
+            </form>
+
+            <a
+                class="button secondary"
+                href="/tower/observatory-walkthrough/operations"
+            >
+                Storage operations
+            </a>
+        </div>
+    </section>
+    """
+
+    return render_page(
+        title="Hosted Persistence Assurance",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/assurance.json"
+)
+def walkthrough_hosted_assurance_json():
+    require_owner_access()
+
+    return jsonify(
+        _assurance_readiness()
+    )
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/assurance/retention-preview"
+)
+def walkthrough_retention_approval_preview():
+    require_owner_access()
+
+    approval = (
+        _assurance_create_retention_approval(
+            owner_id=_owner_id()
+        )
+    )
+
+    content = f"""
+    <section class="hero">
+        <h1>Retention Approval Preview Created</h1>
+
+        <p>
+            Tower created an owner-decision record. No
+            walkthrough runs were deleted.
+        </p>
+
+        <div class="status-row">
+            <span class="status good">
+                Preview saved
+            </span>
+
+            <span class="status">
+                Cleanup performed:
+                {approval["cleanup_performed"]}
+            </span>
+        </div>
+    </section>
+
+    <section class="card receipt" style="margin-top:22px">
+        <div class="meta">
+            <div>
+                <strong>Approval ID:</strong>
+                {approval["approval_id"]}
+            </div>
+
+            <div>
+                <strong>Eligible count:</strong>
+                {approval["record"]["eligible_count"]}
+            </div>
+
+            <div>
+                <strong>Status:</strong>
+                {approval["record"]["status"]}
+            </div>
+
+            <div>
+                <strong>Record path:</strong>
+                {approval["record_path"]}
+            </div>
+        </div>
+
+        <a
+            class="button"
+            href="/tower/observatory-walkthrough/operations/assurance"
+        >
+            Return to assurance
+        </a>
+    </section>
+    """
+
+    return render_page(
+        title="Retention Approval Preview",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/assurance/incident"
+)
+def walkthrough_storage_incident_create():
+    require_owner_access()
+
+    payload = request.get_json(
+        silent=True
+    ) or request.form.to_dict()
+
+    incident = _assurance_create_incident(
+        incident_type=payload.get(
+            "incident_type",
+            "storage_operations_review",
+        ),
+        severity=payload.get(
+            "severity",
+            "warning",
+        ),
+        summary=payload.get(
+            "summary",
+            "Owner-created storage operations incident.",
+        ),
+        evidence={
+            "assurance": (
+                _assurance_readiness()
+            ),
+        },
+        owner_id=_owner_id(),
+    )
+
+    return jsonify(
+        incident
+    ), 201
+
+
+def _build_hosted_assurance_cert_payload(
+    pack: int,
+) -> Dict[str, Any]:
+    from tower.tower_ir_cert_p2473 import (
+        build_ir_cert_p2473_preview,
+    )
+    from tower.tower_ir_cert_p2474 import (
+        build_ir_cert_p2474_preview,
+    )
+    from tower.tower_ir_cert_p2475 import (
+        build_ir_cert_p2475_preview,
+    )
+    from tower.tower_ir_cert_p2476 import (
+        build_ir_cert_p2476_preview,
+    )
+    from tower.tower_ir_cert_p2477 import (
+        build_ir_cert_p2477_preview,
+    )
+    from tower.tower_ir_cert_p2478 import (
+        build_ir_cert_p2478_preview,
+    )
+    from tower.tower_ir_cert_p2479 import (
+        build_ir_cert_p2479_preview,
+    )
+    from tower.tower_ir_cert_p2480 import (
+        build_ir_cert_p2480_preview,
+    )
+    from tower.tower_ir_cert_p2481 import (
+        build_ir_cert_p2481_preview,
+    )
+    from tower.tower_ir_cert_p2482 import (
+        build_ir_cert_p2482_preview,
+    )
+
+    builders = {
+        2473: build_ir_cert_p2473_preview,
+        2474: build_ir_cert_p2474_preview,
+        2475: build_ir_cert_p2475_preview,
+        2476: build_ir_cert_p2476_preview,
+        2477: build_ir_cert_p2477_preview,
+        2478: build_ir_cert_p2478_preview,
+        2479: build_ir_cert_p2479_preview,
+        2480: build_ir_cert_p2480_preview,
+        2481: build_ir_cert_p2481_preview,
+        2482: build_ir_cert_p2482_preview,
+    }
+
+    builder = builders.get(
+        pack
+    )
+
+    if builder is None:
+        abort(404)
+
+    return builder()
+
+
+def _hosted_assurance_cert_response(
+    pack: int,
+):
+    require_owner_access()
+
+    return jsonify(
+        _build_hosted_assurance_cert_payload(
+            pack
+        )
+    )
+
+
+def _register_hosted_assurance_cert_routes():
+    for pack in range(
+        2473,
+        2483,
+    ):
+        tower_ob_walkthrough_bp.add_url_rule(
+            f"/tower/ir-cert-v{pack}.json",
+            endpoint=(
+                f"hosted_assurance_cert_pack_{pack}"
+            ),
+            view_func=(
+                lambda selected_pack=pack:
+                _hosted_assurance_cert_response(
+                    selected_pack
+                )
+            ),
+            methods=["GET"],
+        )
+
+
+_register_hosted_assurance_cert_routes()
+
+# END TOWER OB HOSTED PERSISTENCE ASSURANCE ROUTES

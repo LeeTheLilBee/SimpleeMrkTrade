@@ -830,3 +830,129 @@ def test_operations_health_json(
 
 
 # END PERSISTENCE OPERATIONS TESTS
+
+# BEGIN HOSTED PERSISTENCE ASSURANCE TESTS
+
+def test_hosted_assurance_owner_only(
+    client,
+):
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/assurance"
+    )
+
+    assert response.status_code == 403
+
+
+def test_hosted_assurance_board(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/assurance"
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert "Hosted Persistence Assurance" in body
+    assert "Runtime gate" in body
+    assert "Backup cadence" in body
+    assert "Readiness blockers" in body
+    assert "Fail closed" in body
+
+
+def test_hosted_assurance_json(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/assurance.json"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload["fail_closed"] is True
+    assert payload[
+        "automatic_restore"
+    ] is False
+    assert payload[
+        "automatic_cleanup"
+    ] is False
+    assert payload[
+        "direct_vault_write"
+    ] is False
+
+
+def test_retention_approval_preview_route(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "operations/assurance/"
+        "retention-preview"
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert (
+        "Retention Approval Preview Created"
+        in body
+    )
+
+    assert "Cleanup performed:" in body
+    assert "False" in body
+
+
+def test_storage_incident_receipt_route(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "operations/assurance/incident",
+        json={
+            "incident_type": (
+                "backup_cadence_review"
+            ),
+            "severity": "warning",
+            "summary": (
+                "Owner requested cadence review."
+            ),
+        },
+    )
+
+    assert response.status_code == 201
+
+    payload = response.get_json()
+
+    assert payload["created"] is True
+
+    assert payload[
+        "incident_id"
+    ].startswith(
+        "obstorageincident_"
+    )
+
+    assert payload["receipt"][
+        "automatic_restore"
+    ] is False
+
+
+# END HOSTED PERSISTENCE ASSURANCE TESTS
