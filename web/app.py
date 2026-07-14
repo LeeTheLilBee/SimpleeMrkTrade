@@ -21939,6 +21939,356 @@ def ob_gp049_tower_lockback_acknowledge_json(
 
 # OB_GIANT_PACK_049_PROTECTED_ROOM_EXIT_CLOSEOUT_ROUTES_END
 
+# OB_GIANT_PACK_050_PROTECTED_LAUNCH_CORRIDOR_READINESS_ROUTES_START
+
+def _ob_gp050_http_enabled():
+    import os
+
+    return (
+        os.environ.get(
+            "OB_PROTECTED_LAUNCH_READINESS_HTTP_ENABLED",
+            "0",
+        )
+        == "1"
+    )
+
+
+@app.route(
+    "/ob/protected-launch-corridor/status.json",
+    methods=["GET"],
+)
+def ob_gp050_protected_launch_corridor_status_json():
+    from flask import jsonify
+
+    from web.ob_protected_launch_corridor_readiness import (
+        protected_launch_corridor_status,
+    )
+
+    payload = (
+        protected_launch_corridor_status()
+    )
+
+    payload[
+        "http_assessment_enabled"
+    ] = _ob_gp050_http_enabled()
+
+    return jsonify(payload)
+
+
+@app.route(
+    "/ob/protected-launch-corridor/assessments.json",
+    methods=["GET"],
+)
+def ob_gp050_readiness_assessments_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_launch_corridor_readiness import (
+        list_readiness_assessments,
+    )
+
+    if not _ob_gp050_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_readiness_http_disabled"
+                    ),
+                    "tower_launch_authorized": False,
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    owner_id = request.args.get(
+        "owner_id"
+    )
+
+    recommendation = request.args.get(
+        "recommendation"
+    )
+
+    try:
+        limit = int(
+            request.args.get(
+                "limit",
+                "100",
+            )
+        )
+
+    except ValueError:
+        limit = 100
+
+    items = (
+        list_readiness_assessments(
+            owner_id=owner_id,
+            recommendation=(
+                recommendation
+            ),
+            limit=limit,
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "items": items,
+            "count": len(items),
+            "tower_launch_authorized": False,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/protected-launch-corridor/evaluate.json",
+    methods=["POST"],
+)
+def ob_gp050_evaluate_owner_rehearsal_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_launch_corridor_readiness import (
+        evaluate_owner_rehearsal_readiness,
+    )
+
+    if not _ob_gp050_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_readiness_http_disabled"
+                    ),
+                    "tower_launch_authorized": False,
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        evaluate_owner_rehearsal_readiness(
+            payload.get(
+                "owner_id",
+                "",
+            ),
+            persist=bool(
+                payload.get(
+                    "persist",
+                    True,
+                )
+            ),
+        )
+    )
+
+    if not result.get("ok"):
+        status_code = 400
+
+    elif result.get(
+        "idempotent"
+    ):
+        status_code = 200
+
+    elif result.get(
+        "created"
+    ):
+        status_code = 201
+
+    else:
+        status_code = 200
+
+    return (
+        jsonify(result),
+        status_code,
+    )
+
+
+@app.route(
+    "/ob/protected-launch-corridor/latest.json",
+    methods=["GET"],
+)
+def ob_gp050_latest_readiness_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_launch_corridor_readiness import (
+        get_latest_readiness_assessment,
+    )
+
+    if not _ob_gp050_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_readiness_http_disabled"
+                    ),
+                    "tower_launch_authorized": False,
+                }
+            ),
+            423,
+        )
+
+    owner_id = str(
+        request.args.get(
+            "owner_id"
+        )
+        or ""
+    ).strip()
+
+    if not owner_id:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_id_required"
+                    ),
+                }
+            ),
+            400,
+        )
+
+    assessment = (
+        get_latest_readiness_assessment(
+            owner_id
+        )
+    )
+
+    if assessment is None:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "readiness_assessment_not_found"
+                    ),
+                    "tower_launch_authorized": False,
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "ok": True,
+            "assessment": assessment,
+            "tower_launch_authorized": False,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/protected-launch-corridor/assessments/<assessment_id>.json",
+    methods=["GET"],
+)
+def ob_gp050_readiness_assessment_detail_json(
+    assessment_id,
+):
+    from flask import jsonify
+
+    from web.ob_protected_launch_corridor_readiness import (
+        get_readiness_assessment,
+    )
+
+    if not _ob_gp050_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_readiness_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    assessment = (
+        get_readiness_assessment(
+            assessment_id
+        )
+    )
+
+    if assessment is None:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "readiness_assessment_not_found"
+                    ),
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "ok": True,
+            "assessment": assessment,
+            "tower_launch_authorized": False,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/protected-launch-corridor/assessments/<assessment_id>/verify.json",
+    methods=["GET"],
+)
+def ob_gp050_readiness_assessment_verify_json(
+    assessment_id,
+):
+    from flask import jsonify
+
+    from web.ob_protected_launch_corridor_readiness import (
+        verify_readiness_assessment,
+    )
+
+    if not _ob_gp050_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_readiness_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    result = (
+        verify_readiness_assessment(
+            assessment_id
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get(
+                "verified"
+            )
+            else 409
+        ),
+    )
+
+# OB_GIANT_PACK_050_PROTECTED_LAUNCH_CORRIDOR_READINESS_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
