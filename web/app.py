@@ -21549,6 +21549,396 @@ def ob_gp048_protected_room_entry_check_json():
 
 # OB_GIANT_PACK_048_PROTECTED_ROOM_ENTRY_ROUTES_END
 
+# OB_GIANT_PACK_049_PROTECTED_ROOM_EXIT_CLOSEOUT_ROUTES_START
+
+def _ob_gp049_http_enabled():
+    import os
+
+    return (
+        os.environ.get(
+            "OB_PROTECTED_ROOM_EXIT_HTTP_ENABLED",
+            "0",
+        )
+        == "1"
+    )
+
+
+@app.route(
+    "/ob/protected-room-exit/status.json",
+    methods=["GET"],
+)
+def ob_gp049_protected_room_exit_status_json():
+    from flask import jsonify
+
+    from web.ob_protected_room_exit_closeout import (
+        protected_room_exit_status,
+    )
+
+    payload = (
+        protected_room_exit_status()
+    )
+
+    payload[
+        "http_closeout_mutation_enabled"
+    ] = _ob_gp049_http_enabled()
+
+    return jsonify(payload)
+
+
+@app.route(
+    "/ob/protected-room-exit/receipts.json",
+    methods=["GET"],
+)
+def ob_gp049_protected_room_exit_receipts_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_room_exit_closeout import (
+        list_protected_room_exit_closeouts,
+    )
+
+    if not _ob_gp049_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_exit_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    owner_id = request.args.get(
+        "owner_id"
+    )
+
+    lockback_state = request.args.get(
+        "lockback_state"
+    )
+
+    try:
+        limit = int(
+            request.args.get(
+                "limit",
+                "100",
+            )
+        )
+
+    except ValueError:
+        limit = 100
+
+    items = (
+        list_protected_room_exit_closeouts(
+            owner_id=owner_id,
+            lockback_state=(
+                lockback_state
+            ),
+            limit=limit,
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "items": items,
+            "count": len(items),
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/protected-room-exit/closeout.json",
+    methods=["POST"],
+)
+def ob_gp049_protected_room_exit_closeout_json():
+    from flask import jsonify, request
+
+    from web.ob_protected_room_exit_closeout import (
+        close_protected_room_exit,
+    )
+
+    if not _ob_gp049_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_exit_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = close_protected_room_exit(
+        payload.get(
+            "context_id",
+            "",
+        ),
+        owner_id=payload.get(
+            "owner_id",
+            "",
+        ),
+        tower_session_id=payload.get(
+            "tower_session_id",
+            "",
+        ),
+        exit_reason=payload.get(
+            "exit_reason",
+            "owner_protected_room_exit",
+        ),
+    )
+
+    if result.get("ok"):
+        status_code = (
+            200
+            if result.get(
+                "idempotent"
+            )
+            else 201
+        )
+
+    else:
+        status_code = 409
+
+    return (
+        jsonify(result),
+        status_code,
+    )
+
+
+@app.route(
+    "/ob/protected-room-exit/receipts/<closeout_id>.json",
+    methods=["GET"],
+)
+def ob_gp049_protected_room_exit_receipt_detail_json(
+    closeout_id,
+):
+    from flask import jsonify
+
+    from web.ob_protected_room_exit_closeout import (
+        get_protected_room_exit_closeout,
+    )
+
+    if not _ob_gp049_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_exit_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    closeout = (
+        get_protected_room_exit_closeout(
+            closeout_id
+        )
+    )
+
+    if closeout is None:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_exit_closeout_not_found"
+                    ),
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "ok": True,
+            "closeout": closeout,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/protected-room-exit/receipts/<closeout_id>/events.json",
+    methods=["GET"],
+)
+def ob_gp049_protected_room_exit_events_json(
+    closeout_id,
+):
+    from flask import jsonify
+
+    from web.ob_protected_room_exit_closeout import (
+        get_protected_room_exit_closeout,
+        list_protected_room_exit_events,
+    )
+
+    if not _ob_gp049_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_exit_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    closeout = (
+        get_protected_room_exit_closeout(
+            closeout_id
+        )
+    )
+
+    if closeout is None:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_exit_closeout_not_found"
+                    ),
+                }
+            ),
+            404,
+        )
+
+    events = (
+        list_protected_room_exit_events(
+            closeout_id
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "items": events,
+            "count": len(events),
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/protected-room-exit/receipts/<closeout_id>/verify.json",
+    methods=["GET"],
+)
+def ob_gp049_protected_room_exit_verify_json(
+    closeout_id,
+):
+    from flask import jsonify
+
+    from web.ob_protected_room_exit_closeout import (
+        verify_protected_room_exit_closeout,
+    )
+
+    if not _ob_gp049_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_exit_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    result = (
+        verify_protected_room_exit_closeout(
+            closeout_id
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get(
+                "verified"
+            )
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/protected-room-exit/receipts/<closeout_id>/acknowledge-lockback.json",
+    methods=["POST"],
+)
+def ob_gp049_tower_lockback_acknowledge_json(
+    closeout_id,
+):
+    from flask import jsonify, request
+
+    from web.ob_protected_room_exit_closeout import (
+        acknowledge_tower_lockback,
+    )
+
+    if not _ob_gp049_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_room_exit_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = acknowledge_tower_lockback(
+        closeout_id,
+        tower_lockback_ack_ref=(
+            payload.get(
+                "tower_lockback_ack_ref",
+                "",
+            )
+        ),
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+# OB_GIANT_PACK_049_PROTECTED_ROOM_EXIT_CLOSEOUT_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
