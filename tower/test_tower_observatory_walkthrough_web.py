@@ -181,3 +181,220 @@ def test_room_helpers():
     assert context["object_context"] == {
         "symbol": "NVDA",
     }
+
+# BEGIN REAL SURFACE WALKTHROUGH TESTS
+
+from flask import Response
+
+from tower.tower_ir_cert_p2433 import (
+    REAL_ROOM_REGISTRY,
+)
+from tower.tower_observatory_walkthrough_web import (
+    _inject_before_body_close,
+    _real_surface_overlay_html,
+    _real_surface_path_for_room,
+    _real_surface_room_for_path,
+    _tower_walkthrough_entry_html,
+)
+
+
+def test_real_surface_registry_paths():
+    expected = {
+        "/dashboard": "ob_room_dashboard",
+        "/market-map": "ob_room_market_map",
+        "/ob/symbol/AMD": "ob_room_symbol_page",
+        "/ob/trade-center": "ob_room_trade_center",
+        "/ob/review-center": "ob_room_review_center",
+        "/ob/owner-console": "ob_room_owner_console",
+    }
+
+    for path, room_id in expected.items():
+        room = _real_surface_room_for_path(
+            path
+        )
+
+        assert room is not None
+        assert room["room_id"] == room_id
+
+
+def test_tower_entry_fragment():
+    fragment = (
+        _tower_walkthrough_entry_html()
+    )
+
+    assert "towerObWalkthroughEntry" in fragment
+
+    assert (
+        "/tower/observatory-walkthrough"
+        in fragment
+    )
+
+
+def test_real_surface_overlay_fragment():
+    room = REAL_ROOM_REGISTRY[0]
+
+    state = {
+        "walkthrough_id": "obwalk_test",
+    }
+
+    fragment = (
+        _real_surface_overlay_html(
+            room=room,
+            state=state,
+        )
+    )
+
+    assert "towerObRealSurfaceGuide" in fragment
+    assert "Dashboard" in fragment
+    assert "Room 1 of 6" in fragment
+    assert "Preview authority only" in fragment
+
+
+def test_html_injection_before_body():
+    result = _inject_before_body_close(
+        "<html><body>Room</body></html>",
+        "<aside>Guide</aside>",
+    )
+
+    assert (
+        "<aside>Guide</aside></body>"
+        in result
+    )
+
+
+def test_symbol_real_surface_uses_launch_symbol():
+    symbol_room = [
+        room
+        for room in REAL_ROOM_REGISTRY
+        if room["room_id"]
+        == "ob_room_symbol_page"
+    ][0]
+
+    state = {
+        "launch_receipt": {
+            "canonical_path": (
+                "/symbol/NVDA"
+            ),
+        },
+    }
+
+    assert (
+        _real_surface_path_for_room(
+            symbol_room,
+            state,
+        )
+        == "/ob/symbol/NVDA"
+    )
+
+
+def test_real_surface_open_requires_receipt(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "open/ob_room_dashboard",
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert "Protected launch denied" in body
+    assert (
+        "tower_ob_real_surface_"
+        "launch_receipt_missing"
+        in body
+    )
+
+
+def test_launch_receipt_links_real_surface(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "room/ob_room_dashboard/launch",
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert (
+        "Open the real room surface"
+        in body
+    )
+
+    assert (
+        "/tower/observatory-walkthrough/"
+        "open/ob_room_dashboard"
+        in body
+    )
+
+
+def test_real_surface_open_redirects_to_dashboard(
+    client,
+):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/"
+        "room/ob_room_dashboard/launch",
+    )
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "open/ob_room_dashboard"
+    )
+
+    assert response.status_code == 302
+
+    location = response.headers[
+        "Location"
+    ]
+
+    assert location.startswith(
+        "/dashboard?"
+    )
+
+    assert "tower_walkthrough=1" in location
+    assert "walkthrough_id=" in location
+
+
+def test_symbol_real_surface_redirect(
+    client,
+):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/"
+        "room/ob_room_symbol_page/launch",
+        data={
+            "symbol": "nvda",
+        },
+    )
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "open/ob_room_symbol_page"
+    )
+
+    assert response.status_code == 302
+
+    assert response.headers[
+        "Location"
+    ].startswith(
+        "/ob/symbol/NVDA?"
+    )
+
+
+# END REAL SURFACE WALKTHROUGH TESTS

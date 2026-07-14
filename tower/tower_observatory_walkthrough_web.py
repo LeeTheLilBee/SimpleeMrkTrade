@@ -952,7 +952,20 @@ def walkthrough_receipt():
             )}"
         >
             <div class="actions">
-                <button type="submit">
+                <a
+                    class="button"
+                    href="{_walkthrough_real_surface_url(
+                        room_id=receipt["room_id"],
+                        walkthrough_id=state["walkthrough_id"],
+                    )}"
+                >
+                    Open the real room surface
+                </a>
+
+                <button
+                    class="button secondary"
+                    type="submit"
+                >
                     Close and return to Tower
                 </button>
 
@@ -1205,3 +1218,815 @@ def _register_walkthrough_cert_routes():
 _register_walkthrough_cert_routes()
 
 # END TOWER OB WALKTHROUGH CERTIFICATION ROUTES
+
+# BEGIN TOWER OB REAL SURFACE WALKTHROUGH INTEGRATION
+
+from html import escape as _html_escape
+from urllib.parse import urlencode as _urlencode
+
+from tower.tower_ir_cert_p2433 import (
+    REAL_ROOM_REGISTRY,
+    real_room_by_id,
+)
+
+
+_REAL_SURFACE_QUERY_FLAG = (
+    "tower_walkthrough"
+)
+
+_REAL_SURFACE_OPEN_ROUTE = (
+    "/tower/observatory-walkthrough/"
+    "open/<room_id>"
+)
+
+
+def _real_surface_room_for_path(
+    path: str,
+) -> Dict[str, Any] | None:
+    normalized = (
+        "/" + path.strip("/")
+    )
+
+    if normalized == "/dashboard":
+        return real_room_by_id(
+            "ob_room_dashboard"
+        )
+
+    if normalized == "/market-map":
+        return real_room_by_id(
+            "ob_room_market_map"
+        )
+
+    if normalized.startswith(
+        "/ob/symbol/"
+    ):
+        return real_room_by_id(
+            "ob_room_symbol_page"
+        )
+
+    if normalized == "/ob/trade-center":
+        return real_room_by_id(
+            "ob_room_trade_center"
+        )
+
+    if normalized == "/ob/review-center":
+        return real_room_by_id(
+            "ob_room_review_center"
+        )
+
+    if normalized == "/ob/owner-console":
+        return real_room_by_id(
+            "ob_room_owner_console"
+        )
+
+    return None
+
+
+def _real_surface_path_for_room(
+    room: Dict[str, Any],
+    state: Dict[str, Any],
+) -> str:
+    if (
+        room["room_id"]
+        == "ob_room_symbol_page"
+    ):
+        receipt = state.get(
+            "launch_receipt"
+        )
+
+        canonical_path = (
+            receipt.get("canonical_path")
+            if isinstance(
+                receipt,
+                dict,
+            )
+            else None
+        )
+
+        if (
+            isinstance(
+                canonical_path,
+                str,
+            )
+            and canonical_path.startswith(
+                "/symbol/"
+            )
+        ):
+            symbol = canonical_path.rsplit(
+                "/",
+                1,
+            )[-1]
+
+            symbol = (
+                symbol.strip().upper()
+                or "AMD"
+            )
+
+            return (
+                "/ob/symbol/"
+                + symbol
+            )
+
+        return "/ob/symbol/AMD"
+
+    return room["real_route"]
+
+
+def _walkthrough_real_surface_url(
+    *,
+    room_id: str,
+    walkthrough_id: str,
+) -> str:
+    return (
+        "/tower/"
+        "observatory-walkthrough/"
+        f"open/{room_id}?"
+        + _urlencode({
+            "walkthrough_id": (
+                walkthrough_id
+            ),
+        })
+    )
+
+
+def _walkthrough_room_position(
+    room_id: str,
+) -> int:
+    for index, room in enumerate(
+        REAL_ROOM_REGISTRY
+    ):
+        if room["room_id"] == room_id:
+            return index
+
+    return -1
+
+
+def _walkthrough_next_room(
+    room_id: str,
+) -> Dict[str, Any] | None:
+    position = (
+        _walkthrough_room_position(
+            room_id
+        )
+    )
+
+    if position < 0:
+        return None
+
+    next_position = position + 1
+
+    if next_position >= len(
+        REAL_ROOM_REGISTRY
+    ):
+        return None
+
+    return deepcopy(
+        REAL_ROOM_REGISTRY[
+            next_position
+        ]
+    )
+
+
+def _real_surface_walkthrough_active(
+    room: Dict[str, Any],
+) -> bool:
+    if not owner_access_allowed():
+        return False
+
+    if request.args.get(
+        _REAL_SURFACE_QUERY_FLAG
+    ) != "1":
+        return False
+
+    state = session.get(
+        "tower_ob_walkthrough"
+    )
+
+    if not isinstance(
+        state,
+        dict,
+    ):
+        return False
+
+    if state.get("stage") not in {
+        "real_surface",
+        "receipt_review",
+    }:
+        return False
+
+    if (
+        state.get("active_room_id")
+        != room["room_id"]
+    ):
+        return False
+
+    requested_walkthrough_id = (
+        request.args.get(
+            "walkthrough_id"
+        )
+    )
+
+    if (
+        requested_walkthrough_id
+        and requested_walkthrough_id
+        != state.get("walkthrough_id")
+    ):
+        return False
+
+    receipt = state.get(
+        "launch_receipt"
+    )
+
+    if not isinstance(
+        receipt,
+        dict,
+    ):
+        return False
+
+    if (
+        receipt.get("room_id")
+        != room["room_id"]
+    ):
+        return False
+
+    return True
+
+
+def _tower_walkthrough_entry_html() -> str:
+    return """
+    <style id="tower-ob-walkthrough-entry-style">
+    .tower-ob-walkthrough-entry {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 2147483000;
+        width: min(350px, calc(100vw - 32px));
+        padding: 18px;
+        border: 1px solid rgba(216,180,254,.28);
+        border-radius: 18px;
+        background:
+            linear-gradient(
+                145deg,
+                rgba(36,27,66,.97),
+                rgba(8,10,24,.98)
+            );
+        color: #f7f4ff;
+        box-shadow: 0 24px 80px rgba(0,0,0,.48);
+        font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            sans-serif;
+    }
+
+    .tower-ob-walkthrough-entry strong {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 16px;
+    }
+
+    .tower-ob-walkthrough-entry p {
+        margin: 0 0 14px;
+        color: #c9c3dc;
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .tower-ob-walkthrough-entry a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 14px;
+        border-radius: 12px;
+        color: white;
+        background:
+            linear-gradient(
+                135deg,
+                #8b5cf6,
+                #6d28d9
+            );
+        text-decoration: none;
+        font-weight: 750;
+        font-size: 13px;
+    }
+    </style>
+
+    <aside
+        class="tower-ob-walkthrough-entry"
+        id="towerObWalkthroughEntry"
+        aria-label="Observatory walkthrough"
+    >
+        <strong>
+            Observatory protected run-through
+        </strong>
+
+        <p>
+            Review and enter the six real OB rooms through
+            Tower’s preview-only owner walkthrough.
+        </p>
+
+        <a href="/tower/observatory-walkthrough">
+            Start Observatory walkthrough
+        </a>
+    </aside>
+    """
+
+
+def _real_surface_overlay_html(
+    *,
+    room: Dict[str, Any],
+    state: Dict[str, Any],
+) -> str:
+    next_room = _walkthrough_next_room(
+        room["room_id"]
+    )
+
+    walkthrough_id = str(
+        state.get(
+            "walkthrough_id",
+            "",
+        )
+    )
+
+    position = (
+        _walkthrough_room_position(
+            room["room_id"]
+        )
+        + 1
+    )
+
+    next_action = ""
+
+    if next_room is not None:
+        next_action = f"""
+        <a
+            class="tower-ob-guide-button"
+            href="/tower/observatory-walkthrough/room/{_html_escape(next_room['room_id'])}"
+        >
+            Review next room:
+            {_html_escape(next_room['display_name'])}
+        </a>
+        """
+
+    else:
+        next_action = """
+        <a
+            class="tower-ob-guide-button"
+            href="/tower/observatory-walkthrough"
+        >
+            Return to walkthrough room list
+        </a>
+        """
+
+    return f"""
+    <style id="tower-ob-real-surface-guide-style">
+    .tower-ob-real-surface-guide {{
+        position: fixed;
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        z-index: 2147483001;
+        display: grid;
+        grid-template-columns:
+            minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: center;
+        padding: 16px 18px;
+        border: 1px solid rgba(216,180,254,.30);
+        border-radius: 18px;
+        background:
+            linear-gradient(
+                140deg,
+                rgba(31,24,58,.98),
+                rgba(7,9,21,.98)
+            );
+        box-shadow: 0 26px 90px rgba(0,0,0,.55);
+        color: #f8f5ff;
+        font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            sans-serif;
+    }}
+
+    .tower-ob-guide-copy {{
+        min-width: 0;
+    }}
+
+    .tower-ob-guide-eyebrow {{
+        margin-bottom: 5px;
+        color: #d8b4fe;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+    }}
+
+    .tower-ob-guide-title {{
+        font-size: 16px;
+        font-weight: 850;
+    }}
+
+    .tower-ob-guide-detail {{
+        margin-top: 4px;
+        color: #c9c3dc;
+        font-size: 12px;
+        line-height: 1.4;
+    }}
+
+    .tower-ob-guide-actions {{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 9px;
+    }}
+
+    .tower-ob-guide-button {{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 0 13px;
+        border: 1px solid rgba(216,180,254,.24);
+        border-radius: 11px;
+        color: white;
+        background:
+            linear-gradient(
+                135deg,
+                #8b5cf6,
+                #6d28d9
+            );
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 780;
+    }}
+
+    .tower-ob-guide-button.secondary {{
+        background: rgba(8,10,24,.88);
+    }}
+
+    @media (max-width: 760px) {{
+        .tower-ob-real-surface-guide {{
+            grid-template-columns: 1fr;
+        }}
+
+        .tower-ob-guide-actions {{
+            justify-content: flex-start;
+        }}
+    }}
+    </style>
+
+    <aside
+        class="tower-ob-real-surface-guide"
+        id="towerObRealSurfaceGuide"
+        data-room-id="{_html_escape(room['room_id'])}"
+        data-walkthrough-id="{_html_escape(walkthrough_id)}"
+        aria-label="Tower Observatory walkthrough guide"
+    >
+        <div class="tower-ob-guide-copy">
+            <div class="tower-ob-guide-eyebrow">
+                Tower protected walkthrough
+            </div>
+
+            <div class="tower-ob-guide-title">
+                Room {position} of 6 ·
+                {_html_escape(room['display_name'])}
+            </div>
+
+            <div class="tower-ob-guide-detail">
+                You are viewing the real Observatory surface.
+                Preview authority only. Existing OB safeguards
+                remain active.
+            </div>
+        </div>
+
+        <div class="tower-ob-guide-actions">
+            <a
+                class="tower-ob-guide-button secondary"
+                href="/tower/observatory-walkthrough/receipt"
+            >
+                View launch receipt
+            </a>
+
+            {next_action}
+
+            <form
+                method="post"
+                action="/tower/observatory-walkthrough/close"
+                style="margin:0"
+            >
+                <button
+                    class="tower-ob-guide-button secondary"
+                    type="submit"
+                    style="cursor:pointer"
+                >
+                    Close and lock back
+                </button>
+            </form>
+        </div>
+    </aside>
+    """
+
+
+def _inject_before_body_close(
+    html: str,
+    fragment: str,
+) -> str:
+    lower = html.lower()
+    marker = "</body>"
+    position = lower.rfind(marker)
+
+    if position >= 0:
+        return (
+            html[:position]
+            + fragment
+            + html[position:]
+        )
+
+    return html + fragment
+
+
+@tower_ob_walkthrough_bp.get(
+    _REAL_SURFACE_OPEN_ROUTE
+)
+def walkthrough_open_real_surface(
+    room_id: str,
+):
+    require_owner_access()
+
+    room = real_room_by_id(
+        room_id
+    )
+
+    if room is None:
+        abort(404)
+
+    state = walkthrough_state()
+
+    receipt = state.get(
+        "launch_receipt"
+    )
+
+    if not isinstance(
+        receipt,
+        dict,
+    ):
+        state["stage"] = "denied"
+        state["denial_reason"] = (
+            "tower_ob_real_surface_"
+            "launch_receipt_missing"
+        )
+        save_walkthrough_state(
+            state
+        )
+
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_denied"
+            )
+        )
+
+    if (
+        receipt.get("room_id")
+        != room_id
+    ):
+        state["stage"] = "denied"
+        state["denial_reason"] = (
+            "tower_ob_real_surface_"
+            "room_scope_mismatch"
+        )
+        save_walkthrough_state(
+            state
+        )
+
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_denied"
+            )
+        )
+
+    if (
+        receipt.get(
+            "default_deny_restored"
+        )
+        is not True
+    ):
+        state["stage"] = "denied"
+        state["denial_reason"] = (
+            "tower_ob_real_surface_"
+            "lockback_not_verified"
+        )
+        save_walkthrough_state(
+            state
+        )
+
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_denied"
+            )
+        )
+
+    state["stage"] = "real_surface"
+    state["real_surface_path"] = (
+        _real_surface_path_for_room(
+            room,
+            state,
+        )
+    )
+    state["real_surface_room_id"] = (
+        room_id
+    )
+    state["real_surface_preview_only"] = (
+        True
+    )
+
+    save_walkthrough_state(
+        state
+    )
+
+    query = _urlencode({
+        _REAL_SURFACE_QUERY_FLAG: "1",
+        "walkthrough_id": state[
+            "walkthrough_id"
+        ],
+        "tower_source": "walkthrough",
+    })
+
+    return redirect(
+        state["real_surface_path"]
+        + "?"
+        + query
+    )
+
+
+@tower_ob_walkthrough_bp.after_app_request
+def _inject_real_surface_walkthrough_ui(
+    response,
+):
+    if response.status_code != 200:
+        return response
+
+    content_type = (
+        response.headers.get(
+            "Content-Type",
+            "",
+        )
+    )
+
+    if "text/html" not in content_type:
+        return response
+
+    try:
+        html = response.get_data(
+            as_text=True
+        )
+    except Exception:
+        return response
+
+    if request.path in {
+        "/tower",
+        "/tower/",
+    }:
+        if (
+            "towerObWalkthroughEntry"
+            not in html
+        ):
+            html = _inject_before_body_close(
+                html,
+                _tower_walkthrough_entry_html(),
+            )
+
+            response.set_data(
+                html
+            )
+
+        return response
+
+    room = _real_surface_room_for_path(
+        request.path
+    )
+
+    if room is None:
+        return response
+
+    if not _real_surface_walkthrough_active(
+        room
+    ):
+        return response
+
+    if (
+        "towerObRealSurfaceGuide"
+        in html
+    ):
+        return response
+
+    state = session.get(
+        "tower_ob_walkthrough"
+    )
+
+    html = _inject_before_body_close(
+        html,
+        _real_surface_overlay_html(
+            room=room,
+            state=state,
+        ),
+    )
+
+    response.set_data(html)
+
+    return response
+
+
+# Real-surface JSON certification routes
+
+def _build_real_surface_cert_payload(
+    pack: int,
+) -> Dict[str, Any]:
+    from tower.tower_ir_cert_p2433 import (
+        build_ir_cert_p2433_preview,
+    )
+    from tower.tower_ir_cert_p2434 import (
+        build_ir_cert_p2434_preview,
+    )
+    from tower.tower_ir_cert_p2435 import (
+        build_ir_cert_p2435_preview,
+    )
+    from tower.tower_ir_cert_p2436 import (
+        build_ir_cert_p2436_preview,
+    )
+    from tower.tower_ir_cert_p2437 import (
+        build_ir_cert_p2437_preview,
+    )
+    from tower.tower_ir_cert_p2438 import (
+        build_ir_cert_p2438_preview,
+    )
+    from tower.tower_ir_cert_p2439 import (
+        build_ir_cert_p2439_preview,
+    )
+    from tower.tower_ir_cert_p2440 import (
+        build_ir_cert_p2440_preview,
+    )
+    from tower.tower_ir_cert_p2441 import (
+        build_ir_cert_p2441_preview,
+    )
+    from tower.tower_ir_cert_p2442 import (
+        build_ir_cert_p2442_preview,
+    )
+
+    builders = {
+        2433: build_ir_cert_p2433_preview,
+        2434: build_ir_cert_p2434_preview,
+        2435: build_ir_cert_p2435_preview,
+        2436: build_ir_cert_p2436_preview,
+        2437: build_ir_cert_p2437_preview,
+        2438: build_ir_cert_p2438_preview,
+        2439: build_ir_cert_p2439_preview,
+        2440: build_ir_cert_p2440_preview,
+        2441: build_ir_cert_p2441_preview,
+        2442: build_ir_cert_p2442_preview,
+    }
+
+    builder = builders.get(pack)
+
+    if builder is None:
+        abort(404)
+
+    return builder()
+
+
+def _real_surface_cert_response(
+    pack: int,
+):
+    require_owner_access()
+
+    return jsonify(
+        _build_real_surface_cert_payload(
+            pack
+        )
+    )
+
+
+def _register_real_surface_cert_routes():
+    for pack in range(2433, 2443):
+        tower_ob_walkthrough_bp.add_url_rule(
+            f"/tower/ir-cert-v{pack}.json",
+            endpoint=(
+                f"real_surface_cert_pack_{pack}"
+            ),
+            view_func=(
+                lambda selected_pack=pack:
+                _real_surface_cert_response(
+                    selected_pack
+                )
+            ),
+            methods=["GET"],
+        )
+
+
+_register_real_surface_cert_routes()
+
+# END TOWER OB REAL SURFACE WALKTHROUGH INTEGRATION
