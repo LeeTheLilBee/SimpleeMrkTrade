@@ -20181,6 +20181,18 @@ def ob_manual_live_owner_first_run_readiness_verify(
 
 # OB_GIANT_PACK_045_OWNER_FIRST_RUN_READINESS_ROUTES_END
 
+
+# BEGIN TOWER OBSERVATORY WALKTHROUGH BLUEPRINT
+from tower.tower_observatory_walkthrough_web import (
+    tower_ob_walkthrough_bp,
+)
+
+if "tower_ob_walkthrough" not in app.blueprints:
+    app.register_blueprint(
+        tower_ob_walkthrough_bp
+    )
+# END TOWER OBSERVATORY WALKTHROUGH BLUEPRINT
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
