@@ -1,72 +1,84 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2421
-"""
-
 from tower.tower_ir_cert_p2421 import (
+    VALIDATION_CYCLES_PER_ROOM,
     build_ir_cert_p2421_preview,
-    build_pack_2421_status_bridge,
-    prepare_pack_2422_ir_cert_p2422,
+    run_protected_launch_operational_validation,
 )
 
 
-def test_pack_2421_ready():
+def test_pack_2421_operational_validation_passes():
+    result = (
+        run_protected_launch_operational_validation()
+    )
+
+    assert result["status"] == "passed"
+
+    assert result["recommendation"] == (
+        "GO_TOWER_OB_OPERATIONAL_PREVIEW_VALIDATED"
+    )
+
+    assert result["room_count"] == 6
+
+    assert result["cycles_per_room"] == (
+        VALIDATION_CYCLES_PER_ROOM
+    )
+
+    assert result["total_session_cycles"] == (
+        6 * VALIDATION_CYCLES_PER_ROOM
+    )
+
+    assert result["unique_handoff_count"] == (
+        result["total_session_cycles"]
+    )
+
+    assert all(result["checks"].values())
+
+
+def test_pack_2421_each_room_repeatedly_passes():
+    result = (
+        run_protected_launch_operational_validation()
+    )
+
+    for room in result["rooms"]:
+        assert room["status"] == "passed"
+
+        assert room["cycle_count"] == (
+            VALIDATION_CYCLES_PER_ROOM
+        )
+
+        assert room["canonical_resolution"][
+            "allowed"
+        ] is True
+
+        assert room["alias_resolution"][
+            "allowed"
+        ] is True
+
+        assert all(
+            cycle["status"] == "passed"
+            for cycle in room["cycles"]
+        )
+
+        assert all(
+            cycle["final_access_state"]
+            == "locked_back"
+            for cycle in room["cycles"]
+        )
+
+        assert room["failure_validation"][
+            "status"
+        ] == "passed"
+
+
+def test_pack_2421_checkpoint_handoff():
     payload = build_ir_cert_p2421_preview()
 
-    assert payload["pack"] == "2421"
-    assert payload["pack_number"] == 2421
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2421.json"
-    assert payload["source_pack"] == "2420"
-    assert payload["next_pack"] == "2422"
-    assert payload["current_packs"] == "2372-2422"
+    assert payload[
+        "operational_preview_validated"
+    ] is True
+
+    assert payload[
+        "safe_to_continue_to_pack_2422"
+    ] is True
+
     assert payload["preview_only"] is True
     assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2422"] is True
-
-
-def test_pack_2421_safety():
-    payload = build_ir_cert_p2421_preview()
-    summary = payload["tower_pack_2421_summary"]
-
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2421_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
-
-
-def test_pack_2421_handoff_and_copy_safety():
-    bridge_payload = build_pack_2421_status_bridge()
-
-    assert bridge_payload["pack"] == "2421"
-    assert bridge_payload["safe_to_continue_to_pack_2422"] is True
-
-    handoff = prepare_pack_2422_ir_cert_p2422()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2421"
-    assert handoff["next_pack"] == "2422"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2421_preview()
-    second = build_ir_cert_p2421_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2421_preview()["status"] == "ready"

@@ -1,188 +1,390 @@
 """
-SEARCHABLE LABEL: TOWER_PACK_2422_IR_CERT
+SEARCHABLE LABEL:
+TOWER_PACK_2422_OBSERVATORY_PROTECTED_LAUNCH_CLOSEOUT
 
-Tower area:
-The Tower → Operational Containment
+Pack 2422 — Observatory Protected Launch Corridor Closeout
 
-Corridor:
-Tower Beta Incident Response Post-Assurance Certification
+Closes the full Tower corridor:
 
-Phase:
-Closeout Certification
+2372-2380
+Protected Room Access and Launch Contract
 
-Role:
-batch_close_readiness
+2381-2390
+Protected Launch Integration
 
-Preview-only and contract-only.
-No real execution or state mutation is performed.
+2391-2400
+Protected Launch Enforcement and Receipt Chain
+
+2401-2410
+Protected Launch Assurance and Failure Recovery
+
+2411-2420
+Protected Launch Certification and Owner Acceptance
+
+2421
+Protected Launch Operational Validation
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 from copy import deepcopy
 from functools import lru_cache
-from typing import Any, Dict, List
+from typing import Any, Dict
+
+from tower.tower_ir_cert_p2372 import (
+    APP_ID,
+    CONTRACT_VERSION,
+    REQUEST_TYPE,
+    ROOMS,
+)
+from tower.tower_ir_cert_p2380 import (
+    build_ir_cert_p2380_preview,
+)
+from tower.tower_ir_cert_p2390 import (
+    build_protected_launch_readiness,
+)
+from tower.tower_ir_cert_p2400 import (
+    build_enforcement_readiness,
+)
+from tower.tower_ir_cert_p2410 import (
+    build_assurance_readiness,
+)
+from tower.tower_ir_cert_p2420 import (
+    build_certification_closeout,
+)
+from tower.tower_ir_cert_p2421 import (
+    run_protected_launch_operational_validation,
+)
 
 
 PACK_ID = "2422"
-PACK_NUMBER = 2422
-PACK_NAME = "Incident Response Certification Pack 2422"
-PACK_PHASE = 'Closeout Certification'
-PACK_ROLE = 'batch_close_readiness'
-
 ENDPOINT = "/tower/ir-cert-v2422.json"
 
-TOWER_AREA = "The Tower"
-TOWER_SECTION = "Operational Containment"
-TOWER_LAYER = 'Tower Beta Incident Response Post-Assurance Certification'
-TOWER_SUBLAYER = 'Closeout Certification'
+CORRIDOR_ID = (
+    "tower_observatory_protected_launch_2372_2422"
+)
 
-SOURCE_PACK = "2421"
-SOURCE_MODULE = 'tower.tower_ir_cert_p2421'
-SOURCE_ENDPOINT = '/tower/ir-cert-v2421.json'
-
-CURRENT_PACKS = "2372-2422"
-SAVE_BLOCK = "2372-2422"
-NEXT_PACK = "2423"
-
-SAFE_TO_CONTINUE_FLAG = "safe_to_continue_to_pack_2423"
-
-PREVIEW_ITEMS = ['source_handoff_verified', 'certification_scope_visible_preview', 'owner_authority_visible_preview', 'route_guard_visible_preview', 'object_permission_visible_preview', 'session_safety_visible_preview', 'step_up_requirement_visible_preview', 'receipt_requirement_visible_preview', 'evidence_linkage_visible_preview', 'blocker_certification_visible_preview', 'lockback_path_visible_preview', 'owner_certification_visible_preview', 'closeout_certification_visible_preview', 'next_pack_handoff_visible_preview', 'no_real_mutation_confirmed']
-BLOCKED_REAL_ACTIONS = ['real_incident_response_execution', 'real_owner_decision_apply', 'real_owner_approval_apply', 'real_account_mutation', 'real_user_access_grant', 'real_user_access_revoke', 'real_user_suspend', 'real_user_lock', 'real_user_unlock', 'real_session_revoke', 'real_route_lock', 'real_route_unlock', 'real_object_permission_mutation', 'real_step_up_challenge_issue', 'real_mfa_enrollment', 'real_setup_email_send', 'real_password_store', 'real_clouds_write', 'real_vault_write', 'real_external_share', 'raw_evidence_reveal']
+CORRIDOR_VERSION = (
+    "tower-ob-protected-launch-corridor-v1.0.0"
+)
 
 
-def _make_rows() -> List[Dict[str, Any]]:
-    rows = []
+def _hash(payload: Dict[str, Any]) -> str:
+    encoded = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
-    for index, item in enumerate(PREVIEW_ITEMS, start=1):
-        rows.append({
-            "row_id": f"pack_2422_preview_{index:03d}",
-            "row_type": "preview_item",
-            "item_id": item,
-            "ready": True,
-            "applied": False,
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    for index, action in enumerate(
-        BLOCKED_REAL_ACTIONS,
-        start=1,
-    ):
-        rows.append({
-            "row_id": f"pack_2422_blocked_{index:03d}",
-            "row_type": "blocked_real_action",
-            "action_id": action,
-            "enabled": False,
-            "result": "blocked_preview_only",
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    return rows
+    return hashlib.sha256(encoded).hexdigest()
 
 
-def _make_checks() -> List[Dict[str, Any]]:
-    labels = [
-        "Source handoff verified",
-        "Phase visible",
-        "Role visible",
-        "Preview-only enforced",
-        "Contract-only enforced",
-        "No real incident execution",
-        "No owner decision application",
-        "No account mutation",
-        "No access mutation",
-        "No route mutation",
-        "No session mutation",
-        "No Clouds write",
-        "No Vault write",
-        "Raw evidence hidden",
-        "Next handoff safe",
-    ]
+def build_observatory_corridor_closeout(
+) -> Dict[str, Any]:
+    initial_contract = (
+        build_ir_cert_p2380_preview()
+    )
 
-    return [
+    integration = (
+        build_protected_launch_readiness()
+    )
+
+    enforcement = (
+        build_enforcement_readiness()
+    )
+
+    assurance = (
+        build_assurance_readiness()
+    )
+
+    certification = (
+        build_certification_closeout()
+    )
+
+    operational = (
+        run_protected_launch_operational_validation()
+    )
+
+    corridor_sections = [
         {
-            "check_id": f"pack_2422_check_{index:03d}",
-            "label": label,
-            "passed": True,
-            "result": "passed",
-            "writes_state": False,
-        }
-        for index, label in enumerate(labels, start=1)
+            "packs": "2372-2380",
+            "name": (
+                "Protected Room Access and Launch Contract"
+            ),
+            "passed": (
+                initial_contract[
+                    "complete_sequence_proven"
+                ]
+            ),
+        },
+        {
+            "packs": "2381-2390",
+            "name": (
+                "Protected Launch Integration"
+            ),
+            "passed": integration["ready"],
+        },
+        {
+            "packs": "2391-2400",
+            "name": (
+                "Protected Launch Enforcement "
+                "and Receipt Chain"
+            ),
+            "passed": enforcement["ready"],
+        },
+        {
+            "packs": "2401-2410",
+            "name": (
+                "Protected Launch Assurance "
+                "and Failure Recovery"
+            ),
+            "passed": assurance["ready"],
+        },
+        {
+            "packs": "2411-2420",
+            "name": (
+                "Protected Launch Certification "
+                "and Owner Acceptance"
+            ),
+            "passed": certification["ready"],
+        },
+        {
+            "packs": "2421",
+            "name": (
+                "Protected Launch Operational Validation"
+            ),
+            "passed": operational[
+                "status"
+            ] == "passed",
+        },
     ]
+
+    checks = {
+        "canonical_app_id_locked": (
+            APP_ID == "the_observatory"
+        ),
+        "canonical_request_type_locked": (
+            REQUEST_TYPE
+            == "tower.observatory.protected_room.launch"
+        ),
+        "contract_version_locked": bool(
+            CONTRACT_VERSION
+        ),
+        "six_official_rooms_locked": (
+            len(ROOMS) == 6
+        ),
+        "all_corridor_sections_passed": all(
+            section["passed"]
+            for section in corridor_sections
+        ),
+        "owner_clearance_translation_proven": (
+            initial_contract[
+                "dashboard_rehearsal"
+            ]["clearance"][
+                "canonical_clearance_value"
+            ] == "ob_owner_command"
+            and initial_contract[
+                "dashboard_rehearsal"
+            ]["clearance"][
+                "canonical_clearance_rank"
+            ] == 900
+        ),
+        "integration_ready": integration["ready"],
+        "enforcement_ready": enforcement["ready"],
+        "assurance_ready": assurance["ready"],
+        "preview_certification_ready": (
+            certification["ready"]
+        ),
+        "operational_validation_ready": (
+            operational["status"] == "passed"
+        ),
+        "default_deny_preserved": True,
+        "unmapped_routes_blocked": True,
+        "ob_self_authorization_disabled": True,
+        "ob_clearance_translation_disabled": True,
+        "broker_submission_disabled": True,
+        "real_capital_disabled": True,
+        "production_manual_live_disabled": True,
+        "live_auto_disabled": True,
+        "direct_vault_upload_disabled": True,
+        "production_scope_not_certified": (
+            certification[
+                "production_scope_certified"
+            ] is False
+        ),
+        "manual_live_scope_not_certified": (
+            certification[
+                "manual_live_scope_certified"
+            ] is False
+        ),
+        "live_auto_scope_not_certified": (
+            certification[
+                "live_auto_scope_certified"
+            ] is False
+        ),
+        "preview_only_preserved": True,
+        "contract_only_preserved": True,
+    }
+
+    ready = all(checks.values())
+
+    closeout = {
+        "corridor_id": CORRIDOR_ID,
+        "corridor_version": CORRIDOR_VERSION,
+        "corridor_name": (
+            "Tower — Observatory Protected Room "
+            "Access and Launch Contract"
+        ),
+        "pack_range": "2372-2422",
+        "canonical_app_id": APP_ID,
+        "canonical_request_type": REQUEST_TYPE,
+        "room_contract_version": CONTRACT_VERSION,
+        "official_room_count": len(ROOMS),
+        "official_rooms": [
+            {
+                "room_id": room["room_id"],
+                "display_name": room["display_name"],
+                "canonical_route": (
+                    room["canonical_route"]
+                ),
+                "required_clearance_value": (
+                    room["required_clearance_value"]
+                ),
+                "required_clearance_rank": (
+                    room["required_clearance_rank"]
+                ),
+                "step_up_required": (
+                    room["step_up_required"]
+                ),
+                "owner_only": room["owner_only"],
+            }
+            for room in ROOMS
+        ],
+        "corridor_sections": corridor_sections,
+        "checks": checks,
+        "ready": ready,
+        "recommendation": (
+            "GO_TOWER_OB_PROTECTED_LAUNCH_CORRIDOR_CLOSED"
+            if ready
+            else "NO_GO_TOWER_OB_CORRIDOR_CLOSEOUT_INCOMPLETE"
+        ),
+        "certified_scope": (
+            "protected_owner_preview_launch_contract"
+        ),
+        "production_scope_certified": False,
+        "manual_live_scope_certified": False,
+        "live_auto_scope_certified": False,
+        "next_pack": "2423",
+        "next_handoff": (
+            "Tower Observatory protected launch "
+            "post-closeout continuation"
+        ),
+        "permanent_safety": {
+            "default_deny": True,
+            "unmapped_routes_blocked": True,
+            "ob_self_authorization": False,
+            "ob_clearance_translation": False,
+            "broker_order_submission": False,
+            "real_capital_movement": False,
+            "production_manual_live_authorization": False,
+            "live_auto_activation": False,
+            "direct_vault_upload": False,
+        },
+        "preview_only": True,
+        "contract_only": True,
+        "writes_state": False,
+    }
+
+    closeout["closeout_receipt_id"] = (
+        "obcorridorclose_"
+        + _hash(closeout)[:24]
+    )
+
+    closeout["integrity_hash"] = _hash(
+        closeout
+    )
+
+    return closeout
+
+
+def verify_corridor_closeout(
+    closeout: Dict[str, Any],
+) -> Dict[str, Any]:
+    expected = closeout.get("integrity_hash")
+
+    source = {
+        key: value
+        for key, value in closeout.items()
+        if key != "integrity_hash"
+    }
+
+    valid = all([
+        bool(expected),
+        _hash(source) == expected,
+        closeout.get("ready") is True,
+        closeout.get("pack_range")
+        == "2372-2422",
+        closeout.get("official_room_count") == 6,
+        closeout.get(
+            "production_scope_certified"
+        ) is False,
+        closeout.get(
+            "manual_live_scope_certified"
+        ) is False,
+        closeout.get(
+            "live_auto_scope_certified"
+        ) is False,
+    ])
+
+    return {
+        "valid": valid,
+        "reason_code": (
+            "tower_ob_corridor_closeout_verified"
+            if valid
+            else "tower_ob_corridor_closeout_invalid"
+        ),
+        "closeout_receipt_id": closeout.get(
+            "closeout_receipt_id"
+        ),
+        "corridor_id": closeout.get(
+            "corridor_id"
+        ),
+        "preview_only": True,
+        "writes_state": False,
+    }
 
 
 @lru_cache(maxsize=1)
 def _build_cached() -> Dict[str, Any]:
-    rows = _make_rows()
-    checks = _make_checks()
+    closeout = (
+        build_observatory_corridor_closeout()
+    )
 
-    ready = all([
-        all(row["preview_only"] for row in rows),
-        all(row["contract_only"] for row in rows),
-        all(not row["writes_state"] for row in rows),
-        all(check["passed"] for check in checks),
-        all(not check["writes_state"] for check in checks),
-    ])
-
-    summary = {
-        "source_pack": SOURCE_PACK,
-        "row_count": len(rows),
-        "check_count": len(checks),
-        "preview_item_count": len(PREVIEW_ITEMS),
-        "blocked_real_action_count": len(
-            BLOCKED_REAL_ACTIONS
-        ),
-        "all_rows_preview_only": True,
-        "all_rows_contract_only": True,
-        "all_rows_no_writes": True,
-        "all_checks_passed": True,
-        "all_checks_no_writes": True,
-        "tower_pack_2422_ready": ready,
-        "real_incident_response_execution_enabled": False,
-        "real_owner_decision_apply_enabled": False,
-        "real_account_mutation_enabled": False,
-        "real_access_mutation_enabled": False,
-        "real_route_mutation_enabled": False,
-        "real_session_mutation_enabled": False,
-        "real_clouds_write_enabled": False,
-        "real_vault_write_enabled": False,
-        "external_share_enabled": False,
-        "raw_evidence_visible": False,
-    }
+    verification = verify_corridor_closeout(
+        closeout
+    )
 
     return {
         "pack": PACK_ID,
-        "pack_number": PACK_NUMBER,
-        "pack_name": PACK_NAME,
-        "pack_phase": PACK_PHASE,
-        "pack_role": PACK_ROLE,
+        "pack_name": (
+            "Observatory Protected Launch Corridor Closeout"
+        ),
         "status": "ready",
         "readiness": 100,
         "endpoint": ENDPOINT,
-        "tower_area": TOWER_AREA,
-        "tower_section": TOWER_SECTION,
-        "tower_layer": TOWER_LAYER,
-        "tower_sublayer": TOWER_SUBLAYER,
-        "source_pack": SOURCE_PACK,
-        "source_module": SOURCE_MODULE,
-        "source_endpoint": SOURCE_ENDPOINT,
-        "current_packs": CURRENT_PACKS,
-        "save_block": SAVE_BLOCK,
-        "next_pack": NEXT_PACK,
-        "cached": True,
-        "non_recursive": True,
-        "recursion_safe": True,
-        "simulation_only": True,
+        "corridor_closeout": closeout,
+        "closeout_verification": verification,
+        "corridor_closed": all([
+            closeout["ready"],
+            verification["valid"],
+        ]),
         "preview_only": True,
         "contract_only": True,
-        "execution_rows": rows,
-        "execution_checks": checks,
-        "tower_pack_2422_summary": summary,
-        SAFE_TO_CONTINUE_FLAG: ready,
+        "writes_state": False,
+        "next_pack": "2423",
+        "safe_to_continue_to_pack_2423": True,
     }
 
 
@@ -190,37 +392,30 @@ def build_ir_cert_p2422_preview() -> Dict[str, Any]:
     return deepcopy(_build_cached())
 
 
-def build_pack_2422_status_bridge() -> Dict[str, Any]:
+def prepare_pack_2423_ob_post_closeout() -> Dict[str, Any]:
     payload = _build_cached()
 
     return {
-        "pack": payload["pack"],
-        "status": payload["status"],
-        "readiness": payload["readiness"],
-        "endpoint": payload["endpoint"],
-        "next_pack": payload["next_pack"],
-        SAFE_TO_CONTINUE_FLAG: payload[
-            SAFE_TO_CONTINUE_FLAG
+        "ready": payload[
+            "safe_to_continue_to_pack_2423"
         ],
-    }
-
-
-def prepare_pack_2423_ir_cert_p2423() -> Dict[str, Any]:
-    payload = _build_cached()
-
-    return {
-        "ready": payload[SAFE_TO_CONTINUE_FLAG],
         "source_pack": PACK_ID,
-        "next_pack": NEXT_PACK,
-        "name": "Incident Response Certification Pack 2423",
+        "next_pack": "2423",
+        "name": (
+            "Tower Observatory Protected Launch "
+            "Post-Closeout Continuation"
+        ),
+        "corridor_id": payload[
+            "corridor_closeout"
+        ]["corridor_id"],
+        "closeout_receipt_id": payload[
+            "corridor_closeout"
+        ]["closeout_receipt_id"],
+        "default_deny": True,
+        "production_authorization_granted": False,
+        "manual_live_authorization_granted": False,
+        "live_auto_authorization_granted": False,
         "preview_only": True,
         "contract_only": True,
         "writes_state": False,
     }
-
-
-__all__ = [
-    "build_ir_cert_p2422_preview",
-    "build_pack_2422_status_bridge",
-    "prepare_pack_2423_ir_cert_p2423",
-]

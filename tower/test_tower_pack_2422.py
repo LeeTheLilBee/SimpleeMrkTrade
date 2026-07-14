@@ -1,72 +1,97 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2422
-"""
-
 from tower.tower_ir_cert_p2422 import (
     build_ir_cert_p2422_preview,
-    build_pack_2422_status_bridge,
-    prepare_pack_2423_ir_cert_p2423,
+    build_observatory_corridor_closeout,
+    prepare_pack_2423_ob_post_closeout,
+    verify_corridor_closeout,
 )
 
 
-def test_pack_2422_ready():
+def test_pack_2422_corridor_closeout():
+    closeout = (
+        build_observatory_corridor_closeout()
+    )
+
+    assert closeout["ready"] is True
+
+    assert closeout["recommendation"] == (
+        "GO_TOWER_OB_PROTECTED_LAUNCH_CORRIDOR_CLOSED"
+    )
+
+    assert closeout["pack_range"] == "2372-2422"
+    assert closeout["official_room_count"] == 6
+
+    assert len(
+        closeout["corridor_sections"]
+    ) == 6
+
+    assert all(
+        section["passed"]
+        for section in closeout[
+            "corridor_sections"
+        ]
+    )
+
+    assert all(closeout["checks"].values())
+
+    assert closeout[
+        "production_scope_certified"
+    ] is False
+
+    assert closeout[
+        "manual_live_scope_certified"
+    ] is False
+
+    assert closeout[
+        "live_auto_scope_certified"
+    ] is False
+
+
+def test_pack_2422_closeout_integrity():
+    closeout = (
+        build_observatory_corridor_closeout()
+    )
+
+    verification = verify_corridor_closeout(
+        closeout
+    )
+
+    assert verification["valid"] is True
+
+    assert verification["reason_code"] == (
+        "tower_ob_corridor_closeout_verified"
+    )
+
+
+def test_pack_2422_final_checkpoint():
     payload = build_ir_cert_p2422_preview()
 
-    assert payload["pack"] == "2422"
-    assert payload["pack_number"] == 2422
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2422.json"
-    assert payload["source_pack"] == "2421"
-    assert payload["next_pack"] == "2423"
-    assert payload["current_packs"] == "2372-2422"
+    assert payload["corridor_closed"] is True
+
+    assert payload[
+        "safe_to_continue_to_pack_2423"
+    ] is True
+
     assert payload["preview_only"] is True
     assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2423"] is True
 
 
-def test_pack_2422_safety():
-    payload = build_ir_cert_p2422_preview()
-    summary = payload["tower_pack_2422_summary"]
-
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2422_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
-
-
-def test_pack_2422_handoff_and_copy_safety():
-    bridge_payload = build_pack_2422_status_bridge()
-
-    assert bridge_payload["pack"] == "2422"
-    assert bridge_payload["safe_to_continue_to_pack_2423"] is True
-
-    handoff = prepare_pack_2423_ir_cert_p2423()
+def test_pack_2422_pack_2423_handoff():
+    handoff = (
+        prepare_pack_2423_ob_post_closeout()
+    )
 
     assert handoff["ready"] is True
     assert handoff["source_pack"] == "2422"
     assert handoff["next_pack"] == "2423"
-    assert handoff["writes_state"] is False
 
-    first = build_ir_cert_p2422_preview()
-    second = build_ir_cert_p2422_preview()
+    assert handoff[
+        "production_authorization_granted"
+    ] is False
 
-    assert first == second
-    assert first is not second
+    assert handoff[
+        "manual_live_authorization_granted"
+    ] is False
 
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2422_preview()["status"] == "ready"
+    assert handoff[
+        "live_auto_authorization_granted"
+    ] is False
