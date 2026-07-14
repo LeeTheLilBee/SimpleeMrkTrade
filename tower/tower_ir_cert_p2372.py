@@ -1,20 +1,9 @@
 """
-SEARCHABLE LABEL: TOWER_PACK_2372_IR_CERT
+SEARCHABLE LABEL: TOWER_PACK_2372_OBSERVATORY_ROOM_REGISTRY
 
-Tower area:
-The Tower → Operational Containment
+Tower — Observatory Protected Room Access and Launch Contract
 
-Corridor:
-Tower Beta Incident Response Post-Assurance Certification
-
-Phase:
-Corridor Index
-
-Role:
-index
-
-Preview-only and contract-only.
-No real execution or state mutation is performed.
+Pack 2372 — Observatory Room Registry
 """
 
 from __future__ import annotations
@@ -25,164 +14,299 @@ from typing import Any, Dict, List
 
 
 PACK_ID = "2372"
-PACK_NUMBER = 2372
-PACK_NAME = "Incident Response Certification Pack 2372"
-PACK_PHASE = 'Corridor Index'
-PACK_ROLE = 'index'
-
 ENDPOINT = "/tower/ir-cert-v2372.json"
 
-TOWER_AREA = "The Tower"
-TOWER_SECTION = "Operational Containment"
-TOWER_LAYER = 'Tower Beta Incident Response Post-Assurance Certification'
-TOWER_SUBLAYER = 'Corridor Index'
+APP_ID = "the_observatory"
+APP_ALIASES = (
+    "observatory",
+    "the-observatory",
+    "ob",
+    "simpleemrktrade",
+)
 
-SOURCE_PACK = "2371"
-SOURCE_MODULE = 'tower.tower_tower_beta_incident_response_owner_decision_execution_verification_index_post_closeout_index_post_closeout_index_post_verification_index_post_readiness_index_closeout_assurance_batch_close_readiness_v2371'
-SOURCE_ENDPOINT = '/tower/tower-beta-incident-response-owner-decision-execution-verification-index-post-closeout-index-post-closeout-index-post-verification-index-post-readiness-index-closeout-assurance-batch-close-readiness-v2371.json'
+REQUEST_TYPE = "tower.observatory.protected_room.launch"
+REQUEST_TYPE_ALIASES = (
+    "tower.ob.protected_room.launch",
+    "observatory.protected_room.launch",
+    "ob.protected_room.launch",
+)
 
-CURRENT_PACKS = "2372-2422"
-SAVE_BLOCK = "2372-2422"
-NEXT_PACK = "2373"
+CONTRACT_VERSION = "tower-ob-access-v1.0.0"
 
-SAFE_TO_CONTINUE_FLAG = "safe_to_continue_to_pack_2373"
+DEFAULT_DENY_REASON = "ob_route_unmapped_default_deny"
+ALLOW_REASON = "ob_room_contract_allow"
 
-PREVIEW_ITEMS = ['source_handoff_verified', 'certification_scope_visible_preview', 'owner_authority_visible_preview', 'route_guard_visible_preview', 'object_permission_visible_preview', 'session_safety_visible_preview', 'step_up_requirement_visible_preview', 'receipt_requirement_visible_preview', 'evidence_linkage_visible_preview', 'blocker_certification_visible_preview', 'lockback_path_visible_preview', 'owner_certification_visible_preview', 'closeout_certification_visible_preview', 'next_pack_handoff_visible_preview', 'no_real_mutation_confirmed']
-BLOCKED_REAL_ACTIONS = ['real_incident_response_execution', 'real_owner_decision_apply', 'real_owner_approval_apply', 'real_account_mutation', 'real_user_access_grant', 'real_user_access_revoke', 'real_user_suspend', 'real_user_lock', 'real_user_unlock', 'real_session_revoke', 'real_route_lock', 'real_route_unlock', 'real_object_permission_mutation', 'real_step_up_challenge_issue', 'real_mfa_enrollment', 'real_setup_email_send', 'real_password_store', 'real_clouds_write', 'real_vault_write', 'real_external_share', 'raw_evidence_reveal']
+CANONICAL_CLEARANCES = {
+    "ob_protected_read": {
+        "value": "ob_protected_read",
+        "rank": 300,
+    },
+    "ob_protected_workflow": {
+        "value": "ob_protected_workflow",
+        "rank": 500,
+    },
+    "ob_owner_command": {
+        "value": "ob_owner_command",
+        "rank": 900,
+    },
+}
 
-
-def _make_rows() -> List[Dict[str, Any]]:
-    rows = []
-
-    for index, item in enumerate(PREVIEW_ITEMS, start=1):
-        rows.append({
-            "row_id": f"pack_2372_preview_{index:03d}",
-            "row_type": "preview_item",
-            "item_id": item,
-            "ready": True,
-            "applied": False,
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    for index, action in enumerate(
-        BLOCKED_REAL_ACTIONS,
-        start=1,
-    ):
-        rows.append({
-            "row_id": f"pack_2372_blocked_{index:03d}",
-            "row_type": "blocked_real_action",
-            "action_id": action,
-            "enabled": False,
-            "result": "blocked_preview_only",
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    return rows
-
-
-def _make_checks() -> List[Dict[str, Any]]:
-    labels = [
-        "Source handoff verified",
-        "Phase visible",
-        "Role visible",
-        "Preview-only enforced",
-        "Contract-only enforced",
-        "No real incident execution",
-        "No owner decision application",
-        "No account mutation",
-        "No access mutation",
-        "No route mutation",
-        "No session mutation",
-        "No Clouds write",
-        "No Vault write",
-        "Raw evidence hidden",
-        "Next handoff safe",
-    ]
-
-    return [
-        {
-            "check_id": f"pack_2372_check_{index:03d}",
-            "label": label,
-            "passed": True,
-            "result": "passed",
-            "writes_state": False,
-        }
-        for index, label in enumerate(labels, start=1)
-    ]
+ROOMS: List[Dict[str, Any]] = [
+    {
+        "room_id": "ob_room_dashboard",
+        "display_name": "Dashboard",
+        "canonical_route": "/dashboard",
+        "accepted_aliases": [
+            "/ob/dashboard",
+            "/observatory/dashboard",
+        ],
+        "required_role": "owner_or_authorized_operator",
+        "required_clearance_value": "ob_protected_read",
+        "required_clearance_rank": 300,
+        "step_up_required": False,
+        "allowed_modes": [
+            "survey",
+            "paper",
+            "manual_live_preview",
+        ],
+        "owner_only": False,
+        "object_guard": {
+            "required": False,
+            "object_type": None,
+            "object_id_required": False,
+        },
+        "lockdown_state": "tower_guarded_default_deny",
+        "launch_destination": "/dashboard",
+        "allow_reason_code": "ob_room_contract_allow",
+        "deny_reason_codes": [
+            "ob_identity_missing",
+            "ob_role_not_allowed",
+            "ob_clearance_level_too_low",
+            "ob_mode_not_allowed",
+            "ob_lockdown_active",
+            "ob_risk_gate_denied",
+        ],
+    },
+    {
+        "room_id": "ob_room_market_map",
+        "display_name": "Market Map",
+        "canonical_route": "/market-map",
+        "accepted_aliases": [
+            "/ob/market-map",
+            "/market-map-v10",
+            "/observatory/market-map",
+        ],
+        "required_role": "owner_or_authorized_operator",
+        "required_clearance_value": "ob_protected_read",
+        "required_clearance_rank": 300,
+        "step_up_required": False,
+        "allowed_modes": [
+            "survey",
+            "paper",
+            "manual_live_preview",
+        ],
+        "owner_only": False,
+        "object_guard": {
+            "required": False,
+            "object_type": None,
+            "object_id_required": False,
+        },
+        "lockdown_state": "tower_guarded_default_deny",
+        "launch_destination": "/market-map",
+        "allow_reason_code": "ob_room_contract_allow",
+        "deny_reason_codes": [
+            "ob_identity_missing",
+            "ob_role_not_allowed",
+            "ob_clearance_level_too_low",
+            "ob_mode_not_allowed",
+            "ob_lockdown_active",
+            "ob_risk_gate_denied",
+        ],
+    },
+    {
+        "room_id": "ob_room_symbol_page",
+        "display_name": "Symbol Page",
+        "canonical_route": "/symbol/<symbol>",
+        "accepted_aliases": [
+            "/ob/symbol/<symbol>",
+            "/symbol-page-v10/<symbol>",
+            "/observatory/symbol/<symbol>",
+        ],
+        "required_role": "owner_or_authorized_operator",
+        "required_clearance_value": "ob_protected_read",
+        "required_clearance_rank": 300,
+        "step_up_required": False,
+        "allowed_modes": [
+            "survey",
+            "paper",
+            "manual_live_preview",
+        ],
+        "owner_only": False,
+        "object_guard": {
+            "required": True,
+            "object_type": "market_symbol",
+            "object_id_required": True,
+            "object_id_field": "symbol",
+            "validation": "uppercase_listed_symbol",
+        },
+        "lockdown_state": "tower_guarded_default_deny",
+        "launch_destination": "/symbol/{symbol}",
+        "allow_reason_code": "ob_room_contract_allow",
+        "deny_reason_codes": [
+            "ob_identity_missing",
+            "ob_role_not_allowed",
+            "ob_clearance_level_too_low",
+            "ob_symbol_object_missing",
+            "ob_symbol_object_invalid",
+            "ob_mode_not_allowed",
+            "ob_lockdown_active",
+            "ob_risk_gate_denied",
+        ],
+    },
+    {
+        "room_id": "ob_room_trade_center",
+        "display_name": "Trade Center",
+        "canonical_route": "/trade-center",
+        "accepted_aliases": [
+            "/ob/trade-center",
+            "/observatory/trade-center",
+        ],
+        "required_role": "owner_or_authorized_operator",
+        "required_clearance_value": "ob_protected_workflow",
+        "required_clearance_rank": 500,
+        "step_up_required": True,
+        "allowed_modes": [
+            "paper",
+            "manual_live_preview",
+        ],
+        "owner_only": False,
+        "object_guard": {
+            "required": True,
+            "object_type": "mission_account",
+            "object_id_required": True,
+            "object_id_field": "mission_account_id",
+        },
+        "lockdown_state": "tower_guarded_default_deny",
+        "launch_destination": "/trade-center",
+        "allow_reason_code": "ob_room_contract_allow",
+        "deny_reason_codes": [
+            "ob_identity_missing",
+            "ob_role_not_allowed",
+            "ob_clearance_level_too_low",
+            "ob_step_up_required",
+            "ob_mission_account_missing",
+            "ob_mode_not_allowed",
+            "ob_lockdown_active",
+            "ob_risk_gate_denied",
+        ],
+    },
+    {
+        "room_id": "ob_room_review_center",
+        "display_name": "Review Center",
+        "canonical_route": "/review-center",
+        "accepted_aliases": [
+            "/ob/review-center",
+            "/observatory/review-center",
+        ],
+        "required_role": "owner_or_authorized_operator",
+        "required_clearance_value": "ob_protected_workflow",
+        "required_clearance_rank": 500,
+        "step_up_required": True,
+        "allowed_modes": [
+            "paper",
+            "manual_live_preview",
+        ],
+        "owner_only": False,
+        "object_guard": {
+            "required": True,
+            "object_type": "mission_account",
+            "object_id_required": True,
+            "object_id_field": "mission_account_id",
+        },
+        "lockdown_state": "tower_guarded_default_deny",
+        "launch_destination": "/review-center",
+        "allow_reason_code": "ob_room_contract_allow",
+        "deny_reason_codes": [
+            "ob_identity_missing",
+            "ob_role_not_allowed",
+            "ob_clearance_level_too_low",
+            "ob_step_up_required",
+            "ob_mission_account_missing",
+            "ob_mode_not_allowed",
+            "ob_lockdown_active",
+            "ob_risk_gate_denied",
+        ],
+    },
+    {
+        "room_id": "ob_room_owner_console",
+        "display_name": "Owner Console",
+        "canonical_route": "/owner-console",
+        "accepted_aliases": [
+            "/ob/owner-console",
+            "/observatory/owner-console",
+        ],
+        "required_role": "owner",
+        "required_clearance_value": "ob_owner_command",
+        "required_clearance_rank": 900,
+        "step_up_required": True,
+        "allowed_modes": [
+            "survey",
+            "paper",
+            "manual_live_preview",
+        ],
+        "owner_only": True,
+        "object_guard": {
+            "required": True,
+            "object_type": "owner_mission_scope",
+            "object_id_required": True,
+            "object_id_field": "mission_account_id",
+        },
+        "lockdown_state": "tower_guarded_default_deny",
+        "launch_destination": "/owner-console",
+        "allow_reason_code": "ob_room_contract_allow",
+        "deny_reason_codes": [
+            "ob_identity_missing",
+            "ob_owner_role_required",
+            "ob_clearance_level_too_low",
+            "ob_step_up_required",
+            "ob_mission_account_missing",
+            "ob_mode_not_allowed",
+            "ob_lockdown_active",
+            "ob_risk_gate_denied",
+        ],
+    },
+]
 
 
 @lru_cache(maxsize=1)
 def _build_cached() -> Dict[str, Any]:
-    rows = _make_rows()
-    checks = _make_checks()
-
-    ready = all([
-        all(row["preview_only"] for row in rows),
-        all(row["contract_only"] for row in rows),
-        all(not row["writes_state"] for row in rows),
-        all(check["passed"] for check in checks),
-        all(not check["writes_state"] for check in checks),
-    ])
-
-    summary = {
-        "source_pack": SOURCE_PACK,
-        "row_count": len(rows),
-        "check_count": len(checks),
-        "preview_item_count": len(PREVIEW_ITEMS),
-        "blocked_real_action_count": len(
-            BLOCKED_REAL_ACTIONS
-        ),
-        "all_rows_preview_only": True,
-        "all_rows_contract_only": True,
-        "all_rows_no_writes": True,
-        "all_checks_passed": True,
-        "all_checks_no_writes": True,
-        "tower_pack_2372_ready": ready,
-        "real_incident_response_execution_enabled": False,
-        "real_owner_decision_apply_enabled": False,
-        "real_account_mutation_enabled": False,
-        "real_access_mutation_enabled": False,
-        "real_route_mutation_enabled": False,
-        "real_session_mutation_enabled": False,
-        "real_clouds_write_enabled": False,
-        "real_vault_write_enabled": False,
-        "external_share_enabled": False,
-        "raw_evidence_visible": False,
-    }
-
     return {
         "pack": PACK_ID,
-        "pack_number": PACK_NUMBER,
-        "pack_name": PACK_NAME,
-        "pack_phase": PACK_PHASE,
-        "pack_role": PACK_ROLE,
+        "pack_name": "Observatory Room Registry",
         "status": "ready",
         "readiness": 100,
         "endpoint": ENDPOINT,
-        "tower_area": TOWER_AREA,
-        "tower_section": TOWER_SECTION,
-        "tower_layer": TOWER_LAYER,
-        "tower_sublayer": TOWER_SUBLAYER,
-        "source_pack": SOURCE_PACK,
-        "source_module": SOURCE_MODULE,
-        "source_endpoint": SOURCE_ENDPOINT,
-        "current_packs": CURRENT_PACKS,
-        "save_block": SAVE_BLOCK,
-        "next_pack": NEXT_PACK,
-        "cached": True,
-        "non_recursive": True,
-        "recursion_safe": True,
-        "simulation_only": True,
+        "app_id": APP_ID,
+        "accepted_app_aliases": list(APP_ALIASES),
+        "supported_request_type": REQUEST_TYPE,
+        "accepted_request_type_aliases": list(
+            REQUEST_TYPE_ALIASES
+        ),
+        "contract_version": CONTRACT_VERSION,
+        "room_count": len(ROOMS),
+        "rooms": deepcopy(ROOMS),
+        "canonical_clearances": deepcopy(
+            CANONICAL_CLEARANCES
+        ),
+        "default_deny": True,
+        "unmapped_routes_blocked": True,
+        "ob_self_authorization_enabled": False,
+        "ob_clearance_translation_enabled": False,
         "preview_only": True,
         "contract_only": True,
-        "execution_rows": rows,
-        "execution_checks": checks,
-        "tower_pack_2372_summary": summary,
-        SAFE_TO_CONTINUE_FLAG: ready,
+        "writes_state": False,
+        "next_pack": "2373",
+        "safe_to_continue_to_pack_2373": True,
     }
 
 
@@ -190,37 +314,34 @@ def build_ir_cert_p2372_preview() -> Dict[str, Any]:
     return deepcopy(_build_cached())
 
 
-def build_pack_2372_status_bridge() -> Dict[str, Any]:
+def get_observatory_room_registry() -> Dict[str, Any]:
     payload = _build_cached()
 
     return {
-        "pack": payload["pack"],
-        "status": payload["status"],
-        "readiness": payload["readiness"],
-        "endpoint": payload["endpoint"],
-        "next_pack": payload["next_pack"],
-        SAFE_TO_CONTINUE_FLAG: payload[
-            SAFE_TO_CONTINUE_FLAG
-        ],
+        "app_id": payload["app_id"],
+        "contract_version": payload["contract_version"],
+        "supported_request_type": (
+            payload["supported_request_type"]
+        ),
+        "rooms": deepcopy(payload["rooms"]),
     }
 
 
-def prepare_pack_2373_ir_cert_p2373() -> Dict[str, Any]:
-    payload = _build_cached()
+def get_room_by_id(room_id: str) -> Dict[str, Any] | None:
+    for room in ROOMS:
+        if room["room_id"] == room_id:
+            return deepcopy(room)
 
+    return None
+
+
+def prepare_pack_2373_ir_cert_p2373() -> Dict[str, Any]:
     return {
-        "ready": payload[SAFE_TO_CONTINUE_FLAG],
+        "ready": True,
         "source_pack": PACK_ID,
-        "next_pack": NEXT_PACK,
-        "name": "Incident Response Certification Pack 2373",
+        "next_pack": "2373",
+        "name": "Canonical Route and Alias Contract",
         "preview_only": True,
         "contract_only": True,
         "writes_state": False,
     }
-
-
-__all__ = [
-    "build_ir_cert_p2372_preview",
-    "build_pack_2372_status_bridge",
-    "prepare_pack_2373_ir_cert_p2373",
-]

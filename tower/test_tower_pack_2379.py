@@ -1,72 +1,51 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2379
-"""
-
+from tower.tower_ir_cert_p2377 import (
+    create_ob_launch_handoff,
+)
+from tower.tower_ir_cert_p2378 import (
+    create_room_access_receipt,
+)
 from tower.tower_ir_cert_p2379 import (
-    build_ir_cert_p2379_preview,
-    build_pack_2379_status_bridge,
-    prepare_pack_2380_ir_cert_p2380,
+    close_ob_launch_session,
 )
 
 
-def test_pack_2379_ready():
-    payload = build_ir_cert_p2379_preview()
+def test_pack_2379_close_and_lockback():
+    handoff = create_ob_launch_handoff(
+        owner_id="owner_1",
+        session_id="session_1",
+        approved_room={
+            "room_id": "ob_room_owner_console",
+            "display_name": "Owner Console",
+        },
+        canonical_path="/owner-console",
+        mode="paper",
+        step_up_reference="stepup_1",
+        clearance_decision_reference="obclr_1",
+        issued_at="2026-07-13T12:00:00+00:00",
+    )
 
-    assert payload["pack"] == "2379"
-    assert payload["pack_number"] == 2379
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2379.json"
-    assert payload["source_pack"] == "2378"
-    assert payload["next_pack"] == "2380"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2380"] is True
+    access = create_room_access_receipt(
+        handoff=handoff,
+        bridge_decision="ob_room_contract_allow",
+        clearance_value="ob_owner_command",
+        clearance_rank=900,
+        step_up_state="validated",
+        launch_time="2026-07-13T12:00:01+00:00",
+    )
 
+    close = close_ob_launch_session(
+        handoff=handoff,
+        access_receipt=access,
+        close_time="2026-07-13T12:05:00+00:00",
+        close_reason="rehearsal_complete",
+    )
 
-def test_pack_2379_safety():
-    payload = build_ir_cert_p2379_preview()
-    summary = payload["tower_pack_2379_summary"]
-
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2379_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
-
-
-def test_pack_2379_handoff_and_copy_safety():
-    bridge_payload = build_pack_2379_status_bridge()
-
-    assert bridge_payload["pack"] == "2379"
-    assert bridge_payload["safe_to_continue_to_pack_2380"] is True
-
-    handoff = prepare_pack_2380_ir_cert_p2380()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2379"
-    assert handoff["next_pack"] == "2380"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2379_preview()
-    second = build_ir_cert_p2379_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2379_preview()["status"] == "ready"
+    assert close["launch_authorization_state"] == (
+        "revoked"
+    )
+    assert close["handoff_replay_state"] == "blocked"
+    assert close["step_up_state"] == (
+        "consumed_or_revoked"
+    )
+    assert close["ob_access_state"] == "locked_back"
+    assert close["default_deny_restored"] is True

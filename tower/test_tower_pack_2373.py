@@ -1,72 +1,41 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2373
-"""
-
 from tower.tower_ir_cert_p2373 import (
-    build_ir_cert_p2373_preview,
-    build_pack_2373_status_bridge,
-    prepare_pack_2374_ir_cert_p2374,
+    normalize_app_id,
+    normalize_request_type,
+    resolve_observatory_route,
 )
 
 
-def test_pack_2373_ready():
-    payload = build_ir_cert_p2373_preview()
+def test_pack_2373_aliases_resolve_canonically():
+    assert normalize_app_id("ob") == "the_observatory"
 
-    assert payload["pack"] == "2373"
-    assert payload["pack_number"] == 2373
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2373.json"
-    assert payload["source_pack"] == "2372"
-    assert payload["next_pack"] == "2374"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2374"] is True
+    assert normalize_request_type(
+        "ob.protected_room.launch"
+    ) == "tower.observatory.protected_room.launch"
+
+    route = resolve_observatory_route("/ob/market-map")
+
+    assert route["allowed"] is True
+    assert route["room_id"] == "ob_room_market_map"
+    assert route["canonical_path"] == "/market-map"
 
 
-def test_pack_2373_safety():
-    payload = build_ir_cert_p2373_preview()
-    summary = payload["tower_pack_2373_summary"]
+def test_pack_2373_unmapped_default_deny():
+    route = resolve_observatory_route(
+        "/made-up-ob-room"
+    )
 
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2373_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
+    assert route["allowed"] is False
+    assert route["reason_code"] == (
+        "ob_route_unmapped_default_deny"
+    )
 
 
-def test_pack_2373_handoff_and_copy_safety():
-    bridge_payload = build_pack_2373_status_bridge()
+def test_pack_2373_symbol_alias_object_resolution():
+    route = resolve_observatory_route(
+        "/ob/symbol/amd"
+    )
 
-    assert bridge_payload["pack"] == "2373"
-    assert bridge_payload["safe_to_continue_to_pack_2374"] is True
-
-    handoff = prepare_pack_2374_ir_cert_p2374()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2373"
-    assert handoff["next_pack"] == "2374"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2373_preview()
-    second = build_ir_cert_p2373_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2373_preview()["status"] == "ready"
+    assert route["allowed"] is True
+    assert route["room_id"] == "ob_room_symbol_page"
+    assert route["canonical_path"] == "/symbol/AMD"
+    assert route["object_context"]["symbol"] == "AMD"

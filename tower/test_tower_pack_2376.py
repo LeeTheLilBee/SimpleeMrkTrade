@@ -1,72 +1,57 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2376
-"""
-
 from tower.tower_ir_cert_p2376 import (
-    build_ir_cert_p2376_preview,
-    build_pack_2376_status_bridge,
-    prepare_pack_2377_ir_cert_p2377,
+    build_protected_room_manifest,
 )
 
 
-def test_pack_2376_ready():
-    payload = build_ir_cert_p2376_preview()
+def test_pack_2376_owner_manifest_contains_six_rooms():
+    manifest = build_protected_room_manifest(
+        tower_role="owner",
+        canonical_clearance_value="ob_owner_command",
+        canonical_clearance_rank=900,
+        identity_verified=True,
+        risk_state="acceptable",
+        lockdown_active=False,
+        mode="paper",
+        step_up_reference="stepup_1",
+        step_up_valid=True,
+        object_context_by_room={
+            "ob_room_symbol_page": {"symbol": "AMD"},
+            "ob_room_trade_center": {
+                "mission_account_id": "proof_demo"
+            },
+            "ob_room_review_center": {
+                "mission_account_id": "proof_demo"
+            },
+            "ob_room_owner_console": {
+                "mission_account_id": "proof_demo"
+            },
+        },
+    )
 
-    assert payload["pack"] == "2376"
-    assert payload["pack_number"] == 2376
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2376.json"
-    assert payload["source_pack"] == "2375"
-    assert payload["next_pack"] == "2377"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2377"] is True
-
-
-def test_pack_2376_safety():
-    payload = build_ir_cert_p2376_preview()
-    summary = payload["tower_pack_2376_summary"]
-
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2376_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
+    assert manifest["available_room_count"] == 6
+    assert manifest["denied_room_count"] == 0
 
 
-def test_pack_2376_handoff_and_copy_safety():
-    bridge_payload = build_pack_2376_status_bridge()
+def test_pack_2376_manifest_filters_denied_rooms():
+    manifest = build_protected_room_manifest(
+        tower_role="authorized_observer",
+        canonical_clearance_value="ob_protected_read",
+        canonical_clearance_rank=300,
+        identity_verified=True,
+        risk_state="acceptable",
+        lockdown_active=False,
+        mode="paper",
+        step_up_reference=None,
+        step_up_valid=False,
+        object_context_by_room={
+            "ob_room_symbol_page": {"symbol": "AMD"},
+        },
+    )
 
-    assert bridge_payload["pack"] == "2376"
-    assert bridge_payload["safe_to_continue_to_pack_2377"] is True
+    available = {
+        room["room_id"]
+        for room in manifest["available_rooms"]
+    }
 
-    handoff = prepare_pack_2377_ir_cert_p2377()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2376"
-    assert handoff["next_pack"] == "2377"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2376_preview()
-    second = build_ir_cert_p2376_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2376_preview()["status"] == "ready"
+    assert "ob_room_owner_console" not in available
+    assert manifest["denied_room_count"] >= 1

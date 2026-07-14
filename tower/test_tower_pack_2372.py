@@ -1,72 +1,41 @@
-"""
-SEARCHABLE LABEL: TOWER_TEST_PACK_2372
-"""
-
 from tower.tower_ir_cert_p2372 import (
     build_ir_cert_p2372_preview,
-    build_pack_2372_status_bridge,
-    prepare_pack_2373_ir_cert_p2373,
+    get_room_by_id,
 )
 
 
-def test_pack_2372_ready():
+def test_pack_2372_six_room_registry():
     payload = build_ir_cert_p2372_preview()
 
     assert payload["pack"] == "2372"
-    assert payload["pack_number"] == 2372
-    assert payload["status"] == "ready"
-    assert payload["readiness"] == 100
-    assert payload["endpoint"] == "/tower/ir-cert-v2372.json"
-    assert payload["source_pack"] == "2371"
-    assert payload["next_pack"] == "2373"
-    assert payload["current_packs"] == "2372-2422"
-    assert payload["preview_only"] is True
-    assert payload["contract_only"] is True
-    assert payload["safe_to_continue_to_pack_2373"] is True
+    assert payload["app_id"] == "the_observatory"
+    assert payload["room_count"] == 6
+    assert payload["default_deny"] is True
+    assert payload["unmapped_routes_blocked"] is True
+
+    names = {
+        room["display_name"]
+        for room in payload["rooms"]
+    }
+
+    assert names == {
+        "Dashboard",
+        "Market Map",
+        "Symbol Page",
+        "Trade Center",
+        "Review Center",
+        "Owner Console",
+    }
 
 
-def test_pack_2372_safety():
-    payload = build_ir_cert_p2372_preview()
-    summary = payload["tower_pack_2372_summary"]
+def test_pack_2372_owner_console_contract():
+    room = get_room_by_id("ob_room_owner_console")
 
-    assert summary["row_count"] >= 36
-    assert summary["check_count"] >= 15
-    assert summary["all_rows_no_writes"] is True
-    assert summary["all_checks_no_writes"] is True
-    assert summary["tower_pack_2372_ready"] is True
-    assert summary[
-        "real_incident_response_execution_enabled"
-    ] is False
-    assert summary[
-        "real_owner_decision_apply_enabled"
-    ] is False
-    assert summary["real_account_mutation_enabled"] is False
-    assert summary["real_access_mutation_enabled"] is False
-    assert summary["real_route_mutation_enabled"] is False
-    assert summary["real_session_mutation_enabled"] is False
-    assert summary["real_clouds_write_enabled"] is False
-    assert summary["real_vault_write_enabled"] is False
-
-
-def test_pack_2372_handoff_and_copy_safety():
-    bridge_payload = build_pack_2372_status_bridge()
-
-    assert bridge_payload["pack"] == "2372"
-    assert bridge_payload["safe_to_continue_to_pack_2373"] is True
-
-    handoff = prepare_pack_2373_ir_cert_p2373()
-
-    assert handoff["ready"] is True
-    assert handoff["source_pack"] == "2372"
-    assert handoff["next_pack"] == "2373"
-    assert handoff["writes_state"] is False
-
-    first = build_ir_cert_p2372_preview()
-    second = build_ir_cert_p2372_preview()
-
-    assert first == second
-    assert first is not second
-
-    first["status"] = "mutated"
-
-    assert build_ir_cert_p2372_preview()["status"] == "ready"
+    assert room["canonical_route"] == "/owner-console"
+    assert room["required_role"] == "owner"
+    assert room["required_clearance_value"] == (
+        "ob_owner_command"
+    )
+    assert room["required_clearance_rank"] == 900
+    assert room["step_up_required"] is True
+    assert room["owner_only"] is True

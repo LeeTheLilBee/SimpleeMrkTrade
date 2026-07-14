@@ -1,188 +1,186 @@
 """
-SEARCHABLE LABEL: TOWER_PACK_2374_IR_CERT
+SEARCHABLE LABEL: TOWER_PACK_2374_OWNER_CLEARANCE_TRANSLATION
 
-Tower area:
-The Tower → Operational Containment
+Pack 2374 — Owner Clearance Translation Contract
 
-Corridor:
-Tower Beta Incident Response Post-Assurance Certification
-
-Phase:
-Main Certification
-
-Role:
-registry_contract
-
-Preview-only and contract-only.
-No real execution or state mutation is performed.
+Tower owns translation. OB receives only canonical clearance.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 from copy import deepcopy
 from functools import lru_cache
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 
 PACK_ID = "2374"
-PACK_NUMBER = 2374
-PACK_NAME = "Incident Response Certification Pack 2374"
-PACK_PHASE = 'Main Certification'
-PACK_ROLE = 'registry_contract'
-
 ENDPOINT = "/tower/ir-cert-v2374.json"
 
-TOWER_AREA = "The Tower"
-TOWER_SECTION = "Operational Containment"
-TOWER_LAYER = 'Tower Beta Incident Response Post-Assurance Certification'
-TOWER_SUBLAYER = 'Main Certification'
+TRANSLATION_CONTRACT_VERSION = (
+    "tower-ob-clearance-translation-v1.0.0"
+)
 
-SOURCE_PACK = "2373"
-SOURCE_MODULE = 'tower.tower_ir_cert_p2373'
-SOURCE_ENDPOINT = '/tower/ir-cert-v2373.json'
-
-CURRENT_PACKS = "2372-2422"
-SAVE_BLOCK = "2372-2422"
-NEXT_PACK = "2375"
-
-SAFE_TO_CONTINUE_FLAG = "safe_to_continue_to_pack_2375"
-
-PREVIEW_ITEMS = ['source_handoff_verified', 'certification_scope_visible_preview', 'owner_authority_visible_preview', 'route_guard_visible_preview', 'object_permission_visible_preview', 'session_safety_visible_preview', 'step_up_requirement_visible_preview', 'receipt_requirement_visible_preview', 'evidence_linkage_visible_preview', 'blocker_certification_visible_preview', 'lockback_path_visible_preview', 'owner_certification_visible_preview', 'closeout_certification_visible_preview', 'next_pack_handoff_visible_preview', 'no_real_mutation_confirmed']
-BLOCKED_REAL_ACTIONS = ['real_incident_response_execution', 'real_owner_decision_apply', 'real_owner_approval_apply', 'real_account_mutation', 'real_user_access_grant', 'real_user_access_revoke', 'real_user_suspend', 'real_user_lock', 'real_user_unlock', 'real_session_revoke', 'real_route_lock', 'real_route_unlock', 'real_object_permission_mutation', 'real_step_up_challenge_issue', 'real_mfa_enrollment', 'real_setup_email_send', 'real_password_store', 'real_clouds_write', 'real_vault_write', 'real_external_share', 'raw_evidence_reveal']
-
-
-def _make_rows() -> List[Dict[str, Any]]:
-    rows = []
-
-    for index, item in enumerate(PREVIEW_ITEMS, start=1):
-        rows.append({
-            "row_id": f"pack_2374_preview_{index:03d}",
-            "row_type": "preview_item",
-            "item_id": item,
-            "ready": True,
-            "applied": False,
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    for index, action in enumerate(
-        BLOCKED_REAL_ACTIONS,
-        start=1,
-    ):
-        rows.append({
-            "row_id": f"pack_2374_blocked_{index:03d}",
-            "row_type": "blocked_real_action",
-            "action_id": action,
-            "enabled": False,
-            "result": "blocked_preview_only",
-            "preview_only": True,
-            "contract_only": True,
-            "writes_state": False,
-        })
-
-    return rows
+ROLE_TRANSLATIONS = {
+    "owner": {
+        "canonical_clearance_value": "ob_owner_command",
+        "canonical_clearance_rank": 900,
+        "reason_code": (
+            "tower_owner_role_translated_to_ob_owner_command"
+        ),
+    },
+    "authorized_operator": {
+        "canonical_clearance_value": (
+            "ob_protected_workflow"
+        ),
+        "canonical_clearance_rank": 500,
+        "reason_code": (
+            "tower_operator_role_translated_to_ob_workflow"
+        ),
+    },
+    "authorized_observer": {
+        "canonical_clearance_value": "ob_protected_read",
+        "canonical_clearance_rank": 300,
+        "reason_code": (
+            "tower_observer_role_translated_to_ob_read"
+        ),
+    },
+}
 
 
-def _make_checks() -> List[Dict[str, Any]]:
-    labels = [
-        "Source handoff verified",
-        "Phase visible",
-        "Role visible",
-        "Preview-only enforced",
-        "Contract-only enforced",
-        "No real incident execution",
-        "No owner decision application",
-        "No account mutation",
-        "No access mutation",
-        "No route mutation",
-        "No session mutation",
-        "No Clouds write",
-        "No Vault write",
-        "Raw evidence hidden",
-        "Next handoff safe",
-    ]
+def _decision_reference(payload: Dict[str, Any]) -> str:
+    encoded = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
-    return [
-        {
-            "check_id": f"pack_2374_check_{index:03d}",
-            "label": label,
-            "passed": True,
-            "result": "passed",
-            "writes_state": False,
+    return "obclr_" + hashlib.sha256(encoded).hexdigest()[:24]
+
+
+def translate_tower_clearance(
+    *,
+    subject_id: str,
+    tower_role: str,
+    identity_verified: bool,
+    account_active: bool,
+    risk_state: str,
+    lockdown_state: str,
+) -> Dict[str, Any]:
+    role = str(tower_role or "").strip().lower()
+
+    base = {
+        "subject_id": subject_id,
+        "tower_role": role,
+        "identity_verified": bool(identity_verified),
+        "account_active": bool(account_active),
+        "risk_state": risk_state,
+        "lockdown_state": lockdown_state,
+        "contract_version": TRANSLATION_CONTRACT_VERSION,
+        "preview_only": True,
+        "writes_state": False,
+    }
+
+    if not identity_verified:
+        result = {
+            **base,
+            "allowed": False,
+            "reason_code": "ob_identity_missing",
+            "canonical_clearance_value": None,
+            "canonical_clearance_rank": 0,
         }
-        for index, label in enumerate(labels, start=1)
-    ]
+
+    elif not account_active:
+        result = {
+            **base,
+            "allowed": False,
+            "reason_code": "tower_account_not_active",
+            "canonical_clearance_value": None,
+            "canonical_clearance_rank": 0,
+        }
+
+    elif risk_state != "acceptable":
+        result = {
+            **base,
+            "allowed": False,
+            "reason_code": "ob_risk_gate_denied",
+            "canonical_clearance_value": None,
+            "canonical_clearance_rank": 0,
+        }
+
+    elif lockdown_state not in {
+        "normal",
+        "tower_guarded_default_deny",
+    }:
+        result = {
+            **base,
+            "allowed": False,
+            "reason_code": "ob_lockdown_active",
+            "canonical_clearance_value": None,
+            "canonical_clearance_rank": 0,
+        }
+
+    elif role not in ROLE_TRANSLATIONS:
+        result = {
+            **base,
+            "allowed": False,
+            "reason_code": (
+                "tower_role_has_no_ob_clearance_translation"
+            ),
+            "canonical_clearance_value": None,
+            "canonical_clearance_rank": 0,
+        }
+
+    else:
+        translated = ROLE_TRANSLATIONS[role]
+
+        result = {
+            **base,
+            "allowed": True,
+            **translated,
+        }
+
+    result["clearance_decision_reference"] = (
+        _decision_reference(result)
+    )
+
+    return result
 
 
 @lru_cache(maxsize=1)
 def _build_cached() -> Dict[str, Any]:
-    rows = _make_rows()
-    checks = _make_checks()
-
-    ready = all([
-        all(row["preview_only"] for row in rows),
-        all(row["contract_only"] for row in rows),
-        all(not row["writes_state"] for row in rows),
-        all(check["passed"] for check in checks),
-        all(not check["writes_state"] for check in checks),
-    ])
-
-    summary = {
-        "source_pack": SOURCE_PACK,
-        "row_count": len(rows),
-        "check_count": len(checks),
-        "preview_item_count": len(PREVIEW_ITEMS),
-        "blocked_real_action_count": len(
-            BLOCKED_REAL_ACTIONS
-        ),
-        "all_rows_preview_only": True,
-        "all_rows_contract_only": True,
-        "all_rows_no_writes": True,
-        "all_checks_passed": True,
-        "all_checks_no_writes": True,
-        "tower_pack_2374_ready": ready,
-        "real_incident_response_execution_enabled": False,
-        "real_owner_decision_apply_enabled": False,
-        "real_account_mutation_enabled": False,
-        "real_access_mutation_enabled": False,
-        "real_route_mutation_enabled": False,
-        "real_session_mutation_enabled": False,
-        "real_clouds_write_enabled": False,
-        "real_vault_write_enabled": False,
-        "external_share_enabled": False,
-        "raw_evidence_visible": False,
-    }
+    owner_example = translate_tower_clearance(
+        subject_id="owner_preview",
+        tower_role="owner",
+        identity_verified=True,
+        account_active=True,
+        risk_state="acceptable",
+        lockdown_state="tower_guarded_default_deny",
+    )
 
     return {
         "pack": PACK_ID,
-        "pack_number": PACK_NUMBER,
-        "pack_name": PACK_NAME,
-        "pack_phase": PACK_PHASE,
-        "pack_role": PACK_ROLE,
+        "pack_name": "Owner Clearance Translation Contract",
         "status": "ready",
         "readiness": 100,
         "endpoint": ENDPOINT,
-        "tower_area": TOWER_AREA,
-        "tower_section": TOWER_SECTION,
-        "tower_layer": TOWER_LAYER,
-        "tower_sublayer": TOWER_SUBLAYER,
-        "source_pack": SOURCE_PACK,
-        "source_module": SOURCE_MODULE,
-        "source_endpoint": SOURCE_ENDPOINT,
-        "current_packs": CURRENT_PACKS,
-        "save_block": SAVE_BLOCK,
-        "next_pack": NEXT_PACK,
-        "cached": True,
-        "non_recursive": True,
-        "recursion_safe": True,
-        "simulation_only": True,
+        "translation_contract_version": (
+            TRANSLATION_CONTRACT_VERSION
+        ),
+        "accepted_tower_roles": sorted(
+            ROLE_TRANSLATIONS
+        ),
+        "owner_translation": owner_example,
+        "raw_owner_string_is_ob_clearance": False,
+        "owner_role_policy_lowered": False,
+        "tower_translation_required": True,
+        "ob_translation_enabled": False,
         "preview_only": True,
         "contract_only": True,
-        "execution_rows": rows,
-        "execution_checks": checks,
-        "tower_pack_2374_summary": summary,
-        SAFE_TO_CONTINUE_FLAG: ready,
+        "writes_state": False,
+        "next_pack": "2375",
+        "safe_to_continue_to_pack_2375": True,
     }
 
 
@@ -190,37 +188,13 @@ def build_ir_cert_p2374_preview() -> Dict[str, Any]:
     return deepcopy(_build_cached())
 
 
-def build_pack_2374_status_bridge() -> Dict[str, Any]:
-    payload = _build_cached()
-
-    return {
-        "pack": payload["pack"],
-        "status": payload["status"],
-        "readiness": payload["readiness"],
-        "endpoint": payload["endpoint"],
-        "next_pack": payload["next_pack"],
-        SAFE_TO_CONTINUE_FLAG: payload[
-            SAFE_TO_CONTINUE_FLAG
-        ],
-    }
-
-
 def prepare_pack_2375_ir_cert_p2375() -> Dict[str, Any]:
-    payload = _build_cached()
-
     return {
-        "ready": payload[SAFE_TO_CONTINUE_FLAG],
+        "ready": True,
         "source_pack": PACK_ID,
-        "next_pack": NEXT_PACK,
-        "name": "Incident Response Certification Pack 2375",
+        "next_pack": "2375",
+        "name": "Step-Up Room Access Matrix",
         "preview_only": True,
         "contract_only": True,
         "writes_state": False,
     }
-
-
-__all__ = [
-    "build_ir_cert_p2374_preview",
-    "build_pack_2374_status_bridge",
-    "prepare_pack_2375_ir_cert_p2375",
-]
