@@ -20497,6 +20497,443 @@ def ob_gp046_tower_protected_launch_consume_json(
 
 # OB_GIANT_PACK_046_TOWER_PROTECTED_LAUNCH_HANDOFF_CONSUMER_ROUTES_END
 
+# OB_GIANT_PACK_047_PROTECTED_LAUNCH_SESSION_ROUTES_START
+
+def _ob_gp047_session_http_enabled():
+    import os
+
+    return (
+        os.environ.get(
+            "OB_TOWER_LAUNCH_SESSION_HTTP_ENABLED",
+            "0",
+        )
+        == "1"
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-sessions/status.json",
+    methods=["GET"],
+)
+def ob_gp047_protected_launch_session_status_json():
+    from flask import jsonify
+    from web.ob_tower_protected_launch_session_state import (
+        protected_launch_session_status,
+    )
+
+    payload = (
+        protected_launch_session_status()
+    )
+
+    payload[
+        "http_session_mutation_enabled"
+    ] = (
+        _ob_gp047_session_http_enabled()
+    )
+
+    return jsonify(payload)
+
+
+@app.route(
+    "/ob/tower-protected-launch-sessions.json",
+    methods=["GET"],
+)
+def ob_gp047_protected_launch_sessions_json():
+    from flask import jsonify, request
+    from web.ob_tower_protected_launch_session_state import (
+        list_protected_launch_sessions,
+    )
+
+    if not _ob_gp047_session_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_session_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    owner_id = request.args.get(
+        "owner_id"
+    )
+
+    state = request.args.get(
+        "state"
+    )
+
+    try:
+        limit = int(
+            request.args.get(
+                "limit",
+                "100",
+            )
+        )
+
+    except ValueError:
+        limit = 100
+
+    items = (
+        list_protected_launch_sessions(
+            owner_id=owner_id,
+            state=state,
+            limit=limit,
+        )
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "items": items,
+            "count": len(items),
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-sessions/start.json",
+    methods=["POST"],
+)
+def ob_gp047_protected_launch_session_start_json():
+    from flask import jsonify, request
+    from web.ob_tower_protected_launch_session_state import (
+        start_protected_launch_session,
+    )
+
+    if not _ob_gp047_session_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_session_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        start_protected_launch_session(
+            payload.get(
+                "intake_id",
+                "",
+            ),
+            owner_id=payload.get(
+                "owner_id"
+            ),
+        )
+    )
+
+    if result.get("ok"):
+        status_code = (
+            200
+            if result.get(
+                "idempotent"
+            )
+            else 201
+        )
+
+    else:
+        status_code = 409
+
+    return (
+        jsonify(result),
+        status_code,
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-sessions/active-room.json",
+    methods=["GET"],
+)
+def ob_gp047_protected_launch_active_room_json():
+    from flask import jsonify, request
+    from web.ob_tower_protected_launch_session_state import (
+        resolve_active_room_binding,
+    )
+
+    if not _ob_gp047_session_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_session_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    owner_id = str(
+        request.args.get(
+            "owner_id"
+        )
+        or ""
+    ).strip()
+
+    if not owner_id:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "owner_id_required"
+                    ),
+                }
+            ),
+            400,
+        )
+
+    result = (
+        resolve_active_room_binding(
+            owner_id=owner_id,
+            tower_session_id=(
+                request.args.get(
+                    "tower_session_id"
+                )
+            ),
+        )
+    )
+
+    return jsonify(result)
+
+
+@app.route(
+    "/ob/tower-protected-launch-sessions/<session_state_id>.json",
+    methods=["GET"],
+)
+def ob_gp047_protected_launch_session_detail_json(
+    session_state_id,
+):
+    from flask import jsonify
+    from web.ob_tower_protected_launch_session_state import (
+        get_protected_launch_session,
+    )
+
+    if not _ob_gp047_session_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_session_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    session = (
+        get_protected_launch_session(
+            session_state_id
+        )
+    )
+
+    if session is None:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_session_not_found"
+                    ),
+                }
+            ),
+            404,
+        )
+
+    return jsonify(
+        {
+            "ok": True,
+            "session": session,
+            "production_authority_granted": False,
+        }
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-sessions/<session_state_id>/verify.json",
+    methods=["GET"],
+)
+def ob_gp047_protected_launch_session_verify_json(
+    session_state_id,
+):
+    from flask import jsonify
+    from web.ob_tower_protected_launch_session_state import (
+        verify_protected_launch_session,
+    )
+
+    if not _ob_gp047_session_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_session_http_disabled"
+                    ),
+                }
+            ),
+            423,
+        )
+
+    result = (
+        verify_protected_launch_session(
+            session_state_id
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get(
+                "verified"
+            )
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-sessions/<session_state_id>/touch.json",
+    methods=["POST"],
+)
+def ob_gp047_protected_launch_session_touch_json(
+    session_state_id,
+):
+    from flask import jsonify, request
+    from web.ob_tower_protected_launch_session_state import (
+        touch_protected_launch_session,
+    )
+
+    if not _ob_gp047_session_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_session_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        touch_protected_launch_session(
+            session_state_id,
+            owner_id=payload.get(
+                "owner_id"
+            ),
+            tower_session_id=payload.get(
+                "tower_session_id"
+            ),
+            room_id=payload.get(
+                "room_id"
+            ),
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+
+@app.route(
+    "/ob/tower-protected-launch-sessions/<session_state_id>/close.json",
+    methods=["POST"],
+)
+def ob_gp047_protected_launch_session_close_json(
+    session_state_id,
+):
+    from flask import jsonify, request
+    from web.ob_tower_protected_launch_session_state import (
+        close_protected_launch_session,
+    )
+
+    if not _ob_gp047_session_http_enabled():
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "reason_code": (
+                        "protected_launch_session_http_disabled"
+                    ),
+                    "production_authority_granted": False,
+                }
+            ),
+            423,
+        )
+
+    payload = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        payload = {}
+
+    result = (
+        close_protected_launch_session(
+            session_state_id,
+            owner_id=payload.get(
+                "owner_id"
+            ),
+            reason=payload.get(
+                "reason",
+                "owner_session_complete",
+            ),
+        )
+    )
+
+    return (
+        jsonify(result),
+        (
+            200
+            if result.get("ok")
+            else 409
+        ),
+    )
+
+# OB_GIANT_PACK_047_PROTECTED_LAUNCH_SESSION_ROUTES_END
+
 if __name__ == "__main__":
     try:
         startup_result = ensure_market_universe_ready(force=False, max_age_hours=12, min_retry_seconds=0)
