@@ -5078,3 +5078,427 @@ def _register_deployment_boundary_cert_routes():
 _register_deployment_boundary_cert_routes()
 
 # END TOWER OB HOSTED DEPLOYMENT BOUNDARY ROUTES
+
+# BEGIN TOWER OB HOSTED ACTIVATION APPROVAL ROUTES
+
+from datetime import datetime as _activation_datetime
+from datetime import timedelta as _activation_timedelta
+from datetime import timezone as _activation_timezone
+
+from tower.tower_observatory_walkthrough_activation_approval import (
+    activation_execution_hold as _activation_hold,
+    activation_scope_freeze as _activation_scope,
+    activation_window_preview as _activation_window,
+    create_activation_approval_request as _activation_request,
+    create_owner_approval_decision as _activation_owner_decision,
+    create_step_up_challenge as _activation_step_up_challenge,
+    deployment_command_dry_run as _activation_command_dry_run,
+    owner_approval_readiness as _activation_readiness,
+    rollback_readiness_receipt as _activation_rollback_readiness,
+)
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/approval"
+)
+def walkthrough_activation_approval_board():
+    require_owner_access()
+
+    readiness = _activation_readiness(
+        owner_id=_owner_id()
+    )
+
+    scope = _activation_scope(
+        owner_id=_owner_id()
+    )
+
+    hold = _activation_hold(
+        owner_id=_owner_id()
+    )
+
+    content = f"""
+    <section class="hero">
+        <h1>Hosted Activation Owner Approval</h1>
+
+        <p>
+            Review the frozen scope, step-up requirement,
+            rollback readiness, deployment dry run, and
+            owner decision boundary. Activation execution
+            remains disabled.
+        </p>
+
+        <div class="status-row">
+            <span class="status {'good' if readiness['ready_for_owner_approval_process'] else 'danger'}">
+                Approval process ready:
+                {readiness["ready_for_owner_approval_process"]}
+            </span>
+
+            <span class="status">
+                Execution hold:
+                {hold["hold_active"]}
+            </span>
+
+            <span class="status">
+                Activation performed: False
+            </span>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="card">
+            <h2>Frozen activation scope</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Environment:</strong>
+                    {scope["environment"]}
+                </div>
+
+                <div>
+                    <strong>Component:</strong>
+                    {scope["component"]}
+                </div>
+
+                <div>
+                    <strong>Scope hash:</strong>
+                    {scope["scope_hash"]}
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Approval requirements</h2>
+
+            <ul>
+                <li>Owner step-up verification</li>
+                <li>Matching frozen scope hash</li>
+                <li>Approved future activation window</li>
+                <li>Verified rollback readiness</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Execution boundary</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Hold active:</strong>
+                    {hold["hold_active"]}
+                </div>
+
+                <div>
+                    <strong>Command executed:</strong>
+                    False
+                </div>
+
+                <div>
+                    <strong>Database replaced:</strong>
+                    False
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="card" style="margin-top:22px">
+        <div class="actions">
+            <form
+                method="post"
+                action="/tower/observatory-walkthrough/operations/deployment/approval/request"
+            >
+                <button type="submit">
+                    Create approval request
+                </button>
+            </form>
+
+            <a
+                class="button secondary"
+                href="/tower/observatory-walkthrough/operations/deployment"
+            >
+                Deployment boundary
+            </a>
+        </div>
+    </section>
+    """
+
+    return render_page(
+        title="Hosted Activation Owner Approval",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/approval.json"
+)
+def walkthrough_activation_approval_json():
+    require_owner_access()
+
+    return jsonify(
+        _activation_readiness(
+            owner_id=_owner_id()
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/approval/request"
+)
+def walkthrough_activation_approval_request():
+    require_owner_access()
+
+    approval = _activation_request(
+        owner_id=_owner_id()
+    )
+
+    challenge = _activation_step_up_challenge(
+        owner_id=_owner_id(),
+        approval_request_id=(
+            approval["record_id"]
+        ),
+    )
+
+    return jsonify({
+        "approval_request": approval,
+        "step_up_challenge": challenge,
+        "activation_performed": False,
+        "deployment_command_executed": False,
+    }), 201
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/approval/dry-run"
+)
+def walkthrough_activation_dry_run():
+    require_owner_access()
+
+    scope = _activation_scope(
+        owner_id=_owner_id()
+    )
+
+    rollback = _activation_rollback_readiness(
+        owner_id=_owner_id()
+    )
+
+    future = (
+        _activation_datetime.now(
+            _activation_timezone.utc
+        )
+        + _activation_timedelta(
+            hours=2
+        )
+    )
+
+    window = _activation_window(
+        requested_start=(
+            future.isoformat()
+        ),
+        duration_minutes=30,
+    )
+
+    dry_run = _activation_command_dry_run(
+        owner_id=_owner_id(),
+        scope_hash=(
+            scope["scope_hash"]
+        ),
+    )
+
+    return jsonify({
+        "scope": scope,
+        "window": window,
+        "rollback": rollback,
+        "command_dry_run": dry_run,
+        "activation_performed": False,
+        "deployment_command_executed": False,
+    })
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/approval/decision-preview"
+)
+def walkthrough_activation_decision_preview():
+    require_owner_access()
+
+    payload = (
+        request.get_json(
+            silent=True
+        )
+        or request.form.to_dict()
+    )
+
+    scope = _activation_scope(
+        owner_id=_owner_id()
+    )
+
+    decision = _activation_owner_decision(
+        owner_id=_owner_id(),
+        approval_request_id=payload.get(
+            "approval_request_id",
+            "owner_preview_request",
+        ),
+        decision=payload.get(
+            "decision",
+            "defer",
+        ),
+        rationale=payload.get(
+            "rationale",
+            "Owner decision preview.",
+        ),
+        step_up_verified=(
+            str(
+                payload.get(
+                    "step_up_verified",
+                    "false",
+                )
+            ).lower()
+            in {
+                "1",
+                "true",
+                "yes",
+            }
+        ),
+        frozen_scope_hash=(
+            scope["scope_hash"]
+        ),
+        submitted_scope_hash=payload.get(
+            "submitted_scope_hash",
+            scope["scope_hash"],
+        ),
+        activation_window_ready=(
+            str(
+                payload.get(
+                    "activation_window_ready",
+                    "false",
+                )
+            ).lower()
+            in {
+                "1",
+                "true",
+                "yes",
+            }
+        ),
+        rollback_ready=(
+            str(
+                payload.get(
+                    "rollback_ready",
+                    "false",
+                )
+            ).lower()
+            in {
+                "1",
+                "true",
+                "yes",
+            }
+        ),
+    )
+
+    hold = _activation_hold(
+        owner_id=_owner_id(),
+        owner_decision=(
+            decision["record"]
+        ),
+    )
+
+    return jsonify({
+        "decision": decision,
+        "execution_hold": hold,
+        "activation_performed": False,
+        "deployment_command_executed": False,
+    }), 201
+
+
+def _build_activation_approval_cert_payload(
+    pack: int,
+) -> Dict[str, Any]:
+    from tower.tower_ir_cert_p2493 import (
+        build_ir_cert_p2493_preview,
+    )
+    from tower.tower_ir_cert_p2494 import (
+        build_ir_cert_p2494_preview,
+    )
+    from tower.tower_ir_cert_p2495 import (
+        build_ir_cert_p2495_preview,
+    )
+    from tower.tower_ir_cert_p2496 import (
+        build_ir_cert_p2496_preview,
+    )
+    from tower.tower_ir_cert_p2497 import (
+        build_ir_cert_p2497_preview,
+    )
+    from tower.tower_ir_cert_p2498 import (
+        build_ir_cert_p2498_preview,
+    )
+    from tower.tower_ir_cert_p2499 import (
+        build_ir_cert_p2499_preview,
+    )
+    from tower.tower_ir_cert_p2500 import (
+        build_ir_cert_p2500_preview,
+    )
+    from tower.tower_ir_cert_p2501 import (
+        build_ir_cert_p2501_preview,
+    )
+    from tower.tower_ir_cert_p2502 import (
+        build_ir_cert_p2502_preview,
+    )
+
+    builders = {
+        2493: build_ir_cert_p2493_preview,
+        2494: build_ir_cert_p2494_preview,
+        2495: build_ir_cert_p2495_preview,
+        2496: build_ir_cert_p2496_preview,
+        2497: build_ir_cert_p2497_preview,
+        2498: build_ir_cert_p2498_preview,
+        2499: build_ir_cert_p2499_preview,
+        2500: build_ir_cert_p2500_preview,
+        2501: build_ir_cert_p2501_preview,
+        2502: build_ir_cert_p2502_preview,
+    }
+
+    builder = builders.get(
+        pack
+    )
+
+    if builder is None:
+        abort(404)
+
+    return builder()
+
+
+def _activation_approval_cert_response(
+    pack: int,
+):
+    require_owner_access()
+
+    return jsonify(
+        _build_activation_approval_cert_payload(
+            pack
+        )
+    )
+
+
+def _register_activation_approval_cert_routes():
+    for pack in range(
+        2493,
+        2503,
+    ):
+        tower_ob_walkthrough_bp.add_url_rule(
+            f"/tower/ir-cert-v{pack}.json",
+            endpoint=(
+                f"activation_approval_cert_pack_{pack}"
+            ),
+            view_func=(
+                lambda selected_pack=pack:
+                _activation_approval_cert_response(
+                    selected_pack
+                )
+            ),
+            methods=["GET"],
+        )
+
+
+_register_activation_approval_cert_routes()
+
+# END TOWER OB HOSTED ACTIVATION APPROVAL ROUTES

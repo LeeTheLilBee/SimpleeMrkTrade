@@ -1093,3 +1093,166 @@ def test_activation_preview_route(
 
 
 # END HOSTED DEPLOYMENT BOUNDARY TESTS
+
+# BEGIN HOSTED ACTIVATION APPROVAL TESTS
+
+def test_activation_approval_owner_only(
+    client,
+):
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment/approval"
+    )
+
+    assert response.status_code == 403
+
+
+def test_activation_approval_board(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment/approval"
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert (
+        "Hosted Activation Owner Approval"
+        in body
+    )
+
+    assert "Frozen activation scope" in body
+    assert "Approval requirements" in body
+    assert "Execution boundary" in body
+    assert "Activation performed: False" in body
+
+
+def test_activation_approval_json(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment/approval.json"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload[
+        "ready_for_owner_approval_process"
+    ] is True
+
+    assert payload[
+        "activation_performed"
+    ] is False
+
+    assert payload[
+        "deployment_command_executed"
+    ] is False
+
+
+def test_activation_approval_request_route(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment/approval/request"
+    )
+
+    assert response.status_code == 201
+
+    payload = response.get_json()
+
+    assert payload[
+        "approval_request"
+    ]["created"] is True
+
+    assert payload[
+        "step_up_challenge"
+    ]["created"] is True
+
+    assert payload[
+        "activation_performed"
+    ] is False
+
+
+def test_activation_dry_run_route(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment/approval/dry-run"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload[
+        "command_dry_run"
+    ]["record"][
+        "dry_run"
+    ] is True
+
+    assert payload[
+        "command_dry_run"
+    ]["record"][
+        "command_executed"
+    ] is False
+
+    assert payload[
+        "activation_performed"
+    ] is False
+
+
+def test_invalid_decision_remains_held(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment/approval/"
+        "decision-preview",
+        json={
+            "decision": "approve",
+            "step_up_verified": False,
+            "activation_window_ready": False,
+            "rollback_ready": False,
+        },
+    )
+
+    assert response.status_code == 201
+
+    payload = response.get_json()
+
+    assert payload[
+        "decision"
+    ]["record"][
+        "valid_owner_approval"
+    ] is False
+
+    assert payload[
+        "execution_hold"
+    ]["hold_active"] is True
+
+    assert payload[
+        "activation_performed"
+    ] is False
+
+
+# END HOSTED ACTIVATION APPROVAL TESTS
