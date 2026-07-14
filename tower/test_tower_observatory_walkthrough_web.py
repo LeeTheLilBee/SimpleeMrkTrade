@@ -398,3 +398,222 @@ def test_symbol_real_surface_redirect(
 
 
 # END REAL SURFACE WALKTHROUGH TESTS
+
+# BEGIN GUIDED SIX ROOM RUN TESTS
+
+from tower.tower_observatory_walkthrough_web import (
+    _GUIDED_ROOM_ORDER,
+    _guided_expected_room_id,
+    _guided_final_receipt,
+    _new_guided_progress,
+)
+
+
+def test_guided_progress_contract():
+    progress = _new_guided_progress(
+        "obwalk_test"
+    )
+
+    assert progress["status"] == "in_progress"
+    assert progress["completed_count"] == 0
+    assert progress["total_room_count"] == 6
+
+    assert progress["next_room_id"] == (
+        "ob_room_dashboard"
+    )
+
+
+def test_guided_expected_room_sequence():
+    progress = _new_guided_progress(
+        "obwalk_test"
+    )
+
+    assert _guided_expected_room_id(
+        progress
+    ) == "ob_room_dashboard"
+
+    progress["completed_room_ids"] = [
+        "ob_room_dashboard",
+        "ob_room_market_map",
+    ]
+
+    assert _guided_expected_room_id(
+        progress
+    ) == "ob_room_symbol_page"
+
+
+def test_guided_start_route(client):
+    set_owner_session(client)
+
+    response = client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    assert response.status_code == 302
+
+    assert response.headers[
+        "Location"
+    ].endswith(
+        "/tower/observatory-walkthrough/"
+        "room/ob_room_dashboard"
+    )
+
+
+def test_guided_progress_page(client):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    response = client.get(
+        "/tower/observatory-walkthrough/progress"
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert "Guided Run Progress" in body
+    assert "0" in body
+    assert "Dashboard" in body
+    assert "Next room" in body
+
+
+def test_guided_sequence_rejects_wrong_room(client):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "progress/complete/ob_room_market_map"
+    )
+
+    assert response.status_code == 409
+
+
+def test_guided_dashboard_completion(client):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    client.post(
+        "/tower/observatory-walkthrough/"
+        "room/ob_room_dashboard/launch"
+    )
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "progress/complete/ob_room_dashboard"
+    )
+
+    assert response.status_code == 302
+
+    assert response.headers[
+        "Location"
+    ].endswith(
+        "/tower/observatory-walkthrough/"
+        "room/ob_room_market_map"
+    )
+
+    with client.session_transaction() as session:
+        progress = session[
+            "tower_ob_guided_progress"
+        ]
+
+        assert progress["completed_count"] == 1
+
+        assert progress[
+            "completed_room_ids"
+        ] == [
+            "ob_room_dashboard"
+        ]
+
+        assert (
+            "ob_room_dashboard"
+            in progress["room_receipts"]
+        )
+
+
+def test_guided_final_receipt_contract():
+    progress = _new_guided_progress(
+        "obwalk_test"
+    )
+
+    progress["completed_room_ids"] = list(
+        _GUIDED_ROOM_ORDER
+    )
+
+    progress["room_receipts"] = {
+        room_id: {
+            "room_completion_receipt_id": (
+                f"receipt_{index}"
+            ),
+            "default_deny_restored": True,
+        }
+        for index, room_id in enumerate(
+            _GUIDED_ROOM_ORDER,
+            start=1,
+        )
+    }
+
+    receipt = _guided_final_receipt(
+        progress
+    )
+
+    assert receipt["status"] == "completed"
+    assert receipt["room_count"] == 6
+
+    assert receipt[
+        "all_default_deny_restored"
+    ] is True
+
+    assert receipt[
+        "broker_order_submission"
+    ] is False
+
+    assert receipt[
+        "production_manual_live_authorization"
+    ] is False
+
+    assert receipt[
+        "final_completion_receipt_id"
+    ].startswith(
+        "obguidedcomplete_"
+    )
+
+
+def test_guided_reset(client):
+    set_owner_session(client)
+
+    client.post(
+        "/tower/observatory-walkthrough/guided-start"
+    )
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "progress/reset"
+    )
+
+    assert response.status_code == 302
+
+    with client.session_transaction() as session:
+        assert (
+            "tower_ob_guided_progress"
+            not in session
+        )
+
+        assert (
+            "tower_ob_walkthrough"
+            not in session
+        )
+
+
+# END GUIDED SIX ROOM RUN TESTS

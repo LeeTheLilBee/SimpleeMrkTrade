@@ -2030,3 +2030,1331 @@ def _register_real_surface_cert_routes():
 _register_real_surface_cert_routes()
 
 # END TOWER OB REAL SURFACE WALKTHROUGH INTEGRATION
+
+# BEGIN TOWER OB GUIDED SIX ROOM RUN
+
+import hashlib as _guided_hashlib
+import json as _guided_json
+from datetime import datetime as _guided_datetime
+from datetime import timezone as _guided_timezone
+
+
+_GUIDED_PROGRESS_KEY = (
+    "tower_ob_guided_progress"
+)
+
+_GUIDED_ROOM_ORDER = [
+    room["room_id"]
+    for room in REAL_ROOM_REGISTRY
+]
+
+
+def _guided_now() -> str:
+    return _guided_datetime.now(
+        _guided_timezone.utc
+    ).isoformat()
+
+
+def _guided_hash(
+    payload: Dict[str, Any],
+) -> str:
+    encoded = _guided_json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+
+    return _guided_hashlib.sha256(
+        encoded
+    ).hexdigest()
+
+
+def _new_guided_progress(
+    walkthrough_id: str,
+) -> Dict[str, Any]:
+    return {
+        "walkthrough_id": walkthrough_id,
+        "guided_mode": True,
+        "status": "in_progress",
+        "started_at": _guided_now(),
+        "updated_at": _guided_now(),
+        "completed_room_ids": [],
+        "room_receipts": {},
+        "next_room_id": (
+            _GUIDED_ROOM_ORDER[0]
+        ),
+        "completed_count": 0,
+        "total_room_count": len(
+            _GUIDED_ROOM_ORDER
+        ),
+        "final_receipt": None,
+        "preview_only": True,
+        "contract_only": True,
+        "writes_state": False,
+    }
+
+
+def _guided_progress(
+    *,
+    create: bool = False,
+) -> Dict[str, Any] | None:
+    progress = session.get(
+        _GUIDED_PROGRESS_KEY
+    )
+
+    if isinstance(progress, dict):
+        return progress
+
+    if not create:
+        return None
+
+    state = walkthrough_state()
+
+    progress = _new_guided_progress(
+        state["walkthrough_id"]
+    )
+
+    _save_guided_progress(
+        progress
+    )
+
+    return progress
+
+
+def _save_guided_progress(
+    progress: Dict[str, Any],
+):
+    progress["updated_at"] = (
+        _guided_now()
+    )
+
+    progress["completed_count"] = len(
+        progress.get(
+            "completed_room_ids",
+            [],
+        )
+    )
+
+    session[
+        _GUIDED_PROGRESS_KEY
+    ] = progress
+
+    session.modified = True
+
+
+def _guided_expected_room_id(
+    progress: Dict[str, Any],
+) -> str | None:
+    completed = set(
+        progress.get(
+            "completed_room_ids",
+            [],
+        )
+    )
+
+    for room_id in (
+        _GUIDED_ROOM_ORDER
+    ):
+        if room_id not in completed:
+            return room_id
+
+    return None
+
+
+def _guided_room_receipt(
+    *,
+    room: Dict[str, Any],
+    walkthrough_state_payload: Dict[str, Any],
+    progress: Dict[str, Any],
+) -> Dict[str, Any]:
+    launch_receipt = (
+        walkthrough_state_payload.get(
+            "launch_receipt"
+        )
+    )
+
+    receipt_source = {
+        "walkthrough_id": (
+            progress["walkthrough_id"]
+        ),
+        "room_id": room["room_id"],
+        "display_name": (
+            room["display_name"]
+        ),
+        "position": (
+            _GUIDED_ROOM_ORDER.index(
+                room["room_id"]
+            )
+            + 1
+        ),
+        "canonical_route": (
+            room["real_route"]
+        ),
+        "completed_at": _guided_now(),
+        "handoff_id": (
+            launch_receipt.get(
+                "handoff_id"
+            )
+            if isinstance(
+                launch_receipt,
+                dict,
+            )
+            else None
+        ),
+        "access_receipt_id": (
+            launch_receipt.get(
+                "access_receipt_id"
+            )
+            if isinstance(
+                launch_receipt,
+                dict,
+            )
+            else None
+        ),
+        "close_receipt_id": (
+            launch_receipt.get(
+                "close_receipt_id"
+            )
+            if isinstance(
+                launch_receipt,
+                dict,
+            )
+            else None
+        ),
+        "default_deny_restored": (
+            launch_receipt.get(
+                "default_deny_restored"
+            )
+            if isinstance(
+                launch_receipt,
+                dict,
+            )
+            else False
+        ),
+        "preview_only": True,
+        "writes_state": False,
+    }
+
+    receipt_source[
+        "room_completion_receipt_id"
+    ] = (
+        "obroomcomplete_"
+        + _guided_hash(
+            receipt_source
+        )[:24]
+    )
+
+    return receipt_source
+
+
+def _guided_final_receipt(
+    progress: Dict[str, Any],
+) -> Dict[str, Any]:
+    ordered_receipts = [
+        progress["room_receipts"][
+            room_id
+        ]
+        for room_id in (
+            _GUIDED_ROOM_ORDER
+        )
+    ]
+
+    source = {
+        "walkthrough_id": (
+            progress["walkthrough_id"]
+        ),
+        "status": "completed",
+        "completed_at": _guided_now(),
+        "room_count": len(
+            ordered_receipts
+        ),
+        "room_order": list(
+            _GUIDED_ROOM_ORDER
+        ),
+        "room_completion_receipt_ids": [
+            receipt[
+                "room_completion_receipt_id"
+            ]
+            for receipt in ordered_receipts
+        ],
+        "all_default_deny_restored": all(
+            receipt[
+                "default_deny_restored"
+            ]
+            for receipt in ordered_receipts
+        ),
+        "broker_order_submission": False,
+        "real_capital_movement": False,
+        "production_manual_live_authorization": False,
+        "live_auto_activation": False,
+        "direct_vault_upload": False,
+        "preview_only": True,
+        "contract_only": True,
+        "writes_state": False,
+    }
+
+    source[
+        "final_completion_receipt_id"
+    ] = (
+        "obguidedcomplete_"
+        + _guided_hash(
+            source
+        )[:24]
+    )
+
+    source["integrity_hash"] = (
+        _guided_hash(
+            source
+        )
+    )
+
+    return source
+
+
+def _guided_progress_fragment(
+    progress: Dict[str, Any],
+) -> str:
+    completed_count = len(
+        progress.get(
+            "completed_room_ids",
+            [],
+        )
+    )
+
+    total = len(
+        _GUIDED_ROOM_ORDER
+    )
+
+    percent = int(
+        completed_count
+        / total
+        * 100
+    )
+
+    status = progress.get(
+        "status",
+        "in_progress",
+    )
+
+    if status == "completed":
+        action_url = (
+            "/tower/"
+            "observatory-walkthrough/"
+            "final-receipt"
+        )
+
+        action_label = (
+            "View final run receipt"
+        )
+
+    else:
+        action_url = (
+            "/tower/"
+            "observatory-walkthrough/"
+            "progress"
+        )
+
+        action_label = (
+            "Resume guided run"
+        )
+
+    return f"""
+    <style id="tower-ob-guided-progress-style">
+    .tower-ob-guided-progress {{
+        position: fixed;
+        left: 24px;
+        bottom: 24px;
+        z-index: 2147482999;
+        width: min(360px, calc(100vw - 32px));
+        padding: 16px;
+        border: 1px solid rgba(134,239,172,.25);
+        border-radius: 17px;
+        background:
+            linear-gradient(
+                145deg,
+                rgba(12,37,29,.97),
+                rgba(7,10,22,.98)
+            );
+        color: #f6fff9;
+        box-shadow: 0 24px 80px rgba(0,0,0,.46);
+        font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            sans-serif;
+    }}
+
+    .tower-ob-guided-progress strong {{
+        display: block;
+        margin-bottom: 7px;
+        font-size: 15px;
+    }}
+
+    .tower-ob-guided-progress p {{
+        margin: 0 0 12px;
+        color: #bfd6c7;
+        font-size: 12px;
+        line-height: 1.45;
+    }}
+
+    .tower-ob-guided-track {{
+        height: 7px;
+        overflow: hidden;
+        margin-bottom: 13px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.10);
+    }}
+
+    .tower-ob-guided-fill {{
+        width: {percent}%;
+        height: 100%;
+        border-radius: inherit;
+        background:
+            linear-gradient(
+                90deg,
+                #22c55e,
+                #86efac
+            );
+    }}
+
+    .tower-ob-guided-progress a {{
+        display: inline-flex;
+        min-height: 39px;
+        padding: 0 13px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        background: #166534;
+        color: white;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+    }}
+    </style>
+
+    <aside
+        class="tower-ob-guided-progress"
+        id="towerObGuidedProgress"
+    >
+        <strong>
+            Observatory guided run:
+            {completed_count} of {total}
+        </strong>
+
+        <p>
+            Status: {status.replace("_", " ")}.
+            Preview-only owner walkthrough.
+        </p>
+
+        <div class="tower-ob-guided-track">
+            <div
+                class="tower-ob-guided-fill"
+            ></div>
+        </div>
+
+        <a href="{action_url}">
+            {action_label}
+        </a>
+    </aside>
+    """
+
+
+def _guided_room_action_fragment(
+    *,
+    room: Dict[str, Any],
+    progress: Dict[str, Any],
+) -> str:
+    completed = set(
+        progress.get(
+            "completed_room_ids",
+            [],
+        )
+    )
+
+    expected_room_id = (
+        _guided_expected_room_id(
+            progress
+        )
+    )
+
+    if room["room_id"] in completed:
+        label = "Room already completed"
+        disabled = "disabled"
+        detail = (
+            "This room already has a "
+            "completion receipt."
+        )
+
+    elif (
+        expected_room_id
+        != room["room_id"]
+    ):
+        label = "Complete earlier rooms first"
+        disabled = "disabled"
+        detail = (
+            "Guided sequence requires "
+            "the next scheduled room."
+        )
+
+    else:
+        label = "Mark room complete"
+        disabled = ""
+        detail = (
+            "Create the room completion receipt "
+            "and continue to the next room."
+        )
+
+    return f"""
+    <style id="tower-ob-guided-room-action-style">
+    .tower-ob-guided-room-action {{
+        position: fixed;
+        right: 18px;
+        top: 18px;
+        z-index: 2147483002;
+        width: min(330px, calc(100vw - 36px));
+        padding: 15px;
+        border: 1px solid rgba(134,239,172,.28);
+        border-radius: 16px;
+        background: rgba(7,23,18,.97);
+        color: #f3fff7;
+        box-shadow: 0 20px 70px rgba(0,0,0,.48);
+        font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            sans-serif;
+    }}
+
+    .tower-ob-guided-room-action strong {{
+        display: block;
+        margin-bottom: 5px;
+    }}
+
+    .tower-ob-guided-room-action p {{
+        margin: 0 0 11px;
+        color: #bcd3c4;
+        font-size: 12px;
+        line-height: 1.4;
+    }}
+
+    .tower-ob-guided-room-action button {{
+        min-height: 39px;
+        padding: 0 13px;
+        border: 0;
+        border-radius: 11px;
+        background: #15803d;
+        color: white;
+        font-weight: 800;
+        cursor: pointer;
+    }}
+
+    .tower-ob-guided-room-action button:disabled {{
+        opacity: .48;
+        cursor: not-allowed;
+    }}
+    </style>
+
+    <aside
+        class="tower-ob-guided-room-action"
+        id="towerObGuidedRoomAction"
+    >
+        <strong>
+            Guided room {room["position"]} of 6
+        </strong>
+
+        <p>
+            {detail}
+        </p>
+
+        <form
+            method="post"
+            action="/tower/observatory-walkthrough/progress/complete/{room['room_id']}"
+        >
+            <button
+                type="submit"
+                {disabled}
+            >
+                {label}
+            </button>
+        </form>
+    </aside>
+    """
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/guided-start"
+)
+def walkthrough_guided_start():
+    require_owner_access()
+
+    state = start_walkthrough_state()
+
+    progress = _new_guided_progress(
+        state["walkthrough_id"]
+    )
+
+    _save_guided_progress(
+        progress
+    )
+
+    return redirect(
+        url_for(
+            "tower_ob_walkthrough."
+            "walkthrough_room",
+            room_id=(
+                _GUIDED_ROOM_ORDER[0]
+            ),
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/progress"
+)
+def walkthrough_guided_progress():
+    require_owner_access()
+
+    progress = _guided_progress()
+
+    if not isinstance(
+        progress,
+        dict,
+    ):
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_home"
+            )
+        )
+
+    room_rows = []
+
+    completed = set(
+        progress.get(
+            "completed_room_ids",
+            [],
+        )
+    )
+
+    expected = _guided_expected_room_id(
+        progress
+    )
+
+    for room in REAL_ROOM_REGISTRY:
+        if room["room_id"] in completed:
+            status = "Completed"
+            action = (
+                "<span class='status good'>"
+                "Receipt saved"
+                "</span>"
+            )
+
+        elif room["room_id"] == expected:
+            status = "Next room"
+            action = f"""
+            <a
+                class="button"
+                href="/tower/observatory-walkthrough/room/{room['room_id']}"
+            >
+                Continue
+            </a>
+            """
+
+        else:
+            status = "Locked in sequence"
+            action = (
+                "<span class='status'>"
+                "Waiting"
+                "</span>"
+            )
+
+        room_rows.append(f"""
+        <section class="card">
+            <h3>
+                {room["position"]}.
+                {room["display_name"]}
+            </h3>
+
+            <p>{status}</p>
+
+            {action}
+        </section>
+        """)
+
+    content = f"""
+    <section class="hero">
+        <h1>Guided Run Progress</h1>
+
+        <p>
+            Complete the six real Observatory rooms in
+            sequence. Each room creates its own completion
+            receipt before the next room opens.
+        </p>
+
+        <div class="status-row">
+            <span class="status good">
+                {progress["completed_count"]}
+                of
+                {progress["total_room_count"]}
+                complete
+            </span>
+
+            <span class="status">
+                {progress["status"]}
+            </span>
+        </div>
+    </section>
+
+    <div class="grid">
+        {"".join(room_rows)}
+    </div>
+
+    <section class="card" style="margin-top:22px">
+        <form
+            method="post"
+            action="/tower/observatory-walkthrough/progress/reset"
+        >
+            <button
+                class="button secondary"
+                type="submit"
+            >
+                Reset and start a new run
+            </button>
+        </form>
+    </section>
+    """
+
+    return render_page(
+        title="Observatory Guided Run Progress",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "progress/complete/<room_id>"
+)
+def walkthrough_guided_complete_room(
+    room_id: str,
+):
+    require_owner_access()
+
+    room = real_room_by_id(
+        room_id
+    )
+
+    if room is None:
+        abort(404)
+
+    progress = _guided_progress()
+
+    state = walkthrough_state()
+
+    if not isinstance(
+        progress,
+        dict,
+    ):
+        abort(409)
+
+    if progress.get(
+        "status"
+    ) == "completed":
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_guided_final_receipt"
+            )
+        )
+
+    expected_room_id = (
+        _guided_expected_room_id(
+            progress
+        )
+    )
+
+    if expected_room_id != room_id:
+        abort(409)
+
+    if (
+        state.get(
+            "active_room_id"
+        )
+        != room_id
+    ):
+        abort(409)
+
+    launch_receipt = state.get(
+        "launch_receipt"
+    )
+
+    if not isinstance(
+        launch_receipt,
+        dict,
+    ):
+        abort(409)
+
+    if (
+        launch_receipt.get(
+            "room_id"
+        )
+        != room_id
+    ):
+        abort(409)
+
+    if (
+        launch_receipt.get(
+            "lockback_verified"
+        )
+        is not True
+    ):
+        abort(409)
+
+    receipt = _guided_room_receipt(
+        room=room,
+        walkthrough_state_payload=state,
+        progress=progress,
+    )
+
+    completed_room_ids = list(
+        progress.get(
+            "completed_room_ids",
+            [],
+        )
+    )
+
+    completed_room_ids.append(
+        room_id
+    )
+
+    progress[
+        "completed_room_ids"
+    ] = completed_room_ids
+
+    room_receipts = dict(
+        progress.get(
+            "room_receipts",
+            {},
+        )
+    )
+
+    room_receipts[room_id] = receipt
+
+    progress["room_receipts"] = (
+        room_receipts
+    )
+
+    next_room_id = (
+        _guided_expected_room_id(
+            progress
+        )
+    )
+
+    progress["next_room_id"] = (
+        next_room_id
+    )
+
+    if next_room_id is None:
+        progress["status"] = "completed"
+
+        progress["final_receipt"] = (
+            _guided_final_receipt(
+                progress
+            )
+        )
+
+        _save_guided_progress(
+            progress
+        )
+
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_guided_final_receipt"
+            )
+        )
+
+    progress["status"] = "in_progress"
+
+    _save_guided_progress(
+        progress
+    )
+
+    state["stage"] = "room_selection"
+    state["active_room_id"] = None
+    state["launch_receipt"] = None
+
+    save_walkthrough_state(
+        state
+    )
+
+    return redirect(
+        url_for(
+            "tower_ob_walkthrough."
+            "walkthrough_room",
+            room_id=next_room_id,
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/final-receipt"
+)
+def walkthrough_guided_final_receipt():
+    require_owner_access()
+
+    progress = _guided_progress()
+
+    if not isinstance(
+        progress,
+        dict,
+    ):
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_home"
+            )
+        )
+
+    final_receipt = progress.get(
+        "final_receipt"
+    )
+
+    if not isinstance(
+        final_receipt,
+        dict,
+    ):
+        return redirect(
+            url_for(
+                "tower_ob_walkthrough."
+                "walkthrough_guided_progress"
+            )
+        )
+
+    rows = []
+
+    for room_id in (
+        _GUIDED_ROOM_ORDER
+    ):
+        receipt = progress[
+            "room_receipts"
+        ][room_id]
+
+        rows.append(f"""
+        <section class="card receipt">
+            <h3>
+                {receipt["position"]}.
+                {receipt["display_name"]}
+            </h3>
+
+            <div class="meta">
+                <div>
+                    <strong>Receipt:</strong>
+                    {receipt["room_completion_receipt_id"]}
+                </div>
+
+                <div>
+                    <strong>Completed:</strong>
+                    {receipt["completed_at"]}
+                </div>
+
+                <div>
+                    <strong>Default deny restored:</strong>
+                    {receipt["default_deny_restored"]}
+                </div>
+            </div>
+        </section>
+        """)
+
+    content = f"""
+    <section class="hero">
+        <h1>Six-Room Run Complete</h1>
+
+        <p>
+            The complete owner walkthrough passed across all
+            six real Observatory surfaces. Every room has a
+            completion receipt and the protected boundaries
+            remained active.
+        </p>
+
+        <div class="status-row">
+            <span class="status good">
+                Six of six complete
+            </span>
+
+            <span class="status good">
+                Default deny restored
+            </span>
+
+            <span class="status">
+                Preview only
+            </span>
+        </div>
+    </section>
+
+    <section class="card receipt" style="margin-top:22px">
+        <h2>Final completion receipt</h2>
+
+        <div class="meta">
+            <div>
+                <strong>Receipt ID:</strong>
+                {final_receipt["final_completion_receipt_id"]}
+            </div>
+
+            <div>
+                <strong>Integrity hash:</strong>
+                {final_receipt["integrity_hash"]}
+            </div>
+
+            <div>
+                <strong>Completed:</strong>
+                {final_receipt["completed_at"]}
+            </div>
+
+            <div>
+                <strong>Room count:</strong>
+                {final_receipt["room_count"]}
+            </div>
+
+            <div>
+                <strong>All lockbacks verified:</strong>
+                {final_receipt["all_default_deny_restored"]}
+            </div>
+        </div>
+    </section>
+
+    <div class="grid">
+        {"".join(rows)}
+    </div>
+
+    <section class="card" style="margin-top:22px">
+        <div class="actions">
+            <a
+                class="button"
+                href="/tower"
+            >
+                Return to Tower
+            </a>
+
+            <form
+                method="post"
+                action="/tower/observatory-walkthrough/progress/reset"
+            >
+                <button
+                    class="button secondary"
+                    type="submit"
+                >
+                    Start a new run
+                </button>
+            </form>
+        </div>
+    </section>
+    """
+
+    return render_page(
+        title="Observatory Six-Room Completion Receipt",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/progress/reset"
+)
+def walkthrough_guided_reset():
+    require_owner_access()
+
+    session.pop(
+        _GUIDED_PROGRESS_KEY,
+        None,
+    )
+
+    session.pop(
+        "tower_ob_walkthrough",
+        None,
+    )
+
+    session.modified = True
+
+    return redirect(
+        url_for(
+            "tower_ob_walkthrough."
+            "walkthrough_home"
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.after_app_request
+def _inject_guided_run_controls(
+    response,
+):
+    if response.status_code != 200:
+        return response
+
+    content_type = (
+        response.headers.get(
+            "Content-Type",
+            "",
+        )
+    )
+
+    if "text/html" not in content_type:
+        return response
+
+    try:
+        html = response.get_data(
+            as_text=True
+        )
+    except Exception:
+        return response
+
+    if not owner_access_allowed():
+        return response
+
+    progress = _guided_progress()
+
+    if request.path in {
+        "/tower",
+        "/tower/",
+    }:
+        if (
+            isinstance(
+                progress,
+                dict,
+            )
+            and "towerObGuidedProgress"
+            not in html
+        ):
+            html = _inject_before_body_close(
+                html,
+                _guided_progress_fragment(
+                    progress
+                ),
+            )
+
+            response.set_data(
+                html
+            )
+
+        return response
+
+    if request.path == (
+        "/tower/"
+        "observatory-walkthrough"
+    ):
+        if (
+            "towerObGuidedStart"
+            not in html
+        ):
+            if isinstance(
+                progress,
+                dict,
+            ):
+                if progress.get(
+                    "status"
+                ) == "completed":
+                    label = (
+                        "View completed run"
+                    )
+
+                    action = (
+                        "/tower/"
+                        "observatory-walkthrough/"
+                        "final-receipt"
+                    )
+
+                else:
+                    label = (
+                        "Resume guided six-room run"
+                    )
+
+                    action = (
+                        "/tower/"
+                        "observatory-walkthrough/"
+                        "progress"
+                    )
+
+                fragment = f"""
+                <section
+                    class="card"
+                    id="towerObGuidedStart"
+                    style="margin-top:22px"
+                >
+                    <h2>Guided six-room owner run</h2>
+
+                    <p>
+                        Continue the ordered run with
+                        room-by-room completion receipts.
+                    </p>
+
+                    <a
+                        class="button"
+                        href="{action}"
+                    >
+                        {label}
+                    </a>
+                </section>
+                """
+
+            else:
+                fragment = """
+                <section
+                    class="card"
+                    id="towerObGuidedStart"
+                    style="margin-top:22px"
+                >
+                    <h2>Guided six-room owner run</h2>
+
+                    <p>
+                        Complete Dashboard, Market Map,
+                        Symbol Page, Trade Center,
+                        Review Center, and Owner Console
+                        in order.
+                    </p>
+
+                    <form
+                        method="post"
+                        action="/tower/observatory-walkthrough/guided-start"
+                    >
+                        <button type="submit">
+                            Start guided six-room run
+                        </button>
+                    </form>
+                </section>
+                """
+
+            html = _inject_before_body_close(
+                html,
+                fragment,
+            )
+
+            response.set_data(
+                html
+            )
+
+        return response
+
+    if not isinstance(
+        progress,
+        dict,
+    ):
+        return response
+
+    room = _real_surface_room_for_path(
+        request.path
+    )
+
+    if room is None:
+        return response
+
+    if not _real_surface_walkthrough_active(
+        room
+    ):
+        return response
+
+    if (
+        "towerObGuidedRoomAction"
+        in html
+    ):
+        return response
+
+    html = _inject_before_body_close(
+        html,
+        _guided_room_action_fragment(
+            room=room,
+            progress=progress,
+        ),
+    )
+
+    response.set_data(
+        html
+    )
+
+    return response
+
+
+def _build_guided_run_cert_payload(
+    pack: int,
+) -> Dict[str, Any]:
+    from tower.tower_ir_cert_p2443 import (
+        build_ir_cert_p2443_preview,
+    )
+    from tower.tower_ir_cert_p2444 import (
+        build_ir_cert_p2444_preview,
+    )
+    from tower.tower_ir_cert_p2445 import (
+        build_ir_cert_p2445_preview,
+    )
+    from tower.tower_ir_cert_p2446 import (
+        build_ir_cert_p2446_preview,
+    )
+    from tower.tower_ir_cert_p2447 import (
+        build_ir_cert_p2447_preview,
+    )
+    from tower.tower_ir_cert_p2448 import (
+        build_ir_cert_p2448_preview,
+    )
+    from tower.tower_ir_cert_p2449 import (
+        build_ir_cert_p2449_preview,
+    )
+    from tower.tower_ir_cert_p2450 import (
+        build_ir_cert_p2450_preview,
+    )
+    from tower.tower_ir_cert_p2451 import (
+        build_ir_cert_p2451_preview,
+    )
+    from tower.tower_ir_cert_p2452 import (
+        build_ir_cert_p2452_preview,
+    )
+
+    builders = {
+        2443: build_ir_cert_p2443_preview,
+        2444: build_ir_cert_p2444_preview,
+        2445: build_ir_cert_p2445_preview,
+        2446: build_ir_cert_p2446_preview,
+        2447: build_ir_cert_p2447_preview,
+        2448: build_ir_cert_p2448_preview,
+        2449: build_ir_cert_p2449_preview,
+        2450: build_ir_cert_p2450_preview,
+        2451: build_ir_cert_p2451_preview,
+        2452: build_ir_cert_p2452_preview,
+    }
+
+    builder = builders.get(pack)
+
+    if builder is None:
+        abort(404)
+
+    return builder()
+
+
+def _guided_run_cert_response(
+    pack: int,
+):
+    require_owner_access()
+
+    return jsonify(
+        _build_guided_run_cert_payload(
+            pack
+        )
+    )
+
+
+def _register_guided_run_cert_routes():
+    for pack in range(2443, 2453):
+        tower_ob_walkthrough_bp.add_url_rule(
+            f"/tower/ir-cert-v{pack}.json",
+            endpoint=(
+                f"guided_run_cert_pack_{pack}"
+            ),
+            view_func=(
+                lambda selected_pack=pack:
+                _guided_run_cert_response(
+                    selected_pack
+                )
+            ),
+            methods=["GET"],
+        )
+
+
+_register_guided_run_cert_routes()
+
+# END TOWER OB GUIDED SIX ROOM RUN
