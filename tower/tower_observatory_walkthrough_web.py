@@ -4657,3 +4657,424 @@ def _register_hosted_assurance_cert_routes():
 _register_hosted_assurance_cert_routes()
 
 # END TOWER OB HOSTED PERSISTENCE ASSURANCE ROUTES
+
+# BEGIN TOWER OB HOSTED DEPLOYMENT BOUNDARY ROUTES
+
+from tower.tower_observatory_walkthrough_deployment_boundary import (
+    activation_packet_preview as _deployment_activation_preview,
+    backup_cadence_enforcement_preview as _deployment_backup_preview,
+    create_environment_binding_receipt as _deployment_environment_receipt,
+    create_startup_gate_receipt as _deployment_startup_receipt,
+    hosted_activation_recommendation as _deployment_recommendation,
+    hosted_deployment_manifest as _deployment_manifest,
+    operations_release_evidence_packet as _deployment_release_packet,
+    storage_incident_review_queue as _deployment_incident_queue,
+)
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment"
+)
+def walkthrough_deployment_boundary():
+    require_owner_access()
+
+    manifest = _deployment_manifest()
+
+    backup = _deployment_backup_preview()
+
+    incidents = _deployment_incident_queue()
+
+    recommendation = (
+        _deployment_recommendation(
+            owner_id=_owner_id()
+        )
+    )
+
+    blocker_rows = "".join(
+        f"<li>{blocker}</li>"
+        for blocker in (
+            recommendation["blockers"]
+        )
+    )
+
+    if not blocker_rows:
+        blocker_rows = (
+            "<li>No current release blockers.</li>"
+        )
+
+    content = f"""
+    <section class="hero">
+        <h1>Hosted Deployment Boundary</h1>
+
+        <p>
+            Review the environment binding, startup gate,
+            backup cadence, incidents, and hosted activation
+            recommendation. This page cannot deploy or
+            activate production.
+        </p>
+
+        <div class="status-row">
+            <span class="status {'good' if recommendation['ready'] else 'danger'}">
+                {recommendation["recommendation"]}
+            </span>
+
+            <span class="status">
+                Owner approval required
+            </span>
+
+            <span class="status">
+                Activation performed: False
+            </span>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="card">
+            <h2>Deployment manifest</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Environment:</strong>
+                    {manifest["environment"]}
+                </div>
+
+                <div>
+                    <strong>Manifest ready:</strong>
+                    {manifest["ready"]}
+                </div>
+
+                <div>
+                    <strong>Database:</strong>
+                    {manifest["database_path"]}
+                </div>
+
+                <div>
+                    <strong>Backup directory:</strong>
+                    {manifest["backup_directory"]}
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Backup cadence</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Ready:</strong>
+                    {backup["ready"]}
+                </div>
+
+                <div>
+                    <strong>Verified backups:</strong>
+                    {backup["verified_backup_count"]}
+                </div>
+
+                <div>
+                    <strong>Recommendation:</strong>
+                    {backup["recommendation"]}
+                </div>
+
+                <div>
+                    <strong>Automatic backup:</strong>
+                    False
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Storage incidents</h2>
+
+            <div class="meta">
+                <div>
+                    <strong>Total:</strong>
+                    {incidents["record_count"]}
+                </div>
+
+                <div>
+                    <strong>Open:</strong>
+                    {incidents["open_count"]}
+                </div>
+
+                <div>
+                    <strong>Critical open:</strong>
+                    {incidents["critical_open_count"]}
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Release blockers</h2>
+
+            <ul>
+                {blocker_rows}
+            </ul>
+        </section>
+    </div>
+
+    <section class="card" style="margin-top:22px">
+        <div class="actions">
+            <form
+                method="post"
+                action="/tower/observatory-walkthrough/operations/deployment/activation-preview"
+            >
+                <button type="submit">
+                    Create activation preview
+                </button>
+            </form>
+
+            <a
+                class="button secondary"
+                href="/tower/observatory-walkthrough/operations/assurance"
+            >
+                Hosted assurance
+            </a>
+        </div>
+    </section>
+    """
+
+    return render_page(
+        title="Hosted Deployment Boundary",
+        content=content,
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment.json"
+)
+def walkthrough_deployment_boundary_json():
+    require_owner_access()
+
+    return jsonify(
+        _deployment_recommendation(
+            owner_id=_owner_id()
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/manifest.json"
+)
+def walkthrough_deployment_manifest_json():
+    require_owner_access()
+
+    return jsonify(
+        _deployment_manifest()
+    )
+
+
+@tower_ob_walkthrough_bp.get(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/release-packet.json"
+)
+def walkthrough_deployment_release_packet_json():
+    require_owner_access()
+
+    return jsonify(
+        _deployment_release_packet(
+            owner_id=_owner_id()
+        )
+    )
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/environment-receipt"
+)
+def walkthrough_deployment_environment_receipt():
+    require_owner_access()
+
+    receipt = (
+        _deployment_environment_receipt(
+            owner_id=_owner_id()
+        )
+    )
+
+    return jsonify(
+        receipt
+    ), 201
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/startup-receipt"
+)
+def walkthrough_deployment_startup_receipt():
+    require_owner_access()
+
+    receipt = (
+        _deployment_startup_receipt(
+            owner_id=_owner_id()
+        )
+    )
+
+    return jsonify(
+        receipt
+    ), 201
+
+
+@tower_ob_walkthrough_bp.post(
+    "/tower/observatory-walkthrough/"
+    "operations/deployment/activation-preview"
+)
+def walkthrough_deployment_activation_preview():
+    require_owner_access()
+
+    preview = (
+        _deployment_activation_preview(
+            owner_id=_owner_id()
+        )
+    )
+
+    content = f"""
+    <section class="hero">
+        <h1>Hosted Activation Preview Created</h1>
+
+        <p>
+            Tower created a reviewable activation packet.
+            No deployment command ran and no production
+            persistence was activated.
+        </p>
+
+        <div class="status-row">
+            <span class="status {'good' if preview['record']['ready'] else 'danger'}">
+                {preview["record"]["recommendation"]}
+            </span>
+
+            <span class="status">
+                Owner approval recorded: False
+            </span>
+
+            <span class="status">
+                Activation performed: False
+            </span>
+        </div>
+    </section>
+
+    <section class="card receipt" style="margin-top:22px">
+        <div class="meta">
+            <div>
+                <strong>Preview ID:</strong>
+                {preview["record_id"]}
+            </div>
+
+            <div>
+                <strong>Record path:</strong>
+                {preview["record_path"]}
+            </div>
+
+            <div>
+                <strong>Release packet hash:</strong>
+                {preview["record"]["release_packet_hash"]}
+            </div>
+        </div>
+
+        <a
+            class="button"
+            href="/tower/observatory-walkthrough/operations/deployment"
+        >
+            Return to deployment boundary
+        </a>
+    </section>
+    """
+
+    return render_page(
+        title="Hosted Activation Preview",
+        content=content,
+    )
+
+
+def _build_deployment_boundary_cert_payload(
+    pack: int,
+) -> Dict[str, Any]:
+    from tower.tower_ir_cert_p2483 import (
+        build_ir_cert_p2483_preview,
+    )
+    from tower.tower_ir_cert_p2484 import (
+        build_ir_cert_p2484_preview,
+    )
+    from tower.tower_ir_cert_p2485 import (
+        build_ir_cert_p2485_preview,
+    )
+    from tower.tower_ir_cert_p2486 import (
+        build_ir_cert_p2486_preview,
+    )
+    from tower.tower_ir_cert_p2487 import (
+        build_ir_cert_p2487_preview,
+    )
+    from tower.tower_ir_cert_p2488 import (
+        build_ir_cert_p2488_preview,
+    )
+    from tower.tower_ir_cert_p2489 import (
+        build_ir_cert_p2489_preview,
+    )
+    from tower.tower_ir_cert_p2490 import (
+        build_ir_cert_p2490_preview,
+    )
+    from tower.tower_ir_cert_p2491 import (
+        build_ir_cert_p2491_preview,
+    )
+    from tower.tower_ir_cert_p2492 import (
+        build_ir_cert_p2492_preview,
+    )
+
+    builders = {
+        2483: build_ir_cert_p2483_preview,
+        2484: build_ir_cert_p2484_preview,
+        2485: build_ir_cert_p2485_preview,
+        2486: build_ir_cert_p2486_preview,
+        2487: build_ir_cert_p2487_preview,
+        2488: build_ir_cert_p2488_preview,
+        2489: build_ir_cert_p2489_preview,
+        2490: build_ir_cert_p2490_preview,
+        2491: build_ir_cert_p2491_preview,
+        2492: build_ir_cert_p2492_preview,
+    }
+
+    builder = builders.get(
+        pack
+    )
+
+    if builder is None:
+        abort(404)
+
+    return builder()
+
+
+def _deployment_boundary_cert_response(
+    pack: int,
+):
+    require_owner_access()
+
+    return jsonify(
+        _build_deployment_boundary_cert_payload(
+            pack
+        )
+    )
+
+
+def _register_deployment_boundary_cert_routes():
+    for pack in range(
+        2483,
+        2493,
+    ):
+        tower_ob_walkthrough_bp.add_url_rule(
+            f"/tower/ir-cert-v{pack}.json",
+            endpoint=(
+                f"deployment_boundary_cert_pack_{pack}"
+            ),
+            view_func=(
+                lambda selected_pack=pack:
+                _deployment_boundary_cert_response(
+                    selected_pack
+                )
+            ),
+            methods=["GET"],
+        )
+
+
+_register_deployment_boundary_cert_routes()
+
+# END TOWER OB HOSTED DEPLOYMENT BOUNDARY ROUTES

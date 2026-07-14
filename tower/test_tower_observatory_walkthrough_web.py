@@ -956,3 +956,140 @@ def test_storage_incident_receipt_route(
 
 
 # END HOSTED PERSISTENCE ASSURANCE TESTS
+
+# BEGIN HOSTED DEPLOYMENT BOUNDARY TESTS
+
+def test_deployment_boundary_owner_only(
+    client,
+):
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment"
+    )
+
+    assert response.status_code == 403
+
+
+def test_deployment_boundary_page(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment"
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert "Hosted Deployment Boundary" in body
+    assert "Deployment manifest" in body
+    assert "Backup cadence" in body
+    assert "Storage incidents" in body
+    assert "Owner approval required" in body
+    assert "Activation performed: False" in body
+
+
+def test_deployment_boundary_json(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment.json"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload[
+        "owner_approval_required"
+    ] is True
+
+    assert payload[
+        "activation_performed"
+    ] is False
+
+    assert payload[
+        "deployment_command_executed"
+    ] is False
+
+    assert payload[
+        "automatic_restore"
+    ] is False
+
+    assert payload[
+        "automatic_cleanup"
+    ] is False
+
+    assert payload[
+        "direct_vault_write"
+    ] is False
+
+
+def test_deployment_manifest_json(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.get(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment/manifest.json"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload[
+        "activation_performed"
+    ] is False
+
+    assert payload[
+        "production_database_replaced"
+    ] is False
+
+    assert payload[
+        "public_link_created"
+    ] is False
+
+
+def test_activation_preview_route(
+    client,
+):
+    set_owner_session(client)
+
+    response = client.post(
+        "/tower/observatory-walkthrough/"
+        "operations/deployment/activation-preview"
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert (
+        "Hosted Activation Preview Created"
+        in body
+    )
+
+    assert (
+        "Owner approval recorded: False"
+        in body
+    )
+
+    assert (
+        "Activation performed: False"
+        in body
+    )
+
+
+# END HOSTED DEPLOYMENT BOUNDARY TESTS
