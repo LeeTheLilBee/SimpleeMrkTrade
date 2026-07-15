@@ -1,0 +1,418 @@
+{
+  "generated_at": "2026-07-14T19:56:32.823315Z",
+  "packet": {
+    "app_id": "observatory",
+    "canonical_route": "/trade-center",
+    "clearance_decision_ref": "obclr_387c362f01cd1625fdf59853",
+    "contract_version": "ob.tower_protected_launch_handoff.v1",
+    "expires_at": "2026-07-14T20:01:32.823139Z",
+    "handoff_id": "oblaunch_0fb651b3e3bd8ca569db6bb7",
+    "integrity_hash": "b19942f6600697f5fba8f02b82442695e454266a43b3fb89ad4d2b0ed623f9bc",
+    "issued_at": "2026-07-14T19:56:32.823139Z",
+    "issuer": "tower",
+    "mode": "paper",
+    "nonce": "tower_gp046_nonce_37f776e9d5184000b9555f580f0934c7",
+    "owner_id": "owner_solice",
+    "room_id": "trade_center",
+    "room_parameters": {
+      "mission_account_id": "proof_demo",
+      "symbol": "AMD"
+    },
+    "safety": {
+      "broker_submission_enabled": false,
+      "direct_vault_upload_enabled": false,
+      "dry_run_only": true,
+      "live_auto_locked": true,
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    },
+    "session_id": "tower_native_session_20260714T195623Z_68150455a4",
+    "single_use": true,
+    "step_up_ref": "tower_native_stepup_20260714T195623Z_68150455a4",
+    "step_up_verified": true,
+    "subject_role": "owner"
+  },
+  "tower_result": {
+    "access_decision": {
+      "allowed": true,
+      "approved_room": {
+        "accepted_aliases": [
+          "/ob/trade-center",
+          "/observatory/trade-center"
+        ],
+        "allow_reason_code": "ob_room_contract_allow",
+        "allowed_modes": [
+          "paper",
+          "manual_live_preview"
+        ],
+        "canonical_route": "/trade-center",
+        "deny_reason_codes": [
+          "ob_identity_missing",
+          "ob_role_not_allowed",
+          "ob_clearance_level_too_low",
+          "ob_step_up_required",
+          "ob_mission_account_missing",
+          "ob_mode_not_allowed",
+          "ob_lockdown_active",
+          "ob_risk_gate_denied"
+        ],
+        "display_name": "Trade Center",
+        "launch_destination": "/trade-center",
+        "lockdown_state": "tower_guarded_default_deny",
+        "object_guard": {
+          "object_id_field": "mission_account_id",
+          "object_id_required": true,
+          "object_type": "mission_account",
+          "required": true
+        },
+        "owner_only": false,
+        "required_clearance_rank": 500,
+        "required_clearance_value": "ob_protected_workflow",
+        "required_role": "owner_or_authorized_operator",
+        "room_id": "ob_room_trade_center",
+        "step_up_required": true
+      },
+      "canonical_clearance_rank": 900,
+      "canonical_clearance_value": "ob_owner_command",
+      "mode": "paper",
+      "object_context": {
+        "mission_account_id": "proof_demo",
+        "symbol": "AMD"
+      },
+      "preview_only": true,
+      "reason_code": "ob_room_contract_allow",
+      "room_id": "ob_room_trade_center",
+      "step_up_reference": "tower_native_stepup_20260714T195623Z_68150455a4",
+      "tower_role": "owner",
+      "writes_state": false
+    },
+    "access_receipt": {
+      "bridge_decision": "ob_room_contract_allow",
+      "canonical_route": "/trade-center",
+      "clearance_rank": 900,
+      "clearance_value": "ob_owner_command",
+      "completion_state": "room_accessed_preview",
+      "contract_only": true,
+      "handoff_id": "oblaunch_0fb651b3e3bd8ca569db6bb7",
+      "integrity_hash": "466d1aaac0344b36d5084ea8849d1b95210132ff4b092d86bc9c16c662d1c4b3",
+      "launch_time": "2026-07-13T12:00:01+00:00",
+      "mode": "paper",
+      "owner_id": "owner_solice",
+      "preview_only": true,
+      "receipt_id": "obaccess_5a28377be8a09e65fae6e635",
+      "room_id": "ob_room_trade_center",
+      "safety_locks": {
+        "broker_order_submission": false,
+        "default_deny": true,
+        "direct_vault_upload": false,
+        "live_auto_activation": false,
+        "ob_clearance_translation": false,
+        "ob_self_authorization": false,
+        "production_manual_live_authorization": false,
+        "real_capital_movement": false,
+        "unmapped_routes_blocked": true
+      },
+      "session_id": "tower_native_session_20260714T195623Z_68150455a4",
+      "step_up_reference": "tower_native_stepup_20260714T195623Z_68150455a4",
+      "step_up_state": "validated",
+      "writes_state": false
+    },
+    "app_id": "the_observatory",
+    "canonical_path": "/trade-center",
+    "clearance": {
+      "account_active": true,
+      "allowed": true,
+      "canonical_clearance_rank": 900,
+      "canonical_clearance_value": "ob_owner_command",
+      "clearance_decision_reference": "obclr_387c362f01cd1625fdf59853",
+      "contract_version": "tower-ob-clearance-translation-v1.0.0",
+      "identity_verified": true,
+      "lockdown_state": "tower_guarded_default_deny",
+      "preview_only": true,
+      "reason_code": "tower_owner_role_translated_to_ob_owner_command",
+      "risk_state": "acceptable",
+      "subject_id": "owner_solice",
+      "tower_role": "owner",
+      "writes_state": false
+    },
+    "close_receipt": {
+      "access_receipt_id": "obaccess_5a28377be8a09e65fae6e635",
+      "close_reason": "owner_rehearsal_completed",
+      "close_receipt_id": "obclose_e0eb8afd6618de3e2c4424b2",
+      "close_time": "2026-07-13T12:05:00+00:00",
+      "completion_receipt_linked": true,
+      "contract_only": true,
+      "default_deny_restored": true,
+      "handoff_id": "oblaunch_0fb651b3e3bd8ca569db6bb7",
+      "handoff_replay_state": "blocked",
+      "integrity_hash": "7d8864ec81c2f1e68dbf80b03eb097fe4f11005edc0438aa67b2331fd39bf605",
+      "launch_authorization_state": "revoked",
+      "ob_access_state": "locked_back",
+      "owner_id": "owner_solice",
+      "preview_only": true,
+      "room_id": "ob_room_trade_center",
+      "session_id": "tower_native_session_20260714T195623Z_68150455a4",
+      "step_up_state": "consumed_or_revoked",
+      "unmapped_routes_blocked": true,
+      "writes_state": false
+    },
+    "contract_only": true,
+    "gp046_contract_version": "ob.tower_protected_launch_handoff.v1",
+    "gp046_native_contract": true,
+    "launch_handoff": {
+      "app_id": "observatory",
+      "canonical_route": "/trade-center",
+      "clearance_decision_ref": "obclr_387c362f01cd1625fdf59853",
+      "contract_version": "ob.tower_protected_launch_handoff.v1",
+      "expires_at": "2026-07-14T20:01:32.823139Z",
+      "handoff_id": "oblaunch_0fb651b3e3bd8ca569db6bb7",
+      "integrity_hash": "b19942f6600697f5fba8f02b82442695e454266a43b3fb89ad4d2b0ed623f9bc",
+      "issued_at": "2026-07-14T19:56:32.823139Z",
+      "issuer": "tower",
+      "mode": "paper",
+      "nonce": "tower_gp046_nonce_37f776e9d5184000b9555f580f0934c7",
+      "owner_id": "owner_solice",
+      "room_id": "trade_center",
+      "room_parameters": {
+        "mission_account_id": "proof_demo",
+        "symbol": "AMD"
+      },
+      "safety": {
+        "broker_submission_enabled": false,
+        "direct_vault_upload_enabled": false,
+        "dry_run_only": true,
+        "live_auto_locked": true,
+        "production_manual_live_authorized": false,
+        "real_capital_movement_enabled": false
+      },
+      "session_id": "tower_native_session_20260714T195623Z_68150455a4",
+      "single_use": true,
+      "step_up_ref": "tower_native_stepup_20260714T195623Z_68150455a4",
+      "step_up_verified": true,
+      "subject_role": "owner"
+    },
+    "legacy_launch_handoff": {
+      "approved_room_id": "ob_room_trade_center",
+      "approved_room_name": "Trade Center",
+      "authorization_state": "issued_preview",
+      "canonical_path": "/trade-center",
+      "clearance_decision_reference": "obclr_387c362f01cd1625fdf59853",
+      "contract_only": true,
+      "expires_at": "2026-07-13T12:05:00+00:00",
+      "handoff_id": "oblaunch_0fb651b3e3bd8ca569db6bb7",
+      "integrity_hash": "6287c44e2865688fead571ed822cdf6771de1bb96cfb2773bb1d0c7a762ca07e",
+      "issued_at": "2026-07-13T12:00:00+00:00",
+      "mode": "paper",
+      "owner_id": "owner_solice",
+      "preview_only": true,
+      "replay_policy": "single_use_same_session",
+      "safety_boundaries": {
+        "broker_order_submission": false,
+        "default_deny": true,
+        "direct_vault_upload": false,
+        "live_auto_activation": false,
+        "ob_clearance_translation": false,
+        "ob_self_authorization": false,
+        "production_manual_live_authorization": false,
+        "real_capital_movement": false,
+        "unmapped_routes_blocked": true
+      },
+      "session_id": "tower_native_session_20260714T195623Z_68150455a4",
+      "step_up_reference": "tower_native_stepup_20260714T195623Z_68150455a4",
+      "writes_state": false
+    },
+    "native_contract_service_version": "tower-ob-gp046-native-contract-v1",
+    "permanent_safety": {
+      "broker_order_submission": false,
+      "default_deny": true,
+      "direct_vault_upload": false,
+      "live_auto_activation": false,
+      "ob_clearance_translation": false,
+      "ob_self_authorization": false,
+      "production_manual_live_authorization": false,
+      "real_capital_movement": false,
+      "unmapped_routes_blocked": true
+    },
+    "preview_only": true,
+    "protected_room_manifest": {
+      "authenticated_subject_required": true,
+      "available_room_count": 6,
+      "available_rooms": [
+        {
+          "allowed_modes": [
+            "survey",
+            "paper",
+            "manual_live_preview"
+          ],
+          "canonical_route": "/dashboard",
+          "display_name": "Dashboard",
+          "launch_destination": "/dashboard",
+          "object_guard": {
+            "object_id_required": false,
+            "object_type": null,
+            "required": false
+          },
+          "reason_code": "ob_room_contract_allow",
+          "required_clearance_rank": 300,
+          "required_clearance_value": "ob_protected_read",
+          "room_id": "ob_room_dashboard",
+          "step_up_required": false
+        },
+        {
+          "allowed_modes": [
+            "survey",
+            "paper",
+            "manual_live_preview"
+          ],
+          "canonical_route": "/market-map",
+          "display_name": "Market Map",
+          "launch_destination": "/market-map",
+          "object_guard": {
+            "object_id_required": false,
+            "object_type": null,
+            "required": false
+          },
+          "reason_code": "ob_room_contract_allow",
+          "required_clearance_rank": 300,
+          "required_clearance_value": "ob_protected_read",
+          "room_id": "ob_room_market_map",
+          "step_up_required": false
+        },
+        {
+          "allowed_modes": [
+            "survey",
+            "paper",
+            "manual_live_preview"
+          ],
+          "canonical_route": "/symbol/<symbol>",
+          "display_name": "Symbol Page",
+          "launch_destination": "/symbol/{symbol}",
+          "object_guard": {
+            "object_id_field": "symbol",
+            "object_id_required": true,
+            "object_type": "market_symbol",
+            "required": true,
+            "validation": "uppercase_listed_symbol"
+          },
+          "reason_code": "ob_room_contract_allow",
+          "required_clearance_rank": 300,
+          "required_clearance_value": "ob_protected_read",
+          "room_id": "ob_room_symbol_page",
+          "step_up_required": false
+        },
+        {
+          "allowed_modes": [
+            "paper",
+            "manual_live_preview"
+          ],
+          "canonical_route": "/trade-center",
+          "display_name": "Trade Center",
+          "launch_destination": "/trade-center",
+          "object_guard": {
+            "object_id_field": "mission_account_id",
+            "object_id_required": true,
+            "object_type": "mission_account",
+            "required": true
+          },
+          "reason_code": "ob_room_contract_allow",
+          "required_clearance_rank": 500,
+          "required_clearance_value": "ob_protected_workflow",
+          "room_id": "ob_room_trade_center",
+          "step_up_required": true
+        },
+        {
+          "allowed_modes": [
+            "paper",
+            "manual_live_preview"
+          ],
+          "canonical_route": "/review-center",
+          "display_name": "Review Center",
+          "launch_destination": "/review-center",
+          "object_guard": {
+            "object_id_field": "mission_account_id",
+            "object_id_required": true,
+            "object_type": "mission_account",
+            "required": true
+          },
+          "reason_code": "ob_room_contract_allow",
+          "required_clearance_rank": 500,
+          "required_clearance_value": "ob_protected_workflow",
+          "room_id": "ob_room_review_center",
+          "step_up_required": true
+        },
+        {
+          "allowed_modes": [
+            "survey",
+            "paper",
+            "manual_live_preview"
+          ],
+          "canonical_route": "/owner-console",
+          "display_name": "Owner Console",
+          "launch_destination": "/owner-console",
+          "object_guard": {
+            "object_id_field": "mission_account_id",
+            "object_id_required": true,
+            "object_type": "owner_mission_scope",
+            "required": true
+          },
+          "reason_code": "ob_room_contract_allow",
+          "required_clearance_rank": 900,
+          "required_clearance_value": "ob_owner_command",
+          "room_id": "ob_room_owner_console",
+          "step_up_required": true
+        }
+      ],
+      "default_deny": true,
+      "denied_room_count": 0,
+      "denied_rooms": [],
+      "manifest_status": "ready",
+      "preview_only": true,
+      "writes_state": false
+    },
+    "recommendation": "GO_PROTECTED_OWNER_REHEARSAL_CONTRACT_READY",
+    "request_type": "tower.observatory.protected_room.launch",
+    "requested_path": "/trade-center",
+    "room_id": "ob_room_trade_center",
+    "runtime_contract_adapter_required": false,
+    "sequence": [
+      {
+        "passed": true,
+        "step": "owner_identity"
+      },
+      {
+        "passed": true,
+        "step": "clearance_translation"
+      },
+      {
+        "passed": true,
+        "step": "step_up"
+      },
+      {
+        "passed": true,
+        "step": "protected_room_manifest"
+      },
+      {
+        "passed": true,
+        "step": "launch_handoff"
+      },
+      {
+        "passed": true,
+        "step": "ob_room_access"
+      },
+      {
+        "passed": true,
+        "step": "completion_receipt"
+      },
+      {
+        "passed": true,
+        "step": "session_close"
+      },
+      {
+        "passed": true,
+        "step": "lockback"
+      }
+    ],
+    "status": "passed",
+    "writes_state": false
+  }
+}
