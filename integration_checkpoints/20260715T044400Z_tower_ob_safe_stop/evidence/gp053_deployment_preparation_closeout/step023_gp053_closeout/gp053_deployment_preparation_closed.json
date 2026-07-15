@@ -1,0 +1,97 @@
+{
+  "closeout_chain": {
+    "deployment_specification_hash": "4495a301bd3481467b6ff8cf0eb828fcb7464b44e6b1e7fa32d27b76a991cf59",
+    "environment_definition_hash": "ea4b25461afb369802d884a22525af8ce49a14337e2aee40dd9756db4ccd3dfb",
+    "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+    "step19_receipt_hash": "1ab0c65f98fba8e5676d8f174fe748f5f5a016b9457b27739068b64851cf4c1f",
+    "step20_receipt_hash": "35d17b9987121f19c589aa9c081e6d3bd8137a4162c8f9a8e15508bc4294c853",
+    "step21_receipt_hash": "5392e67b65685b91568bca2eb135fea15a9998983deaee874c06b9ec6b5f842c",
+    "step22_receipt_hash": "a4ff8ab86910d21b8d585a42f99fb7dac9ab2ca9495374a3320172b6d13bbbf7"
+  },
+  "closeout_chain_hash": "7d3cb0dc1622c0b575ca6193a176093f030cb78666f0c16941249e037834e0c9",
+  "commit_created": false,
+  "completed_results": {
+    "all_13_inputs_classified": true,
+    "integration_clone_clean": true,
+    "no_deploy_rehearsal_passed": true,
+    "no_secret_deployment_specification_built": true,
+    "tests_passed": 85
+  },
+  "created_at": "2026-07-15T03:47:44.881912Z",
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_DEPLOYMENT_REQUIREMENTS_INCOMPLETE",
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "merge_performed": false,
+  "next_boundary": "managed_staging_provider_resource_provisioning",
+  "official_managed_staging_walkthrough_performed": false,
+  "provider_calls_performed": false,
+  "provider_resources_created": false,
+  "push_performed": false,
+  "ready_for_managed_staging_deployment": false,
+  "receipt_hash": "1c502bb62314203efc44107b854f5652a4f8c1af842cfbdc203ca74683583187",
+  "receipt_type": "tower_ob_gp053_deployment_preparation_closeout",
+  "remaining_deployment_blocker_count": 7,
+  "remaining_deployment_blockers": [
+    {
+      "classification": "architecture_selected_resource_not_created",
+      "input": "managed_host_provider",
+      "reason": "The managed-host architecture is selected, but no provider resource has been created."
+    },
+    {
+      "classification": "operator_supplied_external_input",
+      "input": "managed_host_account_or_team",
+      "reason": "The real provider account or team cannot be inferred from repository files."
+    },
+    {
+      "classification": "operator_supplied_external_input",
+      "input": "deployment_region",
+      "reason": "The managed-host region must be selected inside the provider account."
+    },
+    {
+      "classification": "repository_entrypoint_unresolved",
+      "input": "Observatory_runtime_entrypoint",
+      "reason": "No independently verified Observatory runtime entrypoint is available in this integration clone."
+    },
+    {
+      "classification": "external_resource_required",
+      "input": "managed_staging_postgresql_instance",
+      "reason": "A separate managed staging PostgreSQL resource must be provisioned."
+    },
+    {
+      "classification": "external_resource_required",
+      "input": "private_staging_object_storage_namespace",
+      "reason": "A separate private staging object-storage namespace must be provisioned."
+    },
+    {
+      "classification": "external_secret_references_required",
+      "input": "staging_secret_references",
+      "reason": "Only secret-reference names are prepared. No raw secrets are created or stored."
+    }
+  ],
+  "safety": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "dry_run_only": true,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "secrets_created": false,
+  "section_steps": [
+    20,
+    21,
+    22,
+    23
+  ],
+  "source_files_modified": false,
+  "status": "closed",
+  "step20_receipt_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_deployment_preparation_closeout/step020_deployment_inputs/gp053_deployment_inputs_classified.json",
+  "step20_receipt_sha256": "cdcfd45ded8892a3793eb1aec810f5a9e2e8ddcaf3de9abcf74683e41ae7720c",
+  "step21_specification_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_deployment_preparation_closeout/step021_deployment_specification/gp053_managed_staging_deployment_specification.json",
+  "step21_specification_sha256": "5274c141a9cdcaf898ebd771efd09f8e8c01e8ad6304ac59357bf1faa2f52720",
+  "step22_receipt_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_deployment_preparation_closeout/step022_no_deploy_rehearsal/gp053_no_deploy_rehearsal_completed.json",
+  "step22_receipt_sha256": "c255fb2d5c0a7c3f9f258bdbe5b07eaed717abf5ef19ecd3242a0db9a2ac81b4",
+  "step_key": "gp053_deployment_preparation_closed",
+  "step_number": 23,
+  "verified": true
+}

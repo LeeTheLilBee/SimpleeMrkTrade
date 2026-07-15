@@ -1,0 +1,17 @@
+{
+  "current_step": 19,
+  "current_step_key": "gp053_managed_staging_environment_defined",
+  "current_step_status": "completed",
+  "current_step_verified": true,
+  "definition_receipt": "/content/Simplee_Tower_OB_Integration/evidence/gp053_managed_staging_environment_definition/gp053_managed_staging_environment_defined_20260715T031014Z.json",
+  "definition_receipt_hash": "1ab0c65f98fba8e5676d8f174fe748f5f5a016b9457b27739068b64851cf4c1f",
+  "environment_decision": "NO_GO_HOLD_MANAGED_STAGING_DEPLOYMENT_INPUTS_UNRESOLVED",
+  "environment_definition": "/content/Simplee_Tower_OB_Integration/evidence/gp053_managed_staging_environment_definition/gp053_managed_staging_environment_definition_20260715T031014Z.json",
+  "environment_definition_hash": "ea4b25461afb369802d884a22525af8ce49a14337e2aee40dd9756db4ccd3dfb",
+  "integration": "tower_ob_native_gp046_to_gp053",
+  "next_boundary": "gp053_managed_staging_deployment_input_gate",
+  "tests_passed": 85,
+  "unresolved_deployment_input_count": 13,
+  "updated_at": "2026-07-15T03:10:14.312396Z",
+  "verified_main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c"
+}

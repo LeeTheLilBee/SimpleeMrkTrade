@@ -1,0 +1,271 @@
+{
+  "contract_id": "tower_ob_gp053_official_managed_staging_walkthrough_readiness",
+  "contract_version": "1.0",
+  "current_readiness": {
+    "human_launch_route_wired": true,
+    "managed_staging_environment_defined": true,
+    "managed_staging_services_deployed": false,
+    "native_contract_in_merged_main": true,
+    "native_session_handoff_present": true,
+    "official_managed_staging_walkthrough_complete": false,
+    "receipt_hash_clearance_binding_present": true
+  },
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "outputs": {
+    "launch_receipt_and_clearance_reference_checklist": [
+      {
+        "description": "Tower stores SESSION_OB_LAUNCH_RECEIPT.",
+        "evidence": [
+          "/content/SimpleeMrkTrade_REAL_CLONE/tower/tower_human_login_ob_launch.py"
+        ],
+        "item_id": "receipt-001",
+        "status": "satisfied_in_source"
+      },
+      {
+        "description": "The real receipt hash becomes clearance_decision_ref.",
+        "evidence": [
+          "/content/SimpleeMrkTrade_REAL_CLONE/tower/tower_human_login_ob_launch.py"
+        ],
+        "item_id": "receipt-002",
+        "status": "satisfied_in_source"
+      },
+      {
+        "description": "Missing clearance evidence fails closed.",
+        "evidence": [
+          "tests/test_tower_human_login_ob_native_launch.py"
+        ],
+        "item_id": "receipt-003",
+        "status": "satisfied_in_regression"
+      },
+      {
+        "description": "Staging captures the actual receipt hash without secrets.",
+        "evidence": [],
+        "item_id": "receipt-004",
+        "status": "pending_staging_walkthrough"
+      }
+    ],
+    "managed_staging_environment_expectation_manifest": {
+      "current_status": "definition_complete_deployment_not_evidenced",
+      "environment_name": "private-managed-staging",
+      "manifest_type": "tower_ob_gp053_managed_staging_environment_expectations",
+      "required_network_boundaries": [
+        "Observatory has no public Tower-bypass route",
+        "Tower remains the front-door identity boundary",
+        "missing owner authentication fails closed",
+        "missing owner step-up fails closed"
+      ],
+      "required_separation": [
+        "staging secrets separate from production secrets",
+        "staging database separate from production database",
+        "staging object storage separate from production storage",
+        "staging access logs separate and reviewable"
+      ],
+      "required_services": [
+        {
+          "deployment_status": "not_evidenced",
+          "role": "identity, permission, owner step-up, and launch boundary",
+          "service": "tower",
+          "visibility": "private"
+        },
+        {
+          "deployment_status": "not_evidenced",
+          "role": "protected Observatory destination behind Tower",
+          "service": "observatory",
+          "visibility": "private"
+        }
+      ]
+    },
+    "native_session_handoff_verification_checklist": [
+      {
+        "description": "Canonical handoff is stored in SESSION_OB_NATIVE_LAUNCH_HANDOFF.",
+        "evidence": [
+          "/content/SimpleeMrkTrade_REAL_CLONE/tower/tower_human_login_ob_launch.py"
+        ],
+        "item_id": "handoff-001",
+        "status": "satisfied_in_source"
+      },
+      {
+        "description": "Optional mission account and symbol values normalize safely.",
+        "evidence": [
+          "tests/test_tower_human_login_ob_native_launch.py"
+        ],
+        "item_id": "handoff-002",
+        "status": "satisfied_in_regression"
+      },
+      {
+        "description": "Native handoff remains dry-run-only.",
+        "evidence": [
+          "/content/SimpleeMrkTrade_REAL_CLONE/tower/tower_ob_gp046_native_contract.py"
+        ],
+        "item_id": "handoff-003",
+        "status": "satisfied_in_source"
+      },
+      {
+        "description": "Staging Observatory consumes the handoff without bypass.",
+        "evidence": [],
+        "item_id": "handoff-004",
+        "status": "pending_staging_walkthrough"
+      }
+    ],
+    "observatory_launch_route_preflight_checklist": [
+      {
+        "description": "Public launch decorators remain preserved.",
+        "evidence": [
+          "/content/SimpleeMrkTrade_REAL_CLONE/tower/tower_human_login_ob_launch.py"
+        ],
+        "item_id": "launch-001",
+        "status": "satisfied_in_source"
+      },
+      {
+        "description": "Legacy launch implementation remains undecorated.",
+        "evidence": [
+          "tests/test_tower_human_login_ob_native_launch.py"
+        ],
+        "item_id": "launch-002",
+        "status": "satisfied_in_regression"
+      },
+      {
+        "description": "Successful walkthrough redirect remains preserved.",
+        "evidence": [
+          "tests/test_tower_human_login_ob_native_launch.py"
+        ],
+        "item_id": "launch-003",
+        "status": "satisfied_in_regression"
+      },
+      {
+        "description": "Staging redirect reaches the approved private Observatory host.",
+        "evidence": [],
+        "item_id": "launch-004",
+        "status": "pending_staging_deployment"
+      }
+    ],
+    "owner_step_up_preflight_checklist": [
+      {
+        "description": "Observatory launch uses the protected owner route.",
+        "evidence": [
+          "/content/SimpleeMrkTrade_REAL_CLONE/tower/tower_human_login_ob_launch.py"
+        ],
+        "item_id": "step-up-001",
+        "status": "satisfied_in_source"
+      },
+      {
+        "description": "Missing or expired step-up redirects before native handoff.",
+        "evidence": [
+          "tower/test_tower_human_login_ob_launch.py"
+        ],
+        "item_id": "step-up-002",
+        "status": "satisfied_in_regression"
+      },
+      {
+        "description": "Successful owner step-up permits protected launch.",
+        "evidence": [],
+        "item_id": "step-up-003",
+        "status": "pending_staging_walkthrough"
+      }
+    ],
+    "staging_evidence_capture_plan": {
+      "redaction_rules": [
+        "do not store passwords",
+        "do not store raw secrets",
+        "do not store session cookies",
+        "do not expose unapproved raw private URLs",
+        "hash sensitive identifiers where practical"
+      ],
+      "required_records": [
+        "staging deployment identifiers",
+        "Tower and Observatory staging host identifiers",
+        "owner-login result",
+        "owner-step-up result",
+        "launch receipt identifier and hash",
+        "clearance_decision_ref",
+        "native handoff identifier",
+        "redirect destination validation",
+        "safety-state snapshot",
+        "regression output",
+        "final GO or NO_GO decision"
+      ]
+    },
+    "staging_readiness_decision_record": {
+      "blocking_conditions": [
+        "deployable managed staging specification not sealed",
+        "private Tower staging service not deployed",
+        "private Observatory staging service not deployed",
+        "official managed staging walkthrough not executed"
+      ],
+      "decision": "NO_GO_HOLD_MANAGED_STAGING_ENVIRONMENT_AND_DEPLOYMENT",
+      "reason": "The GP053 readiness contract is implemented, but the private managed staging services are not yet evidenced as deployed and the official walkthrough has not run.",
+      "satisfied_conditions": [
+        "native contract merged",
+        "human Tower launch route wired",
+        "receipt-hash clearance binding present",
+        "native session handoff present",
+        "ten readiness outputs implemented"
+      ]
+    },
+    "tower_human_login_preflight_checklist": [
+      {
+        "description": "Approved private Tower staging host is reachable.",
+        "evidence": [],
+        "item_id": "tower-login-001",
+        "status": "pending_staging_deployment"
+      },
+      {
+        "description": "Valid owner credentials create a real Tower owner session.",
+        "evidence": [],
+        "item_id": "tower-login-002",
+        "status": "pending_staging_walkthrough"
+      },
+      {
+        "description": "Invalid credentials fail closed.",
+        "evidence": [],
+        "item_id": "tower-login-003",
+        "status": "pending_staging_walkthrough"
+      },
+      {
+        "description": "Authenticated owner reaches Tower Access Home.",
+        "evidence": [],
+        "item_id": "tower-login-004",
+        "status": "pending_staging_walkthrough"
+      }
+    ],
+    "walkthrough_acceptance_criteria": [
+      "private staging Tower and Observatory services are deployed",
+      "owner authentication creates a real Tower session",
+      "owner step-up is required and succeeds",
+      "Tower launch receipt is created",
+      "receipt hash becomes clearance_decision_ref",
+      "native handoff is stored in the Tower session",
+      "protected redirect reaches private Observatory",
+      "no Tower bypass route is available",
+      "dry-run-only remains true",
+      "Production Manual Live remains disabled",
+      "broker submission remains disabled",
+      "real capital movement remains disabled",
+      "required evidence is captured",
+      "all 85 regressions pass"
+    ],
+    "walkthrough_failure_and_rollback_criteria": {
+      "fail_closed_conditions": [
+        "Tower owner session is missing",
+        "owner step-up is missing or expired",
+        "launch receipt is missing",
+        "receipt hash is missing",
+        "clearance_decision_ref is missing",
+        "native session handoff is missing",
+        "Observatory is reachable outside Tower",
+        "any safety lock changes",
+        "any required regression fails"
+      ],
+      "rollback_actions": [
+        "stop the walkthrough",
+        "preserve collected evidence",
+        "disable the affected staging route",
+        "restore the last verified staging deployment",
+        "do not enable broker or capital authority",
+        "record a NO_GO decision"
+      ]
+    }
+  },
+  "package_type": "tower_ob_gp053_managed_staging_walkthrough_readiness_package",
+  "scope_hash": "be582b412c1a6be74f9252b6fa410096da161e175ce51251d98bef6e9b2ebdee"
+}

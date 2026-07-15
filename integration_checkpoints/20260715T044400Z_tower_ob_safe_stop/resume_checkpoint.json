@@ -1,0 +1,191 @@
+{
+  "branch": "main",
+  "checkpoint_type": "tower_ob_safe_stop_checkpoint",
+  "created_at": "2026-07-15T04:44:00.275803Z",
+  "important_note": "Attempted Steps 024\u2013030 did not complete. Resume fresh from Step 024.",
+  "last_confirmed_closeout_chain_hash": "7d3cb0dc1622c0b575ca6193a176093f030cb78666f0c16941249e037834e0c9",
+  "last_confirmed_completed_step": 23,
+  "last_confirmed_decision": "NO_GO_HOLD_DEPLOYMENT_REQUIREMENTS_INCOMPLETE",
+  "last_confirmed_section_status": "closed",
+  "pre_save_head": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "repository": "/content/SimpleeMrkTrade_REAL_CLONE",
+  "resume_from": "STEP 024 \u2014 MANAGED STAGING PROVIDER RESOURCE PROVISIONING PREPARATION",
+  "safety": {
+    "broker_submission_enabled": false,
+    "deployment_performed": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "provider_calls_performed": false,
+    "real_capital_movement_enabled": false
+  },
+  "saved_evidence_file_count": 33,
+  "saved_evidence_files": [
+    {
+      "relative_path": "contract_recovery/resolved_clearance_decision_contract.json",
+      "sha256": "f78834142595839d16311a1bf8dbf9a5f1a4b114de9d31408e3960ba0bba2b7b",
+      "size_bytes": 7509
+    },
+    {
+      "relative_path": "contract_recovery/validated_rehearsal_status.json",
+      "sha256": "63a82645c77ca24c944ec53b7b8c37858c5593f956a21b21032698fbc1b5c9a1",
+      "size_bytes": 986
+    },
+    {
+      "relative_path": "gp051_step10_tower_lockback/current_step10_state.json",
+      "sha256": "7491cd0057cb11f0fb017f69466e644da68de8c966a7d691bf21e13e41e6e236",
+      "size_bytes": 537
+    },
+    {
+      "relative_path": "gp051_step10_tower_lockback/tower_lockback_acknowledged_20260715T011352Z.json",
+      "sha256": "d46a33a31a73acd83ed3f24d33be8abc0ea5c9f8614bd605151ff27ad4fca0bb",
+      "size_bytes": 4207
+    },
+    {
+      "relative_path": "gp052_evidence_binding_closeout/current_gp052_closeout_state.json",
+      "sha256": "ab7970aaa160f66af817977c07f6cc48c70fd06bba69e6a68ae696858d1c71fa",
+      "size_bytes": 872
+    },
+    {
+      "relative_path": "gp052_evidence_binding_closeout/gp052_evidence_binding_closed_20260715T021651Z.json",
+      "sha256": "bca2ba45b48a8c44f6a34a84e7a4119ca6d8bdbbd8ef9bc921fa25b08956239d",
+      "size_bytes": 3730
+    },
+    {
+      "relative_path": "gp052_evidence_binding_continuation/current_gp052_continuation_state.json",
+      "sha256": "99bc57b39ff35fd60eaa3b44c8bb77be308748681976b08fd8457ec0d194f407",
+      "size_bytes": 542
+    },
+    {
+      "relative_path": "gp052_evidence_binding_continuation/gp052_continuation_prepared_20260715T012531Z.json",
+      "sha256": "e7771dbba98cec2393101f0053aaee13db562368ae8930e116e39b76c282792c",
+      "size_bytes": 2366
+    },
+    {
+      "relative_path": "gp052_evidence_binding_execution/current_gp052_execution_state.json",
+      "sha256": "71110b21aed8c7330d9a53836a081feb15ac35da1931ae68f374996c934bd8c9",
+      "size_bytes": 767
+    },
+    {
+      "relative_path": "gp052_evidence_binding_execution/gp052_evidence_binding_executed_20260715T020025Z.json",
+      "sha256": "b6a5fee560a05421dc8da4a183ac84bbdfafc1abeb8eff9473136d432f1322ce",
+      "size_bytes": 7011
+    },
+    {
+      "relative_path": "gp052_evidence_binding_verification/current_gp052_verification_state.json",
+      "sha256": "24f6a9a52d41adbe38b75271e82cc682bddd8254d8696e20d9a6fcd5b5ce5539",
+      "size_bytes": 792
+    },
+    {
+      "relative_path": "gp052_evidence_binding_verification/gp052_evidence_binding_verified_20260715T020708Z.json",
+      "sha256": "26f1543d4332d02da77b3a55384d51896cacc4b699e9828b6ca2a5f44f2164d0",
+      "size_bytes": 3111
+    },
+    {
+      "relative_path": "gp053_contract_discovery/current_gp053_contract_discovery_state.json",
+      "sha256": "077eed236d526513ac3baafc8771748bc62f98b1dfcf319d9fa8b9b89b2ffc1d",
+      "size_bytes": 773
+    },
+    {
+      "relative_path": "gp053_contract_discovery/gp053_contract_discovery_20260715T024213Z.json",
+      "sha256": "d3d93542de35e6fc1dea73aae527830fe5976685685e03ce60e8765143cfaa11",
+      "size_bytes": 7537
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/current_gp053_section_state.json",
+      "sha256": "baeea80a887e9ec01b2e7eab42d407ed9422d313992868f78a3b26a1c759c71b",
+      "size_bytes": 988
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/step020_deployment_inputs/current_step020_state.json",
+      "sha256": "7c8bbc32737795dee6c41f02c08d27028f595037b6d131abbeb86f236fbfa88b",
+      "size_bytes": 737
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/step020_deployment_inputs/gp053_deployment_inputs_classified.json",
+      "sha256": "cdcfd45ded8892a3793eb1aec810f5a9e2e8ddcaf3de9abcf74683e41ae7720c",
+      "size_bytes": 6101
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/step021_deployment_specification/current_step021_state.json",
+      "sha256": "322fd4a34d887dc5b9f8dd88f95d7619e657b49d8f906fc625c25c66f9f5b14b",
+      "size_bytes": 794
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/step021_deployment_specification/gp053_managed_staging_deployment_specification.json",
+      "sha256": "5274c141a9cdcaf898ebd771efd09f8e8c01e8ad6304ac59357bf1faa2f52720",
+      "size_bytes": 5058
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/step022_no_deploy_rehearsal/current_step022_state.json",
+      "sha256": "05f943d40756e345e3315091ca88861a31a99a43d992dab296df1e39aa9b13ce",
+      "size_bytes": 694
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/step022_no_deploy_rehearsal/gp053_no_deploy_rehearsal_completed.json",
+      "sha256": "c255fb2d5c0a7c3f9f258bdbe5b07eaed717abf5ef19ecd3242a0db9a2ac81b4",
+      "size_bytes": 3362
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/step023_gp053_closeout/current_step023_state.json",
+      "sha256": "917bc1c7dbd5438525a5ec6d68e826050fae602792e304fac5ad94e7e562d0a8",
+      "size_bytes": 917
+    },
+    {
+      "relative_path": "gp053_deployment_preparation_closeout/step023_gp053_closeout/gp053_deployment_preparation_closed.json",
+      "sha256": "29917259f3834ef4f2a256a9d3d7ac2ae1be2d22d3a517007fdac795ae78e162",
+      "size_bytes": 4633
+    },
+    {
+      "relative_path": "gp053_integration_continuation/current_gp053_continuation_state.json",
+      "sha256": "00b8aade6b17e8da83ef5547021a0b3fb574783b09c6c392742e7f33c5065927",
+      "size_bytes": 689
+    },
+    {
+      "relative_path": "gp053_integration_continuation/gp053_continuation_prepared_20260715T022344Z.json",
+      "sha256": "036ff7c75b28711086fd09390c73149be5210e4be4313da887186a7ef2dfb937",
+      "size_bytes": 3092
+    },
+    {
+      "relative_path": "gp053_managed_staging_environment_definition/current_gp053_environment_definition_state.json",
+      "sha256": "a1a1504ccfd0754196ace8b9882db38e6b68c1d3b605ca16fad450ff41a30a4b",
+      "size_bytes": 1117
+    },
+    {
+      "relative_path": "gp053_managed_staging_environment_definition/gp053_managed_staging_environment_defined_20260715T031014Z.json",
+      "sha256": "65847ee8db3be9a3918d1455f6be2248e089f7a068788da6c226b04bd2892a29",
+      "size_bytes": 2622
+    },
+    {
+      "relative_path": "gp053_managed_staging_environment_definition/gp053_managed_staging_environment_definition_20260715T031014Z.json",
+      "sha256": "bdeb97ad51958c43622447a6fee842f9516b0a1ea07685b31ceae7df88b4f654",
+      "size_bytes": 107126
+    },
+    {
+      "relative_path": "gp053_readiness_contract_implementation/current_gp053_readiness_contract_state.json",
+      "sha256": "1a6c551eb9694670d55627850f0515c6ada4f62749890fb378cd22ec157c0d75",
+      "size_bytes": 1067
+    },
+    {
+      "relative_path": "gp053_readiness_contract_implementation/gp053_readiness_contract_implemented_20260715T030137Z.json",
+      "sha256": "94f82eccc9dd3723e5262f5aaa0c2b4978effce1234089db768a4e07c70239d3",
+      "size_bytes": 2349
+    },
+    {
+      "relative_path": "gp053_readiness_contract_implementation/gp053_readiness_package_20260715T030137Z.json",
+      "sha256": "ab8a686050449a2200794fb8a1c0a61c9ec4827e4fea164c5fde58db8020921e",
+      "size_bytes": 10017
+    },
+    {
+      "relative_path": "gp053_scope_definition/current_gp053_scope_state.json",
+      "sha256": "a9d71078338b8c6324a9767a095158c807b4af7c59a5e26321431a8f74b8d33a",
+      "size_bytes": 860
+    },
+    {
+      "relative_path": "gp053_scope_definition/gp053_scope_defined_20260715T024234Z.json",
+      "sha256": "579a26d1163feac29dbc84c3b96af0cf09417639c040206575909c0aa7a6632e",
+      "size_bytes": 6049
+    }
+  ],
+  "tests_passed_at_last_confirmed_closeout": 85
+}

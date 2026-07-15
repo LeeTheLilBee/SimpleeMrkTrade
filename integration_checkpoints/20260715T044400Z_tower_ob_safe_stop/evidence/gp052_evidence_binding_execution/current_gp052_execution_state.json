@@ -1,0 +1,15 @@
+{
+  "binding_set_hash": "1ce9ca0e55973066b5d6cdeee414fcc83c37d5e9a82eb788712028afe295650b",
+  "bound_evidence_source_count": 6,
+  "current_step": 12,
+  "current_step_key": "gp052_evidence_binding_executed",
+  "current_step_status": "completed",
+  "current_step_verified": true,
+  "integration": "tower_ob_native_gp046_to_gp052",
+  "next_boundary": "gp052_evidence_binding_verification_gate",
+  "receipt": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_execution/gp052_evidence_binding_executed_20260715T020025Z.json",
+  "receipt_hash": "07072942d5111c08121c8ce9fc81e8465046189d5166483332989ac7a780f621",
+  "tests_passed": 85,
+  "updated_at": "2026-07-15T02:00:26.000646Z",
+  "verified_main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c"
+}

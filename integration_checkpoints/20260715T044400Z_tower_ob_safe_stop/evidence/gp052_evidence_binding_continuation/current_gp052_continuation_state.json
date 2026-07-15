@@ -1,0 +1,11 @@
+{
+  "current_step": 11,
+  "current_step_key": "gp052_evidence_binding_continuation_prepared",
+  "current_step_status": "prepared",
+  "current_step_verified": true,
+  "integration": "tower_ob_native_gp046_to_gp052",
+  "manifest": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_continuation/gp052_continuation_prepared_20260715T012531Z.json",
+  "next_boundary": "gp052_evidence_binding_execution_gate",
+  "updated_at": "2026-07-15T01:25:31.902453Z",
+  "verified_main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c"
+}

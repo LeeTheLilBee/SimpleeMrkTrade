@@ -1,0 +1,237 @@
+{
+  "accepted_input_aliases": [
+    "clearance_decision_ref",
+    "clearance_decision_reference",
+    "decision_ref"
+  ],
+  "alias_results": [
+    {
+      "accepted": true,
+      "canonical_output_value": "obclr_387c362f01cd1625fdf59853",
+      "field_name": "clearance_decision_ref"
+    },
+    {
+      "accepted": true,
+      "canonical_output_value": "obclr_387c362f01cd1625fdf59853",
+      "field_name": "clearance_decision_reference"
+    },
+    {
+      "accepted": true,
+      "canonical_output_value": "obclr_387c362f01cd1625fdf59853",
+      "field_name": "decision_ref"
+    },
+    {
+      "accepted": false,
+      "error": "Tower clearance-decision reference is required.",
+      "error_type": "ValueError",
+      "field_name": "clearance"
+    },
+    {
+      "accepted": false,
+      "error": "Tower clearance-decision reference is required.",
+      "error_type": "ValueError",
+      "field_name": "canonical_clearance_value"
+    },
+    {
+      "accepted": false,
+      "error": "Tower clearance-decision reference is required.",
+      "error_type": "ValueError",
+      "field_name": "canonical_clearance_rank"
+    },
+    {
+      "accepted": false,
+      "error": "Tower clearance-decision reference is required.",
+      "error_type": "ValueError",
+      "field_name": "required_clearance_value"
+    },
+    {
+      "accepted": false,
+      "error": "Tower clearance-decision reference is required.",
+      "error_type": "ValueError",
+      "field_name": "required_clearance_rank"
+    },
+    {
+      "accepted": false,
+      "error": "Tower clearance-decision reference is required.",
+      "error_type": "ValueError",
+      "field_name": "clearance_value"
+    },
+    {
+      "accepted": false,
+      "error": "Tower clearance-decision reference is required.",
+      "error_type": "ValueError",
+      "field_name": "clearance_rank"
+    },
+    {
+      "accepted": false,
+      "error": "Tower clearance-decision reference is required.",
+      "error_type": "ValueError",
+      "field_name": "ob_clearance_translation"
+    }
+  ],
+  "blank_reference_rejected": true,
+  "branch": "recovery/tower-ob-gp046-native-human-launch",
+  "canonical_output_field": "clearance_decision_ref",
+  "canonical_reference": "obclr_387c362f01cd1625fdf59853",
+  "commit_created": false,
+  "created_at": "2026-07-14T22:22:19.551998Z",
+  "head": "a047ea06ca12d1208e7e28d7eadd374af39d23cc",
+  "missing_reference_rejected": true,
+  "native_test_passed": true,
+  "observed_clearance_fields": [
+    {
+      "key": "clearance",
+      "path": "root.clearance",
+      "value": {
+        "account_active": true,
+        "allowed": true,
+        "canonical_clearance_rank": 900,
+        "canonical_clearance_value": "ob_owner_command",
+        "clearance_decision_reference": "obclr_387c362f01cd1625fdf59853",
+        "contract_version": "tower-ob-clearance-translation-v1.0.0",
+        "identity_verified": true,
+        "lockdown_state": "tower_guarded_default_deny",
+        "preview_only": true,
+        "reason_code": "tower_owner_role_translated_to_ob_owner_command",
+        "risk_state": "acceptable",
+        "subject_id": "owner_solice",
+        "tower_role": "owner",
+        "writes_state": false
+      }
+    },
+    {
+      "key": "canonical_clearance_value",
+      "path": "root.clearance.canonical_clearance_value",
+      "value": "ob_owner_command"
+    },
+    {
+      "key": "canonical_clearance_rank",
+      "path": "root.clearance.canonical_clearance_rank",
+      "value": 900
+    },
+    {
+      "key": "clearance_decision_reference",
+      "path": "root.clearance.clearance_decision_reference",
+      "value": "obclr_387c362f01cd1625fdf59853"
+    },
+    {
+      "key": "canonical_clearance_value",
+      "path": "root.access_decision.canonical_clearance_value",
+      "value": "ob_owner_command"
+    },
+    {
+      "key": "canonical_clearance_rank",
+      "path": "root.access_decision.canonical_clearance_rank",
+      "value": 900
+    },
+    {
+      "key": "required_clearance_value",
+      "path": "root.access_decision.approved_room.required_clearance_value",
+      "value": "ob_protected_workflow"
+    },
+    {
+      "key": "required_clearance_rank",
+      "path": "root.access_decision.approved_room.required_clearance_rank",
+      "value": 500
+    },
+    {
+      "key": "required_clearance_value",
+      "path": "root.protected_room_manifest.available_rooms[0].required_clearance_value",
+      "value": "ob_protected_read"
+    },
+    {
+      "key": "required_clearance_rank",
+      "path": "root.protected_room_manifest.available_rooms[0].required_clearance_rank",
+      "value": 300
+    },
+    {
+      "key": "required_clearance_value",
+      "path": "root.protected_room_manifest.available_rooms[1].required_clearance_value",
+      "value": "ob_protected_read"
+    },
+    {
+      "key": "required_clearance_rank",
+      "path": "root.protected_room_manifest.available_rooms[1].required_clearance_rank",
+      "value": 300
+    },
+    {
+      "key": "required_clearance_value",
+      "path": "root.protected_room_manifest.available_rooms[2].required_clearance_value",
+      "value": "ob_protected_read"
+    },
+    {
+      "key": "required_clearance_rank",
+      "path": "root.protected_room_manifest.available_rooms[2].required_clearance_rank",
+      "value": 300
+    },
+    {
+      "key": "required_clearance_value",
+      "path": "root.protected_room_manifest.available_rooms[3].required_clearance_value",
+      "value": "ob_protected_workflow"
+    },
+    {
+      "key": "required_clearance_rank",
+      "path": "root.protected_room_manifest.available_rooms[3].required_clearance_rank",
+      "value": 500
+    },
+    {
+      "key": "required_clearance_value",
+      "path": "root.protected_room_manifest.available_rooms[4].required_clearance_value",
+      "value": "ob_protected_workflow"
+    },
+    {
+      "key": "required_clearance_rank",
+      "path": "root.protected_room_manifest.available_rooms[4].required_clearance_rank",
+      "value": 500
+    },
+    {
+      "key": "required_clearance_value",
+      "path": "root.protected_room_manifest.available_rooms[5].required_clearance_value",
+      "value": "ob_owner_command"
+    },
+    {
+      "key": "required_clearance_rank",
+      "path": "root.protected_room_manifest.available_rooms[5].required_clearance_rank",
+      "value": 900
+    },
+    {
+      "key": "clearance_decision_ref",
+      "path": "root.launch_handoff.clearance_decision_ref",
+      "value": "obclr_387c362f01cd1625fdf59853"
+    },
+    {
+      "key": "clearance_value",
+      "path": "root.access_receipt.clearance_value",
+      "value": "ob_owner_command"
+    },
+    {
+      "key": "clearance_rank",
+      "path": "root.access_receipt.clearance_rank",
+      "value": 900
+    },
+    {
+      "key": "ob_clearance_translation",
+      "path": "root.access_receipt.safety_locks.ob_clearance_translation",
+      "value": false
+    },
+    {
+      "key": "ob_clearance_translation",
+      "path": "root.permanent_safety.ob_clearance_translation",
+      "value": false
+    },
+    {
+      "key": "clearance_decision_reference",
+      "path": "root.legacy_launch_handoff.clearance_decision_reference",
+      "value": "obclr_387c362f01cd1625fdf59853"
+    },
+    {
+      "key": "ob_clearance_translation",
+      "path": "root.legacy_launch_handoff.safety_boundaries.ob_clearance_translation",
+      "value": false
+    }
+  ],
+  "push_performed": false,
+  "receipt_type": "resolved_native_gp046_clearance_decision_contract",
+  "source_modified": false,
+  "tower_root": "/content/SimpleeMrkTrade_TOWER"
+}

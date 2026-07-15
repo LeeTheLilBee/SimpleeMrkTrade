@@ -1,0 +1,32 @@
+{
+  "branch": "recovery/tower-ob-gp046-native-human-launch",
+  "builder_guard_literals": [
+    "",
+    "passed"
+  ],
+  "commit_created": false,
+  "created_at": "2026-07-14T22:11:00.841419Z",
+  "head": "a047ea06ca12d1208e7e28d7eadd374af39d23cc",
+  "native_test_passed": true,
+  "probe_results": [
+    {
+      "accepted": false,
+      "candidate": "",
+      "error": "Tower rehearsal must pass before a GP046 handoff can be issued.",
+      "error_type": "ValueError"
+    },
+    {
+      "accepted": true,
+      "candidate": "passed",
+      "integrity_hash": "16b5a9901f01f6bb82bf7c27740c0e09a2235826812595ac55d6b964bc3bc5d5",
+      "packet_contract_version": "ob.tower_protected_launch_handoff.v1",
+      "packet_room_id": "trade_center"
+    }
+  ],
+  "push_performed": false,
+  "receipt_type": "contract_derived_rehearsal_status",
+  "source_modified": false,
+  "tower_root": "/content/SimpleeMrkTrade_TOWER",
+  "validated_rehearsal_status": "passed",
+  "wrapper_runtime_status": "passed"
+}

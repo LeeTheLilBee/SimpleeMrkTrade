@@ -1,0 +1,212 @@
+{
+  "all_gp053_reference_count": 4,
+  "all_gp053_references": [
+    {
+      "classification": "routing_only_reference",
+      "contract_hits": [],
+      "filename_contract_signal": false,
+      "gp053_line_count": 1,
+      "gp053_lines": [
+        {
+          "line": 12,
+          "text": "  \"next_boundary\": \"gp053_integration_continuation_preparation\","
+        }
+      ],
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_closeout/current_gp052_closeout_state.json",
+      "routing_hits": [
+        "continuation",
+        "gp053_integration_continuation_preparation",
+        "next_boundary",
+        "preparation"
+      ],
+      "sha256": "ab7970aaa160f66af817977c07f6cc48c70fd06bba69e6a68ae696858d1c71fa"
+    },
+    {
+      "classification": "routing_only_reference",
+      "contract_hits": [],
+      "filename_contract_signal": false,
+      "gp053_line_count": 1,
+      "gp053_lines": [
+        {
+          "line": 56,
+          "text": "  \"next_boundary\": \"gp053_integration_continuation_preparation\","
+        }
+      ],
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_closeout/gp052_evidence_binding_closed_20260715T021651Z.json",
+      "routing_hits": [
+        "continuation",
+        "gp053_integration_continuation_preparation",
+        "next_boundary",
+        "preparation"
+      ],
+      "sha256": "bca2ba45b48a8c44f6a34a84e7a4119ca6d8bdbbd8ef9bc921fa25b08956239d"
+    },
+    {
+      "classification": "routing_only_reference",
+      "contract_hits": [
+        "contract"
+      ],
+      "filename_contract_signal": false,
+      "gp053_line_count": 6,
+      "gp053_lines": [
+        {
+          "line": 3,
+          "text": "  \"current_step_key\": \"gp053_integration_continuation_prepared\","
+        },
+        {
+          "line": 6,
+          "text": "  \"gp053_discovery_status\": \"references_found\","
+        },
+        {
+          "line": 7,
+          "text": "  \"gp053_reference_count\": 2,"
+        },
+        {
+          "line": 8,
+          "text": "  \"integration\": \"tower_ob_native_gp046_to_gp053\","
+        },
+        {
+          "line": 9,
+          "text": "  \"manifest\": \"/content/Simplee_Tower_OB_Integration/evidence/gp053_integration_continuation/gp053_continuation_prepared_20260715T022344Z.json\","
+        },
+        {
+          "line": 11,
+          "text": "  \"next_boundary\": \"gp053_contract_discovery_gate\","
+        }
+      ],
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_integration_continuation/current_gp053_continuation_state.json",
+      "routing_hits": [
+        "continuation",
+        "gp053_contract_discovery_gate",
+        "next_boundary"
+      ],
+      "sha256": "00b8aade6b17e8da83ef5547021a0b3fb574783b09c6c392742e7f33c5065927"
+    },
+    {
+      "classification": "routing_only_reference",
+      "contract_hits": [
+        "contract"
+      ],
+      "filename_contract_signal": false,
+      "gp053_line_count": 8,
+      "gp053_lines": [
+        {
+          "line": 12,
+          "text": "  \"gp053_discovery_status\": \"references_found\","
+        },
+        {
+          "line": 13,
+          "text": "  \"gp053_reference_count\": 2,"
+        },
+        {
+          "line": 14,
+          "text": "  \"gp053_references\": ["
+        },
+        {
+          "line": 21,
+          "text": "          \"text\": \"  \\\"next_boundary\\\": \\\"gp053_integration_continuation_preparation\\\",\""
+        },
+        {
+          "line": 35,
+          "text": "          \"text\": \"  \\\"next_boundary\\\": \\\"gp053_integration_continuation_preparation\\\",\""
+        },
+        {
+          "line": 47,
+          "text": "  \"next_boundary\": \"gp053_contract_discovery_gate\","
+        },
+        {
+          "line": 49,
+          "text": "  \"receipt_type\": \"tower_ob_gp053_integration_continuation_preparation\","
+        },
+        {
+          "line": 62,
+          "text": "  \"step_key\": \"gp053_integration_continuation_prepared\","
+        }
+      ],
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_integration_continuation/gp053_continuation_prepared_20260715T022344Z.json",
+      "routing_hits": [
+        "continuation",
+        "gp053_contract_discovery_gate",
+        "gp053_integration_continuation_preparation",
+        "next_boundary",
+        "preparation"
+      ],
+      "sha256": "036ff7c75b28711086fd09390c73149be5210e4be4313da887186a7ef2dfb937"
+    }
+  ],
+  "commit_created": false,
+  "created_at": "2026-07-15T02:42:13.510717Z",
+  "deployment_performed": false,
+  "discovery_result": "no_substantive_contract_found",
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "merge_performed": false,
+  "next_boundary": "gp053_scope_definition_gate",
+  "push_performed": false,
+  "receipt_hash": "52d45bdad5890e068b3ad30fbc8f10b29cad4863041321310060b0c31197235b",
+  "receipt_type": "tower_ob_gp053_contract_discovery",
+  "routing_reference_count": 4,
+  "safety": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "dry_run_only": true,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "scope_definition_required": true,
+  "source_files_modified": false,
+  "status": "completed",
+  "step15_manifest_hash": "4724b458ee019bb6cb6b2e514de3b18738c03751f2f61b865d8c49ded917d1b8",
+  "step15_manifest_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_integration_continuation/gp053_continuation_prepared_20260715T022344Z.json",
+  "step15_manifest_sha256": "036ff7c75b28711086fd09390c73149be5210e4be4313da887186a7ef2dfb937",
+  "step15_reference_classifications": [
+    {
+      "classification": "routing_only_reference",
+      "contract_hits": [],
+      "filename_contract_signal": false,
+      "gp053_line_count": 1,
+      "gp053_lines": [
+        {
+          "line": 12,
+          "text": "  \"next_boundary\": \"gp053_integration_continuation_preparation\","
+        }
+      ],
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_closeout/current_gp052_closeout_state.json",
+      "routing_hits": [
+        "continuation",
+        "gp053_integration_continuation_preparation",
+        "next_boundary",
+        "preparation"
+      ],
+      "sha256": "ab7970aaa160f66af817977c07f6cc48c70fd06bba69e6a68ae696858d1c71fa"
+    },
+    {
+      "classification": "routing_only_reference",
+      "contract_hits": [],
+      "filename_contract_signal": false,
+      "gp053_line_count": 1,
+      "gp053_lines": [
+        {
+          "line": 56,
+          "text": "  \"next_boundary\": \"gp053_integration_continuation_preparation\","
+        }
+      ],
+      "path": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_closeout/gp052_evidence_binding_closed_20260715T021651Z.json",
+      "routing_hits": [
+        "continuation",
+        "gp053_integration_continuation_preparation",
+        "next_boundary",
+        "preparation"
+      ],
+      "sha256": "bca2ba45b48a8c44f6a34a84e7a4119ca6d8bdbbd8ef9bc921fa25b08956239d"
+    }
+  ],
+  "step15_reference_count": 2,
+  "step15_state_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_integration_continuation/current_gp053_continuation_state.json",
+  "step15_state_sha256": "00b8aade6b17e8da83ef5547021a0b3fb574783b09c6c392742e7f33c5065927",
+  "step_key": "gp053_contract_discovery_completed",
+  "step_number": 16,
+  "substantive_contract_reference_count": 0,
+  "tests_passed": 85,
+  "verified": true
+}

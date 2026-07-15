@@ -1,0 +1,62 @@
+{
+  "commit_created": false,
+  "continuation": {
+    "gp052_evidence_binding_preparation_loaded": true,
+    "ready_for_gp052_execution_gate": true
+  },
+  "created_at": "2026-07-15T01:25:31.899765Z",
+  "deployment_performed": false,
+  "gp052_source_path": "/content/SimpleeMrkTrade_REAL_CLONE/integration_checkpoints/20260714t202118z/04_gp052_evidence_binding_preparation.json",
+  "gp052_source_sha256": "15adc187153a28de3fcee427cae7001488d5f69ddc14ded8c7969a515aaa5a92",
+  "gp052_top_level_keys": [
+    "binding_requirements",
+    "created_at",
+    "evidence_source_count",
+    "evidence_sources",
+    "final_outcome",
+    "gp051_completed_step_count",
+    "gp051_run_id",
+    "gp051_verified",
+    "manifest_hash",
+    "manifest_type",
+    "native_run_id",
+    "native_validation_ids",
+    "ob_source_modified",
+    "official_managed_staging_walkthrough_complete",
+    "operating_loop_ids",
+    "previous_integration_run_id",
+    "push_performed",
+    "ready_for_gp052_implementation",
+    "remaining_before_official_staging",
+    "safety",
+    "source_files_modified_in_base_clone",
+    "tower_native_contract"
+  ],
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "merge_performed": false,
+  "next_boundary": "gp052_evidence_binding_execution_gate",
+  "prior_loop": {
+    "final_outcome": "not_placed",
+    "gp051_completed": true,
+    "tests_passed": 85,
+    "tower_lockback_acknowledged": true
+  },
+  "push_performed": false,
+  "receipt_type": "tower_ob_gp052_evidence_binding_continuation_preparation",
+  "safety": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "dry_run_only": true,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "status": "prepared",
+  "step10_receipt_path": "/content/Simplee_Tower_OB_Integration/evidence/gp051_step10_tower_lockback/tower_lockback_acknowledged_20260715T011352Z.json",
+  "step10_receipt_sha256": "d46a33a31a73acd83ed3f24d33be8abc0ea5c9f8614bd605151ff27ad4fca0bb",
+  "step10_state_path": "/content/Simplee_Tower_OB_Integration/evidence/gp051_step10_tower_lockback/current_step10_state.json",
+  "step10_state_sha256": "7491cd0057cb11f0fb017f69466e644da68de8c966a7d691bf21e13e41e6e236",
+  "step_key": "gp052_evidence_binding_continuation_prepared",
+  "step_number": 11,
+  "verified": true
+}

@@ -1,0 +1,117 @@
+{
+  "contains_raw_secrets": false,
+  "created_at": "2026-07-15T03:47:15.435957Z",
+  "deployment_authorized": false,
+  "deployment_specification": {
+    "deployment_policy": {
+      "automatic_deployment_enabled": false,
+      "database_creation_allowed": false,
+      "deployment_authorized": false,
+      "manual_owner_approval_required": true,
+      "provider_resource_creation_allowed": false,
+      "secret_creation_allowed": false,
+      "storage_creation_allowed": false
+    },
+    "environment": {
+      "customer_facing": false,
+      "dry_run_only": true,
+      "name": "simplee-private-staging",
+      "production": false
+    },
+    "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+    "managed_resources": {
+      "object_storage": {
+        "direct_vault_upload": false,
+        "namespace": "${STAGING_OBJECT_STORAGE_NAMESPACE}",
+        "private": true,
+        "provisioned": false,
+        "public_access": false,
+        "shared_with_production": false
+      },
+      "postgresql": {
+        "environment": "staging",
+        "provisioned": false,
+        "resource": "${STAGING_DATABASE_RESOURCE}",
+        "shared_with_production": false
+      }
+    },
+    "provider": {
+      "account_or_team": "${MANAGED_HOST_ACCOUNT_OR_TEAM}",
+      "actual_provider_resource_created": false,
+      "platform_class": "Render-compatible managed Python hosting",
+      "region": "${STAGING_DEPLOYMENT_REGION}"
+    },
+    "security": {
+      "missing_requirement_behavior": "fail_closed",
+      "native_session_handoff_required": true,
+      "observatory_public_bypass_allowed": false,
+      "owner_authentication_required": true,
+      "owner_step_up_required": true,
+      "raw_secrets_in_specification": false,
+      "real_tower_receipt_required": true,
+      "receipt_hash_clearance_reference_required": true,
+      "tower_is_only_front_door": true
+    },
+    "services": {
+      "observatory": {
+        "deployment_status": "not_deployed",
+        "environment_variables": {
+          "BROKER_SUBMISSION_ENABLED": "false",
+          "DATABASE_SECRET_REF": "${STAGING_DATABASE_SECRET_REF}",
+          "DIRECT_VAULT_UPLOAD_ENABLED": "false",
+          "LIVE_AUTO_LOCKED": "true",
+          "OBJECT_STORAGE_SECRET_REF": "${STAGING_STORAGE_SECRET_REF}",
+          "OB_HANDOFF_SECRET_REF": "${OB_HANDOFF_SECRET_REF}",
+          "PRODUCTION_MANUAL_LIVE_AUTHORIZED": "false",
+          "REAL_CAPITAL_MOVEMENT_ENABLED": "false",
+          "SIMPLEE_ENV": "staging",
+          "TOWER_STAGING_HOST": "${TOWER_STAGING_HOST}"
+        },
+        "external_access": "prohibited",
+        "health_check_path": "${OBSERVATORY_HEALTH_CHECK_PATH}",
+        "name": "simplee-observatory-staging",
+        "public_front_door": false,
+        "service_type": "managed_private_python_service",
+        "source_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+        "start_command": "${OBSERVATORY_RUNTIME_ENTRYPOINT}"
+      },
+      "tower": {
+        "deployment_status": "not_deployed",
+        "environment_variables": {
+          "BROKER_SUBMISSION_ENABLED": "false",
+          "DATABASE_SECRET_REF": "${STAGING_DATABASE_SECRET_REF}",
+          "DIRECT_VAULT_UPLOAD_ENABLED": "false",
+          "LIVE_AUTO_LOCKED": "true",
+          "OBJECT_STORAGE_SECRET_REF": "${STAGING_STORAGE_SECRET_REF}",
+          "OBSERVATORY_PRIVATE_ADDRESS": "${OBSERVATORY_PRIVATE_SERVICE_ADDRESS}",
+          "OB_HANDOFF_SECRET_REF": "${OB_HANDOFF_SECRET_REF}",
+          "PRODUCTION_MANUAL_LIVE_AUTHORIZED": "false",
+          "REAL_CAPITAL_MOVEMENT_ENABLED": "false",
+          "SIMPLEE_ENV": "staging",
+          "TOWER_SESSION_SECRET_REF": "${TOWER_SESSION_SECRET_REF}"
+        },
+        "external_access": "restricted_authenticated_access_only",
+        "health_check_path": "${TOWER_HEALTH_CHECK_PATH}",
+        "name": "simplee-tower-staging",
+        "public_front_door": true,
+        "service_type": "managed_python_web_service",
+        "source_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+        "start_command": "gunicorn web.app:app"
+      }
+    },
+    "specification_type": "tower_ob_gp053_private_managed_staging_deployment",
+    "specification_version": "1.0"
+  },
+  "deployment_specification_hash": "4495a301bd3481467b6ff8cf0eb828fcb7464b44e6b1e7fa32d27b76a991cf59",
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "next_boundary": "gp053_no_deploy_configuration_rehearsal_gate",
+  "receipt_hash": "5392e67b65685b91568bca2eb135fea15a9998983deaee874c06b9ec6b5f842c",
+  "receipt_type": "tower_ob_gp053_deployment_specification",
+  "status": "completed",
+  "step20_receipt_hash": "35d17b9987121f19c589aa9c081e6d3bd8137a4162c8f9a8e15508bc4294c853",
+  "step20_receipt_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_deployment_preparation_closeout/step020_deployment_inputs/gp053_deployment_inputs_classified.json",
+  "step20_receipt_sha256": "cdcfd45ded8892a3793eb1aec810f5a9e2e8ddcaf3de9abcf74683e41ae7720c",
+  "step_key": "gp053_managed_staging_deployment_specification_built",
+  "step_number": 21,
+  "verified": true
+}

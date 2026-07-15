@@ -1,0 +1,101 @@
+{
+  "commit_created": false,
+  "completed_step_matches": [
+    {
+      "path": "database_steps.9",
+      "record": {
+        "evidence_hash": "11c8de21e61e82f6145c64545a7823d6ec9568168c67fb7a70f05a407b7b739e",
+        "evidence_ref": "gp051_step_10_11c8de21e61e82f6145c64545a7823d6",
+        "state": "completed",
+        "step_code": "tower_lockback_acknowledged",
+        "step_index": 10
+      },
+      "source": "integration_checkpoints/20260714t202118z/49_gp051_final_binding_execution.json"
+    },
+    {
+      "path": "submitted_steps.5.result.run.steps.9",
+      "record": {
+        "completed_at": "2026-07-14T19:48:41.969687Z",
+        "evidence_hash": "11c8de21e61e82f6145c64545a7823d6ec9568168c67fb7a70f05a407b7b739e",
+        "evidence_ref": "gp051_step_10_11c8de21e61e82f6145c64545a7823d6",
+        "previous_step_hash": "466405b4f9846f2875033c2d655d96abef3202104988c2220892ef3a5a8d1250",
+        "state": "completed",
+        "step_code": "tower_lockback_acknowledged",
+        "step_hash": "bb68d0f898cc815a240ce084e42f6f0680dd39e91325b084ac4d6e93d441dba2",
+        "step_index": 10,
+        "title": "Record Tower lockback acknowledgment"
+      },
+      "source": "integration_checkpoints/20260714t202118z/49_gp051_final_binding_execution.json"
+    },
+    {
+      "path": "completed_steps.9",
+      "record": {
+        "completed_at": "2026-07-14T19:48:41.969687Z",
+        "evidence_hash": "11c8de21e61e82f6145c64545a7823d6ec9568168c67fb7a70f05a407b7b739e",
+        "evidence_ref": "gp051_step_10_11c8de21e61e82f6145c64545a7823d6",
+        "previous_step_hash": "466405b4f9846f2875033c2d655d96abef3202104988c2220892ef3a5a8d1250",
+        "state": "completed",
+        "step_code": "tower_lockback_acknowledged",
+        "step_hash": "bb68d0f898cc815a240ce084e42f6f0680dd39e91325b084ac4d6e93d441dba2",
+        "step_index": 10,
+        "title": "Record Tower lockback acknowledgment"
+      },
+      "source": "integration_checkpoints/20260714t202118z/50_gp051_completed_rehearsal_verification.json"
+    }
+  ],
+  "created_at": "2026-07-15T01:13:52.777276Z",
+  "current_contract": {
+    "human_owner_login": true,
+    "native_gp046": true,
+    "native_session_handoff": true,
+    "owner_step_up": true,
+    "receipt_hash_clearance_binding": true,
+    "tower_lockback_acknowledged": true,
+    "walkthrough_redirect_preserved": true
+  },
+  "deployment_performed": false,
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "merge_performed": false,
+  "native_contract_sha256": "1d77f5ddfe06e96a90c019e2ff99b42025a496051da169ac693e4d282cd4659a",
+  "next_boundary": "gp051_post_lockback_continuation_preparation",
+  "operating_result": {
+    "broker_submission_performed": false,
+    "capital_movement_performed": false,
+    "direct_vault_upload_performed": false,
+    "final_outcome": "not_placed"
+  },
+  "original_step_evidence": {
+    "integration_checkpoints/20260714t202118z/49_gp051_final_binding_execution.json": {
+      "completed_match_count": 2,
+      "sha256": "55b54c5e9033df9017267b480dea9c6dbbf6ebfe589e7ff8bd91ac4fc8af05b7",
+      "step_match_count": 9
+    },
+    "integration_checkpoints/20260714t202118z/50_gp051_completed_rehearsal_verification.json": {
+      "completed_match_count": 1,
+      "sha256": "f8b68cc38a4b99fae1808c69bbd5305ca54680d96f6158a8103620d4f704d2d0",
+      "step_match_count": 1
+    },
+    "integration_checkpoints/20260714t202118z/integration_state.json": {
+      "completed_match_count": 0,
+      "sha256": "d6ccb3d3a4d169e20603119c92163dd725733b1caf6a7b1f312ac049f2706acf",
+      "step_match_count": 0
+    }
+  },
+  "push_performed": false,
+  "receipt_type": "tower_ob_gp051_step10_lockback_revalidation",
+  "recovery_commit": "22983d72f47410e5fa1004d9e9fdc40675148bb7",
+  "safety": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "dry_run_only": true,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "status": "completed",
+  "step_key": "tower_lockback_acknowledged",
+  "step_number": 10,
+  "tests_passed": 85,
+  "tower_module_sha256": "f312816c214c8dc3644554ed9d55079bb26eda078bec0955d88beb5e1b0b0f99",
+  "verified": true
+}

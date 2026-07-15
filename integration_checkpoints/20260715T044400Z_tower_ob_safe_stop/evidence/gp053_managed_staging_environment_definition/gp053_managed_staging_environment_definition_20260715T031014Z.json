@@ -1,0 +1,2840 @@
+{
+  "document_hash": "7ae9912bbb4555b474126cd3af581f7bf529189c584fa2197d733e3160569f08",
+  "environment_decision": {
+    "decision": "NO_GO_HOLD_MANAGED_STAGING_DEPLOYMENT_INPUTS_UNRESOLVED",
+    "deployment_authorized": false,
+    "deployment_inputs_complete": false,
+    "deployment_performed": false,
+    "environment_definition_complete": true,
+    "official_walkthrough_authorized": false,
+    "official_walkthrough_complete": false,
+    "reason": "The managed staging architecture is now defined, but provider, account, region, runtime entrypoints, service names, resource identifiers, secret references, and deployment configuration remain unresolved."
+  },
+  "environment_definition": {
+    "configuration_contract": {
+      "non_secret_configuration": [
+        "environment name",
+        "Tower staging service identifier",
+        "Observatory staging service identifier",
+        "approved Tower staging host",
+        "private Observatory service address",
+        "allowed redirect destination",
+        "session-cookie security mode",
+        "logging level"
+      ],
+      "secret_references": [
+        "Tower session-signing secret reference",
+        "Observatory handoff-signing secret reference",
+        "staging database credential reference",
+        "staging object-storage credential reference",
+        "approved owner credential reference"
+      ],
+      "secret_rules": [
+        "no raw secret values in Git",
+        "no raw secret values in integration evidence",
+        "no production secrets reused in staging",
+        "secret references must resolve only inside the managed host",
+        "secret rotation must not alter historical evidence"
+      ]
+    },
+    "definition_type": "tower_ob_gp053_managed_staging_environment_definition",
+    "definition_version": "1.0",
+    "deployment_artifact_inventory": {
+      "artifacts": [
+        {
+          "name": "app.py",
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/web/app.py",
+          "relative_path": "web/app.py",
+          "sha256": "915875c08e0d7a98ee386acd9a112866918b9ddc4155c9b36893471d159a4552",
+          "size_bytes": 2783924
+        }
+      ],
+      "entrypoint_candidates": [
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/ob_route_exposure_report.py",
+          "relative_path": "tower/ob_route_exposure_report.py",
+          "sha256": "906ca5af5573a4b43a29779129f917665476a05ecaa871b13a15146d2e1bc76a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/security_events.py",
+          "relative_path": "tower/security_events.py",
+          "sha256": "b210191d30b568b6005d80a680b80951080588407ee77e975cd4e960816a5e2e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/step_up.py",
+          "relative_path": "tower/step_up.py",
+          "sha256": "a7b70ae57afeb38e7be5c61c46e058adb66b5dd1d5829d6ab5eebc3238e61bc4",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_human_login_ob_launch.py",
+          "relative_path": "tower/test_tower_human_login_ob_launch.py",
+          "sha256": "dd988cb88e9283d3f8c0ee82c4cff96f519258b7c2b3b75236e71722622cf53d",
+          "signals": [
+            "Flask(",
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_observatory_walkthrough_web.py",
+          "relative_path": "tower/test_tower_observatory_walkthrough_web.py",
+          "sha256": "e2c81809b69135e121fd94ce37cc65131cf6b2e3c73c534c0532738502dcc90b",
+          "signals": [
+            "Flask(",
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_101.py",
+          "relative_path": "tower/test_tower_pack_101.py",
+          "sha256": "6bbc1f75c24f7d095f4ec94fe80a10b1ecbeb52dbd9922e7aefb0f169674f244",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_219a.py",
+          "relative_path": "tower/test_tower_pack_219a.py",
+          "sha256": "957051b3727e7cde0b6784f052924116f78e2577c3a481c781bbda4bd53d1eeb",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_219b.py",
+          "relative_path": "tower/test_tower_pack_219b.py",
+          "sha256": "be88f34fcefc9f7beb9e5d2f6f0c19e2b954bd62b57d203fdc7103c808b82f20",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_219c.py",
+          "relative_path": "tower/test_tower_pack_219c.py",
+          "sha256": "3fb11d7b054416b0b8a1c987fc1cc48c30c728cf4f59118848e769a232acbd08",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_220.py",
+          "relative_path": "tower/test_tower_pack_220.py",
+          "sha256": "a518a193ab5ea70bac6be3e37599f5b62fcfc383bb104c82ccd9afcc0fa433cb",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_221.py",
+          "relative_path": "tower/test_tower_pack_221.py",
+          "sha256": "64983f687dcb7d5a5a7bcb9c2ad57b75b3dac9eab954efb8bcfdcd689c63c13c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_222.py",
+          "relative_path": "tower/test_tower_pack_222.py",
+          "sha256": "87ac3606b39c8f5d3db4e7020cca654fa6b72afa999ece8734f31ce7aee9e0c3",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_223.py",
+          "relative_path": "tower/test_tower_pack_223.py",
+          "sha256": "5c3aa02eb75c5e62dbaf71088d22c071f16fc6e0884085b1d80041a2b0c866b4",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_224.py",
+          "relative_path": "tower/test_tower_pack_224.py",
+          "sha256": "f42d5c08bae08450646cca2e9707f243a849cbc06cf723a474578ce7121d1307",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_225.py",
+          "relative_path": "tower/test_tower_pack_225.py",
+          "sha256": "19956c43f57b667b1908ec4405913df9112f299351bc1ef42dccd5e78285870e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_226.py",
+          "relative_path": "tower/test_tower_pack_226.py",
+          "sha256": "fed3f471aed110d9aa092730161735fe6c0a82d29008fdc1d2e8fceaa4a80aef",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_227.py",
+          "relative_path": "tower/test_tower_pack_227.py",
+          "sha256": "a625bc3316ce11feba4fd43e480bcc528f82e4780ddc64b14fae9a338a2f95b0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_228.py",
+          "relative_path": "tower/test_tower_pack_228.py",
+          "sha256": "bc8ccfc6c306a9496b18319a67f669a3c95deac2729ff696ff076e98465672f6",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_229.py",
+          "relative_path": "tower/test_tower_pack_229.py",
+          "sha256": "34a3399e4a52df3eee052253dfe9c1562876ad2a174d7f885c810dfad3221014",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_230.py",
+          "relative_path": "tower/test_tower_pack_230.py",
+          "sha256": "5b0f1c255b065ba7f914fb6bfaba0fc82ec9fde8ccca27a6671fea7849b5a6a1",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_231.py",
+          "relative_path": "tower/test_tower_pack_231.py",
+          "sha256": "26cbc10d4d9ace96cd84a311f02701e28feab883f91487e411db57e1a16c4a0c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_232.py",
+          "relative_path": "tower/test_tower_pack_232.py",
+          "sha256": "d51442e3fb79649e6a5b74929ade17fef7ce8d2b5b7d30f9d558110440a24ee8",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_233.py",
+          "relative_path": "tower/test_tower_pack_233.py",
+          "sha256": "9b8fc7cc028d78b22ea7394b147d87c8be330f268a9b076fb69742217f602a83",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_234.py",
+          "relative_path": "tower/test_tower_pack_234.py",
+          "sha256": "2386387ced470b7681dbfd1024763da503e2782a2504abf3383eb290840c577a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_235.py",
+          "relative_path": "tower/test_tower_pack_235.py",
+          "sha256": "6010ee4f420da57d1c8829d836751bc7942f0c78ba1dc69581d864dd71da25f7",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_236.py",
+          "relative_path": "tower/test_tower_pack_236.py",
+          "sha256": "a4276ec5774e395f05058150b754272d814aede84762e3aa82b58c7dbeac3470",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_237.py",
+          "relative_path": "tower/test_tower_pack_237.py",
+          "sha256": "f94fb9738fae60bb1a07239a85df694609ebdce007c059777caf8c99ae39dff7",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_238.py",
+          "relative_path": "tower/test_tower_pack_238.py",
+          "sha256": "115e816395f88063d0d5846f34e5a34f2bf28e056d8a6d6a721a0595774d1162",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_239.py",
+          "relative_path": "tower/test_tower_pack_239.py",
+          "sha256": "f4c449d206d89b580c23c70b494f6751b0c07f330fb1eed8699586d1d2faa4be",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_240.py",
+          "relative_path": "tower/test_tower_pack_240.py",
+          "sha256": "20a82f7f6b4af24900bc668becdf4863d5fb1b09cca95b09d4e4f05bd4a9a951",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_241.py",
+          "relative_path": "tower/test_tower_pack_241.py",
+          "sha256": "c71d1a1ad8ee952f86abf1fac7cf26ad42a0071845c2f080af3aed97bdfa8de1",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_242.py",
+          "relative_path": "tower/test_tower_pack_242.py",
+          "sha256": "0acba1751a0dfc1cd440ddb9807c11eb23cb5a9886d014667c7fdc822eeddc70",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_243.py",
+          "relative_path": "tower/test_tower_pack_243.py",
+          "sha256": "5dc636e2fde9320a8bfddfbb20f15ca3f85bbf17b675b114c3b6ddf566cca468",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_244.py",
+          "relative_path": "tower/test_tower_pack_244.py",
+          "sha256": "11d979d674fef52397e6b33c459334db9fb147bbeee958fed46b10312cd3732d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_245.py",
+          "relative_path": "tower/test_tower_pack_245.py",
+          "sha256": "af315fedad2a4e1d33492c3e4435f8d417e337fc9fc5f919b4f95bd0432d7b59",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_246.py",
+          "relative_path": "tower/test_tower_pack_246.py",
+          "sha256": "ddabe0c2bf5f79f2e3329b6e8f38ed111771ec44c3593555cbc93f145f4a3389",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_247.py",
+          "relative_path": "tower/test_tower_pack_247.py",
+          "sha256": "e5e6b661e805e6ae1e2e7728154803ad98b435ef1bc79d7383dfa05998b42261",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_248.py",
+          "relative_path": "tower/test_tower_pack_248.py",
+          "sha256": "6e603cc1579b519d8dfb0faf3aec3a613496d4232f3f8b5c5c4cd1459df0bd53",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_249.py",
+          "relative_path": "tower/test_tower_pack_249.py",
+          "sha256": "3b5b27c86879ddc53e666944bfb02595f9a46c7d1074e55fe2e1ea8a194b7aab",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_250.py",
+          "relative_path": "tower/test_tower_pack_250.py",
+          "sha256": "5e645f321899fd3fdcfd0c51eeb56ec3e0f01979470f846406d139755690bfbd",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_251.py",
+          "relative_path": "tower/test_tower_pack_251.py",
+          "sha256": "8b8dca56dad25b9e7a61f2b5e506bbeb30a514d861aca1a99f1da0dc27a157bb",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_252.py",
+          "relative_path": "tower/test_tower_pack_252.py",
+          "sha256": "f6bddae331b7cc58a68c860a5d6f39b3019d225350c71abce63f11a464b208de",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_253.py",
+          "relative_path": "tower/test_tower_pack_253.py",
+          "sha256": "5f09a067857f3996c7266c09446e75ac2cc66880dc9ecbcaefd493df9f89a73a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_254.py",
+          "relative_path": "tower/test_tower_pack_254.py",
+          "sha256": "727b0b383a5eaf24d2706dca074ca3077d241fbf60084c05517540a8e2f5f169",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_255.py",
+          "relative_path": "tower/test_tower_pack_255.py",
+          "sha256": "44e45837d5cbfbdb3b263175928bd663d05873bec33bb8288d655df8ba89783e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_256.py",
+          "relative_path": "tower/test_tower_pack_256.py",
+          "sha256": "d44f23992bc9c773edf23e3b9f5ca0ee124084d488334af81dbe90fb24348d69",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_257.py",
+          "relative_path": "tower/test_tower_pack_257.py",
+          "sha256": "dda40089a24edd551d4b2bd6df29427dba34fcefaed2b25e16fbdc9db8b14c32",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_258.py",
+          "relative_path": "tower/test_tower_pack_258.py",
+          "sha256": "2f5d4926a0a2e39a46911cc5075ee096c7a0d3f4b4ee93930499dfe6229c63be",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_259.py",
+          "relative_path": "tower/test_tower_pack_259.py",
+          "sha256": "157c1028bc54a849822fb48c9f1b99ce819eefd009da9ea37cbf6c993bf51be5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_260.py",
+          "relative_path": "tower/test_tower_pack_260.py",
+          "sha256": "68aef1d90f5481b3bda7aa819266b92a9faa6806d4fa64c8813cda073490fcdd",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_261.py",
+          "relative_path": "tower/test_tower_pack_261.py",
+          "sha256": "320760b1a31c80a1d60c2ee677bf4a2260f39fc76c1f54d9a2a83ee56d40acba",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_262.py",
+          "relative_path": "tower/test_tower_pack_262.py",
+          "sha256": "9dd544cfa7fe414398765366b8568eae1be10024e851d97725161ffaf66ff4e5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_263.py",
+          "relative_path": "tower/test_tower_pack_263.py",
+          "sha256": "8d06219e53426c164d84b9ad2ee426eef73daa3a6e2c0793c5a5ba5058558b2c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_264.py",
+          "relative_path": "tower/test_tower_pack_264.py",
+          "sha256": "bb066c843bb97dcfda5bc63d7282f9e8085b5dafe199c6b469c24ec8f256c1d9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_265.py",
+          "relative_path": "tower/test_tower_pack_265.py",
+          "sha256": "ec32003e16ca7ea95891030a1fc6f147ebd4abdcdefb3b79f05c5c51c31a1947",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_266.py",
+          "relative_path": "tower/test_tower_pack_266.py",
+          "sha256": "4e240841beaa168ff3f531768a0646bf580ea6f8b1732cbe9170dd811146d1c9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_267.py",
+          "relative_path": "tower/test_tower_pack_267.py",
+          "sha256": "fcda87cd65a514080e3e718ba2806f9606c7454514d18b16ec3e138f85736855",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_268.py",
+          "relative_path": "tower/test_tower_pack_268.py",
+          "sha256": "4bc376c5b0529c3a352a3b03870a08d73a0743f2942193f54fda4047a4c18e42",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_269.py",
+          "relative_path": "tower/test_tower_pack_269.py",
+          "sha256": "b478b61febdbe71e076b4a9e2d4c1429006ac7f6270e4a73e1bb272e238b3372",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_270.py",
+          "relative_path": "tower/test_tower_pack_270.py",
+          "sha256": "31f4da5c579bc82ddab9b3ec835e83f8bdcd788e670e4856bd8debdcf92591fd",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_271.py",
+          "relative_path": "tower/test_tower_pack_271.py",
+          "sha256": "6b20dbc77e696116fd74b46af6ce1f66cd1f36fa26d9f304a8a775c02edfb2c5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_272.py",
+          "relative_path": "tower/test_tower_pack_272.py",
+          "sha256": "185193cab9ca0e0e156044a1e2bc490ad81ba6acc90d1f1e579172edcf78bba0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_273.py",
+          "relative_path": "tower/test_tower_pack_273.py",
+          "sha256": "ff3cab665805d07fa2355508555fbf41623ff884e00ca200a850bb3d30e49376",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_274.py",
+          "relative_path": "tower/test_tower_pack_274.py",
+          "sha256": "d4719d538fb93a4b19dc3f0987ad940f58bd6a873fca9211981718ca159adc85",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_275.py",
+          "relative_path": "tower/test_tower_pack_275.py",
+          "sha256": "aef54f4f8fe10d5edf98afd1902aa0f071e8ec2be7610afbda69ab71055260cf",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_276.py",
+          "relative_path": "tower/test_tower_pack_276.py",
+          "sha256": "314c6521db47c0c8e8a6d25d84bb2c9ee4c57e8a861c125ce1195a33a6ae4094",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_277.py",
+          "relative_path": "tower/test_tower_pack_277.py",
+          "sha256": "281ccd7e3c71dfc98c0799e869768d638870e7b88f3ea71d7f6b593f28ac3f0b",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_278.py",
+          "relative_path": "tower/test_tower_pack_278.py",
+          "sha256": "b110aba17c7d0c1ec55fed7ac2cb5b02068678f04ac1ddb1dcb0383ed40469b5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_279.py",
+          "relative_path": "tower/test_tower_pack_279.py",
+          "sha256": "0ab04ee26f1b8b2100e03e6f20a9ab6cfdd3a3057aba988d1e60afba92301c2c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_280.py",
+          "relative_path": "tower/test_tower_pack_280.py",
+          "sha256": "57db976f5a730bfe36c94e41867b861983921643f1312d559763f36fafe9f16a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_281.py",
+          "relative_path": "tower/test_tower_pack_281.py",
+          "sha256": "1aa18cab081764358d2b9dd3e81a8445b0a5232e9ba34281526e105d3f6487b2",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_282.py",
+          "relative_path": "tower/test_tower_pack_282.py",
+          "sha256": "87256d42fbf8f090fa32218c905a8afdd7eb1c39d714679ace78b38027849c2f",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_283.py",
+          "relative_path": "tower/test_tower_pack_283.py",
+          "sha256": "75eb00f39f44794f57b0c7dc1058cf1482a408814cf41d0360914cc4a2e38a81",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_284.py",
+          "relative_path": "tower/test_tower_pack_284.py",
+          "sha256": "18f8bd48ce88240e61d1950fa79c48023be5ad3585a12de792c12c174a418b3e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_285.py",
+          "relative_path": "tower/test_tower_pack_285.py",
+          "sha256": "59115449fcbf07111f50e71aa6ed2154816e3e83e21966a4744bd230fc07ba0a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_286.py",
+          "relative_path": "tower/test_tower_pack_286.py",
+          "sha256": "9daaa0f6d79aed444e88100bb2d9b7eb9111a29e7006f10d9c604e283b88d861",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_287.py",
+          "relative_path": "tower/test_tower_pack_287.py",
+          "sha256": "47a45a036775f9b84f1d732d180d291694c856f321070c6f6a9549e01090f830",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_288.py",
+          "relative_path": "tower/test_tower_pack_288.py",
+          "sha256": "bf5962f60314685fa149f3495e1451722edd4101c23b358167bd393ddea0981d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_289.py",
+          "relative_path": "tower/test_tower_pack_289.py",
+          "sha256": "6a0129f973611aed1882df5b583b77e36711b60cd2aa5337154aad78a9a0eb39",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_290.py",
+          "relative_path": "tower/test_tower_pack_290.py",
+          "sha256": "b61da8456f52749894543455a59af22b64fd4eb99fca669931ad61d0779a6170",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_291.py",
+          "relative_path": "tower/test_tower_pack_291.py",
+          "sha256": "3e6eaa04902a6151458843d8f835b27ba0349200ad821f351e7a7e155273e960",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_292.py",
+          "relative_path": "tower/test_tower_pack_292.py",
+          "sha256": "94a73ffa8a680f862b0e01f6d8dcd6f4a750ef3ecdce8f63293fd018d03164b3",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_293.py",
+          "relative_path": "tower/test_tower_pack_293.py",
+          "sha256": "6bb7a2c698070b73139ed03727aaf28f939e8d9e81ee3043c799b23d4699f9f9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_294.py",
+          "relative_path": "tower/test_tower_pack_294.py",
+          "sha256": "a1182ecac62680447f7f1b0efd55e1a7eabd06b3dbe990b8c2ae658198e64ab8",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_295.py",
+          "relative_path": "tower/test_tower_pack_295.py",
+          "sha256": "ecaa7acd652823465d4cd139a96c9e5010487e40d46134f9cc53c13ef52707ba",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_296.py",
+          "relative_path": "tower/test_tower_pack_296.py",
+          "sha256": "c4c747d6ca6637dae6aad1a579952de23289535ef1fab21156f1c33a3aa774d3",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_297.py",
+          "relative_path": "tower/test_tower_pack_297.py",
+          "sha256": "9b432ab2fcaf25d25fc8a2b4b19a03c970942f8b3e8ed49b2a791ec1d27da926",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_298.py",
+          "relative_path": "tower/test_tower_pack_298.py",
+          "sha256": "41e86da9c3757b0cd19d639a1099c01f6bfab04b7f66115b091a5a87fa63ad5d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_299.py",
+          "relative_path": "tower/test_tower_pack_299.py",
+          "sha256": "2ddd1dad30a2842bf05eca9136bce8799101189f266711320e273c825487dcda",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_300.py",
+          "relative_path": "tower/test_tower_pack_300.py",
+          "sha256": "4414076d57a0201cdedac09fd021d8993b025beb1043ce021183351ec66cb88e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_301.py",
+          "relative_path": "tower/test_tower_pack_301.py",
+          "sha256": "f1cc90862454048c6df63dfbac8f6c7e5efceb1e6c79222762c1e350104ac16a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_302.py",
+          "relative_path": "tower/test_tower_pack_302.py",
+          "sha256": "129d84e8b4e83a4e18445265e54e7a2abfe75e882eec41a3b9de7b06a7343a7d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_303.py",
+          "relative_path": "tower/test_tower_pack_303.py",
+          "sha256": "1c63e1f3abfc6ad1bced8dd5f6432e07fa4ea7fd6f8f6f3df6ac3c961a642462",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_304.py",
+          "relative_path": "tower/test_tower_pack_304.py",
+          "sha256": "b244a68280a49b4b644182f4462605823dc07272f3be7bd2faf2cf997331894e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_305.py",
+          "relative_path": "tower/test_tower_pack_305.py",
+          "sha256": "5142beb6e117c65423a38580489398a6c2eda75915e5d54119556c0baf600957",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_306.py",
+          "relative_path": "tower/test_tower_pack_306.py",
+          "sha256": "314caa34d3650bd2be55ff62dd794c81769e4bebd44f4c7357c27cd8c8fbcb90",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_307.py",
+          "relative_path": "tower/test_tower_pack_307.py",
+          "sha256": "bdb6c65294a08750fc6024f4eaf801e5545e5c050838f4759630ff166b707a93",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_308.py",
+          "relative_path": "tower/test_tower_pack_308.py",
+          "sha256": "8fa907211cb02e353b6d618631f28f1abdc2b3f016d9d0c2562bd1893a278a95",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_309.py",
+          "relative_path": "tower/test_tower_pack_309.py",
+          "sha256": "e1c1a2c8c5655cc5b0e8f3495b5e503cec0a9b4c823dfe73fdf649316c306ad3",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_310.py",
+          "relative_path": "tower/test_tower_pack_310.py",
+          "sha256": "ac0eb12f4d8976e9df8b9b2e65c6201b2bcd6ab8abfd257133accdbf4e123b28",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_311.py",
+          "relative_path": "tower/test_tower_pack_311.py",
+          "sha256": "786cb16d515a4ba384d89de30e4d65b5b0eaa8736da0f8be96d40c578a3fa1a9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_312.py",
+          "relative_path": "tower/test_tower_pack_312.py",
+          "sha256": "207f518dce678e3de5230301cb3fcd2dd21684eb99297664a5642c78a303e0e5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_313.py",
+          "relative_path": "tower/test_tower_pack_313.py",
+          "sha256": "0534aea9d8e9374c2a1d207580d8bb1795bfe7d0f649057a372632c4154b6d5b",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_314.py",
+          "relative_path": "tower/test_tower_pack_314.py",
+          "sha256": "b53c83ef1ee9a9a3494a5a02f0f53ae7d1edbcd277efcda60c3d532181ceea21",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_315.py",
+          "relative_path": "tower/test_tower_pack_315.py",
+          "sha256": "4f3f64369f0f480e35a4001ed0dcf539672c65f104aee9cd9b6c602e6d0b13f4",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_316.py",
+          "relative_path": "tower/test_tower_pack_316.py",
+          "sha256": "792c30e23db66b040370edc64e2066f27ab2399c84adaa8ce998cef1ef6bc784",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_317.py",
+          "relative_path": "tower/test_tower_pack_317.py",
+          "sha256": "2538e7ba24779cfa882b25f1588a574208a74490117947aaaff497ef79483662",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_318.py",
+          "relative_path": "tower/test_tower_pack_318.py",
+          "sha256": "1406e0d312317dedf1f05b729cdd6f7b81024384479f1e203ba4f53de291000c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_319.py",
+          "relative_path": "tower/test_tower_pack_319.py",
+          "sha256": "2d019e85583088fa2fe16f997bf04c87b1350de6dd7e6bf2a66afcdce754c88b",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_320.py",
+          "relative_path": "tower/test_tower_pack_320.py",
+          "sha256": "c8c8ccdce951a99bd6666b915e7eba7d82d72d0b6fc32cd6c4e1ba897cc0ef55",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_321.py",
+          "relative_path": "tower/test_tower_pack_321.py",
+          "sha256": "22b367852e9c80f54f5c5dd1543483f6fabb536d71231173ea4a8a84d37e982a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_322.py",
+          "relative_path": "tower/test_tower_pack_322.py",
+          "sha256": "240a0cbeb2887e417e1cd35e18f69c91011bd8ea07e92c92351bbf9ed61408c9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_323.py",
+          "relative_path": "tower/test_tower_pack_323.py",
+          "sha256": "23f156a0fda5a78ad66c1d3425aae4b9d8522416e6e693f7ae69bc224bc1c1de",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_324.py",
+          "relative_path": "tower/test_tower_pack_324.py",
+          "sha256": "27283a1ab3eea7b51a03e6ece767dad3f98088778ac4a37f452648bb003c50a0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_325.py",
+          "relative_path": "tower/test_tower_pack_325.py",
+          "sha256": "f816bad00a21508283798d88bf88116f66ad205d7e592f3f0610369568bbd121",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_326.py",
+          "relative_path": "tower/test_tower_pack_326.py",
+          "sha256": "c25588dd75d3783b76f6783a4f768b3283c8ceb2c500772b22329047482f732e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_327.py",
+          "relative_path": "tower/test_tower_pack_327.py",
+          "sha256": "7488073b08ff7178abca65926f3c531465347d011f9d8bf5f4323d8142922510",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_328.py",
+          "relative_path": "tower/test_tower_pack_328.py",
+          "sha256": "36c59aade4fe9d023db18637bb8f0888f27bdbd3fbd642aa60058fb2601689a3",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_329.py",
+          "relative_path": "tower/test_tower_pack_329.py",
+          "sha256": "904a41293ff1e7dd494c74cb38402c02422862de63fa585c0d42b4b412b9dc75",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_330.py",
+          "relative_path": "tower/test_tower_pack_330.py",
+          "sha256": "01cbcfa60f5473645b8701554e0472b22144a918ce7a210b82e2bc5a51236a70",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_331.py",
+          "relative_path": "tower/test_tower_pack_331.py",
+          "sha256": "4b6ab0b768014a9c53912cc6821a1b4bb17e70e0be738f3a7edb4f06bb27aaf0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_332.py",
+          "relative_path": "tower/test_tower_pack_332.py",
+          "sha256": "e381dc15cd011595e3edd280a54fc5a80a4f9b0bcf60b5b6de5051455be1a865",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_333.py",
+          "relative_path": "tower/test_tower_pack_333.py",
+          "sha256": "0c1e62e6b6ecfaabc4b0c054f9f2a349e032600d9c0f6aa88587a2a0e9409039",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_334.py",
+          "relative_path": "tower/test_tower_pack_334.py",
+          "sha256": "a113ee234644c9a4e25df08be7b8435e9f7f6828ba939d579ccde98490bd82ca",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_335.py",
+          "relative_path": "tower/test_tower_pack_335.py",
+          "sha256": "febecfdda106335c48af4c6684ceb70289da47bf0f7f4b2dacd4cd347f13ace5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_336.py",
+          "relative_path": "tower/test_tower_pack_336.py",
+          "sha256": "06ac50adc088b4ba3278eb6c911f723180180aa9361075603340208ce4677507",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_337.py",
+          "relative_path": "tower/test_tower_pack_337.py",
+          "sha256": "1ff7c3f8a12816d3587038dd11864166b166f00409d5d9f7eaf90e557eb7e950",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_338.py",
+          "relative_path": "tower/test_tower_pack_338.py",
+          "sha256": "f08b1858edcd3c4a5290c6eb3b4263a9a6cb23c7fc25755575cecf3d0ec69b11",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_339.py",
+          "relative_path": "tower/test_tower_pack_339.py",
+          "sha256": "230a43a421125d1d1bfe55ee373e447856b8ced2780e86fa950572f5b3b0e170",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_340.py",
+          "relative_path": "tower/test_tower_pack_340.py",
+          "sha256": "baff05a61d76b085aea626bbaf7dcd0c8c822268f7c2573b34621b161298e208",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_341.py",
+          "relative_path": "tower/test_tower_pack_341.py",
+          "sha256": "af9b2b45c194cf33aaf29a71220b51e67015f6c4cbd91933da87e8a8a54b823e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_342.py",
+          "relative_path": "tower/test_tower_pack_342.py",
+          "sha256": "89aa005b0bce4554576ca9e664195fb5f3ec632dc49eff5609c5bd89b640fffb",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_343.py",
+          "relative_path": "tower/test_tower_pack_343.py",
+          "sha256": "3a1b4df280e86180c6a4c2b78c28a52b1d4111d4c69c3f1a4d5c854af65b514f",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_344.py",
+          "relative_path": "tower/test_tower_pack_344.py",
+          "sha256": "162efb84a31c2f2e1d72e9a457e1681380bf61f24de168dbf0c1e95cff4865da",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_345.py",
+          "relative_path": "tower/test_tower_pack_345.py",
+          "sha256": "bdc9a6864945480afcc62278a816be25f7843e75b08c89cc5f3250bb106792fc",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_346.py",
+          "relative_path": "tower/test_tower_pack_346.py",
+          "sha256": "bd26d93044c0037e926057732ba658cdb0daedc4797f5151a178b545a6a8b9fc",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_347.py",
+          "relative_path": "tower/test_tower_pack_347.py",
+          "sha256": "bc4a284f4e2ee379becfe1d453bfdfbd05f89ff4daf1a960d518e59da5a32168",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_348.py",
+          "relative_path": "tower/test_tower_pack_348.py",
+          "sha256": "ceb136211f4026641caa0bc699df1db230b4d9efebd94a228f63675d82f462d6",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_349.py",
+          "relative_path": "tower/test_tower_pack_349.py",
+          "sha256": "24be86da65b253b95f9d25892499ff18c1a35aa87146f017349faff19c8a8f7c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_350.py",
+          "relative_path": "tower/test_tower_pack_350.py",
+          "sha256": "ebdc2b7b960cd71ed588a1246f365a865ffaf816973e80417e441d165744ee5c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_351.py",
+          "relative_path": "tower/test_tower_pack_351.py",
+          "sha256": "313c56468503d1ab6edfaf2472143aa72d9e52d4c7101590a813077c98d469c5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_352.py",
+          "relative_path": "tower/test_tower_pack_352.py",
+          "sha256": "46e84e6e96200dbb7309e2e639a0b8d6f51a16a65c1dfd6794130b98bde40a7b",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_353.py",
+          "relative_path": "tower/test_tower_pack_353.py",
+          "sha256": "b9c25788014f9a471ba11fb480f2c86db2c978afd5e0cff3c8921f4915be5ed9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_354.py",
+          "relative_path": "tower/test_tower_pack_354.py",
+          "sha256": "ddfba0d932c9a01bb96410653dae15f434f03bcf691b2cec152dd088f8af648a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_355.py",
+          "relative_path": "tower/test_tower_pack_355.py",
+          "sha256": "e428dcd4ac83da491a32fbf18697d68bdf05b8380ad6931ef776ef6021a90a25",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_356.py",
+          "relative_path": "tower/test_tower_pack_356.py",
+          "sha256": "d8057ec7b1ac4cb3964439a45d07bf2d51d7b009cfcfdce4fe9776b3d2326d80",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_357.py",
+          "relative_path": "tower/test_tower_pack_357.py",
+          "sha256": "48d53aea0ec04a05ec492fc1e3c27cf26f150aa5945a5c99b22621c72357d716",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_358.py",
+          "relative_path": "tower/test_tower_pack_358.py",
+          "sha256": "bf3a3cfd579e45f4b762a92e392bab42747b7fa83bc12af2215fea6ebebb40f1",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_359.py",
+          "relative_path": "tower/test_tower_pack_359.py",
+          "sha256": "6b597a093343b97b9022d5c78a3c019d411396ce5d41d850eb40df4ad2bf9543",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_360.py",
+          "relative_path": "tower/test_tower_pack_360.py",
+          "sha256": "7e803f74ccde525897295535d2fd9d84cea4c141ee8a223a381ad0d1c114a173",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_361.py",
+          "relative_path": "tower/test_tower_pack_361.py",
+          "sha256": "00d2bb9381f0f3589cea6c188373c1dd87117baa7a90cfaf369ff68cf737fcc3",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_362.py",
+          "relative_path": "tower/test_tower_pack_362.py",
+          "sha256": "31e511078f262881aefe5cd9b541f025a08a00f6e2bf201e70fd11c4665b08d8",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_363.py",
+          "relative_path": "tower/test_tower_pack_363.py",
+          "sha256": "1673607b6d27012a80dfdad06f326ba665f8107330390ad3e70a3a81a6bcc97a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_364.py",
+          "relative_path": "tower/test_tower_pack_364.py",
+          "sha256": "263f88ac11dd649d8db65db7b7e0e466853a0ccb03158524770c8457f545f220",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_365.py",
+          "relative_path": "tower/test_tower_pack_365.py",
+          "sha256": "7312491e41e9b3af8f25488b4c9c028619b968c40b7a565c97cf1e371be16fef",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_366.py",
+          "relative_path": "tower/test_tower_pack_366.py",
+          "sha256": "5cfb7c5c289484444ae151ac74b3ce78ee56942ecc2abc406d8b97c6c980c526",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_367.py",
+          "relative_path": "tower/test_tower_pack_367.py",
+          "sha256": "d5c20a48fe72c64df24354f8253364eef44aea1cf09730586ad39fbbeed579d9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_368.py",
+          "relative_path": "tower/test_tower_pack_368.py",
+          "sha256": "d8858a97ea2c5b825a440d31162456bb32e46848254ad3c86eb32f3c9cc763bc",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_369.py",
+          "relative_path": "tower/test_tower_pack_369.py",
+          "sha256": "93714c3e8e2ac36991726bf3bb1a5caff2b5419dd149581d3ca7bdaee24aa69c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_370.py",
+          "relative_path": "tower/test_tower_pack_370.py",
+          "sha256": "1d6cbd16ee4a797f210d6aeab62b38efbd65541a2e0899882fa6a0f4a6bf3ccf",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_371.py",
+          "relative_path": "tower/test_tower_pack_371.py",
+          "sha256": "4e2c32a7964e176ac33145182d5a4848e230f3037016dd5f8d5183404b278ea0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_372.py",
+          "relative_path": "tower/test_tower_pack_372.py",
+          "sha256": "f0576d2d96897252de6d9aef2c3a1d03e3cdd0d4d235fcf71c0ef95ec24cf684",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_373.py",
+          "relative_path": "tower/test_tower_pack_373.py",
+          "sha256": "caf934bf6cf9ba13076e62cd6b2ade4b0fce37d289d55309536ede7fd74d8ef6",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_374.py",
+          "relative_path": "tower/test_tower_pack_374.py",
+          "sha256": "c6382152b32a5d4b8501d120788952282842b974afb380f47d335a4b9a0b6e9e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_375.py",
+          "relative_path": "tower/test_tower_pack_375.py",
+          "sha256": "2fdac5000de0a807ac787eda2519ab7ccda156c624a92c2e391e02e0cff6f8be",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_376.py",
+          "relative_path": "tower/test_tower_pack_376.py",
+          "sha256": "3e4833704c42d8f85384a80736f1c18ec78b8d1d0317fc2fc7efd4af6276ac8d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_377.py",
+          "relative_path": "tower/test_tower_pack_377.py",
+          "sha256": "57150db128579c24594f9c8b907651920835a1efd5f1e737a4891feef125657d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_378.py",
+          "relative_path": "tower/test_tower_pack_378.py",
+          "sha256": "415017172d69c1f73a94c868a08d3571ec47333a23b3325001ff1e2f8a716b99",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_379.py",
+          "relative_path": "tower/test_tower_pack_379.py",
+          "sha256": "6bda3a06eedd302928d7f8a289485bf07faf30d838a7d8a04fc2c1ac76b83609",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_380.py",
+          "relative_path": "tower/test_tower_pack_380.py",
+          "sha256": "b0c25c54f1e33ca264ce9ff5e1c712214d11d641647ad4a66a20068191571f91",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_381.py",
+          "relative_path": "tower/test_tower_pack_381.py",
+          "sha256": "46c225fb1db00ae48f43d3ece7adeb82a7163f4892de3a3391d9f7cd50c98d1c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_382.py",
+          "relative_path": "tower/test_tower_pack_382.py",
+          "sha256": "617ab9bc7bcf9a74dac7b643411ab459131232a3d9f2c607af6a3ce044b2b5dc",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_383.py",
+          "relative_path": "tower/test_tower_pack_383.py",
+          "sha256": "0f127396ac3255b4c6c8f0d647b29a9ad2da20543e8e2723c53abfbda06a5b4a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_384.py",
+          "relative_path": "tower/test_tower_pack_384.py",
+          "sha256": "5d8c5eee5d35c5dfe6b74b31a92580c35b600064ed412e78ab503bb4f4e0c3c1",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_385.py",
+          "relative_path": "tower/test_tower_pack_385.py",
+          "sha256": "f40caa2796faf5497de92659d8b2e704c21b6d089c5a9329479ab1369c29d60e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_386.py",
+          "relative_path": "tower/test_tower_pack_386.py",
+          "sha256": "aa396213a19cfe1d1a980eb337d258bc5fbe05320a2e91e12188fd54856828c9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_387.py",
+          "relative_path": "tower/test_tower_pack_387.py",
+          "sha256": "be0a5368e03f60f8a0065cde19ba20d3931250af81176ce64a234b3b09f31ff5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_388.py",
+          "relative_path": "tower/test_tower_pack_388.py",
+          "sha256": "4d94f6bdd7de584409d544e6f95078570e796c615e2af400358a27e5a081392c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_389.py",
+          "relative_path": "tower/test_tower_pack_389.py",
+          "sha256": "937a0e9c4da3082c747e56e2177a8169efb04cb562ca7b009c3feea9cee55819",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_390.py",
+          "relative_path": "tower/test_tower_pack_390.py",
+          "sha256": "bd044b24719eadc993984746371832604fb69ee2e9ca9df7d850b0432f89271a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_391.py",
+          "relative_path": "tower/test_tower_pack_391.py",
+          "sha256": "e84f0a07c5046bbb997b70d16bfb49c52a0ce1aac2d06956c7753b98200220fc",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_392.py",
+          "relative_path": "tower/test_tower_pack_392.py",
+          "sha256": "31e06802e149234d0c57a44c6baf73dd949fdc8f19af3da41113d9ef5a3d40e4",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_393.py",
+          "relative_path": "tower/test_tower_pack_393.py",
+          "sha256": "309f9572589a9565998003f3f39ab74984203377499be731e6b8fb0a5c510a2e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_394.py",
+          "relative_path": "tower/test_tower_pack_394.py",
+          "sha256": "21d0cc0b195e9be39a45576f46aed9bf2dec1fc66bae36d514db2466c52356ab",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_395.py",
+          "relative_path": "tower/test_tower_pack_395.py",
+          "sha256": "929e239512ac2f889367acc642807dcd681bf9c57b47f3a79367a6429ac31555",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_396.py",
+          "relative_path": "tower/test_tower_pack_396.py",
+          "sha256": "f5d53928ca5920da69181bf2603a09c3151887db5212aad8979d3851093dbd5a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_397.py",
+          "relative_path": "tower/test_tower_pack_397.py",
+          "sha256": "c4aa951098dbb934f592de46fd870732455480bf1c395218c75ff923faca2839",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_398.py",
+          "relative_path": "tower/test_tower_pack_398.py",
+          "sha256": "2139574e1a454474fa921609f4511980cf8e44ea374368d4cef6ac848b174799",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_399.py",
+          "relative_path": "tower/test_tower_pack_399.py",
+          "sha256": "fb7fc23016efb8b568d818bfa534af2439c215c363392ef6561c341691592820",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_400.py",
+          "relative_path": "tower/test_tower_pack_400.py",
+          "sha256": "5e491c304e1e2854f3425ed1d6e78de9e84162a417406978b0ccf7f4cdc83c08",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_401.py",
+          "relative_path": "tower/test_tower_pack_401.py",
+          "sha256": "30dbe06cd819d90f50294f84b82debf03b87587cb5db978666b7a42dbcfa699f",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_402.py",
+          "relative_path": "tower/test_tower_pack_402.py",
+          "sha256": "945ccb3bf8ca18e31bbda93c43e555cba7d2ec95254280011b6fde09db5d1e76",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_403.py",
+          "relative_path": "tower/test_tower_pack_403.py",
+          "sha256": "afe5e5eac68236bcb3a2db3721665cc5ba259d51ac5a655935e4e0ca0129e539",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_404.py",
+          "relative_path": "tower/test_tower_pack_404.py",
+          "sha256": "7c12187bb3b0eac1aec4d056de28b29418506cf71da9ac80b5430eb4fbe95c0e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_405.py",
+          "relative_path": "tower/test_tower_pack_405.py",
+          "sha256": "4a8bbbfb7cd4371f6c9316fb4c436739e9d997ede91a7626aa9d56df09808d6e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_406.py",
+          "relative_path": "tower/test_tower_pack_406.py",
+          "sha256": "a6fca2bdedc0256d0214c37f0896648cebbb3c20d3bc2bf8920af9e68743790a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_407.py",
+          "relative_path": "tower/test_tower_pack_407.py",
+          "sha256": "19fd7589ebb9298e87249057be1e1a4e3472d96be511a491b5887124935ed43b",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_408.py",
+          "relative_path": "tower/test_tower_pack_408.py",
+          "sha256": "3b3317431b3136464d18104ec8d0910300944bbd9f0f9408670ffc240dc76618",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_409.py",
+          "relative_path": "tower/test_tower_pack_409.py",
+          "sha256": "3e8192bfd03a536573aaa209fbe73ca32496252825c07a714674b4f3fe009ad7",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_410.py",
+          "relative_path": "tower/test_tower_pack_410.py",
+          "sha256": "8efcf309026d8d73539928c1120d4abf22722c4bdcdfc928c570e1f612369836",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_411.py",
+          "relative_path": "tower/test_tower_pack_411.py",
+          "sha256": "3dc557a2be85a09938acdab704711884923b95d5cb432f977d1b91504b7359e2",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_412.py",
+          "relative_path": "tower/test_tower_pack_412.py",
+          "sha256": "a4bb718101121f192a79dbff6a17af733eb1989a07d1f9a9b6c0aa6bb2747051",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_413.py",
+          "relative_path": "tower/test_tower_pack_413.py",
+          "sha256": "732ef77b58bb5d3fd4506883d14f795f0cea841b9e0533b906f05b9a32c4ac66",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_414.py",
+          "relative_path": "tower/test_tower_pack_414.py",
+          "sha256": "ea01985992829620cbc4f921f3d365c22b35251593410eb7b709cf29de562623",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_415.py",
+          "relative_path": "tower/test_tower_pack_415.py",
+          "sha256": "87977f2fe954634b57e7fcd19917309b7b3a0a8e3b5eeb9be01f06281e0112fd",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_416.py",
+          "relative_path": "tower/test_tower_pack_416.py",
+          "sha256": "9dfff4583ba792dc0495aa04ce82668c1469172e6a988a9f5cb7fd4df69d1be6",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_417.py",
+          "relative_path": "tower/test_tower_pack_417.py",
+          "sha256": "5038d1452513f434706f6741d83037d5ee95167c008b5eab3646118792ab7067",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_418.py",
+          "relative_path": "tower/test_tower_pack_418.py",
+          "sha256": "e20856daa8f563b4479ca7d57bd6c0e0efe3332680357ec6b7195f54f4a1eab3",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_419.py",
+          "relative_path": "tower/test_tower_pack_419.py",
+          "sha256": "ee589975510aed6ae87e346fa0155314b5b2a40444ac2526cdd40a2c4ee0f8a6",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_420.py",
+          "relative_path": "tower/test_tower_pack_420.py",
+          "sha256": "9bbdc960eec43d6d2f896f1d13ff5eb576e02e8d9753bc5d2f5efc6993ebc08d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_421.py",
+          "relative_path": "tower/test_tower_pack_421.py",
+          "sha256": "f81a65837e99700c0eed7bc352946a3875f79aa63d9b9fced58ff898dc6e73f0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_422.py",
+          "relative_path": "tower/test_tower_pack_422.py",
+          "sha256": "5e93298e999f4a8e5e6fac856c0b84121a04ab74bec4f04b01eb1db759822067",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_423.py",
+          "relative_path": "tower/test_tower_pack_423.py",
+          "sha256": "4c4b92c6e1a44d5d05d50fcc68b48bec95025429a96a2e118ba68adbcae430ae",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_424.py",
+          "relative_path": "tower/test_tower_pack_424.py",
+          "sha256": "59cfc1b1bb39a736c8f4cc5a8ace30889761485ab91d8f91a4be5b9265217c4a",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_425.py",
+          "relative_path": "tower/test_tower_pack_425.py",
+          "sha256": "a1d73ad82f943d2902c711377397534c5c041412972c09dc4b877622100ccc3d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_426.py",
+          "relative_path": "tower/test_tower_pack_426.py",
+          "sha256": "bd7945ff02b390e143ba8acce790389780227da80abd42c0791ceebd2a35cb95",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_427.py",
+          "relative_path": "tower/test_tower_pack_427.py",
+          "sha256": "d0f22314895ff65b82ae1c3692c37cebe09b8eb4c43036f71012fd88faaedb56",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_428.py",
+          "relative_path": "tower/test_tower_pack_428.py",
+          "sha256": "c1a824c74f29ce8e3167ef40b0f9f2fc0895f110f506bd8f93d137c2fbe45b84",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_429.py",
+          "relative_path": "tower/test_tower_pack_429.py",
+          "sha256": "f56e5e5bae1eb400b81a915ef555f0c864c46846a30717be2e33ae4fa267e392",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_430.py",
+          "relative_path": "tower/test_tower_pack_430.py",
+          "sha256": "97a11ce342cef654df436e65b09aacb6ee02986f1e9ee12339a6c9dd0783a699",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_431.py",
+          "relative_path": "tower/test_tower_pack_431.py",
+          "sha256": "0e9ed8cc92e034acbe8a858832a9104b86f57bf904c0c434ae1235fae233032e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_432.py",
+          "relative_path": "tower/test_tower_pack_432.py",
+          "sha256": "edec4b98cddea8d09f9de9f0ca284e28405bbd2c9e96c7b7ca20263b76ab14fb",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_433.py",
+          "relative_path": "tower/test_tower_pack_433.py",
+          "sha256": "c924beb7a83f775063d54987b8f6c9a37410c88795956c66a108d15373bfb8cd",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_434.py",
+          "relative_path": "tower/test_tower_pack_434.py",
+          "sha256": "ad4a4e4755812cd1adc150f6069faa16193181071235fe60d475808ab1a323cd",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_435.py",
+          "relative_path": "tower/test_tower_pack_435.py",
+          "sha256": "8f9f3cb0798d34d2964c680af6ed0d001bf59849b6949677bbcfa3bbcc2d756e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_436.py",
+          "relative_path": "tower/test_tower_pack_436.py",
+          "sha256": "e0eea4f7398951aa14aa1155410382c5539dc75dad6aae8b237b61b24ba51d75",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_437.py",
+          "relative_path": "tower/test_tower_pack_437.py",
+          "sha256": "b705cc808fdbecb4697a9827098888817c41c76800bce279642bb99e3c0533a2",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_438.py",
+          "relative_path": "tower/test_tower_pack_438.py",
+          "sha256": "1017829883dd9ab31add2dbdc9221fd061a108d655aee2ad10892e813d86f6da",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_439.py",
+          "relative_path": "tower/test_tower_pack_439.py",
+          "sha256": "55b23acbdd027b4e1961ccebf668d9e948e28741e0494d07d344f485d9ead478",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_440.py",
+          "relative_path": "tower/test_tower_pack_440.py",
+          "sha256": "d8c755b50173133691db35adecf2344de64044365d8dc2492e0c15fcbbd33e97",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_441.py",
+          "relative_path": "tower/test_tower_pack_441.py",
+          "sha256": "bcae09fdb144c905a618108ec2348a8f5806abc12943d7f325ef7228a1dd30d2",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_442.py",
+          "relative_path": "tower/test_tower_pack_442.py",
+          "sha256": "4d379972c2f8ddcd9ce9b7fc1544d5176e28c6570c0bc2e3107ca9bf9746d3d0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_443.py",
+          "relative_path": "tower/test_tower_pack_443.py",
+          "sha256": "0d5877722a2d1205e1def4a134cb26351465335064cfdcb337c21b2b5b068c75",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_444.py",
+          "relative_path": "tower/test_tower_pack_444.py",
+          "sha256": "2971ce19dfb20fe64bb063ee1b637d495da4dee0f7e179ad5857f021758c62c8",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_445.py",
+          "relative_path": "tower/test_tower_pack_445.py",
+          "sha256": "0636b135f29fbab0fdacd86771770f513445de4aa3f041d40c81d65ad7435652",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_446.py",
+          "relative_path": "tower/test_tower_pack_446.py",
+          "sha256": "71d1e3095ed904061478296aa005ab6e70335c965fcb834e88e123bc0ef65527",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_447.py",
+          "relative_path": "tower/test_tower_pack_447.py",
+          "sha256": "106fb366a65c0889192b04e14b12b05c4da491cfe91eec90a1229bf4c8d99ae5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_448.py",
+          "relative_path": "tower/test_tower_pack_448.py",
+          "sha256": "041bde5236ccb39709f991db4ae43503d01fab79e08ed779ed9b128e3a4d194f",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_449.py",
+          "relative_path": "tower/test_tower_pack_449.py",
+          "sha256": "d7d23847d8b89d28753765b84dfa92937c4100d1d975dcd14473ba12d3e73425",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_450.py",
+          "relative_path": "tower/test_tower_pack_450.py",
+          "sha256": "e946fb7c7cec41033027a9a353a8623dc51ac1344ea4f7ee093fcb70a52ea6db",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_451.py",
+          "relative_path": "tower/test_tower_pack_451.py",
+          "sha256": "932431d190d5b434284d51e3300c2e74408cb62f323b53b339276484be7138c6",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_452.py",
+          "relative_path": "tower/test_tower_pack_452.py",
+          "sha256": "94fb7234ece66d8377f491e47b2aa7037816d41929ba0a4b3d6c8c6a82bb6c38",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_453.py",
+          "relative_path": "tower/test_tower_pack_453.py",
+          "sha256": "46b6d05381c4e8b95bf7c590ac8e9046303efc721e4ddfae3f0a82f8d515b1b5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_454.py",
+          "relative_path": "tower/test_tower_pack_454.py",
+          "sha256": "2294999d63e871a029687b63504b094c1ca154aeb0b14895158410225b99a9cd",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_455.py",
+          "relative_path": "tower/test_tower_pack_455.py",
+          "sha256": "105c0f36f2b9a35fbaa1311b47412ff8a5c5fe686d23d5560538e627014574f5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_456.py",
+          "relative_path": "tower/test_tower_pack_456.py",
+          "sha256": "ef571b36c798400808f74ad1407c5b9a995f8eec287ed57d632ea09a594981eb",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_457.py",
+          "relative_path": "tower/test_tower_pack_457.py",
+          "sha256": "99e3363fef097a2c24bcc782a778e68e7e56d5923027da37016913fe35341c57",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_458.py",
+          "relative_path": "tower/test_tower_pack_458.py",
+          "sha256": "df9f41599e99061cb7daaa06e1dc994e8fce9b259bae7c07a41ac975661af6a9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_459.py",
+          "relative_path": "tower/test_tower_pack_459.py",
+          "sha256": "c9556e459d43b223372ff93dd4a8dcb2978d0334be77e7817fe9300e6de07df9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_460.py",
+          "relative_path": "tower/test_tower_pack_460.py",
+          "sha256": "55e9a3724fe371fec7b07ad705be84a7044d76e1d7f94f5786d94f5f945166fc",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_461.py",
+          "relative_path": "tower/test_tower_pack_461.py",
+          "sha256": "f3e477449a17297f8741fcff11648051162aafe9d5e8e6bda2e5923991f1ac72",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_462.py",
+          "relative_path": "tower/test_tower_pack_462.py",
+          "sha256": "d170fcf0f1be7f7cde29471ccd7ac64c7e313271833d0dae49e176926a06fc51",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_463.py",
+          "relative_path": "tower/test_tower_pack_463.py",
+          "sha256": "ec86488f660296185621a736fe5350018708c4e6224bf10522527f16b1e213c0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_464.py",
+          "relative_path": "tower/test_tower_pack_464.py",
+          "sha256": "699e0e53ffa964026a02a2e430d56b5e4ebcbfb42c33759448fcb0f9f73479b9",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_465.py",
+          "relative_path": "tower/test_tower_pack_465.py",
+          "sha256": "95f75c48ec0262d344070c7de7b0f3c2e9939313893a21356d014e085460d02e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_466.py",
+          "relative_path": "tower/test_tower_pack_466.py",
+          "sha256": "7bc1bd98401792e541f10cda8d09efb3ae4c92a1b3b3f80a88453f51fe4bfc0e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_467.py",
+          "relative_path": "tower/test_tower_pack_467.py",
+          "sha256": "637e7ac17b331081afd2d70deea802c6538f0965e071c3245f97abb80b482179",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_468.py",
+          "relative_path": "tower/test_tower_pack_468.py",
+          "sha256": "7078e77fe059b2fd75a6340a3bf46d092cd6fc12032de3b181e88525e7cbcece",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_469.py",
+          "relative_path": "tower/test_tower_pack_469.py",
+          "sha256": "d952e162c1e9c4cc5e96ec0fee56fa922ef12ca9077a9b903c03fb67d63b2434",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_470.py",
+          "relative_path": "tower/test_tower_pack_470.py",
+          "sha256": "5e950b85dca63d47cf7d9075946e9a4d80104548a7ab4e762dc373837ad37303",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_471.py",
+          "relative_path": "tower/test_tower_pack_471.py",
+          "sha256": "8c164b14fa5fc098fe415efb2814388bb4372c6f8e47d611f249f8b15f551228",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_472.py",
+          "relative_path": "tower/test_tower_pack_472.py",
+          "sha256": "456d5459dd01b27e2a5c77ecde8ef36aaa90251755dc4057b82513690055073d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_473.py",
+          "relative_path": "tower/test_tower_pack_473.py",
+          "sha256": "53924e4e65a81edebb48ed3520eed92d93cc11ebbd8894966d0f820de4c671c3",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_474.py",
+          "relative_path": "tower/test_tower_pack_474.py",
+          "sha256": "2aa01e8ecfc50d3692edcbef091dfbda3172c89bf9519127d540d8911e998df8",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_475.py",
+          "relative_path": "tower/test_tower_pack_475.py",
+          "sha256": "ecb9d1591992546e2972b7b8a7e13fccac6fce6f237ce0b68713d3518800b5d6",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_476.py",
+          "relative_path": "tower/test_tower_pack_476.py",
+          "sha256": "976888f738c1f220fcd8b3ef2400e3a15453b49919ecfa01fd4c1fd6f8a930af",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_477.py",
+          "relative_path": "tower/test_tower_pack_477.py",
+          "sha256": "97d80defde8da80fcc5df6014270e278c3a677dcb74662a30cf6e8c6842cc493",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_478.py",
+          "relative_path": "tower/test_tower_pack_478.py",
+          "sha256": "f1a09f963a1dbbccf654d85a8aa1410dac68ca3b03b95efa3b80d4a126a9e9ac",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_479.py",
+          "relative_path": "tower/test_tower_pack_479.py",
+          "sha256": "7250e33e920ab9f1adbfbab08e7ac6f9c0fa8bd182e972bc6eb2199459169f42",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_480.py",
+          "relative_path": "tower/test_tower_pack_480.py",
+          "sha256": "597f132f9528432ca12652c66cb3930cd9936893108357105acb5177024de1e6",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_481.py",
+          "relative_path": "tower/test_tower_pack_481.py",
+          "sha256": "f910a7472ee7fc31467df769554dc7c3c16d18392cb05b24065df13c85e4b99c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_482.py",
+          "relative_path": "tower/test_tower_pack_482.py",
+          "sha256": "412dac6731fbf75b36517125a59fce8fca6fbfa82fbabdaf016d87a0dba2f334",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_483.py",
+          "relative_path": "tower/test_tower_pack_483.py",
+          "sha256": "8ad7069f149a51cc102a1e0e793b1afa6f1b54159964439e4bc124b0e1e6e69d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_484.py",
+          "relative_path": "tower/test_tower_pack_484.py",
+          "sha256": "36c2c7419967bbf16f8d2fa662c564f9a0740d45d5e35827fd1911d3a38a089c",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_485.py",
+          "relative_path": "tower/test_tower_pack_485.py",
+          "sha256": "8d0ed09f7040821c41a9cc10fb0acb39c088749e5fa70b96c8cc4482142b992b",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_486.py",
+          "relative_path": "tower/test_tower_pack_486.py",
+          "sha256": "c7101e2bc8457a2f048da80b0d5cbf36043523169cd6dadc58838dfe5e8f3c1d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_487.py",
+          "relative_path": "tower/test_tower_pack_487.py",
+          "sha256": "c2912955d00f10d589ccfc556a784cdc5cdc6574cf87334e0de74655d9d4ad9e",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_488.py",
+          "relative_path": "tower/test_tower_pack_488.py",
+          "sha256": "001bd0c2b62c2e7b8c85707649ee745493334a9009fc96d4bd075f0be0e456f8",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_489.py",
+          "relative_path": "tower/test_tower_pack_489.py",
+          "sha256": "59389279682ff4b99ee12dd77d61f12ccbe76fe317f16bc14ddeedd0246acae7",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_490.py",
+          "relative_path": "tower/test_tower_pack_490.py",
+          "sha256": "160a6c77f012ecd16d4c0dcd355c1af21eaa726a1e4b05a1ea512c547bb8cce1",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_491.py",
+          "relative_path": "tower/test_tower_pack_491.py",
+          "sha256": "69df04af57a421de170b513290c25675a61608f1669664c5bd4af65f2b88a64d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_492.py",
+          "relative_path": "tower/test_tower_pack_492.py",
+          "sha256": "49faa54ba013f000d09b4bdf0bdbc44b118460c7baad824676478c63bcb9783f",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_493.py",
+          "relative_path": "tower/test_tower_pack_493.py",
+          "sha256": "f87f5883ed9610c466dab1679f13411db057b043d409912f20d1b945a768a3f0",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_494.py",
+          "relative_path": "tower/test_tower_pack_494.py",
+          "sha256": "442e9dabd905825f8bbed44786d45458df12bc105642284b428b72f67fc75242",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_495.py",
+          "relative_path": "tower/test_tower_pack_495.py",
+          "sha256": "03d68d7bdefe777b68dc45d345a6c4ae3c781ff30a3e7239c42e848df7bc156f",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_496.py",
+          "relative_path": "tower/test_tower_pack_496.py",
+          "sha256": "fd702b720e5550e507baaab80d054f0eb53a5611d0e0bc92c81bf36301a934ac",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_497.py",
+          "relative_path": "tower/test_tower_pack_497.py",
+          "sha256": "a86d47cd4b4b96549bcf36868350546576a5de7927ceb81669558b1036012ee2",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_498.py",
+          "relative_path": "tower/test_tower_pack_498.py",
+          "sha256": "940584b7ad95987dd3419267398f325a3379b20f08128f6856f97a6b4e351326",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_499.py",
+          "relative_path": "tower/test_tower_pack_499.py",
+          "sha256": "5145147aada79db261ff97ee43daf35ce1a661cc5aa5c8bf6756519da91a20d5",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/test_tower_pack_500.py",
+          "relative_path": "tower/test_tower_pack_500.py",
+          "sha256": "c0badeb24bc8608e54dac1e94f8f2fd09222fb1a237b6bbf5d613c712998404d",
+          "signals": [
+            "app ="
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/tower_human_login_ob_launch.py",
+          "relative_path": "tower/tower_human_login_ob_launch.py",
+          "sha256": "f312816c214c8dc3644554ed9d55079bb26eda078bec0955d88beb5e1b0b0f99",
+          "signals": [
+            "Blueprint("
+          ]
+        },
+        {
+          "name_signal": false,
+          "path": "/content/SimpleeMrkTrade_REAL_CLONE/tower/tower_observatory_walkthrough_web.py",
+          "relative_path": "tower/tower_observatory_walkthrough_web.py",
+          "sha256": "8d7560831b1a5e5d1378d0046d4b8e917842ecced814fb3c77339a43cdf7da67",
+          "signals": [
+            "Blueprint("
+          ]
+        }
+      ],
+      "status": "existing_deployment_artifacts_detected_unvalidated"
+    },
+    "environment": {
+      "customer_facing": false,
+      "dry_run_only": true,
+      "name": "simplee-private-staging",
+      "production_environment": false,
+      "purpose": "Private managed staging environment for the official human Tower-to-Observatory walkthrough."
+    },
+    "environment_separation": {
+      "production_data_copy_allowed": false,
+      "separate_access_logs": true,
+      "separate_database": true,
+      "separate_from_production": true,
+      "separate_object_storage_namespace": true,
+      "separate_payment_keys": true,
+      "separate_secret_set": true,
+      "separate_webhook_keys": true
+    },
+    "health_and_readiness_contract": {
+      "Tower_to_Observatory_private_route_check_required": true,
+      "database_connectivity_check_required": true,
+      "health_checks_may_move_capital": false,
+      "health_checks_may_submit_broker_orders": false,
+      "object_storage_connectivity_check_required": true,
+      "observatory_health_check_required": true,
+      "tower_health_check_required": true
+    },
+    "managed_resources": {
+      "database": {
+        "connection_secret_stored_in_git": false,
+        "environment": "staging",
+        "status": "not_provisioned",
+        "type": "managed_postgresql"
+      },
+      "logging": {
+        "secret_redaction_required": true,
+        "session_cookie_logging_allowed": false,
+        "status": "not_configured",
+        "type": "managed_service_and_access_logs"
+      },
+      "object_storage": {
+        "direct_vault_upload": false,
+        "environment": "staging",
+        "public_bucket": false,
+        "status": "not_provisioned",
+        "type": "private_s3_compatible_storage"
+      }
+    },
+    "network_and_route_contract": {
+      "approved_redirect_required": true,
+      "missing_requirement_behavior": "fail_closed",
+      "native_session_handoff_required": true,
+      "observatory_public_bypass_prohibited": true,
+      "owner_authentication_required": true,
+      "owner_step_up_required": true,
+      "real_launch_receipt_required": true,
+      "receipt_hash_clearance_reference_required": true,
+      "tower_is_front_door": true
+    },
+    "safety": {
+      "broker_submission_enabled": false,
+      "direct_vault_upload_enabled": false,
+      "dry_run_only": true,
+      "live_auto_locked": true,
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    },
+    "service_topology": {
+      "observatory": {
+        "deployment_status": "not_deployed",
+        "direct_public_navigation": false,
+        "entrypoint": "unresolved",
+        "external_ingress": "prohibited",
+        "role": "protected Observatory destination reached only through an approved Tower handoff",
+        "service_type": "managed_private_python_service"
+      },
+      "tower": {
+        "deployment_status": "not_deployed",
+        "entrypoint": "unresolved",
+        "external_ingress": "restricted_authenticated_access_only",
+        "observatory_bypass_allowed": false,
+        "role": "only approved external front door for identity, permissions, owner step-up, routing, and Observatory launch",
+        "service_type": "managed_python_web_service"
+      }
+    }
+  },
+  "environment_definition_hash": "ea4b25461afb369802d884a22525af8ce49a14337e2aee40dd9756db4ccd3dfb",
+  "unresolved_deployment_inputs": [
+    {
+      "input": "managed_host_provider",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "managed_host_account_or_team",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "deployment_region",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "Tower_service_name",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "Observatory_service_name",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "Tower_runtime_entrypoint",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "Observatory_runtime_entrypoint",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "Tower_staging_host",
+      "required_before_walkthrough": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "Observatory_private_service_address",
+      "required_before_walkthrough": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "managed_staging_postgresql_instance",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "private_staging_object_storage_namespace",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "staging_secret_references",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    },
+    {
+      "input": "deployment_configuration_file",
+      "required_before_deployment": true,
+      "status": "unresolved"
+    }
+  ],
+  "unresolved_deployment_inputs_hash": "aeec79f134a988c495aaff0f343435110304799dfc70408e3df529ede28a2ac3"
+}

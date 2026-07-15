@@ -1,0 +1,67 @@
+{
+  "bound_evidence_source_count": 6,
+  "commit_created": false,
+  "created_at": "2026-07-15T02:07:08.942106Z",
+  "deployment_performed": false,
+  "execution_receipt_path": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_execution/gp052_evidence_binding_executed_20260715T020025Z.json",
+  "execution_receipt_sha256": "b6a5fee560a05421dc8da4a183ac84bbdfafc1abeb8eff9473136d432f1322ce",
+  "final_outcome": "not_placed",
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "merge_performed": false,
+  "next_boundary": "gp052_evidence_binding_closeout_gate",
+  "push_performed": false,
+  "receipt_hash": "11357242ee1f9f682decbe2f59d5ada51f8d03a15638142607039b00b6b038c8",
+  "receipt_type": "tower_ob_gp052_evidence_binding_verification",
+  "recomputed_binding_set_hash": "1ce9ca0e55973066b5d6cdeee414fcc83c37d5e9a82eb788712028afe295650b",
+  "recomputed_execution_receipt_hash": "07072942d5111c08121c8ce9fc81e8465046189d5166483332989ac7a780f621",
+  "safety": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "dry_run_only": true,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "source_files_modified": false,
+  "status": "completed",
+  "step12_state_path": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_execution/current_gp052_execution_state.json",
+  "step12_state_sha256": "71110b21aed8c7330d9a53836a081feb15ac35da1931ae68f374996c934bd8c9",
+  "step_key": "gp052_evidence_binding_verified",
+  "step_number": 13,
+  "stored_binding_set_hash": "1ce9ca0e55973066b5d6cdeee414fcc83c37d5e9a82eb788712028afe295650b",
+  "stored_execution_receipt_hash": "07072942d5111c08121c8ce9fc81e8465046189d5166483332989ac7a780f621",
+  "tests_passed": 85,
+  "verified": true,
+  "verified_sources": [
+    {
+      "binding_hash": "e978379be554df6f27cdcd3d653bf5c08a48463f3150b1390c2e4466e1dfb9c0",
+      "index": 1,
+      "source_hash": "38edf4ddd5831defae3b52f03e98ec41ebd9e10c502a19750d494f00e36b68ad"
+    },
+    {
+      "binding_hash": "6e4784cc9b154fb7a0f474ba39aa4ee710c1d2dc1bfb5dc4a0f7510cc035b358",
+      "index": 2,
+      "source_hash": "ff5d8d1bd1df539868bb919d42450dc7b1066c8b904a9c9a27fd91f5d1ce648d"
+    },
+    {
+      "binding_hash": "a525392a77a7b69f13fe72f874543bff10d57efc52b9ca583568a609552ba567",
+      "index": 3,
+      "source_hash": "9f99dc1ac3cf2c3b6bb62ef07e4e952a79bb3de6eff3f2dcd3550ed7fe215eee"
+    },
+    {
+      "binding_hash": "152038a24e46d528412c2d9dd0af075b2b399133b0cf38eb444f73488c1f9370",
+      "index": 4,
+      "source_hash": "feb782e4afc88ba239608540937f906fc5a1cd328be123542357888775f6bcec"
+    },
+    {
+      "binding_hash": "e1a0de0ba9aa6c4cb13f2dfeb1c1a8d335a59c3e576ee211c3176e8a6f9fc1e6",
+      "index": 5,
+      "source_hash": "2a4fd9d94ca4e2769260e76db8a0de296ee55d8a6d001902ef064a66d8a19d22"
+    },
+    {
+      "binding_hash": "3092858529a0ead122ed446596062f1d263e69c3115202ca80e696370c3fa920",
+      "index": 6,
+      "source_hash": "15cf94b9b673124a0d5d10c011970acf68f72fb90ef984cf8ec71a1e9fc2ea25"
+    }
+  ]
+}

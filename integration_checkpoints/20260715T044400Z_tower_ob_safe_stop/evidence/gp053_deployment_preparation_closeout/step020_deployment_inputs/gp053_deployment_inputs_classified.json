@@ -1,0 +1,138 @@
+{
+  "classification_decision": "GO_BUILD_NO_SECRET_DEPLOYMENT_SPECIFICATION",
+  "created_at": "2026-07-15T03:47:15.428990Z",
+  "deployment_authorized": false,
+  "deployment_blocker_count": 7,
+  "input_classifications": [
+    {
+      "blocks_deployment": true,
+      "classification": "architecture_selected_resource_not_created",
+      "input": "managed_host_provider",
+      "reason": "The managed-host architecture is selected, but no provider resource has been created.",
+      "value": "Render-compatible managed Python hosting"
+    },
+    {
+      "blocks_deployment": true,
+      "classification": "operator_supplied_external_input",
+      "input": "managed_host_account_or_team",
+      "reason": "The real provider account or team cannot be inferred from repository files.",
+      "value": "${MANAGED_HOST_ACCOUNT_OR_TEAM}"
+    },
+    {
+      "blocks_deployment": true,
+      "classification": "operator_supplied_external_input",
+      "input": "deployment_region",
+      "reason": "The managed-host region must be selected inside the provider account.",
+      "value": "${STAGING_DEPLOYMENT_REGION}"
+    },
+    {
+      "blocks_deployment": false,
+      "classification": "safe_design_default",
+      "input": "Tower_service_name",
+      "reason": "A staging-only Tower service name can be prepared before resource creation.",
+      "value": "simplee-tower-staging"
+    },
+    {
+      "blocks_deployment": false,
+      "classification": "safe_design_default",
+      "input": "Observatory_service_name",
+      "reason": "A staging-only private Observatory service name can be prepared before resource creation.",
+      "value": "simplee-observatory-staging"
+    },
+    {
+      "blocks_deployment": false,
+      "classification": "resolved_from_repository",
+      "input": "Tower_runtime_entrypoint",
+      "inspection": {
+        "app_objects": [
+          "app",
+          "app",
+          "app"
+        ],
+        "classification": "concrete_app_object_found",
+        "exists": true,
+        "factory_functions": [],
+        "module": "web.app",
+        "path": "/content/SimpleeMrkTrade_REAL_CLONE/web/app.py",
+        "recommended_start_command": "gunicorn web.app:app",
+        "sha256": "915875c08e0d7a98ee386acd9a112866918b9ddc4155c9b36893471d159a4552"
+      },
+      "reason": "Derived from web/app.py.",
+      "value": "gunicorn web.app:app"
+    },
+    {
+      "blocks_deployment": true,
+      "classification": "repository_entrypoint_unresolved",
+      "input": "Observatory_runtime_entrypoint",
+      "reason": "No independently verified Observatory runtime entrypoint is available in this integration clone.",
+      "value": "${OBSERVATORY_RUNTIME_ENTRYPOINT}"
+    },
+    {
+      "blocks_deployment": false,
+      "blocks_walkthrough": true,
+      "classification": "provider_assigned_after_deployment",
+      "input": "Tower_staging_host",
+      "reason": "The Tower staging host is assigned after the service is created.",
+      "value": "${TOWER_STAGING_HOST}"
+    },
+    {
+      "blocks_deployment": false,
+      "blocks_walkthrough": true,
+      "classification": "provider_assigned_after_deployment",
+      "input": "Observatory_private_service_address",
+      "reason": "The private Observatory address is assigned after service creation.",
+      "value": "${OBSERVATORY_PRIVATE_SERVICE_ADDRESS}"
+    },
+    {
+      "blocks_deployment": true,
+      "classification": "external_resource_required",
+      "input": "managed_staging_postgresql_instance",
+      "reason": "A separate managed staging PostgreSQL resource must be provisioned.",
+      "value": "${STAGING_DATABASE_RESOURCE}"
+    },
+    {
+      "blocks_deployment": true,
+      "classification": "external_resource_required",
+      "input": "private_staging_object_storage_namespace",
+      "reason": "A separate private staging object-storage namespace must be provisioned.",
+      "value": "${STAGING_OBJECT_STORAGE_NAMESPACE}"
+    },
+    {
+      "blocks_deployment": true,
+      "classification": "external_secret_references_required",
+      "input": "staging_secret_references",
+      "reason": "Only secret-reference names are prepared. No raw secrets are created or stored.",
+      "value": [
+        "${TOWER_SESSION_SECRET_REF}",
+        "${OB_HANDOFF_SECRET_REF}",
+        "${STAGING_DATABASE_SECRET_REF}",
+        "${STAGING_STORAGE_SECRET_REF}",
+        "${STAGING_OWNER_CREDENTIAL_REF}"
+      ]
+    },
+    {
+      "blocks_deployment": false,
+      "classification": "resolved_by_step021_artifact",
+      "input": "deployment_configuration_file",
+      "reason": "Step 021 writes the no-secret deployment specification outside the Git repository.",
+      "value": "generated_outside_git_in_step021"
+    }
+  ],
+  "input_count": 13,
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "next_boundary": "gp053_managed_staging_deployment_specification_gate",
+  "receipt_hash": "35d17b9987121f19c589aa9c081e6d3bd8137a4162c8f9a8e15508bc4294c853",
+  "receipt_type": "tower_ob_gp053_deployment_input_classification",
+  "status": "completed",
+  "step19_definition_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_managed_staging_environment_definition/gp053_managed_staging_environment_definition_20260715T031014Z.json",
+  "step19_definition_sha256": "bdeb97ad51958c43622447a6fee842f9516b0a1ea07685b31ceae7df88b4f654",
+  "step19_receipt_hash": "1ab0c65f98fba8e5676d8f174fe748f5f5a016b9457b27739068b64851cf4c1f",
+  "step19_receipt_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_managed_staging_environment_definition/gp053_managed_staging_environment_defined_20260715T031014Z.json",
+  "step19_receipt_sha256": "65847ee8db3be9a3918d1455f6be2248e089f7a068788da6c226b04bd2892a29",
+  "step19_state_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_managed_staging_environment_definition/current_gp053_environment_definition_state.json",
+  "step19_state_sha256": "a1a1504ccfd0754196ace8b9882db38e6b68c1d3b605ca16fad450ff41a30a4b",
+  "step_key": "gp053_managed_staging_deployment_inputs_classified",
+  "step_number": 20,
+  "verified": true,
+  "walkthrough_blocker_count": 2
+}

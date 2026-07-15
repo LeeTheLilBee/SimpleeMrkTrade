@@ -1,0 +1,129 @@
+{
+  "binding_set": {
+    "binding_requirements": [
+      "Bind every GP051 step to its canonical evidence reference and hash.",
+      "Bind the native Tower packet to the GP046 intake and integrity result.",
+      "Bind GP041\u2013GP045 IDs to Steps 5\u20138.",
+      "Bind GP049 exit and Tower lockback to Steps 9\u201310.",
+      "Resolve every referenced record across its owning pack.",
+      "Reject missing, duplicated, reordered, or hash-mismatched evidence."
+    ],
+    "binding_type": "tower_ob_gp052_deterministic_evidence_binding",
+    "bound_sources": [
+      {
+        "binding_hash": "e978379be554df6f27cdcd3d653bf5c08a48463f3150b1390c2e4466e1dfb9c0",
+        "index": 1,
+        "source": {
+          "evidence_type": "native_tower_gp046_contract_source",
+          "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_native_gp046_20260714T195623Z_68150455a4/03_native_contract_source_receipt.json",
+          "sha256": "b344cbb47814c6fa6fcefb4b2430f2cee798c2acb7888789008e938fcb67076a"
+        },
+        "source_hash": "38edf4ddd5831defae3b52f03e98ec41ebd9e10c502a19750d494f00e36b68ad"
+      },
+      {
+        "binding_hash": "6e4784cc9b154fb7a0f474ba39aa4ee710c1d2dc1bfb5dc4a0f7510cc035b358",
+        "index": 2,
+        "source": {
+          "evidence_type": "native_tower_launch_handoff",
+          "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_native_gp046_20260714T195623Z_68150455a4/01_native_tower_handoff.json",
+          "sha256": "3aea5f5d2f5bcc199efa5b48196ea709a865e815b79042dd17fe853eea46f46c"
+        },
+        "source_hash": "ff5d8d1bd1df539868bb919d42450dc7b1066c8b904a9c9a27fd91f5d1ce648d"
+      },
+      {
+        "binding_hash": "a525392a77a7b69f13fe72f874543bff10d57efc52b9ca583568a609552ba567",
+        "index": 3,
+        "source": {
+          "evidence_type": "native_gp046_gp049_validation",
+          "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_native_gp046_20260714T195623Z_68150455a4/02_native_gp046_gp049_validation.json",
+          "sha256": "b9893b29aac4be09e9368c1e4b51caeaf52dba20a3bf3916adf10f1bb74a3c5f"
+        },
+        "source_hash": "9f99dc1ac3cf2c3b6bb62ef07e4e952a79bb3de6eff3f2dcd3550ed7fe215eee"
+      },
+      {
+        "binding_hash": "152038a24e46d528412c2d9dd0af075b2b399133b0cf38eb444f73488c1f9370",
+        "index": 4,
+        "source": {
+          "evidence_type": "gp051_completed_owner_rehearsal",
+          "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/50_gp051_completed_rehearsal_verification.json",
+          "sha256": "f8b68cc38a4b99fae1808c69bbd5305ca54680d96f6158a8103620d4f704d2d0"
+        },
+        "source_hash": "feb782e4afc88ba239608540937f906fc5a1cd328be123542357888775f6bcec"
+      },
+      {
+        "binding_hash": "e1a0de0ba9aa6c4cb13f2dfeb1c1a8d335a59c3e576ee211c3176e8a6f9fc1e6",
+        "index": 5,
+        "source": {
+          "evidence_type": "native_ob_gp041_gp045_summary",
+          "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/47_native_operating_loop_summary.json",
+          "sha256": "4d2bd149a4c63b0057ffea7964472b2ca00ee2850157439e8928cd2eac944936"
+        },
+        "source_hash": "2a4fd9d94ca4e2769260e76db8a0de296ee55d8a6d001902ef064a66d8a19d22"
+      },
+      {
+        "binding_hash": "3092858529a0ead122ed446596062f1d263e69c3115202ca80e696370c3fa920",
+        "index": 6,
+        "source": {
+          "evidence_type": "gp051_final_binding_execution",
+          "path": "/content/Simplee_Tower_OB_Integration/evidence/tower_ob_handshake_20260714T191455Z_cc7bac7ffe/49_gp051_final_binding_execution.json",
+          "sha256": "55b54c5e9033df9017267b480dea9c6dbbf6ebfe589e7ff8bd91ac4fc8af05b7"
+        },
+        "source_hash": "15cf94b9b673124a0d5d10c011970acf68f72fb90ef984cf8ec71a1e9fc2ea25"
+      }
+    ],
+    "final_outcome": "not_placed",
+    "gp051_run_id": "ob_rehearsal_run_40dYVC6sASpogiqvHVCBYNXWRlY",
+    "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+    "native_run_id": "tower_ob_native_gp046_20260714T195623Z_68150455a4",
+    "native_validation_ids": {
+      "gp046_intake_id": "ob_launch_vGsrkYERyYqHtSdxpdL0ytDR",
+      "gp047_session_state_id": "ob_session_qSwdVXJCngCyccHrBf65y2",
+      "gp048_context_id": "ob_room_context_mGsNlWUQ9TEtckDmhpV1jYIl8m2CZ",
+      "gp049_closeout_id": "ob_room_exit_tAhuqe6XLzQPVLyGPZkMVX1VDB8",
+      "tower_lockback_ack_ref": "tower_native_lockback_255262ca31abdc99ec792dac46c1d83d"
+    },
+    "operating_loop_ids": {
+      "candidate_id": "ob_candidate_rehearsal_8ad2fe9326b53d7b03d8",
+      "checkpoint_id": "ob-gp045-readiness-e5adeb7008c84ed0869d511c3535c1b3",
+      "evidence_record_id": "obdry_ed986f1ac5524f869efa54f25df9b3e1",
+      "finalization_id": "ob-gp043-finalization-c1b51a35ec914199aa5a181aa6837788",
+      "flow_id": "ob-gp042-flow-e9a539416a01442c870017da8a2d6aa5",
+      "handoff_id": "obhand_rehearsal_8ad2fe9326b53d7b03d8",
+      "receipt_id": "ob-gp044-receipt-d2f3bf28c6e843efa207c3649ffaede2"
+    },
+    "previous_integration_run_id": "tower_ob_handshake_20260714T191455Z_cc7bac7ffe"
+  },
+  "binding_set_hash": "1ce9ca0e55973066b5d6cdeee414fcc83c37d5e9a82eb788712028afe295650b",
+  "bound_evidence_source_count": 6,
+  "commit_created": false,
+  "created_at": "2026-07-15T02:00:25.999264Z",
+  "deployment_performed": false,
+  "final_outcome": "not_placed",
+  "gp052_manifest_hash_from_source": "67cf32de79b204257166b1f1721e371af2346dfc7c7de8bef59edcb28433418e",
+  "gp052_source_path": "/content/SimpleeMrkTrade_REAL_CLONE/integration_checkpoints/20260714t202118z/04_gp052_evidence_binding_preparation.json",
+  "gp052_source_sha256": "15adc187153a28de3fcee427cae7001488d5f69ddc14ded8c7969a515aaa5a92",
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "merge_performed": false,
+  "next_boundary": "gp052_evidence_binding_verification_gate",
+  "push_performed": false,
+  "receipt_hash": "07072942d5111c08121c8ce9fc81e8465046189d5166483332989ac7a780f621",
+  "receipt_type": "tower_ob_gp052_evidence_binding_execution",
+  "safety": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "dry_run_only": true,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "source_files_modified": false,
+  "status": "completed",
+  "step11_manifest_path": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_continuation/gp052_continuation_prepared_20260715T012531Z.json",
+  "step11_manifest_sha256": "e7771dbba98cec2393101f0053aaee13db562368ae8930e116e39b76c282792c",
+  "step11_state_path": "/content/Simplee_Tower_OB_Integration/evidence/gp052_evidence_binding_continuation/current_gp052_continuation_state.json",
+  "step11_state_sha256": "99bc57b39ff35fd60eaa3b44c8bb77be308748681976b08fd8457ec0d194f407",
+  "step_key": "gp052_evidence_binding_executed",
+  "step_number": 12,
+  "tests_passed": 85,
+  "verified": true
+}

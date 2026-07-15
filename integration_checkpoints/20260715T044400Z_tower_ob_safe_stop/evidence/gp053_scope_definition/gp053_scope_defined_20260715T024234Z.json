@@ -1,0 +1,131 @@
+{
+  "commit_created": false,
+  "created_at": "2026-07-15T02:42:34.759354Z",
+  "deployment_performed": false,
+  "discovery_receipt_hash": "52d45bdad5890e068b3ad30fbc8f10b29cad4863041321310060b0c31197235b",
+  "discovery_receipt_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_contract_discovery/gp053_contract_discovery_20260715T024213Z.json",
+  "discovery_receipt_sha256": "d3d93542de35e6fc1dea73aae527830fe5976685685e03ce60e8765143cfaa11",
+  "gp052_source_path": "/content/SimpleeMrkTrade_REAL_CLONE/integration_checkpoints/20260714t202118z/04_gp052_evidence_binding_preparation.json",
+  "gp052_source_sha256": "15adc187153a28de3fcee427cae7001488d5f69ddc14ded8c7969a515aaa5a92",
+  "gp053_scope": {
+    "acceptance_criteria": [
+      "all authoritative inputs exist and are hash-verifiable",
+      "managed staging expectations are explicitly documented",
+      "Tower login, step-up, launch, receipt, and handoff checks are enumerated",
+      "every safety invariant is asserted",
+      "failure and rollback criteria are documented",
+      "all 85 Tower/Observatory regressions pass",
+      "integration clone remains clean",
+      "no deployment, commit, push, merge, broker action, or capital movement occurs"
+    ],
+    "authoritative_inputs": [
+      "verified merged main commit",
+      "GP052 evidence-binding closeout receipt",
+      "GP052 six-source binding set",
+      "native GP046 Tower-to-Observatory contract",
+      "human Tower login and step-up route",
+      "real Tower launch receipt hash",
+      "native Observatory session handoff",
+      "existing 85-test Tower/Observatory regression set"
+    ],
+    "contract_id": "tower_ob_gp053_official_managed_staging_walkthrough_readiness",
+    "contract_version": "1.0",
+    "decision_states": [
+      "NO_GO_SCOPE_INCOMPLETE",
+      "NO_GO_STAGING_EXPECTATIONS_INCOMPLETE",
+      "NO_GO_SAFETY_INVARIANT_FAILED",
+      "NO_GO_REGRESSION_FAILED",
+      "GO_GP053_READINESS_CONTRACT_DEFINED"
+    ],
+    "explicitly_out_of_scope": [
+      "production deployment",
+      "production Manual Live authorization",
+      "broker API connection",
+      "broker order submission",
+      "real capital movement",
+      "automatic trade execution",
+      "Live Auto unlock",
+      "direct Vault upload",
+      "secret creation or secret rotation",
+      "production database mutation",
+      "public Observatory access",
+      "bypassing Tower authentication or step-up"
+    ],
+    "failure_conditions": [
+      "missing or altered GP052 closeout evidence",
+      "missing native Tower contract evidence",
+      "missing human login or owner step-up requirement",
+      "missing real receipt-hash clearance binding",
+      "missing native session handoff",
+      "any safety invariant opens",
+      "any regression fails",
+      "integration clone becomes dirty",
+      "staging environment expectations remain ambiguous"
+    ],
+    "purpose": "Prepare and verify the evidence, environment expectations, route boundaries, session handoff checks, safety assertions, and acceptance criteria required before an official managed staging Tower-to-Observatory human walkthrough may begin.",
+    "required_invariants": {
+      "broker_submission_enabled": false,
+      "direct_vault_upload_enabled": false,
+      "dry_run_only": true,
+      "human_owner_authentication_required": true,
+      "live_auto_locked": true,
+      "native_session_handoff_required": true,
+      "owner_step_up_required": true,
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false,
+      "real_tower_receipt_required": true,
+      "receipt_hash_is_clearance_reference": true,
+      "tower_is_front_door": true,
+      "walkthrough_redirect_must_be_preserved": true
+    },
+    "required_outputs": [
+      "managed staging environment expectation manifest",
+      "Tower human login preflight checklist",
+      "owner step-up preflight checklist",
+      "Observatory launch-route preflight checklist",
+      "launch receipt and clearance-reference verification checklist",
+      "native session-handoff verification checklist",
+      "walkthrough acceptance criteria",
+      "walkthrough failure and rollback criteria",
+      "staging evidence-capture plan",
+      "GO or NO_GO staging-readiness decision record"
+    ]
+  },
+  "gp053_scope_hash": "be582b412c1a6be74f9252b6fa410096da161e175ce51251d98bef6e9b2ebdee",
+  "main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "merge_performed": false,
+  "next_boundary": "gp053_readiness_contract_implementation_gate",
+  "official_managed_staging_walkthrough_complete": false,
+  "push_performed": false,
+  "receipt_hash": "1bf3d8461ba4f8c7dcef64f53773a629ce2de00e6ca33bb1d19ad9943ac704a1",
+  "receipt_type": "tower_ob_gp053_scope_definition",
+  "remaining_before_official_staging": [
+    "Move the validated Tower native contract commit into the permanent tower-dev workflow.",
+    "Wire the human Tower launch route to the native contract service.",
+    "Deploy the private managed staging Tower and OB services."
+  ],
+  "safety": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "dry_run_only": true,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "scope_decision": "GO_GP053_READINESS_CONTRACT_DEFINED",
+  "source_files_modified": false,
+  "status": "completed",
+  "step16_state_path": "/content/Simplee_Tower_OB_Integration/evidence/gp053_contract_discovery/current_gp053_contract_discovery_state.json",
+  "step16_state_sha256": "077eed236d526513ac3baafc8771748bc62f98b1dfcf319d9fa8b9b89b2ffc1d",
+  "step_key": "gp053_scope_defined",
+  "step_number": 17,
+  "tests_passed": 85,
+  "tower_native_contract": {
+    "contract_version": "ob.tower_protected_launch_handoff.v1",
+    "feature_branch": "integration/tower-ob-gp046-native-contract",
+    "feature_commit": "215a11efc3a3a5599473c2b4069f4ea0689cc46e",
+    "raw_gp046_compatible": true,
+    "runtime_adapter_required": false
+  },
+  "verified": true
+}

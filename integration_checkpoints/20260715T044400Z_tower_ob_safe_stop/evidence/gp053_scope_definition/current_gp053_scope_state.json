@@ -1,0 +1,16 @@
+{
+  "current_step": 17,
+  "current_step_key": "gp053_scope_defined",
+  "current_step_status": "completed",
+  "current_step_verified": true,
+  "gp053_contract_id": "tower_ob_gp053_official_managed_staging_walkthrough_readiness",
+  "gp053_scope_hash": "be582b412c1a6be74f9252b6fa410096da161e175ce51251d98bef6e9b2ebdee",
+  "integration": "tower_ob_native_gp046_to_gp053",
+  "next_boundary": "gp053_readiness_contract_implementation_gate",
+  "scope_decision": "GO_GP053_READINESS_CONTRACT_DEFINED",
+  "scope_receipt": "/content/Simplee_Tower_OB_Integration/evidence/gp053_scope_definition/gp053_scope_defined_20260715T024234Z.json",
+  "scope_receipt_hash": "1bf3d8461ba4f8c7dcef64f53773a629ce2de00e6ca33bb1d19ad9943ac704a1",
+  "tests_passed": 85,
+  "updated_at": "2026-07-15T02:42:34.760040Z",
+  "verified_main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c"
+}

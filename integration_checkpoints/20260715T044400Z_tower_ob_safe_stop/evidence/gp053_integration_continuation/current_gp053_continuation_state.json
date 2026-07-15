@@ -1,0 +1,14 @@
+{
+  "current_step": 15,
+  "current_step_key": "gp053_integration_continuation_prepared",
+  "current_step_status": "prepared",
+  "current_step_verified": true,
+  "gp053_discovery_status": "references_found",
+  "gp053_reference_count": 2,
+  "integration": "tower_ob_native_gp046_to_gp053",
+  "manifest": "/content/Simplee_Tower_OB_Integration/evidence/gp053_integration_continuation/gp053_continuation_prepared_20260715T022344Z.json",
+  "manifest_hash": "4724b458ee019bb6cb6b2e514de3b18738c03751f2f61b865d8c49ded917d1b8",
+  "next_boundary": "gp053_contract_discovery_gate",
+  "updated_at": "2026-07-15T02:23:44.062600Z",
+  "verified_main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c"
+}

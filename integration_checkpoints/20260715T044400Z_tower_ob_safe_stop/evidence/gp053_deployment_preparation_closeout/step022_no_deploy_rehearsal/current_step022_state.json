@@ -1,0 +1,14 @@
+{
+  "current_step": 22,
+  "current_step_key": "gp053_no_deploy_configuration_rehearsal_completed",
+  "current_step_status": "completed",
+  "current_step_verified": true,
+  "deployment_performed": false,
+  "next_boundary": "gp053_deployment_preparation_closeout_gate",
+  "receipt": "/content/Simplee_Tower_OB_Integration/evidence/gp053_deployment_preparation_closeout/step022_no_deploy_rehearsal/gp053_no_deploy_rehearsal_completed.json",
+  "receipt_hash": "a4ff8ab86910d21b8d585a42f99fb7dac9ab2ca9495374a3320172b6d13bbbf7",
+  "rehearsal_check_count": 16,
+  "tests_passed": 85,
+  "updated_at": "2026-07-15T03:47:44.880208Z",
+  "verified_main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c"
+}

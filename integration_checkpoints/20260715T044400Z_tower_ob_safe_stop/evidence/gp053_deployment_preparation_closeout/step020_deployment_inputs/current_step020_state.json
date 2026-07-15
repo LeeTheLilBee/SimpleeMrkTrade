@@ -1,0 +1,15 @@
+{
+  "current_step": 20,
+  "current_step_key": "gp053_managed_staging_deployment_inputs_classified",
+  "current_step_status": "completed",
+  "current_step_verified": true,
+  "deployment_authorized": false,
+  "deployment_blocker_count": 7,
+  "input_count": 13,
+  "next_boundary": "gp053_managed_staging_deployment_specification_gate",
+  "receipt": "/content/Simplee_Tower_OB_Integration/evidence/gp053_deployment_preparation_closeout/step020_deployment_inputs/gp053_deployment_inputs_classified.json",
+  "receipt_hash": "35d17b9987121f19c589aa9c081e6d3bd8137a4162c8f9a8e15508bc4294c853",
+  "updated_at": "2026-07-15T03:47:15.431945Z",
+  "verified_main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "walkthrough_blocker_count": 2
+}

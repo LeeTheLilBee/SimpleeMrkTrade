@@ -1,0 +1,18 @@
+{
+  "closed_through_step": 23,
+  "closeout_chain_hash": "7d3cb0dc1622c0b575ca6193a176093f030cb78666f0c16941249e037834e0c9",
+  "closeout_receipt": "/content/Simplee_Tower_OB_Integration/evidence/gp053_deployment_preparation_closeout/step023_gp053_closeout/gp053_deployment_preparation_closed.json",
+  "closeout_receipt_hash": "1c502bb62314203efc44107b854f5652a4f8c1af842cfbdc203ca74683583187",
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_DEPLOYMENT_REQUIREMENTS_INCOMPLETE",
+  "integration": "tower_ob_native_gp046_to_gp053",
+  "next_boundary": "managed_staging_provider_resource_provisioning",
+  "official_walkthrough_performed": false,
+  "ready_for_managed_staging_deployment": false,
+  "remaining_deployment_blocker_count": 7,
+  "section": "GP053_OFFICIAL_MANAGED_STAGING_WALKTHROUGH_READINESS",
+  "section_status": "closed",
+  "tests_passed": 85,
+  "updated_at": "2026-07-15T03:47:44.882854Z",
+  "verified_main_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c"
+}
