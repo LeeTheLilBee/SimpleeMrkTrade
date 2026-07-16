@@ -1,0 +1,11 @@
+{
+  "challenge_hash": "1f41cc0ed24c63e9b4c3dbcbf73a45a44dfcb6b6d37a0f3434b8f8d49256d620",
+  "challenge_id": "tower-ob-session-open-63040ed18579",
+  "challenge_phrase": "AUTHORIZE CONTROLLED SESSION OPENING 63040ED18579",
+  "challenge_ready": false,
+  "challenge_type": "controlled_provider_session_opening_authorization",
+  "frozen_session_preparation_packet_hash": "1d672fb18467a2ceede89672718fd427654e772564351f82440efe6abdaa0186",
+  "provider_calls_performed": false,
+  "provider_session_opened": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_authorization.v1"
+}

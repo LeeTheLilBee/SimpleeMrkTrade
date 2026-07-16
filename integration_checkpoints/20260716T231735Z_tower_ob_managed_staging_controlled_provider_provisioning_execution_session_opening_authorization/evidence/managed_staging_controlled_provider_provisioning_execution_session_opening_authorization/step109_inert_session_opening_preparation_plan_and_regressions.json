@@ -1,0 +1,28 @@
+{
+  "browser_actions": [],
+  "build_performed": false,
+  "deployment_performed": false,
+  "dry_run_only": true,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "future_sequence": [
+    "revalidate frozen Step 100 preparation and Step 110 authorization",
+    "revalidate owner step-up receipt and authorization window",
+    "prepare provider identity and duplicate-resource lookup controls",
+    "prepare session opening and authentication receipts",
+    "stop before resource creation secret registration build or deployment"
+  ],
+  "http_requests": [],
+  "opening_authorization_decision_hash": "fd022bad76b5e55d1f531c59d7addedb1e0eb41abf743c93ce85ce12a6041d8b",
+  "plan_hash": "c45bd586123ea2dd411f26d4a1b77328d97558973dea9c3cdf2e887619a33f57",
+  "plan_type": "inert_controlled_provider_session_opening_preparation_plan",
+  "provider_api_requests": [],
+  "provider_calls_performed": false,
+  "provider_cli_commands": [],
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "ready_for_later_separate_preparation": false,
+  "resources_created": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_authorization.v1",
+  "secrets_registered": false,
+  "shell_commands": []
+}

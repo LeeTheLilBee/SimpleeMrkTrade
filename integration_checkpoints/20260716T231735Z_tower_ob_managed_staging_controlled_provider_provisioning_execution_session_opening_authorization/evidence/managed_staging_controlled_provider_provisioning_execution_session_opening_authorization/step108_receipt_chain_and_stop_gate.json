@@ -1,0 +1,26 @@
+{
+  "contract_hash": "ce44dac0ffebbe2eed6f1ac7619c25d8148da94aab76399e9038d1ea28b52212",
+  "contract_type": "controlled_provider_session_opening_receipt_and_stop_gate",
+  "mandatory_stop_conditions": [
+    "authorization missing invalid expired or hash mismatch",
+    "provider account team or region fingerprint mismatch",
+    "duplicate or ambiguous resource detected",
+    "provider asks for broader scope than one inert service shell",
+    "secret value readback or export requested",
+    "build deployment database storage DNS or walkthrough requested"
+  ],
+  "provider_calls_performed": false,
+  "provider_session_opened": false,
+  "required_receipt_order": [
+    "opening_authorization_revalidation_receipt",
+    "provider_identity_fingerprint_receipt",
+    "authorization_window_receipt",
+    "duplicate_resource_lookup_receipt",
+    "provider_session_opening_receipt",
+    "provider_authentication_receipt",
+    "stop_before_resource_creation_receipt",
+    "session_close_receipt"
+  ],
+  "resources_created": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_authorization.v1"
+}

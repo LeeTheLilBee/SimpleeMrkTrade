@@ -1,0 +1,24 @@
+{
+  "authorization_valid": false,
+  "build_authorized": false,
+  "deployment_authorized": false,
+  "future_scope": {
+    "authenticate_to_bound_provider_account_team": false,
+    "capture_non_secret_provider_references": false,
+    "duplicate_resource_lookup": false,
+    "open_one_manual_provider_console_session": false,
+    "prepare_one_inert_web_service_shell": false
+  },
+  "manifest_hash": "ec55ddcd4402cf4fe684d18e8654fdbcf28051a9c36a2e5fd49f1359e5f17bea",
+  "manifest_type": "controlled_provider_session_opening_scope",
+  "provider_calls_performed": false,
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "resource_ceiling": {
+    "databases": 0,
+    "dns_changes": 0,
+    "managed_web_service_shells": 0,
+    "object_storage_buckets": 0
+  },
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_authorization.v1"
+}

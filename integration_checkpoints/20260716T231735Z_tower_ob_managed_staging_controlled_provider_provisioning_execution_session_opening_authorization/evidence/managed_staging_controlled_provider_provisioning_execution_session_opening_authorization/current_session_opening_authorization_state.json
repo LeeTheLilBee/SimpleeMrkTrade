@@ -1,0 +1,257 @@
+{
+  "blocking_requirement_count": 53,
+  "blocking_requirements": [
+    {
+      "requirement": "completed_controlled_session_preparation",
+      "status": "valid_session_preparation_required"
+    },
+    {
+      "requirement": "completed_session_preparation_ready",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "decision_authorizes",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_source_commit_format_valid",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_source_commit_matches",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "owner_id_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "tower_step_up_receipt_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "challenge_phrase_matches",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "decided_at_is_utc_iso",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "monthly_cost_ceiling_valid",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "monthly_cost_ceiling_matches",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_window_ordered",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_window_matches_preparation",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorization_expiry_valid",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_scope.open_one_manual_provider_console_session",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_scope.authenticate_to_bound_provider_account_team",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_scope.perform_duplicate_resource_lookup",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_scope.prepare_one_inert_managed_web_service_shell",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_scope.capture_non_secret_provider_references",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.staging_only_scope_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.single_tower_fronted_service_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.tower_only_public_ingress_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.observatory_separate_service_not_required",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.frozen_session_preparation_packet_hash_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.session_preparation_decision_hash_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.authorized_source_commit_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.session_window_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.monthly_cost_ceiling_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.provider_account_team_fingerprint_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.provider_region_fingerprint_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.owner_session_receipt_fingerprint_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.fresh_tower_owner_step_up_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.duplicate_resource_lookup_required_before_opening",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.stop_if_duplicate_or_ambiguous_resource_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.manual_provider_session_opening_control_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.one_inert_web_service_shell_limit_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.non_secret_environment_names_only_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.secret_reference_registration_without_readback_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.receipt_chain_and_stop_gate_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_resource_creation_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_secret_registration_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_build_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_deployment_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.database_creation_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.object_storage_creation_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.dns_changes_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.official_walkthrough_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.production_manual_live_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.broker_submission_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.real_capital_movement_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.direct_vault_upload_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.live_auto_remains_locked",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "scope_attestations.no_provider_session_login_or_calls_performed_during_decision",
+      "status": "required_check_failed"
+    }
+  ],
+  "broker_submission_enabled": false,
+  "build_authorized": false,
+  "build_performed": false,
+  "closed_layer": "MANAGED_STAGING_CONTROLLED_PROVIDER_PROVISIONING_EXECUTION_SESSION_OPENING_AUTHORIZATION",
+  "closed_through_step": 110,
+  "completed_session_preparation_handoff_hash": "79aa70a5340b7e4826ad15bdb8cab46e4bdd8043b4125cd73244fed755fdc69f",
+  "database_creation_authorized": false,
+  "deployment_authorized": false,
+  "deployment_performed": false,
+  "direct_vault_upload_enabled": false,
+  "dns_changes_authorized": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "frozen_session_opening_authorization_record_hash": "9880e9fc0c241c55395ac9d8b2c0e2b2fc7ef960118a7ec1ddf4fbe228353f8c",
+  "inert_session_opening_preparation_plan_hash": "c45bd586123ea2dd411f26d4a1b77328d97558973dea9c3cdf2e887619a33f57",
+  "live_auto_locked": true,
+  "next_boundary": "managed_staging_controlled_provider_provisioning_execution_session_opening_preparation",
+  "object_storage_creation_authorized": false,
+  "official_walkthrough_performed": false,
+  "permanent_main_modified": false,
+  "production_manual_live_authorized": false,
+  "provider_calls_authorized_for_later_preparation": false,
+  "provider_calls_performed": false,
+  "provider_login_authorized_for_later_preparation": false,
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "provider_session_opening_authorized_for_later_preparation": false,
+  "ready_for_separate_controlled_provider_session_opening_preparation": false,
+  "real_capital_movement_enabled": false,
+  "resource_creation_authorized": false,
+  "resources_created": false,
+  "runtime_target": "web.managed_staging:app",
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_authorization.v1",
+  "secret_reference_registration_authorized": false,
+  "secrets_created_or_read": false,
+  "secrets_registered": false,
+  "session_opening_authorization_decision_hash": "fd022bad76b5e55d1f531c59d7addedb1e0eb41abf743c93ce85ce12a6041d8b",
+  "session_opening_authorization_valid": false,
+  "session_preparation_ready": false,
+  "state_hash": "ac63d4ab183b4122eea79fc65916e0dc70c2dc91c1d287af33c22b30311b32f1"
+}
