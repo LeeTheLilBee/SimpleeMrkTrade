@@ -1,0 +1,33 @@
+{
+  "command_executed": false,
+  "created_at": "2026-07-16T15:14:41.096984Z",
+  "deployment_performed": false,
+  "fail_closed_environment_gate": true,
+  "health_route": "/tower/healthz",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "8dd7a8d344945a50b8e901a672fe5093721e8fb6",
+  "managed_start_command": "gunicorn --bind 0.0.0.0:$PORT web.managed_staging:app",
+  "managed_wsgi_target": "web.managed_staging:app",
+  "previous_receipt_hash": "9df6fd9058521dfd30b3567691ef31ab15b4a560cdfb726ced3649dd0a26c86a",
+  "receipt_hash": "c9efe85dc134db18018fe934fd97c5eeed7d3d0c9866cf410ae81a4e620638aa",
+  "runtime_checks": {
+    "human_login_binds_native_gp046": true,
+    "human_login_exists": true,
+    "managed_runtime_validates_before_source_import": true,
+    "managed_wsgi_exists": true,
+    "managed_wsgi_uses_runtime_factory": true,
+    "native_gp046_exists": true,
+    "source_app_defines_flask_app": true,
+    "source_app_exists": true,
+    "source_app_registers_human_login": true,
+    "source_app_registers_walkthrough": true,
+    "walkthrough_exists": true
+  },
+  "runtime_resolved": true,
+  "schema_version": "simplee.tower_ob.integration_step.v1",
+  "status": "completed",
+  "step_key": "managed_staging_runtime_entrypoint_validated",
+  "step_number": 35,
+  "tower_only_ingress_guard": true,
+  "verified": true
+}

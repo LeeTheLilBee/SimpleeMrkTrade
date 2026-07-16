@@ -1,0 +1,18 @@
+{
+  "created_at": "2026-07-16T15:14:41.096466Z",
+  "deployment_region_reference": "SIMPLEE_STAGING_DEPLOYMENT_REGION",
+  "deployment_region_reference_present": false,
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "8dd7a8d344945a50b8e901a672fe5093721e8fb6",
+  "previous_receipt_hash": "8a8ae46d450e2fd0c57c44002e1c3dde4d1a5ae1390b829d1215a5c0cbfc8641",
+  "production_region_bound": false,
+  "provider_calls_performed": false,
+  "raw_region_value_recorded": false,
+  "receipt_hash": "b52b20a692886883c050ba21637e1e207585f380c5cf1335d70dc4ca760ab65b",
+  "region_verification_status": "operator_input_required",
+  "schema_version": "simplee.tower_ob.integration_step.v1",
+  "status": "completed",
+  "step_key": "managed_staging_region_contract_recorded",
+  "step_number": 33,
+  "verified": true
+}

@@ -1,0 +1,17 @@
+{
+  "account_or_team_reference": "SIMPLEE_MANAGED_HOST_ACCOUNT_OR_TEAM",
+  "account_or_team_reference_present": false,
+  "created_at": "2026-07-16T15:14:41.096171Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "8dd7a8d344945a50b8e901a672fe5093721e8fb6",
+  "ownership_verification_status": "operator_input_required",
+  "previous_receipt_hash": "c51efb29c4f813aa89a8bf05ae45f3ed5801286bfc7ebcbdea315d2b12277a6f",
+  "provider_calls_performed": false,
+  "raw_account_or_team_value_recorded": false,
+  "receipt_hash": "8a8ae46d450e2fd0c57c44002e1c3dde4d1a5ae1390b829d1215a5c0cbfc8641",
+  "schema_version": "simplee.tower_ob.integration_step.v1",
+  "status": "completed",
+  "step_key": "managed_host_account_team_ownership_contract_recorded",
+  "step_number": 32,
+  "verified": true
+}

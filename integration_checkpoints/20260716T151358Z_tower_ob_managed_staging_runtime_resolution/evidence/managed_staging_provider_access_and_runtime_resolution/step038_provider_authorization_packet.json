@@ -1,0 +1,59 @@
+{
+  "authorization_packet": {
+    "blocking_requirement_count": 4,
+    "blocking_requirements": [
+      {
+        "requirement": "managed_host_provider",
+        "status": "operator_input_required"
+      },
+      {
+        "requirement": "managed_host_account_or_team",
+        "status": "operator_input_required"
+      },
+      {
+        "requirement": "deployment_region",
+        "status": "operator_input_required"
+      },
+      {
+        "requirement": "provider_owner_approval",
+        "status": "owner_approval_required"
+      }
+    ],
+    "deployment_authorized": false,
+    "deployment_performed": false,
+    "environment_report_hash": "4782d2f6114d2abe5c6d3bcfc81f2292ce77e33b95a9381358b017274cf8c31b",
+    "final_decision": "NO_GO_HOLD_PROVIDER_SELECTION_ACCOUNT_REGION_AND_OWNER_APPROVAL_REQUIRED",
+    "managed_start_command": "gunicorn --bind 0.0.0.0:$PORT web.managed_staging:app",
+    "managed_wsgi_target": "web.managed_staging:app",
+    "packet_hash": "04482edd20550e175d9d6beab6534d38d2b2abd8dd2fd1776081c4c2c7bfdace",
+    "packet_type": "managed_staging_provider_authorization_review",
+    "provider_calls_authorized": false,
+    "provider_calls_performed": false,
+    "provider_inputs_complete": false,
+    "raw_provider_values_recorded": false,
+    "raw_secrets_recorded": false,
+    "ready_for_separate_authorization_review": false,
+    "resource_creation_authorized": false,
+    "resources_created": false,
+    "runtime_contract_hash": "3bb9ed82ee3db4117c7763922d178002fe07f06816080dffa8c15c430c090611",
+    "runtime_environment_ready": false,
+    "runtime_resolved": true,
+    "schema_version": "simplee.tower_ob.managed_staging_runtime.v1"
+  },
+  "authorization_packet_hash": "04482edd20550e175d9d6beab6534d38d2b2abd8dd2fd1776081c4c2c7bfdace",
+  "created_at": "2026-07-16T15:14:41.097946Z",
+  "deployment_authorized": false,
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "8dd7a8d344945a50b8e901a672fe5093721e8fb6",
+  "owner_approval_reference_present": false,
+  "previous_receipt_hash": "a192bea9c331ce206600a4ebb722d1ef98b6fcf51e1d96959164bcb3f4c100dd",
+  "provider_calls_authorized": false,
+  "raw_provider_values_recorded": false,
+  "receipt_hash": "7e9df70a31343d96112d444db2f5cd8e1bfed10b519e1b0674500664b6483102",
+  "resource_creation_authorized": false,
+  "schema_version": "simplee.tower_ob.integration_step.v1",
+  "status": "completed",
+  "step_key": "provider_authorization_review_packet_created",
+  "step_number": 38,
+  "verified": true
+}

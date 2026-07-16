@@ -1,0 +1,43 @@
+{
+  "blocking_requirement_count": 4,
+  "blocking_requirements": [
+    {
+      "requirement": "managed_host_provider",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "managed_host_account_or_team",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "deployment_region",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "provider_owner_approval",
+      "status": "owner_approval_required"
+    }
+  ],
+  "closed_through_step": 40,
+  "closeout_chain_hash": "4305eefcfb3430298435909f28d62ff39165c42782f5e4435b1ad9d7ef9364a2",
+  "closeout_receipt": "integration_checkpoints/20260716T151358Z_tower_ob_managed_staging_runtime_resolution/evidence/managed_staging_provider_access_and_runtime_resolution/step040_runtime_resolution_closeout.json",
+  "closeout_receipt_hash": "1866a951af25d3b09388359c63f3e44eeb580b64acb4216a05918578b6132d03",
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_SELECTION_ACCOUNT_REGION_AND_OWNER_APPROVAL_REQUIRED",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "8dd7a8d344945a50b8e901a672fe5093721e8fb6",
+  "layer": "MANAGED_STAGING_PROVIDER_ACCESS_AND_OBSERVATORY_RUNTIME_RESOLUTION",
+  "layer_status": "closed",
+  "managed_wsgi_target": "web.managed_staging:app",
+  "next_boundary": "managed_staging_provider_inputs_and_owner_authorization",
+  "official_walkthrough_performed": false,
+  "origin_main_at_execution": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "provider_calls_performed": false,
+  "resources_created": false,
+  "runtime_entrypoint_resolved": true,
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "schema_version": "simplee.tower_ob.current_state.v1",
+  "secrets_created": false,
+  "total_tests_passed": 103,
+  "updated_at": "2026-07-16T15:14:41.098918Z"
+}

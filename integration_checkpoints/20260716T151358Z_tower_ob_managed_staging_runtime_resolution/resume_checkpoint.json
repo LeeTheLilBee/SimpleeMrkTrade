@@ -1,0 +1,44 @@
+{
+  "blocking_requirements": [
+    {
+      "requirement": "managed_host_provider",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "managed_host_account_or_team",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "deployment_region",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "provider_owner_approval",
+      "status": "owner_approval_required"
+    }
+  ],
+  "broker_submission_enabled": false,
+  "checkpoint_version": "1.0",
+  "closed_layer": "MANAGED_STAGING_PROVIDER_ACCESS_AND_OBSERVATORY_RUNTIME_RESOLUTION",
+  "closed_through_step": 40,
+  "created_at": "2026-07-16T15:14:41.099105Z",
+  "deployment_performed": false,
+  "devkit_tests_passed": 4,
+  "existing_tower_ob_tests_passed": 85,
+  "final_decision": "NO_GO_HOLD_PROVIDER_SELECTION_ACCOUNT_REGION_AND_OWNER_APPROVAL_REQUIRED",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_checkpoint_commit": "8dd7a8d344945a50b8e901a672fe5093721e8fb6",
+  "live_auto_locked": true,
+  "managed_start_command": "gunicorn --bind 0.0.0.0:$PORT web.managed_staging:app",
+  "managed_wsgi_target": "web.managed_staging:app",
+  "next_boundary": "managed_staging_provider_inputs_and_owner_authorization",
+  "official_walkthrough_performed": false,
+  "production_manual_live_authorized": false,
+  "provider_calls_performed": false,
+  "real_capital_movement_enabled": false,
+  "resources_created": false,
+  "runtime_contract_tests_passed": 14,
+  "runtime_entrypoint_resolved": true,
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "secrets_created": false
+}

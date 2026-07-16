@@ -1,0 +1,46 @@
+{
+  "created_at": "2026-07-16T15:14:41.095488Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "8dd7a8d344945a50b8e901a672fe5093721e8fb6",
+  "previous_receipt_hash": "4a0f097242ca4227a34fd30161756ad6063276101ec845adede108174b83a56c",
+  "provider_calls_performed": false,
+  "provider_resolution": {
+    "network_boundary": {
+      "future_service_split_allowed_without_boundary_change": true,
+      "observatory_direct_anonymous_access_allowed": false,
+      "observatory_routes_co_resident": true,
+      "observatory_separate_private_service_required_now": false,
+      "observatory_separate_public_service": false,
+      "tower_is_only_browser_front_door": true
+    },
+    "provider_calls_authorized": false,
+    "provider_model": "provider_neutral_composite_stack_allowed",
+    "required_capabilities": [
+      "managed Python web service",
+      "provider supplied port binding",
+      "HTTPS termination",
+      "encrypted environment-secret store",
+      "health checks",
+      "deployment logs",
+      "access logs",
+      "manual deployment control",
+      "rollback support",
+      "managed PostgreSQL or compatible external PostgreSQL",
+      "private S3-compatible object storage"
+    ],
+    "resolution_hash": "4244f8210e87129616d62ac820dab8bb9359129badd5a4ea3a536cebdf0f59d5",
+    "resources_created": false,
+    "schema_version": "simplee.tower_ob.managed_staging_runtime.v1",
+    "selection_status": "operator_input_required",
+    "topology": "single_tower_fronted_managed_python_web_service"
+  },
+  "provider_resolution_hash": "4244f8210e87129616d62ac820dab8bb9359129badd5a4ea3a536cebdf0f59d5",
+  "provider_selected": false,
+  "receipt_hash": "c51efb29c4f813aa89a8bf05ae45f3ed5801286bfc7ebcbdea315d2b12277a6f",
+  "resources_created": false,
+  "schema_version": "simplee.tower_ob.integration_step.v1",
+  "status": "completed",
+  "step_key": "managed_staging_provider_capabilities_resolved",
+  "step_number": 31,
+  "verified": true
+}

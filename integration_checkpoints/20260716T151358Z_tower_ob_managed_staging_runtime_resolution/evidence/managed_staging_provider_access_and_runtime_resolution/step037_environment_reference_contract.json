@@ -1,0 +1,129 @@
+{
+  "created_at": "2026-07-16T15:14:41.097545Z",
+  "environment_reference_contract": {
+    "contract_hash": "b6df64b3e2dcff415e33e0f5c4e8ce3acede90386c6aeef084964fd65f533d61",
+    "optional": [
+      "PORT",
+      "TOWER_STEP_UP_MINUTES",
+      "TOWER_OB_WALKTHROUGH_DB",
+      "TOWER_OB_WALKTHROUGH_BACKUP_DIR",
+      "TOWER_OB_WALKTHROUGH_BACKUP_MAX_AGE_HOURS",
+      "TOWER_OB_WALKTHROUGH_INCIDENT_DIR",
+      "TOWER_OB_WALKTHROUGH_RETENTION_APPROVAL_DIR",
+      "TOWER_OB_WALKTHROUGH_DEPLOYMENT_RECORD_DIR",
+      "TOWER_OB_WALKTHROUGH_ACTIVATION_APPROVAL_DIR"
+    ],
+    "prohibited_in_hosted_staging": [
+      "TOWER_LOCAL_OWNER_PASSWORD"
+    ],
+    "provider_required_before_authorization_review": [
+      "SIMPLEE_MANAGED_HOST_PROVIDER",
+      "SIMPLEE_MANAGED_HOST_ACCOUNT_OR_TEAM",
+      "SIMPLEE_STAGING_DEPLOYMENT_REGION",
+      "SIMPLEE_PROVIDER_OWNER_APPROVAL"
+    ],
+    "rules": {
+      "local_plaintext_owner_password_allowed": false,
+      "local_walkthrough_mode_allowed": false,
+      "production_secrets_reused_in_staging": false,
+      "provider_secret_store_required": true,
+      "raw_secrets_in_evidence": false,
+      "raw_secrets_in_git": false,
+      "values_in_contract": false
+    },
+    "runtime_required": [
+      "SIMPLEE_DEPLOYMENT_ENVIRONMENT",
+      "TOWER_HOSTED_MODE",
+      "TOWER_SESSION_SECRET",
+      "TOWER_OWNER_USERNAME",
+      "TOWER_OWNER_PASSWORD_HASH",
+      "TOWER_OWNER_ID"
+    ],
+    "schema_version": "simplee.tower_ob.managed_staging_runtime.v1"
+  },
+  "environment_reference_contract_hash": "b6df64b3e2dcff415e33e0f5c4e8ce3acede90386c6aeef084964fd65f533d61",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "8dd7a8d344945a50b8e901a672fe5093721e8fb6",
+  "previous_receipt_hash": "6d7a70dfd12283a6b71ebcd035ba02e8887ab1545983da95c66c98951f457296",
+  "raw_environment_values_recorded": false,
+  "raw_secrets_recorded": false,
+  "receipt_hash": "a192bea9c331ce206600a4ebb722d1ef98b6fcf51e1d96959164bcb3f4c100dd",
+  "runtime_environment_report": {
+    "authorization_review_ready": false,
+    "blocking_requirement_count": 5,
+    "blocking_requirements": [
+      {
+        "requirement": "managed_host_provider",
+        "status": "operator_input_required"
+      },
+      {
+        "requirement": "managed_host_account_or_team",
+        "status": "operator_input_required"
+      },
+      {
+        "requirement": "deployment_region",
+        "status": "operator_input_required"
+      },
+      {
+        "requirement": "provider_owner_approval",
+        "status": "owner_approval_required"
+      },
+      {
+        "requirement": "managed_staging_runtime_environment",
+        "status": "runtime_environment_references_required"
+      }
+    ],
+    "deployment_authorized": false,
+    "provider_calls_authorized": false,
+    "provider_checks": {
+      "managed_host_account_or_team_present": false,
+      "managed_host_provider_present": false,
+      "provider_owner_approval_recorded": false,
+      "staging_deployment_region_present": false
+    },
+    "provider_fingerprints": {
+      "managed_host_account_or_team_sha256": null,
+      "managed_host_provider_sha256": null,
+      "staging_deployment_region_sha256": null
+    },
+    "provider_inputs_complete": false,
+    "raw_values_returned": false,
+    "reference_presence": {
+      "PORT": false,
+      "SIMPLEE_DEPLOYMENT_ENVIRONMENT": false,
+      "SIMPLEE_MANAGED_HOST_ACCOUNT_OR_TEAM": false,
+      "SIMPLEE_MANAGED_HOST_PROVIDER": false,
+      "SIMPLEE_PROVIDER_OWNER_APPROVAL": false,
+      "SIMPLEE_STAGING_DEPLOYMENT_REGION": false,
+      "TOWER_HOSTED_MODE": false,
+      "TOWER_LOCAL_OWNER_PASSWORD": false,
+      "TOWER_LOCAL_WALKTHROUGH_MODE": false,
+      "TOWER_OWNER_ID": false,
+      "TOWER_OWNER_PASSWORD_HASH": false,
+      "TOWER_OWNER_USERNAME": false,
+      "TOWER_SESSION_SECRET": false
+    },
+    "report_hash": "4782d2f6114d2abe5c6d3bcfc81f2292ce77e33b95a9381358b017274cf8c31b",
+    "runtime_checks": {
+      "deployment_environment_is_staging": false,
+      "hosted_mode_enabled": false,
+      "local_plaintext_password_absent": true,
+      "local_walkthrough_mode_disabled": true,
+      "owner_id_present": false,
+      "owner_password_appears_hashed": false,
+      "owner_password_hash_present": false,
+      "owner_username_present": false,
+      "session_secret_minimum_length": false,
+      "session_secret_present": false
+    },
+    "runtime_ready": false,
+    "schema_version": "simplee.tower_ob.managed_staging_runtime.v1"
+  },
+  "runtime_environment_report_hash": "4782d2f6114d2abe5c6d3bcfc81f2292ce77e33b95a9381358b017274cf8c31b",
+  "schema_version": "simplee.tower_ob.integration_step.v1",
+  "secrets_created": false,
+  "status": "completed",
+  "step_key": "managed_staging_environment_reference_contract_created",
+  "step_number": 37,
+  "verified": true
+}
