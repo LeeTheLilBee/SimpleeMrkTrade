@@ -109,3 +109,31 @@ from .mission_lane_surface_service import (
     get_mission_lane_surface,
     get_mission_lane_surface_payload,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP004
+# OWNER ATTENTION COMMAND SURFACE
+# ============================================================
+
+from .owner_attention_surface import (
+    AttentionCommandGroup,
+    AttentionNavigationMode,
+    AttentionSourceType,
+    OwnerAttentionCommand,
+    OwnerAttentionDetail,
+    OwnerAttentionSummary,
+    OwnerAttentionSurface,
+    filter_owner_attention,
+    owner_attention_sort_key,
+)
+
+from .owner_attention_surface_service import (
+    get_clouds_gp004_status_payload,
+    get_owner_attention_commands,
+    get_owner_attention_detail,
+    get_owner_attention_detail_payload,
+    get_owner_attention_queue,
+    get_owner_attention_surface,
+    get_owner_attention_surface_payload,
+)

@@ -40,24 +40,26 @@ Clouds must not import operational application packages directly.
 
 `THE CLOUDS — OWNER COMMAND MISSION LANE SURFACE / GP003`
 
-## GP003 mission-lane surface
+`THE CLOUDS — OWNER ATTENTION COMMAND SURFACE / GP004`
 
-The mission-lane surface now provides:
+## GP004 owner-attention surface
 
-- active and reserved lane groups
-- lane health and readiness summaries
-- lane-to-application ownership
-- lane attention states
-- owner-attention lane ordering
-- lane detail projections
-- owner questions for each lane
-- safe navigation toward the owning app
-- visible owning-app authority boundaries
+The owner-attention surface now provides:
 
-Mission-lane cards are summaries and navigation handoffs.
+- one prioritized attention queue
+- action-required and informational groups
+- critical, high, elevated, and routine bands
+- source application and mission-lane linkage
+- source integrity verification
+- owner review questions
+- safe navigation handoffs
+- authority-boundary visibility
+- fail-closed missing-item behavior
 
-Clouds does not execute lane operations.
+Attention records identify what needs awareness.
+
+Clouds does not approve or execute the underlying action.
 
 ## Next checkpoint
 
-`THE CLOUDS — OWNER ATTENTION COMMAND SURFACE / GP004`
+`THE CLOUDS — OWNER COMMAND TODAY SURFACE / GP005`
