@@ -3,23 +3,41 @@
 The Clouds is the universal owner command and visibility layer
 for the Simplee ecosystem.
 
-This directory was intentionally reset for a clean rebuild.
+## Core purpose
+
+The Clouds gives the owner one high-level place to see:
+
+- application health
+- application readiness
+- business and mission lanes
+- owner attention
+- cross-business priorities
+- safe navigation into the correct operating app
 
 ## Locked boundaries
 
-- Clouds provides owner-level summaries, awareness, priorities,
-  decisions, and navigation.
 - Tower controls identity, permissions, step-up, approval, and routing.
-- Observatory owns trading and capital execution.
-- Vault is sealed memory and is not entered directly.
-- Teller owns people, payment, payroll, and workflow operations.
-- Grounds owns real-estate operations.
+- Observatory owns investment intelligence and capital execution.
+- Archive Vault owns sealed evidence and permanent memory.
+- Teller owns payroll, payment, people, vendor, and workflow operations.
+- Grounds owns real-estate acquisition and daily property operations.
+- Clouds observes, summarizes, prioritizes, and routes.
 - Clouds does not execute another application's operational work.
+
+## Integration doctrine
+
+Clouds will consume compact, structured summary contracts.
+
+Clouds must not call deep internal service graphs from another application.
+
+Clouds must not import operational application packages directly.
 
 ## Current checkpoint
 
-No Giant Packs are active.
-
-Next pack:
+Closed:
 
 `THE CLOUDS — CLEAN OWNER COMMAND FOUNDATION / GP001`
+
+Next:
+
+`THE CLOUDS — OWNER COMMAND APP REGISTRY SURFACE / GP002`
