@@ -1,0 +1,28 @@
+{
+  "automatic_paid_addons_authorized": false,
+  "automatic_scale_up_authorized": false,
+  "billing_boundary": {
+    "automatic_paid_addons_authorized": false,
+    "automatic_scale_up_authorized": false,
+    "billing_owner_ref_sha256": null,
+    "billing_owner_reference_present": false,
+    "owner_cost_review_required_before_resource_creation": true,
+    "production_billing_reuse_authorized": false,
+    "record_hash": "3cf760bec2d77c57b7053894a9fceb71e9245312a2f055f2921ef4838dfb39dc",
+    "record_type": "managed_staging_billing_boundary",
+    "resource_creation_authorized": false,
+    "schema_version": "simplee.tower_ob.provider_authorization.v1",
+    "staging_budget_limit_recorded": false
+  },
+  "created_at": "2026-07-16T15:33:52.586154Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "741dfe1c41aa3b29588e5192ebcb49813deb851b",
+  "previous_receipt_hash": "63ea80b7ce1ebdcaa5c50a98e881cbcc8f9ff1eec83299e923d4f43a1be9b467",
+  "receipt_hash": "f3832e92f788e64cfd9d2d8bb89fb3050cc7ce16121f91a63453846849c0db81",
+  "resource_creation_authorized": false,
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "billing_and_cost_boundary",
+  "step_number": 45,
+  "verified": true
+}

@@ -1,0 +1,28 @@
+{
+  "created_at": "2026-07-16T15:33:52.585938Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "741dfe1c41aa3b29588e5192ebcb49813deb851b",
+  "previous_receipt_hash": "c390b310a6cce6ccf76d946212a070f4e8b93fdabb2b6431cb243df73b696a0a",
+  "provider_calls_performed": false,
+  "provider_region_availability_verified": false,
+  "receipt_hash": "63ea80b7ce1ebdcaa5c50a98e881cbcc8f9ff1eec83299e923d4f43a1be9b467",
+  "region_binding": {
+    "data_residency_legal_review_completed": false,
+    "deployment_region_present": false,
+    "deployment_region_sha256": null,
+    "environment_name": "staging",
+    "provider_calls_authorized": false,
+    "provider_region_availability_verified": false,
+    "record_hash": "86e3ac61c9e0a68eed602212cc6a381f7bfd766b60ef622a8dd14198b804d3aa",
+    "record_type": "managed_staging_region_binding",
+    "region_binding_ready_for_review": false,
+    "region_verified_against_provider": false,
+    "schema_version": "simplee.tower_ob.provider_authorization.v1"
+  },
+  "region_verified_against_provider": false,
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "deployment_region_binding",
+  "step_number": 44,
+  "verified": true
+}

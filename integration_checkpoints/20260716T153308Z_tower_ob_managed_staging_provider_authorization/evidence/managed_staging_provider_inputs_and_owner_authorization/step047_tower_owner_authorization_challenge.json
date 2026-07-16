@@ -1,0 +1,29 @@
+{
+  "created_at": "2026-07-16T15:33:52.586679Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "741dfe1c41aa3b29588e5192ebcb49813deb851b",
+  "owner_approval_recorded": false,
+  "owner_authorization_challenge": {
+    "challenge_hash": "e2b00497958cfea3eb2c291a8eeee5c2e635f2e566109308b64f19a6a3b22ec9",
+    "challenge_id": "0bd9098ff89f37f20e3303af",
+    "challenge_phrase": "AUTHORIZE TOWER OB STAGING PROVIDER REVIEW 0BD9098FF89F37F20E3303AF",
+    "deployment_authorized": false,
+    "frozen_packet_hash": "9b85b58ce9a6a9df95ea6ed349145b9e317349948e951840c2dbe7541ef35373",
+    "provider_calls_authorized": false,
+    "record_type": "managed_staging_owner_authorization_challenge",
+    "required_owner_decision": "APPROVE_FOR_PROVISIONING_REVIEW",
+    "resource_creation_authorized": false,
+    "schema_version": "simplee.tower_ob.provider_authorization.v1",
+    "tower_owner_session_required": true,
+    "tower_step_up_receipt_required": true
+  },
+  "previous_receipt_hash": "fd0f7546543fb02694e2530dd24db2e11ac343ce086e7d8fade280b9064785d9",
+  "receipt_hash": "6eee539799982dc92a274b2ac0d66a6249f8efe26a74905f402cca4675e31d29",
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "tower_owner_authorization_challenge",
+  "step_number": 47,
+  "tower_owner_session_required": true,
+  "tower_step_up_receipt_required": true,
+  "verified": true
+}

@@ -1,0 +1,57 @@
+{
+  "capability_attestation_record": {
+    "all_required_capabilities_attested": false,
+    "capability_checks": {
+      "access_logs": false,
+      "deployment_logs": false,
+      "encrypted_environment_secret_store": false,
+      "health_checks": false,
+      "https_termination": false,
+      "managed_python_web_service": false,
+      "manual_deployment_control": false,
+      "provider_supplied_port_binding": false,
+      "rollback_support": false
+    },
+    "claims_verified_against_provider_api": false,
+    "composite_stack_allowed": true,
+    "provider_calls_authorized": false,
+    "record_hash": "6fbd51df35a4a4f78143c9edb6a0fbd893296ac6e0a9c20de1d98174a108e71a",
+    "record_type": "managed_staging_provider_capability_attestation",
+    "required_capabilities": [
+      "managed_python_web_service",
+      "provider_supplied_port_binding",
+      "https_termination",
+      "encrypted_environment_secret_store",
+      "health_checks",
+      "deployment_logs",
+      "access_logs",
+      "manual_deployment_control",
+      "rollback_support"
+    ],
+    "schema_version": "simplee.tower_ob.provider_authorization.v1",
+    "upstream_capability_resolution_hash": "4244f8210e87129616d62ac820dab8bb9359129badd5a4ea3a536cebdf0f59d5"
+  },
+  "created_at": "2026-07-16T15:33:52.585292Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "741dfe1c41aa3b29588e5192ebcb49813deb851b",
+  "previous_receipt_hash": "a11d1f6784244b6a2cb0492f20ea9053a570f795ae27d2143a85147d9d14052d",
+  "provider_calls_performed": false,
+  "provider_claims_verified_against_provider_api": false,
+  "receipt_hash": "f91ac0d45829f411f0c28164e21cbee3ee3c324762410db927b8c34aad4d27ff",
+  "required_capabilities": [
+    "managed_python_web_service",
+    "provider_supplied_port_binding",
+    "https_termination",
+    "encrypted_environment_secret_store",
+    "health_checks",
+    "deployment_logs",
+    "access_logs",
+    "manual_deployment_control",
+    "rollback_support"
+  ],
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "provider_capability_attestation_contract",
+  "step_number": 42,
+  "verified": true
+}

@@ -1,0 +1,95 @@
+{
+  "blocking_requirement_count": 14,
+  "blocking_requirements": [
+    {
+      "requirement": "provider_slug",
+      "status": "required"
+    },
+    {
+      "requirement": "account_or_team_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "deployment_region",
+      "status": "required"
+    },
+    {
+      "requirement": "billing_owner_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "capability_attestations.managed_python_web_service",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "capability_attestations.provider_supplied_port_binding",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "capability_attestations.https_termination",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "capability_attestations.encrypted_environment_secret_store",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "capability_attestations.health_checks",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "capability_attestations.deployment_logs",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "capability_attestations.access_logs",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "capability_attestations.manual_deployment_control",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "capability_attestations.rollback_support",
+      "status": "required_capability_not_attested"
+    },
+    {
+      "requirement": "tower_owner_authorization",
+      "status": "owner_step_up_and_decision_required"
+    }
+  ],
+  "challenge_id": "0bd9098ff89f37f20e3303af",
+  "closed_layer": "MANAGED_STAGING_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION",
+  "closed_through_step": 50,
+  "closeout_receipt": "integration_checkpoints/20260716T153308Z_tower_ob_managed_staging_provider_authorization/evidence/managed_staging_provider_inputs_and_owner_authorization/step050_provider_inputs_owner_authorization_closeout.json",
+  "closeout_receipt_hash": "ca217919bf5464889f921a788e17a757898d67442f385679f061e29c20111b2d",
+  "deployment_authorized": false,
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "frozen_packet_hash": "9b85b58ce9a6a9df95ea6ed349145b9e317349948e951840c2dbe7541ef35373",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "741dfe1c41aa3b29588e5192ebcb49813deb851b",
+  "next_boundary": "managed_staging_no_call_provider_provisioning_review",
+  "official_walkthrough_performed": false,
+  "origin_main_at_execution": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "owner_approval_valid": false,
+  "owner_authorization_record_hash": "bf44f1f351adde7397d382af1ada0913af83642c973fcd53c43ab6f092946944",
+  "owner_decision_report_hash": "83ce6df85ec627cdf664f5ada04fb0d883e14eafeeb3fae1770b92e644629aea",
+  "permanent_main_modified": false,
+  "provider_calls_authorized": false,
+  "provider_calls_performed": false,
+  "provider_inputs_valid": false,
+  "provisioning_readiness_plan_hash": "33f342cbe5005457190d50adfd30fd22e3e995d76f8091aab382e42c894470a9",
+  "raw_owner_values_recorded": false,
+  "raw_provider_values_recorded": false,
+  "ready_for_separate_no_call_provisioning_review": false,
+  "resource_creation_authorized": false,
+  "resources_created": false,
+  "runtime_target": "web.managed_staging:app",
+  "schema_version": "simplee.tower_ob.provider_authorization.v1",
+  "secret_creation_authorized": false,
+  "secrets_created": false,
+  "state_hash": "a96836136e7a71945b708f2d53e0b7aa6df96dccf3d1efce2720aec79d870a53",
+  "total_tests_passed": 123,
+  "updated_at": "2026-07-16T15:33:52.587896Z"
+}
