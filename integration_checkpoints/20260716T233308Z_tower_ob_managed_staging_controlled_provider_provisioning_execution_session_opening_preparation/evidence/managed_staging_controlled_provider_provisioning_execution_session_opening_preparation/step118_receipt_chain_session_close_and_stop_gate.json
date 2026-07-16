@@ -1,0 +1,35 @@
+{
+  "gate_hash": "2240b32eeae3f56371e5f5b15857ce9534d519aec2e9f7d8bbfafaea3a18de27",
+  "mandatory_stop_conditions": [
+    "authorization missing invalid expired or hash-mismatched",
+    "provider identity account team or region differs from frozen fingerprints",
+    "provider login requires credential export copy paste or recording",
+    "duplicate resource exists or lookup result is ambiguous",
+    "resource form exceeds one inert Tower-fronted web-service shell",
+    "database object storage DNS build deployment or production access is requested",
+    "secret value readback display logging or repository storage is requested",
+    "receipt chain cannot be completed in order"
+  ],
+  "preparation_valid": false,
+  "provider_session_opened": false,
+  "receipt_chain_preflight_ref_sha256": null,
+  "record_type": "controlled_provider_session_opening_receipt_chain_close_and_stop_gate",
+  "required_receipt_order": [
+    "step110_authorization_revalidation_receipt",
+    "owner_session_opening_preparation_receipt",
+    "provider_console_entrypoint_receipt",
+    "provider_identity_revalidation_receipt",
+    "provider_authentication_receipt",
+    "duplicate_resource_lookup_receipt",
+    "stop_before_resource_creation_receipt",
+    "provider_session_close_receipt",
+    "provider_session_revocation_or_logout_receipt"
+  ],
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_preparation.v1",
+  "session_close_and_revocation_plan_ref_sha256": null,
+  "session_close_required_on_any_stop": true,
+  "stop_before_build": true,
+  "stop_before_deployment": true,
+  "stop_before_resource_creation": true,
+  "stop_before_secret_registration": true
+}

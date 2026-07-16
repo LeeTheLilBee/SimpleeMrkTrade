@@ -1,0 +1,23 @@
+{
+  "authorization_handoff_ready": false,
+  "build_authorized": false,
+  "build_performed": false,
+  "decision_hash": "c6efa10c818f8d45e02bade4580ca7744255a22a2c41de5d5aaa836f31020770",
+  "decision_type": "controlled_provider_session_opening_preparation_closeout",
+  "deployment_authorized": false,
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "opening_preparation_valid": false,
+  "provider_calls_authorized": false,
+  "provider_calls_performed": false,
+  "provider_login_authorized": false,
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "provider_session_opening_authorized": false,
+  "ready_for_separate_controlled_provider_session_opening_execution_authorization": false,
+  "resource_creation_authorized": false,
+  "resources_created": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_preparation.v1",
+  "secret_registration_authorized": false,
+  "secrets_registered": false
+}

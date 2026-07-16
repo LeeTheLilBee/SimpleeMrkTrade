@@ -1,0 +1,19 @@
+{
+  "account_or_team_ref_sha256": null,
+  "cookies_or_session_tokens_recorded": false,
+  "credentials_recorded": false,
+  "deployment_region_sha256": null,
+  "isolated_browser_session_required": true,
+  "owner_id_sha256": null,
+  "owner_session_opening_preparation_receipt_ref_sha256": null,
+  "preflight_hash": "9f02f87ddde7a4e1bac820838da23231fd25a3b30e3bfa81e2ada301a4677776",
+  "preparation_valid": false,
+  "private_browsing_profile_required": true,
+  "provider_console_entrypoint_review_ref_sha256": null,
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "provider_slug_sha256": null,
+  "record_type": "provider_identity_and_session_isolation_preflight",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_preparation.v1",
+  "tower_step_up_receipt_ref_sha256": null
+}

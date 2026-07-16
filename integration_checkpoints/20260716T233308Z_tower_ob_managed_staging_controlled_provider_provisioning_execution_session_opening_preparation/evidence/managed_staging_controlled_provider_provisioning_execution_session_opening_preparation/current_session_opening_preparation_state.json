@@ -1,0 +1,333 @@
+{
+  "blocking_requirement_count": 72,
+  "blocking_requirements": [
+    {
+      "requirement": "valid_step110_session_opening_authorization",
+      "status": "authorization_required"
+    },
+    {
+      "requirement": "authorization_handoff_ready",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_source_commit_format_valid",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_source_commit_matches",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "monthly_cost_ceiling_valid",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "monthly_cost_ceiling_matches",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "owner_session_opening_preparation_receipt_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "prepared_by_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "prepared_at_is_utc_iso",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "provider_console_entrypoint_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "provider_identity_revalidation_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "account_team_revalidation_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "region_revalidation_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorization_window_revalidation_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "duplicate_resource_lookup_preflight_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "browser_session_isolation_plan_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "credential_custody_preflight_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "one_service_shell_form_preflight_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "repository_binding_preflight_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "non_secret_environment_names_preflight_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "secret_reference_custody_preflight_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "receipt_chain_preflight_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_close_and_revocation_plan_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_window_ordered",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_window_matches_authorization",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorization_expiry_matches",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "preparation_occurs_before_authorization_expiry",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.staging_only_scope_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.single_tower_fronted_service_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.tower_only_public_ingress_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.observatory_separate_service_not_required",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.frozen_session_opening_authorization_hash_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.session_opening_authorization_decision_hash_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.authorized_source_commit_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.session_window_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.authorization_expiry_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.monthly_cost_ceiling_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.provider_identity_fingerprints_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.owner_step_up_receipt_fingerprint_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.fresh_owner_session_opening_preparation_receipt_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.manual_provider_console_entrypoint_reviewed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.isolated_browser_session_required",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.private_browsing_profile_required",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.credential_manager_or_provider_login_ui_only",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.credentials_must_not_enter_repository_or_worksheet",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.cookies_and_session_tokens_must_not_be_captured",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.provider_identity_revalidation_required_before_login",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.account_team_revalidation_required_before_login",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.region_revalidation_required_before_login",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.authorization_window_revalidation_required_before_login",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.duplicate_resource_lookup_required_after_login_before_creation",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.stop_if_duplicate_or_ambiguous_resource_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.one_inert_web_service_shell_limit_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.repository_branch_commit_binding_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.non_secret_environment_names_only_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.secret_reference_registration_without_readback_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.receipt_chain_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.session_close_and_revocation_plan_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.stop_before_resource_creation_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.stop_before_secret_registration_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.stop_before_build_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.stop_before_deployment_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.database_creation_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.object_storage_creation_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.dns_changes_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.official_walkthrough_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.production_manual_live_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.broker_submission_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.real_capital_movement_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.direct_vault_upload_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.live_auto_remains_locked",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.no_provider_session_login_or_calls_performed_during_preparation",
+      "status": "required_check_failed"
+    }
+  ],
+  "broker_submission_enabled": false,
+  "build_authorized": false,
+  "build_performed": false,
+  "closed_layer": "MANAGED_STAGING_CONTROLLED_PROVIDER_PROVISIONING_EXECUTION_SESSION_OPENING_PREPARATION",
+  "closed_through_step": 120,
+  "database_creation_authorized": false,
+  "deployment_authorized": false,
+  "deployment_performed": false,
+  "direct_vault_upload_enabled": false,
+  "dns_changes_authorized": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "frozen_session_opening_preparation_packet_hash": "9ede64750a77589f812abfffd2683de37612d597a60bf2986ac8d55f105a7592",
+  "inert_session_opening_execution_authorization_plan_hash": "dee39fa299a81173704aca92f34df00c77de5cb50876f5d1b77a5590ddf3dd64",
+  "live_auto_locked": true,
+  "next_boundary": "managed_staging_controlled_provider_provisioning_execution_session_opening_execution_authorization",
+  "object_storage_creation_authorized": false,
+  "official_walkthrough_performed": false,
+  "permanent_main_modified": false,
+  "production_manual_live_authorized": false,
+  "provider_calls_authorized": false,
+  "provider_calls_performed": false,
+  "provider_login_authorized": false,
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "provider_session_opening_authorized": false,
+  "ready_for_separate_controlled_provider_session_opening_execution_authorization": false,
+  "real_capital_movement_enabled": false,
+  "resource_creation_authorized": false,
+  "resources_created": false,
+  "runtime_target": "web.managed_staging:app",
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_preparation.v1",
+  "secret_reference_registration_authorized": false,
+  "secrets_created_or_read": false,
+  "secrets_registered": false,
+  "session_opening_authorization_handoff_hash": "acbb44cbcbed2fbbceec848ea9042779d9ffdfce2f666a52c8e4623b519d45eb",
+  "session_opening_authorization_ready": false,
+  "session_opening_preparation_decision_hash": "c6efa10c818f8d45e02bade4580ca7744255a22a2c41de5d5aaa836f31020770",
+  "session_opening_preparation_valid": false,
+  "state_hash": "b6d618fb58a8d1d434a85f6882c16c0e72206804555120af934ccbcca8c48df5"
+}

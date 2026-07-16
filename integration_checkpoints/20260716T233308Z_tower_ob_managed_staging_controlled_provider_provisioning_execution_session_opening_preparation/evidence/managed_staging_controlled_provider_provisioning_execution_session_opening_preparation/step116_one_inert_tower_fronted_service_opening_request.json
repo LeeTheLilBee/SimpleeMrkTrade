@@ -1,0 +1,24 @@
+{
+  "authorized_source_commit_sha256": null,
+  "build_authorized": false,
+  "deployment_authorized": false,
+  "future_resource_ceiling": {
+    "databases": 0,
+    "dns_changes": 0,
+    "managed_web_service_shells": 0,
+    "object_storage_buckets": 0
+  },
+  "observatory_separate_service_required": false,
+  "one_service_shell_form_preflight_ref_sha256": null,
+  "preparation_valid": false,
+  "public_ingress_owner": "tower_only",
+  "record_type": "one_inert_tower_fronted_service_opening_request",
+  "repository_binding_preflight_ref_sha256": null,
+  "request_hash": "2e9d8340673563d69272f0e4f1d77ae65db3a029bf6efc96b078e9f450c8f345",
+  "resource_creation_authorized": false,
+  "resources_created": false,
+  "runtime_target": "web.managed_staging:app",
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_preparation.v1",
+  "secret_registration_authorized": false
+}

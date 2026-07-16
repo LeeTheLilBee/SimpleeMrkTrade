@@ -1,0 +1,15 @@
+{
+  "account_team_revalidation_ref_sha256": null,
+  "authorization_window_revalidation_ref_sha256": null,
+  "duplicate_lookup_must_run_after_login_before_creation": true,
+  "duplicate_resource_lookup_preflight_ref_sha256": null,
+  "preflight_hash": "35aebfe73b825765c1a2a036a26fe230194cc49eeea38e271c0df7e759158c15",
+  "preparation_valid": false,
+  "provider_calls_performed": false,
+  "provider_identity_revalidation_ref_sha256": null,
+  "record_type": "duplicate_resource_and_binding_revalidation_preflight",
+  "region_revalidation_ref_sha256": null,
+  "resources_created": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_preparation.v1",
+  "stop_on_duplicate_or_ambiguous_result": true
+}
