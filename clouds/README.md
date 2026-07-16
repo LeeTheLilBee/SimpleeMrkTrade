@@ -13,7 +13,8 @@ The Clouds gives the owner one high-level place to see:
 - owner attention
 - today's focus
 - strategic priorities
-- cross-business recommendations
+- executive recommendations
+- combined ecosystem readiness
 - safe navigation into the correct operating app
 
 ## Locked boundaries
@@ -48,26 +49,33 @@ Clouds must not import operational application packages directly.
 
 `THE CLOUDS — OWNER COMMAND PRIORITY BOARD / GP006`
 
-## GP006 Priority Board
+`THE CLOUDS — EXECUTIVE OWNER DASHBOARD SURFACE / GP007`
 
-The Priority Board now provides:
+## GP007 Executive Owner Dashboard
 
-- critical, high, medium, and low priority bands
-- deterministic strategic scoring
-- ready, watch, and blocked states
-- expected-impact projections
-- estimated-effort projections
-- revenue, growth, operations, and infrastructure categories
-- linked applications and mission lanes
-- top and second owner recommendations
-- safe Tower-mediated navigation
-- source integrity validation
-- fail-closed priority lookup
+The Executive Owner Dashboard now provides:
 
-Priority cards recommend owner direction.
+- a fixed six-section executive surface
+- Today roll-up
+- Priority Board roll-up
+- Owner Attention roll-up
+- Mission Lane roll-up
+- Application Registry roll-up
+- combined readiness scoring
+- combined executive health
+- blocked-priority visibility
+- top and second recommendations
+- watch-next recommendation
+- future-opportunity recommendation
+- dashboard card filtering
+- dashboard detail projections
+- safe internal Clouds navigation
+- source integrity verification
 
-Clouds does not approve or execute the underlying action.
+The Executive Dashboard summarizes and recommends.
+
+Clouds does not approve or execute the underlying work.
 
 ## Next checkpoint
 
-`THE CLOUDS — EXECUTIVE OWNER DASHBOARD SURFACE / GP007`
+`THE CLOUDS — EXECUTIVE DASHBOARD SECTION DETAIL SURFACE / GP008`
