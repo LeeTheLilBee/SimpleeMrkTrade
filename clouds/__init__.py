@@ -81,3 +81,31 @@ from .app_registry_surface_service import (
     get_app_registry_surface_payload,
     get_clouds_gp002_status_payload,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP003
+# OWNER COMMAND MISSION LANE SURFACE
+# ============================================================
+
+from .mission_lane_surface import (
+    MissionLaneAttentionState,
+    MissionLaneCard,
+    MissionLaneDetail,
+    MissionLaneGroup,
+    MissionLaneOpenMode,
+    MissionLaneSummary,
+    MissionLaneSurface,
+    build_mission_lane_card,
+    filter_mission_lane_cards,
+)
+
+from .mission_lane_surface_service import (
+    get_clouds_gp003_status_payload,
+    get_mission_lane_attention_queue,
+    get_mission_lane_cards,
+    get_mission_lane_detail,
+    get_mission_lane_detail_payload,
+    get_mission_lane_surface,
+    get_mission_lane_surface_payload,
+)

@@ -38,23 +38,26 @@ Clouds must not import operational application packages directly.
 
 `THE CLOUDS — OWNER COMMAND APP REGISTRY SURFACE / GP002`
 
-## GP002 registry surface
+`THE CLOUDS — OWNER COMMAND MISSION LANE SURFACE / GP003`
 
-The owner application registry now provides:
+## GP003 mission-lane surface
 
-- active and reserved application groups
-- health and readiness cards
-- attention states
-- connection-state summaries
-- application detail views
-- authority boundaries
-- safe Tower-mediated navigation targets
+The mission-lane surface now provides:
 
-Opening an application from Clouds remains a navigation handoff.
+- active and reserved lane groups
+- lane health and readiness summaries
+- lane-to-application ownership
+- lane attention states
+- owner-attention lane ordering
+- lane detail projections
+- owner questions for each lane
+- safe navigation toward the owning app
+- visible owning-app authority boundaries
 
-Clouds does not authenticate, authorize, perform step-up, or execute
-operational application work.
+Mission-lane cards are summaries and navigation handoffs.
+
+Clouds does not execute lane operations.
 
 ## Next checkpoint
 
-`THE CLOUDS — OWNER COMMAND MISSION LANE SURFACE / GP003`
+`THE CLOUDS — OWNER ATTENTION COMMAND SURFACE / GP004`
