@@ -1,0 +1,35 @@
+{
+  "authorization_approved": false,
+  "build_performed": false,
+  "deployment_performed": false,
+  "future_receipt_order": [
+    "session_opening_execution_preparation_start_receipt",
+    "identity_account_region_revalidation_receipt",
+    "isolated_browser_session_preparation_receipt",
+    "duplicate_resource_lookup_preparation_receipt",
+    "one_service_shell_preparation_receipt",
+    "environment_and_secret_reference_preparation_receipt",
+    "session_close_logout_revocation_preparation_receipt",
+    "execution_preparation_closeout_receipt"
+  ],
+  "gate_hash": "ece5c0e2209c86d58edcff0e010a6da7e30b92fcb58cbc4655fb7d076d228c44",
+  "gate_type": "controlled_provider_session_opening_execution_receipt_chain_and_stop_gate",
+  "mandatory_stop_conditions": [
+    "authorization_expired_or_outside_window",
+    "owner_step_up_receipt_invalid_or_stale",
+    "provider_identity_account_or_region_mismatch",
+    "duplicate_or_ambiguous_resource_detected",
+    "credential_cookie_or_token_capture_requested",
+    "more_than_one_service_requested",
+    "database_object_storage_or_dns_requested",
+    "secret_value_readback_requested",
+    "build_or_deployment_requested",
+    "manual_live_broker_capital_vault_or_live_auto_boundary_reached"
+  ],
+  "provider_calls_authorized_now": false,
+  "provider_login_authorized_now": false,
+  "provider_session_opening_authorized_now": false,
+  "resources_created": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_authorization.v1",
+  "secrets_registered": false
+}

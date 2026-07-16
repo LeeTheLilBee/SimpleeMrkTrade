@@ -1,0 +1,20 @@
+{
+  "account_or_team_ref_sha256": "",
+  "authorization_expires_at": "",
+  "authorized_source_commit_sha256": null,
+  "binding_hash": "de018ab89e3de33e72fd394b336159a11b0a0384fa1b6e97e74a3e1d7daf005b",
+  "deployment_region_sha256": "",
+  "execution_window_expires_at": "",
+  "execution_window_starts_at": "",
+  "monthly_cost_ceiling_usd": "",
+  "owner_execution_authorization_receipt_ref_sha256": null,
+  "owner_id_sha256": null,
+  "provider_slug_sha256": "",
+  "raw_credentials_recorded": false,
+  "raw_provider_identity_values_recorded": false,
+  "raw_tokens_or_cookies_recorded": false,
+  "record_type": "controlled_provider_session_opening_identity_window_cost_binding",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_authorization.v1",
+  "tower_step_up_receipt_ref_sha256": null,
+  "validation_approved": false
+}

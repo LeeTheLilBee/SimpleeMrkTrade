@@ -1,0 +1,28 @@
+{
+  "authorization_approved": false,
+  "build_authorized_now": false,
+  "database_creation_authorized": false,
+  "deployment_authorized_now": false,
+  "dns_changes_authorized": false,
+  "future_preparation_scope": {
+    "duplicate_resource_lookup_preparation": false,
+    "isolated_private_browser_session_preparation": false,
+    "non_secret_environment_name_preparation": false,
+    "one_inert_tower_fronted_service_shell_preparation": false,
+    "ordered_receipt_chain_preparation": false,
+    "provider_account_team_revalidation_preparation": false,
+    "provider_identity_revalidation_preparation": false,
+    "provider_region_revalidation_preparation": false,
+    "secret_reference_registration_preparation_without_readback": false,
+    "session_close_logout_and_revocation_preparation": false
+  },
+  "manifest_hash": "a241ae4b22d0297c6c4be9ad4c5985a09810ee3acbe63ee33ce3ddbe76d9e10b",
+  "manifest_type": "controlled_provider_session_opening_execution_scope",
+  "object_storage_creation_authorized": false,
+  "provider_calls_authorized_now": false,
+  "provider_login_authorized_now": false,
+  "provider_session_opening_authorized_now": false,
+  "resource_creation_authorized_now": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_authorization.v1",
+  "secret_registration_authorized_now": false
+}

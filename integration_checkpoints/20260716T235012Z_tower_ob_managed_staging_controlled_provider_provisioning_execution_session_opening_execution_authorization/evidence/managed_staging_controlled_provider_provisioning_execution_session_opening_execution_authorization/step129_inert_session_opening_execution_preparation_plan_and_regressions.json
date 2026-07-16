@@ -1,0 +1,26 @@
+{
+  "browser_actions": [],
+  "build_performed": false,
+  "deployment_performed": false,
+  "dry_run_only": true,
+  "http_requests": [],
+  "plan_hash": "be7a4a191469ceeb8bbc80dd779031a69da21d9180191f9947d0850b845ccb7e",
+  "plan_type": "inert_controlled_provider_session_opening_execution_preparation_plan",
+  "provider_api_requests": [],
+  "provider_calls_performed": false,
+  "provider_cli_commands": [],
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "ready_for_separate_execution_preparation": false,
+  "required_future_inputs": [
+    "fresh_execution_preparation_receipt_ref",
+    "exact_frozen_session_opening_execution_authorization_record_hash",
+    "exact_execution_authorization_decision_hash",
+    "fresh_window_revalidation_receipt_ref",
+    "fresh_provider_identity_account_region_revalidation_receipts"
+  ],
+  "resources_created": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_authorization.v1",
+  "secrets_registered": false,
+  "shell_commands": []
+}

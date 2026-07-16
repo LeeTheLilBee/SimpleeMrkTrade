@@ -1,0 +1,12 @@
+{
+  "challenge_expires_after_minutes": 15,
+  "challenge_id": "c8a9efe19267d0be631714dab12a0ae44d54cc3d4fad4b719146d08d852014df",
+  "challenge_phrase": "AUTHORIZE CONTROLLED PROVIDER SESSION OPENING EXECUTION PREPARATION 9ede64750a77 c6efa10c818f",
+  "challenge_type": "controlled_provider_session_opening_execution_authorization",
+  "frozen_session_opening_preparation_packet_hash": "9ede64750a77589f812abfffd2683de37612d597a60bf2986ac8d55f105a7592",
+  "provider_calls_performed": false,
+  "provider_login_performed": false,
+  "provider_session_opening_authorized": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_authorization.v1",
+  "session_opening_preparation_decision_hash": "c6efa10c818f8d45e02bade4580ca7744255a22a2c41de5d5aaa836f31020770"
+}
