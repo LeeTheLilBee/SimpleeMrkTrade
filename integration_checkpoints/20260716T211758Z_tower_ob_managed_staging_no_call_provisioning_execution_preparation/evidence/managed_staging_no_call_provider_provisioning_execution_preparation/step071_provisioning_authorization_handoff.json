@@ -1,0 +1,17 @@
+{
+  "authorization_handoff_hash": "e1628db433a184cb2ad84b99e7ae66ab831bfe9d1c823f67ca97e7df1bc65165",
+  "authorization_handoff_ready": false,
+  "created_at": "2026-07-16T21:19:27.865457Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "05eae9021f48a55c06b33a0319baea20f01f67e0",
+  "previous_receipt_hash": "e8c7d9dee05b855719067a237c0a256817d32375781fada3c7d79efc3fef40bc",
+  "provider_calls_authorized": false,
+  "provider_login_authorized": false,
+  "provisioning_authorization_valid": false,
+  "receipt_hash": "c8e4d52447c35901981a6b2fb490a1fc1c10d41825bc9fd50459df1bf08d1f57",
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "provisioning_authorization_handoff",
+  "step_number": 71,
+  "verified": true
+}
