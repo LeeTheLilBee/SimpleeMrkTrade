@@ -165,3 +165,37 @@ from .today_surface_service import (
     get_today_surface,
     get_today_surface_payload,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP006
+# OWNER COMMAND PRIORITY BOARD
+# ============================================================
+
+from .priority_board import (
+    EffortLevel,
+    ImpactLevel,
+    PriorityBoard,
+    PriorityCard,
+    PriorityCategory,
+    PriorityDetail,
+    PriorityNavigationMode,
+    PriorityState,
+    PrioritySummary,
+    StrategicPriority,
+    calculate_priority_score,
+    filter_priority_cards,
+    priority_sort_key,
+)
+
+from .priority_board_service import (
+    get_clouds_gp006_status_payload,
+    get_priority_board,
+    get_priority_board_payload,
+    get_priority_card,
+    get_priority_cards,
+    get_priority_detail,
+    get_priority_detail_payload,
+    get_priority_queue,
+    get_priority_summary,
+)

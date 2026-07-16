@@ -12,7 +12,8 @@ The Clouds gives the owner one high-level place to see:
 - business and mission lanes
 - owner attention
 - today's focus
-- cross-business priorities
+- strategic priorities
+- cross-business recommendations
 - safe navigation into the correct operating app
 
 ## Locked boundaries
@@ -22,7 +23,7 @@ The Clouds gives the owner one high-level place to see:
 - Archive Vault owns sealed evidence and permanent memory.
 - Teller owns payroll, payment, people, vendor, and workflow operations.
 - Grounds owns real-estate acquisition and daily property operations.
-- Clouds observes, summarizes, prioritizes, and routes.
+- Clouds observes, summarizes, prioritizes, recommends, and routes.
 - Clouds does not execute another application's operational work.
 
 ## Integration doctrine
@@ -45,24 +46,28 @@ Clouds must not import operational application packages directly.
 
 `THE CLOUDS — OWNER COMMAND TODAY SURFACE / GP005`
 
-## GP005 Today surface
+`THE CLOUDS — OWNER COMMAND PRIORITY BOARD / GP006`
 
-The Today surface now provides:
+## GP006 Priority Board
 
-- a compact owner header
-- top-focus cards
-- watch cards
-- open-target cards
-- action-required counts
-- safe navigation handoffs
-- deterministic ordering
-- owner review questions
+The Priority Board now provides:
+
+- critical, high, medium, and low priority bands
+- deterministic strategic scoring
+- ready, watch, and blocked states
+- expected-impact projections
+- estimated-effort projections
+- revenue, growth, operations, and infrastructure categories
+- linked applications and mission lanes
+- top and second owner recommendations
+- safe Tower-mediated navigation
 - source integrity validation
+- fail-closed priority lookup
 
-Today cards summarize owner priorities.
+Priority cards recommend owner direction.
 
-Clouds does not execute the underlying operational action.
+Clouds does not approve or execute the underlying action.
 
 ## Next checkpoint
 
-`THE CLOUDS — OWNER COMMAND PRIORITY BOARD / GP006`
+`THE CLOUDS — EXECUTIVE OWNER DASHBOARD SURFACE / GP007`
