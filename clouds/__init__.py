@@ -137,3 +137,31 @@ from .owner_attention_surface_service import (
     get_owner_attention_surface,
     get_owner_attention_surface_payload,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP005
+# OWNER COMMAND TODAY SURFACE
+# ============================================================
+
+from .today_surface import (
+    TodayCard,
+    TodayCardKind,
+    TodayDetail,
+    TodayHeader,
+    TodayNavigationMode,
+    TodayPriority,
+    TodaySurface,
+    filter_today_cards,
+    today_sort_key,
+)
+
+from .today_surface_service import (
+    get_clouds_gp005_status_payload,
+    get_today_cards,
+    get_today_detail,
+    get_today_detail_payload,
+    get_today_queue,
+    get_today_surface,
+    get_today_surface_payload,
+)

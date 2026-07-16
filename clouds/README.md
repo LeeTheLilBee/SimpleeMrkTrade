@@ -11,6 +11,7 @@ The Clouds gives the owner one high-level place to see:
 - application readiness
 - business and mission lanes
 - owner attention
+- today's focus
 - cross-business priorities
 - safe navigation into the correct operating app
 
@@ -42,24 +43,26 @@ Clouds must not import operational application packages directly.
 
 `THE CLOUDS — OWNER ATTENTION COMMAND SURFACE / GP004`
 
-## GP004 owner-attention surface
+`THE CLOUDS — OWNER COMMAND TODAY SURFACE / GP005`
 
-The owner-attention surface now provides:
+## GP005 Today surface
 
-- one prioritized attention queue
-- action-required and informational groups
-- critical, high, elevated, and routine bands
-- source application and mission-lane linkage
-- source integrity verification
-- owner review questions
+The Today surface now provides:
+
+- a compact owner header
+- top-focus cards
+- watch cards
+- open-target cards
+- action-required counts
 - safe navigation handoffs
-- authority-boundary visibility
-- fail-closed missing-item behavior
+- deterministic ordering
+- owner review questions
+- source integrity validation
 
-Attention records identify what needs awareness.
+Today cards summarize owner priorities.
 
-Clouds does not approve or execute the underlying action.
+Clouds does not execute the underlying operational action.
 
 ## Next checkpoint
 
-`THE CLOUDS — OWNER COMMAND TODAY SURFACE / GP005`
+`THE CLOUDS — OWNER COMMAND PRIORITY BOARD / GP006`
