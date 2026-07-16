@@ -1,0 +1,16 @@
+{
+  "artifact_hash": "571495d0ff335ad212f09127da60f50a3ac2d9dd7ad79808c7f6bc15fa65f4cc",
+  "created_at": "2026-07-16T21:59:29.823670Z",
+  "decision": "HOLD",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "e0aa55df00d94903491cf9fb8ad765227f39d838",
+  "owner_step_up_required": true,
+  "previous_receipt_hash": "54341e58ef928c738a2d9de8a9c921f9fdb7c00262428d0a9960d0482abc5613",
+  "provider_calls_performed": false,
+  "receipt_hash": "741038b68884bc4958570f914c97c625cef33929e717e937326ce67842f76b85",
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "execution_owner_decision_contract",
+  "step_number": 83,
+  "verified": true
+}

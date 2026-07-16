@@ -1,0 +1,19 @@
+{
+  "artifact_hash": "6c09fa0a115516a3937735f1fc533595de095bc2f61a428528526c8e5e829d69",
+  "closed_layer": "MANAGED_STAGING_PROVIDER_PROVISIONING_EXECUTION_AUTHORIZATION",
+  "closed_through_step": 90,
+  "created_at": "2026-07-16T21:59:29.825277Z",
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "e0aa55df00d94903491cf9fb8ad765227f39d838",
+  "next_boundary": "managed_staging_controlled_provider_provisioning_execution_session_preparation",
+  "previous_receipt_hash": "e8c3ec67edb00225b22d7a9be1fe3dc5bba24d3ecc14bfafeadebddc67c93b58",
+  "provider_calls_performed": false,
+  "receipt_hash": "0062209228a14e9d74867204f3644f260440e67f31c98a63c3bed238c0a5b979",
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "execution_authorization_closeout",
+  "step_number": 90,
+  "verified": true
+}
