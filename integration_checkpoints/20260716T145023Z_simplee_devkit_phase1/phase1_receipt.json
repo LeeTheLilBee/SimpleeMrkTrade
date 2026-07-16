@@ -1,0 +1,84 @@
+{
+  "application_source_modified": false,
+  "branch": "tower-ob-integration-dev",
+  "created_at": "2026-07-16T14:51:08.393941Z",
+  "decision": "SIMPLEE_DEVKIT_PHASE1_READY",
+  "deployment_performed": false,
+  "devkit_tests_passed": 4,
+  "devkit_version": "0.1.0",
+  "existing_tower_ob_tests_passed": 85,
+  "files": {
+    "tests/test_simplee_devkit_phase1.py": {
+      "sha256": "2af3a6b5ea6fab46d20c24b564d2bb0e7716a35df9cce3ea53578e2912b04ea4",
+      "size_bytes": 3372
+    },
+    "tools/README.md": {
+      "sha256": "899607141ff8fe9841952dd8b59bc2527256c14c9f82f1059b31d34b1db58183",
+      "size_bytes": 1881
+    },
+    "tools/export_chatgpt_context.py": {
+      "sha256": "e5b15d4559942eafc3df6feedaa5bac20121230ad9f4eb2f9e7dc271b9040723",
+      "size_bytes": 8909
+    },
+    "tools/simplee_devkit/__init__.py": {
+      "sha256": "06aae56ca6590401e1035fffe591f02cf41a0a45bb3e2fdd808f9c81b0199b8d",
+      "size_bytes": 85
+    },
+    "tools/simplee_devkit/common.py": {
+      "sha256": "0f6d1013627a0775fc78ade1c4dcb0713bfbfe942215bb2a12e3c8ab2b410baa",
+      "size_bytes": 6259
+    },
+    "tools/simplee_devkit/create_snapshot.py": {
+      "sha256": "da1029fa449074e5bbe053e1b3057bd6ff3ca2461fe6c4cb855bfa75cc5e38e4",
+      "size_bytes": 9832
+    },
+    "tools/simplee_devkit/export_git_context.py": {
+      "sha256": "18332cba8d8c4ae1125cad47f9d6da14cde730058346d53fecbc84f1df68fa3d",
+      "size_bytes": 3354
+    },
+    "tools/simplee_devkit/export_repo_tree.py": {
+      "sha256": "2085d5135d58e1131440a8920a7d185ff0050c2ba5c2afc58ebd0f84c784bd55",
+      "size_bytes": 2744
+    }
+  },
+  "merge_performed": false,
+  "next_boundary": "managed_staging_provider_access_and_observatory_runtime_resolution",
+  "phase": "SIMPLEE_DEVKIT_PHASE_1",
+  "pre_commit_head": "696ce949e2e3ed64545913f5cab377bb04151cfe",
+  "provider_calls_performed": false,
+  "receipt_hash": "373cad34c3731016fd663163eef81b12e879a9f6c4269ba30358e7e786e1418e",
+  "resources_created": false,
+  "schema_version": "simplee.devkit.phase1.receipt.v1",
+  "smoke_export_manifest_summary": {
+    "environment_variable_name_count": 15,
+    "included_file_count": 1766,
+    "included_total_bytes": 12580004,
+    "runtime_candidate_count": 7
+  },
+  "smoke_export_summary": {
+    "branch": "tower-ob-integration-dev",
+    "closed_layer": "MANAGED_STAGING_PROVIDER_RESOURCE_PROVISIONING_PREPARATION",
+    "closed_through_step": 30,
+    "devkit_version": "0.1.0",
+    "environment_variable_name_count": 15,
+    "final_decision": "NO_GO_HOLD_PROVIDER_ACCESS_AND_RUNTIME_INPUTS_REQUIRED",
+    "generated_at": "2026-07-16T14:50:53.232831Z",
+    "head": "696ce949e2e3ed64545913f5cab377bb04151cfe",
+    "included_source_file_count": 1766,
+    "latest_resume_checkpoint": "integration_checkpoints/20260716T140216Z_tower_ob_provider_provisioning_preparation/resume_checkpoint.json",
+    "mode": "focused",
+    "next_boundary": "managed_staging_provider_access_and_observatory_runtime_resolution",
+    "origin_main": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+    "repository_root": "/content/SimpleeMrkTrade_TOWER_OB_INTEGRATION",
+    "runtime_candidate_count": 7,
+    "schema_version": "simplee.devkit.context_export.v1",
+    "summary_digest": "8949c61763d87de6c9974684a3074bdad5781bad0a5dbc43bfbaae63ccc4f795",
+    "tracked_file_count": 6226,
+    "working_tree_clean": false
+  },
+  "smoke_export_zip": "/content/simplee_devkit_phase1_smoke_20260716T145023Z/simplee_context_SimpleeMrkTrade_TOWER_OB_INTEGRATION_20260716T145041Z.zip",
+  "smoke_export_zip_sha256": "50a0f2cbd4af2f22b93d9f41d4e283f5045785a2952cf65515d038ee66e8ef07",
+  "smoke_export_zip_size_bytes": 2896104,
+  "status": "closed",
+  "total_tests_passed": 89
+}
