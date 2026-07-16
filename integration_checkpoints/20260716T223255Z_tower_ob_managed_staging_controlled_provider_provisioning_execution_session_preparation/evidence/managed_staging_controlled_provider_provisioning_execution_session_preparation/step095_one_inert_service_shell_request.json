@@ -1,0 +1,19 @@
+{
+  "artifact_hash": "865cbba1c2f52f7dc4d97ff6cea329707c8e120b035771f004deb1db8654837f",
+  "build_ceiling": 0,
+  "created_at": "2026-07-16T22:35:37.028470Z",
+  "database_ceiling": 0,
+  "deployment_ceiling": 0,
+  "dns_change_ceiling": 0,
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "f0a7cd5e0d05d58b764e19742d41a49c45112323",
+  "managed_web_service_shell_ceiling": 1,
+  "object_storage_ceiling": 0,
+  "previous_receipt_hash": "44ed32e4280b3afb15cc002789262d17665df014ad7cbaf98adbbb415037be8d",
+  "receipt_hash": "ebcdbff661344f059ea113f2d2e8961c2e80d5060c1ad2404d196f7f3b766ed0",
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "one_inert_service_shell_request",
+  "step_number": 95,
+  "verified": true
+}

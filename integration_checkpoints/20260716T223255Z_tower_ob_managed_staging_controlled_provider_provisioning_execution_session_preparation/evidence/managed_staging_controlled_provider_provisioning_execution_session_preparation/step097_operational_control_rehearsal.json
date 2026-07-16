@@ -1,0 +1,17 @@
+{
+  "artifact_hash": "33fee8a1d3fb423f3571a6e1e2efcd08e2a851693316df8d562a2375786b7bb3",
+  "build_performed": false,
+  "created_at": "2026-07-16T22:35:37.028924Z",
+  "deployment_performed": false,
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "f0a7cd5e0d05d58b764e19742d41a49c45112323",
+  "previous_receipt_hash": "832c25402c67f71bbeb6a44acd84e00b7ef92dca3092aa1b4efb008fc71ccd4a",
+  "provider_calls_performed": false,
+  "receipt_hash": "e392e8215b6933c68dd38173dc33831f304c5ce413f6d1783f252fa5310b25b7",
+  "rehearsal_only": true,
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "operational_control_rehearsal",
+  "step_number": 97,
+  "verified": true
+}

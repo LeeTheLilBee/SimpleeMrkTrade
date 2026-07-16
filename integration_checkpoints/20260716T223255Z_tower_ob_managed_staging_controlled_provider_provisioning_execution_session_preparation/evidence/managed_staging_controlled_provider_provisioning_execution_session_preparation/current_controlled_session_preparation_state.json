@@ -1,0 +1,297 @@
+{
+  "blocking_requirement_count": 63,
+  "blocking_requirements": [
+    {
+      "requirement": "completed_execution_authorization",
+      "status": "valid_execution_authorization_required"
+    },
+    {
+      "requirement": "execution_authorization_ready",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_source_commit_format_valid",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "authorized_source_commit_matches",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "monthly_cost_ceiling_valid",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "monthly_cost_ceiling_matches",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_window_starts_at_is_utc_iso",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_window_expires_at_is_utc_iso",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_window_ordered",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "session_window_within_execution_authorization",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "owner_execution_session_receipt_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "provider_console_access_preflight_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "provider_account_team_binding_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "provider_region_binding_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "duplicate_resource_lookup_plan_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "service_creation_form_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "repository_binding_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "non_secret_environment_registration_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "secret_reference_registration_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "health_logging_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "manual_deployment_control_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "rollback_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "cost_ceiling_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "receipt_chain_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "stop_conditions_review_ref_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "prepared_by_present",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "prepared_at_is_utc_iso",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.staging_only_scope_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.single_tower_fronted_service_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.tower_only_public_ingress_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.observatory_separate_service_not_required",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.frozen_execution_authorization_hash_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.execution_authorization_window_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.authorized_source_commit_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.monthly_cost_ceiling_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.owner_controlled_session_receipt_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.provider_account_team_binding_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.provider_region_binding_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.duplicate_resource_lookup_before_creation_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.stop_if_duplicate_or_ambiguous_resource_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.one_inert_web_service_shell_limit_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.repository_branch_and_commit_binding_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.non_secret_environment_names_only_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.secret_references_without_readback_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.secret_values_never_written_to_git_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.health_check_configuration_reviewed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.deployment_logs_configuration_reviewed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.access_logs_configuration_reviewed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.manual_deployment_control_reviewed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.rollback_target_reviewed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.receipt_chain_order_reviewed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.stop_before_build_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.stop_before_deployment_confirmed",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.database_creation_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.object_storage_creation_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.dns_changes_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.official_walkthrough_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.production_manual_live_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.broker_submission_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.real_capital_movement_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.direct_vault_upload_not_authorized",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.live_auto_remains_locked",
+      "status": "required_check_failed"
+    },
+    {
+      "requirement": "attestations.no_provider_session_login_or_calls_performed_during_preparation",
+      "status": "required_check_failed"
+    }
+  ],
+  "broker_submission_enabled": false,
+  "build_authorized": false,
+  "build_performed": false,
+  "closed_layer": "MANAGED_STAGING_CONTROLLED_PROVIDER_PROVISIONING_EXECUTION_SESSION_PREPARATION",
+  "closed_through_step": 100,
+  "database_creation_authorized": false,
+  "deployment_authorized": false,
+  "deployment_performed": false,
+  "direct_vault_upload_enabled": false,
+  "dns_changes_authorized": false,
+  "execution_authorization_handoff_hash": "2fb696f3f4548011b6410e22d6fb04e0a8b5ac38a74d8b64ea550112b1d9cc0f",
+  "execution_authorization_ready": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "inert_session_opening_authorization_plan_hash": "d47accb33c71a2fcc68b6c1dbe747d060d8c624c7f6022ad1e1ab47bdde2d259",
+  "live_auto_locked": true,
+  "next_boundary": "managed_staging_controlled_provider_provisioning_execution_session_opening_authorization",
+  "object_storage_creation_authorized": false,
+  "official_walkthrough_performed": false,
+  "one_inert_web_service_creation_authorized": false,
+  "permanent_main_modified": false,
+  "production_manual_live_authorized": false,
+  "provider_calls_authorized": false,
+  "provider_calls_performed": false,
+  "provider_login_authorized": false,
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "provider_session_opening_authorized": false,
+  "ready_for_separate_controlled_provider_session_opening_authorization": false,
+  "real_capital_movement_enabled": false,
+  "resources_created": false,
+  "runtime_target": "web.managed_staging:app",
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "schema_version": "simplee.tower_ob.controlled_provider_provisioning_execution_session_preparation.v1",
+  "secret_reference_registration_authorized": false,
+  "secrets_created_or_read": false,
+  "secrets_registered": false,
+  "session_preparation_decision_hash": "5b345c39965acad065dd8bf28be60532483ea96a0b73981715d468ca38713366",
+  "session_preparation_inputs_valid": false,
+  "session_preparation_validation_report_hash": "02552ad9625a55c3fe5bc1e61be881f03ca1e28433ab7e7986eba7128d114921",
+  "state_hash": "adc74f8db8eb8914cafd1e81350d05474bf83f473a1d68d0ba413991c3438943"
+}
