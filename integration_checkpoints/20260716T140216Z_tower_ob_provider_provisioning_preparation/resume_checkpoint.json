@@ -1,0 +1,41 @@
+{
+  "blocking_requirements": [
+    {
+      "requirement": "managed_host_provider",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "managed_host_account_or_team",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "deployment_region",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "observatory_runtime_entrypoint",
+      "status": "repository_resolution_required"
+    },
+    {
+      "requirement": "provider_owner_approval",
+      "status": "owner_approval_required"
+    }
+  ],
+  "broker_submission_enabled": false,
+  "checkpoint_version": "1.0",
+  "closed_layer": "MANAGED_STAGING_PROVIDER_RESOURCE_PROVISIONING_PREPARATION",
+  "closed_through_step": 30,
+  "created_at": "2026-07-16T14:02:45.471302Z",
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_ACCESS_AND_RUNTIME_INPUTS_REQUIRED",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_checkpoint_commit": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "live_auto_locked": true,
+  "next_boundary": "managed_staging_provider_access_and_observatory_runtime_resolution",
+  "official_walkthrough_performed": false,
+  "production_manual_live_authorized": false,
+  "provider_calls_performed": false,
+  "real_capital_movement_enabled": false,
+  "resources_created": false,
+  "secrets_created": false
+}

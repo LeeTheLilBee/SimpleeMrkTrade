@@ -1,0 +1,65 @@
+{
+  "created_at": "2026-07-16T14:02:16.474054Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "operator_packet": {
+    "forbidden_values": [
+      "raw passwords",
+      "raw session secrets",
+      "raw database credentials",
+      "raw storage credentials",
+      "production credentials",
+      "broker credentials"
+    ],
+    "packet_complete": false,
+    "packet_version": "1.0",
+    "provider_assigned_outputs": [
+      "Tower staging host",
+      "Observatory private-service address",
+      "Tower deployment identifier",
+      "Observatory deployment identifier",
+      "PostgreSQL resource identifier",
+      "object-storage namespace identifier"
+    ],
+    "required_inputs": [
+      {
+        "key": "managed_host_provider",
+        "status": "required",
+        "value": "${MANAGED_HOST_PROVIDER}"
+      },
+      {
+        "key": "managed_host_account_or_team",
+        "status": "required",
+        "value": "${MANAGED_HOST_ACCOUNT_OR_TEAM}"
+      },
+      {
+        "key": "deployment_region",
+        "status": "required",
+        "value": "${STAGING_DEPLOYMENT_REGION}"
+      },
+      {
+        "key": "observatory_runtime_entrypoint",
+        "status": "required",
+        "value": "${OBSERVATORY_RUNTIME_ENTRYPOINT}"
+      },
+      {
+        "allowed_values": [
+          "APPROVED",
+          "NOT_APPROVED"
+        ],
+        "key": "provider_owner_approval",
+        "status": "required_before_provider_calls",
+        "value": "${PROVIDER_OWNER_APPROVAL}"
+      }
+    ]
+  },
+  "operator_packet_hash": "01a48fea8ff97ce9a397f8d314e6b4d39f7635401433c5e564ad5489edf4d25e",
+  "packet_complete": false,
+  "previous_receipt_hash": "ad44c34fa26a0e0d6e76952447f7f654b7af063cd754d7a981a854b044b9350a",
+  "provider_calls_authorized": false,
+  "receipt_hash": "260725ac813c451fb4e49bf971c6c554f69dfa7da504f85b98c0a262e79c182e",
+  "status": "completed",
+  "step_key": "provider_operator_input_packet_created",
+  "step_number": 26,
+  "verified": true
+}

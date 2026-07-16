@@ -1,0 +1,23 @@
+{
+  "created_at": "2026-07-16T14:02:16.465350Z",
+  "deployment_performed": false,
+  "gp053_closeout_chain_hash": "7d3cb0dc1622c0b575ca6193a176093f030cb78666f0c16941249e037834e0c9",
+  "gp053_receipt_hash": "1c502bb62314203efc44107b854f5652a4f8c1af842cfbdc203ca74683583187",
+  "gp053_receipt_path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/step023_gp053_closeout/gp053_deployment_preparation_closed.json",
+  "gp053_receipt_sha256": "29917259f3834ef4f2a256a9d3d7ac2ae1be2d22d3a517007fdac795ae78e162",
+  "gp053_state_path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/current_gp053_section_state.json",
+  "gp053_state_sha256": "baeea80a887e9ec01b2e7eab42d407ed9422d313992868f78a3b26a1c759c71b",
+  "gp053_verified_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "origin_main_at_execution": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "provider_calls_performed": false,
+  "receipt_hash": "e04ecb8c59ee58924113636b8d5b10e4cfa07b3baca5c2a7b2b2c6f95ab3d337",
+  "resources_created": false,
+  "resume_checkpoint_path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/resume_checkpoint.json",
+  "resume_checkpoint_sha256": "607ffb01284a6c09e81692e147c226942ef94211a70d389a9333c4b21fbfa3b0",
+  "status": "completed",
+  "step_key": "gp053_provider_handoff_verified",
+  "step_number": 24,
+  "verified": true
+}

@@ -1,0 +1,22 @@
+{
+  "blocking_requirement_count": 5,
+  "closed_through_step": 30,
+  "closeout_chain_hash": "881086b39cc07001261981b09ac3f828ca80f99bb820bbf692bff27b1649d80a",
+  "closeout_receipt": "integration_checkpoints/20260716T140216Z_tower_ob_provider_provisioning_preparation/evidence/managed_staging_provider_resource_provisioning_preparation/step030_provider_preparation_closed.json",
+  "closeout_receipt_hash": "4a0f097242ca4227a34fd30161756ad6063276101ec845adede108174b83a56c",
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_ACCESS_AND_RUNTIME_INPUTS_REQUIRED",
+  "gp053_verified_commit": "1fa908ea970496f5927d3e3f7d090a2e27b9991c",
+  "integration_branch": "tower-ob-integration-dev",
+  "layer": "MANAGED_STAGING_PROVIDER_RESOURCE_PROVISIONING_PREPARATION",
+  "layer_status": "closed",
+  "next_boundary": "managed_staging_provider_access_and_observatory_runtime_resolution",
+  "official_walkthrough_performed": false,
+  "origin_main_at_execution": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "provider_calls_performed": false,
+  "resources_created": false,
+  "secrets_created": false,
+  "tests_passed": 85,
+  "updated_at": "2026-07-16T14:02:45.471097Z",
+  "verified_integration_commit": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd"
+}

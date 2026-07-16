@@ -1,0 +1,71 @@
+{
+  "blocking_requirement_count": 5,
+  "blocking_requirements": [
+    {
+      "requirement": "managed_host_provider",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "managed_host_account_or_team",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "deployment_region",
+      "status": "operator_input_required"
+    },
+    {
+      "requirement": "observatory_runtime_entrypoint",
+      "status": "repository_resolution_required"
+    },
+    {
+      "requirement": "provider_owner_approval",
+      "status": "owner_approval_required"
+    }
+  ],
+  "closeout_chain": {
+    "gp053_closeout_chain_hash": "7d3cb0dc1622c0b575ca6193a176093f030cb78666f0c16941249e037834e0c9",
+    "gp053_receipt_hash": "1c502bb62314203efc44107b854f5652a4f8c1af842cfbdc203ca74683583187",
+    "integration_branch": "tower-ob-integration-dev",
+    "integration_commit": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+    "operator_packet_hash": "01a48fea8ff97ce9a397f8d314e6b4d39f7635401433c5e564ad5489edf4d25e",
+    "provider_contract_hash": "d8ff7b5fcbe406dc50b8eff9ba1ff36a60b1e8708d37de539f21490da253b370",
+    "secret_map_hash": "9892ef399df56a2089d3d1436b8b8c45580492a1b6f3c4f16b593db65e131b9c",
+    "sequence_hash": "6d118eea1f2aa692b15352d826c84f13ad613243009482543cacb1005a7051d1",
+    "step24_receipt_hash": "e04ecb8c59ee58924113636b8d5b10e4cfa07b3baca5c2a7b2b2c6f95ab3d337",
+    "step25_receipt_hash": "ad44c34fa26a0e0d6e76952447f7f654b7af063cd754d7a981a854b044b9350a",
+    "step26_receipt_hash": "260725ac813c451fb4e49bf971c6c554f69dfa7da504f85b98c0a262e79c182e",
+    "step27_receipt_hash": "972f52d10809c270c385ea8ce4abd82fb03993b3ab2cb9ae7d2bf3a885dd9828",
+    "step28_receipt_hash": "e9af5789928f4126055f95c7978de488796703877d1e06c7bf9c1a1d6f8f502d",
+    "step29_receipt_hash": "a96f3d1f1ccac1e9269a1869e2cf03134cc052ffedf977f491396871b99b1020"
+  },
+  "closeout_chain_hash": "881086b39cc07001261981b09ac3f828ca80f99bb820bbf692bff27b1649d80a",
+  "commit_created": false,
+  "created_at": "2026-07-16T14:02:45.470364Z",
+  "deployment_performed": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_ACCESS_AND_RUNTIME_INPUTS_REQUIRED",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "layer_steps": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "merge_performed": false,
+  "next_boundary": "managed_staging_provider_access_and_observatory_runtime_resolution",
+  "official_walkthrough_performed": false,
+  "provider_calls_performed": false,
+  "push_performed": false,
+  "receipt_hash": "4a0f097242ca4227a34fd30161756ad6063276101ec845adede108174b83a56c",
+  "resources_created": false,
+  "secrets_created": false,
+  "source_files_modified": false,
+  "status": "closed",
+  "step_key": "provider_provisioning_preparation_closed",
+  "step_number": 30,
+  "tests_passed": 85,
+  "verified": true
+}

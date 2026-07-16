@@ -1,0 +1,84 @@
+{
+  "created_at": "2026-07-16T14:02:16.481103Z",
+  "deployment_authorized": false,
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit": "9293dd9e9fb625a31e2efe169952b5b53b0c17cd",
+  "previous_receipt_hash": "972f52d10809c270c385ea8ce4abd82fb03993b3ab2cb9ae7d2bf3a885dd9828",
+  "provider_calls_authorized": false,
+  "receipt_hash": "e9af5789928f4126055f95c7978de488796703877d1e06c7bf9c1a1d6f8f502d",
+  "sequence": {
+    "deployment_authorized": false,
+    "ordered_actions": [
+      {
+        "action": "create managed staging PostgreSQL",
+        "order": 1,
+        "status": "not_executed"
+      },
+      {
+        "action": "create private staging object-storage namespace",
+        "order": 2,
+        "status": "not_executed"
+      },
+      {
+        "action": "create provider secret references",
+        "order": 3,
+        "status": "not_executed"
+      },
+      {
+        "action": "create private Observatory staging service",
+        "order": 4,
+        "status": "not_executed"
+      },
+      {
+        "action": "create Tower staging web service",
+        "order": 5,
+        "status": "not_executed"
+      },
+      {
+        "action": "bind private Tower-to-Observatory networking",
+        "order": 6,
+        "status": "not_executed"
+      },
+      {
+        "action": "configure health checks and logs",
+        "order": 7,
+        "status": "not_executed"
+      },
+      {
+        "action": "capture provider resource identifiers",
+        "order": 8,
+        "status": "not_executed"
+      },
+      {
+        "action": "verify deployment without official walkthrough",
+        "order": 9,
+        "status": "not_executed"
+      }
+    ],
+    "preconditions": [
+      "provider selected",
+      "provider account or team identified",
+      "region selected",
+      "Observatory runtime entrypoint verified",
+      "owner approval recorded"
+    ],
+    "provider_calls_authorized": false,
+    "resource_creation_authorized": false,
+    "rollback_actions": [
+      "stop deployment verification",
+      "disable Tower-to-Observatory staging route",
+      "roll back Tower to prior verified deployment",
+      "roll back Observatory to prior verified deployment",
+      "preserve logs and evidence",
+      "keep Observatory public ingress disabled",
+      "keep broker and capital authority disabled",
+      "record a NO_GO decision"
+    ],
+    "sequence_version": "1.0"
+  },
+  "sequence_hash": "6d118eea1f2aa692b15352d826c84f13ad613243009482543cacb1005a7051d1",
+  "status": "completed",
+  "step_key": "provider_provisioning_sequence_defined",
+  "step_number": 28,
+  "verified": true
+}
