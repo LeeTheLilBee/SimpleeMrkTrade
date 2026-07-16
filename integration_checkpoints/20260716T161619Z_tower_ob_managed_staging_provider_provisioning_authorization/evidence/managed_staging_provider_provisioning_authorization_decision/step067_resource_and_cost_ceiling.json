@@ -1,0 +1,32 @@
+{
+  "automatic_spend_authorized": false,
+  "created_at": "2026-07-16T16:17:15.653361Z",
+  "database_creation_authorized": false,
+  "dns_changes_authorized": false,
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "2597a03ae1adadb916327fdb9c34b06069ed060b",
+  "object_storage_creation_authorized": false,
+  "previous_receipt_hash": "9350d14e644ff46a5e6fab16d1ee396a42b81e9bb879731b6315105dba3882f0",
+  "receipt_hash": "43ac74c36a9cb21d513ba52214fe70f483aebb5e735667865cc98372cbeb78bf",
+  "resource_and_cost_ceiling_manifest": {
+    "automatic_scaling_authorized": false,
+    "automatic_spend_authorized": false,
+    "billing_credentials_recorded": false,
+    "database_count_ceiling": 0,
+    "dns_change_count_ceiling": 0,
+    "environment": "staging",
+    "managed_web_service_count_ceiling": 0,
+    "manifest_hash": "3c2d746134cae8909ee6f0bc5caf514fc0de2853ad806414977f03a172ab0d1f",
+    "manifest_type": "provider_provisioning_resource_and_cost_ceiling",
+    "monthly_cost_ceiling_usd": null,
+    "object_storage_bucket_count_ceiling": 0,
+    "production_billing_reuse_authorized": false,
+    "resource_creation_performed": false,
+    "schema_version": "simplee.tower_ob.provider_provisioning_authorization_decision.v1"
+  },
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "resource_and_cost_ceiling",
+  "step_number": 67,
+  "verified": true
+}

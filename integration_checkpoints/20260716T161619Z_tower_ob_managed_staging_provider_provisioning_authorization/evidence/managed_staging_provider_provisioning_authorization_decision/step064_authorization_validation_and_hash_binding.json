@@ -1,0 +1,222 @@
+{
+  "authorization_expiry_required": true,
+  "authorization_validation": {
+    "approval_valid": false,
+    "attestation_checks": {
+      "broker_submission_not_authorized": false,
+      "database_creation_not_authorized": false,
+      "deployment_not_authorized": false,
+      "direct_vault_upload_not_authorized": false,
+      "dns_changes_not_authorized": false,
+      "live_auto_remains_locked": false,
+      "no_provider_calls_performed_during_decision": false,
+      "object_storage_creation_not_authorized": false,
+      "observatory_separate_service_not_required": false,
+      "official_walkthrough_not_authorized": false,
+      "one_web_service_resource_limit_confirmed": false,
+      "production_manual_live_not_authorized": false,
+      "provider_console_manual_control_confirmed": false,
+      "real_capital_movement_not_authorized": false,
+      "secret_readback_prohibited_confirmed": false,
+      "secret_values_never_recorded_in_git_confirmed": false,
+      "single_tower_fronted_service_confirmed": false,
+      "staging_only_scope_confirmed": false,
+      "tower_only_public_ingress_confirmed": false
+    },
+    "checks": {
+      "authorization_expires_at_is_utc_iso": false,
+      "authorization_window_ordered": false,
+      "challenge_id_matches": false,
+      "challenge_phrase_matches": false,
+      "completed_review_ready": false,
+      "decided_at_is_utc_iso": false,
+      "decision_allowed": true,
+      "frozen_review_packet_hash_matches": true,
+      "monthly_cost_ceiling_valid": false,
+      "owner_id_present": false,
+      "review_decision_hash_matches": true,
+      "tower_step_up_receipt_ref_present": false
+    },
+    "decision": "HOLD",
+    "error_count": 36,
+    "errors": [
+      {
+        "code": "required_check_failed",
+        "field": "completed_review_ready"
+      },
+      {
+        "code": "required_check_failed",
+        "field": "owner_id_present"
+      },
+      {
+        "code": "required_check_failed",
+        "field": "tower_step_up_receipt_ref_present"
+      },
+      {
+        "code": "required_check_failed",
+        "field": "challenge_id_matches"
+      },
+      {
+        "code": "required_check_failed",
+        "field": "challenge_phrase_matches"
+      },
+      {
+        "code": "required_check_failed",
+        "field": "decided_at_is_utc_iso"
+      },
+      {
+        "code": "required_check_failed",
+        "field": "authorization_expires_at_is_utc_iso"
+      },
+      {
+        "code": "required_check_failed",
+        "field": "monthly_cost_ceiling_valid"
+      },
+      {
+        "code": "required_check_failed",
+        "field": "authorization_window_ordered"
+      },
+      {
+        "code": "required_scope_not_authorized",
+        "field": "authorized_scope.provider_console_access"
+      },
+      {
+        "code": "required_scope_not_authorized",
+        "field": "authorized_scope.create_one_managed_web_service"
+      },
+      {
+        "code": "required_scope_not_authorized",
+        "field": "authorized_scope.configure_non_secret_environment_names"
+      },
+      {
+        "code": "required_scope_not_authorized",
+        "field": "authorized_scope.register_secret_references_without_readback"
+      },
+      {
+        "code": "required_scope_not_authorized",
+        "field": "authorized_scope.configure_health_checks"
+      },
+      {
+        "code": "required_scope_not_authorized",
+        "field": "authorized_scope.configure_deployment_and_access_logs"
+      },
+      {
+        "code": "required_scope_not_authorized",
+        "field": "authorized_scope.configure_manual_deployment_control"
+      },
+      {
+        "code": "required_scope_not_authorized",
+        "field": "authorized_scope.configure_rollback_target"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.staging_only_scope_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.single_tower_fronted_service_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.tower_only_public_ingress_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.observatory_separate_service_not_required"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.one_web_service_resource_limit_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.provider_console_manual_control_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.secret_values_never_recorded_in_git_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.secret_readback_prohibited_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.database_creation_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.object_storage_creation_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.dns_changes_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.deployment_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.official_walkthrough_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.production_manual_live_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.broker_submission_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.real_capital_movement_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.direct_vault_upload_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.live_auto_remains_locked"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.no_provider_calls_performed_during_decision"
+      }
+    ],
+    "monthly_cost_ceiling_usd": null,
+    "owner_id_sha256": null,
+    "raw_owner_values_recorded": false,
+    "raw_secret_values_recorded": false,
+    "record_type": "provider_provisioning_authorization_validation",
+    "rejected": false,
+    "report_hash": "4c860082750fd854b66f0cc819234628456098bd6b95530aee6a11956e387ccd",
+    "schema_version": "simplee.tower_ob.provider_provisioning_authorization_decision.v1",
+    "scope_checks": {
+      "configure_deployment_and_access_logs": false,
+      "configure_health_checks": false,
+      "configure_manual_deployment_control": false,
+      "configure_non_secret_environment_names": false,
+      "configure_rollback_target": false,
+      "create_one_managed_web_service": false,
+      "provider_console_access": false,
+      "register_secret_references_without_readback": false
+    },
+    "sensitive_material_detected": false,
+    "tower_step_up_receipt_ref_sha256": null
+  },
+  "created_at": "2026-07-16T16:17:15.652236Z",
+  "frozen_review_packet_hash_bound": true,
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "2597a03ae1adadb916327fdb9c34b06069ed060b",
+  "previous_receipt_hash": "aa11f75a6837cf477a8216c11c3c7677e3b804709133788034eb50faf0011534",
+  "receipt_hash": "e0e74134b7220138a0436497f67de6d10b9742ce2768aaef6c3d9eb31a7db85b",
+  "review_decision_hash_bound": true,
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "authorization_validation_and_hash_binding",
+  "step_number": 64,
+  "tower_step_up_reference_required": true,
+  "verified": true
+}
