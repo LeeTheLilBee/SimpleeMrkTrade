@@ -53,3 +53,31 @@ __all__ = [
     "get_owner_command_dashboard",
     "get_owner_command_payload",
 ]
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP002
+# OWNER COMMAND APP REGISTRY SURFACE
+# ============================================================
+
+from .app_registry_surface import (
+    AppOpenMode,
+    AppRegistryAttentionState,
+    AppRegistryCard,
+    AppRegistryDetail,
+    AppRegistryGroup,
+    AppRegistrySummary,
+    AppRegistrySurface,
+    build_app_registry_card,
+    filter_registry_cards,
+)
+
+from .app_registry_surface_service import (
+    get_app_registry_attention_queue,
+    get_app_registry_cards,
+    get_app_registry_detail,
+    get_app_registry_detail_payload,
+    get_app_registry_surface,
+    get_app_registry_surface_payload,
+    get_clouds_gp002_status_payload,
+)

@@ -26,18 +26,35 @@ The Clouds gives the owner one high-level place to see:
 
 ## Integration doctrine
 
-Clouds will consume compact, structured summary contracts.
+Clouds consumes compact, structured summary contracts.
 
 Clouds must not call deep internal service graphs from another application.
 
 Clouds must not import operational application packages directly.
 
-## Current checkpoint
-
-Closed:
+## Closed checkpoints
 
 `THE CLOUDS — CLEAN OWNER COMMAND FOUNDATION / GP001`
 
-Next:
-
 `THE CLOUDS — OWNER COMMAND APP REGISTRY SURFACE / GP002`
+
+## GP002 registry surface
+
+The owner application registry now provides:
+
+- active and reserved application groups
+- health and readiness cards
+- attention states
+- connection-state summaries
+- application detail views
+- authority boundaries
+- safe Tower-mediated navigation targets
+
+Opening an application from Clouds remains a navigation handoff.
+
+Clouds does not authenticate, authorize, perform step-up, or execute
+operational application work.
+
+## Next checkpoint
+
+`THE CLOUDS — OWNER COMMAND MISSION LANE SURFACE / GP003`
