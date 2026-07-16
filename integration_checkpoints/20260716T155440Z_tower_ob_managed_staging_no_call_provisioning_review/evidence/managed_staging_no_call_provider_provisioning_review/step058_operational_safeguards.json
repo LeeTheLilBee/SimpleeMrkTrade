@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-07-16T15:55:40.477270Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "b824ea6bff0d5ec6de46cccfe2aa1d146b05b658",
+  "live_auto_locked": true,
+  "official_walkthrough_authorized": false,
+  "operational_safeguards": {
+    "broker_submission_enabled": false,
+    "deployment_authorized": false,
+    "direct_vault_upload_enabled": false,
+    "incident_execution_authorized": false,
+    "live_auto_locked": true,
+    "manifest_hash": "8c13d89764a89994d8d4e9f465dcdfa544ae9c4f17a7abf0fb46c4815b61f2c2",
+    "manifest_type": "managed_staging_operational_safeguards",
+    "official_walkthrough_authorized": false,
+    "official_walkthrough_required_after_separate_deployment": true,
+    "production_manual_live_authorized": false,
+    "provider_calls_authorized": false,
+    "real_capital_movement_enabled": false,
+    "required_checks": [
+      "health endpoint responds only after managed environment validation",
+      "deployment logs available to authorized operators",
+      "access logs available without exposing secret values",
+      "manual deployment control enabled",
+      "rollback target retained",
+      "incident stop and owner hold available",
+      "Tower-only ingress preserved",
+      "Observatory routes remain behind Tower authentication and step-up"
+    ],
+    "rollback_execution_authorized": false,
+    "schema_version": "simplee.tower_ob.no_call_provisioning_review.v1"
+  },
+  "previous_receipt_hash": "030117692dad44943744f09bddf2252aebb4f155e94af830b4e62946be71419c",
+  "production_manual_live_authorized": false,
+  "receipt_hash": "d25736bd5ad418b6860de2ba343770813e0ba2c8a14cda6fb0d8e115f84dfbc4",
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "operational_safeguard_review",
+  "step_number": 58,
+  "verified": true
+}

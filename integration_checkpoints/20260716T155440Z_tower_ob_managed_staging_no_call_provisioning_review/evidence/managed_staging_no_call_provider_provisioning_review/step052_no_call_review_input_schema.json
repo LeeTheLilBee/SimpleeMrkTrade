@@ -1,0 +1,197 @@
+{
+  "created_at": "2026-07-16T15:55:40.475486Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "b824ea6bff0d5ec6de46cccfe2aa1d146b05b658",
+  "previous_receipt_hash": "909078919058632c2aeeb3722d67917c5cae2c7d75d89ffd53beef6214364cdc",
+  "raw_review_values_recorded": false,
+  "raw_secrets_recorded": false,
+  "receipt_hash": "5bdbe94127ce58e4858bc294f794edf2b461245880d4885be8eb7ce2fe07658a",
+  "review_input_template": {
+    "access_logging_evidence_ref": "",
+    "account_access_evidence_ref": "",
+    "attestations": {
+      "access_logs_reviewed": false,
+      "account_team_access_confirmed": false,
+      "deployment_logs_reviewed": false,
+      "encrypted_secret_store_reviewed": false,
+      "health_check_support_reviewed": false,
+      "manual_deployment_control_reviewed": false,
+      "no_provider_calls_performed": false,
+      "observatory_separate_service_not_required": false,
+      "provider_documentation_reviewed": false,
+      "region_availability_reviewed": false,
+      "rollback_support_reviewed": false,
+      "staging_cost_boundary_reviewed": false,
+      "staging_only_scope_confirmed": false,
+      "tower_only_ingress_confirmed": false
+    },
+    "cost_review_ref": "",
+    "deployment_logging_evidence_ref": "",
+    "frozen_provider_packet_hash": "acd00dfcc18cfc176521fd88a23d490ff6bd04376feea4a3f664389d8d64fa3a",
+    "health_check_evidence_ref": "",
+    "notes": [
+      "Use non-secret references to provider documentation or screenshots only.",
+      "Do not include passwords, tokens, API keys, cookies, private keys, or connection strings.",
+      "Do not log into or call a provider from this utility.",
+      "Completing this review does not authorize provider calls, resource creation, secrets, or deployment."
+    ],
+    "owner_authorization_record_hash": "da40c9514fd2df16c979c08833909c2484a576b944424b929e74da7671f5ff08",
+    "packet_type": "managed_staging_no_call_provisioning_review_inputs",
+    "provider_documentation_ref": "",
+    "region_availability_evidence_ref": "",
+    "reviewed_at": "",
+    "reviewed_by": "",
+    "rollback_evidence_ref": "",
+    "schema_version": "simplee.tower_ob.no_call_provisioning_review.v1",
+    "secret_store_evidence_ref": "",
+    "template_hash": "04569586b8da8b5801417437bd2f64b94967022a10ac6fa8a9e0daf573e22a47"
+  },
+  "review_validation": {
+    "attestation_checks": {
+      "access_logs_reviewed": false,
+      "account_team_access_confirmed": false,
+      "deployment_logs_reviewed": false,
+      "encrypted_secret_store_reviewed": false,
+      "health_check_support_reviewed": false,
+      "manual_deployment_control_reviewed": false,
+      "no_provider_calls_performed": false,
+      "observatory_separate_service_not_required": false,
+      "provider_documentation_reviewed": false,
+      "region_availability_reviewed": false,
+      "rollback_support_reviewed": false,
+      "staging_cost_boundary_reviewed": false,
+      "staging_only_scope_confirmed": false,
+      "tower_only_ingress_confirmed": false
+    },
+    "authorization_handoff_ready": false,
+    "completed_attestation_count": 0,
+    "error_count": 25,
+    "errors": [
+      {
+        "code": "required",
+        "field": "provider_documentation_ref"
+      },
+      {
+        "code": "required",
+        "field": "account_access_evidence_ref"
+      },
+      {
+        "code": "required",
+        "field": "region_availability_evidence_ref"
+      },
+      {
+        "code": "required",
+        "field": "cost_review_ref"
+      },
+      {
+        "code": "required",
+        "field": "secret_store_evidence_ref"
+      },
+      {
+        "code": "required",
+        "field": "health_check_evidence_ref"
+      },
+      {
+        "code": "required",
+        "field": "deployment_logging_evidence_ref"
+      },
+      {
+        "code": "required",
+        "field": "access_logging_evidence_ref"
+      },
+      {
+        "code": "required",
+        "field": "rollback_evidence_ref"
+      },
+      {
+        "code": "required",
+        "field": "reviewed_by"
+      },
+      {
+        "code": "required",
+        "field": "reviewed_at"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.provider_documentation_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.account_team_access_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.region_availability_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.staging_cost_boundary_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.encrypted_secret_store_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.health_check_support_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.deployment_logs_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.access_logs_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.manual_deployment_control_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.rollback_support_reviewed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.staging_only_scope_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.tower_only_ingress_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.observatory_separate_service_not_required"
+      },
+      {
+        "code": "attestation_required",
+        "field": "attestations.no_provider_calls_performed"
+      }
+    ],
+    "raw_values_returned": false,
+    "record_type": "managed_staging_no_call_review_validation",
+    "reference_fingerprints": {
+      "access_logging_evidence_ref_sha256": null,
+      "account_access_evidence_ref_sha256": null,
+      "cost_review_ref_sha256": null,
+      "deployment_logging_evidence_ref_sha256": null,
+      "health_check_evidence_ref_sha256": null,
+      "provider_documentation_ref_sha256": null,
+      "region_availability_evidence_ref_sha256": null,
+      "reviewed_at_sha256": null,
+      "reviewed_by_sha256": null,
+      "rollback_evidence_ref_sha256": null,
+      "secret_store_evidence_ref_sha256": null
+    },
+    "report_hash": "b2ca534c6925019859add978c9ec98ba97c1e8165fd93798197919af063f19ad",
+    "required_attestation_count": 14,
+    "schema_version": "simplee.tower_ob.no_call_provisioning_review.v1",
+    "sensitive_material_detected": false,
+    "valid": false
+  },
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "no_call_review_input_schema",
+  "step_number": 52,
+  "verified": true
+}

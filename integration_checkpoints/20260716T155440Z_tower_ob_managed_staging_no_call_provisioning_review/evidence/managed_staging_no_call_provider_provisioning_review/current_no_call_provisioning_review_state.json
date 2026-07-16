@@ -1,0 +1,148 @@
+{
+  "authorization_handoff_hash": "7d3a608a6ff27c1c6e02d496ab71b118937129d09e5d4b492a3af8d6404372e1",
+  "blocking_requirement_count": 27,
+  "blocking_requirements": [
+    {
+      "requirement": "provider_inputs",
+      "status": "provider_inputs_required"
+    },
+    {
+      "requirement": "tower_owner_authorization",
+      "status": "owner_step_up_and_decision_required"
+    },
+    {
+      "requirement": "provider_documentation_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "account_access_evidence_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "region_availability_evidence_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "cost_review_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "secret_store_evidence_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "health_check_evidence_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "deployment_logging_evidence_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "access_logging_evidence_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "rollback_evidence_ref",
+      "status": "required"
+    },
+    {
+      "requirement": "reviewed_by",
+      "status": "required"
+    },
+    {
+      "requirement": "reviewed_at",
+      "status": "required"
+    },
+    {
+      "requirement": "attestations.provider_documentation_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.account_team_access_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.region_availability_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.staging_cost_boundary_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.encrypted_secret_store_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.health_check_support_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.deployment_logs_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.access_logs_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.manual_deployment_control_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.rollback_support_reviewed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.staging_only_scope_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.tower_only_ingress_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.observatory_separate_service_not_required",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "attestations.no_provider_calls_performed",
+      "status": "attestation_required"
+    }
+  ],
+  "broker_submission_enabled": false,
+  "closed_layer": "MANAGED_STAGING_NO_CALL_PROVIDER_PROVISIONING_REVIEW",
+  "closed_through_step": 60,
+  "deployment_authorized": false,
+  "deployment_performed": false,
+  "direct_vault_upload_enabled": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "frozen_review_packet_hash": "dddc5fc136ca6215609f896bfcbbfc7da778da9e21f3d14a2e74079a2a1f6518",
+  "live_auto_locked": true,
+  "next_boundary": "managed_staging_provider_provisioning_authorization_decision",
+  "no_call_dry_run_plan_hash": "92efbd7e83853f18f8d7a61b152caef62823495e0e204ec4d2f7106ebf3e060e",
+  "official_walkthrough_performed": false,
+  "owner_approval_valid": false,
+  "permanent_main_modified": false,
+  "production_manual_live_authorized": false,
+  "provider_calls_authorized": false,
+  "provider_calls_performed": false,
+  "provider_inputs_valid": false,
+  "raw_owner_values_recorded": false,
+  "raw_provider_values_recorded": false,
+  "raw_review_values_recorded": false,
+  "raw_secrets_recorded": false,
+  "ready_for_separate_provider_provisioning_authorization_decision": false,
+  "real_capital_movement_enabled": false,
+  "resource_creation_authorized": false,
+  "resources_created": false,
+  "review_decision_hash": "22be98eaeb64b3c901feffed4cc03cd69011881b38d06d6a0433b79059afe284",
+  "review_inputs_valid": false,
+  "runtime_target": "web.managed_staging:app",
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "schema_version": "simplee.tower_ob.no_call_provisioning_review.v1",
+  "secret_creation_authorized": false,
+  "secrets_created": false,
+  "state_hash": "062dfbcdb919b73c2383916c037a5fc884ffb36b01a0b6337cce4ad0ee02956c"
+}

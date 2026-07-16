@@ -1,0 +1,32 @@
+{
+  "account_region_cost_review": {
+    "account_access_evidence_ref_sha256": null,
+    "automatic_scale_up_authorized": false,
+    "automatic_spend_authorized": false,
+    "billing_credentials_recorded": false,
+    "budget_amount_recorded": false,
+    "cost_review_ref_sha256": null,
+    "production_billing_reuse_authorized": false,
+    "provider_calls_authorized": false,
+    "record_hash": "c8e4079cbbb7ce6808e5b22b3485bbb3ff1ee7dede9fce317d341518853303ba",
+    "record_type": "managed_staging_account_region_cost_review",
+    "region_availability_evidence_ref_sha256": null,
+    "resources_created": false,
+    "review_complete": false,
+    "reviewed_at_sha256": null,
+    "reviewed_by_sha256": null,
+    "schema_version": "simplee.tower_ob.no_call_provisioning_review.v1"
+  },
+  "automatic_spend_authorized": false,
+  "created_at": "2026-07-16T15:55:40.476285Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "b824ea6bff0d5ec6de46cccfe2aa1d146b05b658",
+  "previous_receipt_hash": "5dbe500d5b0bc108ccc2066ce1abe768e2981e2326660a6756a5e9e8d8de9748",
+  "receipt_hash": "05bad2c99174e16c2ffa70306e91f2906784d42a0b4253648bc4900cdf022213",
+  "resource_creation_authorized": false,
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "account_region_cost_review",
+  "step_number": 54,
+  "verified": true
+}

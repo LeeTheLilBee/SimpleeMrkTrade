@@ -1,0 +1,30 @@
+{
+  "created_at": "2026-07-16T15:55:40.476057Z",
+  "integration_branch": "tower-ob-integration-dev",
+  "integration_commit_before_closeout_commit": "b824ea6bff0d5ec6de46cccfe2aa1d146b05b658",
+  "previous_receipt_hash": "5bdbe94127ce58e4858bc294f794edf2b461245880d4885be8eb7ce2fe07658a",
+  "provider_api_invoked": false,
+  "provider_calls_performed": false,
+  "provider_documentation_review": {
+    "access_logging_evidence_ref_sha256": null,
+    "claims_verified_by_provider_api": false,
+    "deployment_logging_evidence_ref_sha256": null,
+    "documentation_review_complete": false,
+    "health_check_evidence_ref_sha256": null,
+    "provider_calls_authorized": false,
+    "provider_calls_performed": false,
+    "provider_documentation_ref_sha256": null,
+    "raw_documentation_refs_recorded": false,
+    "record_hash": "89b48932be6c4ef7d0e2df9c764ec1b26a99b26caf79be0ac32d100e7ec55502",
+    "record_type": "managed_staging_provider_documentation_review",
+    "rollback_evidence_ref_sha256": null,
+    "schema_version": "simplee.tower_ob.no_call_provisioning_review.v1",
+    "secret_store_evidence_ref_sha256": null
+  },
+  "receipt_hash": "5dbe500d5b0bc108ccc2066ce1abe768e2981e2326660a6756a5e9e8d8de9748",
+  "schema_version": "simplee.tower_ob.integration_receipt.v1",
+  "status": "completed",
+  "step_key": "provider_documentation_review",
+  "step_number": 53,
+  "verified": true
+}
