@@ -1,0 +1,37 @@
+{
+  "future_receipt_order": [
+    "execution_session_authorization_start_receipt",
+    "provider_identity_revalidation_receipt",
+    "duplicate_resource_lookup_receipt",
+    "one_service_request_review_receipt",
+    "environment_name_review_receipt",
+    "secret_reference_review_receipt",
+    "provider_session_close_logout_receipt",
+    "execution_session_authorization_closeout_receipt"
+  ],
+  "gate_hash": "53daf38062ea718d27bd37b3dcc01b132077ce6084cee079a7b0298f4354233c",
+  "gate_type": "controlled_provider_session_opening_execution_preparation_receipt_chain_and_stop_gate",
+  "mandatory_stop_conditions": [
+    "stop_before_provider_login_without_fresh_execution_session_authorization",
+    "stop_before_any_provider_mutation",
+    "stop_if_duplicate_or_ambiguous_resource_is_detected",
+    "stop_if_identity_account_region_or_commit_binding_changes",
+    "stop_if_authorization_window_expires",
+    "stop_if_monthly_cost_ceiling_changes",
+    "stop_if_secret_value_readback_is_requested",
+    "stop_before_build",
+    "stop_before_deployment"
+  ],
+  "preparation_valid": false,
+  "provider_calls_performed": false,
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "resources_created": false,
+  "rollback_plan": [
+    "close_private_browser_session",
+    "log_out_of_provider_console",
+    "revoke_temporary_session_if_supported",
+    "record_fail_closed_stop_receipt"
+  ],
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_preparation.v1"
+}

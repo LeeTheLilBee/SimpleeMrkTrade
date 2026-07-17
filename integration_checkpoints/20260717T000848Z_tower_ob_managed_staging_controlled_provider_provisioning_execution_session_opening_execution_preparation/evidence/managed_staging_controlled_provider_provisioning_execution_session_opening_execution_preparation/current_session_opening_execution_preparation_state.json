@@ -1,0 +1,277 @@
+{
+  "blocking_requirement_count": 58,
+  "blocking_requirements": [
+    {
+      "requirement": "valid_step130_session_opening_execution_authorization",
+      "status": "authorization_required"
+    },
+    {
+      "requirement": "preparation_decision",
+      "status": "exact_prepare_decision_required"
+    },
+    {
+      "requirement": "owner_execution_preparation_receipt_ref",
+      "status": "safe_reference_required"
+    },
+    {
+      "requirement": "provider_console_route_ref",
+      "status": "safe_reference_required"
+    },
+    {
+      "requirement": "isolated_browser_session_ref",
+      "status": "safe_reference_required"
+    },
+    {
+      "requirement": "duplicate_resource_lookup_receipt_ref",
+      "status": "safe_reference_required"
+    },
+    {
+      "requirement": "one_service_request_ref",
+      "status": "safe_reference_required"
+    },
+    {
+      "requirement": "execution_session_nonce_ref",
+      "status": "safe_reference_required"
+    },
+    {
+      "requirement": "authorized_source_commit_ref",
+      "status": "safe_reference_required"
+    },
+    {
+      "requirement": "authorized_source_commit_ref",
+      "status": "exact_40_character_commit_required"
+    },
+    {
+      "requirement": "preparation_window_starts_at",
+      "status": "valid_utc_timestamp_required"
+    },
+    {
+      "requirement": "preparation_window_expires_at",
+      "status": "valid_utc_timestamp_required"
+    },
+    {
+      "requirement": "monthly_cost_ceiling_usd",
+      "status": "positive_bounded_money_required"
+    },
+    {
+      "requirement": "scope_attestations.staging_only_scope_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.single_tower_fronted_service_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.tower_only_public_ingress_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.frozen_execution_authorization_record_hash_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.execution_authorization_decision_hash_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.authorized_source_commit_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.provider_identity_fingerprints_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.owner_execution_authorization_receipt_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.fresh_owner_execution_preparation_receipt_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.preparation_window_within_authorized_window_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.monthly_cost_ceiling_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.isolated_private_browser_session_required",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.browser_profile_ephemeral_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.browser_automation_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.credential_manager_or_provider_login_ui_only",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.credentials_cookies_tokens_not_recorded",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.clipboard_capture_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.screenshots_of_credentials_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.duplicate_resource_lookup_required_before_creation",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.lookup_only_no_mutation_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.stop_if_duplicate_or_ambiguous_resource_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.one_inert_web_service_shell_limit_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.runtime_target_web_managed_staging_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.repository_branch_commit_binding_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.non_secret_environment_names_only_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.secret_reference_registration_without_readback_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.secret_values_not_in_git_logs_or_receipts_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.ordered_receipt_chain_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.rollback_and_session_close_plan_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_provider_login_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_provider_calls_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_resource_creation_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_secret_registration_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_build_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.stop_before_deployment_confirmed",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.database_creation_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.object_storage_creation_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.dns_changes_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.official_walkthrough_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.production_manual_live_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.broker_submission_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.real_capital_movement_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.direct_vault_upload_not_authorized",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.live_auto_remains_locked",
+      "status": "attestation_required"
+    },
+    {
+      "requirement": "scope_attestations.no_provider_session_login_or_calls_performed_during_preparation",
+      "status": "attestation_required"
+    }
+  ],
+  "broker_submission_enabled": false,
+  "build_authorized": false,
+  "build_performed": false,
+  "closed_layer": "MANAGED_STAGING_CONTROLLED_PROVIDER_PROVISIONING_EXECUTION_SESSION_OPENING_EXECUTION_PREPARATION",
+  "closed_through_step": 140,
+  "completed_execution_authorization_handoff_hash": "26bb4dbaea56ae3b7c3d51eb644d63aba15ca444d8011fda67b85bd583865b9c",
+  "database_creation_authorized": false,
+  "deployment_authorized": false,
+  "deployment_performed": false,
+  "direct_vault_upload_enabled": false,
+  "dns_changes_authorized": false,
+  "final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+  "frozen_session_opening_execution_preparation_packet_hash": "3b371f4eb67c185100cc44a1c45ef4e67a720f40b233f736c375bad483cf53e4",
+  "inert_execution_session_authorization_plan_hash": "bd40363e9a21e627692204fbfc6b899dc366ab906b7dc7bb2af43342803eb8c4",
+  "live_auto_locked": true,
+  "next_boundary": "managed_staging_controlled_provider_provisioning_execution_session_opening_execution_session_authorization",
+  "object_storage_creation_authorized": false,
+  "official_walkthrough_performed": false,
+  "permanent_main_modified": false,
+  "production_manual_live_authorized": false,
+  "provider_calls_authorized": false,
+  "provider_calls_performed": false,
+  "provider_login_authorized": false,
+  "provider_login_performed": false,
+  "provider_session_opened": false,
+  "provider_session_opening_authorized": false,
+  "ready_for_separate_controlled_provider_session_opening_execution_session_authorization": false,
+  "real_capital_movement_enabled": false,
+  "resource_creation_authorized": false,
+  "resources_created": false,
+  "runtime_target": "web.managed_staging:app",
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_preparation.v1",
+  "secret_reference_registration_authorized": false,
+  "secrets_created_or_read": false,
+  "secrets_registered": false,
+  "session_opening_execution_authorization_ready": false,
+  "session_opening_execution_preparation_decision_hash": "7edc463e5c717afa0e6fa43668b98680b3092f514bb209379b3a6082f4a141a6",
+  "session_opening_execution_preparation_valid": false,
+  "state_hash": "e2b55f49ac10efa81e30885e9c3d5d7dc30a0a0f166fab070307a2782e2609dd"
+}

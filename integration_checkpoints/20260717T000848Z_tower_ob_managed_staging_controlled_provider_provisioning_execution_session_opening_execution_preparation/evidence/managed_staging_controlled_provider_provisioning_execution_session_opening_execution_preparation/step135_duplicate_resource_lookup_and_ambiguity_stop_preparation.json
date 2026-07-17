@@ -1,0 +1,20 @@
+{
+  "browser_actions": [],
+  "http_requests": [],
+  "lookup_mode": "read_only_provider_console_review",
+  "lookup_performed": false,
+  "mandatory_stop_conditions": [
+    "stop_if_existing_matching_service_is_found",
+    "stop_if_multiple_candidate_services_are_found",
+    "stop_if_account_team_or_region_binding_is_ambiguous",
+    "stop_if_lookup_requires_secret_readback"
+  ],
+  "plan_hash": "7cfd5e3a3865ddf9fe9e82a454f433319be5850df29430f795c8bcd8f6a7243a",
+  "plan_type": "duplicate_resource_lookup_preparation",
+  "provider_api_requests": [],
+  "provider_cli_commands": [],
+  "ready_for_later_lookup": false,
+  "resource_mutations": [],
+  "resources_created": false,
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_preparation.v1"
+}

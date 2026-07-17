@@ -1,0 +1,324 @@
+{
+  "input_template": {
+    "account_or_team_ref_sha256": "",
+    "authorized_source_commit_ref": "",
+    "build_authorized": false,
+    "deployment_authorized": false,
+    "deployment_region_sha256": "",
+    "duplicate_resource_lookup_receipt_ref": "",
+    "execution_session_nonce_ref": "",
+    "frozen_session_opening_execution_authorization_record_hash": "d237f294642021f1143be0ad9036a464acd10526346f04ce3aca0592dc5aaeab",
+    "isolated_browser_session_ref": "",
+    "monthly_cost_ceiling_usd": "",
+    "one_service_request_ref": "",
+    "owner_execution_authorization_receipt_ref_sha256": "",
+    "owner_execution_preparation_receipt_ref": "",
+    "packet_type": "controlled_provider_session_opening_execution_preparation_input",
+    "preparation_decision": "HOLD",
+    "preparation_window_expires_at": "",
+    "preparation_window_starts_at": "",
+    "provider_calls_authorized": false,
+    "provider_console_route_ref": "",
+    "provider_login_authorized": false,
+    "provider_session_opening_authorized": false,
+    "provider_slug_sha256": "",
+    "resource_creation_authorized": false,
+    "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_preparation.v1",
+    "scope_attestations": {
+      "authorized_source_commit_confirmed": false,
+      "broker_submission_not_authorized": false,
+      "browser_automation_not_authorized": false,
+      "browser_profile_ephemeral_confirmed": false,
+      "clipboard_capture_not_authorized": false,
+      "credential_manager_or_provider_login_ui_only": false,
+      "credentials_cookies_tokens_not_recorded": false,
+      "database_creation_not_authorized": false,
+      "direct_vault_upload_not_authorized": false,
+      "dns_changes_not_authorized": false,
+      "duplicate_resource_lookup_required_before_creation": false,
+      "execution_authorization_decision_hash_confirmed": false,
+      "fresh_owner_execution_preparation_receipt_confirmed": false,
+      "frozen_execution_authorization_record_hash_confirmed": false,
+      "isolated_private_browser_session_required": false,
+      "live_auto_remains_locked": false,
+      "lookup_only_no_mutation_confirmed": false,
+      "monthly_cost_ceiling_confirmed": false,
+      "no_provider_session_login_or_calls_performed_during_preparation": false,
+      "non_secret_environment_names_only_confirmed": false,
+      "object_storage_creation_not_authorized": false,
+      "official_walkthrough_not_authorized": false,
+      "one_inert_web_service_shell_limit_confirmed": false,
+      "ordered_receipt_chain_confirmed": false,
+      "owner_execution_authorization_receipt_confirmed": false,
+      "preparation_window_within_authorized_window_confirmed": false,
+      "production_manual_live_not_authorized": false,
+      "provider_identity_fingerprints_confirmed": false,
+      "real_capital_movement_not_authorized": false,
+      "repository_branch_commit_binding_confirmed": false,
+      "rollback_and_session_close_plan_confirmed": false,
+      "runtime_target_web_managed_staging_confirmed": false,
+      "screenshots_of_credentials_not_authorized": false,
+      "secret_reference_registration_without_readback_confirmed": false,
+      "secret_values_not_in_git_logs_or_receipts_confirmed": false,
+      "single_tower_fronted_service_confirmed": false,
+      "staging_only_scope_confirmed": false,
+      "stop_before_build_confirmed": false,
+      "stop_before_deployment_confirmed": false,
+      "stop_before_provider_calls_confirmed": false,
+      "stop_before_provider_login_confirmed": false,
+      "stop_before_resource_creation_confirmed": false,
+      "stop_before_secret_registration_confirmed": false,
+      "stop_if_duplicate_or_ambiguous_resource_confirmed": false,
+      "tower_only_public_ingress_confirmed": false
+    },
+    "secret_registration_authorized": false,
+    "session_opening_execution_authorization_decision_hash": "c6b12aeb30422b6e1eb5cdf92b59213b32e5507ff5f26e06c967bb0ed7b1b522",
+    "template_hash": "2ec3bda2f9698b0ad040bd691f8c1aca882c232c1d136d3feb99c922b0a63f5c"
+  },
+  "record_type": "session_opening_execution_preparation_input_contract_and_validation",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_preparation.v1",
+  "validation_report": {
+    "build_authorized": false,
+    "deployment_authorized": false,
+    "error_count": 57,
+    "errors": [
+      {
+        "code": "exact_prepare_decision_required",
+        "field": "preparation_decision"
+      },
+      {
+        "code": "safe_reference_required",
+        "field": "owner_execution_preparation_receipt_ref"
+      },
+      {
+        "code": "safe_reference_required",
+        "field": "provider_console_route_ref"
+      },
+      {
+        "code": "safe_reference_required",
+        "field": "isolated_browser_session_ref"
+      },
+      {
+        "code": "safe_reference_required",
+        "field": "duplicate_resource_lookup_receipt_ref"
+      },
+      {
+        "code": "safe_reference_required",
+        "field": "one_service_request_ref"
+      },
+      {
+        "code": "safe_reference_required",
+        "field": "execution_session_nonce_ref"
+      },
+      {
+        "code": "safe_reference_required",
+        "field": "authorized_source_commit_ref"
+      },
+      {
+        "code": "exact_40_character_commit_required",
+        "field": "authorized_source_commit_ref"
+      },
+      {
+        "code": "valid_utc_timestamp_required",
+        "field": "preparation_window_starts_at"
+      },
+      {
+        "code": "valid_utc_timestamp_required",
+        "field": "preparation_window_expires_at"
+      },
+      {
+        "code": "positive_bounded_money_required",
+        "field": "monthly_cost_ceiling_usd"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.staging_only_scope_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.single_tower_fronted_service_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.tower_only_public_ingress_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.frozen_execution_authorization_record_hash_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.execution_authorization_decision_hash_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.authorized_source_commit_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.provider_identity_fingerprints_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.owner_execution_authorization_receipt_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.fresh_owner_execution_preparation_receipt_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.preparation_window_within_authorized_window_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.monthly_cost_ceiling_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.isolated_private_browser_session_required"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.browser_profile_ephemeral_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.browser_automation_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.credential_manager_or_provider_login_ui_only"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.credentials_cookies_tokens_not_recorded"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.clipboard_capture_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.screenshots_of_credentials_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.duplicate_resource_lookup_required_before_creation"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.lookup_only_no_mutation_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.stop_if_duplicate_or_ambiguous_resource_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.one_inert_web_service_shell_limit_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.runtime_target_web_managed_staging_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.repository_branch_commit_binding_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.non_secret_environment_names_only_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.secret_reference_registration_without_readback_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.secret_values_not_in_git_logs_or_receipts_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.ordered_receipt_chain_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.rollback_and_session_close_plan_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.stop_before_provider_login_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.stop_before_provider_calls_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.stop_before_resource_creation_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.stop_before_secret_registration_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.stop_before_build_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.stop_before_deployment_confirmed"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.database_creation_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.object_storage_creation_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.dns_changes_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.official_walkthrough_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.production_manual_live_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.broker_submission_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.real_capital_movement_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.direct_vault_upload_not_authorized"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.live_auto_remains_locked"
+      },
+      {
+        "code": "attestation_required",
+        "field": "scope_attestations.no_provider_session_login_or_calls_performed_during_preparation"
+      }
+    ],
+    "provider_calls_authorized": false,
+    "provider_login_authorized": false,
+    "provider_session_opening_authorized": false,
+    "report_hash": "35668f5b1a6f731b7dc16b1ad0a6a65f7fc760fced6f42704544543beae580b5",
+    "report_type": "controlled_provider_session_opening_execution_preparation_validation",
+    "resource_creation_authorized": false,
+    "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_preparation.v1",
+    "secret_registration_authorized": false,
+    "valid": false
+  }
+}

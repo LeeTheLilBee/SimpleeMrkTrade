@@ -1,0 +1,16 @@
+{
+  "account_or_team_ref_sha256": "",
+  "authorized_source_commit_sha256": "",
+  "deployment_region_sha256": "",
+  "monthly_cost_ceiling_usd": "",
+  "preparation_valid": false,
+  "preparation_window_expires_at": "",
+  "preparation_window_starts_at": "",
+  "provider_login_performed": false,
+  "provider_slug_sha256": "",
+  "raw_credentials_recorded": false,
+  "raw_provider_identity_values_recorded": false,
+  "record_hash": "e5a90814c8bc6c813a3eeea334000a7331a7f5b7de5f074bd61bbcfcbba68c6d",
+  "record_type": "provider_identity_window_cost_revalidation_preparation",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_preparation.v1"
+}

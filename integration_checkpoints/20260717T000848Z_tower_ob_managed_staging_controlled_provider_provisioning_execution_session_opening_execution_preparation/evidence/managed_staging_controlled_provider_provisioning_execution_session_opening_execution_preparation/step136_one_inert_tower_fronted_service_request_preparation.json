@@ -1,0 +1,23 @@
+{
+  "build_authorized": false,
+  "database_creation_authorized": false,
+  "deployment_authorized": false,
+  "dns_changes_authorized": false,
+  "environment_variable_names_only": true,
+  "manifest_hash": "2283a19c98e03dfe00711312cd9fe9ce90e40611e1fab1423fb8087b4b6fb6a4",
+  "manifest_type": "one_inert_tower_fronted_service_environment_secret_preparation",
+  "object_storage_creation_authorized": false,
+  "observatory_separate_service_required": false,
+  "provider_session_opening_authorized": false,
+  "public_ingress_owner": "tower",
+  "ready_for_later_session_authorization": false,
+  "resource_creation_authorized": false,
+  "runtime_target": "web.managed_staging:app",
+  "runtime_topology": "single_tower_fronted_managed_python_web_service",
+  "schema_version": "simplee.tower_ob.controlled_provider_session_opening_execution_preparation.v1",
+  "secret_readback_authorized": false,
+  "secret_references_only": true,
+  "secret_registration_authorized": false,
+  "secret_values_included": false,
+  "service_limit": 0
+}
