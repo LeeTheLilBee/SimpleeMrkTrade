@@ -1,0 +1,32 @@
+{
+  "automatic_production_promotion": false,
+  "locked_resources": {
+    "database_creation": true,
+    "dns_change": true,
+    "object_storage_creation": true,
+    "production_resource_creation": true
+  },
+  "manual_deployment_only": true,
+  "policy_hash": "9a3a7b2f248a6da29537bfe10d8d6cf1d8ec797d46ebcc677d11e3fd1588de41",
+  "policy_type": "managed_staging_release_policy",
+  "production_deployment_authorized": false,
+  "required_pre_deploy_gates": [
+    "provider_binding_complete",
+    "staging_environment_references_registered_by_name",
+    "source_commit_frozen",
+    "health_check_configured",
+    "rollback_target_recorded",
+    "owner_deployment_approval_recorded"
+  ],
+  "rollback": {
+    "previous_known_good_commit_required": true,
+    "provider_rollback_control_required": true,
+    "required": true,
+    "stop_on_failed_health_check": true,
+    "stop_on_observatory_public_ingress": true,
+    "stop_on_tower_login_failure": true
+  },
+  "runtime_target": "web.managed_staging:app",
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "source_branch": "tower-ob-integration-dev"
+}

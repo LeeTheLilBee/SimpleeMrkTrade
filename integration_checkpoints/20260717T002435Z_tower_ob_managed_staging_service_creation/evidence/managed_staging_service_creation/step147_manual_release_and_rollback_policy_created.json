@@ -1,0 +1,44 @@
+{
+  "build_performed": false,
+  "deployment_performed": false,
+  "previous_receipt_hash": "93a0ed3f1811e9d9b5230fa5979468802b9127838ae4e30732117160b6167e78",
+  "provider_calls_performed": false,
+  "provider_resource_created": false,
+  "receipt_hash": "51c182d3d924d027ab4e8d2ca115bc8c31f0fd2cdffbff450d0bb0d517ba02a9",
+  "release_policy": {
+    "automatic_production_promotion": false,
+    "locked_resources": {
+      "database_creation": true,
+      "dns_change": true,
+      "object_storage_creation": true,
+      "production_resource_creation": true
+    },
+    "manual_deployment_only": true,
+    "policy_hash": "9a3a7b2f248a6da29537bfe10d8d6cf1d8ec797d46ebcc677d11e3fd1588de41",
+    "policy_type": "managed_staging_release_policy",
+    "production_deployment_authorized": false,
+    "required_pre_deploy_gates": [
+      "provider_binding_complete",
+      "staging_environment_references_registered_by_name",
+      "source_commit_frozen",
+      "health_check_configured",
+      "rollback_target_recorded",
+      "owner_deployment_approval_recorded"
+    ],
+    "rollback": {
+      "previous_known_good_commit_required": true,
+      "provider_rollback_control_required": true,
+      "required": true,
+      "stop_on_failed_health_check": true,
+      "stop_on_observatory_public_ingress": true,
+      "stop_on_tower_login_failure": true
+    },
+    "runtime_target": "web.managed_staging:app",
+    "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+    "source_branch": "tower-ob-integration-dev"
+  },
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "secret_values_registered": false,
+  "step_key": "manual_release_and_rollback_policy_created",
+  "step_number": 147
+}

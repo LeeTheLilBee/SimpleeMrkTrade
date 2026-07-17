@@ -1,0 +1,69 @@
+{
+  "build_performed": false,
+  "deployment_performed": false,
+  "environment_manifest": {
+    "environment_names": [
+      "PORT",
+      "SIMPLEE_DEPLOYMENT_ENVIRONMENT",
+      "SIMPLEE_MANAGED_HOST_ACCOUNT_OR_TEAM",
+      "SIMPLEE_MANAGED_HOST_PROVIDER",
+      "SIMPLEE_PROVIDER_OWNER_APPROVAL",
+      "SIMPLEE_STAGING_DEPLOYMENT_REGION",
+      "TOWER_HOSTED_MODE",
+      "TOWER_OB_WALKTHROUGH_ACTIVATION_APPROVAL_DIR",
+      "TOWER_OB_WALKTHROUGH_BACKUP_DIR",
+      "TOWER_OB_WALKTHROUGH_BACKUP_MAX_AGE_HOURS",
+      "TOWER_OB_WALKTHROUGH_DB",
+      "TOWER_OB_WALKTHROUGH_DEPLOYMENT_RECORD_DIR",
+      "TOWER_OB_WALKTHROUGH_INCIDENT_DIR",
+      "TOWER_OB_WALKTHROUGH_RETENTION_APPROVAL_DIR",
+      "TOWER_OWNER_ID",
+      "TOWER_OWNER_PASSWORD_HASH",
+      "TOWER_OWNER_USERNAME",
+      "TOWER_SESSION_SECRET",
+      "TOWER_STEP_UP_MINUTES"
+    ],
+    "manifest_hash": "9dc29404f6b9f4bc92c49cfd0a99a07fb250ce34792531e355e282d9e2191a14",
+    "manifest_type": "environment_names_only",
+    "optional_names": [
+      "PORT",
+      "TOWER_STEP_UP_MINUTES",
+      "TOWER_OB_WALKTHROUGH_DB",
+      "TOWER_OB_WALKTHROUGH_BACKUP_DIR",
+      "TOWER_OB_WALKTHROUGH_BACKUP_MAX_AGE_HOURS",
+      "TOWER_OB_WALKTHROUGH_INCIDENT_DIR",
+      "TOWER_OB_WALKTHROUGH_RETENTION_APPROVAL_DIR",
+      "TOWER_OB_WALKTHROUGH_DEPLOYMENT_RECORD_DIR",
+      "TOWER_OB_WALKTHROUGH_ACTIVATION_APPROVAL_DIR"
+    ],
+    "production_values_reused": false,
+    "prohibited_names": [
+      "TOWER_LOCAL_OWNER_PASSWORD"
+    ],
+    "required_provider_binding_names": [
+      "SIMPLEE_MANAGED_HOST_PROVIDER",
+      "SIMPLEE_MANAGED_HOST_ACCOUNT_OR_TEAM",
+      "SIMPLEE_STAGING_DEPLOYMENT_REGION",
+      "SIMPLEE_PROVIDER_OWNER_APPROVAL"
+    ],
+    "required_runtime_names": [
+      "SIMPLEE_DEPLOYMENT_ENVIRONMENT",
+      "TOWER_HOSTED_MODE",
+      "TOWER_SESSION_SECRET",
+      "TOWER_OWNER_USERNAME",
+      "TOWER_OWNER_PASSWORD_HASH",
+      "TOWER_OWNER_ID"
+    ],
+    "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+    "secret_values_in_git": false,
+    "values_in_manifest": false
+  },
+  "previous_receipt_hash": "2344c55bf40370d442bd3e47d8fae3d974281d7cfc77004b7be78866c667bf54",
+  "provider_calls_performed": false,
+  "provider_resource_created": false,
+  "receipt_hash": "b817de545ecd014315b215f1262706b827b08ebe85bfb3778567fb59da3eb60f",
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "secret_values_registered": false,
+  "step_key": "environment_name_manifest_created",
+  "step_number": 144
+}

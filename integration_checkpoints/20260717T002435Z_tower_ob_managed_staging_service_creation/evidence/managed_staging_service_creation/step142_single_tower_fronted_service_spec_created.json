@@ -1,0 +1,51 @@
+{
+  "build_performed": false,
+  "deployment_performed": false,
+  "previous_receipt_hash": "084761850aa313d6552aecaa577fd5ca3b9e18c2be15aaf4df50cfd3c533ac65",
+  "provider_calls_performed": false,
+  "provider_resource_created": false,
+  "receipt_hash": "6ad29a5146309693b7cc917bbb2909ec95ca8bda7b211c13c4c38c47e767a9d1",
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "secret_values_registered": false,
+  "service_spec": {
+    "environment": "staging",
+    "execution": {
+      "build_performed": false,
+      "deployment_performed": false,
+      "provider_binding_complete": false,
+      "provider_calls_performed": false,
+      "resource_created_at_provider": false,
+      "secret_values_registered": false
+    },
+    "health_check_path": "/tower/healthz",
+    "public_ingress": {
+      "anonymous_observatory_access_allowed": false,
+      "observatory_public_ingress_allowed": false,
+      "tower_only_browser_front_door": true
+    },
+    "repository_branch": "tower-ob-integration-dev",
+    "resource_scope": {
+      "database_created_in_this_pack": false,
+      "dns_changed_in_this_pack": false,
+      "object_storage_created_in_this_pack": false,
+      "production_resource_created_in_this_pack": false,
+      "web_service_shell_count": 1
+    },
+    "runtime_target": "web.managed_staging:app",
+    "runtime_topology": "single_tower_fronted_managed_python_web_service",
+    "safety": {
+      "broker_submission_enabled": false,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    },
+    "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+    "service_name": "simplee-tower-ob-staging",
+    "service_spec_hash": "e3c7bf743cd14ce3282d47318c553ae247a43f4b2d660cf444ca7f869b28df3e",
+    "service_type": "managed_python_web_service",
+    "start_command": "gunicorn --bind 0.0.0.0:$PORT web.managed_staging:app"
+  },
+  "step_key": "single_tower_fronted_service_spec_created",
+  "step_number": 142
+}

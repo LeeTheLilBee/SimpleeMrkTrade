@@ -1,0 +1,14 @@
+{
+  "build_performed": false,
+  "deployment_performed": false,
+  "next_boundary": "managed_staging_configuration_build_and_deployment",
+  "previous_receipt_hash": "da65b033417b20d40bd7e48fd1a2a65c3be348ff104bfb54338d31eed585c733",
+  "provider_binding_complete": false,
+  "provider_calls_performed": false,
+  "provider_resource_created": false,
+  "receipt_hash": "a8eb3ae1ace9b6a58af20243af72a072b39955f2b2761f969188160c25f9eb25",
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "secret_values_registered": false,
+  "step_key": "configuration_build_and_deployment_handoff_prepared",
+  "step_number": 149
+}

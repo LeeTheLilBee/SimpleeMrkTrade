@@ -1,0 +1,51 @@
+{
+  "build_performed": false,
+  "deployment_performed": false,
+  "previous_receipt_hash": "51c182d3d924d027ab4e8d2ca115bc8c31f0fd2cdffbff450d0bb0d517ba02a9",
+  "provider_calls_performed": false,
+  "provider_resource_created": false,
+  "receipt_hash": "da65b033417b20d40bd7e48fd1a2a65c3be348ff104bfb54338d31eed585c733",
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "secret_values_registered": false,
+  "step_key": "service_shell_file_integrity_verified",
+  "step_number": 148,
+  "validation": {
+    "build_performed": false,
+    "checks": {
+      "deploy/managed_staging/README.md:content_matches": true,
+      "deploy/managed_staging/README.md:exists": true,
+      "deploy/managed_staging/environment.names.json:content_matches": true,
+      "deploy/managed_staging/environment.names.json:exists": true,
+      "deploy/managed_staging/health_probe.py:content_matches": true,
+      "deploy/managed_staging/health_probe.py:exists": true,
+      "deploy/managed_staging/provider_binding.template.json:content_matches": true,
+      "deploy/managed_staging/provider_binding.template.json:exists": true,
+      "deploy/managed_staging/release_policy.json:content_matches": true,
+      "deploy/managed_staging/release_policy.json:exists": true,
+      "deploy/managed_staging/service_spec.json:content_matches": true,
+      "deploy/managed_staging/service_spec.json:exists": true,
+      "deploy/managed_staging/start.sh:content_matches": true,
+      "deploy/managed_staging/start.sh:exists": true,
+      "managed_wsgi_target_matches": true,
+      "repository_runtime_resolved": true,
+      "tower_only_topology": true
+    },
+    "deployment_performed": false,
+    "file_hashes": {
+      "deploy/managed_staging/README.md": "7eaee9045429d9b33374144b2bc0eab0846b64b12022aa0546b5318c98c2c32f",
+      "deploy/managed_staging/environment.names.json": "776257e2b71ff26c1f4d5c9dc9be921141abb96450e95e2de859638dc0222da9",
+      "deploy/managed_staging/health_probe.py": "34b2187a64fee43c137decbe60b96de16756d3d559a837d5919d69501fd00c34",
+      "deploy/managed_staging/provider_binding.template.json": "448431c465a4f6f94faddba01829c7ac3f97785db489c172ee48a46b4bad7c3c",
+      "deploy/managed_staging/release_policy.json": "eddbc97a038b48b6f3356ea944254a010478ff403db05ff78648c68e1c250635",
+      "deploy/managed_staging/service_spec.json": "5a30f053e6581e79430a7e80c4a7360bc2018c1dec90983ce1d283cff5618606",
+      "deploy/managed_staging/start.sh": "f1a8995cfc6719a34a3641401e53b3f202d0a64505fc1d4fd0914f8104243f3a"
+    },
+    "provider_calls_performed": false,
+    "provider_resource_created": false,
+    "runtime_contract_hash": "3bb9ed82ee3db4117c7763922d178002fe07f06816080dffa8c15c430c090611",
+    "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+    "secret_values_registered": false,
+    "valid": true,
+    "validation_hash": "8293b023d375c1f308262a6a025f6957654c9f3943f32acf0d47b339b4490682"
+  }
+}

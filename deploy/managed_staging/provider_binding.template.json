@@ -1,0 +1,33 @@
+{
+  "account_or_team_ref": "",
+  "binding_complete": false,
+  "capability_attestations": {
+    "access_logs": false,
+    "deployment_logs": false,
+    "encrypted_environment_secret_store": false,
+    "health_checks": false,
+    "https_termination": false,
+    "managed_python_web_service": false,
+    "manual_deployment_control": false,
+    "provider_supplied_port_binding": false,
+    "rollback_support": false
+  },
+  "deployment_authorized": false,
+  "deployment_region": "",
+  "monthly_cost_ceiling_usd": "",
+  "notes": [
+    "Use non-secret provider-visible references only.",
+    "Do not paste passwords, API keys, tokens, cookies, or connection strings.",
+    "Completing this packet does not itself build or deploy the service."
+  ],
+  "owner_approval_receipt_ref": "",
+  "packet_type": "managed_staging_provider_binding",
+  "provider_calls_authorized": false,
+  "provider_service_id_ref": "",
+  "provider_service_url_ref": "",
+  "provider_slug": "",
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "service_name": "simplee-tower-ob-staging",
+  "source_commit_ref": "",
+  "template_hash": "a1da90341fd9bbc6b58accbc77cdc0b479b38e1e1cdb737e60f1f907036c1088"
+}

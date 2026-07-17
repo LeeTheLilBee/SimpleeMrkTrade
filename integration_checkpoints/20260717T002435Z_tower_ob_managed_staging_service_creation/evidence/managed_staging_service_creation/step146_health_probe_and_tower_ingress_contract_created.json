@@ -1,0 +1,14 @@
+{
+  "build_performed": false,
+  "deployment_performed": false,
+  "health_path": "/tower/healthz",
+  "previous_receipt_hash": "e90d1c6f83e88da04d70b3a8655699f6da10ae646535753314ca17181d4e35d6",
+  "provider_calls_performed": false,
+  "provider_resource_created": false,
+  "receipt_hash": "93a0ed3f1811e9d9b5230fa5979468802b9127838ae4e30732117160b6167e78",
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "secret_values_registered": false,
+  "step_key": "health_probe_and_tower_ingress_contract_created",
+  "step_number": 146,
+  "tower_only_front_door": true
+}

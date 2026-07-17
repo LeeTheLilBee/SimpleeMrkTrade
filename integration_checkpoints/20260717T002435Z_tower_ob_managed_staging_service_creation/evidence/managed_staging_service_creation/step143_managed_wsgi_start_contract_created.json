@@ -1,0 +1,14 @@
+{
+  "build_performed": false,
+  "deployment_performed": false,
+  "previous_receipt_hash": "6ad29a5146309693b7cc917bbb2909ec95ca8bda7b211c13c4c38c47e767a9d1",
+  "provider_calls_performed": false,
+  "provider_resource_created": false,
+  "receipt_hash": "2344c55bf40370d442bd3e47d8fae3d974281d7cfc77004b7be78866c667bf54",
+  "runtime_target": "web.managed_staging:app",
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "secret_values_registered": false,
+  "start_command": "gunicorn --bind 0.0.0.0:$PORT web.managed_staging:app",
+  "step_key": "managed_wsgi_start_contract_created",
+  "step_number": 143
+}

@@ -1,0 +1,22 @@
+{
+  "build_performed": false,
+  "deployment_performed": false,
+  "handoff": {
+    "checkpoint_path": "integration_checkpoints/20260717T000848Z_tower_ob_managed_staging_controlled_provider_provisioning_execution_session_opening_execution_preparation/resume_checkpoint.json",
+    "closed_through_step": 140,
+    "handoff_hash": "742d26df8b6e4bf51667c0046d12fccdab5e2f3d82ce332d19f5267c0e72c4fc",
+    "handoff_ready": true,
+    "prior_final_decision": "NO_GO_HOLD_PROVIDER_INPUTS_AND_OWNER_AUTHORIZATION_REQUIRED",
+    "source_commit": "25998b862adf4de28225bbe75aed19540b3b010e",
+    "step140_receipt_hash": "343417fe4c3f0ade9383231c3c9834777bad95e5941135db8779432e1be400fe"
+  },
+  "previous_receipt_hash": "343417fe4c3f0ade9383231c3c9834777bad95e5941135db8779432e1be400fe",
+  "provider_calls_performed": false,
+  "provider_resource_created": false,
+  "receipt_hash": "084761850aa313d6552aecaa577fd5ca3b9e18c2be15aaf4df50cfd3c533ac65",
+  "recursive_authorization_loop_stopped": true,
+  "schema_version": "simplee.tower_ob.managed_staging_service_creation.v1",
+  "secret_values_registered": false,
+  "step_key": "step140_handoff_and_staging_finish_line",
+  "step_number": 141
+}
