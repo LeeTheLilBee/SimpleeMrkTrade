@@ -1,0 +1,31 @@
+# Tower-OB managed staging service. Staging only.
+services:
+  - type: web
+    name: simplee-tower-ob-staging
+    runtime: python
+    plan: free
+    region: virginia
+    branch: tower-ob-integration-dev
+    autoDeploy: false
+    buildCommand: pip install -r deploy/managed_staging/requirements.txt
+    startCommand: deploy/managed_staging/start.sh
+    healthCheckPath: /tower/healthz
+    envVars:
+      - key: SIMPLEE_DEPLOYMENT_ENVIRONMENT
+        value: staging
+      - key: TOWER_HOSTED_MODE
+        value: "true"
+      - key: SIMPLEE_MANAGED_HOST_PROVIDER
+        value: render
+      - key: SIMPLEE_STAGING_DEPLOYMENT_REGION
+        value: virginia
+      - key: SIMPLEE_PROVIDER_OWNER_APPROVAL
+        value: APPROVED
+      - key: TOWER_SESSION_SECRET
+        sync: false
+      - key: TOWER_OWNER_USERNAME
+        sync: false
+      - key: TOWER_OWNER_PASSWORD_HASH
+        sync: false
+      - key: TOWER_OWNER_ID
+        sync: false

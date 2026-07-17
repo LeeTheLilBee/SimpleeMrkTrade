@@ -1,0 +1,41 @@
+{
+  "api_base": "https://api.render.com/v1",
+  "authentication": "bearer_token_runtime_only",
+  "contract_hash": "1d532f4c086e197cadd83df9379c0f951768a7e0734719c672075392b7fbf866",
+  "database_endpoint_used": false,
+  "deploy_list": {
+    "method": "GET",
+    "path": "/services/{service_id}/deploys"
+  },
+  "deploy_trigger": {
+    "method": "POST",
+    "path": "/services/{service_id}/deploys"
+  },
+  "dns_endpoint_used": false,
+  "environment_variable_update": {
+    "method": "PUT",
+    "path": "/services/{service_id}/env-vars/{key}"
+  },
+  "object_storage_endpoint_used": false,
+  "provider": "render",
+  "schema_version": "simplee.tower_ob.managed_staging_configuration_build_deployment.v1",
+  "service_create": {
+    "method": "POST",
+    "path": "/services"
+  },
+  "service_health": {
+    "method": "GET",
+    "path": "/tower/healthz"
+  },
+  "service_list": {
+    "method": "GET",
+    "path": "/services"
+  },
+  "service_update": {
+    "method": "PATCH",
+    "path": "/services/{service_id}"
+  },
+  "token_in_arguments": false,
+  "token_in_evidence": false,
+  "token_in_git": false
+}
