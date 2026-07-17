@@ -1,0 +1,33 @@
+{
+  "api_key_included": false,
+  "database_created": false,
+  "deploy_id_fingerprint": "9a114fe231699581ff0d0faac546a9e909b2baa2cd3929cbdf4738f7e57169dc",
+  "deploy_id_ref": "dep-d9d7eejbc2fs73emaang",
+  "deploy_status": "live",
+  "dns_changed": false,
+  "health_check": {
+    "health_url": "https://simplee-tower-ob-staging.onrender.com/tower/healthz",
+    "ok": true,
+    "raw_body_returned": false,
+    "receipt_hash": "a1568d767761f121de763593eb6586868f8c9e1f9a7b8073fed012cbfa8d61f9",
+    "status_code": 200
+  },
+  "object_storage_created": false,
+  "plan": "free",
+  "production_resource_created": false,
+  "provider": "render",
+  "record_hash": "150d45e9434ffae1972072a1b3d298aab43db079c4c9f2901332a49714218cca",
+  "region": "virginia",
+  "runtime_target": "web.managed_staging:app",
+  "schema_version": "simplee.tower_ob.managed_staging_configuration_build_deployment.v1",
+  "secret_values_included": false,
+  "service_id_fingerprint": "5b7d1d1e491643dcd7608dffd2b95901185fb559290cc1b75901073fe8d2cb28",
+  "service_id_ref": "srv-d9d7da3bc2fs73em86i0",
+  "service_name": "simplee-tower-ob-staging",
+  "service_url_ref": "https://simplee-tower-ob-staging.onrender.com",
+  "source_branch": "tower-ob-integration-dev",
+  "source_commit": "dfea34627b076f873ae9b050ddf786a980c5d93e",
+  "workspace_id_fingerprint": "43f1a8bf5ceb98c4060cedd00bc85a290cbba3eb6cb4b64d2629e8bd2905c651",
+  "workspace_id_ref": "tea-d9d6sqmq1p3s73cip83g",
+  "workspace_name": "Simplee World Staging"
+}

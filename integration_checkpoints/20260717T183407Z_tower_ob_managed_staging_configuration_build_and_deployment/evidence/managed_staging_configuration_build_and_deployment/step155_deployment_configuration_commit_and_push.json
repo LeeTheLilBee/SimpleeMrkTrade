@@ -1,0 +1,18 @@
+{
+  "database_created": false,
+  "deployment_performed": false,
+  "dns_changed": false,
+  "final_decision": null,
+  "object_storage_created": false,
+  "previous_receipt_hash": "6086c9d928a165c6fb1c2c684ab29ddff5bfe91432bc196e9c8e991e192a5cba",
+  "production_resource_created": false,
+  "provider": "render",
+  "provider_calls_performed": false,
+  "receipt_hash": "879649db739e3b646b449f42837ea9df9becbfd12062ec56548d10448b0b93f5",
+  "runtime_target": "web.managed_staging:app",
+  "schema_version": "simplee.tower_ob.managed_staging_configuration_build_deployment.v1",
+  "secret_values_included": false,
+  "service_name": "simplee-tower-ob-staging",
+  "step_name": "deployment_configuration_commit_and_push",
+  "step_number": 155
+}
