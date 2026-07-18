@@ -378,6 +378,38 @@ def evaluate_ob_request_guard(
             },
         }
 
+    # TOWER_OB_OWNER_BLANKET_VISIBILITY_V1
+    # The authenticated owner may inspect every Observatory surface. This is a
+    # visibility bypass only: unsafe HTTP methods continue through the normal
+    # mapped-policy/default-deny gates and downstream action gates remain live.
+    request_method = _safe_str(metadata.get('method'), 'GET').upper()
+    owner_read_only_view = all([
+        _safe_str(role).lower() == 'owner',
+        _safe_str(user_id, 'anonymous').lower() not in {'', 'anonymous'},
+        request_method in {'GET', 'HEAD', 'OPTIONS'},
+    ])
+
+    if owner_read_only_view:
+        return {
+            'ok': True,
+            'allowed': True,
+            'decision': 'allow',
+            'reason_code': 'ob_owner_blanket_view_allowed',
+            'risk_state': 'clear' if _safe_int(current_risk_score, 0) < 40 else 'watch',
+            'risk_score': _safe_int(current_risk_score, 0),
+            'required_actions': [],
+            'human_reason': 'The authenticated Tower owner may view every Observatory surface.',
+            'soulaana_translation': 'Soulaana: Owner view confirmed. Every Observatory room is visible; action gates remain armed.',
+            'metadata': {
+                'path': path,
+                'method': request_method,
+                'owner_blanket_visibility': True,
+                'read_only_visibility': True,
+                'match': match,
+                'evaluated_at': _utc_now(),
+            },
+        }
+
     if match.get('match_type') == 'unmapped_default_deny' and default_deny_unmapped:
         return {
             'ok': True,

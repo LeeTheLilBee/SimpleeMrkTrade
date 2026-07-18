@@ -59,7 +59,7 @@ def test_critical_owner_is_allowed_through_every_walkthrough_surface(path):
     )
     assert decision["block"] is False
     assert decision["allowed"] is True
-    assert decision["reason_code"] == "ob_route_clearance_allowed"
+    assert decision["reason_code"] == "ob_owner_blanket_view_allowed"
 
 
 @pytest.mark.parametrize(
@@ -114,16 +114,37 @@ def test_owner_console_requires_critical_clearance():
     assert allowed["allowed"] is True
 
 
-def test_unknown_private_route_still_defaults_deny():
+def test_unknown_private_route_defaults_deny_except_owner_read_only_visibility():
     matched = match_ob_guard_policy("/private-route-not-in-map")
     assert matched["matched"] is False
     assert matched["match_type"] == "unmapped_default_deny"
 
-    decision = should_block_ob_request(
+    anonymous = should_block_ob_request(
+        path="/private-route-not-in-map",
+        user_id="anonymous",
+        role="",
+        user_clearance_level="",
+        metadata={"method": "GET"},
+    )
+    assert anonymous["block"] is True
+    assert anonymous["reason_code"] == "ob_route_unmapped_default_deny"
+
+    owner_view = should_block_ob_request(
         path="/private-route-not-in-map",
         user_id="tower-owner-solice-001",
         role="owner",
         user_clearance_level="critical",
+        metadata={"method": "GET"},
     )
-    assert decision["block"] is True
-    assert decision["reason_code"] == "ob_route_unmapped_default_deny"
+    assert owner_view["block"] is False
+    assert owner_view["reason_code"] == "ob_owner_blanket_view_allowed"
+
+    owner_write = should_block_ob_request(
+        path="/private-route-not-in-map",
+        user_id="tower-owner-solice-001",
+        role="owner",
+        user_clearance_level="critical",
+        metadata={"method": "POST"},
+    )
+    assert owner_write["block"] is True
+    assert owner_write["reason_code"] == "ob_route_unmapped_default_deny"

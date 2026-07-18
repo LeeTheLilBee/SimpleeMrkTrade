@@ -6664,12 +6664,12 @@ def get_all_symbol_rows() -> List[Dict[str, Any]]:
 # ROUTES
 # ============================================================
 
-# ============================================================================== 
+# ==============================================================================
 # OBSERVATORY_READINESS_REPORT_DASHBOARD_PANEL_001_HELPERS
-# ============================================================================== 
+# ==============================================================================
 # Read-only dashboard helper for polished readiness_report.json.
 # Does not mutate engine state, active books, or selection behavior.
-# ============================================================================== 
+# ==============================================================================
 
 def load_observatory_readiness_report_for_dashboard() -> Dict[str, Any]:
     try:
@@ -9049,38 +9049,70 @@ def admin_product_analytics_page():
 
 def _pack046_get_ob_request_identity():
     try:
-        from flask import request, session
+        from flask import current_app, request, session
 
-        user_id = (
+        # TOWER_OB_NATIVE_OWNER_IDENTITY_BRIDGE_V1
+        # Hosted identity is session-derived. Query overrides remain available
+        # only while Flask TESTING is enabled for legacy unit tests.
+        testing = bool(current_app.config.get("TESTING"))
+
+        try:
+            from tower.tower_human_login_ob_launch import owner_session_active
+            native_owner_active = bool(owner_session_active())
+        except Exception:
+            native_owner_active = False
+
+        native_owner_id = str(
+            session.get("owner_id")
+            or session.get("tower_owner_id")
+            or ""
+        )
+        native_role = str(session.get("tower_role") or "")
+
+        query_user_id = (
             request.args.get("ob_user_id")
             or request.args.get("tower_user_id")
-            or session.get("user_id")
-            or session.get("username")
-            or "anonymous"
-        )
-
-        role = (
+        ) if testing else None
+        query_role = (
             request.args.get("ob_role")
             or request.args.get("role")
-            or session.get("role")
-            or session.get("tier")
-            or ""
-        )
-
-        clearance = (
+        ) if testing else None
+        query_clearance = (
             request.args.get("ob_clearance")
             or request.args.get("clearance")
-            or session.get("clearance_level")
-            or ""
-        )
-
-        risk_score = (
+        ) if testing else None
+        query_risk = (
             request.args.get("ob_risk_score")
             or request.args.get("risk_score")
-            or session.get("risk_score")
-            or 0
-        )
+        ) if testing else None
 
+        if native_owner_active:
+            user_id = native_owner_id or "tower-owner"
+            role = "owner"
+            clearance = "critical"
+        else:
+            user_id = (
+                query_user_id
+                or session.get("user_id")
+                or session.get("username")
+                or native_owner_id
+                or "anonymous"
+            )
+            role = (
+                query_role
+                or session.get("role")
+                or session.get("tier")
+                or native_role
+                or ""
+            )
+            clearance = (
+                query_clearance
+                or session.get("clearance_level")
+                or session.get("tower_clearance_level")
+                or ""
+            )
+
+        risk_score = query_risk or session.get("risk_score") or 0
         try:
             risk_score = int(risk_score)
         except Exception:
@@ -9091,6 +9123,7 @@ def _pack046_get_ob_request_identity():
             "role": str(role or ""),
             "user_clearance_level": str(clearance or ""),
             "current_risk_score": risk_score,
+            "native_owner_session_active": native_owner_active,
         }
     except Exception:
         return {
@@ -9098,8 +9131,8 @@ def _pack046_get_ob_request_identity():
             "role": "",
             "user_clearance_level": "",
             "current_risk_score": 0,
+            "native_owner_session_active": False,
         }
-
 
 def _pack046_should_skip_ob_guard():
     try:
