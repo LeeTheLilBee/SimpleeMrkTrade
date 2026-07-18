@@ -39,6 +39,35 @@ OB_ROUTE_GUARD_MAP: Dict[str, Dict[str, Any]] = {
         'public_allowed': False,
         'plain': 'Main OB dashboard. Private app surface.',
     },
+    # TOWER_OB_HOSTED_WALKTHROUGH_ROUTE_POLICY_REPAIR_V1
+    '/market-map': {
+        'route_key': 'market_map',
+        'action': 'view',
+        'sensitivity': 'confidential',
+        'public_allowed': False,
+        'plain': 'Protected Observatory Market Map room.',
+    },
+    '/ob/trade-center': {
+        'route_key': 'trade_center',
+        'action': 'view',
+        'sensitivity': 'restricted',
+        'public_allowed': False,
+        'plain': 'Protected Observatory Trade Center room.',
+    },
+    '/ob/review-center': {
+        'route_key': 'review_center',
+        'action': 'view',
+        'sensitivity': 'restricted',
+        'public_allowed': False,
+        'plain': 'Protected Observatory Review Center room.',
+    },
+    '/ob/owner-console': {
+        'route_key': 'owner_console',
+        'action': 'view',
+        'sensitivity': 'critical',
+        'public_allowed': False,
+        'plain': 'Protected owner-only Observatory console.',
+    },
     '/signals-spotlight': {
         'route_key': 'signals_spotlight',
         'action': 'view',
@@ -168,6 +197,30 @@ def match_ob_guard_policy(path: str) -> Dict[str, Any]:
             'path': normalized,
             'policy': OB_ROUTE_GUARD_MAP[normalized],
         }
+
+    # TOWER_OB_HOSTED_WALKTHROUGH_SYMBOL_ROUTE_POLICY_REPAIR_V1
+    # Canonical hosted Symbol Page corridors.
+    if (
+        normalized.startswith('/ob/symbol/')
+        or normalized.startswith('/symbol/')
+    ):
+        parts = normalized.split('/')
+        symbol = parts[-1].upper() if parts else ''
+        if symbol:
+            return {
+                'ok': True,
+                'matched': True,
+                'match_type': 'dynamic_ob_symbol',
+                'path': normalized,
+                'object_id': symbol,
+                'policy': {
+                    'route_key': 'symbol_detail',
+                    'action': 'view',
+                    'sensitivity': 'confidential',
+                    'public_allowed': False,
+                    'plain': 'Protected Observatory symbol intelligence page.',
+                },
+            }
 
     # Dynamic symbol detail pages: /signals/AAPL, /signals/AMD, etc.
     if normalized.startswith('/signals/') and len(normalized.split('/')) >= 3:

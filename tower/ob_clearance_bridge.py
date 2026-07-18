@@ -30,6 +30,35 @@ OB_ROUTE_CLEARANCE_CATALOG: Dict[str, Dict[str, Any]] = {
         'allowed_actions': ['view'],
         'plain': 'Basic logged-in OB dashboard access.',
     },
+    # TOWER_OB_HOSTED_WALKTHROUGH_ROUTE_POLICY_REPAIR_V1
+    'market_map': {
+        'route_id': '/market-map',
+        'label': 'Market Map',
+        'required_clearance_level': 'confidential',
+        'allowed_actions': ['view'],
+        'plain': 'Protected cross-market intelligence and constellation map.',
+    },
+    'trade_center': {
+        'route_id': '/ob/trade-center',
+        'label': 'Trade Center',
+        'required_clearance_level': 'restricted',
+        'allowed_actions': ['view'],
+        'plain': 'Protected trade review and manual decision workspace.',
+    },
+    'review_center': {
+        'route_id': '/ob/review-center',
+        'label': 'Review Center',
+        'required_clearance_level': 'restricted',
+        'allowed_actions': ['view'],
+        'plain': 'Protected receipt, replay, and decision review workspace.',
+    },
+    'owner_console': {
+        'route_id': '/ob/owner-console',
+        'label': 'Owner Console',
+        'required_clearance_level': 'critical',
+        'allowed_actions': ['view'],
+        'plain': 'Owner-only Observatory command and control room.',
+    },
     'signals_spotlight': {
         'route_id': '/signals-spotlight',
         'label': 'Signals Spotlight',
