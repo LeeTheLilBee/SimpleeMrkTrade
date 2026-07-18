@@ -1,0 +1,39 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_OWNER_EXPERIENCE_SIMPLIFICATION_FOUNDATION",
+  "created_at": "2026-07-18T16:04:47.140076Z",
+  "doctrine_hash": "0de3f677428cb63557baaf00df529750acf7f967a6016b53ab3706b3302ea14f",
+  "file_hashes": {
+    "ob_owner_experience/README.md": "98b6f5b7b11f5a7e84bd143129fabc30d16f640187f63d70b96b0ffdc73ee779",
+    "ob_owner_experience/__init__.py": "6ed41076209b8f664d6ba848799cd5888dffbc0470fa903bf395c823953e6b0e",
+    "ob_owner_experience/simplification.py": "1e97081d257fe4c38a2c9fb6edcc1b8b674562b6d152c829ed01e9aef40719fb",
+    "tests/test_owner_experience_simplification.py": "4b38b04d220623d78e90eceb18640b38d8ff67609c7252bf1f199ab3850da30a"
+  },
+  "files": [
+    "ob_owner_experience/__init__.py",
+    "ob_owner_experience/simplification.py",
+    "ob_owner_experience/README.md",
+    "tests/test_owner_experience_simplification.py"
+  ],
+  "locked_doctrine": {
+    "blanket_owner_visibility_for_viewing": true,
+    "dangerous_actions_remain_separately_gated": true,
+    "deep_dive_complexity_hidden_by_default": true,
+    "market_map_first_glance_simplified": true,
+    "one_clear_purpose_per_page": true,
+    "owner_controls_moved_to_owner_console_or_collapsed_drawers": true,
+    "plain_language_headings": true,
+    "smaller_default_surfaces": true,
+    "soulaana_page_level_interpreter": true
+  },
+  "out_of_scope": [
+    "Tower return/session continuity repair",
+    "Render redeployment",
+    "production deployment",
+    "broker submission",
+    "real capital movement",
+    "secret creation",
+    "database or object-storage changes"
+  ],
+  "repository": "/content/SimpleeMrkTrade_OB"
+}
