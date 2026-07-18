@@ -1,0 +1,40 @@
+{
+  "logout_verified": true,
+  "report_hash": "7058f18761513dca9ccc2d9e702ccf41c09fa3468dfa35d613b15b4ebe25ef36",
+  "room_count": 6,
+  "rooms": [
+    {
+      "room_id": "ob_room_dashboard",
+      "surface_path": "/dashboard",
+      "surface_status": 200
+    },
+    {
+      "room_id": "ob_room_market_map",
+      "surface_path": "/market-map",
+      "surface_status": 200
+    },
+    {
+      "room_id": "ob_room_symbol_page",
+      "surface_path": "/ob/symbol/AMD",
+      "surface_status": 200
+    },
+    {
+      "room_id": "ob_room_trade_center",
+      "surface_path": "/ob/trade-center",
+      "surface_status": 200
+    },
+    {
+      "room_id": "ob_room_review_center",
+      "surface_path": "/ob/review-center",
+      "surface_status": 200
+    },
+    {
+      "room_id": "ob_room_owner_console",
+      "surface_path": "/ob/owner-console",
+      "surface_status": 200
+    }
+  ],
+  "schema_version": "simplee.tower_ob.owner_blanket_visibility_repair.v1",
+  "secret_values_included": false,
+  "walkthrough_closed": true
+}

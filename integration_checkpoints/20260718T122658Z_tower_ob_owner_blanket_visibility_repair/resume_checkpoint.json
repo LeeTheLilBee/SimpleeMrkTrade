@@ -1,0 +1,11 @@
+{
+  "closed_layer": "OWNER_BLANKET_OBSERVATORY_VISIBILITY_REPAIR",
+  "deploy_id_ref": "dep-d9dn0pbbc2fs73edp730",
+  "deploy_status": "live",
+  "human_owner_attestation_performed": false,
+  "machine_six_room_walkthrough_passed": true,
+  "next_boundary": "MANAGED_STAGING_VERIFICATION_AND_OWNER_WALKTHROUGH",
+  "receipt_hash": "1a72a70bca5d24edf17a0e08e530375eb57aa51a8e1223ca56f52840be187a5c",
+  "repair_commit": "4c98c77799a0289581ed3f79360344d696b90c6e",
+  "schema_version": "simplee.tower_ob.owner_blanket_visibility_repair.v1"
+}
