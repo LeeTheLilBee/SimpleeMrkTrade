@@ -1,0 +1,39 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_DASHBOARD_SIMPLIFICATION",
+  "created_at": "2026-07-18T16:39:20.646895Z",
+  "evidence_hash": "7315c14fc469fb301b25466e658d10e517a3af47ccbd71da4f53a81d09efa3f4",
+  "file_hashes": {
+    "ob_owner_experience/__init__.py": "18bb3eebb5e17231091cffecad269cf0ee4b5bec41f50dac8e8551a5114b39ed",
+    "ob_owner_experience/dashboard.py": "9b360525f8afda34f993d867b25ed35af2cf66655366bd55cc9c1d897da348d8",
+    "tests/test_dashboard_simplification.py": "4e84a05a3553da1b7e96a9ab2b2825dbf7ec599d96bcccdc55e3e2a9656210d2"
+  },
+  "files": [
+    "ob_owner_experience/dashboard.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_dashboard_simplification.py"
+  ],
+  "foundation_required": true,
+  "locked_changes": {
+    "critical_indicators_limited": true,
+    "dangerous_actions_separately_gated": true,
+    "deep_details_hidden_by_default": true,
+    "one_dominant_summary": true,
+    "one_next_action": true,
+    "one_principal_recommendation": true,
+    "owner_drawer_collapsed_by_default": true,
+    "soulaana_visible_interpreter": true
+  },
+  "out_of_scope": [
+    "Tower return/session continuity repair",
+    "Market Map redesign",
+    "Render redeployment",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "primary_question": "What needs my attention today?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "dashboard"
+}

@@ -1,3 +1,13 @@
+from .dashboard import (
+    DASHBOARD_DEFAULT_LIMITS,
+    DASHBOARD_DETAIL_DRAWERS,
+    DASHBOARD_PRIORITY_ORDER,
+    build_dashboard_surface,
+    dashboard_acceptance_contract,
+    empty_dashboard_surface,
+    normalize_attention_item,
+    rank_attention_items,
+)
 from .simplification import (
     DANGEROUS_ACTION_POLICY,
     MARKET_MAP_DEEP_DIVES,
@@ -13,13 +23,22 @@ from .simplification import (
 
 __all__ = [
     "DANGEROUS_ACTION_POLICY",
+    "DASHBOARD_DEFAULT_LIMITS",
+    "DASHBOARD_DETAIL_DRAWERS",
+    "DASHBOARD_PRIORITY_ORDER",
+    "MARKET_MAP_DEEP_DIVIES",
     "MARKET_MAP_DEEP_DIVES",
     "OWNER_CONTROL_POLICY",
     "ROOM_PURPOSES",
     "SOULAANA_GLOBAL_POLICY",
+    "build_dashboard_surface",
     "build_owner_experience_doctrine",
     "build_room_surface",
+    "dashboard_acceptance_contract",
+    "empty_dashboard_surface",
     "get_room_policy",
     "market_map_first_glance_surface",
+    "normalize_attention_item",
+    "rank_attention_items",
     "soulaana_interpretation",
 ]
