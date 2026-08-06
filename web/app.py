@@ -51004,3 +51004,159 @@ except Exception as tower_app_registry_v2_route_error:
     ] = repr(tower_app_registry_v2_route_error)
 
 # END TOWER APP REGISTRY V2 ROUTES 2533-2542
+
+
+# BEGIN TOWER OB SIX ROOM ACCEPTANCE HANDOFF ROUTES 2543-2552
+
+try:
+    from flask import jsonify, redirect, request, session
+
+    from tower.tower_ob_six_room_acceptance_handoff import (
+        build_handoff_payload,
+        build_owner_session_preservation_receipt,
+        render_handoff_surface,
+    )
+    from tower.tower_ir_cert_p2543 import build_ir_cert_p2543_preview
+    from tower.tower_ir_cert_p2544 import build_ir_cert_p2544_preview
+    from tower.tower_ir_cert_p2545 import build_ir_cert_p2545_preview
+    from tower.tower_ir_cert_p2546 import build_ir_cert_p2546_preview
+    from tower.tower_ir_cert_p2547 import build_ir_cert_p2547_preview
+    from tower.tower_ir_cert_p2548 import build_ir_cert_p2548_preview
+    from tower.tower_ir_cert_p2549 import build_ir_cert_p2549_preview
+    from tower.tower_ir_cert_p2550 import build_ir_cert_p2550_preview
+    from tower.tower_ir_cert_p2551 import build_ir_cert_p2551_preview
+    from tower.tower_ir_cert_p2552 import build_ir_cert_p2552_preview
+
+
+    def _tower_ob_handoff_owner_allowed():
+        return (
+            session.get("tower_authenticated") is True
+            and session.get("tower_role") == "owner"
+            and bool(session.get("owner_id"))
+        )
+
+
+    def _tower_ob_handoff_session_summary():
+        return {
+            "authenticated": session.get("tower_authenticated") is True,
+            "role": session.get("tower_role"),
+            "owner_id": session.get("owner_id"),
+            "username": session.get("tower_username"),
+        }
+
+
+    def _tower_ob_handoff_step_up_active():
+        try:
+            from tower.tower_human_login_ob_launch import step_up_active
+            return bool(step_up_active())
+        except Exception:
+            return False
+
+
+    @app.get("/tower/observatory-six-room-acceptance")
+    def tower_ob_six_room_acceptance_page():
+        if not _tower_ob_handoff_owner_allowed():
+            return redirect("/tower/login")
+
+        payload = build_handoff_payload(
+            owner_session=_tower_ob_handoff_session_summary(),
+            step_up_active=_tower_ob_handoff_step_up_active(),
+        )
+
+        return render_handoff_surface(payload)
+
+
+    @app.get("/tower/observatory-six-room-acceptance.json")
+    def tower_ob_six_room_acceptance_json():
+        if not _tower_ob_handoff_owner_allowed():
+            return jsonify({
+                "allowed": False,
+                "reason": "owner_session_required",
+                "default_deny": True,
+            }), 403
+
+        return jsonify(
+            build_handoff_payload(
+                owner_session=_tower_ob_handoff_session_summary(),
+                step_up_active=_tower_ob_handoff_step_up_active(),
+            )
+        )
+
+
+    @app.get("/tower/observatory-six-room-acceptance/return-check.json")
+    def tower_ob_six_room_acceptance_return_check_json():
+        if not _tower_ob_handoff_owner_allowed():
+            return jsonify({
+                "allowed": False,
+                "reason": "owner_session_required",
+                "owner_session_preserved": False,
+                "default_deny": True,
+            }), 403
+
+        receipt = build_owner_session_preservation_receipt(
+            owner_session=_tower_ob_handoff_session_summary(),
+            last_room=request.args.get("last_room") or "unknown",
+            direction="ob_to_tower_return_check",
+        )
+
+        session["tower_ob_six_room_return_check_receipt"] = receipt
+
+        return jsonify(receipt)
+
+
+    @app.get("/tower/ir-cert-v2543.json")
+    def tower_ir_cert_v2543_json():
+        return jsonify(build_ir_cert_p2543_preview())
+
+
+    @app.get("/tower/ir-cert-v2544.json")
+    def tower_ir_cert_v2544_json():
+        return jsonify(build_ir_cert_p2544_preview())
+
+
+    @app.get("/tower/ir-cert-v2545.json")
+    def tower_ir_cert_v2545_json():
+        return jsonify(build_ir_cert_p2545_preview())
+
+
+    @app.get("/tower/ir-cert-v2546.json")
+    def tower_ir_cert_v2546_json():
+        return jsonify(build_ir_cert_p2546_preview())
+
+
+    @app.get("/tower/ir-cert-v2547.json")
+    def tower_ir_cert_v2547_json():
+        return jsonify(build_ir_cert_p2547_preview())
+
+
+    @app.get("/tower/ir-cert-v2548.json")
+    def tower_ir_cert_v2548_json():
+        return jsonify(build_ir_cert_p2548_preview())
+
+
+    @app.get("/tower/ir-cert-v2549.json")
+    def tower_ir_cert_v2549_json():
+        return jsonify(build_ir_cert_p2549_preview())
+
+
+    @app.get("/tower/ir-cert-v2550.json")
+    def tower_ir_cert_v2550_json():
+        return jsonify(build_ir_cert_p2550_preview())
+
+
+    @app.get("/tower/ir-cert-v2551.json")
+    def tower_ir_cert_v2551_json():
+        return jsonify(build_ir_cert_p2551_preview())
+
+
+    @app.get("/tower/ir-cert-v2552.json")
+    def tower_ir_cert_v2552_json():
+        return jsonify(build_ir_cert_p2552_preview())
+
+
+except Exception as tower_ob_six_room_acceptance_handoff_error:
+    app.config[
+        "TOWER_OB_SIX_ROOM_ACCEPTANCE_HANDOFF_ROUTE_ERROR"
+    ] = repr(tower_ob_six_room_acceptance_handoff_error)
+
+# END TOWER OB SIX ROOM ACCEPTANCE HANDOFF ROUTES 2543-2552
