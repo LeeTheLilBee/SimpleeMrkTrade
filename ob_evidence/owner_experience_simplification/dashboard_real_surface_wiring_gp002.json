@@ -1,0 +1,65 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_DASHBOARD_REAL_SURFACE_WIRING_GP002",
+  "canonical_key_alignment": {
+    "drawers": "DashboardDetailsDrawerGroup",
+    "indicators": "DashboardTinySignalsStrip",
+    "owner_drawer": "DashboardOwnerDrawer"
+  },
+  "created_at": "2026-08-06T16:29:39.181566Z",
+  "decision": "READY_FOR_DASHBOARD_REAL_SURFACE_WIRING_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Today\u2019s Command Nest",
+  "evidence_hash": "adab30d80b38be6331a5edda8e12ddc5d914d77f660890de1caef665664ff304",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/dashboard_real_surface_wiring_gp002_handoff.md": "ae928b9f844fbb74c54fcfb32a451efadc2002560e2fc1ff214c5cf201b36d48",
+    "ob_owner_experience/__init__.py": "5bcbf612081312eeb5cc62b843f4cf4ce57407a1c92c713f2afa4b24bd624ce0",
+    "ob_owner_experience/dashboard_real_surface.py": "24628a92396544e365520a9cc4c5deb54efe8cad3a5fd28bd9b7922c1bfe90da",
+    "tests/test_dashboard_real_surface_wiring.py": "eff30f326cc62435bf83f48719e8a10c8a158403086d74df85f71bef22e3274a"
+  },
+  "files": [
+    "ob_owner_experience/dashboard_real_surface.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_dashboard_real_surface_wiring.py",
+    "ob_evidence/owner_experience_simplification/dashboard_real_surface_wiring_gp002_handoff.md"
+  ],
+  "locked_changes": {
+    "broker_submission_locked": true,
+    "canonical_dashboard_keys_preserved": true,
+    "dashboard_contract_order_derived": true,
+    "dashboard_real_surface_adapter_created": true,
+    "details_collapsed_by_default": true,
+    "empty_state_created": true,
+    "error_state_created": true,
+    "live_auto_locked": true,
+    "loading_state_created": true,
+    "owner_drawer_collapsed_by_default": true,
+    "ready_for_dashboard_ui_wiring": true,
+    "ready_for_owner_walkthrough": false,
+    "real_capital_movement_locked": true,
+    "soulaana_near_top": true,
+    "staging_ready": false
+  },
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "OB Market Map real surface wiring / GP003",
+  "package": "ob_dashboard_real_surface_wiring_gp002",
+  "primary_question": "What needs my attention today?",
+  "repair": "dashboard_contract_key_alignment",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "dashboard",
+  "safety_locks": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  }
+}
