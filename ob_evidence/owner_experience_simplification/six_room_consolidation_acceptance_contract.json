@@ -1,0 +1,92 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_SIX_ROOM_OWNER_EXPERIENCE_CONSOLIDATION_ACCEPTANCE",
+  "created_at": "2026-08-06T15:37:28.778499Z",
+  "decision": "READY_FOR_TOWER_INTEGRATION_REVIEW_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Six-Room Owner Experience",
+  "evidence_hash": "5bb6b6c048614b3b499a02dd03993ff6f5d9e2cd7299001092817831ba3a5c6c",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/six_room_consolidation_acceptance_handoff.md": "f8e9e7cfdeacd4570bc4ca941973ad46a07369f7349581405adfea13259d0cfd",
+    "ob_owner_experience/__init__.py": "0d183a612cd54cf365ea6c1d7144d741adcc81adf8b06fd965fb1cac30439058",
+    "ob_owner_experience/consolidation.py": "d4734b8cb5f63a7c9c333dde27b3ecbb50a243ef8f6ec6ceb80d01b8623e8fc0",
+    "tests/test_six_room_consolidation_acceptance.py": "444c7f4408b8fb79f93d065da01c3818b35282af3c4f64b87f40b6462c36aee9"
+  },
+  "files": [
+    "ob_owner_experience/consolidation.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_six_room_consolidation_acceptance.py",
+    "ob_evidence/owner_experience_simplification/six_room_consolidation_acceptance_handoff.md"
+  ],
+  "locked_changes": {
+    "broker_submission_locked": true,
+    "consolidated_acceptance_contract_written": true,
+    "cute_informative_headings_preserved": true,
+    "heavy_details_hidden_by_default": true,
+    "live_auto_locked": true,
+    "one_question_per_room": true,
+    "owner_console_global_controls_centralized": true,
+    "ready_for_owner_walkthrough": false,
+    "ready_for_tower_integration_review": true,
+    "real_capital_movement_locked": true,
+    "room_handoffs_written": true,
+    "six_room_order_locked": true,
+    "soulaana_visible_interpreter_preserved": true,
+    "staging_ready": false
+  },
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed"
+  ],
+  "next_build": "Tower return/session continuity repair or actual six-room UI wiring",
+  "out_of_scope": [
+    "Tower return/session continuity repair",
+    "actual web UI wiring",
+    "Render redeployment",
+    "owner walkthrough",
+    "STAGING_READY",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "package": "ob_owner_experience_six_room_consolidation",
+  "primary_question": "Are the six protected Observatory rooms ready for Tower integration review?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room_display_titles": {
+    "dashboard": "Today\u2019s Command Nest",
+    "market_map": "Market Weather",
+    "owner_console": "Owner Crown Room",
+    "review_center": "Reflection Library",
+    "symbol_page": "Asset Storybook",
+    "trade_center": "Decision Garden"
+  },
+  "room_order": [
+    "dashboard",
+    "market_map",
+    "symbol_page",
+    "trade_center",
+    "review_center",
+    "owner_console"
+  ],
+  "room_primary_questions": {
+    "dashboard": "What needs my attention today?",
+    "market_map": "What is happening in the market?",
+    "owner_console": "What controls need owner attention?",
+    "review_center": "What did we learn and what needs review?",
+    "symbol_page": "What do I need to understand about this asset?",
+    "trade_center": "What decisions or actions are waiting?"
+  },
+  "safety_locks": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "start_head": "3bbb6d04be2df2af100ed3ce4bfdd7cbc3d2f5a3"
+}
