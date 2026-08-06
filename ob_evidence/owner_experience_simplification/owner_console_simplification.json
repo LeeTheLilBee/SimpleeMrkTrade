@@ -1,0 +1,102 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_OWNER_CONSOLE_SIMPLIFICATION_OWNER_CROWN_ROOM",
+  "created_at": "2026-08-06T15:24:05.868773Z",
+  "detail_drawers": [
+    "approval_context",
+    "mode_gate_context",
+    "access_context",
+    "session_context",
+    "deployment_context",
+    "safety_lock_context",
+    "evidence_context",
+    "owner_notes"
+  ],
+  "display_title": "Owner Crown Room",
+  "evidence_hash": "d10ec1d6809d5f904e0da8f4cdcb8a0dcd8b94254cfbad3d1799439faaca81f3",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/owner_console_simplification_handoff.md": "c4bc398b69de8f2a7b567848b5ae8e11280616a209f8d386a76c081403f4e98f",
+    "ob_owner_experience/__init__.py": "148ae82eb4c0fed05669ccc82636c55be13e5a50e1cf6707a81034ea5e311b0a",
+    "ob_owner_experience/owner_console.py": "59d9fd6796065085751318af8885606f3fd73d2e0d3d40f6c18ac956ad7d337f",
+    "tests/test_owner_console_simplification.py": "d0193b5f0edaba59b45bf2c9c2d2269d32f829a6cd979913c08a75e28af03ef5"
+  },
+  "files": [
+    "ob_owner_experience/owner_console.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_owner_console_simplification.py",
+    "ob_evidence/owner_experience_simplification/owner_console_simplification_handoff.md"
+  ],
+  "global_control_policy": {
+    "dashboard_global_controls_allowed": false,
+    "global_controls_live_here": true,
+    "market_map_global_controls_allowed": false,
+    "owner_console_is_control_center": true,
+    "review_center_global_controls_allowed": false,
+    "room_specific_drawers_live_in_rooms": true,
+    "symbol_page_global_controls_allowed": false,
+    "trade_center_global_controls_allowed": false
+  },
+  "locked_changes": {
+    "access_and_session_visible": true,
+    "approval_basket_visible": true,
+    "broker_submission_locked": true,
+    "builder_handoff_written": true,
+    "cute_informative_headings": true,
+    "dangerous_actions_separately_gated": true,
+    "deep_detail_hidden_by_default": true,
+    "detail_drawers_created": true,
+    "first_glance_owner_control_summary": true,
+    "global_controls_centralized": true,
+    "live_auto_locked": true,
+    "mode_gate_summary_visible": true,
+    "real_capital_movement_locked": true,
+    "room_controls_not_scattered": true,
+    "safety_locks_visible": true,
+    "soulaana_visible_interpreter": true
+  },
+  "next_build": "Six-room owner experience consolidation and acceptance contract",
+  "out_of_scope": [
+    "Tower return/session continuity repair",
+    "Render redeployment",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "primary_question": "What controls need owner attention?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "owner_console",
+  "safety_locks": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "section_headings": {
+    "access": "\ud83d\udddd\ufe0f Access Watch",
+    "approvals": "\ud83e\ude84 Approval Basket",
+    "drawers": "\ud83d\uddc2\ufe0f Control Detail Drawers",
+    "evidence": "\ud83d\udcce Proof Shelf",
+    "hero": "\ud83d\udc51 Owner Crown Room",
+    "locks": "\ud83d\udd12 Safety Locks",
+    "modes": "\ud83d\udea6 Mode Gates",
+    "next_action": "\ud83d\udc63 Owner Next Step",
+    "sessions": "\ud83d\udd6f\ufe0f Session Lanterns",
+    "soulaana": "\ud83e\udded Soulaana Advises"
+  },
+  "start_head": "02e1541547c1f735563f44890868663d66cb903d",
+  "surface_order": [
+    "hero",
+    "soulaana",
+    "approvals",
+    "modes",
+    "access",
+    "sessions",
+    "locks",
+    "evidence",
+    "next_action",
+    "drawers"
+  ],
+  "tone": "cute, calm, global-control-first, safety-aware, owner-first"
+}
