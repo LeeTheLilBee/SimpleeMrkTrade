@@ -50747,3 +50747,139 @@ except Exception as tower_access_home_ui_v2_route_error:
     ] = repr(tower_access_home_ui_v2_route_error)
 
 # END TOWER ACCESS HOME UI V2 CERT ROUTES 2513-2522
+
+
+# BEGIN TOWER OWNER CONSOLE V1 ROUTES 2523-2532
+
+try:
+    from flask import jsonify, redirect, session
+
+    from tower.tower_owner_console_v1 import (
+        build_owner_console_payload,
+        render_owner_console,
+    )
+    from tower.tower_ir_cert_p2523 import build_ir_cert_p2523_preview
+    from tower.tower_ir_cert_p2524 import build_ir_cert_p2524_preview
+    from tower.tower_ir_cert_p2525 import build_ir_cert_p2525_preview
+    from tower.tower_ir_cert_p2526 import build_ir_cert_p2526_preview
+    from tower.tower_ir_cert_p2527 import build_ir_cert_p2527_preview
+    from tower.tower_ir_cert_p2528 import build_ir_cert_p2528_preview
+    from tower.tower_ir_cert_p2529 import build_ir_cert_p2529_preview
+    from tower.tower_ir_cert_p2530 import build_ir_cert_p2530_preview
+    from tower.tower_ir_cert_p2531 import build_ir_cert_p2531_preview
+    from tower.tower_ir_cert_p2532 import build_ir_cert_p2532_preview
+
+
+    def _tower_owner_console_owner_allowed():
+        return (
+            session.get("tower_authenticated") is True
+            and session.get("tower_role") == "owner"
+            and bool(session.get("owner_id"))
+        )
+
+
+    def _tower_owner_console_session_summary():
+        return {
+            "authenticated": (
+                session.get("tower_authenticated") is True
+            ),
+            "role": session.get("tower_role"),
+            "owner_id": session.get("owner_id"),
+            "username": session.get("tower_username"),
+        }
+
+
+    def _tower_owner_console_step_up_active():
+        try:
+            from tower.tower_human_login_ob_launch import step_up_active
+            return bool(step_up_active())
+        except Exception:
+            return False
+
+
+    @app.get("/tower/owner-console")
+    def tower_owner_console_v1_page():
+        if not _tower_owner_console_owner_allowed():
+            return redirect("/tower/login")
+
+        payload = build_owner_console_payload(
+            owner_session=_tower_owner_console_session_summary(),
+            step_up_active=_tower_owner_console_step_up_active(),
+        )
+
+        return render_owner_console(payload)
+
+
+    @app.get("/tower/owner-console.json")
+    def tower_owner_console_v1_json():
+        if not _tower_owner_console_owner_allowed():
+            return jsonify({
+                "allowed": False,
+                "reason": "owner_session_required",
+                "default_deny": True,
+            }), 403
+
+        return jsonify(
+            build_owner_console_payload(
+                owner_session=_tower_owner_console_session_summary(),
+                step_up_active=_tower_owner_console_step_up_active(),
+            )
+        )
+
+
+    @app.get("/tower/ir-cert-v2523.json")
+    def tower_ir_cert_v2523_json():
+        return jsonify(build_ir_cert_p2523_preview())
+
+
+    @app.get("/tower/ir-cert-v2524.json")
+    def tower_ir_cert_v2524_json():
+        return jsonify(build_ir_cert_p2524_preview())
+
+
+    @app.get("/tower/ir-cert-v2525.json")
+    def tower_ir_cert_v2525_json():
+        return jsonify(build_ir_cert_p2525_preview())
+
+
+    @app.get("/tower/ir-cert-v2526.json")
+    def tower_ir_cert_v2526_json():
+        return jsonify(build_ir_cert_p2526_preview())
+
+
+    @app.get("/tower/ir-cert-v2527.json")
+    def tower_ir_cert_v2527_json():
+        return jsonify(build_ir_cert_p2527_preview())
+
+
+    @app.get("/tower/ir-cert-v2528.json")
+    def tower_ir_cert_v2528_json():
+        return jsonify(build_ir_cert_p2528_preview())
+
+
+    @app.get("/tower/ir-cert-v2529.json")
+    def tower_ir_cert_v2529_json():
+        return jsonify(build_ir_cert_p2529_preview())
+
+
+    @app.get("/tower/ir-cert-v2530.json")
+    def tower_ir_cert_v2530_json():
+        return jsonify(build_ir_cert_p2530_preview())
+
+
+    @app.get("/tower/ir-cert-v2531.json")
+    def tower_ir_cert_v2531_json():
+        return jsonify(build_ir_cert_p2531_preview())
+
+
+    @app.get("/tower/ir-cert-v2532.json")
+    def tower_ir_cert_v2532_json():
+        return jsonify(build_ir_cert_p2532_preview())
+
+
+except Exception as tower_owner_console_v1_route_error:
+    app.config[
+        "TOWER_OWNER_CONSOLE_V1_ROUTE_REGISTRATION_ERROR"
+    ] = repr(tower_owner_console_v1_route_error)
+
+# END TOWER OWNER CONSOLE V1 ROUTES 2523-2532
