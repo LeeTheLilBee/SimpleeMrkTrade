@@ -1,0 +1,68 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_SYMBOL_PAGE_REAL_SURFACE_WIRING_GP004",
+  "canonical_key_alignment": {
+    "asset_thesis": "AssetStorybookNarrativeCard",
+    "drawers": "AssetStorybookDetailDrawerGroup",
+    "owner_drawer": "AssetStorybookOwnerDrawer",
+    "thesis": "AssetStorybookNarrativeCard"
+  },
+  "created_at": "2026-08-06T17:00:34.605270Z",
+  "decision": "READY_FOR_SYMBOL_PAGE_REAL_SURFACE_WIRING_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Asset Storybook",
+  "evidence_hash": "60141207b920fbabd4b6352f55779fc6fede11e37e73a7782f980810866b03bc",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/symbol_page_real_surface_wiring_gp004_handoff.md": "cd5b0887fae3a7d890ca99bf7a63b6b4b5cbf699f74d0d5d008b0ef2ac7bd9af",
+    "ob_owner_experience/__init__.py": "e829ba7fff6daf970f346bccff956dc4050b042078fa039334ebf2ad6108b70c",
+    "ob_owner_experience/symbol_page_real_surface.py": "7a8bc919b3288f85e3afa58c538f40592396661a3a32e8a5fc12eb8a0e1ff44c",
+    "tests/test_symbol_page_real_surface_wiring.py": "def94cfa233c06b8561919f94e8d9447e95e1ed197a2d038e02a0d08452018aa"
+  },
+  "files": [
+    "ob_owner_experience/symbol_page_real_surface.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_symbol_page_real_surface_wiring.py",
+    "ob_evidence/owner_experience_simplification/symbol_page_real_surface_wiring_gp004_handoff.md"
+  ],
+  "locked_changes": {
+    "broker_submission_locked": true,
+    "destination_only_fallback_created": true,
+    "detail_drawers_collapsed_by_default": true,
+    "empty_state_created": true,
+    "error_state_created": true,
+    "live_auto_locked": true,
+    "loading_state_created": true,
+    "ready_for_owner_walkthrough": false,
+    "ready_for_symbol_page_ui_wiring": true,
+    "real_capital_movement_locked": true,
+    "soulaana_near_top": true,
+    "staging_ready": false,
+    "story_risk_decision_before_raw_detail": true,
+    "symbol_context_required": true,
+    "symbol_page_contract_order_derived": true,
+    "symbol_page_real_surface_adapter_created": true,
+    "thesis_maps_to_narrative_card": true
+  },
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "OB Trade Center real surface wiring / GP005",
+  "package": "ob_symbol_page_real_surface_wiring_gp004",
+  "primary_question": "What do I need to understand about this asset?",
+  "repair": "symbol_page_thesis_component_mapping",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "symbol_page",
+  "safety_locks": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  }
+}
