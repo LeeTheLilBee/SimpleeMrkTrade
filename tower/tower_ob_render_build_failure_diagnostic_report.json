@@ -1,0 +1,134 @@
+{
+  "broker_submission": false,
+  "build_log_attempts": [
+    {
+      "body_preview": "{\"hasMore\":false,\"logs\":[{\"id\":\"b0bf817f-b525-4a21-9e13-a7a5098c54ac\",\"labels\":[{\"name\":\"resource\",\"value\":\"srv-d9d7da3bc2fs73em86i0\"},{\"name\":\"level\",\"value\":\"info\"},{\"name\":\"type\",\"value\":\"app\"}],\"message\":\"\\u001b[34m\\u001b[1m==\\u003e\\u001b(B\\u001b[m \\u001b[1mDownloading cache...\\u001b(B\\u001b[m\",\"timestamp\":\"2026-08-06T16:58:36.662177151Z\"},{\"id\":\"089a8b38-c4b3-4b1e-9538-94e26295a3f2\",\"labels\":[{\"name\":\"resource\",\"value\":\"srv-d9d7da3bc2fs73em86i0\"},{\"name\":\"level\",\"value\":\"info\"},{\"name\":\"type\",\"value\":\"app\"}],\"message\":\"\\u001b[34m\\u001b[1m==\\u003e\\u001b(B\\u001b[m \\u001b[1mCloning from https://github.com/LeeTheLilBee/SimpleeMrkTrade\\u001b(B\\u001b[m\",\"timestamp\":\"2026-08-06T16:58:36.692303342Z\"},{\"id\":\"78146d1b-8579-426a-9d30-0ca831cf6d36\",\"labels\":[{\"name\":\"resource\",\"value\":\"srv-d9d7da3bc2fs73em86i0\"},{\"name\":\"level\",\"value\":\"info\"},{\"name\":\"type\",\"value\":\"app\"}],\"message\":\"\\u001b[34m\\u001b[1m==\\u003e\\u001b(B\\u001b[m \\u001b[1mChecking out commit 8e8cd9182508ad980fbdcd0fa58c7fd4ecba",
+      "ok": true,
+      "params": {
+        "direction": "backward",
+        "endTime": "2026-08-06T17:14:32.806328Z",
+        "limit": 100,
+        "resource": [
+          "srv-d9d7da3bc2fs73em86i0"
+        ],
+        "startTime": "2026-08-06T14:14:32.806328Z",
+        "type": [
+          "build"
+        ]
+      },
+      "status_code": 200
+    }
+  ],
+  "build_log_line_count": 16,
+  "build_logs_retrieved": true,
+  "capital_movement": false,
+  "deploy_summary": {
+    "commit": {
+      "createdAt": "2026-08-06T16:47:14Z",
+      "id": "8e8cd9182508ad980fbdcd0fa58c7fd4ecbad2c5",
+      "message": "Add managed staging entrypoint for Tower OB redeploy"
+    },
+    "createdAt": "2026-08-06T16:58:34.264149Z",
+    "errorMessage": null,
+    "finishedAt": "2026-08-06T16:59:23.821252Z",
+    "id": "dep-d9qbqem7bikc73dl6860",
+    "status": "build_failed",
+    "updatedAt": "2026-08-06T16:59:23.82195Z"
+  },
+  "destructive_action_unlocked": false,
+  "diagnostic": "tower_ob_render_build_failure",
+  "direct_vault_write": false,
+  "finished_at": "2026-08-06T17:14:45.466046+00:00",
+  "interesting_log_lines": [
+    "2026-08-06T16:59:11.363711482Z  \u001b[34;1m==>\u001b[0;22m \u001b[1mUsing Python version 3.12.13 via environment variable PYTHON_VERSION\u001b[22m",
+    "2026-08-06T16:59:11.363725672Z  \u001b[34;1m==>\u001b[0;22m \u001b[1mDocs on specifying a Python version: https://render.com/docs/python-version\u001b[22m",
+    "2026-08-06T16:59:11.363830622Z  \u001b[34;1m==>\u001b[0;22m \u001b[1mInstalling Python version 3.12.13...\u001b[22m",
+    "2026-08-06T16:59:17.430740852Z  \u001b[34m\u001b[1m==>\u001b(B\u001b[m \u001b[1mRunning build command 'pip install -r deploy/managed_staging/requirements.txt'...\u001b(B\u001b[m",
+    "2026-08-06T16:59:17.893921185Z  [notice] A new release of pip is available: 25.0.1 -> 26.2.1",
+    "2026-08-06T16:59:17.893923031Z  [notice] To update, run: pip install --upgrade pip",
+    "2026-08-06T16:59:17.894410881Z  ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'deploy/managed_staging/requirements.txt'",
+    "2026-08-06T16:59:17.962940878Z  \u001b[31m\u001b[1m==> Build failed \ud83d\ude1e\u001b(B\u001b[m"
+  ],
+  "live_auto_authorized": false,
+  "local_config_files": {
+    "Pipfile": {
+      "exists": false,
+      "preview": ""
+    },
+    "Pipfile.lock": {
+      "exists": false,
+      "preview": ""
+    },
+    "Procfile": {
+      "exists": false,
+      "preview": ""
+    },
+    "package.json": {
+      "exists": false,
+      "preview": ""
+    },
+    "pyproject.toml": {
+      "exists": false,
+      "preview": ""
+    },
+    "render.yaml": {
+      "exists": false,
+      "preview": ""
+    },
+    "requirements.txt": {
+      "exists": false,
+      "preview": ""
+    },
+    "runtime.txt": {
+      "exists": false,
+      "preview": ""
+    },
+    "web/app.py": {
+      "exists": true,
+      "preview": "import os\nimport sys\nfrom pathlib import Path\nimport json\nfrom typing import Any, Dict, List, Optional\n\n# --- PROJECT PATH SETUP ---\nPROJECT_ROOT = \"/content/SimpleeMrkTrade\"\nif PROJECT_ROOT not in sys.path:\n    sys.path.insert(0, PROJECT_ROOT)\n\n# --- FLASK ---\nfrom flask import (\n    Flask,\n    jsonify,\n    redirect,\n    render_template,\n    render_template_string,\n    request,\n    session,\n    url_for,\n    flash,\n)\nfrom jinja2 import TemplateNotFound\n\n# --- SOULAANA CORE (NEW SYSTEM) ---\nimport engine.soulaana_core as soulaana_core\nimport engine.soulaana_voice as soulaana_voice\n\n# --- CORE ENGINE (V1 BRIDGE LAYER) ---\nfrom engine.engine_selection import build_execution_universe, get_learning_adjustment_map\nfrom engine.canonical_decision_object import build_canonical_decision_object\n\n# --- MARKET / SYMBOLS ---\nimport engine.market_universe as market_universe\nfrom engine.symbols import load_symbol_news, refresh_symbol_news\nfrom engine.symbols import get_symbol_detail\n\n# --- USER / PLAYS ---\nfrom engine.my_plays import (\n    get_my_plays,\n    add_play,\n    get_play,\n    update_play,\n    archive_play,\n    add_user_position_from_play,\n    get_user_positions,\n    get_user_position,\n    update_user_position,\n    close_user_position,\n    analyze_user_trades,\n)\n\n# --- INTELLIGENCE LAYERS ---\nfrom engine.trade_intelligence import attach_trade_intelligence\nfrom engine.signal_tiering import slice_signals_by_tier, spotlight_sections\nfrom engine.position_health import attach_position_health\nfrom engine.portfolio_intelligence import evaluate_portfolio\nfrom engine.alert_engine import generate_alerts\nfrom engine.system_brain import build_system_brain\n\n# --- ANALYTICS ---\nfrom engine.admin_product_analytics import (\n    log_event,\n    maybe_track_page_view,\n    track_symbol_click,\n    track_trade_click,\n    track_upgrade_click,\n    track_cta_click,\n    track_premium_wall_seen,\n    track_premium_content_view,\n    track_rejection_interest,\n    build_product_analytics,\n    top_engaged_symbols,\n    top_engaged_symbols_with_counts,\n    most_underrated_symbols,\n)\n\n# --- V2 DASHBOARD + REPLAY ---\nfrom engine_v2.dashboard_contract import build_dashboard_contract\nfrom engine_v2.replay_batch_builder import build_replay_batch\nfrom engine_v2.replay_page_context_builder import build_replay_page_context\n\n# --- V2 FUSION + UI SYSTEM ---\nfrom engine_v2.app_fusion_helper import build_full_product_fusion\nfrom engine_v2.dashboard_fusion_adapter import build_dashboard_fusion_view\nfrom engine_v2.symbol_page_fusion_adapter import build_symbol_page_fusion_view\nfrom engine_v2.spotlight_fusion_adapter import build_spotlight_fusion_cards\n\n# --- V2 MARKET VISUAL SYSTEM ---\nfrom engine_v2.market_map_builder import build_market_map\nfrom engine_v2.constellation_mapper import map_tiles_to_constellation\nfrom engine_v2.market_map_interaction_contract import build_market_map_interaction_contract\nfrom engine_v2.map_layer_toggle_contract import build_map_layer_toggle_contract\n\n# --- V2 SYMBOL CONTRACTS ---\nfrom engine_v2.symbol_hero_contract import build_symbol_hero_contract\nfrom engine_v2.symbol_deep_dive_contract import build_symbol_deep_dive_contract\nfrom engine_v2.horizontal_hero_contract import build_horizontal_hero_contract\n\n# --- V2 SPOTLIGHT ---\nfrom engine_v2.spotlight_page_contract import build_spotlight_page_contract\n\n# --- V2 MODE ROUTING ---\nfrom engine_v2.mode_router import resolve_user_modes\n\n# --- FINAL BRAIN SYSTEM ---\nfrom web.final_brain_routes_engine import (\n    build_symbol_final_brain,\n    build_all_final_brains,\n    build_final_all_symbol_cards,\n)\n\nfrom engine_v2.final_brain_live_helpers import (\n    build_final_symbol_context,\n    build_final_spotlight_context,\n    build_final_dashboard_context,\n)\n\n# --- APP INIT ---\napp = Flask(__name__)\n\n\n\n\n\napp = Flask(__name__, template_folder=\"templates\", static_folder=\"static\")\napp.secret_key = \"simpleemrktrade-dev-key-change-later\"\n\n# ==============================================================================="
+    },
+    "web/managed_staging.py": {
+      "exists": true,
+      "preview": "\"\"\"\nManaged staging WSGI entrypoint for Render.\n\nThis module intentionally imports the canonical Flask app from web.app.\nIt exists so managed hosts configured for web.managed_staging:app can\nboot the same Tower-fronted application without duplicating app logic.\n\nSafety:\n- no production deployment authorization\n- no broker submission\n- no capital movement\n- no Manual Live authorization\n- no Live Auto authorization\n- no STAGING_READY change\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom web.app import app as app\n\n\nSTAGING_ENTRYPOINT = \"web.managed_staging:app\"\nPRODUCTION_DEPLOYMENT = False\nBROKER_SUBMISSION = False\nCAPITAL_MOVEMENT = False\nMANUAL_LIVE_AUTHORIZED = False\nLIVE_AUTO_AUTHORIZED = False\nSTAGING_READY = False\n\n\ndef managed_staging_status() -> dict[str, object]:\n    \"\"\"Return a tiny import-safe status contract for tests and deploy checks.\"\"\"\n    return {\n        \"entrypoint\": STAGING_ENTRYPOINT,\n        \"app_imported\": app is not None,\n        \"production_deployment\": PRODUCTION_DEPLOYMENT,\n        \"broker_submission\": BROKER_SUBMISSION,\n        \"capital_movement\": CAPITAL_MOVEMENT,\n        \"manual_live_authorized\": MANUAL_LIVE_AUTHORIZED,\n        \"live_auto_authorized\": LIVE_AUTO_AUTHORIZED,\n        \"staging_ready\": STAGING_READY,\n    }\n"
+    },
+    "web/test_managed_staging_entrypoint.py": {
+      "exists": true,
+      "preview": "from __future__ import annotations\n\n\ndef test_managed_staging_imports_canonical_app():\n    from web import app as web_app\n    from web.managed_staging import app, managed_staging_status\n\n    assert app is web_app.app\n\n    status = managed_staging_status()\n\n    assert status[\"entrypoint\"] == \"web.managed_staging:app\"\n    assert status[\"app_imported\"] is True\n    assert status[\"production_deployment\"] is False\n    assert status[\"broker_submission\"] is False\n    assert status[\"capital_movement\"] is False\n    assert status[\"manual_live_authorized\"] is False\n    assert status[\"live_auto_authorized\"] is False\n    assert status[\"staging_ready\"] is False\n"
+    }
+  },
+  "main_pushed": false,
+  "managed_staging_import_ok": true,
+  "manual_live_authorized": false,
+  "merge_performed": false,
+  "next_recommended_action": "Use the build error lines from this report to patch the exact Render build/start configuration, then rerun staging redeploy. Do not mark STAGING_READY until hosted owner walkthrough passes.",
+  "origin_main_commit": "8e8cd9182508ad980fbdcd0fa58c7fd4ecbad2c5",
+  "origin_main_short": "8e8cd9182508",
+  "owner_id_discovered": true,
+  "production_deployment": false,
+  "redeploy_requested": false,
+  "render_api_called": true,
+  "render_deploy_id": "dep-d9qbqem7bikc73dl6860",
+  "render_service_id": "srv-d9d7da3bc2fs73em86i0",
+  "render_service_name": "simplee-tower-ob-staging",
+  "render_yaml_exists": false,
+  "requirements_txt_exists": false,
+  "runtime_txt_exists": false,
+  "secret_values_exposed": false,
+  "service_summary": {
+    "branch": "tower-ob-integration-dev",
+    "buildCommand": null,
+    "id": "srv-d9d7da3bc2fs73em86i0",
+    "name": "simplee-tower-ob-staging",
+    "ownerId": "tea-d9d6sqmq1p3s73cip83g",
+    "plan": "free",
+    "region": "virginia",
+    "repo": "https://github.com/LeeTheLilBee/SimpleeMrkTrade",
+    "rootDir": "",
+    "runtime": "python",
+    "startCommand": null,
+    "type": "web_service"
+  },
+  "staging_ready": false,
+  "started_at": "2026-08-06T17:14:29.736075+00:00",
+  "status": "diagnostic_completed"
+}
