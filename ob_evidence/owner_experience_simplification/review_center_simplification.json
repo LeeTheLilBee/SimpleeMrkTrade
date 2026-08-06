@@ -1,0 +1,89 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_REVIEW_CENTER_SIMPLIFICATION_REFLECTION_LIBRARY",
+  "created_at": "2026-08-06T15:18:30.941068Z",
+  "detail_drawers": [
+    "outcome_context",
+    "receipt_context",
+    "performance_context",
+    "mistake_context",
+    "pattern_context",
+    "improvement_context",
+    "owner_notes"
+  ],
+  "display_title": "Reflection Library",
+  "evidence_hash": "6eaf2605cee0908f14ccfb7cd2d9834c9d0f72afc3065d46a6d99cce6dde1df2",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/review_center_simplification_handoff.md": "a27bebc81039d412e28c3ca431680564224c8df9a4bbf375d58ad58083d50c60",
+    "ob_owner_experience/__init__.py": "56e97f7608b273535d55c8fa2587f8bd53f3258c90bc91835cd8aa4f282ac3ac",
+    "ob_owner_experience/review_center.py": "ddd6d0bc90ea49db906d7b6433d9ff1f531daf788052b6dc8edcf91e5273bcef",
+    "tests/test_review_center_simplification.py": "88d4a78f6b06e9accef5eebd223bd353928086fcbea4f7823dec92dd2cfb5cfd"
+  },
+  "files": [
+    "ob_owner_experience/review_center.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_review_center_simplification.py",
+    "ob_evidence/owner_experience_simplification/review_center_simplification_handoff.md"
+  ],
+  "locked_changes": {
+    "broker_submission_locked": true,
+    "builder_handoff_written": true,
+    "cute_informative_headings": true,
+    "dangerous_actions_separately_gated": true,
+    "deep_detail_hidden_by_default": true,
+    "detail_drawers_created": true,
+    "first_glance_review_summary": true,
+    "learning_not_execution": true,
+    "lessons_before_raw_evidence": true,
+    "owner_drawer_collapsed_by_default": true,
+    "patterns_visible_without_history_wall": true,
+    "real_capital_movement_locked": true,
+    "receipt_state_visible": true,
+    "review_queue_limited": true,
+    "soulaana_visible_interpreter": true
+  },
+  "next_build": "Owner Console simplification using the same doctrine",
+  "out_of_scope": [
+    "Tower return/session continuity repair",
+    "Owner Console simplification",
+    "Render redeployment",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "primary_question": "What did we learn and what needs review?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "review_center",
+  "safety_locks": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "section_headings": {
+    "drawers": "\ud83d\uddc2\ufe0f Review Detail Drawers",
+    "hero": "\ud83d\udcda Reflection Library",
+    "lessons": "\ud83e\udde0 Lesson Shelf",
+    "next_review": "\ud83d\udc51 Owner Next Review",
+    "outcomes": "\ud83e\udeb4 What Happened",
+    "owner_drawer": "\ud83d\udd10 Owner Drawer",
+    "patterns": "\ud83e\ude9e Pattern Mirror",
+    "receipts": "\ud83e\uddfe Receipt Check",
+    "soulaana": "\ud83e\udded Soulaana Reflects"
+  },
+  "start_head": "e5489b14b22f2c11f50776d91301aca711d830c4",
+  "surface_order": [
+    "hero",
+    "soulaana",
+    "outcomes",
+    "receipts",
+    "lessons",
+    "patterns",
+    "next_review",
+    "drawers",
+    "owner_drawer"
+  ],
+  "tone": "cute, calm, reflective, learning-first, owner-first"
+}
