@@ -340,3 +340,49 @@ def test_human_login_cert_routes_allow_owner(
 
 
 # END HUMAN LOGIN CERT ROUTE TESTS
+
+# BEGIN ACCESS HOME UI V2 TESTS
+
+def test_access_home_v2_in_existing_login_suite(client):
+    login(client)
+
+    response = client.get(
+        ACCESS_HOME_PATH
+    )
+
+    assert response.status_code == 200
+
+    body = response.get_data(
+        as_text=True
+    )
+
+    assert "Tower Access Command Center" in body
+    assert "Access Hub" in body
+    assert "Evidence drawers" in body
+    assert "Open OB" in body
+
+
+def test_return_route_in_existing_login_suite(client):
+    login(client)
+
+    response = client.get(
+        "/tower/return/observatory.json?last_room=Dashboard"
+    )
+
+    assert response.status_code == 200
+
+    payload = response.get_json()
+
+    assert payload[
+        "owner_session_preserved"
+    ] is True
+
+    assert payload[
+        "clearance_preserved"
+    ] is True
+
+    assert payload[
+        "dangerous_action_unlocked"
+    ] is False
+
+# END ACCESS HOME UI V2 TESTS

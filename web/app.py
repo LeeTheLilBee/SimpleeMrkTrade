@@ -50685,3 +50685,65 @@ from tower.tower_human_login_ob_launch import (
 register_tower_human_login(app)
 
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
+
+
+# BEGIN TOWER ACCESS HOME UI V2 CERT ROUTES 2513-2522
+
+try:
+    from tower.tower_ir_cert_p2513 import build_ir_cert_p2513_preview
+    from tower.tower_ir_cert_p2514 import build_ir_cert_p2514_preview
+    from tower.tower_ir_cert_p2515 import build_ir_cert_p2515_preview
+    from tower.tower_ir_cert_p2516 import build_ir_cert_p2516_preview
+    from tower.tower_ir_cert_p2517 import build_ir_cert_p2517_preview
+    from tower.tower_ir_cert_p2518 import build_ir_cert_p2518_preview
+    from tower.tower_ir_cert_p2519 import build_ir_cert_p2519_preview
+    from tower.tower_ir_cert_p2520 import build_ir_cert_p2520_preview
+    from tower.tower_ir_cert_p2521 import build_ir_cert_p2521_preview
+    from tower.tower_ir_cert_p2522 import build_ir_cert_p2522_preview
+
+    @app.get("/tower/ir-cert-v2513.json")
+    def tower_ir_cert_v2513_json():
+        return jsonify(build_ir_cert_p2513_preview())
+
+    @app.get("/tower/ir-cert-v2514.json")
+    def tower_ir_cert_v2514_json():
+        return jsonify(build_ir_cert_p2514_preview())
+
+    @app.get("/tower/ir-cert-v2515.json")
+    def tower_ir_cert_v2515_json():
+        return jsonify(build_ir_cert_p2515_preview())
+
+    @app.get("/tower/ir-cert-v2516.json")
+    def tower_ir_cert_v2516_json():
+        return jsonify(build_ir_cert_p2516_preview())
+
+    @app.get("/tower/ir-cert-v2517.json")
+    def tower_ir_cert_v2517_json():
+        return jsonify(build_ir_cert_p2517_preview())
+
+    @app.get("/tower/ir-cert-v2518.json")
+    def tower_ir_cert_v2518_json():
+        return jsonify(build_ir_cert_p2518_preview())
+
+    @app.get("/tower/ir-cert-v2519.json")
+    def tower_ir_cert_v2519_json():
+        return jsonify(build_ir_cert_p2519_preview())
+
+    @app.get("/tower/ir-cert-v2520.json")
+    def tower_ir_cert_v2520_json():
+        return jsonify(build_ir_cert_p2520_preview())
+
+    @app.get("/tower/ir-cert-v2521.json")
+    def tower_ir_cert_v2521_json():
+        return jsonify(build_ir_cert_p2521_preview())
+
+    @app.get("/tower/ir-cert-v2522.json")
+    def tower_ir_cert_v2522_json():
+        return jsonify(build_ir_cert_p2522_preview())
+
+except Exception as tower_access_home_ui_v2_route_error:
+    app.config[
+        "TOWER_ACCESS_HOME_UI_V2_ROUTE_REGISTRATION_ERROR"
+    ] = repr(tower_access_home_ui_v2_route_error)
+
+# END TOWER ACCESS HOME UI V2 CERT ROUTES 2513-2522

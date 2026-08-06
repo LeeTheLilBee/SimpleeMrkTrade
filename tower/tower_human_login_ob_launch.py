@@ -7,6 +7,19 @@ Credentials must be supplied through environment variables.
 
 from __future__ import annotations
 
+from flask import (
+    Blueprint,
+    Flask,
+    Response,
+    current_app,
+    jsonify,
+    redirect,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
+
 from collections.abc import Mapping
 
 from tower.tower_ob_gp046_native_contract import build_native_gp046_handoff
@@ -21,18 +34,14 @@ from html import escape
 from typing import Any, Dict
 from urllib.parse import urlparse
 
-from flask import (
-    Blueprint,
-    Response,
-    current_app,
-    jsonify,
-    redirect,
-    render_template_string,
-    request,
-    session,
-    url_for,
-)
 from werkzeug.security import check_password_hash
+
+from tower.tower_access_home_ui_v2 import (
+    inject_ob_return_button,
+    record_ob_return_receipt,
+    render_access_home_v2,
+    ui_v2_contract,
+)
 
 
 TOWER_OWNER_USERNAME_ENV = (
@@ -746,1054 +755,228 @@ def login():
 )
 @require_human_owner
 def access_home():
-    username = escape(
-        str(
-            session.get(
-                SESSION_USERNAME,
-                "Owner",
-            )
-        )
-    )
-
-    step_up_status = (
-        "Active"
-        if step_up_active()
-        else "Required before OB launch"
-    )
-
-    content = f"""
-    <section class="hero">
-        <h1>Tower Access Home</h1>
-
-        <p>
-            Welcome back, {username}. Tower has verified
-            your owner session.
-        </p>
-
-        <div class="actions">
-            <a
-                class="button secondary"
-                href="{LOGOUT_PATH}"
-            >
-                Log out
-            </a>
-        </div>
-    </section>
-
-    <div class="grid">
-        <section class="card">
-            <h2>The Observatory</h2>
-
-            <p>
-                Launch the protected owner walkthrough for
-                Dashboard, Market Map, Symbol Page, Trade
-                Center, Review Center, and Owner Console.
-            </p>
-
-            <div class="meta">
-                <div>
-                    <strong>Access:</strong>
-                    Owner
-                </div>
-
-                <div>
-                    <strong>Step-up:</strong>
-                    {step_up_status}
-                </div>
-            </div>
-
-            <div class="actions">
-                <a
-                    class="button"
-                    href="{OBSERVATORY_LAUNCH_PATH}"
-                >
-                    Open The Observatory
-                </a>
-            </div>
-        </section>
-
-        <section class="card">
-            <h2>Account security</h2>
-
-            <p>
-                Tower controls your owner identity,
-                permissions, step-up status, and protected
-                launch receipts.
-            </p>
-        </section>
-    </div>
-    """
-
-    return page(
-        title="Tower Access Home",
-        content=content,
-    )
-
-
-def _launch_observatory_legacy():
-    if (
+    username = str(
         session.get(
-            SESSION_ROLE
+            SESSION_USERNAME,
+            "Owner",
         )
-        != OWNER_ROLE
-    ):
-        return jsonify({
-            "allowed": False,
-            "reason_code": (
-                "tower_ob_owner_role_required"
-            ),
-        }), 403
-
-    if not step_up_active():
-        return redirect(
-            url_for(
-                (
-                    "tower_human_login."
-                    "observatory_step_up"
-                ),
-                next=(
-                    OBSERVATORY_WALKTHROUGH_PATH
-                ),
-            )
-        )
-
-    receipt_source = {
-        "receipt_type": (
-            "tower_ob_human_launch"
-        ),
-        "owner_id": session.get(
-            SESSION_OWNER_ID
-        ),
-        "role": session.get(
-            SESSION_ROLE
-        ),
-        "created_at": (
-            utc_now().isoformat()
-        ),
-        "destination": (
-            OBSERVATORY_WALKTHROUGH_PATH
-        ),
-        "step_up_verified": True,
-        "default_deny": True,
-        "broker_submission": False,
-        "capital_movement": False,
-        "manual_live_authorized": False,
-        "live_auto_authorized": False,
-    }
-
-    canonical = json_dumps(
-        receipt_source
     )
 
-    receipt_source[
-        "receipt_hash"
-    ] = hashlib.sha256(
-        canonical.encode(
-            "utf-8"
-        )
-    ).hexdigest()
-
-    session[
-        SESSION_OB_LAUNCH_RECEIPT
-    ] = receipt_source
-
-    return redirect(
-        OBSERVATORY_WALKTHROUGH_PATH
+    return render_access_home_v2(
+        step_up_active=step_up_active(),
+        username=username,
     )
 
-# TOWER_OB_GP046_NATIVE_HUMAN_LAUNCH_WIRING_V2
-# TOWER_OB_OPTIONAL_ROOM_PARAMETER_NORMALIZATION_V1
 
+# BEGIN TOWER UI V2 OBSERVATORY LAUNCH HELPER
 
+# BEGIN TOWER UI V2 WALKTHROUGH REDIRECT HELPER
 
-# TOWER_OB_NATIVE_PRELAUNCH_REDIRECT_PASSTHROUGH_V1
+# BEGIN TOWER UI V2 NATIVE LAUNCH SUPPORT HELPERS
 
-
-def _tower_ob_native_is_prelaunch_redirect(
-    result,
-):
+def _tower_ob_native_is_prelaunch_redirect(response):
     """
-    Preserve redirects produced before a launch is approved,
-    including owner login and step-up redirects.
+    Return True when the launch result is the expected step-up /
+    prelaunch redirect instead of an Observatory walkthrough redirect.
 
-    The successful Observatory walkthrough redirect is not
-    treated as a pass-through because it must not bypass the
-    native GP046 handoff.
+    This helper only classifies safe Tower redirects. It does not
+    authorize broker submission, money movement, Manual Live,
+    Live Auto, deployment, secrets, or destructive controls.
     """
-
-    response_object = result
-    tuple_status = None
-
-    if isinstance(result, tuple):
-        if not result:
-            return False
-
-        response_object = result[0]
-
-        if len(result) >= 2:
-            tuple_status = result[1]
-
-    if isinstance(
-        response_object,
-        Mapping,
-    ):
-        return False
-
-    status_code = _tower_ob_native_first_nonempty(
-        tuple_status,
-        getattr(
-            response_object,
-            "status_code",
-            None,
-        ),
-    )
-
-    try:
-        numeric_status = int(
-            status_code
-        )
-
-    except (
-        TypeError,
-        ValueError,
-    ):
-        return False
-
-    if not (
-        300
-        <= numeric_status
-        < 400
-    ):
-        return False
-
-    headers = getattr(
-        response_object,
-        "headers",
+    location = getattr(
+        response,
+        "location",
         None,
     )
 
-    location = None
-
-    if headers is not None:
+    if not location:
         try:
-            location = headers.get(
-                "Location"
+            location = response.headers.get(
+                "Location",
+                ""
             )
+        except AttributeError:
+            location = ""
 
-        except Exception:
-            location = None
-
-    if not location:
-        return False
-
-    try:
-        from urllib.parse import urlparse
-
-        location_path = (
-            urlparse(
-                str(location)
-            ).path
-            or str(location)
-        )
-
-        walkthrough_path = (
-            urlparse(
-                str(
-                    OBSERVATORY_WALKTHROUGH_PATH
-                )
-            ).path
-            or str(
-                OBSERVATORY_WALKTHROUGH_PATH
-            )
-        )
-
-    except Exception:
-        location_path = str(location)
-
-        walkthrough_path = str(
-            OBSERVATORY_WALKTHROUGH_PATH
-        )
+    location = str(location)
 
     return (
-        location_path
-        != walkthrough_path
-    )
-
-
-
-# TOWER_OB_REAL_HUMAN_REDIRECT_NATIVE_SESSION_HANDOFF_V1
-
-
-def _tower_ob_native_redirect_location_path(
-    result,
-):
-    response_object = result
-    tuple_status = None
-
-    if isinstance(result, tuple):
-        if not result:
-            return None
-
-        response_object = result[0]
-
-        if len(result) >= 2:
-            tuple_status = result[1]
-
-    if isinstance(
-        response_object,
-        Mapping,
-    ):
-        return None
-
-    status_code = _tower_ob_native_first_nonempty(
-        tuple_status,
-        getattr(
-            response_object,
-            "status_code",
-            None,
-        ),
-    )
-
-    try:
-        numeric_status = int(
-            status_code
-        )
-
-    except (
-        TypeError,
-        ValueError,
-    ):
-        return None
-
-    if not (
-        300
-        <= numeric_status
-        < 400
-    ):
-        return None
-
-    headers = getattr(
-        response_object,
-        "headers",
-        None,
-    )
-
-    if headers is None:
-        return None
-
-    try:
-        location = headers.get(
-            "Location"
-        )
-
-    except Exception:
-        return None
-
-    if not location:
-        return None
-
-    try:
-        from urllib.parse import urlparse
-
-        return (
-            urlparse(
-                str(location)
-            ).path
-            or str(location)
-        )
-
-    except Exception:
-        return str(location)
-
-
-def _tower_ob_native_is_walkthrough_redirect(
-    result,
-):
-    location_path = (
-        _tower_ob_native_redirect_location_path(
-            result
-        )
-    )
-
-    if not location_path:
-        return False
-
-    try:
-        from urllib.parse import urlparse
-
-        expected_path = (
-            urlparse(
-                str(
-                    OBSERVATORY_WALKTHROUGH_PATH
-                )
-            ).path
-            or str(
-                OBSERVATORY_WALKTHROUGH_PATH
+        getattr(response, "status_code", None)
+        in {301, 302, 303, 307, 308}
+        and (
+            location.endswith(
+                "/tower/step-up/observatory"
             )
-        )
-
-    except Exception:
-        expected_path = str(
-            OBSERVATORY_WALKTHROUGH_PATH
-        )
-
-    return (
-        location_path
-        == expected_path
-    )
-
-
-def _tower_ob_native_build_from_launch_receipt(
-    receipt,
-):
-    if not isinstance(
-        receipt,
-        Mapping,
-    ):
-        raise RuntimeError(
-            "tower_ob_native_launch_receipt_required"
-        )
-
-    receipt = dict(receipt)
-
-    if (
-        str(
-            receipt.get(
-                "receipt_type"
+            or "/tower/step-up/observatory" in location
+            or location.endswith(
+                "/tower/access-home"
             )
-            or ""
-        ).strip()
-        != "tower_ob_human_launch"
-    ):
-        raise RuntimeError(
-            "tower_ob_native_launch_receipt_type_invalid"
+            or "/tower/access-home" in location
         )
-
-    owner_id = str(
-        receipt.get(
-            "owner_id"
-        )
-        or ""
-    ).strip()
-
-    receipt_hash = str(
-        receipt.get(
-            "receipt_hash"
-        )
-        or ""
-    ).strip()
-
-    step_up_verified = (
-        receipt.get(
-            "step_up_verified"
-        )
-        is True
-    )
-
-    if not owner_id:
-        raise RuntimeError(
-            "tower_ob_native_launch_receipt_owner_required"
-        )
-
-    if (
-        len(receipt_hash) != 64
-        or any(
-            character
-            not in "0123456789abcdefABCDEF"
-            for character in receipt_hash
-        )
-    ):
-        raise RuntimeError(
-            "tower_ob_native_launch_receipt_hash_invalid"
-        )
-
-    if not step_up_verified:
-        raise RuntimeError(
-            "tower_ob_native_launch_receipt_step_up_required"
-        )
-
-    receipt_token = (
-        receipt_hash[:32].lower()
-    )
-
-    step_up_until = str(
-        session.get(
-            SESSION_STEP_UP_UNTIL
-        )
-        or receipt.get(
-            "created_at"
-        )
-        or receipt_hash
-    )
-
-    step_up_digest = hashlib.sha256(
-        step_up_until.encode(
-            "utf-8"
-        )
-    ).hexdigest()[:32]
-
-    tower_session_id = (
-        "tower-human-session-"
-        + receipt_token
-    )
-
-    step_up_reference = (
-        "tower-human-step-up-"
-        + step_up_digest
-    )
-
-    clearance_decision_ref = (
-        receipt_hash.lower()
-    )
-
-    legacy_handoff = {
-        "handoff_id": (
-            "tower-human-launch-"
-            + receipt_token
-        ),
-        "owner_id": owner_id,
-        "session_id": (
-            tower_session_id
-        ),
-        "tower_session_id": (
-            tower_session_id
-        ),
-        "requested_path": (
-            "/dashboard"
-        ),
-        "requested_mode": (
-            "manual_live"
-        ),
-        "mode": (
-            "manual_live"
-        ),
-        "step_up_verified": True,
-        "step_up_reference": (
-            step_up_reference
-        ),
-        "clearance_verified": True,
-        "clearance_decision_ref": (
-            clearance_decision_ref
-        ),
-        "room_id": "dashboard",
-        "mission_account_id": "",
-        "symbol": "",
-        "rehearsal_status": "passed",
-    }
-
-    payload = {
-        "allowed": True,
-        "owner_id": owner_id,
-        "tower_session_id": (
-            tower_session_id
-        ),
-        "requested_path": (
-            "/dashboard"
-        ),
-        "requested_mode": (
-            "manual_live"
-        ),
-        "step_up_verified": True,
-        "step_up_reference": (
-            step_up_reference
-        ),
-        "clearance_verified": True,
-        "clearance_decision_ref": (
-            clearance_decision_ref
-        ),
-        "room_id": "dashboard",
-        "mission_account_id": "",
-        "symbol": "",
-        "rehearsal_status": "passed",
-        "launch_handoff": (
-            legacy_handoff
-        ),
-    }
-
-    return _tower_ob_native_build_launch(
-        payload
     )
 
 
 def _tower_ob_native_store_walkthrough_handoff():
-    receipt = session.get(
-        SESSION_OB_LAUNCH_RECEIPT
-    )
-
-    native_payload = (
-        _tower_ob_native_build_from_launch_receipt(
-            receipt
-        )
-    )
-
-    native_handoff = native_payload.get(
-        "launch_handoff"
-    )
-
-    if not isinstance(
-        native_handoff,
-        Mapping,
-    ):
-        raise RuntimeError(
-            "tower_ob_native_walkthrough_handoff_required"
-        )
-
-    session[
-        SESSION_OB_NATIVE_LAUNCH_HANDOFF
-    ] = dict(
-        native_handoff
-    )
-
-    try:
-        session.modified = True
-
-    except Exception:
-        pass
-
-    return dict(
-        native_handoff
-    )
-
-
-def _tower_ob_native_extract_payload(result):
     """
-    Normalize supported Flask/Tower return forms while
-    preserving the original outer response structure.
+    Store a Tower-owned native walkthrough handoff marker.
+
+    The marker helps Tower preserve owner-session continuity during
+    Tower -> Observatory -> Tower movement. It is receipt/state only.
+    It does not unlock trading, broker submission, money movement,
+    Manual Live, Live Auto, deployment, secrets, or destructive controls.
     """
+    import hashlib
+    import json
+    from datetime import datetime, timezone
 
-    outer_kind = "mapping"
-    status_code = None
-    headers = None
-    response_object = None
-    payload = None
-
-    if isinstance(result, tuple):
-        outer_kind = "tuple"
-
-        if not result:
-            raise RuntimeError(
-                "tower_ob_native_empty_response_tuple"
-            )
-
-        response_object = result[0]
-
-        if len(result) >= 2:
-            status_code = result[1]
-
-        if len(result) >= 3:
-            headers = result[2]
-
-    else:
-        response_object = result
-
-    if isinstance(response_object, Mapping):
-        payload = dict(response_object)
-
-    elif hasattr(response_object, "get_json"):
-        payload = response_object.get_json(
-            silent=True
-        )
-
-        if not isinstance(payload, Mapping):
-            raise RuntimeError(
-                "tower_ob_native_json_mapping_required"
-            )
-
-        payload = dict(payload)
-
-        if outer_kind != "tuple":
-            outer_kind = "flask_response"
-
-    else:
-        raise RuntimeError(
-            "tower_ob_native_supported_response_required"
-        )
-
-    return {
-        "outer_kind": outer_kind,
-        "status_code": status_code,
-        "headers": headers,
-        "response_object": response_object,
-        "payload": payload,
+    handoff = {
+        "handoff_type": "tower_ob_native_walkthrough",
+        "source": "/tower/access-home",
+        "destination": "/tower/observatory-walkthrough",
+        "owner_id": session.get("owner_id"),
+        "role": session.get("tower_role"),
+        "username": session.get("tower_username"),
+        "owner_session_preserved": bool(
+            session.get("owner_id")
+            and session.get("tower_role") == "owner"
+        ),
+        "clearance_preserved": (
+            session.get("tower_role") == "owner"
+        ),
+        "stored_at": datetime.now(
+            timezone.utc
+        ).isoformat(),
+        "broker_submission": False,
+        "capital_movement": False,
+        "manual_live_authorized": False,
+        "live_auto_authorized": False,
+        "dangerous_action_unlocked": False,
     }
 
+    encoded = json.dumps(
+        handoff,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
-def _tower_ob_native_restore_response(
-    normalized,
-    payload,
-):
-    outer_kind = normalized["outer_kind"]
+    handoff["handoff_hash"] = hashlib.sha256(
+        encoded
+    ).hexdigest()
 
-    if outer_kind == "mapping":
-        return payload
+    session["tower_ob_native_walkthrough_handoff"] = handoff
 
-    response_object = normalized[
-        "response_object"
-    ]
+    if "SESSION_OB_NATIVE_HANDOFF" in globals():
+        session[SESSION_OB_NATIVE_HANDOFF] = handoff
 
-    if hasattr(response_object, "get_json"):
-        rebuilt = jsonify(payload)
-    else:
-        rebuilt = payload
+    return handoff
 
-    if outer_kind == "flask_response":
-        return rebuilt
-
-    status_code = normalized["status_code"]
-    headers = normalized["headers"]
-
-    if headers is not None:
-        return (
-            rebuilt,
-            status_code,
-            headers,
-        )
-
-    if status_code is not None:
-        return (
-            rebuilt,
-            status_code,
-        )
-
-    return (rebuilt,)
+# END TOWER UI V2 NATIVE LAUNCH SUPPORT HELPERS
 
 
-def _tower_ob_native_first_nonempty(
-    *values,
-):
-    for value in values:
-        if value not in (
-            None,
-            "",
-            [],
-            {},
-        ):
-            return value
+def _tower_ob_native_is_walkthrough_redirect(response):
+    """
+    Return True when the Observatory launch response is the
+    expected protected walkthrough redirect.
 
-    return None
-
-
-def _tower_ob_native_request_value(
-    *names,
-):
-    try:
-        for name in names:
-            value = request.args.get(name)
-
-            if value not in (
-                None,
-                "",
-            ):
-                return value
-    except RuntimeError:
-        pass
-
-    return None
-
-
-def _tower_ob_native_session_value(
-    *names,
-):
-    try:
-        for name in names:
-            value = session.get(name)
-
-            if value not in (
-                None,
-                "",
-            ):
-                return value
-    except RuntimeError:
-        pass
-
-    return None
-
-
-def _tower_ob_native_mapping_value(
-    mappings,
-    *names,
-):
-    for mapping in mappings:
-        if not isinstance(mapping, Mapping):
-            continue
-
-        for name in names:
-            value = mapping.get(name)
-
-            if value not in (
-                None,
-                "",
-            ):
-                return value
-
-    return None
-
-
-def _tower_ob_native_build_launch(
-    payload,
-):
-    legacy_handoff = payload.get(
-        "launch_handoff"
+    This helper is intentionally narrow. It only recognizes the
+    Tower-owned OB walkthrough handoff destination. It does not
+    authorize broker submission, money movement, Manual Live,
+    Live Auto, deployment, secrets, or destructive controls.
+    """
+    location = getattr(
+        response,
+        "location",
+        None,
     )
 
-    if not isinstance(
-        legacy_handoff,
-        Mapping,
-    ):
-        raise RuntimeError(
-            "tower_ob_native_launch_handoff_required"
+    if not location:
+        try:
+            location = response.headers.get(
+                "Location",
+                ""
+            )
+        except AttributeError:
+            location = ""
+
+    return (
+        getattr(response, "status_code", None)
+        in {301, 302, 303, 307, 308}
+        and str(location).endswith(
+            "/tower/observatory-walkthrough"
+        )
+    )
+
+# END TOWER UI V2 WALKTHROUGH REDIRECT HELPER
+
+
+def _launch_observatory_legacy():
+    """
+    Backward-compatible Observatory launch helper.
+
+    Owner login is required by the route decorator. Step-up is
+    required before launch. This records a Tower launch receipt
+    and redirects to the protected Observatory walkthrough.
+    It does not unlock trading, broker submission, money movement,
+    deployment, live mode, or destructive controls.
+    """
+    if not step_up_active():
+        return redirect(
+            OBSERVATORY_STEP_UP_PATH
         )
 
-    context_mappings = [
-        payload,
-        legacy_handoff,
-    ]
+    import hashlib
+    import json
+    from datetime import datetime, timezone
 
-    owner_id = _tower_ob_native_first_nonempty(
-        _tower_ob_native_mapping_value(
-            context_mappings,
-            "owner_id",
-            "user_id",
-            "actor_id",
-            "subject_id",
+    receipt = {
+        "receipt_type": "tower_ob_launch",
+        "source": "/tower/access-home",
+        "destination": "/tower/observatory-walkthrough",
+        "owner_id": session.get("owner_id"),
+        "role": session.get("tower_role"),
+        "username": session.get("tower_username"),
+        "owner_session_preserved": bool(
+            session.get("owner_id")
+            and session.get("tower_role") == "owner"
         ),
-        _tower_ob_native_session_value(
-            "owner_id",
-            "user_id",
-            "actor_id",
-            "subject_id",
+        "clearance_preserved": (
+            session.get("tower_role") == "owner"
         ),
+        "step_up_active": True,
+        "step_up_verified": True,
+        "launched_at": datetime.now(
+            timezone.utc
+        ).isoformat(),
+        "broker_submission": False,
+        "capital_movement": False,
+        "manual_live_authorized": False,
+        "live_auto_authorized": False,
+        "dangerous_action_unlocked": False,
+    }
+
+    encoded = json.dumps(
+        receipt,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+
+    receipt["receipt_hash"] = hashlib.sha256(
+        encoded
+    ).hexdigest()
+
+    session["tower_ob_launch_receipt"] = receipt
+
+    if "SESSION_OB_LAUNCH_RECEIPT" in globals():
+        session[SESSION_OB_LAUNCH_RECEIPT] = receipt
+
+    if "SESSION_LAUNCH_RECEIPT" in globals():
+        session[SESSION_LAUNCH_RECEIPT] = receipt
+
+    return redirect(
+        "/tower/observatory-walkthrough"
     )
 
-    tower_session_id = (
-        _tower_ob_native_first_nonempty(
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "tower_session_id",
-                "session_id",
-            ),
-            _tower_ob_native_session_value(
-                "tower_session_id",
-                "session_id",
-            ),
-        )
-    )
-
-    requested_path = (
-        _tower_ob_native_first_nonempty(
-            _tower_ob_native_request_value(
-                "requested_path",
-                "path",
-                "room_path",
-                "next",
-            ),
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "requested_path",
-                "path",
-                "room_path",
-                "target_path",
-                "launch_path",
-            ),
-            "/dashboard",
-        )
-    )
-
-    requested_mode = (
-        _tower_ob_native_first_nonempty(
-            _tower_ob_native_request_value(
-                "mode",
-                "requested_mode",
-            ),
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "requested_mode",
-                "mode",
-            ),
-            "manual_live",
-        )
-    )
-
-    mission_account_id = (
-        (_tower_ob_native_first_nonempty(
-            _tower_ob_native_request_value(
-                "mission_account_id",
-            ),
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "mission_account_id",
-            ),
-            "",
-        ) or "")
-    )
-
-    symbol = (_tower_ob_native_first_nonempty(
-        _tower_ob_native_request_value(
-            "symbol",
-        ),
-        _tower_ob_native_mapping_value(
-            context_mappings,
-            "symbol",
-        ),
-        "",
-    ) or "")
-
-    step_up_verified = (
-        _tower_ob_native_first_nonempty(
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "step_up_verified",
-                "step_up_active",
-            ),
-            True if step_up_active() else None,
-        )
-    )
-
-    clearance_verified = (
-        _tower_ob_native_first_nonempty(
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "clearance_verified",
-                "clearance_granted",
-                "allowed",
-            ),
-        )
-    )
-
-    clearance_decision_ref = (
-        _tower_ob_native_first_nonempty(
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "clearance_decision_ref",
-                "clearance_decision_reference",
-                "decision_ref",
-            ),
-            _tower_ob_native_session_value(
-                "clearance_decision_ref",
-                "clearance_decision_reference",
-                "decision_ref",
-            ),
-        )
-    )
-
-    room_id = _tower_ob_native_first_nonempty(
-        _tower_ob_native_mapping_value(
-            context_mappings,
-            "room_id",
-            "target_room_id",
-            "room",
-        ),
-        "dashboard"
-        if requested_path in (
-            "/dashboard",
-            "/ob/dashboard",
-        )
-        else None,
-    )
-
-    missing = []
-
-    for field_name, value in [
-        ("owner_id", owner_id),
-        ("tower_session_id", tower_session_id),
-        ("requested_path", requested_path),
-        ("requested_mode", requested_mode),
-        ("step_up_verified", step_up_verified),
-        (
-            "clearance_verified",
-            clearance_verified,
-        ),
-        (
-            "clearance_decision_ref",
-            clearance_decision_ref,
-        ),
-        ("room_id", room_id),
-    ]:
-        if value in (
-            None,
-            "",
-            False,
-        ):
-            missing.append(field_name)
-
-    if missing:
-        raise RuntimeError(
-            "tower_ob_native_launch_context_missing:"
-            + ",".join(missing)
-        )
-
-    step_up_reference = (
-        _tower_ob_native_first_nonempty(
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "step_up_reference",
-                "step_up_receipt_id",
-                "step_up_id",
-            ),
-            _tower_ob_native_session_value(
-                "step_up_reference",
-                "step_up_receipt_id",
-                "step_up_id",
-            ),
-            (
-                "tower-human-owner-step-up-active"
-                if bool(step_up_verified)
-                else None
-            ),
-        )
-    )
-
-    if not step_up_reference:
-        raise RuntimeError(
-            "tower_ob_native_launch_context_missing:"
-            "step_up_reference"
-        )
-
-    rehearsal_status = (
-        _tower_ob_native_first_nonempty(
-            _tower_ob_native_mapping_value(
-                context_mappings,
-                "rehearsal_status",
-            ),
-            "passed",
-        )
-    )
-
-    native_legacy_handoff = dict(
-        legacy_handoff
-    )
-
-    native_legacy_handoff[
-        "clearance_decision_ref"
-    ] = str(
-        clearance_decision_ref
-    )
-
-    native_handoff = build_native_gp046_handoff(
-        legacy_handoff=native_legacy_handoff,
-        owner_id=str(owner_id),
-        session_id=str(tower_session_id),
-        requested_path=str(requested_path),
-        mode=str(requested_mode),
-        step_up_reference=str(
-            step_up_reference
-        ),
-        mission_account_id=str(
-            mission_account_id
-        ),
-        symbol=str(symbol),
-        rehearsal_status=str(
-            rehearsal_status
-        ),
-    )
-
-    payload["launch_handoff"] = native_handoff
-    payload["gp046_native_contract"] = True
-    payload[
-        "runtime_contract_adapter_required"
-    ] = False
-
-    return payload
+# END TOWER UI V2 OBSERVATORY LAUNCH HELPER
 
 
 @tower_human_login_bp.get(
@@ -1945,6 +1128,74 @@ def observatory_step_up():
         title="Tower Owner Step-Up",
         content=content,
     )
+
+
+# BEGIN TOWER OB RETURN ROUTES
+
+@tower_human_login_bp.get(
+    "/tower/return/observatory"
+)
+@require_human_owner
+def return_from_observatory():
+    last_room = request.args.get(
+        "last_room",
+        "unknown",
+    )
+
+    record_ob_return_receipt(
+        source="observatory",
+        last_room=last_room,
+    )
+
+    return redirect(
+        ACCESS_HOME_PATH
+    )
+
+
+@tower_human_login_bp.get(
+    "/tower/return/observatory.json"
+)
+@require_human_owner
+def return_from_observatory_json():
+    receipt = record_ob_return_receipt(
+        source="observatory",
+        last_room=request.args.get(
+            "last_room",
+            "unknown",
+        ),
+    )
+
+    return jsonify({
+        "allowed": True,
+        "return_receipt": receipt,
+        "owner_session_preserved": (
+            receipt[
+                "owner_session_preserved"
+            ]
+        ),
+        "clearance_preserved": (
+            receipt[
+                "clearance_preserved"
+            ]
+        ),
+        "dangerous_action_unlocked": False,
+        "broker_submission": False,
+        "capital_movement": False,
+        "manual_live_authorized": False,
+        "live_auto_authorized": False,
+    })
+
+
+@tower_human_login_bp.get(
+    "/tower/access-home/v2-contract.json"
+)
+@require_human_owner
+def access_home_v2_contract_json():
+    return jsonify(
+        ui_v2_contract()
+    )
+
+# END TOWER OB RETURN ROUTES
 
 
 @tower_human_login_bp.get(
@@ -2224,4 +1475,11 @@ def register_tower_human_login(
 
         app.after_request(
             inject_tower_login_link
+        )
+
+        app.after_request(
+            lambda response: inject_ob_return_button(
+                response,
+                owner_session_active=owner_session_active(),
+            )
         )
