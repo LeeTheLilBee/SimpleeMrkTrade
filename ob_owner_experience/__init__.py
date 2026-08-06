@@ -20,4 +20,4 @@ from .consolidation import *
 # Trade Center state labels remain available through trade_center.py directly.
 #
 from .symbol_page import DECISION_STATE_LABELS as DECISION_STATE_LABELS
-
+from .ui_surface_registry import *

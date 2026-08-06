@@ -1,0 +1,96 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_SIX_ROOM_REAL_SURFACE_REGISTRY_UI_CONTRACT_ADAPTER_GP001",
+  "created_at": "2026-08-06T16:15:02.495651Z",
+  "created_contracts": [
+    "real surface registry",
+    "route manifest",
+    "component adapter manifest",
+    "owner walkthrough hooks",
+    "protected route policy",
+    "Soulaana registry summary",
+    "takeover handoff"
+  ],
+  "decision": "READY_FOR_OB_UI_WIRING_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Six-Room Real Surface Registry",
+  "evidence_hash": "7c9a290618f6ff6991405d0d48e1dd2ee44911348cb44737c8901fc8f648d781",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/ui_surface_registry_adapter_handoff.md": "a056f38e6fc4e477bc21e5d76762017fff2536eb5943f3db8991846c34d75700",
+    "ob_owner_experience/__init__.py": "598c7c38cd1a445776e2f397e1a8be952cb479f7330b84ab803c0d52a234db0b",
+    "ob_owner_experience/ui_surface_registry.py": "75566d3abd70148c68e0efb8ca98101b3464fab15fa52f4fedb6235701f4a825",
+    "tests/test_ui_surface_registry_adapter.py": "76b79963e93423f0139d25dcd81b4e97c83d79f5c2e99916748e691d9591978b"
+  },
+  "files": [
+    "ob_owner_experience/ui_surface_registry.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_ui_surface_registry_adapter.py",
+    "ob_evidence/owner_experience_simplification/ui_surface_registry_adapter_handoff.md"
+  ],
+  "locked_changes": {
+    "broker_submission_locked": true,
+    "component_adapter_manifest_created": true,
+    "live_auto_locked": true,
+    "owner_walkthrough_hooks_created": true,
+    "protected_route_policy_created": true,
+    "ready_for_ob_ui_wiring": true,
+    "ready_for_owner_walkthrough": false,
+    "real_capital_movement_locked": true,
+    "real_surface_registry_created": true,
+    "route_manifest_created": true,
+    "soulaana_registry_summary_created": true,
+    "staging_ready": false
+  },
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "OB Dashboard real surface wiring / GP002",
+  "next_ob_build_order": [
+    "GP002 Dashboard real surface wiring",
+    "GP003 Market Map real surface wiring",
+    "GP004 Symbol Page real surface wiring",
+    "GP005 Trade Center real surface wiring",
+    "GP006 Review Center real surface wiring",
+    "GP007 Owner Console real surface wiring",
+    "GP008 visual polish pass",
+    "GP009 Tower handoff adapter",
+    "GP010 OB pre-integration closeout"
+  ],
+  "out_of_scope": [
+    "actual room HTML rendering",
+    "Tower return/session continuity repair",
+    "Tower integration execution",
+    "Render redeployment",
+    "owner walkthrough",
+    "STAGING_READY",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "package": "ob_six_room_real_surface_registry",
+  "primary_question": "Can the real OB app discover the six simplified owner rooms safely?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room_order": [
+    "dashboard",
+    "market_map",
+    "symbol_page",
+    "trade_center",
+    "review_center",
+    "owner_console"
+  ],
+  "safety_locks": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "start_head": "8aefbbf48fac2e8f6a3ac7368ba17a80909b4253"
+}
