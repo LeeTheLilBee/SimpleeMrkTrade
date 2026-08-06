@@ -1,0 +1,80 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_SYMBOL_PAGE_SIMPLIFICATION_ASSET_STORYBOOK",
+  "created_at": "2026-08-06T15:04:51.471398Z",
+  "detail_drawers": [
+    "quote_context",
+    "thesis_detail",
+    "risk_detail",
+    "technical_context",
+    "news_context",
+    "evidence_context",
+    "history_context",
+    "owner_notes"
+  ],
+  "display_title": "Asset Storybook",
+  "evidence_hash": "a999ad7e1da571bd8495871aee4928bf89dbd8d874be1183ab680641c1eb4ed1",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/symbol_page_simplification_handoff.md": "4cd7d9170f237fb4faa2ee1a54fbd76009a1a016ae7bf163e87222dd741fe63f",
+    "ob_owner_experience/__init__.py": "9822d7ca739afe9f5361599974217dac5c49d984cc9d10fa404ec1a39ee14236",
+    "ob_owner_experience/symbol_page.py": "b181a2c86062edf0203d7005542bdf1fe97f272f44bc9b42215f16308e7f433d",
+    "tests/test_symbol_page_simplification.py": "32a80f9f991521a52d8741e0e778164a6f06a564806a88c6eeb4b7b6d27e987c"
+  },
+  "files": [
+    "ob_owner_experience/symbol_page.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_symbol_page_simplification.py",
+    "ob_evidence/owner_experience_simplification/symbol_page_simplification_handoff.md"
+  ],
+  "locked_changes": {
+    "asset_indicators_limited": true,
+    "builder_handoff_written": true,
+    "cute_informative_headings": true,
+    "dangerous_actions_separately_gated": true,
+    "decision_posture_visible": true,
+    "deep_detail_hidden_by_default": true,
+    "detail_drawers_created": true,
+    "first_glance_asset_identity": true,
+    "owner_drawer_collapsed_by_default": true,
+    "risk_before_action": true,
+    "soulaana_visible_interpreter": true,
+    "thesis_before_chart_noise": true
+  },
+  "next_build": "Trade Center simplification using the same doctrine",
+  "out_of_scope": [
+    "Tower return/session continuity repair",
+    "Trade Center simplification",
+    "Review Center simplification",
+    "Owner Console simplification",
+    "Render redeployment",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "primary_question": "What do I need to understand about this asset?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "symbol_page",
+  "section_headings": {
+    "decision": "\ud83d\udc51 Decision Posture",
+    "drawers": "\ud83d\uddc2\ufe0f Asset Detail Drawers",
+    "hero": "\ud83d\udd0e Asset Storybook",
+    "owner_drawer": "\ud83d\udd10 Owner Drawer",
+    "risk": "\ud83d\udee1\ufe0f Risk Before Shine",
+    "signals": "\u2728 Tiny Asset Signals",
+    "soulaana": "\ud83e\udded Soulaana Explains",
+    "thesis": "\ud83d\udcd6 The Asset Story"
+  },
+  "start_head": "6bd3b97d387d3697d614ca921e580516b04d4b9f",
+  "surface_order": [
+    "hero",
+    "soulaana",
+    "thesis",
+    "risk",
+    "decision",
+    "signals",
+    "drawers",
+    "owner_drawer"
+  ],
+  "tone": "cute, clear, asset-focused, risk-aware, owner-first"
+}
