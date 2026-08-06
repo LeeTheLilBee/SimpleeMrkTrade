@@ -22,3 +22,4 @@ from .consolidation import *
 from .symbol_page import DECISION_STATE_LABELS as DECISION_STATE_LABELS
 from .ui_surface_registry import *
 from .dashboard_real_surface import *
+from .market_map_real_surface import *

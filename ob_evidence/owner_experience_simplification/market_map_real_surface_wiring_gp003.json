@@ -1,0 +1,95 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_MARKET_MAP_REAL_SURFACE_WIRING_GP003",
+  "collapsed_components": [
+    "MarketWeatherDeepDiveRoomTabs",
+    "MarketWeatherOwnerDrawer"
+  ],
+  "created_at": "2026-08-06T16:39:25.730983Z",
+  "created_contracts": [
+    "Market Map real surface adapter",
+    "Market Map component tree",
+    "Market Map first-glance components",
+    "Market Map deep-dive room tabs",
+    "Market Map loading state",
+    "Market Map empty state",
+    "Market Map error state",
+    "Market Map takeover handoff"
+  ],
+  "decision": "READY_FOR_MARKET_MAP_REAL_SURFACE_WIRING_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Market Weather",
+  "evidence_hash": "e202643ec369da731d837eff9c35c1a1cb50dfd74e081090dbf3306dfaa8c5db",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/market_map_real_surface_wiring_gp003_handoff.md": "c26d03f63b7ed22e3a74c2d3dfa008fda00df3eb76595618a88c986a892db7cb",
+    "ob_owner_experience/__init__.py": "7ec7137b3610294b1448383e9a2273951a48254b2667ddabd74cee2bd75364cd",
+    "ob_owner_experience/market_map_real_surface.py": "229e5b5f552d824bf2741c11c70a634df34a493e5181297702b7b9388d9d42c9",
+    "tests/test_market_map_real_surface_wiring.py": "9ad0bd5eba38054f23e7f6c1d6624bb6f69b918a18d82d132261d0a467963809"
+  },
+  "files": [
+    "ob_owner_experience/market_map_real_surface.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_market_map_real_surface_wiring.py",
+    "ob_evidence/owner_experience_simplification/market_map_real_surface_wiring_gp003_handoff.md"
+  ],
+  "first_glance_components": [
+    "MarketWeatherHeroCard",
+    "MarketWeatherSoulaanaCard",
+    "MarketWeatherRiskFirstCard",
+    "MarketWeatherBiggestMovementCard",
+    "MarketWeatherOpportunityGarden",
+    "MarketWeatherWatchYourStepCard"
+  ],
+  "locked_changes": {
+    "broker_submission_locked": true,
+    "deep_dive_room_tabs_created": true,
+    "deep_dives_collapsed_or_tab_ready_by_default": true,
+    "empty_state_created": true,
+    "error_state_created": true,
+    "live_auto_locked": true,
+    "loading_state_created": true,
+    "market_map_contract_order_derived": true,
+    "market_map_real_surface_adapter_created": true,
+    "ready_for_market_map_ui_wiring": true,
+    "ready_for_owner_walkthrough": false,
+    "real_capital_movement_locked": true,
+    "risk_before_opportunity": true,
+    "soulaana_near_top": true,
+    "staging_ready": false
+  },
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "OB Symbol Page real surface wiring / GP004",
+  "out_of_scope": [
+    "final HTML/CSS rendering",
+    "Symbol Page real surface wiring",
+    "Tower return/session continuity repair",
+    "Tower integration execution",
+    "Render redeployment",
+    "owner walkthrough",
+    "STAGING_READY",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "package": "ob_market_map_real_surface_wiring_gp003",
+  "primary_question": "What is happening in the market?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "market_map",
+  "safety_locks": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "start_head": "d0f23c2b360f0219ef41c4a662c9aad06fb1cf62"
+}
