@@ -50883,3 +50883,124 @@ except Exception as tower_owner_console_v1_route_error:
     ] = repr(tower_owner_console_v1_route_error)
 
 # END TOWER OWNER CONSOLE V1 ROUTES 2523-2532
+
+
+# BEGIN TOWER APP REGISTRY V2 ROUTES 2533-2542
+
+try:
+    from flask import jsonify, redirect, session
+
+    from tower.tower_app_registry_v2 import (
+        build_app_registry_payload,
+        render_app_registry,
+    )
+    from tower.tower_ir_cert_p2533 import build_ir_cert_p2533_preview
+    from tower.tower_ir_cert_p2534 import build_ir_cert_p2534_preview
+    from tower.tower_ir_cert_p2535 import build_ir_cert_p2535_preview
+    from tower.tower_ir_cert_p2536 import build_ir_cert_p2536_preview
+    from tower.tower_ir_cert_p2537 import build_ir_cert_p2537_preview
+    from tower.tower_ir_cert_p2538 import build_ir_cert_p2538_preview
+    from tower.tower_ir_cert_p2539 import build_ir_cert_p2539_preview
+    from tower.tower_ir_cert_p2540 import build_ir_cert_p2540_preview
+    from tower.tower_ir_cert_p2541 import build_ir_cert_p2541_preview
+    from tower.tower_ir_cert_p2542 import build_ir_cert_p2542_preview
+
+
+    def _tower_app_registry_owner_allowed():
+        return (
+            session.get("tower_authenticated") is True
+            and session.get("tower_role") == "owner"
+            and bool(session.get("owner_id"))
+        )
+
+
+    def _tower_app_registry_role():
+        return session.get("tower_role")
+
+
+    @app.get("/tower/app-registry")
+    def tower_app_registry_v2_page():
+        if not _tower_app_registry_owner_allowed():
+            return redirect("/tower/login")
+
+        payload = build_app_registry_payload(
+            owner_authenticated=True,
+            role=_tower_app_registry_role(),
+        )
+
+        return render_app_registry(payload)
+
+
+    @app.get("/tower/app-registry.json")
+    def tower_app_registry_v2_json():
+        if not _tower_app_registry_owner_allowed():
+            return jsonify({
+                "allowed": False,
+                "reason": "owner_session_required",
+                "default_deny": True,
+            }), 403
+
+        return jsonify(
+            build_app_registry_payload(
+                owner_authenticated=True,
+                role=_tower_app_registry_role(),
+            )
+        )
+
+
+    @app.get("/tower/ir-cert-v2533.json")
+    def tower_ir_cert_v2533_json():
+        return jsonify(build_ir_cert_p2533_preview())
+
+
+    @app.get("/tower/ir-cert-v2534.json")
+    def tower_ir_cert_v2534_json():
+        return jsonify(build_ir_cert_p2534_preview())
+
+
+    @app.get("/tower/ir-cert-v2535.json")
+    def tower_ir_cert_v2535_json():
+        return jsonify(build_ir_cert_p2535_preview())
+
+
+    @app.get("/tower/ir-cert-v2536.json")
+    def tower_ir_cert_v2536_json():
+        return jsonify(build_ir_cert_p2536_preview())
+
+
+    @app.get("/tower/ir-cert-v2537.json")
+    def tower_ir_cert_v2537_json():
+        return jsonify(build_ir_cert_p2537_preview())
+
+
+    @app.get("/tower/ir-cert-v2538.json")
+    def tower_ir_cert_v2538_json():
+        return jsonify(build_ir_cert_p2538_preview())
+
+
+    @app.get("/tower/ir-cert-v2539.json")
+    def tower_ir_cert_v2539_json():
+        return jsonify(build_ir_cert_p2539_preview())
+
+
+    @app.get("/tower/ir-cert-v2540.json")
+    def tower_ir_cert_v2540_json():
+        return jsonify(build_ir_cert_p2540_preview())
+
+
+    @app.get("/tower/ir-cert-v2541.json")
+    def tower_ir_cert_v2541_json():
+        return jsonify(build_ir_cert_p2541_preview())
+
+
+    @app.get("/tower/ir-cert-v2542.json")
+    def tower_ir_cert_v2542_json():
+        return jsonify(build_ir_cert_p2542_preview())
+
+
+except Exception as tower_app_registry_v2_route_error:
+    app.config[
+        "TOWER_APP_REGISTRY_V2_ROUTE_REGISTRATION_ERROR"
+    ] = repr(tower_app_registry_v2_route_error)
+
+# END TOWER APP REGISTRY V2 ROUTES 2533-2542
