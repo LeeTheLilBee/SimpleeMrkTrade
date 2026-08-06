@@ -1,0 +1,164 @@
+{
+  "broker_submission": false,
+  "capital_movement": false,
+  "cert_routes_verified": [
+    "/tower/ir-cert-v2543.json",
+    "/tower/ir-cert-v2544.json",
+    "/tower/ir-cert-v2545.json",
+    "/tower/ir-cert-v2546.json",
+    "/tower/ir-cert-v2547.json",
+    "/tower/ir-cert-v2548.json",
+    "/tower/ir-cert-v2549.json",
+    "/tower/ir-cert-v2550.json",
+    "/tower/ir-cert-v2551.json",
+    "/tower/ir-cert-v2552.json"
+  ],
+  "dangerous_controls_locked": true,
+  "deploy_boundary": {
+    "commit_pinned_deploy_required": true,
+    "expected_staging_app_target": "web.managed_staging:app",
+    "expected_staging_service_name": "simplee-tower-ob-staging",
+    "hosted_env_store_must_be_verified_before_deploy": true,
+    "hosted_env_values_printed": false,
+    "local_env_simulation_present": true,
+    "production_deployment_performed": false,
+    "render_api_called": false,
+    "render_deploy_called": false,
+    "rollback_commit": "151c128f824d2488d0c37e96ebb1b03d37f492ac",
+    "rollback_plan_required": true,
+    "secret_values_exposed": false,
+    "staging_redeploy_performed": false
+  },
+  "destructive_action_unlocked": false,
+  "direct_vault_write": false,
+  "env_presence_local_process": {
+    "TOWER_LOCAL_OWNER_PASSWORD": false,
+    "TOWER_LOCAL_WALKTHROUGH_MODE": false,
+    "TOWER_OWNER_ID": false,
+    "TOWER_OWNER_USERNAME": false,
+    "TOWER_SESSION_SECRET": false
+  },
+  "expected_staging_app_target": "web.managed_staging:app",
+  "expected_staging_service_name": "simplee-tower-ob-staging",
+  "focused_tests_passed": true,
+  "gates": [
+    {
+      "detail": "151c128f824d",
+      "name": "main_is_expected_merge_commit",
+      "passed": true
+    },
+    {
+      "detail": "151c128f824d",
+      "name": "origin_main_is_expected_merge_commit",
+      "passed": true
+    },
+    {
+      "detail": "all required merged Tower handoff files present",
+      "name": "required_merged_files_present",
+      "passed": true
+    },
+    {
+      "detail": "8aefbbf48fac2e8f6a3ac7368ba17a80909b4253",
+      "name": "handoff_records_ob_acceptance_commit",
+      "passed": true
+    },
+    {
+      "detail": "staging/redeploy/live/broker/capital locks present",
+      "name": "handoff_safety_strings_present",
+      "passed": true
+    },
+    {
+      "detail": "focused post-merge Tower\u2013OB test suite passed",
+      "name": "focused_tests_pass",
+      "passed": true
+    },
+    {
+      "detail": "owner login, Access Home, Owner Console, App Registry, handoff, launch, walkthrough, return",
+      "name": "local_owner_flow_passes",
+      "passed": true
+    },
+    {
+      "detail": "dashboard, market_map, symbol_page, trade_center, review_center, owner_console",
+      "name": "six_rooms_verified",
+      "passed": true
+    },
+    {
+      "detail": "all 10 cert routes returned ready with safety locks false",
+      "name": "cert_routes_2543_2552_verified",
+      "passed": true
+    },
+    {
+      "detail": "broker/capital/manual/live/production/vault/destructive controls false",
+      "name": "dangerous_controls_locked",
+      "passed": true
+    },
+    {
+      "detail": "must be verified in explicit deploy request cell before Render deploy",
+      "name": "hosted_env_store_not_verified_yet",
+      "passed": true
+    },
+    {
+      "detail": "rollback commit pinned to 151c128f824d",
+      "name": "rollback_plan_required",
+      "passed": true
+    },
+    {
+      "detail": "review only",
+      "name": "redeploy_not_performed",
+      "passed": true
+    },
+    {
+      "detail": "hosted owner walkthrough has not happened",
+      "name": "staging_ready_remains_false",
+      "passed": true
+    }
+  ],
+  "live_auto_authorized": false,
+  "local_owner_walkthrough_verified": true,
+  "main_branch": "main",
+  "manual_live_authorized": false,
+  "merge_commit": "151c128f824d2488d0c37e96ebb1b03d37f492ac",
+  "merge_commit_short": "151c128f824d",
+  "next_recommended_action": "Run a separate explicit staging redeploy request cell only if owner approves. That cell may request a Render deploy but must still keep STAGING_READY=false until hosted owner walkthrough passes.",
+  "ob_acceptance_commit": "8aefbbf48fac2e8f6a3ac7368ba17a80909b4253",
+  "origin_main_verified": true,
+  "owner_session_preserved": true,
+  "production_deployment": false,
+  "ready_to_request_staging_redeploy": true,
+  "redeploy_authorized": false,
+  "redeploy_performed": false,
+  "render_api_called": false,
+  "required_files_verified": [
+    "web/app.py",
+    "tower/tower_access_home_ui_v2.py",
+    "tower/tower_owner_console_v1.py",
+    "tower/tower_app_registry_v2.py",
+    "tower/tower_human_login_ob_launch.py",
+    "tower/tower_ob_six_room_acceptance_handoff.py",
+    "tower/test_tower_ob_six_room_acceptance_handoff.py",
+    "tower/tower_ir_cert_p2543.py",
+    "tower/test_tower_pack_2543.py",
+    "tower/tower_ir_cert_p2552.py",
+    "tower/test_tower_pack_2552.py"
+  ],
+  "return_receipt_verified": true,
+  "review": "tower_ob_staging_redeploy_readiness",
+  "reviewed_at": "2026-08-06T16:35:09.446607+00:00",
+  "routes_verified": [
+    "/tower/access-home",
+    "/tower/owner-console",
+    "/tower/app-registry",
+    "/tower/launch/observatory",
+    "/tower/step-up/observatory",
+    "/tower/return/observatory",
+    "/tower/return/observatory.json",
+    "/tower/observatory-walkthrough",
+    "/tower/observatory-six-room-acceptance",
+    "/tower/observatory-six-room-acceptance.json",
+    "/tower/observatory-six-room-acceptance/return-check.json"
+  ],
+  "six_room_walkthrough_pages_verified": true,
+  "staging_ready": false,
+  "started_at": "2026-08-06T16:34:25.160017+00:00",
+  "status": "passed"
+}
