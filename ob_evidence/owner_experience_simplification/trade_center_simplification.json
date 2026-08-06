@@ -1,0 +1,87 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_TRADE_CENTER_SIMPLIFICATION_DECISION_GARDEN",
+  "created_at": "2026-08-06T15:11:25.030669Z",
+  "detail_drawers": [
+    "candidate_context",
+    "thesis_context",
+    "risk_context",
+    "broker_checklist_context",
+    "manual_live_context",
+    "receipt_context",
+    "owner_notes"
+  ],
+  "display_title": "Decision Garden",
+  "evidence_hash": "ff26f02474e1cd565cdee7cef2e68d965b80b74e8123ddbf63a9ba06dbe296f9",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/trade_center_simplification_handoff.md": "2448911980b542f1610c751f07e00a75c97811b6e3df342fe719dfd27ed1081b",
+    "ob_owner_experience/__init__.py": "5b81a6ebfb0437ba8cde69d81c1a6ad2f823b89d6f29ecdeb1a99c344ea9cbcf",
+    "ob_owner_experience/trade_center.py": "b7e57c1de8c87699942834f0647cd9698213a78104e3fbdd426ec6496495138b",
+    "tests/test_trade_center_simplification.py": "c3a8e9c504db8df92a523de09a7d23830280c9b5ef87a1db28da2f70fbb19dad"
+  },
+  "files": [
+    "ob_owner_experience/trade_center.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_trade_center_simplification.py",
+    "ob_evidence/owner_experience_simplification/trade_center_simplification_handoff.md"
+  ],
+  "locked_changes": {
+    "broker_submission_locked": true,
+    "builder_handoff_written": true,
+    "cute_informative_headings": true,
+    "dangerous_actions_separately_gated": true,
+    "decision_queue_limited": true,
+    "deep_detail_hidden_by_default": true,
+    "detail_drawers_created": true,
+    "first_glance_waiting_decisions": true,
+    "owner_drawer_collapsed_by_default": true,
+    "readiness_checklist_visible": true,
+    "real_capital_movement_locked": true,
+    "review_not_execution": true,
+    "risk_and_lock_state_visible": true,
+    "soulaana_visible_interpreter": true
+  },
+  "next_build": "Review Center simplification using the same doctrine",
+  "out_of_scope": [
+    "Tower return/session continuity repair",
+    "Review Center simplification",
+    "Owner Console simplification",
+    "Render redeployment",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "primary_question": "What decisions or actions are waiting?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "trade_center",
+  "safety_locks": {
+    "broker_submission_enabled": false,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false
+  },
+  "section_headings": {
+    "checklist": "\u2705 Readiness Checklist",
+    "drawers": "\ud83d\uddc2\ufe0f Decision Detail Drawers",
+    "hero": "\ud83c\udf38 Decision Garden",
+    "next_action": "\ud83d\udc51 Owner Next Move",
+    "owner_drawer": "\ud83d\udd10 Owner Drawer",
+    "queue": "\ud83d\udcec Waiting Decisions",
+    "risk": "\ud83d\udee1\ufe0f Risk Gate",
+    "soulaana": "\ud83e\udded Soulaana Guides"
+  },
+  "start_head": "e6aca2c6c1d74f8a0a7b239951c1dc92bc585cf9",
+  "surface_order": [
+    "hero",
+    "soulaana",
+    "queue",
+    "risk",
+    "checklist",
+    "next_action",
+    "drawers",
+    "owner_drawer"
+  ],
+  "tone": "cute, calm, review-first, safety-aware, owner-first"
+}
