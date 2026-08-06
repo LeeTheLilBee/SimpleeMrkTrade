@@ -1,0 +1,82 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_MARKET_MAP_SIMPLIFICATION_MARKET_WEATHER",
+  "created_at": "2026-08-06T14:58:31.014991Z",
+  "deep_dive_rooms": {
+    "correlations": "\ud83e\uddf2 Together Map",
+    "evidence": "\ud83d\udcce Receipts Table",
+    "flows": "\ud83d\udca7 Money River",
+    "historical_comparisons": "\ud83e\ude9e Time Mirror",
+    "market_breadth": "\ud83e\udee7 Breadth Check",
+    "research_detail": "\ud83d\udcda Research Library",
+    "sector_details": "\ud83c\udf3f Sector Garden",
+    "symbol_level_data": "\ud83e\udeba Symbol Nest",
+    "technical_signals": "\ud83c\udfee Signal Lanterns",
+    "volatility": "\u26c8\ufe0f Storm Meter"
+  },
+  "display_title": "Market Weather",
+  "evidence_hash": "7153b5c3334f3efb6deea095d3bc7a125710304fc9ca0691817fc7657e7695d9",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/market_map_simplification_handoff.md": "2d52c070a7253cd95cad65089bd6b9e0e7c715d181200785fcd43a2354d96b01",
+    "ob_owner_experience/__init__.py": "c93e354164f2b2eb2db2a5722248e6bd7190dbdb0f56e51cf176f28d1fba5f91",
+    "ob_owner_experience/market_map.py": "1d004a0b8396a13e8c3ebcfbc56996c399de3f48756bf275cd4c6370ad22ebb1",
+    "tests/test_market_map_simplification.py": "b22fa018135a10bb6a6e3ca39bd35f5baad7f1b2853fa546aed577e8ec03a041"
+  },
+  "files": [
+    "ob_owner_experience/market_map.py",
+    "ob_owner_experience/__init__.py",
+    "tests/test_market_map_simplification.py",
+    "ob_evidence/owner_experience_simplification/market_map_simplification_handoff.md"
+  ],
+  "locked_changes": {
+    "builder_handoff_written": true,
+    "cute_informative_headings": true,
+    "dangerous_actions_separately_gated": true,
+    "deep_dive_complexity_hidden_by_default": true,
+    "deep_dive_rooms_created": true,
+    "first_glance_market_condition": true,
+    "most_important_movement": true,
+    "opportunities_limited": true,
+    "owner_drawer_collapsed_by_default": true,
+    "risk_before_opportunity": true,
+    "soulaana_visible_interpreter": true,
+    "warnings_limited": true
+  },
+  "next_build": "Symbol Page simplification using the same doctrine",
+  "out_of_scope": [
+    "Tower return/session continuity repair",
+    "Symbol Page simplification",
+    "Trade Center simplification",
+    "Review Center simplification",
+    "Render redeployment",
+    "production deployment",
+    "broker submission",
+    "money movement",
+    "secret creation"
+  ],
+  "primary_question": "What is happening in the market?",
+  "repository": "/content/SimpleeMrkTrade_OB",
+  "room": "market_map",
+  "section_headings": {
+    "deep_dives": "\ud83d\uddfa\ufe0f Deep-Dive Rooms",
+    "hero": "\ud83c\udf26\ufe0f Market Weather",
+    "movement": "\ud83c\udf0a Biggest Movement",
+    "opportunities": "\ud83c\udf31 Strongest Opportunities",
+    "owner_drawer": "\ud83d\udd10 Owner Drawer",
+    "risk": "\ud83d\udee1\ufe0f Risk First",
+    "soulaana": "\ud83e\udded Soulaana Reads the Room",
+    "warnings": "\u26a0\ufe0f Watch Your Step"
+  },
+  "start_head": "1f02854e787841ef87719e79df42e720257f6f6a",
+  "surface_order": [
+    "hero",
+    "soulaana",
+    "risk",
+    "movement",
+    "opportunities",
+    "warnings",
+    "deep_dives",
+    "owner_drawer"
+  ],
+  "tone": "cute, calm, readable, risk-aware, owner-first"
+}
