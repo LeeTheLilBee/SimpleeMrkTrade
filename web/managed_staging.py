@@ -40,3 +40,48 @@ def managed_staging_status() -> dict[str, object]:
         "live_auto_authorized": LIVE_AUTO_AUTHORIZED,
         "staging_ready": STAGING_READY,
     }
+
+
+# SIMPLEE_MANAGED_STAGING_HEALTH_ENDPOINT_V1
+# Minimal exact-path Render staging liveness endpoint.
+def _simplee_managed_staging_health_view():
+    return {"ok": True}, 200
+
+
+if "simplee_managed_staging_healthz" not in app.view_functions:
+    app.add_url_rule(
+        "/tower/healthz",
+        endpoint="simplee_managed_staging_healthz",
+        view_func=_simplee_managed_staging_health_view,
+        methods=["GET"],
+    )
+
+
+class _SimpleeManagedStagingHealthMiddleware:
+    def __init__(self, wrapped):
+        self.wrapped = wrapped
+
+    def __call__(self, environ, start_response):
+        path = environ.get("PATH_INFO", "")
+        method = environ.get("REQUEST_METHOD", "GET").upper()
+
+        if path == "/tower/healthz" and method in {"GET", "HEAD"}:
+            body = b'{"ok":true}\n'
+            headers = [
+                ("Content-Type", "application/json; charset=utf-8"),
+                ("Content-Length", str(len(body))),
+                ("Cache-Control", "no-store"),
+            ]
+            start_response("200 OK", headers)
+
+            if method == "HEAD":
+                return [b""]
+
+            return [body]
+
+        return self.wrapped(environ, start_response)
+
+
+if not getattr(app, "_simplee_health_middleware_v1", False):
+    app.wsgi_app = _SimpleeManagedStagingHealthMiddleware(app.wsgi_app)
+    app._simplee_health_middleware_v1 = True
