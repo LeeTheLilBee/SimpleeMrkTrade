@@ -1,0 +1,209 @@
+{
+  "access_home_verified": true,
+  "anonymous_default_deny_passed": true,
+  "anonymous_results": {
+    "/tower": {
+      "body_preview": "\\n    <!doctype html>\\n    <html>\\n    <head>\\n      <meta charset=\"utf-8\">\\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\\n      <title>Restricted</title>\\n      <style>\\n        :root { color-scheme: dark; }\\n        body {\\n          marg",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": false,
+      "location": null,
+      "ok": false,
+      "status_code": 403,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower",
+      "valid_default_deny_or_login_landing": true
+    },
+    "/tower/access-home": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n            >\\n            <title>Tower Owner Logi",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": true,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/login?next=/tower/access-home",
+      "valid_default_deny_or_login_landing": true
+    },
+    "/tower/app-registry": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n            >\\n            <title>Tower Owner Logi",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": true,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/login",
+      "valid_default_deny_or_login_landing": true
+    },
+    "/tower/observatory-six-room-acceptance": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n            >\\n            <title>Tower Owner Logi",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": true,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/login",
+      "valid_default_deny_or_login_landing": true
+    },
+    "/tower/observatory-six-room-acceptance.json": {
+      "body_preview": "{\"allowed\":false,\"default_deny\":true,\"reason\":\"owner_session_required\"}\\n",
+      "content_type": "application/json",
+      "landed_on_login": false,
+      "location": null,
+      "ok": false,
+      "status_code": 403,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/observatory-six-room-acceptance.json",
+      "valid_default_deny_or_login_landing": true
+    },
+    "/tower/owner-console": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n            >\\n            <title>Tower Owner Logi",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": true,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/login",
+      "valid_default_deny_or_login_landing": true
+    }
+  },
+  "app_registry_verified": true,
+  "broker_submission": false,
+  "capital_movement": false,
+  "clearance_preservation_verified": true,
+  "dangerous_controls_locked": true,
+  "destructive_action_unlocked": false,
+  "direct_vault_write": false,
+  "finished_at": "2026-08-10T17:00:54.634222+00:00",
+  "hosted_login_passed": true,
+  "hosted_owner_walkthrough_passed": true,
+  "launch_probe_attempted": true,
+  "launch_probe_results": [
+    {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n            >\\n            <title>Tower Owner Step",
+      "landed_on_login": false,
+      "location": null,
+      "path": "/tower/launch/observatory",
+      "status_code": 200
+    },
+    {
+      "body_preview": "\\n    <!doctype html>\\n    <html lang=\"en\">\\n    <head>\\n        <meta charset=\"utf-8\">\\n        <meta\\n            name=\"viewport\"\\n            content=\"width=device-width,initial-scale=1\"\\n        >\\n        <title>Tower Access Home</title>\\n        \\n    <style>\\n    :",
+      "landed_on_login": false,
+      "location": null,
+      "path": "/tower/return/observatory",
+      "status_code": 200
+    }
+  ],
+  "launch_probe_safe": true,
+  "live_auto_authorized": false,
+  "login_attempts_scrubbed": [
+    {
+      "body_preview": "\\n    <!doctype html>\\n    <html lang=\"en\">\\n    <head>\\n        <meta charset=\"utf-8\">\\n        <meta\\n            name=\"viewport\"\\n            content=\"width=device-width,initial-scale=1\"\\n        >\\n        <title>Tower Access Home</title>\\n        \\n    <style>\\n    :",
+      "content_type": "text/html; charset=utf-8",
+      "location": null,
+      "ok": true,
+      "payload_keys": [
+        "next",
+        "password",
+        "username"
+      ],
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/access-home"
+    }
+  ],
+  "login_page_status_code": 200,
+  "main_commit": "bbd998e41668113b2a7cf722158e24855fe84915",
+  "main_commit_short": "bbd998e41668",
+  "main_pushed": false,
+  "manual_live_authorized": false,
+  "merge_performed": false,
+  "next_recommended_action": "Record final Tower\u2013OB staging readiness decision only if owner approves.",
+  "ob_acceptance_commit": "8aefbbf48fac2e8f6a3ac7368ba17a80909b4253",
+  "ob_handoff_json_verified": true,
+  "owner_console_verified": true,
+  "owner_session_preservation_verified": true,
+  "owner_surface_results": {
+    "/tower/access-home": {
+      "body_preview": "\\n    <!doctype html>\\n    <html lang=\"en\">\\n    <head>\\n        <meta charset=\"utf-8\">\\n        <meta\\n            name=\"viewport\"\\n            content=\"width=device-width,initial-scale=1\"\\n        >\\n        <title>Tower Access Home</title>\\n        \\n    <style>\\n    :",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": false,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/access-home"
+    },
+    "/tower/app-registry": {
+      "body_preview": "\\n    <!doctype html>\\n    <html lang=\"en\">\\n    <head>\\n        <meta charset=\"utf-8\">\\n        <meta\\n            name=\"viewport\"\\n            content=\"width=device-width,initial-scale=1\"\\n        >\\n        <title>Tower App Registry</title>\\n        \\n    <style>\\n    ",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": false,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/app-registry"
+    },
+    "/tower/observatory-six-room-acceptance": {
+      "body_preview": "\\n    <!doctype html>\\n    <html lang=\"en\">\\n    <head>\\n        <meta charset=\"utf-8\">\\n        <meta\\n            name=\"viewport\"\\n            content=\"width=device-width,initial-scale=1\"\\n        >\\n        <title>Tower OB Six-Room Handoff</title>\\n        \\n    <styl",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": false,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/observatory-six-room-acceptance"
+    },
+    "/tower/observatory-six-room-acceptance.json": {
+      "body_preview": "{\"acceptance_package\":{\"branch_clean_reported\":true,\"commit\":\"8aefbbf48fac2e8f6a3ac7368ba17a80909b4253\",\"package\":\"ob_owner_experience_six_room_acceptance\",\"package_hash\":\"4a1a56653234a348e2d0a2879d3dcaff74833996f587c8e4fec93f0fcd2257d8\",\"recognized_at\":\"2026-",
+      "content_type": "application/json",
+      "landed_on_login": false,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/observatory-six-room-acceptance.json"
+    },
+    "/tower/observatory-six-room-acceptance/return-check.json?last_room=Review%20Center": {
+      "body_preview": "{\"clearance_preserved\":true,\"created_at\":\"2026-08-10T17:00:51.126702+00:00\",\"dangerous_controls\":{\"broker_submission\":false,\"capital_movement\":false,\"destructive_action_unlocked\":false,\"direct_vault_write\":false,\"live_auto_authorized\":false,\"manual_live_author",
+      "content_type": "application/json",
+      "landed_on_login": false,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/observatory-six-room-acceptance/return-check.json?last_room=Review%20Center"
+    },
+    "/tower/owner-console": {
+      "body_preview": "\\n    <!doctype html>\\n    <html lang=\"en\">\\n    <head>\\n        <meta charset=\"utf-8\">\\n        <meta\\n            name=\"viewport\"\\n            content=\"width=device-width,initial-scale=1\"\\n        >\\n        <title>Tower Owner Console</title>\\n        \\n    <style>\\n   ",
+      "content_type": "text/html; charset=utf-8",
+      "landed_on_login": false,
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/owner-console"
+    }
+  },
+  "production_deployment": false,
+  "public_path_checks_passed": true,
+  "public_results": {
+    "/tower/healthz": {
+      "body_preview": "{\"ok\":true}\\n",
+      "content_type": "application/json; charset=utf-8",
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/healthz"
+    },
+    "/tower/login": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n            >\\n            <title>Tower Owner Logi",
+      "content_type": "text/html; charset=utf-8",
+      "location": null,
+      "ok": true,
+      "status_code": 200,
+      "url": "https://simplee-tower-ob-staging.onrender.com/tower/login"
+    }
+  },
+  "ready_for_final_staging_readiness_decision": true,
+  "redeploy_requested_in_this_cell": false,
+  "render_api_called_in_this_cell": false,
+  "secret_values_exposed": false,
+  "six_room_count_verified": 6,
+  "staging_base_url": "https://simplee-tower-ob-staging.onrender.com",
+  "staging_ready": false,
+  "staging_ready_reason": "Final staging readiness decision has not been explicitly recorded.",
+  "started_at": "2026-08-10T16:59:48.162387+00:00",
+  "status": "passed",
+  "tower_return_verified": true,
+  "verification": "tower_ob_hosted_owner_walkthrough_redirect_aware"
+}
