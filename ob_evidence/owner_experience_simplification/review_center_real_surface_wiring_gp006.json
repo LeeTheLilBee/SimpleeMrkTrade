@@ -1,0 +1,112 @@
+{
+  "action_locks": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "correction_note_allowed": true,
+    "direct_execution_enabled": false,
+    "lesson_capture_allowed": true,
+    "live_auto_locked": true,
+    "real_capital_movement_enabled": false,
+    "review_read_allowed": true
+  },
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_REVIEW_CENTER_REAL_SURFACE_WIRING_GP006",
+  "collapsed_components": [
+    "ReviewCenterDetailDrawerGroup",
+    "ReviewCenterOwnerDrawer"
+  ],
+  "component_hint": "ReflectionLibrarySurface",
+  "created_at": "2026-08-10T15:13:25.882783Z",
+  "data_adapter_hint": "build_review_center_surface",
+  "decision": "READY_FOR_REVIEW_CENTER_REAL_SURFACE_WIRING_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Review Center",
+  "evidence_hash": "8b44a0316c98f87fddf9822f1e3e8a42b111393895358301bb53395c84abb3d8",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/review_center_real_surface_wiring_gp006_handoff.md": "a4cf3b4bf51563c0f8f89c088385b136801b28156f4884be7cb2c5932bd9df74",
+    "ob_owner_experience/review_center_real_surface.py": "0ef3cbd01ee0a731339ba03e53543434508bb23558762ab9bac4f6ec255a3fae",
+    "tests/test_review_center_real_surface_wiring.py": "a089577e6fdee2c7ce4815131f8717645a7f41771d6722954d98e1d1dd35b20a"
+  },
+  "files": [
+    "ob_owner_experience/review_center_real_surface.py",
+    "tests/test_review_center_real_surface_wiring.py",
+    "ob_evidence/owner_experience_simplification/review_center_real_surface_wiring_gp006_handoff.md"
+  ],
+  "first_glance_components": [
+    "ReviewCenterHeroCard",
+    "ReviewCenterSoulaanaCard",
+    "ReviewCenterOutcomePatternCard",
+    "ReviewCenterReceiptTimeline",
+    "ReviewCenterLessonPatternCard",
+    "ReviewCenterNextReviewSection",
+    "ReviewCenterRecentReviewsList",
+    "ReviewCenterDecisionReplayCard",
+    "ReviewCenterCorrectionQueueCard"
+  ],
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "OB Owner Console Real Surface Wiring / GP007",
+  "package": "ob_review_center_real_surface_wiring_gp006",
+  "repair": "small_finish_registry_alignment",
+  "room": "review_center",
+  "route_hint": "/ob/review-center",
+  "safety_summary": {
+    "broker_submission_enabled": false,
+    "dangerous_action_policy": {
+      "broker_submission": "separately_gated",
+      "default_state": "disabled_until_authorized",
+      "deployment": "separately_gated",
+      "destructive_controls": "separately_gated",
+      "money_movement": "separately_gated",
+      "secrets": "separately_gated",
+      "trading": "separately_gated"
+    },
+    "dangerous_actions_separately_gated": true,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "owner_console_safety_locks": {
+      "broker_submission_enabled": false,
+      "dangerous_actions_separately_gated": true,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "plain_language": "Review and owner visibility are allowed. Production Manual Live, broker submission, real capital movement, direct Vault upload, and Live Auto remain locked.",
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    },
+    "plain_language": "The owner-experience package is review-only. Broker submission, real capital movement, production Manual Live, direct Vault upload, and Live Auto remain locked.",
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false,
+    "trade_center_lock_state": {
+      "broker_submission_enabled": false,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    }
+  },
+  "start_head": "ad14be73baf99472f4e2ee59f190bf5c2efebd02",
+  "surface_status": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "contract_ready": true,
+    "correction_queue_ready": true,
+    "direct_execution_enabled": false,
+    "lesson_capture_ready": true,
+    "owner_walkthrough_accepted": false,
+    "real_capital_movement_enabled": false,
+    "real_html_rendered": false,
+    "real_surface_adapter_ready": true,
+    "receipt_review_ready": true,
+    "registry_ready": true,
+    "render_redeployed": false,
+    "staging_ready": false,
+    "tower_return_repaired": false
+  }
+}
