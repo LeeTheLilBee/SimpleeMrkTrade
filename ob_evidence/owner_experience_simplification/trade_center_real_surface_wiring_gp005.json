@@ -1,0 +1,31 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_TRADE_CENTER_REAL_SURFACE_WIRING_GP005",
+  "created_at": "2026-08-10T14:53:27.277928Z",
+  "decision": "READY_FOR_TRADE_CENTER_REAL_SURFACE_WIRING_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Decision Garden",
+  "evidence_hash": "89addb2baf4b91f5f97afc813462b4c6f61274a00e5c3bf3b588258ad7d7d747",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/trade_center_real_surface_wiring_gp005_handoff.md": "17f03464211deb155394dab46ae17ff1d453b247ff65f6234fb74c84bfba48b5",
+    "ob_owner_experience/__init__.py": "e829ba7fff6daf970f346bccff956dc4050b042078fa039334ebf2ad6108b70c",
+    "ob_owner_experience/trade_center_real_surface.py": "ba4bc161df31fa448f50545bf3a8da3c45d9f4a68006d84387f536fc60eabc18",
+    "tests/test_trade_center_real_surface_wiring.py": "8d4a169f95bfde7b8eb4fab1fb2ac803c2960e6691b76a4ed9bbb73056082657"
+  },
+  "files": [
+    "ob_owner_experience/__init__.py",
+    "ob_owner_experience/trade_center_real_surface.py",
+    "tests/test_trade_center_real_surface_wiring.py",
+    "ob_evidence/owner_experience_simplification/trade_center_real_surface_wiring_gp005_handoff.md"
+  ],
+  "next_build": "OB Review Center Real Surface Wiring / GP006",
+  "package": "ob_trade_center_real_surface_wiring_gp005",
+  "repair": "bash_repair_remove_star_export_and_use_gp005_order",
+  "room": "trade_center",
+  "safety_locks": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "real_capital_movement_enabled": false
+  }
+}
