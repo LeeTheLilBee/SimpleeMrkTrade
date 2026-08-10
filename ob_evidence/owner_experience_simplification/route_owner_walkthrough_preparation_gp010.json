@@ -1,0 +1,424 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_ROUTE_OWNER_WALKTHROUGH_PREPARATION_GP010",
+  "closed_dependency": "GP009",
+  "created_at": "2026-08-10T15:51:11.386166Z",
+  "decision": "READY_FOR_ROUTE_AND_OWNER_WALKTHROUGH_PREPARATION_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Route and Owner Walkthrough Preparation",
+  "evidence_hash": "3e3239a197d6eaa88238ff6c976699bd1712febed512485f54a9f0d468529d27",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/route_owner_walkthrough_preparation_gp010_handoff.md": "84188f095032bc4364122d6966d9885d991268bbb58ef4038e82be8e9642036b",
+    "ob_owner_experience/route_owner_walkthrough_preparation.py": "617da147e809fc241c57233a3a2853e065369384cb1541f8bda82e6cc7980306",
+    "tests/test_route_owner_walkthrough_preparation_gp010.py": "e17908f135172d55cb34ab33ee2bb21c4935d62765d9f9107c2e16589929eabe"
+  },
+  "files": [
+    "ob_owner_experience/route_owner_walkthrough_preparation.py",
+    "tests/test_route_owner_walkthrough_preparation_gp010.py",
+    "ob_evidence/owner_experience_simplification/route_owner_walkthrough_preparation_gp010_handoff.md"
+  ],
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "OB Owner Walkthrough Dry-Run Evidence / GP011",
+  "not_authorized": [
+    "STAGING_READY",
+    "owner walkthrough started",
+    "owner walkthrough accepted",
+    "Tower return/session continuity repaired",
+    "Render redeploy",
+    "production deployment",
+    "broker submission",
+    "real capital movement",
+    "direct execution",
+    "automated execution",
+    "permission mutation",
+    "secret reveal",
+    "Live Auto unlock"
+  ],
+  "package": "ob_route_owner_walkthrough_preparation_gp010",
+  "preparation_status": {
+    "all_routes_ready_for_walkthrough_preparation": true,
+    "all_six_rooms_present": true,
+    "anonymous_access_allowed": false,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "gp008_six_room_acceptance_ready": true,
+    "gp009_closeout_closed": true,
+    "live_auto_locked": true,
+    "owner_session_required": true,
+    "owner_walkthrough_accepted": false,
+    "owner_walkthrough_started": false,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "render_redeployed": false,
+    "route_owner_walkthrough_preparation_ready": true,
+    "secret_reveal_enabled": false,
+    "staging_ready": false,
+    "tower_return_repaired": false,
+    "walkthrough_script_prepared": true
+  },
+  "prepared": true,
+  "release_boundary": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "owner_walkthrough_accepted": false,
+    "owner_walkthrough_started": false,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "render_redeployed": false,
+    "secret_reveal_enabled": false,
+    "staging_ready": false,
+    "tower_return_repaired": false
+  },
+  "route_matrix": [
+    {
+      "accepted_by_gp008": true,
+      "checks": {
+        "anonymous_access_denied": true,
+        "automated_execution_disabled": true,
+        "broker_submission_locked": true,
+        "component_hint_present": true,
+        "data_adapter_hint_present": true,
+        "direct_execution_disabled": true,
+        "live_auto_locked": true,
+        "owner_session_required": true,
+        "real_capital_movement_locked": true,
+        "registry_component_match": true,
+        "registry_data_adapter_match": true,
+        "registry_route_match": true,
+        "route_hint_present": true,
+        "staging_ready_not_claimed": true
+      },
+      "component_hint": "DashboardTodayCommandNest",
+      "data_adapter_hint": "build_dashboard_surface",
+      "display_title": "Today\u2019s Command Nest",
+      "owner_goal": "Confirm the owner can understand what needs attention today.",
+      "ready_for_walkthrough_preparation": true,
+      "room": "dashboard",
+      "route_hint": "/ob/dashboard",
+      "step": 1
+    },
+    {
+      "accepted_by_gp008": true,
+      "checks": {
+        "anonymous_access_denied": true,
+        "automated_execution_disabled": true,
+        "broker_submission_locked": true,
+        "component_hint_present": true,
+        "data_adapter_hint_present": true,
+        "direct_execution_disabled": true,
+        "live_auto_locked": true,
+        "owner_session_required": true,
+        "real_capital_movement_locked": true,
+        "registry_component_match": true,
+        "registry_data_adapter_match": true,
+        "registry_route_match": true,
+        "route_hint_present": true,
+        "staging_ready_not_claimed": true
+      },
+      "component_hint": "MarketWeatherSurface",
+      "data_adapter_hint": "build_market_map_surface",
+      "display_title": "Market Weather",
+      "owner_goal": "Confirm the owner can read market condition and risk before opportunity.",
+      "ready_for_walkthrough_preparation": true,
+      "room": "market_map",
+      "route_hint": "/ob/market-map",
+      "step": 2
+    },
+    {
+      "accepted_by_gp008": true,
+      "checks": {
+        "anonymous_access_denied": true,
+        "automated_execution_disabled": true,
+        "broker_submission_locked": true,
+        "component_hint_present": true,
+        "data_adapter_hint_present": true,
+        "direct_execution_disabled": true,
+        "live_auto_locked": true,
+        "owner_session_required": true,
+        "real_capital_movement_locked": true,
+        "registry_component_match": true,
+        "registry_data_adapter_match": true,
+        "registry_route_match": true,
+        "route_hint_present": true,
+        "staging_ready_not_claimed": true
+      },
+      "component_hint": "AssetStorybookSurface",
+      "data_adapter_hint": "build_symbol_page_surface",
+      "display_title": "Asset Storybook",
+      "owner_goal": "Confirm the owner can understand one asset without raw quote-wall noise.",
+      "ready_for_walkthrough_preparation": true,
+      "room": "symbol_page",
+      "route_hint": "/ob/symbol/<symbol>",
+      "step": 3
+    },
+    {
+      "accepted_by_gp008": true,
+      "checks": {
+        "anonymous_access_denied": true,
+        "automated_execution_disabled": true,
+        "broker_submission_locked": true,
+        "component_hint_present": true,
+        "data_adapter_hint_present": true,
+        "direct_execution_disabled": true,
+        "live_auto_locked": true,
+        "owner_session_required": true,
+        "real_capital_movement_locked": true,
+        "registry_component_match": true,
+        "registry_data_adapter_match": true,
+        "registry_route_match": true,
+        "route_hint_present": true,
+        "staging_ready_not_claimed": true
+      },
+      "component_hint": "DecisionGardenSurface",
+      "data_adapter_hint": "build_trade_center_surface",
+      "display_title": "Decision Garden",
+      "owner_goal": "Confirm the owner sees review-only trade intent with execution locked.",
+      "ready_for_walkthrough_preparation": true,
+      "room": "trade_center",
+      "route_hint": "/ob/trade-center",
+      "step": 4
+    },
+    {
+      "accepted_by_gp008": true,
+      "checks": {
+        "anonymous_access_denied": true,
+        "automated_execution_disabled": true,
+        "broker_submission_locked": true,
+        "component_hint_present": true,
+        "data_adapter_hint_present": true,
+        "direct_execution_disabled": true,
+        "live_auto_locked": true,
+        "owner_session_required": true,
+        "real_capital_movement_locked": true,
+        "registry_component_match": true,
+        "registry_data_adapter_match": true,
+        "registry_route_match": true,
+        "route_hint_present": true,
+        "staging_ready_not_claimed": true
+      },
+      "component_hint": "ReflectionLibrarySurface",
+      "data_adapter_hint": "build_review_center_surface",
+      "display_title": "Review Center",
+      "owner_goal": "Confirm the owner can review decisions, lessons, and corrections safely.",
+      "ready_for_walkthrough_preparation": true,
+      "room": "review_center",
+      "route_hint": "/ob/review-center",
+      "step": 5
+    },
+    {
+      "accepted_by_gp008": true,
+      "checks": {
+        "anonymous_access_denied": true,
+        "automated_execution_disabled": true,
+        "broker_submission_locked": true,
+        "component_hint_present": true,
+        "data_adapter_hint_present": true,
+        "direct_execution_disabled": true,
+        "live_auto_locked": true,
+        "owner_session_required": true,
+        "real_capital_movement_locked": true,
+        "registry_component_match": true,
+        "registry_data_adapter_match": true,
+        "registry_route_match": true,
+        "route_hint_present": true,
+        "staging_ready_not_claimed": true
+      },
+      "component_hint": "OwnerCrownRoomSurface",
+      "data_adapter_hint": "build_owner_console_surface",
+      "display_title": "Owner Console",
+      "owner_goal": "Confirm the owner can see locks, access, receipts, and Tower handoff status.",
+      "ready_for_walkthrough_preparation": true,
+      "room": "owner_console",
+      "route_hint": "/ob/owner-console",
+      "step": 6
+    }
+  ],
+  "safety_summary": {
+    "broker_submission_enabled": false,
+    "dangerous_action_policy": {
+      "broker_submission": "separately_gated",
+      "default_state": "disabled_until_authorized",
+      "deployment": "separately_gated",
+      "destructive_controls": "separately_gated",
+      "money_movement": "separately_gated",
+      "secrets": "separately_gated",
+      "trading": "separately_gated"
+    },
+    "dangerous_actions_separately_gated": true,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "owner_console_safety_locks": {
+      "broker_submission_enabled": false,
+      "dangerous_actions_separately_gated": true,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "plain_language": "Review and owner visibility are allowed. Production Manual Live, broker submission, real capital movement, direct Vault upload, and Live Auto remain locked.",
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    },
+    "plain_language": "The owner-experience package is review-only. Broker submission, real capital movement, production Manual Live, direct Vault upload, and Live Auto remain locked.",
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false,
+    "trade_center_lock_state": {
+      "broker_submission_enabled": false,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    }
+  },
+  "start_head": "24f2532f0df8bdf065d1d103061909270b94bd77",
+  "walkthrough_script": [
+    {
+      "display_title": "Today\u2019s Command Nest",
+      "must_confirm": [
+        "Owner session is required.",
+        "Anonymous access is denied.",
+        "The route opens the expected room.",
+        "The visible surface matches the room purpose.",
+        "Dangerous actions are not available.",
+        "No staging readiness is claimed."
+      ],
+      "must_not_do": [
+        "Do not accept the owner walkthrough in this package.",
+        "Do not claim Tower return/session continuity repaired.",
+        "Do not redeploy Render.",
+        "Do not unlock execution or money movement."
+      ],
+      "owner_goal": "Confirm the owner can understand what needs attention today.",
+      "owner_prompt": "Open Today\u2019s Command Nest and confirm: Confirm the owner can understand what needs attention today.",
+      "prepared": true,
+      "room": "dashboard",
+      "route_hint": "/ob/dashboard",
+      "step": 1
+    },
+    {
+      "display_title": "Market Weather",
+      "must_confirm": [
+        "Owner session is required.",
+        "Anonymous access is denied.",
+        "The route opens the expected room.",
+        "The visible surface matches the room purpose.",
+        "Dangerous actions are not available.",
+        "No staging readiness is claimed."
+      ],
+      "must_not_do": [
+        "Do not accept the owner walkthrough in this package.",
+        "Do not claim Tower return/session continuity repaired.",
+        "Do not redeploy Render.",
+        "Do not unlock execution or money movement."
+      ],
+      "owner_goal": "Confirm the owner can read market condition and risk before opportunity.",
+      "owner_prompt": "Open Market Weather and confirm: Confirm the owner can read market condition and risk before opportunity.",
+      "prepared": true,
+      "room": "market_map",
+      "route_hint": "/ob/market-map",
+      "step": 2
+    },
+    {
+      "display_title": "Asset Storybook",
+      "must_confirm": [
+        "Owner session is required.",
+        "Anonymous access is denied.",
+        "The route opens the expected room.",
+        "The visible surface matches the room purpose.",
+        "Dangerous actions are not available.",
+        "No staging readiness is claimed."
+      ],
+      "must_not_do": [
+        "Do not accept the owner walkthrough in this package.",
+        "Do not claim Tower return/session continuity repaired.",
+        "Do not redeploy Render.",
+        "Do not unlock execution or money movement."
+      ],
+      "owner_goal": "Confirm the owner can understand one asset without raw quote-wall noise.",
+      "owner_prompt": "Open Asset Storybook and confirm: Confirm the owner can understand one asset without raw quote-wall noise.",
+      "prepared": true,
+      "room": "symbol_page",
+      "route_hint": "/ob/symbol/<symbol>",
+      "step": 3
+    },
+    {
+      "display_title": "Decision Garden",
+      "must_confirm": [
+        "Owner session is required.",
+        "Anonymous access is denied.",
+        "The route opens the expected room.",
+        "The visible surface matches the room purpose.",
+        "Dangerous actions are not available.",
+        "No staging readiness is claimed."
+      ],
+      "must_not_do": [
+        "Do not accept the owner walkthrough in this package.",
+        "Do not claim Tower return/session continuity repaired.",
+        "Do not redeploy Render.",
+        "Do not unlock execution or money movement."
+      ],
+      "owner_goal": "Confirm the owner sees review-only trade intent with execution locked.",
+      "owner_prompt": "Open Decision Garden and confirm: Confirm the owner sees review-only trade intent with execution locked.",
+      "prepared": true,
+      "room": "trade_center",
+      "route_hint": "/ob/trade-center",
+      "step": 4
+    },
+    {
+      "display_title": "Review Center",
+      "must_confirm": [
+        "Owner session is required.",
+        "Anonymous access is denied.",
+        "The route opens the expected room.",
+        "The visible surface matches the room purpose.",
+        "Dangerous actions are not available.",
+        "No staging readiness is claimed."
+      ],
+      "must_not_do": [
+        "Do not accept the owner walkthrough in this package.",
+        "Do not claim Tower return/session continuity repaired.",
+        "Do not redeploy Render.",
+        "Do not unlock execution or money movement."
+      ],
+      "owner_goal": "Confirm the owner can review decisions, lessons, and corrections safely.",
+      "owner_prompt": "Open Review Center and confirm: Confirm the owner can review decisions, lessons, and corrections safely.",
+      "prepared": true,
+      "room": "review_center",
+      "route_hint": "/ob/review-center",
+      "step": 5
+    },
+    {
+      "display_title": "Owner Console",
+      "must_confirm": [
+        "Owner session is required.",
+        "Anonymous access is denied.",
+        "The route opens the expected room.",
+        "The visible surface matches the room purpose.",
+        "Dangerous actions are not available.",
+        "No staging readiness is claimed."
+      ],
+      "must_not_do": [
+        "Do not accept the owner walkthrough in this package.",
+        "Do not claim Tower return/session continuity repaired.",
+        "Do not redeploy Render.",
+        "Do not unlock execution or money movement."
+      ],
+      "owner_goal": "Confirm the owner can see locks, access, receipts, and Tower handoff status.",
+      "owner_prompt": "Open Owner Console and confirm: Confirm the owner can see locks, access, receipts, and Tower handoff status.",
+      "prepared": true,
+      "room": "owner_console",
+      "route_hint": "/ob/owner-console",
+      "step": 6
+    }
+  ]
+}
