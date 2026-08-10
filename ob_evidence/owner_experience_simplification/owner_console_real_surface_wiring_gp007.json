@@ -1,0 +1,122 @@
+{
+  "action_locks": {
+    "access_review_allowed": true,
+    "audit_receipt_review_allowed": true,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "mode_lock_review_allowed": true,
+    "owner_status_read_allowed": true,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "safety_lock_review_allowed": true,
+    "secret_reveal_enabled": false,
+    "tower_handoff_review_allowed": true
+  },
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_OWNER_CONSOLE_REAL_SURFACE_WIRING_GP007",
+  "collapsed_components": [
+    "OwnerConsoleDetailDrawerGroup",
+    "OwnerConsoleOwnerDrawer"
+  ],
+  "component_hint": "OwnerCrownRoomSurface",
+  "created_at": "2026-08-10T15:29:02.260397Z",
+  "data_adapter_hint": "build_owner_console_surface",
+  "decision": "READY_FOR_OWNER_CONSOLE_REAL_SURFACE_WIRING_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Owner Console",
+  "evidence_hash": "cf883bcfc614b947c90b719e93427e668f13aa52f7ada7dba04aea36edefb0d9",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/owner_console_real_surface_wiring_gp007_handoff.md": "b20c7bd4d00b04c2d270c72712c9704fcf85f112aebafb509199afc76bf9f23e",
+    "ob_owner_experience/owner_console_real_surface.py": "491cc222c2d3538b03c3bf07dc7107aa0d7f68cc455031adbfbcc0ce8e238774",
+    "tests/test_owner_console_real_surface_wiring.py": "023ba523651a99c673f0b9a86fffefd8439f1f4dfaf8372c66d54b82bbed8622"
+  },
+  "files": [
+    "ob_owner_experience/owner_console_real_surface.py",
+    "tests/test_owner_console_real_surface_wiring.py",
+    "ob_evidence/owner_experience_simplification/owner_console_real_surface_wiring_gp007_handoff.md"
+  ],
+  "first_glance_components": [
+    "OwnerConsoleHeroCard",
+    "OwnerConsoleSoulaanaCard",
+    "OwnerConsoleStatusCard",
+    "OwnerConsoleAccessControlsCard",
+    "OwnerConsoleModeLocksCard",
+    "OwnerConsoleSafetyLocksCard",
+    "OwnerConsoleTowerHandoffCard",
+    "OwnerConsoleAuditReceiptTimeline"
+  ],
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "OB Six-Room Real Surface Acceptance / GP008",
+  "package": "ob_owner_console_real_surface_wiring_gp007",
+  "room": "owner_console",
+  "route_hint": "/ob/owner-console",
+  "safety_summary": {
+    "broker_submission_enabled": false,
+    "dangerous_action_policy": {
+      "broker_submission": "separately_gated",
+      "default_state": "disabled_until_authorized",
+      "deployment": "separately_gated",
+      "destructive_controls": "separately_gated",
+      "money_movement": "separately_gated",
+      "secrets": "separately_gated",
+      "trading": "separately_gated"
+    },
+    "dangerous_actions_separately_gated": true,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "owner_console_safety_locks": {
+      "broker_submission_enabled": false,
+      "dangerous_actions_separately_gated": true,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "plain_language": "Review and owner visibility are allowed. Production Manual Live, broker submission, real capital movement, direct Vault upload, and Live Auto remain locked.",
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    },
+    "plain_language": "The owner-experience package is review-only. Broker submission, real capital movement, production Manual Live, direct Vault upload, and Live Auto remain locked.",
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false,
+    "trade_center_lock_state": {
+      "broker_submission_enabled": false,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    }
+  },
+  "start_head": "5cceb339f73397f4515cd8a7fb3b004ec8069d7f",
+  "surface_status": {
+    "access_review_ready": true,
+    "audit_receipt_review_ready": true,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "contract_ready": true,
+    "direct_execution_enabled": false,
+    "mode_lock_review_ready": true,
+    "owner_status_ready": true,
+    "owner_walkthrough_accepted": false,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "real_html_rendered": false,
+    "real_surface_adapter_ready": true,
+    "registry_ready": true,
+    "render_redeployed": false,
+    "safety_lock_review_ready": true,
+    "secrets_visible": false,
+    "staging_ready": false,
+    "tower_handoff_review_ready": true,
+    "tower_return_repaired": false
+  }
+}
