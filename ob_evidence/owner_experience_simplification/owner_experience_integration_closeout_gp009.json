@@ -1,0 +1,205 @@
+{
+  "accepted_rooms": [
+    "dashboard",
+    "market_map",
+    "symbol_page",
+    "trade_center",
+    "review_center",
+    "owner_console"
+  ],
+  "blocked_rooms": [],
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_OWNER_EXPERIENCE_INTEGRATION_CLOSEOUT_GP009",
+  "closed": true,
+  "closed_gp_codes": [
+    "GP001",
+    "GP002",
+    "GP003",
+    "GP004",
+    "GP005",
+    "GP006",
+    "GP007",
+    "GP008"
+  ],
+  "closed_package_names": [
+    "Six-room registry adapter",
+    "Dashboard real surface",
+    "Market Map real surface",
+    "Symbol Page real surface",
+    "Trade Center real surface",
+    "Review Center real surface",
+    "Owner Console real surface",
+    "Six-room real surface acceptance"
+  ],
+  "created_at": "2026-08-10T15:47:28.229490Z",
+  "decision": "READY_FOR_OWNER_EXPERIENCE_INTEGRATION_CLOSEOUT_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Owner Experience Integration Closeout",
+  "evidence_hash": "f9b831347a53df6ed923e9adabaccf69b6c40dcaabb1b77cdefbbb1b55541b2a",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/owner_experience_integration_closeout_gp009_handoff.md": "d6a3363c9c1033143b02904f72da2f9c023ae2f5f76fd5712ea0c87bc6d3181f",
+    "ob_owner_experience/owner_experience_integration_closeout.py": "c64528fd6b52a50cc6670581b5b160206cba086cb2343e229c8db4a3bb786c6c",
+    "tests/test_owner_experience_integration_closeout_gp009.py": "7aca1513eb70514479a5774b37ee664af0f4ec5c4b1460aebad3716e0476d945"
+  },
+  "files": [
+    "ob_owner_experience/owner_experience_integration_closeout.py",
+    "tests/test_owner_experience_integration_closeout_gp009.py",
+    "ob_evidence/owner_experience_simplification/owner_experience_integration_closeout_gp009_handoff.md"
+  ],
+  "integration_status": {
+    "all_data_adapters_match": true,
+    "all_registry_components_match": true,
+    "all_registry_routes_match": true,
+    "all_routes_protected": true,
+    "all_six_rooms_present": true,
+    "anonymous_access_allowed": false,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "dashboard_real_surface_closed": true,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "market_map_real_surface_closed": true,
+    "owner_console_real_surface_closed": true,
+    "owner_experience_integration_closeout_ready": true,
+    "owner_session_required": true,
+    "owner_walkthrough_accepted": false,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "registry_adapter_closed": true,
+    "render_redeployed": false,
+    "review_center_real_surface_closed": true,
+    "secret_reveal_enabled": false,
+    "six_room_acceptance_closed": true,
+    "staging_ready": false,
+    "symbol_page_real_surface_closed": true,
+    "tower_return_repaired": false,
+    "trade_center_real_surface_closed": true
+  },
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "OB Route and Owner Walkthrough Preparation / GP010",
+  "not_authorized": [
+    "STAGING_READY",
+    "production deployment",
+    "Render redeploy",
+    "owner walkthrough acceptance",
+    "Tower return repair",
+    "broker submission",
+    "real capital movement",
+    "direct execution",
+    "automated execution",
+    "permission mutation",
+    "secret reveal",
+    "Live Auto unlock"
+  ],
+  "package": "ob_owner_experience_integration_closeout_gp009",
+  "registry_summary": [
+    {
+      "accepted": true,
+      "component_hint": "DashboardTodayCommandNest",
+      "data_adapter_hint": "build_dashboard_surface",
+      "room": "dashboard",
+      "route_hint": "/ob/dashboard"
+    },
+    {
+      "accepted": true,
+      "component_hint": "MarketWeatherSurface",
+      "data_adapter_hint": "build_market_map_surface",
+      "room": "market_map",
+      "route_hint": "/ob/market-map"
+    },
+    {
+      "accepted": true,
+      "component_hint": "AssetStorybookSurface",
+      "data_adapter_hint": "build_symbol_page_surface",
+      "room": "symbol_page",
+      "route_hint": "/ob/symbol/<symbol>"
+    },
+    {
+      "accepted": true,
+      "component_hint": "DecisionGardenSurface",
+      "data_adapter_hint": "build_trade_center_surface",
+      "room": "trade_center",
+      "route_hint": "/ob/trade-center"
+    },
+    {
+      "accepted": true,
+      "component_hint": "ReflectionLibrarySurface",
+      "data_adapter_hint": "build_review_center_surface",
+      "room": "review_center",
+      "route_hint": "/ob/review-center"
+    },
+    {
+      "accepted": true,
+      "component_hint": "OwnerCrownRoomSurface",
+      "data_adapter_hint": "build_owner_console_surface",
+      "room": "owner_console",
+      "route_hint": "/ob/owner-console"
+    }
+  ],
+  "release_boundary": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "owner_walkthrough_accepted": false,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "render_redeployed": false,
+    "secret_reveal_enabled": false,
+    "staging_ready": false,
+    "tower_return_repaired": false
+  },
+  "room_order": [
+    "dashboard",
+    "market_map",
+    "symbol_page",
+    "trade_center",
+    "review_center",
+    "owner_console"
+  ],
+  "safety_summary": {
+    "broker_submission_enabled": false,
+    "dangerous_action_policy": {
+      "broker_submission": "separately_gated",
+      "default_state": "disabled_until_authorized",
+      "deployment": "separately_gated",
+      "destructive_controls": "separately_gated",
+      "money_movement": "separately_gated",
+      "secrets": "separately_gated",
+      "trading": "separately_gated"
+    },
+    "dangerous_actions_separately_gated": true,
+    "direct_vault_upload_enabled": false,
+    "live_auto_locked": true,
+    "owner_console_safety_locks": {
+      "broker_submission_enabled": false,
+      "dangerous_actions_separately_gated": true,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "plain_language": "Review and owner visibility are allowed. Production Manual Live, broker submission, real capital movement, direct Vault upload, and Live Auto remain locked.",
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    },
+    "plain_language": "The owner-experience package is review-only. Broker submission, real capital movement, production Manual Live, direct Vault upload, and Live Auto remain locked.",
+    "production_manual_live_authorized": false,
+    "real_capital_movement_enabled": false,
+    "trade_center_lock_state": {
+      "broker_submission_enabled": false,
+      "direct_vault_upload_enabled": false,
+      "live_auto_locked": true,
+      "production_manual_live_authorized": false,
+      "real_capital_movement_enabled": false
+    }
+  },
+  "start_head": "294b19c3e76a4621dae9be4296e95fe0feea4c6d"
+}
