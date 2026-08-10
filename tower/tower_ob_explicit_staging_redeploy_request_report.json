@@ -1,0 +1,93 @@
+{
+  "broker_submission": false,
+  "capital_movement": false,
+  "destructive_action_unlocked": false,
+  "direct_vault_write": false,
+  "finished_at": "2026-08-10T16:46:55.825408+00:00",
+  "hosted_owner_walkthrough_required_next": true,
+  "hosted_protected_boundary_checks_passed": true,
+  "hosted_protected_boundary_results": {
+    "/tower": {
+      "body_preview": "\\n    <!doctype html>\\n    <html>\\n    <head>\\n      <meta charset=\"utf-8\">\\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\\n      <title>Restricted</title>\\n      <style>\\n        :root { color-schem",
+      "location": null,
+      "ok_or_locked": true,
+      "status_code": 403
+    },
+    "/tower/": {
+      "body_preview": "\\n    <!doctype html>\\n    <html>\\n    <head>\\n      <meta charset=\"utf-8\">\\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\\n      <title>Restricted</title>\\n      <style>\\n        :root { color-schem",
+      "location": null,
+      "ok_or_locked": true,
+      "status_code": 403
+    },
+    "/tower/access-home": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n         ",
+      "location": null,
+      "ok_or_locked": true,
+      "status_code": 200
+    },
+    "/tower/app-registry": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n         ",
+      "location": null,
+      "ok_or_locked": true,
+      "status_code": 200
+    },
+    "/tower/observatory-six-room-acceptance": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n         ",
+      "location": null,
+      "ok_or_locked": true,
+      "status_code": 200
+    },
+    "/tower/observatory-six-room-acceptance.json": {
+      "body_preview": "{\"allowed\":false,\"default_deny\":true,\"reason\":\"owner_session_required\"}\\n",
+      "location": null,
+      "ok_or_locked": true,
+      "status_code": 403
+    },
+    "/tower/observatory-six-room-acceptance/return-check.json?last_room=Review%20Center": {
+      "body_preview": "{\"allowed\":false,\"default_deny\":true,\"owner_session_preserved\":false,\"reason\":\"owner_session_required\"}\\n",
+      "location": null,
+      "ok_or_locked": true,
+      "status_code": 403
+    },
+    "/tower/owner-console": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n         ",
+      "location": null,
+      "ok_or_locked": true,
+      "status_code": 200
+    }
+  },
+  "hosted_public_checks_passed": true,
+  "hosted_public_results": {
+    "/tower/healthz": {
+      "body_preview": "{\"ok\":true}\\n",
+      "location": null,
+      "ok_public": true,
+      "status_code": 200
+    },
+    "/tower/login": {
+      "body_preview": "\\n        <!doctype html>\\n        <html lang=\"en\">\\n        <head>\\n            <meta charset=\"utf-8\">\\n            <meta\\n                name=\"viewport\"\\n                content=\"width=device-width,initial-scale=1\"\\n         ",
+      "location": null,
+      "ok_public": true,
+      "status_code": 200
+    }
+  },
+  "live_auto_authorized": false,
+  "main_commit": "bbd998e41668113b2a7cf722158e24855fe84915",
+  "main_commit_short": "bbd998e41668",
+  "manual_live_authorized": false,
+  "next_recommended_action": "Run TOWER\u2013OB HOSTED OWNER WALKTHROUGH VERIFICATION.",
+  "production_deployment": false,
+  "redeploy_requested_in_this_cell": false,
+  "render_api_called_in_this_cell": false,
+  "render_service_id": "srv-d9d7da3bc2fs73em86i0",
+  "render_service_name": "simplee-tower-ob-staging",
+  "request": "tower_ob_hosted_boundary_resume_after_403",
+  "secret_values_exposed": false,
+  "staging_base_url": "https://simplee-tower-ob-staging.onrender.com",
+  "staging_ready": false,
+  "staging_ready_reason": "Hosted owner walkthrough has not passed yet.",
+  "started_at": "2026-08-10T16:46:03.133432+00:00",
+  "status": "passed",
+  "tower_root_protected_or_locked": true,
+  "tower_root_status_code": 403
+}
