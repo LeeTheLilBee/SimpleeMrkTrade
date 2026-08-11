@@ -51312,3 +51312,39 @@ try:
 except Exception as tower_owner_beta_issue_intake_route_error:
     print("PACKS 2573–2582: Tower Owner-Beta issue intake routes unavailable:", tower_owner_beta_issue_intake_route_error)
 
+# ============================================================
+# TOWER_OWNER_BETA_WALKTHROUGH_CLOSEOUT_ROUTES_REGISTERED
+# Packs 2583–2592: Walkthrough Closeout + Tester Entry Prep
+# ============================================================
+
+try:
+    from tower.tower_owner_beta_walkthrough_closeout import (
+        tester_entry_prep_payload,
+        walkthrough_closeout_payload,
+    )
+
+    @app.get("/tower/owner-beta/closeout.json")
+    def tower_owner_beta_walkthrough_closeout_json():
+        if not tower_owner_beta_owner_session_active():
+            return jsonify({
+                "status": "denied",
+                "reason": "owner_session_required",
+            }), 403
+
+        return jsonify(walkthrough_closeout_payload())
+
+    @app.get("/tower/owner-beta/tester-entry-prep.json")
+    def tower_owner_beta_tester_entry_prep_json():
+        if not tower_owner_beta_owner_session_active():
+            return jsonify({
+                "status": "denied",
+                "reason": "owner_session_required",
+            }), 403
+
+        return jsonify(tester_entry_prep_payload())
+
+    print("PACKS 2583–2592: Tower Owner-Beta walkthrough closeout routes registered.")
+
+except Exception as tower_owner_beta_walkthrough_closeout_route_error:
+    print("PACKS 2583–2592: Tower Owner-Beta walkthrough closeout routes unavailable:", tower_owner_beta_walkthrough_closeout_route_error)
+
