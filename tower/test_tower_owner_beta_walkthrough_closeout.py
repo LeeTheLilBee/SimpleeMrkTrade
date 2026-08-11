@@ -6,9 +6,9 @@ from tower.tower_owner_beta_walkthrough_closeout import (
     hosted_proof_summary,
     issue_intake_receipt_summary,
     owner_decision_packet,
-    tester_entry_prep_payload,
-    tester_entry_readiness_gate,
-    tester_invite_prep_record,
+    tester_entry_prep_payload as _tester_entry_prep_payload,
+    tester_entry_readiness_gate as _tester_entry_readiness_gate,
+    tester_invite_prep_record as _tester_invite_prep_record,
     walkthrough_checklist,
     walkthrough_closeout_cert,
     walkthrough_closeout_payload,
@@ -49,9 +49,9 @@ def test_hosted_proof_and_issue_receipt_summary():
 
 
 def test_tester_entry_prep_is_not_open():
-    gate = tester_entry_readiness_gate()
-    invite = tester_invite_prep_record()
-    prep = tester_entry_prep_payload()
+    gate = _tester_entry_readiness_gate()
+    invite = _tester_invite_prep_record()
+    prep = _tester_entry_prep_payload()
 
     assert gate["status"] == "prepared_not_open"
     assert gate["ready_for_owner_decision"] is True
