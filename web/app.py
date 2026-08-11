@@ -51228,3 +51228,87 @@ try:
 
 except Exception as tower_owner_beta_route_error:
     print("PACKS 2553–2572: Tower Owner-Beta Control Room routes unavailable:", tower_owner_beta_route_error)
+
+# ============================================================
+# TOWER_OWNER_BETA_ISSUE_INTAKE_ROUTES_REGISTERED
+# Packs 2573–2582: Owner-Beta Issue Intake + Review Receipts
+# ============================================================
+
+try:
+    from tower.tower_owner_beta_issue_intake import (
+        create_issue,
+        create_review_receipt,
+        intake_contract,
+        list_issues,
+        list_review_receipts,
+    )
+
+    def tower_owner_beta_issue_owner_id():
+        return (
+            session.get("owner_id")
+            or session.get("tower_owner_id")
+            or session.get("tower_user_id")
+            or session.get("user_id")
+            or "owner"
+        )
+
+    @app.get("/tower/owner-beta/issues.json")
+    def tower_owner_beta_issues_json():
+        if not tower_owner_beta_owner_session_active():
+            return jsonify({
+                "status": "denied",
+                "reason": "owner_session_required",
+                "contract": intake_contract(),
+            }), 403
+
+        return jsonify({
+            "status": "passed",
+            "contract": intake_contract(),
+            "issues": list_issues(),
+        })
+
+    @app.post("/tower/owner-beta/issues.json")
+    def tower_owner_beta_issue_submit_json():
+        if not tower_owner_beta_owner_session_active():
+            return jsonify({
+                "status": "denied",
+                "reason": "owner_session_required",
+                "contract": intake_contract(),
+            }), 403
+
+        payload = request.get_json(silent=True) or {}
+        issue = create_issue(payload, owner_id=str(tower_owner_beta_issue_owner_id()))
+        receipt = create_review_receipt(
+            issue,
+            reviewer_id=str(tower_owner_beta_issue_owner_id()),
+            decision="received_for_review",
+            notes="Owner-beta issue intake received.",
+        )
+
+        return jsonify({
+            "status": "created",
+            "issue": issue,
+            "review_receipt": receipt,
+            "dangerous_controls_locked": issue["dangerous_controls_locked"] and receipt["dangerous_controls_locked"],
+        }), 201
+
+    @app.get("/tower/owner-beta/review-receipts.json")
+    def tower_owner_beta_review_receipts_json():
+        if not tower_owner_beta_owner_session_active():
+            return jsonify({
+                "status": "denied",
+                "reason": "owner_session_required",
+                "contract": intake_contract(),
+            }), 403
+
+        return jsonify({
+            "status": "passed",
+            "contract": intake_contract(),
+            "review_receipts": list_review_receipts(),
+        })
+
+    print("PACKS 2573–2582: Tower Owner-Beta issue intake routes registered.")
+
+except Exception as tower_owner_beta_issue_intake_route_error:
+    print("PACKS 2573–2582: Tower Owner-Beta issue intake routes unavailable:", tower_owner_beta_issue_intake_route_error)
+
