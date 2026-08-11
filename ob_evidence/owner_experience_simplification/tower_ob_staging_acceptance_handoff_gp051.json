@@ -1,0 +1,103 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_TOWER_OB_STAGING_ACCEPTANCE_HANDOFF_GP051",
+  "created_at": "2026-08-11T15:23:40.641416Z",
+  "decision": "TOWER_OB_STAGING_ACCEPTANCE_HANDOFF_READY_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Tower OB Staging Acceptance Handoff",
+  "evidence_hash": "5a026ac46e0cf0c07dfc19361d4358e3abc8cbc48bc4187fac8de4aaf468d9dc",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/tower_ob_staging_acceptance_handoff_gp051_handoff.md": "a3409f56d7ad0bfb80f5c6a0917ff2718e955c8bc2144c8410d6dbd7347fb7cd",
+    "ob_owner_experience/tower_ob_staging_acceptance_handoff.py": "9f2b210e1fab1f9f829ccf953457d4c0e47a8d13704d15f5c729bdcbc8cb410d",
+    "tests/test_tower_ob_staging_acceptance_handoff_gp051.py": "b244002e72a98fd99e7bf1394b94274593dbd129171c41db82392c03e26ad424"
+  },
+  "files": [
+    "ob_owner_experience/tower_ob_staging_acceptance_handoff.py",
+    "tests/test_tower_ob_staging_acceptance_handoff_gp051.py",
+    "ob_evidence/owner_experience_simplification/tower_ob_staging_acceptance_handoff_gp051_handoff.md"
+  ],
+  "gate_state": "ready_for_tower_acceptance_review_packet",
+  "handoff_packet": {
+    "evidence_packet_required": true,
+    "gp050_staging_closeout_ready": true,
+    "handoff_evidence_refs": [
+      "GP046 Staging Ready Claim Release",
+      "GP047 Staging Ready Evidence Seal",
+      "GP048 Owner Beta Readiness Gate",
+      "GP049 Private Beta Access Hold Boundary",
+      "GP050 OB Owner Experience Staging Closeout"
+    ],
+    "handoff_type": "tower_ob_staging_acceptance_handoff",
+    "owner_beta_readiness_ready": false,
+    "private_beta_access_hold_ready": false,
+    "private_beta_access_opened": false,
+    "production_deploy_enabled": false,
+    "source_dependency": "GP050",
+    "staging_acceptance_handoff_ready": true,
+    "staging_ready": true,
+    "staging_ready_claim_released": false,
+    "staging_ready_evidence_sealed": false,
+    "tester_credentials_issued": false,
+    "tower_acceptance_required": true
+  },
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "Tower OB Staging Acceptance Review Packet / GP052",
+  "not_authorized": [
+    "private beta access opening",
+    "tester credential issuance",
+    "production deployment",
+    "broker submission",
+    "real capital movement",
+    "direct execution",
+    "automated execution",
+    "permission mutation",
+    "secret reveal",
+    "Live Auto unlock"
+  ],
+  "package": "ob_tower_ob_staging_acceptance_handoff_gp051",
+  "recommendation": "GO_FOR_TOWER_OB_STAGING_ACCEPTANCE_REVIEW_PACKET",
+  "release_boundary": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "permission_mutation_enabled": false,
+    "private_beta_access_opened": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "secret_reveal_enabled": false,
+    "staging_acceptance_handoff_ready": true,
+    "staging_ready": true,
+    "tester_credentials_issued": false
+  },
+  "source_dependency": "GP050",
+  "staging_acceptance_handoff_ready": true,
+  "start_head": "8af18429cb4eb57e6f6c2ad4d9dacbf989ad2b46",
+  "status": {
+    "anonymous_access_allowed": false,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "evidence_packet_required": true,
+    "gp050_staging_closeout_ready": true,
+    "live_auto_locked": true,
+    "owner_session_required": true,
+    "permission_mutation_enabled": false,
+    "private_beta_access_opened": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "secret_reveal_enabled": false,
+    "staging_acceptance_handoff_ready": true,
+    "staging_ready": true,
+    "tester_credentials_issued": false,
+    "tower_acceptance_required": true
+  }
+}
