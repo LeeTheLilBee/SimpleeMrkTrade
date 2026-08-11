@@ -51161,29 +51161,70 @@ except Exception as tower_ob_six_room_acceptance_handoff_error:
 
 # END TOWER OB SIX ROOM ACCEPTANCE HANDOFF ROUTES 2543-2552
 
-
 # ============================================================
 # TOWER_OWNER_BETA_CONTROL_ROOM_ROUTES_REGISTERED
-# Packs 2553–2562: Owner-Beta Control Room
+# Packs 2553–2572: Owner-Beta Control Room + Owner Route Gate
 # ============================================================
 
 try:
+    from flask import redirect, request, session, url_for
+
     from tower.tower_owner_beta_control_room import (
         OWNER_BETA_JSON_ROUTE,
         OWNER_BETA_ROUTE,
         owner_beta_payload,
         render_owner_beta_html,
     )
+    from tower.tower_owner_beta_route_gate import owner_beta_route_gate_contract
+
+    def tower_owner_beta_owner_session_active():
+        owner_like_keys = [
+            "tower_owner_authenticated",
+            "owner_authenticated",
+            "tower_owner_session",
+            "owner_session",
+            "owner_id",
+            "tower_owner_id",
+            "tower_user_id",
+            "user_id",
+        ]
+
+        for key in owner_like_keys:
+            value = session.get(key)
+            if value:
+                return True
+
+        role = str(session.get("role") or session.get("tower_role") or "").lower()
+        if role in {"owner", "admin_owner", "tower_owner"}:
+            return True
+
+        return False
+
+    def tower_owner_beta_login_redirect():
+        try:
+            return redirect("/tower/login?next=" + request.path)
+        except Exception:
+            return ("Tower owner session required.", 403)
 
     @app.get(OWNER_BETA_ROUTE)
     def tower_owner_beta_control_room_page():
+        if not tower_owner_beta_owner_session_active():
+            return tower_owner_beta_login_redirect()
+
         return render_owner_beta_html()
 
     @app.get(OWNER_BETA_JSON_ROUTE)
     def tower_owner_beta_control_room_json():
+        if not tower_owner_beta_owner_session_active():
+            return jsonify({
+                "status": "denied",
+                "reason": "owner_session_required",
+                "route_gate": owner_beta_route_gate_contract(),
+            }), 403
+
         return jsonify(owner_beta_payload())
 
-    print("PACKS 2553–2562: Tower Owner-Beta Control Room routes registered.")
+    print("PACKS 2553–2572: Tower Owner-Beta Control Room owner-gated routes registered.")
 
 except Exception as tower_owner_beta_route_error:
-    print("PACKS 2553–2562: Tower Owner-Beta Control Room routes unavailable:", tower_owner_beta_route_error)
+    print("PACKS 2553–2572: Tower Owner-Beta Control Room routes unavailable:", tower_owner_beta_route_error)
