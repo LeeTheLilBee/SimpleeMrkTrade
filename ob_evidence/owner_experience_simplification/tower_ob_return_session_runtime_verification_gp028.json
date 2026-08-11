@@ -1,0 +1,152 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_TOWER_OB_RETURN_SESSION_RUNTIME_VERIFICATION_GP028",
+  "created_at": "2026-08-11T14:28:03.832148Z",
+  "decision": "READY_FOR_TOWER_OB_RETURN_SESSION_RUNTIME_VERIFICATION_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Tower OB Return Session Runtime Verification",
+  "evidence_hash": "ebea0e65266aa8535a42fbaafabc1183f555ef723b4420ee42533639a05e714b",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/tower_ob_return_session_runtime_verification_gp028_handoff.md": "2e8f421d2c3e1812165be160ccf0db493e89fe91458d81fe82468647fa6c8837",
+    "ob_owner_experience/tower_ob_return_session_runtime_verification.py": "e07ebec77fafb199d40de4156c593fa412ad13211f1a98713e9ac3ff23d2902f",
+    "tests/test_tower_ob_return_session_runtime_verification_gp028.py": "1c159cbb8642ac408bb983570c839f8c564ca0d19f85d75cb00464830cd7d79d"
+  },
+  "files": [
+    "ob_owner_experience/tower_ob_return_session_runtime_verification.py",
+    "tests/test_tower_ob_return_session_runtime_verification_gp028.py",
+    "ob_evidence/owner_experience_simplification/tower_ob_return_session_runtime_verification_gp028_handoff.md"
+  ],
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "Integrated Controlled Route Check Execution / GP029",
+  "not_authorized": [
+    "STAGING_READY",
+    "Render redeploy",
+    "production deployment",
+    "live route verification claim",
+    "controlled route check execution",
+    "owner walkthrough start",
+    "owner walkthrough acceptance",
+    "broker submission",
+    "real capital movement",
+    "direct execution",
+    "automated execution",
+    "permission mutation",
+    "secret reveal",
+    "Live Auto unlock"
+  ],
+  "package": "ob_tower_ob_return_session_runtime_verification_gp028",
+  "release_boundary": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "controlled_route_check_executed": false,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "live_route_verified": false,
+    "live_routes_opened": false,
+    "owner_walkthrough_accepted": false,
+    "owner_walkthrough_started": false,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "render_redeployed": false,
+    "secret_reveal_enabled": false,
+    "staging_ready": false
+  },
+  "return_results": [
+    {
+      "authorized_return_passed": true,
+      "default_deny_passed": true,
+      "live_route_verified": false,
+      "return_session_verified": true,
+      "room": "dashboard",
+      "session_reference_required_passed": true,
+      "staging_ready": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "authorized_return_passed": true,
+      "default_deny_passed": true,
+      "live_route_verified": false,
+      "return_session_verified": true,
+      "room": "market_map",
+      "session_reference_required_passed": true,
+      "staging_ready": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "authorized_return_passed": true,
+      "default_deny_passed": true,
+      "live_route_verified": false,
+      "return_session_verified": true,
+      "room": "symbol_page",
+      "session_reference_required_passed": true,
+      "staging_ready": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "authorized_return_passed": true,
+      "default_deny_passed": true,
+      "live_route_verified": false,
+      "return_session_verified": true,
+      "room": "trade_center",
+      "session_reference_required_passed": true,
+      "staging_ready": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "authorized_return_passed": true,
+      "default_deny_passed": true,
+      "live_route_verified": false,
+      "return_session_verified": true,
+      "room": "review_center",
+      "session_reference_required_passed": true,
+      "staging_ready": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "authorized_return_passed": true,
+      "default_deny_passed": true,
+      "live_route_verified": false,
+      "return_session_verified": true,
+      "room": "owner_console",
+      "session_reference_required_passed": true,
+      "staging_ready": false,
+      "tower_return_route": "/tower/access-home"
+    }
+  ],
+  "return_session_verified": true,
+  "source_dependency": "GP027",
+  "start_head": "75b8beefd22ebda6a1ffe65eb6f6aa10f9919a2b",
+  "status": {
+    "all_six_rooms_verified": true,
+    "anonymous_access_allowed": false,
+    "authorized_return_verified": true,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "controlled_route_check_executed": false,
+    "direct_execution_enabled": false,
+    "gp027_runtime_mount_verified": true,
+    "live_auto_locked": true,
+    "live_route_verified": false,
+    "live_routes_opened": false,
+    "owner_session_required": true,
+    "owner_walkthrough_accepted": false,
+    "owner_walkthrough_started": false,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "render_redeployed": false,
+    "return_session_verified": true,
+    "secret_reveal_enabled": false,
+    "session_reference_required_verified": true,
+    "staging_ready": false
+  }
+}
