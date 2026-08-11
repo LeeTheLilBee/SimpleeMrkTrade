@@ -1,0 +1,34 @@
+{
+  "generated_at_utc": "2026-08-11T15:40:38.062002+00:00",
+  "package": "GP060",
+  "payload": {
+    "allowed_private_beta_modes": [
+      "Survey",
+      "Paper"
+    ],
+    "automated_execution_disabled": true,
+    "beta_launch_preparation_closeout_ready": true,
+    "broker_submission_locked": true,
+    "closeout_ready": true,
+    "direct_execution_disabled": true,
+    "failures": [],
+    "gate_state": "private_beta_access_authorization_closeout_sealed",
+    "live_auto_locked": true,
+    "manual_live_owner_only": true,
+    "next_build": "Private Beta Tester Access Issuance / GP061",
+    "package": "GP060",
+    "permission_mutation_performed": false,
+    "permission_mutations_disabled": true,
+    "private_beta_access_opened": false,
+    "production_deploy_disabled": true,
+    "real_capital_movement_locked": true,
+    "recommendation": "GO_FOR_PRIVATE_BETA_TESTER_ACCESS_ISSUANCE",
+    "secret_reveal_disabled": true,
+    "staging_ready": true,
+    "tester_credentials_issued": false,
+    "tester_session_created": false,
+    "title": "Private Beta Access Authorization Closeout",
+    "tower_staging_accepted": true
+  },
+  "title": "Private Beta Access Authorization Closeout"
+}

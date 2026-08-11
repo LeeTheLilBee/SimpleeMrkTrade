@@ -1,0 +1,30 @@
+{
+  "generated_at_utc": "2026-08-11T15:40:38.045124+00:00",
+  "package": "GP056",
+  "payload": {
+    "access_authorization_ready": true,
+    "allowed_beta_modes": [
+      "Survey",
+      "Paper"
+    ],
+    "automated_execution": "DISABLED",
+    "broker_submission": "LOCKED",
+    "direct_execution": "DISABLED",
+    "failures": [],
+    "gate_state": "private_beta_access_authorization_sealed",
+    "live_auto_policy": "LOCKED",
+    "manual_live_policy": "OWNER_ONLY",
+    "package": "GP056",
+    "permission_mutation": "DISABLED",
+    "permission_mutation_performed": false,
+    "private_beta_access_opened": false,
+    "production_deploy": "DISABLED",
+    "real_capital_movement": "LOCKED",
+    "recommendation": "GO_FOR_PRIVATE_BETA_TESTER_ELIGIBILITY_REVIEW",
+    "secret_reveal": "DISABLED",
+    "tester_credentials_issued": false,
+    "tester_session_created": false,
+    "title": "Private Beta Access Authorization"
+  },
+  "title": "Private Beta Access Authorization"
+}

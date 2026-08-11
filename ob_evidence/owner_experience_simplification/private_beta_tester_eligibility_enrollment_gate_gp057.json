@@ -1,0 +1,28 @@
+{
+  "generated_at_utc": "2026-08-11T15:40:38.054585+00:00",
+  "package": "GP057",
+  "payload": {
+    "access_activated": false,
+    "allowed_modes": [
+      "Survey",
+      "Paper"
+    ],
+    "broker_execution_allowed": false,
+    "credential_issued": false,
+    "eligibility_ready": true,
+    "enrollment_mutation_performed": false,
+    "failures": [],
+    "gate_state": "private_beta_tester_eligibility_gate_sealed",
+    "live_auto_allowed": false,
+    "manual_live_allowed": false,
+    "package": "GP057",
+    "permission_admin_allowed": false,
+    "recommendation": "GO_FOR_PRIVATE_BETA_TESTER_ACCESS_GRANT_PREPARATION",
+    "secret_access_allowed": false,
+    "tester_enrolled": false,
+    "tester_id": "private-beta-evidence-candidate",
+    "tester_session_created": false,
+    "title": "Private Beta Tester Eligibility & Enrollment Gate"
+  },
+  "title": "Private Beta Tester Eligibility & Enrollment Gate"
+}

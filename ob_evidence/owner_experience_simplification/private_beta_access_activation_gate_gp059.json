@@ -1,0 +1,23 @@
+{
+  "generated_at_utc": "2026-08-11T15:40:38.060910+00:00",
+  "package": "GP059",
+  "payload": {
+    "access_activation_performed": false,
+    "activation_authorizable": true,
+    "broker_submission": "LOCKED",
+    "failures": [],
+    "gate_state": "private_beta_access_activation_gate_sealed",
+    "live_auto_policy": "LOCKED",
+    "manual_live_policy": "OWNER_ONLY",
+    "package": "GP059",
+    "permission_mutation_performed": false,
+    "private_beta_access_opened": false,
+    "production_deploy": "DISABLED",
+    "real_capital_movement": "LOCKED",
+    "recommendation": "GO_FOR_PRIVATE_BETA_ACCESS_AUTHORIZATION_CLOSEOUT",
+    "tester_credentials_issued": false,
+    "tester_session_created": false,
+    "title": "Private Beta Access Activation Gate"
+  },
+  "title": "Private Beta Access Activation Gate"
+}
