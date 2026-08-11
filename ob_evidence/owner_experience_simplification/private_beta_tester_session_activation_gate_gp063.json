@@ -1,0 +1,24 @@
+{
+  "generated_at_utc": "2026-08-11T15:58:11.594105+00:00",
+  "package": "GP063",
+  "payload": {
+    "anonymous_access_allowed": false,
+    "broker_submission_allowed": false,
+    "credential_material_created": false,
+    "external_beta_access_opened": false,
+    "failures": [],
+    "gate_state": "private_beta_tester_session_activation_gate_sealed",
+    "live_auto_allowed": false,
+    "manual_live_allowed": false,
+    "owner_console_access_allowed": false,
+    "package": "GP063",
+    "real_capital_allowed": false,
+    "recommendation": "GO_FOR_PRIVATE_BETA_FIRST_ACCESS_RECEIPT_AUDIT_TRAIL",
+    "session_activation_authorizable_after_real_credential_setup": true,
+    "session_activation_gate_ready": true,
+    "tester_session_activated": false,
+    "tester_session_created": false,
+    "title": "Private Beta Tester Session Activation Gate"
+  },
+  "title": "Private Beta Tester Session Activation Gate"
+}

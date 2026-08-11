@@ -1,0 +1,42 @@
+{
+  "generated_at_utc": "2026-08-11T15:58:11.593039+00:00",
+  "package": "GP061",
+  "payload": {
+    "access_id": "ob-beta-access-111c4e7922973afa2b56",
+    "allowed_modes": [
+      "Survey",
+      "Paper"
+    ],
+    "allowed_rooms": [
+      "Dashboard",
+      "Market Map",
+      "Symbol Page",
+      "Trade Center",
+      "Review Center"
+    ],
+    "broker_submission_allowed": false,
+    "credential_material_issued": false,
+    "denied_rooms": [
+      "Owner Console"
+    ],
+    "entitlement_record_issued": true,
+    "external_beta_access_opened": false,
+    "failures": [],
+    "gate_state": "private_beta_tester_access_issuance_sealed",
+    "live_auto_allowed": false,
+    "manual_live_allowed": false,
+    "package": "GP061",
+    "password_generated": false,
+    "real_capital_allowed": false,
+    "recommendation": "GO_FOR_TOWER_TESTER_CREDENTIAL_PROVISIONING_BOUNDARY",
+    "revocable": true,
+    "secret_revealed": false,
+    "tester_id": "private-beta-evidence-candidate",
+    "tester_session_activated": false,
+    "tester_session_created": false,
+    "title": "Private Beta Tester Access Issuance",
+    "token_generated": false,
+    "tower_managed": true
+  },
+  "title": "Private Beta Tester Access Issuance"
+}
