@@ -51160,3 +51160,30 @@ except Exception as tower_ob_six_room_acceptance_handoff_error:
     ] = repr(tower_ob_six_room_acceptance_handoff_error)
 
 # END TOWER OB SIX ROOM ACCEPTANCE HANDOFF ROUTES 2543-2552
+
+
+# ============================================================
+# TOWER_OWNER_BETA_CONTROL_ROOM_ROUTES_REGISTERED
+# Packs 2553–2562: Owner-Beta Control Room
+# ============================================================
+
+try:
+    from tower.tower_owner_beta_control_room import (
+        OWNER_BETA_JSON_ROUTE,
+        OWNER_BETA_ROUTE,
+        owner_beta_payload,
+        render_owner_beta_html,
+    )
+
+    @app.get(OWNER_BETA_ROUTE)
+    def tower_owner_beta_control_room_page():
+        return render_owner_beta_html()
+
+    @app.get(OWNER_BETA_JSON_ROUTE)
+    def tower_owner_beta_control_room_json():
+        return jsonify(owner_beta_payload())
+
+    print("PACKS 2553–2562: Tower Owner-Beta Control Room routes registered.")
+
+except Exception as tower_owner_beta_route_error:
+    print("PACKS 2553–2562: Tower Owner-Beta Control Room routes unavailable:", tower_owner_beta_route_error)
