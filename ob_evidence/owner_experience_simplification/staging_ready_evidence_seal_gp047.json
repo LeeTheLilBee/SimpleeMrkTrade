@@ -1,0 +1,94 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_STAGING_READY_EVIDENCE_SEAL_GP047",
+  "created_at": "2026-08-11T15:12:59.936312Z",
+  "decision": "STAGING_READY_EVIDENCE_SEALED_WITH_SAFETY_LOCKS_HELD",
+  "display_title": "Staging Ready Evidence Seal",
+  "evidence_hash": "99a8fcf105cbf70df4ef87f9338411730318ef822719d10228ac8333951b1e60",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/staging_ready_evidence_seal_gp047_handoff.md": "a996aee43a7cacf240c6b8a76ec6c52474c2a38a1aab3afd935e6cec4f3118c9",
+    "ob_owner_experience/staging_ready_evidence_seal.py": "d4d11f0100dde4ee35054d20be06dcc502d3a5399d2c131a34e881b556065218",
+    "tests/test_staging_ready_evidence_seal_gp047.py": "9e833c7430f7d6589379128863f77b58278d8a7c0ae302847f1ca795b55e56f5"
+  },
+  "files": [
+    "ob_owner_experience/staging_ready_evidence_seal.py",
+    "tests/test_staging_ready_evidence_seal_gp047.py",
+    "ob_evidence/owner_experience_simplification/staging_ready_evidence_seal_gp047_handoff.md"
+  ],
+  "gate_state": "staging_ready_evidence_sealed",
+  "must_not_claim": [
+    "PRODUCTION_READY",
+    "LIVE_READY",
+    "BROKER_READY",
+    "AUTO_EXECUTION_READY",
+    "REAL_CAPITAL_READY"
+  ],
+  "next_build": "Owner Beta Readiness Gate / GP048",
+  "not_authorized": [
+    "production deployment",
+    "broker submission",
+    "real capital movement",
+    "direct execution",
+    "automated execution",
+    "permission mutation",
+    "secret reveal",
+    "Live Auto unlock"
+  ],
+  "package": "ob_staging_ready_evidence_seal_gp047",
+  "recommendation": "GO_FOR_OWNER_BETA_READINESS_GATE",
+  "release_boundary": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "live_auto_unlocked": false,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "secret_reveal_enabled": false,
+    "staging_readiness_granted": true,
+    "staging_ready": true,
+    "staging_ready_evidence_sealed": true
+  },
+  "seal_record": {
+    "broker_submission_enabled": false,
+    "evidence_append_only": true,
+    "gp046_staging_ready_claim_released": true,
+    "live_auto_locked": true,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "sealed_evidence_inputs": [
+      "GP041 hosted runtime verification execution",
+      "GP042 Tower OB hosted route verification",
+      "GP043 hosted return session continuity verification",
+      "GP044 hosted safety lock verification",
+      "GP045 staging readiness claim release gate",
+      "GP046 staging ready claim release"
+    ],
+    "source_dependency": "GP046",
+    "staging_readiness_granted": true,
+    "staging_ready": true,
+    "staging_ready_evidence_sealed": true
+  },
+  "source_dependency": "GP046",
+  "staging_ready_evidence_sealed": true,
+  "start_head": "8e2e86d5ae5f0e3e1abe4f4414d10109913a9e95",
+  "status": {
+    "anonymous_access_allowed": false,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "evidence_append_only": true,
+    "gp046_staging_ready_claim_released": true,
+    "live_auto_locked": true,
+    "live_auto_unlocked": false,
+    "owner_session_required": true,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "secret_reveal_enabled": false,
+    "staging_readiness_granted": true,
+    "staging_ready": true,
+    "staging_ready_evidence_sealed": true
+  }
+}
