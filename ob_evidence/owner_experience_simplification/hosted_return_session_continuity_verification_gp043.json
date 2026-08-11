@@ -1,0 +1,144 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_HOSTED_RETURN_SESSION_CONTINUITY_VERIFICATION_GP043",
+  "created_at": "2026-08-11T15:03:15.100955Z",
+  "decision": "HOSTED_RETURN_SESSION_CONTINUITY_VERIFIED_WITH_SAFETY_LOCKS_HELD_NOT_STAGING_READY",
+  "display_title": "Hosted Return Session Continuity Verification",
+  "evidence_hash": "327b4fc4c8716cdf308cb12616bedb7c9d4f280d6e957e7f2ab856a317d3609b",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/hosted_return_session_continuity_verification_gp043_handoff.md": "beb6d4fab67d4080f9d4a2f21b19b0827e842265bdd5407d1fd02579979feebd",
+    "ob_owner_experience/hosted_return_session_continuity_verification.py": "79bf8b7b00e177ec14a56f05f72dad3a916b4434343af6093b8fd479a3147456",
+    "tests/test_hosted_return_session_continuity_verification_gp043.py": "9b8eb16111c0c1f790fab6518f462737d9442a6b6596579098ead56b342cdba2"
+  },
+  "files": [
+    "ob_owner_experience/hosted_return_session_continuity_verification.py",
+    "tests/test_hosted_return_session_continuity_verification_gp043.py",
+    "ob_evidence/owner_experience_simplification/hosted_return_session_continuity_verification_gp043_handoff.md"
+  ],
+  "gate_state": "hosted_return_session_verified_pending_safety_lock_verification",
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "Hosted Safety Lock Verification / GP044",
+  "not_authorized": [
+    "STAGING_READY",
+    "production deployment",
+    "broker submission",
+    "real capital movement",
+    "direct execution",
+    "automated execution",
+    "permission mutation",
+    "secret reveal",
+    "Live Auto unlock"
+  ],
+  "package": "ob_hosted_return_session_continuity_verification_gp043",
+  "recommendation": "GO_FOR_HOSTED_SAFETY_LOCK_VERIFICATION",
+  "release_boundary": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "live_auto_locked": true,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "return_session_continuity_verified": true,
+    "secret_reveal_enabled": false,
+    "staging_readiness_granted": false,
+    "staging_ready": false
+  },
+  "return_results": [
+    {
+      "display_title": "Today\u2019s Command Nest",
+      "hosted_return_check_executed": true,
+      "hosted_return_check_passed": true,
+      "owner_session_reference_present": true,
+      "return_control_visible": true,
+      "room": "dashboard",
+      "session_continuity_preserved": true,
+      "staging_ready_claim_allowed_now": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "display_title": "Market Weather",
+      "hosted_return_check_executed": true,
+      "hosted_return_check_passed": true,
+      "owner_session_reference_present": true,
+      "return_control_visible": true,
+      "room": "market_map",
+      "session_continuity_preserved": true,
+      "staging_ready_claim_allowed_now": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "display_title": "Asset Storybook",
+      "hosted_return_check_executed": true,
+      "hosted_return_check_passed": true,
+      "owner_session_reference_present": true,
+      "return_control_visible": true,
+      "room": "symbol_page",
+      "session_continuity_preserved": true,
+      "staging_ready_claim_allowed_now": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "display_title": "Decision Garden",
+      "hosted_return_check_executed": true,
+      "hosted_return_check_passed": true,
+      "owner_session_reference_present": true,
+      "return_control_visible": true,
+      "room": "trade_center",
+      "session_continuity_preserved": true,
+      "staging_ready_claim_allowed_now": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "display_title": "Reflection Library",
+      "hosted_return_check_executed": true,
+      "hosted_return_check_passed": true,
+      "owner_session_reference_present": true,
+      "return_control_visible": true,
+      "room": "review_center",
+      "session_continuity_preserved": true,
+      "staging_ready_claim_allowed_now": false,
+      "tower_return_route": "/tower/access-home"
+    },
+    {
+      "display_title": "Owner Crown Room",
+      "hosted_return_check_executed": true,
+      "hosted_return_check_passed": true,
+      "owner_session_reference_present": true,
+      "return_control_visible": true,
+      "room": "owner_console",
+      "session_continuity_preserved": true,
+      "staging_ready_claim_allowed_now": false,
+      "tower_return_route": "/tower/access-home"
+    }
+  ],
+  "return_session_continuity_verified": true,
+  "source_dependency": "GP042",
+  "start_head": "a88bb05acdd087bc4f5f96a8a186e6e96ce6a808",
+  "status": {
+    "all_six_returns_verified": true,
+    "anonymous_access_allowed": false,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "gp042_hosted_routes_verified": true,
+    "live_auto_locked": true,
+    "owner_session_required": true,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "return_session_continuity_verified": true,
+    "secret_reveal_enabled": false,
+    "staging_readiness_granted": false,
+    "staging_ready": false
+  }
+}

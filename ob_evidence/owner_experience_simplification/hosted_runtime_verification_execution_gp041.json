@@ -1,0 +1,152 @@
+{
+  "branch": "ob-owner-experience-simplification",
+  "build": "OB_HOSTED_RUNTIME_VERIFICATION_EXECUTION_GP041",
+  "created_at": "2026-08-11T15:03:15.084791Z",
+  "decision": "HOSTED_RUNTIME_VERIFICATION_EXECUTED_WITH_SAFETY_LOCKS_HELD_NOT_STAGING_READY",
+  "display_title": "Hosted Runtime Verification Execution",
+  "evidence_hash": "ae631c794a2be8bd164111349a0ea804d4a31e11e4f9354795ca43c534297322",
+  "file_hashes": {
+    "ob_evidence/owner_experience_simplification/hosted_runtime_verification_execution_gp041_handoff.md": "badf7741eb01289bf0e04e48dae4309450db8423aa2f97f6b7d3df8d980bc95b",
+    "ob_owner_experience/hosted_runtime_verification_execution.py": "e8244d846a25926c3725234a1b65fef577b5ddf3e4632d6262a83e7ab09163bd",
+    "tests/test_hosted_runtime_verification_execution_gp041.py": "0bf388debdd2ef122239adb53390f5343021cf9bd44769e80cb4fe728602023f"
+  },
+  "files": [
+    "ob_owner_experience/hosted_runtime_verification_execution.py",
+    "tests/test_hosted_runtime_verification_execution_gp041.py",
+    "ob_evidence/owner_experience_simplification/hosted_runtime_verification_execution_gp041_handoff.md"
+  ],
+  "gate_state": "hosted_runtime_verified_pending_route_verification",
+  "hosted_runtime_verification_executed": true,
+  "must_not_claim": [
+    "STAGING_READY",
+    "production deployment authorized",
+    "broker submission enabled",
+    "real capital movement enabled",
+    "Live Auto unlocked",
+    "Tower return/session continuity repaired",
+    "Render redeployed",
+    "owner walkthrough accepted"
+  ],
+  "next_build": "Tower OB Hosted Route Verification / GP042",
+  "not_authorized": [
+    "STAGING_READY",
+    "production deployment",
+    "broker submission",
+    "real capital movement",
+    "direct execution",
+    "automated execution",
+    "permission mutation",
+    "secret reveal",
+    "Live Auto unlock"
+  ],
+  "package": "ob_hosted_runtime_verification_execution_gp041",
+  "recommendation": "GO_FOR_TOWER_OB_HOSTED_ROUTE_VERIFICATION",
+  "release_boundary": {
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "hosted_runtime_verification_executed": true,
+    "hosted_runtime_verified": true,
+    "live_auto_locked": true,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "secret_reveal_enabled": false,
+    "staging_readiness_granted": false,
+    "staging_ready": false
+  },
+  "runtime_results": [
+    {
+      "check": "hosted /tower/healthz",
+      "executed": true,
+      "hosted_runtime_evidence_recorded": true,
+      "passed": true,
+      "required": true,
+      "staging_ready_claim_allowed_now": false,
+      "step": 1
+    },
+    {
+      "check": "owner login available",
+      "executed": true,
+      "hosted_runtime_evidence_recorded": true,
+      "passed": true,
+      "required": true,
+      "staging_ready_claim_allowed_now": false,
+      "step": 2
+    },
+    {
+      "check": "Tower Access Home available",
+      "executed": true,
+      "hosted_runtime_evidence_recorded": true,
+      "passed": true,
+      "required": true,
+      "staging_ready_claim_allowed_now": false,
+      "step": 3
+    },
+    {
+      "check": "Tower to OB launch available",
+      "executed": true,
+      "hosted_runtime_evidence_recorded": true,
+      "passed": true,
+      "required": true,
+      "staging_ready_claim_allowed_now": false,
+      "step": 4
+    },
+    {
+      "check": "six OB rooms reachable through Tower",
+      "executed": true,
+      "hosted_runtime_evidence_recorded": true,
+      "passed": true,
+      "required": true,
+      "staging_ready_claim_allowed_now": false,
+      "step": 5
+    },
+    {
+      "check": "OB to Tower return available",
+      "executed": true,
+      "hosted_runtime_evidence_recorded": true,
+      "passed": true,
+      "required": true,
+      "staging_ready_claim_allowed_now": false,
+      "step": 6
+    },
+    {
+      "check": "dangerous actions locked",
+      "executed": true,
+      "hosted_runtime_evidence_recorded": true,
+      "passed": true,
+      "required": true,
+      "staging_ready_claim_allowed_now": false,
+      "step": 7
+    },
+    {
+      "check": "STAGING_READY not claimed before hosted evidence",
+      "executed": true,
+      "hosted_runtime_evidence_recorded": true,
+      "passed": true,
+      "required": true,
+      "staging_ready_claim_allowed_now": false,
+      "step": 8
+    }
+  ],
+  "source_dependency": "GP040",
+  "start_head": "a88bb05acdd087bc4f5f96a8a186e6e96ce6a808",
+  "status": {
+    "anonymous_access_allowed": false,
+    "automated_execution_enabled": false,
+    "broker_submission_enabled": false,
+    "direct_execution_enabled": false,
+    "gp040_hosted_runtime_verification_gate_ready": true,
+    "hosted_runtime_checks_passed": true,
+    "hosted_runtime_verification_executed": true,
+    "hosted_runtime_verified": true,
+    "live_auto_locked": true,
+    "owner_session_required": true,
+    "permission_mutation_enabled": false,
+    "production_deploy_enabled": false,
+    "real_capital_movement_enabled": false,
+    "secret_reveal_enabled": false,
+    "staging_readiness_granted": false,
+    "staging_ready": false
+  }
+}
