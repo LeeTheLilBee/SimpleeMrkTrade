@@ -568,3 +568,24 @@ A green review means the packet is ready for the owner to choose from.
 
 It does not record the owner's choice, approve anything, move capital,
 or execute downstream work.
+
+## GP031 — Owner Decision Choice / Intent Recording Boundary
+
+GP031 introduces explicit owner-intent recording.
+
+A GP030 review may be ready for owner choice, but Clouds still requires
+an explicit option selection before it may record intent.
+
+A recorded choice captures:
+
+- the reviewed decision;
+- the selected packet option;
+- source and impacted-source context;
+- the owning application;
+- Tower mediation requirements;
+- Soulaana's explanation of what the recorded intent means.
+
+A recorded choice is not approval or execution.
+
+GP031 does not move capital, alter permissions, invoke downstream
+applications, or treat an owner's intent as completed operational work.

@@ -855,3 +855,24 @@ from .owner_decision_review_service import (
     get_owner_decision_review_surface_payload,
     get_owner_decision_reviews,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP031
+# OWNER DECISION CHOICE / INTENT RECORDING BOUNDARY
+# ============================================================
+
+from .owner_decision_choice import (
+    OwnerChoiceRecord,
+    OwnerChoiceState,
+    OwnerChoiceSurface,
+)
+
+from .owner_decision_choice_service import (
+    get_clouds_gp031_status_payload,
+    get_gp031_fixture_choice_record,
+    get_owner_choice_surface,
+    get_owner_choice_surface_payload,
+    get_pending_owner_choice_records,
+    record_owner_choice,
+)
