@@ -317,3 +317,21 @@ Soulaana now explains:
 Interpretation leads the owner experience before raw metrics.
 
 Clouds still performs no raw downstream source access and no downstream execution.
+
+## GP021 — Owner Command UX / Soulaana Executive Surface
+
+GP021 turns the trusted executive operating snapshot into the first
+real owner-command experience contract.
+
+The page leads with Soulaana's interpretation and organizes the
+owner's world into:
+
+- Needs You
+- Keep Watching
+- Can Wait
+- Simplee World
+
+Raw technical evidence is hidden by default.
+
+Clouds uses progressive disclosure and safe navigation references.
+Protected application entry remains Tower-mediated.
