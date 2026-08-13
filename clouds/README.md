@@ -627,3 +627,28 @@ Authorization does not deliver the package, invoke Tower, open another
 application, move capital, or execute downstream work.
 
 The decline path is also explicitly verified and remains fail-closed.
+
+## GP034 — Protected Handoff Package / Delivery Preparation
+
+GP034 freezes a GP033-authorized owner intent into a bounded protected
+handoff package.
+
+The package binds:
+
+- the GP033 authorization record;
+- GP032 intent review;
+- GP031 choice record;
+- decision review and decision packet references;
+- selected owner option;
+- source and impacted-source context;
+- owning application;
+- Tower mediation requirement;
+- delivery target class;
+- deterministic integrity hash.
+
+The package excludes credentials, Tower session material, and raw evidence.
+
+Prepared does not mean delivered.
+
+GP034 does not release the package, deliver it to Tower or another
+application, move capital, approve downstream work, or execute anything.

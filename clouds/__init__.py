@@ -919,3 +919,24 @@ from .handoff_authorization_decision_service import (
     get_handoff_authorization_surface_payload,
     record_handoff_authorization_decision,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP034
+# PROTECTED HANDOFF PACKAGE / DELIVERY PREPARATION
+# ============================================================
+
+from .protected_handoff_package import (
+    ProtectedHandoffDeliveryTargetKind,
+    ProtectedHandoffPackage,
+    ProtectedHandoffPackageState,
+    ProtectedHandoffPreparationSurface,
+)
+
+from .protected_handoff_package_service import (
+    build_protected_handoff_package,
+    get_clouds_gp034_status_payload,
+    get_gp034_protected_handoff_package,
+    get_protected_handoff_preparation_surface,
+    get_protected_handoff_preparation_surface_payload,
+)
