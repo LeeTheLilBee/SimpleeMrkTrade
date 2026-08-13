@@ -495,3 +495,32 @@ The graph is advisory only.
 
 It cannot move capital, alter permissions, change business priorities,
 or execute downstream application work.
+
+## GP028 — Executive Owner Agenda / Time-Horizon Prioritization
+
+GP028 turns Clouds intelligence into an owner-attention agenda.
+
+Soulaana now separates operating information into six time horizons:
+
+- Do Now
+- Today
+- This Week
+- Watching
+- Waiting
+- Can Wait
+
+The agenda consumes operating changes and cross-business impact
+projections without turning every signal into false urgency.
+
+Every agenda item explains:
+
+- what happened;
+- what it means;
+- why it deserves its current time horizon;
+- what happens if the owner waits;
+- when or where to review it next.
+
+This layer is advisory only.
+
+Clouds cannot approve work, move capital, change Tower authority,
+alter another application, or execute downstream actions.
