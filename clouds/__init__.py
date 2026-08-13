@@ -699,3 +699,30 @@ from .beta_readiness_closeout_service import (
     get_clouds_gp024_status_payload,
     get_clouds_owner_walkthrough,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP025
+# REAL OPERATING FEED INGESTION FOUNDATION
+# ============================================================
+
+from .operating_feed_ingestion import (
+    CANONICAL_OPERATING_SOURCE_IDS,
+    OperatingFeedEnvelope,
+    OperatingFeedIngestionSurface,
+    OperatingFeedMetric,
+    OperatingFeedMode,
+    OperatingFeedReplayState,
+    OperatingFeedValidationReceipt,
+    OperatingFeedValidationState,
+)
+
+from .operating_feed_ingestion_service import (
+    build_projection_feed_envelopes,
+    get_clouds_gp025_status_payload,
+    get_operating_feed_envelope,
+    get_operating_feed_ingestion_surface,
+    get_operating_feed_ingestion_surface_payload,
+    get_projection_feed_validation_receipts,
+    validate_operating_feed,
+)

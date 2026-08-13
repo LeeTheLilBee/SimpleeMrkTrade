@@ -411,3 +411,31 @@ GP024 explicitly does not claim:
 - external beta acceptance.
 
 Those must be proven in the real Tower/Clouds integration and owner walkthrough.
+
+## GP025 — Real Operating Feed Ingestion Foundation
+
+GP025 begins Clouds Phase II.
+
+Clouds now has a canonical ingress contract for future operating-summary
+feeds from Simplee applications and businesses.
+
+The contract distinguishes:
+
+- approved projection feeds;
+- real live feeds;
+- source identity;
+- source sequence;
+- observed time;
+- health;
+- readiness;
+- owner attention;
+- Soulaana explanation material;
+- metrics;
+- source integrity;
+- duplicate and stale-feed state.
+
+GP025 proves the boundary using the six existing approved projections.
+
+It explicitly reports zero live feeds.
+
+No downstream application is imported or called.
