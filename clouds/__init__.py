@@ -278,3 +278,37 @@ from .executive_dashboard_detail_service import (
     get_executive_section_recommendations,
     get_executive_section_summary,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP009
+# EXECUTIVE DASHBOARD NAVIGATION MAP
+# ============================================================
+
+from .executive_navigation_map import (
+    ExecutiveNavigationAuthority,
+    ExecutiveNavigationAvailability,
+    ExecutiveNavigationDestination,
+    ExecutiveNavigationDestinationKind,
+    ExecutiveNavigationMap,
+    ExecutiveNavigationMapSummary,
+    ExecutiveNavigationMode,
+    ExecutiveNavigationSectionMap,
+    filter_navigation_destinations,
+    navigation_destination_sort_key,
+    navigation_section_sort_key,
+)
+
+from .executive_navigation_map_service import (
+    filter_executive_navigation_destinations,
+    get_clouds_gp009_status_payload,
+    get_executive_navigation_destination,
+    get_executive_navigation_destination_payload,
+    get_executive_navigation_destinations,
+    get_executive_navigation_map,
+    get_executive_navigation_map_payload,
+    get_executive_navigation_map_summary,
+    get_executive_navigation_section,
+    get_executive_navigation_section_payload,
+    get_executive_navigation_sections,
+)

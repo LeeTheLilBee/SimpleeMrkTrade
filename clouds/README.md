@@ -89,3 +89,20 @@ Clouds does not approve or execute operational work.
 ## Next checkpoint
 
 `THE CLOUDS — EXECUTIVE DASHBOARD NAVIGATION MAP / GP009`
+## GP009 — Executive Dashboard Navigation Map
+
+GP009 adds the read-only executive navigation intelligence layer.
+
+The map:
+
+- maps the six executive dashboard sections to owner destinations;
+- distinguishes Clouds-internal navigation from Tower-mediated handoffs;
+- identifies application and mission-lane ownership;
+- exposes availability for active, referenced, reserved, or held destinations;
+- keeps Tower responsible for authentication, permission, step-up, and downstream entry;
+- keeps all navigation descriptive rather than executable;
+- fails closed for unknown destinations and sections.
+
+GP009 does not authenticate, authorize, step-up, approve, trade, move money,
+retrieve raw Vault evidence, operate property workflows, or directly launch
+downstream applications.
