@@ -515,3 +515,18 @@ def build_login_and_checkin_bundle(
         "type": "login_bundle",
         "greeting": login_payload,
     }
+# OBUX001-OBUX005 UNIVERSAL SOULAANA BRIDGE
+#
+# This is intentionally a thin adapter.
+# Existing Soulaana decision/explainability/voice behavior remains authoritative.
+
+def build_universal_soulaana_output(
+    context: Dict[str, Any],
+    emotional_state: Optional[str] = None,
+) -> Dict[str, Any]:
+    from engine.soulaana_universal_bridge import build_universal_soulaana
+
+    return build_universal_soulaana(
+        context,
+        emotional_state=emotional_state,
+    )

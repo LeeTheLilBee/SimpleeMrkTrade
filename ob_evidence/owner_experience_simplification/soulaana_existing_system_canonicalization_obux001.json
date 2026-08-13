@@ -1,0 +1,53 @@
+{
+  "generated_at_utc": "2026-08-13T14:04:15.715970+00:00",
+  "package": "OBUX001",
+  "payload": {
+    "canonical": {
+      "can_wait": "A trade decision can wait until entry confirmation is complete.",
+      "needs_attention": "Entry confirmation is still incomplete.",
+      "next_action": "Continue monitoring.",
+      "no_action_needed": true,
+      "what_changed": "Momentum strengthened since the previous observation.",
+      "what_it_is": "AMD setup reviewed",
+      "what_it_means": "The setup is improving but is not ready for action.",
+      "why_it_matters": "Momentum and confirmation are moving in the right direction."
+    },
+    "canonical_schema_version": "soulaana_universal_v1",
+    "existing_soulaana_remains_authoritative": true,
+    "field_sources": {
+      "can_wait": "context.can_wait",
+      "needs_attention": "risk",
+      "next_action": "next_action",
+      "what_changed": "context.what_changed",
+      "what_it_is": "headline",
+      "what_it_means": "assessment",
+      "why_it_matters": "why"
+    },
+    "gate_state": "soulaana_existing_system_canonicalization_sealed",
+    "legacy_compatibility": {
+      "assessment": "The setup is improving but is not ready for action.",
+      "headline": "AMD setup reviewed",
+      "next_action": "Continue monitoring.",
+      "risk": "Entry confirmation is still incomplete.",
+      "verdict": "WATCH",
+      "why": "Momentum and confirmation are moving in the right direction."
+    },
+    "legacy_fields_preserved": true,
+    "legacy_payload": {
+      "assessment": "The setup is improving but is not ready for action.",
+      "headline": "AMD setup reviewed",
+      "next_action": "Continue monitoring.",
+      "risk": "Entry confirmation is still incomplete.",
+      "verdict": "WATCH",
+      "why": "Momentum and confirmation are moving in the right direction."
+    },
+    "package": "OBUX001",
+    "parallel_soulaana_engine_created": false,
+    "recommendation": "GO_FOR_SOULAANA_EXISTING_LAYER_BRIDGE",
+    "source_complete": true,
+    "source_gap_count": 0,
+    "source_gaps": [],
+    "title": "Soulaana Existing-System Canonicalization Contract"
+  },
+  "title": "Soulaana Existing-System Canonicalization Contract"
+}

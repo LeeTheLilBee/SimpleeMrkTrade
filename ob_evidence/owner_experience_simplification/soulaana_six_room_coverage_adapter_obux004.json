@@ -1,0 +1,89 @@
+{
+  "generated_at_utc": "2026-08-13T14:04:15.719159+00:00",
+  "package": "OBUX004",
+  "payload": {
+    "all_six_rooms_covered": true,
+    "evidence_collapsed_by_default": true,
+    "gate_state": "soulaana_six_room_coverage_adapter_sealed",
+    "package": "OBUX004",
+    "recommendation": "GO_FOR_SOULAANA_COMPLETENESS_CALM_GATE",
+    "room_count": 6,
+    "rooms": {
+      "Dashboard": {
+        "allowed": true,
+        "core_question": "What matters right now?",
+        "evidence_collapsed_by_default": true,
+        "surface_order": [
+          "soulaana",
+          "key_facts",
+          "attention_and_actions",
+          "visuals",
+          "evidence"
+        ]
+      },
+      "Market Map": {
+        "allowed": true,
+        "core_question": "Where is the opportunity?",
+        "evidence_collapsed_by_default": true,
+        "surface_order": [
+          "soulaana",
+          "key_facts",
+          "attention_and_actions",
+          "visuals",
+          "evidence"
+        ]
+      },
+      "Owner Console": {
+        "allowed": true,
+        "core_question": "What needs owner control or oversight?",
+        "evidence_collapsed_by_default": true,
+        "surface_order": [
+          "soulaana",
+          "key_facts",
+          "attention_and_actions",
+          "visuals",
+          "evidence"
+        ]
+      },
+      "Review Center": {
+        "allowed": true,
+        "core_question": "What happened and what did we learn?",
+        "evidence_collapsed_by_default": true,
+        "surface_order": [
+          "soulaana",
+          "key_facts",
+          "attention_and_actions",
+          "visuals",
+          "evidence"
+        ]
+      },
+      "Symbol Page": {
+        "allowed": true,
+        "core_question": "What is happening with this company?",
+        "evidence_collapsed_by_default": true,
+        "surface_order": [
+          "soulaana",
+          "key_facts",
+          "attention_and_actions",
+          "visuals",
+          "evidence"
+        ]
+      },
+      "Trade Center": {
+        "allowed": true,
+        "core_question": "What am I considering or doing?",
+        "evidence_collapsed_by_default": true,
+        "surface_order": [
+          "soulaana",
+          "key_facts",
+          "attention_and_actions",
+          "visuals",
+          "evidence"
+        ]
+      }
+    },
+    "soulaana_leads_each_room": true,
+    "title": "Soulaana Six-Room Explanation Coverage Adapter"
+  },
+  "title": "Soulaana Six-Room Explanation Coverage Adapter"
+}
