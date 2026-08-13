@@ -244,3 +244,10 @@ Tower permission and step-up requirements remain preserved.
 
 GP015 does not create a Tower request, deliver anything to Tower,
 create a Tower receipt, execute a handoff, or perform downstream work.
+
+## GP016 — Tower Intake Package / Validation Surface
+
+GP016 validates every GP015 submission as a strict Tower intake package.
+
+All packages remain Clouds-side only. No Tower request, delivery,
+receipt, handoff, or downstream execution occurs.
