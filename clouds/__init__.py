@@ -962,3 +962,27 @@ from .protected_handoff_delivery_release_service import (
     get_protected_handoff_release_authorization_surface_payload,
     record_delivery_release_decision,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP036
+# PROTECTED HANDOFF RELEASE RECORD / DELIVERY ENVELOPE PREPARATION
+# ============================================================
+
+from .protected_handoff_release_record import (
+    ProtectedDeliveryEnvelopeState,
+    ProtectedHandoffDeliveryEnvelope,
+    ProtectedHandoffReleasePreparationSurface,
+    ProtectedHandoffReleaseRecord,
+    ProtectedReleaseRecordState,
+)
+
+from .protected_handoff_release_record_service import (
+    build_protected_handoff_delivery_envelope,
+    build_protected_handoff_release_record,
+    get_clouds_gp036_status_payload,
+    get_gp036_delivery_envelope,
+    get_gp036_release_record,
+    get_protected_handoff_release_preparation_surface,
+    get_protected_handoff_release_preparation_surface_payload,
+)

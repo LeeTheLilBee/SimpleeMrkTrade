@@ -678,3 +678,27 @@ Release authorization does not release or deliver the package.
 
 GP035 performs no Tower intake, navigation, downstream approval, capital
 movement, or downstream execution.
+
+## GP036 — Protected Handoff Release Record / Delivery Envelope Preparation
+
+GP036 converts the exact GP035 release authorization into two bounded
+artifacts:
+
+1. a protected release record;
+2. a protected delivery envelope.
+
+The release record freezes the authorized package, owner release
+decision, source context, selected option, owning application, Tower
+mediation requirement, delivery target, and package integrity hash.
+
+The delivery envelope binds that release record using its own
+deterministic integrity hash.
+
+Neither artifact contains credentials, Tower session material, or raw
+evidence.
+
+GP036 prepares release artifacts only.
+
+It does not execute release, attempt delivery, contact Tower, create a
+session, launch an application, move capital, approve downstream work,
+or perform downstream execution.
