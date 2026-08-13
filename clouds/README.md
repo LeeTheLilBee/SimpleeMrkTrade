@@ -524,3 +524,24 @@ This layer is advisory only.
 
 Clouds cannot approve work, move capital, change Tower authority,
 alter another application, or execute downstream actions.
+
+## GP029 — Owner Decision Prep / Decision Packet Surface
+
+GP029 turns executive owner-agenda items into structured decision packets.
+
+Each packet explains:
+
+- what the owner is deciding;
+- why the decision exists;
+- what changed;
+- what else may be affected;
+- available choices;
+- expected benefits and risks;
+- what happens if the owner waits or takes no action;
+- what evidence should be reviewed;
+- which application owns the real workflow.
+
+Decision packets remain preparation only.
+
+Clouds does not choose for the owner, approve actions, move capital,
+or execute downstream work.
