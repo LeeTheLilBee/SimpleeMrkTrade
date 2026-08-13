@@ -1,36 +1,188 @@
-/* ================================================================================================
+/* =================================================================================================
    THE OBSERVATORY
-   OBUX006-OBUX010
-   SOULAANA EXPLANATION-FIRST DASHBOARD
-   ================================================================================================ */
+   OBUX011-OBUX015
+   SOULAANA-FIRST DASHBOARD
+   LIVING NEBULA / IRREGULAR COMMAND MOSAIC
+   ================================================================================================= */
 
 
-.obux-dashboard-header-status {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: flex-end;
-    align-items: center;
+/* -------------------------------------------------------------------------------------------------
+   LIVING SKY
+   ------------------------------------------------------------------------------------------------- */
+
+html,
+body {
+    min-height: 100%;
 }
 
 
-.obux-dashboard-header-status span,
-.obux-dashboard-context span,
-.obux-dashboard-chip,
-.obux-dashboard-state-chip {
-    border: 1px solid rgba(255,255,255,0.09);
-    background: rgba(255,255,255,0.035);
-    color: var(--ob-text, #f4f1ff);
-    border-radius: 999px;
-    padding: 7px 10px;
-    font-size: 10px;
-    font-weight: 760;
+body {
+    background:
+        radial-gradient(
+            circle at 18% 12%,
+            rgba(89, 87, 190, 0.50),
+            transparent 31%
+        ),
+        radial-gradient(
+            circle at 82% 18%,
+            rgba(173, 76, 180, 0.32),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 52% 63%,
+            rgba(58, 102, 174, 0.34),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 88% 82%,
+            rgba(84, 57, 145, 0.38),
+            transparent 32%
+        ),
+        linear-gradient(
+            145deg,
+            #17172f 0%,
+            #222049 32%,
+            #171c3d 62%,
+            #251837 100%
+        ) !important;
+    background-attachment: fixed !important;
 }
 
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 7% 17%,
+            rgba(255,255,255,0.70) 0 1px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            circle at 22% 42%,
+            rgba(255,255,255,0.58) 0 1px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            circle at 38% 13%,
+            rgba(255,255,255,0.62) 0 1px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            circle at 56% 31%,
+            rgba(255,255,255,0.48) 0 1px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            circle at 70% 8%,
+            rgba(255,255,255,0.70) 0 1px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            circle at 91% 38%,
+            rgba(255,255,255,0.55) 0 1px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            circle at 12% 76%,
+            rgba(255,255,255,0.45) 0 1px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            circle at 49% 87%,
+            rgba(255,255,255,0.54) 0 1px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            circle at 77% 69%,
+            rgba(255,255,255,0.60) 0 1px,
+            transparent 1.5px
+        );
+
+    opacity: 0.72;
+}
+
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: -18%;
+    z-index: 0;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 30% 28%,
+            rgba(122, 94, 220, 0.16),
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 74% 52%,
+            rgba(213, 91, 187, 0.12),
+            transparent 31%
+        ),
+        radial-gradient(
+            ellipse at 43% 82%,
+            rgba(75, 137, 214, 0.13),
+            transparent 34%
+        );
+
+    filter: blur(32px);
+}
+
+
+#ob-app,
+.ob-layer,
+.dashboard-page,
+.dashboard-shell {
+    position: relative;
+    z-index: 1;
+    background: transparent !important;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   DASHBOARD FRAME
+   ------------------------------------------------------------------------------------------------- */
 
 .obux-dashboard-shell {
+    position: relative;
+    z-index: 2;
     display: grid;
-    gap: 22px;
+    gap: 28px;
+
+    width: min(
+        1500px,
+        calc(100% - 28px)
+    );
+
+    margin: 0 auto;
+    padding: 10px 0 54px;
+}
+
+
+.obux-dashboard-shell-v2::before {
+    content: "";
+    position: absolute;
+    top: -100px;
+    left: 10%;
+    right: 10%;
+    height: 250px;
+    z-index: -1;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(146, 106, 255, 0.18),
+            transparent 68%
+        );
+
+    filter: blur(34px);
+    pointer-events: none;
 }
 
 
@@ -43,498 +195,1501 @@
 }
 
 
-.obux-dashboard-now {
-    padding: 28px;
-    border-color: rgba(233,194,111,0.22);
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(127,102,255,0.10),
-            transparent 34%
-        ),
-        rgba(10,8,20,0.78);
-}
+/* -------------------------------------------------------------------------------------------------
+   HEADER STATUS
+   ------------------------------------------------------------------------------------------------- */
 
-
-.obux-dashboard-now-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 22px;
-}
-
-
-.obux-dashboard-now h2 {
-    margin: 7px 0 8px;
-    max-width: 900px;
-    font-size: clamp(28px, 4vw, 44px);
-    line-height: 1.06;
-    letter-spacing: -0.035em;
-}
-
-
-.obux-dashboard-lead {
-    margin: 0;
-    max-width: 880px;
-    color: rgba(238,233,255,0.76);
-    font-size: 15px;
-    line-height: 1.68;
-}
-
-
-.obux-dashboard-context {
+.obux-dashboard-header-status {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 7px;
     justify-content: flex-end;
-}
-
-
-.obux-dashboard-meaning-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 22px;
-}
-
-
-.obux-dashboard-meaning-grid article {
-    min-height: 126px;
-    padding: 15px;
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 15px;
-    background: rgba(0,0,0,0.16);
-}
-
-
-.obux-dashboard-meaning-grid span,
-.obux-dashboard-next span,
-.obux-dashboard-position-risk span,
-.obux-dashboard-explain span,
-.obux-dashboard-metric > span,
-.obux-dashboard-score > span {
-    display: block;
-    margin-bottom: 7px;
-    color: var(--ob-gold, #e9c26f);
-    font-size: 9px;
-    font-weight: 850;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-}
-
-
-.obux-dashboard-meaning-grid p,
-.obux-dashboard-explain p {
-    margin: 0;
-    font-size: 13px;
-    line-height: 1.58;
-}
-
-
-.obux-dashboard-action-state {
-    display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 14px;
-    padding: 14px 16px;
-    border-radius: 14px;
-    font-size: 13px;
 }
 
 
-.obux-dashboard-action-state.calm {
-    border: 1px solid rgba(123,224,195,0.20);
-    background: rgba(123,224,195,0.055);
-}
-
-
-.obux-dashboard-action-state.active {
-    border: 1px solid rgba(233,194,111,0.23);
-    background: rgba(233,194,111,0.055);
-}
-
-
-.obux-dashboard-section {
-    display: grid;
-    gap: 13px;
-}
-
-
-.obux-dashboard-section-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 18px;
-}
-
-
-.obux-dashboard-section-head h3,
-.obux-dashboard-since h3,
-.obux-dashboard-market-context h3 {
-    margin: 5px 0;
-    font-size: clamp(20px, 2.8vw, 27px);
-    letter-spacing: -0.025em;
-}
-
-
-.obux-dashboard-section-head p,
-.obux-dashboard-since p,
-.obux-dashboard-market-context p {
-    margin: 0;
-    max-width: 840px;
-    color: rgba(238,233,255,0.70);
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-
+.obux-dashboard-header-status span,
+.obux-soulaana-orbit span,
+.obux-dashboard-chip,
 .obux-dashboard-state-chip {
-    text-transform: capitalize;
+    display: inline-flex;
+    align-items: center;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.11);
+
+    background:
+        rgba(34, 31, 73, 0.48);
+
+    backdrop-filter:
+        blur(16px);
+
+    color:
+        rgba(247,244,255,0.86);
+
+    border-radius:
+        999px;
+
+    padding:
+        7px 10px;
+
+    font-size:
+        10px;
+
+    font-weight:
+        760;
 }
 
 
-.obux-dashboard-state-chip.steady,
-.obux-dashboard-state-chip.calm {
-    color: #7be0c3;
-}
+/* -------------------------------------------------------------------------------------------------
+   SOULAANA HERO
+   ------------------------------------------------------------------------------------------------- */
 
+.obux-soulaana-hero {
+    position: relative;
+    overflow: hidden;
 
-.obux-dashboard-state-chip.selective {
-    color: var(--ob-gold, #e9c26f);
-}
+    padding:
+        34px;
 
+    border:
+        1px solid
+        rgba(255,255,255,0.11);
 
-.obux-dashboard-state-chip.attention {
-    color: #ff7ea2;
-}
+    border-radius:
+        34px 14px 34px 14px;
 
-
-.obux-dashboard-metric-grid,
-.obux-dashboard-source-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 10px;
-}
-
-
-.obux-dashboard-source-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-
-.obux-dashboard-metric {
-    min-height: 138px;
-    padding: 15px;
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px;
-    background: rgba(10,8,20,0.58);
-}
-
-
-.obux-dashboard-metric strong {
-    display: block;
-    margin: 5px 0 8px;
-    font-size: 21px;
-}
-
-
-.obux-dashboard-metric p {
-    margin: 0;
-    color: rgba(238,233,255,0.65);
-    font-size: 11px;
-    line-height: 1.5;
-}
-
-
-.obux-dashboard-since {
-    padding: 20px 22px;
-}
-
-
-.obux-dashboard-attention-grid,
-.obux-dashboard-position-grid,
-.obux-dashboard-hot-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 11px;
-}
-
-
-.obux-dashboard-attention-card,
-.obux-dashboard-position-card,
-.obux-dashboard-hot-card {
-    padding: 18px;
-    border: 1px solid rgba(255,255,255,0.075);
-    border-radius: 18px;
     background:
         radial-gradient(
-            circle at top right,
-            rgba(127,102,255,0.06),
-            transparent 36%
+            circle at 92% 8%,
+            rgba(194, 107, 229, 0.18),
+            transparent 28%
         ),
-        rgba(10,8,20,0.64);
+        radial-gradient(
+            circle at 10% 86%,
+            rgba(85, 122, 230, 0.15),
+            transparent 31%
+        ),
+        rgba(30, 28, 66, 0.62);
+
+    backdrop-filter:
+        blur(24px);
+
+    box-shadow:
+        0 30px 80px
+        rgba(8, 7, 30, 0.28);
 }
 
 
-.obux-dashboard-hot-card.actionable {
-    border-color: rgba(123,224,195,0.24);
+.obux-soulaana-hero::after {
+    content: "";
+    position: absolute;
+    top: -80px;
+    right: -45px;
+
+    width:
+        300px;
+
+    height:
+        300px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.06);
+
+    border-radius:
+        50%;
+
+    box-shadow:
+        0 0 80px
+        rgba(147, 104, 255, 0.16);
+
+    pointer-events:
+        none;
 }
 
 
-.obux-dashboard-card-top {
+.obux-soulaana-orbit {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    margin-bottom:
+        24px;
 }
 
 
-.obux-dashboard-card-top > div {
+.obux-soulaana-intro {
+    max-width:
+        1050px;
+}
+
+
+.obux-soulaana-intro h2 {
+    margin:
+        7px 0 14px;
+
+    max-width:
+        900px;
+
+    font-size:
+        clamp(32px, 4.8vw, 58px);
+
+    line-height:
+        1.02;
+
+    letter-spacing:
+        -0.045em;
+}
+
+
+.obux-soulaana-opening {
+    margin:
+        0;
+
+    max-width:
+        980px;
+
+    color:
+        rgba(244,239,255,0.82);
+
+    font-size:
+        16px;
+
+    line-height:
+        1.72;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   IRREGULAR SOULAANA BRIEF
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-soulaana-brief-grid {
     display: grid;
-    gap: 4px;
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+
+    gap:
+        11px;
+
+    margin-top:
+        28px;
+}
+
+
+.obux-soulaana-brief-card {
+    position: relative;
+    overflow: hidden;
+
+    min-height:
+        135px;
+
+    padding:
+        17px 18px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    background:
+        rgba(15, 15, 43, 0.32);
+
+    backdrop-filter:
+        blur(14px);
+}
+
+
+.obux-soulaana-brief-card > span {
+    display:
+        block;
+
+    margin-bottom:
+        9px;
+
+    color:
+        var(--ob-gold, #e9c26f);
+
+    font-size:
+        9px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        0.13em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.obux-soulaana-brief-card h3 {
+    margin:
+        0 0 8px;
+
+    font-size:
+        20px;
+}
+
+
+.obux-soulaana-brief-card p {
+    margin:
+        0;
+
+    color:
+        rgba(244,239,255,0.79);
+
+    font-size:
+        12.5px;
+
+    line-height:
+        1.58;
+}
+
+
+.obux-brief-foot {
+    margin-top:
+        12px;
+
+    color:
+        rgba(244,239,255,0.52);
+
+    font-size:
+        10px;
+}
+
+
+.market-read {
+    grid-column:
+        span 7;
+
+    min-height:
+        190px;
+
+    border-radius:
+        24px 8px 24px 8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(84, 76, 174, 0.32),
+            rgba(31, 31, 70, 0.30)
+        );
+}
+
+
+.meaning-read {
+    grid-column:
+        span 5;
+
+    min-height:
+        190px;
+
+    border-radius:
+        10px 26px 10px 26px;
+}
+
+
+.account-read {
+    grid-column:
+        span 4;
+
+    border-radius:
+        22px;
+}
+
+
+.watch-read {
+    grid-column:
+        span 5;
+
+    border-radius:
+        8px 26px 26px 8px;
+}
+
+
+.attention-read {
+    grid-column:
+        span 3;
+
+    border-radius:
+        24px 8px 24px 8px;
+}
+
+
+.change-read {
+    grid-column:
+        span 3;
+
+    min-height:
+        112px;
+
+    border-radius:
+        12px 24px 12px 24px;
+}
+
+
+.wait-read {
+    grid-column:
+        span 4;
+
+    min-height:
+        112px;
+
+    border-radius:
+        24px 10px 24px 10px;
+}
+
+
+.next-read {
+    grid-column:
+        span 5;
+
+    min-height:
+        112px;
+
+    border-radius:
+        10px 28px 10px 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(181, 135, 74, 0.14),
+            rgba(30, 28, 66, 0.36)
+        );
+}
+
+
+.obux-soulaana-bottom-line {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    margin-top:
+        14px;
+
+    padding:
+        13px 16px;
+
+    border-radius:
+        14px 24px 14px 24px;
+
+    font-size:
+        12px;
+}
+
+
+.obux-soulaana-bottom-line.calm {
+    border:
+        1px solid
+        rgba(123,224,195,0.18);
+
+    background:
+        rgba(84, 169, 158, 0.08);
+}
+
+
+.obux-soulaana-bottom-line.active {
+    border:
+        1px solid
+        rgba(233,194,111,0.21);
+
+    background:
+        rgba(183, 135, 66, 0.08);
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   SECTION TITLES
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-dashboard-support,
+.obux-dashboard-cluster {
+    display:
+        grid;
+
+    gap:
+        13px;
+}
+
+
+.obux-dashboard-section-title {
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        space-between;
+
+    gap:
+        18px;
+}
+
+
+.obux-dashboard-section-title h3 {
+    margin:
+        5px 0 0;
+
+    font-size:
+        clamp(20px, 2.5vw, 29px);
+
+    letter-spacing:
+        -0.025em;
+}
+
+
+.obux-dashboard-section-title > p {
+    margin:
+        0;
+
+    max-width:
+        430px;
+
+    color:
+        rgba(244,239,255,0.62);
+
+    font-size:
+        11px;
+
+    line-height:
+        1.5;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   OBUX013 SUPPORT MOSAIC
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-support-mosaic {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+
+    grid-auto-flow:
+        dense;
+
+    gap:
+        10px;
+}
+
+
+.obux-support-tile {
+    position:
+        relative;
+
+    overflow:
+        hidden;
+
+    min-height:
+        118px;
+
+    padding:
+        15px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.075);
+
+    background:
+        rgba(26, 25, 61, 0.49);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+
+.obux-support-tile > span {
+    display:
+        block;
+
+    margin-bottom:
+        7px;
+
+    color:
+        rgba(233,194,111,0.84);
+
+    font-size:
+        8.5px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        0.13em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.obux-support-tile > strong {
+    display:
+        block;
+
+    font-size:
+        17px;
+
+    line-height:
+        1.15;
+}
+
+
+.obux-support-tile > p {
+    margin:
+        8px 0 0;
+
+    color:
+        rgba(244,239,255,0.59);
+
+    font-size:
+        10.5px;
+
+    line-height:
+        1.45;
+}
+
+
+.risk-tile {
+    grid-column:
+        span 3;
+
+    border-radius:
+        22px 8px 22px 8px;
+}
+
+
+.book-tile {
+    grid-column:
+        span 2;
+
+    border-radius:
+        8px 22px 8px 22px;
+}
+
+
+.market-tile {
+    grid-column:
+        span 4;
+
+    min-height:
+        142px;
+
+    border-radius:
+        25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(77, 83, 170, 0.34),
+            rgba(27, 27, 64, 0.46)
+        );
+}
+
+
+.watch-tile {
+    grid-column:
+        span 3;
+
+    border-radius:
+        8px 28px 8px 28px;
+}
+
+
+.mode-tile {
+    grid-column:
+        span 4;
+
+    border-radius:
+        24px 8px 24px 8px;
+}
+
+
+.change-tile {
+    grid-column:
+        span 8;
+
+    border-radius:
+        10px 30px 10px 30px;
+
+    min-height:
+        104px;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   SINCE YOU WERE HERE RIBBON
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-since-ribbon {
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(220px, 0.7fr)
+        minmax(0, 1.3fr);
+
+    gap:
+        20px;
+
+    align-items:
+        center;
+
+    padding:
+        13px 18px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    border-radius:
+        999px 20px 999px 20px;
+
+    background:
+        rgba(30, 29, 69, 0.48);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+
+.obux-since-ribbon span {
+    display:
+        block;
+
+    color:
+        var(--ob-gold, #e9c26f);
+
+    font-size:
+        8px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        0.13em;
+}
+
+
+.obux-since-ribbon strong {
+    display:
+        block;
+
+    margin-top:
+        3px;
+
+    font-size:
+        12px;
+}
+
+
+.obux-since-ribbon p {
+    margin:
+        0;
+
+    color:
+        rgba(244,239,255,0.67);
+
+    font-size:
+        11px;
+
+    line-height:
+        1.5;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   COMPACT OPEN BOOK
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-openbook-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+
+    gap:
+        10px;
+}
+
+
+.obux-openbook-card {
+    grid-column:
+        span 4;
+
+    min-height:
+        190px;
+
+    padding:
+        17px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    border-radius:
+        23px 9px 23px 9px;
+
+    background:
+        rgba(25, 24, 59, 0.51);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+
+.obux-openbook-card:nth-child(2n) {
+    border-radius:
+        9px 25px 9px 25px;
+}
+
+
+.obux-openbook-card:nth-child(3n) {
+    border-radius:
+        26px;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   HOT NOW MICRO MOSAIC
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-hot-mosaic {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+
+    grid-auto-flow:
+        dense;
+
+    gap:
+        10px;
+}
+
+
+.obux-hot-micro-card {
+    grid-column:
+        span 3;
+
+    min-height:
+        170px;
+
+    padding:
+        16px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    border-radius:
+        22px 8px 22px 8px;
+
+    background:
+        rgba(25, 24, 59, 0.49);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+
+.obux-hot-micro-card:nth-child(2n) {
+    grid-column:
+        span 4;
+
+    border-radius:
+        8px 26px 8px 26px;
+}
+
+
+.obux-hot-micro-card:nth-child(3n) {
+    grid-column:
+        span 5;
+
+    border-radius:
+        27px;
+}
+
+
+.obux-hot-micro-card.actionable {
+    border-color:
+        rgba(123,224,195,0.24);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(53, 113, 111, 0.17),
+            rgba(25, 24, 59, 0.51)
+        );
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   SHARED COMPACT CARDS
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-card-top {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-start;
+
+    gap:
+        10px;
+}
+
+
+.obux-card-top > div {
+    display:
+        grid;
+
+    gap:
+        2px;
 }
 
 
 .obux-symbol {
-    font-size: 17px;
-    font-weight: 900;
+    font-size:
+        18px;
+
+    font-weight:
+        900;
+}
+
+
+.obux-card-sub {
+    color:
+        rgba(244,239,255,0.48);
+
+    font-size:
+        9px;
 }
 
 
 .obux-dashboard-chip.attention {
-    color: #ff7ea2;
+    color:
+        #ff99b3;
 }
 
 
 .obux-dashboard-chip.actionable {
-    color: #7be0c3;
+    color:
+        #8fe5ce;
 }
 
 
 .obux-dashboard-chip.watch {
-    color: var(--ob-gold, #e9c26f);
+    color:
+        var(--ob-gold, #e9c26f);
 }
 
 
-.obux-dashboard-position-risk {
-    margin: 14px 0 10px;
+.obux-card-translation {
+    margin:
+        14px 0 0;
+
+    color:
+        rgba(244,239,255,0.76);
+
+    font-size:
+        11.5px;
+
+    line-height:
+        1.55;
 }
 
 
-.obux-dashboard-position-card > p,
-.obux-dashboard-attention-card > p {
-    margin: 0;
-    color: rgba(238,233,255,0.72);
-    font-size: 12px;
-    line-height: 1.58;
+.obux-mini-next {
+    display:
+        grid;
+
+    gap:
+        3px;
+
+    margin-top:
+        13px;
+
+    padding-top:
+        11px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.06);
 }
 
 
-.obux-dashboard-next {
-    display: grid;
-    gap: 2px;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.065);
+.obux-mini-next span {
+    color:
+        var(--ob-gold, #e9c26f);
+
+    font-size:
+        8px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        0.12em;
 }
 
 
-.obux-dashboard-next strong {
-    font-size: 12px;
-    line-height: 1.5;
+.obux-mini-next strong {
+    font-size:
+        10.5px;
+
+    line-height:
+        1.45;
 }
 
 
-.obux-dashboard-score {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2px 12px;
-    align-items: end;
-    margin: 16px 0;
-    padding-bottom: 13px;
-    border-bottom: 1px solid rgba(255,255,255,0.065);
+.obux-mini-detail {
+    margin-top:
+        12px;
+
+    color:
+        rgba(244,239,255,0.56);
+
+    font-size:
+        9px;
 }
 
 
-.obux-dashboard-score strong {
-    grid-row: span 2;
-    font-size: 28px;
+.obux-mini-detail summary {
+    cursor:
+        pointer;
+
+    color:
+        rgba(244,239,255,0.55);
 }
 
 
-.obux-dashboard-score small {
-    color: var(--ob-gold, #e9c26f);
+.obux-mini-detail > div {
+    margin-top:
+        9px;
+
+    padding:
+        10px;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(0,0,0,0.12);
 }
 
 
-.obux-dashboard-explain + .obux-dashboard-explain {
-    margin-top: 13px;
+.obux-mini-detail p {
+    margin:
+        4px 0 0;
+
+    line-height:
+        1.45;
 }
 
 
-.obux-dashboard-calm-card {
-    padding: 20px 22px;
-    border-color: rgba(123,224,195,0.16);
+/* -------------------------------------------------------------------------------------------------
+   SMALL EMPTY STATE
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-small-calm-panel {
+    display:
+        inline-flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        5px;
+
+    width:
+        min(620px, 100%);
+
+    padding:
+        16px 18px;
+
+    border:
+        1px solid
+        rgba(123,224,195,0.16);
+
+    border-radius:
+        24px 9px 24px 9px;
+
+    background:
+        rgba(39, 80, 83, 0.10);
+
+    backdrop-filter:
+        blur(14px);
 }
 
 
-.obux-dashboard-calm-card > strong {
-    color: #7be0c3;
+.obux-small-calm-panel strong {
+    color:
+        #8fe5ce;
 }
 
 
-.obux-dashboard-calm-card p {
-    margin: 7px 0 0;
-    color: rgba(238,233,255,0.67);
-    font-size: 13px;
-    line-height: 1.58;
+.obux-small-calm-panel span {
+    color:
+        rgba(244,239,255,0.62);
+
+    font-size:
+        10.5px;
+
+    line-height:
+        1.45;
 }
 
 
-.obux-dashboard-market-context {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr auto;
-    align-items: center;
-    gap: 20px;
-    padding: 18px 20px;
+/* -------------------------------------------------------------------------------------------------
+   MARKET HANDOFF
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-market-handoff {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        22px;
+
+    padding:
+        17px 20px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.09);
+
+    border-radius:
+        9px 32px 9px 32px;
+
+    background:
+        linear-gradient(
+            125deg,
+            rgba(60, 75, 150, 0.30),
+            rgba(35, 29, 71, 0.44)
+        );
+
+    backdrop-filter:
+        blur(16px);
 }
 
+
+.obux-market-handoff span {
+    color:
+        var(--ob-gold, #e9c26f);
+
+    font-size:
+        8px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        0.12em;
+}
+
+
+.obux-market-handoff strong {
+    display:
+        block;
+
+    margin-top:
+        3px;
+
+    font-size:
+        17px;
+}
+
+
+.obux-market-handoff p {
+    margin:
+        5px 0 0;
+
+    color:
+        rgba(244,239,255,0.63);
+
+    font-size:
+        10.5px;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   DEEPER DETAIL / SHOW ME WHY
+   ------------------------------------------------------------------------------------------------- */
 
 .obux-dashboard-evidence {
-    overflow: hidden;
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.07);
+
+    border-radius:
+        28px 10px 28px 10px;
+
+    background:
+        rgba(23, 22, 54, 0.47);
+
+    backdrop-filter:
+        blur(16px);
 }
 
 
 .obux-dashboard-evidence > summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 18px;
-    padding: 18px 20px;
-    cursor: pointer;
-    list-style: none;
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        18px;
+
+    padding:
+        17px 20px;
+
+    cursor:
+        pointer;
+
+    list-style:
+        none;
 }
 
 
 .obux-dashboard-evidence > summary::-webkit-details-marker {
-    display: none;
+    display:
+        none;
 }
 
 
 .obux-dashboard-evidence-plus {
-    color: var(--ob-gold, #e9c26f);
-    font-size: 24px;
-    transition: transform 140ms ease;
+    color:
+        var(--ob-gold, #e9c26f);
+
+    font-size:
+        24px;
+
+    transition:
+        transform 140ms ease;
 }
 
 
-.obux-dashboard-evidence[open] .obux-dashboard-evidence-plus {
-    transform: rotate(45deg);
+.obux-dashboard-evidence[open]
+.obux-dashboard-evidence-plus {
+    transform:
+        rotate(45deg);
 }
 
 
 .obux-dashboard-evidence-body {
-    padding: 18px 20px 20px;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    padding:
+        18px 20px 20px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.07);
 }
 
 
 .obux-dashboard-evidence-body > p {
-    margin-top: 0;
-    color: rgba(238,233,255,0.67);
-    font-size: 12px;
-    line-height: 1.58;
+    margin-top:
+        0;
+
+    color:
+        rgba(244,239,255,0.61);
+
+    font-size:
+        11px;
+
+    line-height:
+        1.55;
+}
+
+
+.obux-dashboard-source-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap:
+        9px;
+}
+
+
+.obux-dashboard-metric {
+    min-height:
+        120px;
+
+    padding:
+        13px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.06);
+
+    border-radius:
+        13px;
+
+    background:
+        rgba(10, 9, 30, 0.18);
+}
+
+
+.obux-dashboard-metric > span {
+    display:
+        block;
+
+    color:
+        var(--ob-gold, #e9c26f);
+
+    font-size:
+        8px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        0.11em;
+}
+
+
+.obux-dashboard-metric strong {
+    display:
+        block;
+
+    margin:
+        5px 0 7px;
+
+    font-size:
+        18px;
+}
+
+
+.obux-dashboard-metric p {
+    margin:
+        0;
+
+    color:
+        rgba(244,239,255,0.53);
+
+    font-size:
+        9.5px;
+
+    line-height:
+        1.4;
 }
 
 
 .obux-dashboard-evidence-sink {
-    display: grid;
-    gap: 12px;
-    margin-top: 18px;
-    padding-top: 18px;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    display:
+        grid;
+
+    gap:
+        11px;
+
+    margin-top:
+        17px;
+
+    padding-top:
+        17px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.06);
 }
 
 
 .obux-dashboard-evidence-empty {
-    color: rgba(238,233,255,0.55);
-    font-size: 11px;
+    color:
+        rgba(244,239,255,0.43);
+
+    font-size:
+        9px;
 }
 
 
-.obux-dashboard-evidence-sink > * {
-    margin: 0 !important;
-    opacity: 0.88;
-}
-
-
-.obux-dashboard-evidence-sink .ob-panel {
-    box-shadow: none !important;
-}
-
-
-/* Legacy Dashboard proof panels should not visually compete with Soulaana. */
 [data-obux-dashboard-evidence-moved="true"] {
-    max-width: 100%;
+    max-width:
+        100%;
 }
 
 
-@media (max-width: 1120px) {
+/* -------------------------------------------------------------------------------------------------
+   RESPONSIVE
+   ------------------------------------------------------------------------------------------------- */
 
-    .obux-dashboard-meaning-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (
+    max-width: 1100px
+) {
+
+    .market-read,
+    .meaning-read {
+        grid-column:
+            span 6;
     }
 
 
-    .obux-dashboard-metric-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+    .account-read,
+    .watch-read,
+    .attention-read {
+        grid-column:
+            span 4;
+    }
+
+
+    .change-read,
+    .wait-read,
+    .next-read {
+        grid-column:
+            span 4;
+    }
+
+
+    .risk-tile,
+    .book-tile,
+    .market-tile,
+    .watch-tile {
+        grid-column:
+            span 6;
+    }
+
+
+    .mode-tile,
+    .change-tile {
+        grid-column:
+            span 6;
+    }
+
+
+    .obux-openbook-card {
+        grid-column:
+            span 6;
+    }
+
+
+    .obux-hot-micro-card,
+    .obux-hot-micro-card:nth-child(2n),
+    .obux-hot-micro-card:nth-child(3n) {
+        grid-column:
+            span 6;
     }
 
 }
 
 
-@media (max-width: 860px) {
+@media (
+    max-width: 760px
+) {
 
-    .obux-dashboard-now-top,
-    .obux-dashboard-section-head,
-    .obux-dashboard-market-context {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
+    .obux-dashboard-shell {
+        width:
+            min(
+                100% - 18px,
+                1500px
+            );
+
+        gap:
+            22px;
     }
 
 
-    .obux-dashboard-context {
-        justify-content: flex-start;
+    .obux-soulaana-hero {
+        padding:
+            23px 18px;
+
+        border-radius:
+            25px 10px 25px 10px;
     }
 
 
-    .obux-dashboard-attention-grid,
-    .obux-dashboard-position-grid,
-    .obux-dashboard-hot-grid,
+    .obux-soulaana-brief-grid,
+    .obux-support-mosaic,
+    .obux-openbook-grid,
+    .obux-hot-mosaic {
+        display:
+            grid;
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .market-read,
+    .meaning-read,
+    .account-read,
+    .watch-read,
+    .attention-read,
+    .change-read,
+    .wait-read,
+    .next-read,
+    .risk-tile,
+    .book-tile,
+    .market-tile,
+    .watch-tile,
+    .mode-tile,
+    .change-tile,
+    .obux-openbook-card,
+    .obux-hot-micro-card,
+    .obux-hot-micro-card:nth-child(2n),
+    .obux-hot-micro-card:nth-child(3n) {
+        grid-column:
+            1;
+    }
+
+
+    .obux-dashboard-section-title,
+    .obux-market-handoff {
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+    }
+
+
+    .obux-since-ribbon {
+        grid-template-columns:
+            1fr;
+
+        border-radius:
+            22px 9px 22px 9px;
+    }
+
+
     .obux-dashboard-source-grid {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-
-@media (max-width: 620px) {
-
-    .obux-dashboard-now {
-        padding: 20px;
+        grid-template-columns:
+            1fr;
     }
 
 
-    .obux-dashboard-meaning-grid,
-    .obux-dashboard-metric-grid {
-        grid-template-columns: 1fr;
-    }
+    .obux-soulaana-bottom-line {
+        align-items:
+            flex-start;
 
-
-    .obux-dashboard-action-state {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction:
+            column;
     }
 
 }
