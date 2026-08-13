@@ -545,3 +545,26 @@ Decision packets remain preparation only.
 
 Clouds does not choose for the owner, approve actions, move capital,
 or execute downstream work.
+
+## GP030 — Owner Decision Review / Readiness Gate
+
+GP030 adds the safety gate between a prepared decision packet and an
+actual owner choice.
+
+Each packet is checked for:
+
+- a clear decision question;
+- non-executing choices;
+- consequence explanations;
+- source-owned evidence references;
+- cross-business impact awareness;
+- owner review prompts;
+- correct owning application;
+- Tower mediation requirements;
+- unresolved blockers;
+- proof that no decision or execution has already occurred.
+
+A green review means the packet is ready for the owner to choose from.
+
+It does not record the owner's choice, approve anything, move capital,
+or execute downstream work.
