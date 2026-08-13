@@ -589,3 +589,24 @@ A recorded choice is not approval or execution.
 
 GP031 does not move capital, alter permissions, invoke downstream
 applications, or treat an owner's intent as completed operational work.
+
+## GP032 — Owner Intent Review / Handoff Authorization Preparation
+
+GP032 reviews recorded owner intent before any handoff-authorization
+boundary.
+
+The review confirms:
+
+- the owner choice is explicitly recorded;
+- the underlying decision review remains green;
+- the selected option still belongs to the reviewed packet;
+- the option has not been reinterpreted;
+- the owning application remains correct;
+- Tower mediation remains preserved;
+- cross-business impact context is unchanged;
+- no approval, capital movement, or downstream execution has occurred.
+
+A green GP032 review means the intent may proceed to a separate
+handoff-authorization decision.
+
+GP032 does not authorize or deliver the handoff.

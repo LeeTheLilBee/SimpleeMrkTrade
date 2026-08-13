@@ -876,3 +876,24 @@ from .owner_decision_choice_service import (
     get_pending_owner_choice_records,
     record_owner_choice,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP032
+# OWNER INTENT REVIEW / HANDOFF AUTHORIZATION PREPARATION
+# ============================================================
+
+from .owner_intent_review import (
+    OwnerIntentReview,
+    OwnerIntentReviewCheck,
+    OwnerIntentReviewState,
+    OwnerIntentReviewSurface,
+)
+
+from .owner_intent_review_service import (
+    build_owner_intent_review,
+    get_clouds_gp032_status_payload,
+    get_owner_intent_review_surface,
+    get_owner_intent_review_surface_payload,
+    get_owner_intent_reviews,
+)
