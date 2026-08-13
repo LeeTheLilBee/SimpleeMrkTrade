@@ -581,3 +581,22 @@ from .operating_data_trust_service import (
     get_operating_trust_surface,
     get_operating_trust_surface_payload,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP020
+# EXECUTIVE OPERATING SNAPSHOT / SOULAANA INTERPRETATION FOUNDATION
+# ============================================================
+
+from .executive_operating_snapshot import (
+    ExecutiveOperatingSnapshot,
+    ExecutiveOperatingSourceCard,
+    SoulaanaExecutiveBrief,
+)
+
+from .executive_operating_snapshot_service import (
+    get_clouds_gp020_status_payload,
+    get_executive_operating_snapshot,
+    get_executive_operating_snapshot_payload,
+    get_executive_operating_source_cards,
+)

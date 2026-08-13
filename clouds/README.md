@@ -299,3 +299,21 @@ Clouds now distinguishes trusted projections from live sources and rejects
 invalid sources fail-closed.
 
 No raw downstream application data is accessed.
+
+## GP020 — Executive Operating Snapshot / Soulaana Interpretation Foundation
+
+GP020 turns trusted operating summaries into one executive owner picture.
+
+Soulaana now explains:
+
+- what each operating source means;
+- why it matters;
+- what needs owner attention;
+- what should remain under watch;
+- what can wait;
+- what the owner can do next;
+- when no action is required.
+
+Interpretation leads the owner experience before raw metrics.
+
+Clouds still performs no raw downstream source access and no downstream execution.
