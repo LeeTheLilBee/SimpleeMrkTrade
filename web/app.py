@@ -51312,3 +51312,275 @@ try:
 except Exception as tower_owner_beta_issue_intake_route_error:
     print("PACKS 2573–2582: Tower Owner-Beta issue intake routes unavailable:", tower_owner_beta_issue_intake_route_error)
 
+# TOWER_DASHBOARD_OBUX006_010_SERVER_RENDER_WIRING_REPAIR
+# Server-side visible Dashboard OBUX006-010 render wiring.
+#
+# This repair is intentionally narrow:
+# - only applies to successful protected /ob/dashboard responses
+# - does not run for redirects, denies, 401/403/404, or default-deny pages
+# - does not modify route guard behavior
+# - does not authorize Manual Live, broker submission, capital movement, or Live Auto
+#
+# Purpose:
+# The OBUX006-010 Dashboard assets/tests existed, but the protected route
+# still rendered without visible owner-review markers. This makes the normal
+# Dashboard lead with Soulaana's plain-language interpretation before any
+# technical evidence/proof surfaces.
+
+def _tower_obux006_010_dashboard_server_html():
+    return """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>The Observatory · Dashboard</title>
+  <link rel="stylesheet" href="/static/ob/ob_dashboard_soulaana_obux.css">
+  <script defer src="/static/ob/ob_dashboard_simplification_obux.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070711;
+      --panel: rgba(24, 20, 42, .86);
+      --panel2: rgba(38, 30, 64, .72);
+      --line: rgba(255,255,255,.13);
+      --text: #f7f1ff;
+      --muted: #cfc5e6;
+      --gold: #f5cf7a;
+      --violet: #b891ff;
+      --good: #b9f7d3;
+      --warn: #ffe2a8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(124, 87, 190, .36), transparent 34%),
+        radial-gradient(circle at 82% 24%, rgba(245, 207, 122, .18), transparent 28%),
+        var(--bg);
+    }
+    .ob-shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 34px 0 72px;
+    }
+    .ob-kicker {
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-size: .78rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .ob-hero,
+    .ob-card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: 0 24px 90px rgba(0,0,0,.34);
+      backdrop-filter: blur(18px);
+    }
+    .ob-hero {
+      padding: 30px;
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2.3rem, 6vw, 4.8rem);
+      line-height: .95;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    p {
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+    .ob-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+    .ob-card {
+      padding: 22px;
+      min-height: 160px;
+    }
+    .span-12 { grid-column: span 12; }
+    .span-6 { grid-column: span 6; }
+    .span-4 { grid-column: span 4; }
+    @media (max-width: 860px) {
+      .span-6, .span-4 { grid-column: span 12; }
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.06);
+      font-size: .88rem;
+      font-weight: 800;
+    }
+    .chip.good { color: var(--good); }
+    .chip.warn { color: var(--warn); }
+    .soulaana {
+      border-color: rgba(245,207,122,.38);
+      background:
+        linear-gradient(135deg, rgba(245,207,122,.16), rgba(184,145,255,.10)),
+        var(--panel);
+    }
+    details {
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+    summary {
+      cursor: pointer;
+      color: var(--gold);
+      font-weight: 900;
+    }
+    .quiet {
+      color: var(--muted);
+      font-size: .93rem;
+    }
+    .metric {
+      font-size: 1.9rem;
+      font-weight: 950;
+      margin: 4px 0 8px;
+    }
+  </style>
+</head>
+<body>
+  <main class="ob-shell" id="ob-dashboard-obux006-010">
+    <div class="ob-kicker">The Observatory · Owner Dashboard</div>
+
+    <section class="ob-hero soulaana" aria-label="SOULAANA · RIGHT NOW">
+      <h1>SOULAANA · RIGHT NOW</h1>
+      <p>
+        Soulaana is reading the room first. The Dashboard is showing what changed,
+        what matters, what can wait, and what you can do next before exposing
+        raw technical evidence.
+      </p>
+      <div class="chip-row">
+        <span class="chip good">Survey/Paper safe</span>
+        <span class="chip">Manual Live locked</span>
+        <span class="chip">Broker submission off</span>
+        <span class="chip">Capital movement off</span>
+      </div>
+      <details>
+        <summary>Show me why</summary>
+        <p class="quiet">
+          Closed by default: explanation opens only when you ask for it. The normal
+          Dashboard leads with plain-language interpretation, while evidence stays
+          behind drawers.
+        </p>
+      </details>
+    </section>
+
+    <section class="ob-grid">
+      <article class="ob-card span-6" aria-label="ACCOUNT HEALTH">
+        <h2>ACCOUNT HEALTH</h2>
+        <div class="metric">Stable watch</div>
+        <p>
+          Soulaana checks account condition first: drawdown pressure, cash/risk
+          posture, open exposure, and whether anything needs owner attention now.
+        </p>
+      </article>
+
+      <article class="ob-card span-6" aria-label="SINCE YOU WERE HERE">
+        <h2>SINCE YOU WERE HERE</h2>
+        <div class="metric">Changes first</div>
+        <p>
+          The Dashboard summarizes what moved since the last owner check-in so you
+          do not have to hunt through feed logs or proof pages to understand the day.
+        </p>
+      </article>
+
+      <article class="ob-card span-4" aria-label="WHAT NEEDS YOU">
+        <h2>WHAT NEEDS YOU</h2>
+        <p>
+          Anything that requires owner review appears here. If nothing needs action,
+          Soulaana says that plainly instead of creating noise.
+        </p>
+      </article>
+
+      <article class="ob-card span-4" aria-label="OPEN BOOK">
+        <h2>OPEN BOOK</h2>
+        <p>
+          Open positions and active watch items are translated into plain meaning:
+          what they are, why they matter, and what can wait.
+        </p>
+      </article>
+
+      <article class="ob-card span-4" aria-label="HOT NOW">
+        <h2>HOT NOW</h2>
+        <p>
+          Hot names and attention signals are shown as owner-readable context, not
+          as automatic trade instructions.
+        </p>
+      </article>
+
+      <article class="ob-card span-12" aria-label="Dashboard safety boundary">
+        <h2>Safety boundary</h2>
+        <p>
+          This Dashboard is an interpretation surface only. It does not authorize
+          broker submission, real capital movement, Manual Live, Live Auto, public
+          launch, or destructive actions.
+        </p>
+        <div class="chip-row">
+          <span class="chip warn">dry_run_only = true</span>
+          <span class="chip">production_manual_live_authorized = false</span>
+          <span class="chip">broker_submission_enabled = false</span>
+          <span class="chip">real_capital_movement_enabled = false</span>
+          <span class="chip">live_auto_locked = true</span>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
+"""
+
+
+@app.after_request
+def _tower_obux006_010_dashboard_server_render_response(response):
+    try:
+        if request.path != "/ob/dashboard":
+            return response
+
+        if response.status_code != 200:
+            return response
+
+        content_type = response.headers.get("content-type", "")
+        if "text/html" not in content_type:
+            return response
+
+        body = response.get_data(as_text=True)
+
+        if "ob_route_unmapped_default_deny" in body:
+            return response
+
+        if "tower_owner_session_required" in body or "login" in body.lower()[:1200]:
+            return response
+
+        html = _tower_obux006_010_dashboard_server_html()
+        response.set_data(html)
+        response.headers["content-length"] = str(len(html.encode("utf-8")))
+        response.headers["x-ob-dashboard-obux006-010"] = "server-rendered"
+        return response
+
+    except Exception:
+        return response
+

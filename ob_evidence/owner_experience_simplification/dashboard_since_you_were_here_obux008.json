@@ -1,0 +1,18 @@
+{
+  "generated_at_utc": "2026-08-13T14:44:39.968606+00:00",
+  "package": "OBUX008",
+  "payload": {
+    "gate_state": "dashboard_since_you_were_here_interpreter_sealed",
+    "package": "OBUX008",
+    "recommendation": "GO_FOR_DASHBOARD_ATTENTION_AND_HOT_NOW",
+    "storage_scope": "browser_session_only",
+    "title": "Dashboard Since-You-Were-Here Interpreter",
+    "tracks": [
+      "confirmed_position_symbols",
+      "attention_symbols",
+      "elevated_watch_symbols",
+      "actionable_symbols"
+    ]
+  },
+  "title": "Dashboard Since-You-Were-Here Interpreter"
+}

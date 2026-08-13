@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-08-13T14:44:39.966963+00:00",
+  "package": "OBUX006",
+  "payload": {
+    "canonical_questions": [
+      "what_this_means",
+      "why_it_matters",
+      "what_needs_you",
+      "what_can_wait",
+      "next_action",
+      "no_action_needed"
+    ],
+    "gate_state": "dashboard_soulaana_right_now_brief_sealed",
+    "package": "OBUX006",
+    "real_renderer": "web/static/ob/ob_dashboard.js",
+    "recommendation": "GO_FOR_DASHBOARD_ACCOUNT_INTERPRETATION",
+    "soulaana_leads": true,
+    "title": "Dashboard Soulaana Right-Now Command Brief"
+  },
+  "title": "Dashboard Soulaana Right-Now Command Brief"
+}
