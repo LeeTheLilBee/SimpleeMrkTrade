@@ -155,3 +155,37 @@ Clouds does not authenticate, authorize, perform Tower step-up,
 approve decisions, confirm irreversible execution, execute the intent,
 launch downstream applications directly, trade, move money, retrieve
 raw Vault evidence, or operate property workflows.
+
+## GP012 — Executive Owner Action Intent Review / Handoff Preparation Surface
+
+GP012 adds the owner-review and handoff-preparation layer beneath GP011.
+
+Each action intent now exposes:
+
+- a review packet;
+- the action being considered;
+- why owner review matters;
+- prerequisite requirements;
+- blockers;
+- Tower requirement visibility;
+- owner permission requirement visibility;
+- step-up requirement visibility;
+- a prepared next-step description;
+- a handoff-preparation state.
+
+A preparation state of `prepared` means only that Clouds has enough
+descriptive information to present the next protected step.
+
+It does not mean:
+
+- approved;
+- authorized;
+- owner-decided;
+- Tower-requested;
+- Tower-accepted;
+- handed off;
+- executed.
+
+Clouds still performs no authentication, authorization, Tower step-up,
+approval, handoff execution, trading, payment execution, raw Vault retrieval,
+or property operations.

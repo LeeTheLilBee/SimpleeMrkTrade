@@ -378,3 +378,34 @@ from .executive_owner_workspace_detail_service import (
     get_executive_owner_workspace_detail_surface_payload,
     get_executive_owner_workspace_details,
 )
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP012
+# EXECUTIVE OWNER ACTION INTENT REVIEW / HANDOFF PREPARATION SURFACE
+# ============================================================
+
+from .executive_owner_action_intent_review import (
+    HandoffPreparation,
+    HandoffPreparationState,
+    IntentReviewAuthority,
+    IntentReviewDecision,
+    IntentReviewState,
+    OwnerIntentReviewPacket,
+    OwnerIntentReviewSurface,
+    ReviewBlocker,
+    ReviewRequirement,
+    filter_review_packets,
+    requirement_sort_key,
+    review_blocker_sort_key,
+    review_packet_sort_key,
+)
+
+from .executive_owner_action_intent_review_service import (
+    filter_owner_intent_review_packets,
+    get_clouds_gp012_status_payload,
+    get_owner_intent_review_packet,
+    get_owner_intent_review_packet_payload,
+    get_owner_intent_review_packets,
+    get_owner_intent_review_surface,
+    get_owner_intent_review_surface_payload,
+)
