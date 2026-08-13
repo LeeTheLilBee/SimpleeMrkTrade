@@ -212,3 +212,25 @@ The envelope remains a draft.
 GP013 does not record owner approval, authorize submission, create a Tower
 request, deliver anything to Tower, create a Tower receipt, execute a handoff,
 or execute downstream application work.
+
+## GP014 — Executive Owner Handoff Request Owner Decision / Submission Authorization Surface
+
+GP014 adds the owner decision and submission authorization layer above
+GP013's Tower delivery envelope drafts.
+
+The owner-side contract now records:
+
+- explicit owner review confirmation;
+- owner decision state;
+- approval state;
+- submission authorization state;
+- draft integrity verification;
+- envelope integrity verification;
+- preservation of owner permission requirements;
+- preservation of Tower step-up requirements;
+- preservation of the Tower boundary.
+
+GP014 authorizes future submission only.
+
+It does not create a Tower request, deliver an envelope, create a Tower
+receipt, execute a handoff, or execute downstream application work.
