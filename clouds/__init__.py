@@ -348,3 +348,33 @@ from .executive_owner_workspace_service import (
     get_executive_owner_workspace_payload,
     get_executive_owner_workspace_summary,
 )
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP011
+# EXECUTIVE OWNER WORKSPACE DETAIL / ACTION INTENT SURFACE
+# ============================================================
+
+from .executive_owner_workspace_detail import (
+    ExecutiveOwnerWorkspaceDetail,
+    ExecutiveOwnerWorkspaceDetailSurface,
+    OwnerActionBlocker,
+    OwnerActionIntent,
+    OwnerActionIntentAuthority,
+    OwnerActionIntentKind,
+    OwnerActionIntentRisk,
+    OwnerActionIntentState,
+    OwnerActionPrerequisite,
+    blocker_sort_key,
+    filter_workspace_details,
+    prerequisite_sort_key,
+)
+
+from .executive_owner_workspace_detail_service import (
+    filter_executive_owner_workspace_details,
+    get_clouds_gp011_status_payload,
+    get_executive_owner_workspace_detail,
+    get_executive_owner_workspace_detail_payload,
+    get_executive_owner_workspace_detail_surface,
+    get_executive_owner_workspace_detail_surface_payload,
+    get_executive_owner_workspace_details,
+)

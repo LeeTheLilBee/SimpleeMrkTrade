@@ -130,3 +130,28 @@ readiness state means.
 Clouds does not authenticate, authorize, perform Tower step-up, approve
 decisions, execute navigation, launch downstream applications directly,
 trade, move money, retrieve raw Vault evidence, or operate property workflows.
+
+## GP011 — Executive Owner Workspace Detail / Action Intent Surface
+
+GP011 adds a detail layer beneath every GP010 workspace item.
+
+Each detail explains:
+
+- what the item means;
+- why it matters;
+- what the owner can do now;
+- what can wait;
+- the current health and priority;
+- source section, application, and mission-lane linkage;
+- the intended next action;
+- whether that intent stays inside Clouds or requires Tower;
+- prerequisites;
+- blockers;
+- owner review questions.
+
+Action intent remains descriptive only.
+
+Clouds does not authenticate, authorize, perform Tower step-up,
+approve decisions, confirm irreversible execution, execute the intent,
+launch downstream applications directly, trade, move money, retrieve
+raw Vault evidence, or operate property workflows.
