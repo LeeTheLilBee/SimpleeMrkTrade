@@ -1,0 +1,19 @@
+{
+  "generated_at_utc": "2026-08-13T16:40:33.336889+00:00",
+  "package": "OBUX013",
+  "payload": {
+    "gate_state": "dashboard_nonuniform_panel_geometry_sealed",
+    "mixed_column_spans": [
+      2,
+      3,
+      4,
+      5,
+      7,
+      8
+    ],
+    "recommendation": "GO_FOR_NEBULA_VISUAL_SYSTEM",
+    "small_panels_added": true,
+    "uniform_grid_removed": true
+  },
+  "title": "Broken Geometry Support Mosaic"
+}

@@ -1,0 +1,14 @@
+{
+  "generated_at_utc": "2026-08-13T16:40:33.337241+00:00",
+  "package": "OBUX014",
+  "payload": {
+    "black_slab_removed": true,
+    "gate_state": "dashboard_nebula_visual_system_sealed",
+    "indigo_present": true,
+    "magenta_haze_present": true,
+    "recommendation": "GO_FOR_DENSITY_REDUCTION",
+    "star_field_present": true,
+    "violet_present": true
+  },
+  "title": "Living Nebula Night Sky"
+}
