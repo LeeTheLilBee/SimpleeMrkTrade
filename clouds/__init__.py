@@ -534,3 +534,29 @@ from .clouds_handoff_delivery_boundary_service import (
     get_clouds_handoff_closeout_receipt,
     get_clouds_handoff_closeout_receipts,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP018
+# SIMPLEE OPERATING DATA ADAPTER FOUNDATION
+# ============================================================
+
+from .operating_data_adapter import (
+    OperatingAdapterSurface,
+    OperatingAttention,
+    OperatingAuthority,
+    OperatingHealth,
+    OperatingMetric,
+    OperatingReadiness,
+    OperatingSourceKind,
+    OperatingSummary,
+)
+
+from .operating_data_adapter_service import (
+    get_clouds_gp018_status_payload,
+    get_operating_adapter_surface,
+    get_operating_adapter_surface_payload,
+    get_operating_summaries,
+    get_operating_summary,
+    get_operating_summary_payload,
+)

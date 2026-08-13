@@ -271,3 +271,21 @@ The closeout explicitly states:
 
 The next Clouds corridor moves away from handoff plumbing and begins
 the real Simplee operating-data adapter foundation.
+
+## GP018 — Simplee Operating Data Adapter Foundation
+
+GP018 creates the approved operating-summary boundary for The Clouds.
+
+Six canonical sources are represented:
+
+- The Observatory
+- The Tower
+- The Teller
+- The Grounds
+- Archive Vault
+- ATM Operations
+
+These are explicit Clouds-side projections for contract development,
+not live downstream feeds.
+
+Clouds does not import or execute downstream applications.
