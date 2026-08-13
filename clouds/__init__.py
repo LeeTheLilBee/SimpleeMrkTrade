@@ -560,3 +560,24 @@ from .operating_data_adapter_service import (
     get_operating_summary,
     get_operating_summary_payload,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP019
+# OPERATING DATA NORMALIZATION / TRUST SURFACE
+# ============================================================
+
+from .operating_data_trust import (
+    NormalizationState,
+    OperatingTrustRecord,
+    OperatingTrustState,
+    OperatingTrustSurface,
+)
+
+from .operating_data_trust_service import (
+    get_clouds_gp019_status_payload,
+    get_operating_trust_record,
+    get_operating_trust_records,
+    get_operating_trust_surface,
+    get_operating_trust_surface_payload,
+)

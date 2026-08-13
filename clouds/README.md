@@ -289,3 +289,13 @@ These are explicit Clouds-side projections for contract development,
 not live downstream feeds.
 
 Clouds does not import or execute downstream applications.
+
+## GP019 — Operating Data Normalization / Trust Surface
+
+GP019 normalizes GP018 operating summaries before they are allowed into
+owner-facing executive interpretation.
+
+Clouds now distinguishes trusted projections from live sources and rejects
+invalid sources fail-closed.
+
+No raw downstream application data is accessed.
