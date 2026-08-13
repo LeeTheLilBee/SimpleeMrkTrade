@@ -755,3 +755,30 @@ from .operating_snapshot_history_service import (
     get_projection_snapshot_delta,
     get_projection_snapshot_deltas,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP027
+# CROSS-BUSINESS IMPACT GRAPH FOUNDATION
+# ============================================================
+
+from .cross_business_impact_graph import (
+    CrossBusinessImpactSurface,
+    ImpactGraphEdge,
+    ImpactGraphNode,
+    ImpactKind,
+    ImpactProjection,
+    ImpactPropagationState,
+    ImpactSeverity,
+)
+
+from .cross_business_impact_graph_service import (
+    get_changed_source_impact_projections,
+    get_clouds_gp027_status_payload,
+    get_cross_business_impact_surface,
+    get_cross_business_impact_surface_payload,
+    get_impact_graph_edges,
+    get_impact_graph_nodes,
+    get_impact_projection,
+    project_source_impact,
+)

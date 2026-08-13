@@ -466,3 +466,32 @@ Soulaana receives explicit explanation fields for:
 GP026 proves this using deterministic projection history only.
 
 No live historical source or live-feed history is claimed.
+
+## GP027 — Cross-Business Impact Graph Foundation
+
+GP027 gives Clouds its first cross-business relationship graph.
+
+Clouds can now reason about how operating changes in one part of
+Simplee World may affect another.
+
+Initial relationship types include:
+
+- capital influence;
+- access/security dependency;
+- finance visibility;
+- evidence/recovery dependency;
+- operational dependency;
+- readiness dependency;
+- priority/capital competition.
+
+Soulaana can explain:
+
+- what else a change may affect;
+- why that relationship matters;
+- whether it belongs in the owner attention picture;
+- what can wait.
+
+The graph is advisory only.
+
+It cannot move capital, alter permissions, change business priorities,
+or execute downstream application work.
