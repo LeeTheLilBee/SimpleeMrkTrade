@@ -378,3 +378,36 @@ The default owner profile uses:
 
 Preferences are presentation-only and cannot weaken Tower,
 remove step-up requirements, change downstream authority, or execute actions.
+
+## GP024 — Beta Readiness / Tower-Clouds Owner Walkthrough Closeout
+
+GP024 closes the Clouds core-v1 rebuild.
+
+Clouds-side owner walkthrough coverage now includes:
+
+- protected Tower launch reference;
+- owner command surface;
+- Soulaana-first explanation;
+- Needs You;
+- Keep Watching;
+- Can Wait;
+- progressive detail drawers;
+- owner preferences;
+- operating-summary boundary;
+- protected application handoff references;
+- no raw downstream execution.
+
+The result is:
+
+`CLOUDS_CORE_V1_READY_FOR_TOWER_INTEGRATION_AND_OWNER_WALKTHROUGH`
+
+This is NOT the same as externally beta-ready.
+
+GP024 explicitly does not claim:
+
+- live downstream feeds;
+- hosted Tower integration;
+- hosted staging verification;
+- external beta acceptance.
+
+Those must be proven in the real Tower/Clouds integration and owner walkthrough.
