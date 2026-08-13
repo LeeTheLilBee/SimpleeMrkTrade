@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <title>OB Dashboard</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_dashboard_soulaana_obux.css') }}" />
 </head>
 <body>
 <!-- OBSERVATORY_DASHBOARD_V16_REAL_ROOM -->
@@ -16,16 +17,11 @@
         <div class="ob-subtitle">OB://Dashboard · What matters right now · Tower controlled · Private room</div>
       </div>
 
-      <div class="ob-panel soulaana-panel">
-        <div class="ob-label">Soulaana · Dashboard Read</div>
-        <div class="soulaana-text">
-          We start here. Not with noise. Not with chasing. The Dashboard tells you what matters right now: account health, open risk, market weather, Tower permission, and the next clean move.
-        </div>
-        <div class="legend">
-          <div class="legend-item"><span class="legend-dot legend-green"></span>Healthy</div>
-          <div class="legend-item"><span class="legend-dot legend-gold"></span>Watch closely</div>
-          <div class="legend-item"><span class="legend-dot legend-red"></span>Locked / guarded</div>
-        </div>
+      <!-- OBUX006-OBUX010 DASHBOARD SIMPLIFICATION -->
+      <div class="obux-dashboard-header-status">
+        <span>Soulaana explanation-first</span>
+        <span>Private room</span>
+        <span>Live Auto locked</span>
       </div>
     </div>
 
@@ -105,5 +101,7 @@
 <script src="{{ url_for('static', filename='ob/ob_manual_live_evidence_readiness_checkpoint.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_manual_live_candidate_decision_handoff.js') }}"></script>
   <script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
+
+<script src="{{ url_for('static', filename='ob/ob_dashboard_simplification_obux.js') }}"></script>
 </body>
 </html>

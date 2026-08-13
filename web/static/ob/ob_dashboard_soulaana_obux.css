@@ -1,0 +1,540 @@
+/* ================================================================================================
+   THE OBSERVATORY
+   OBUX006-OBUX010
+   SOULAANA EXPLANATION-FIRST DASHBOARD
+   ================================================================================================ */
+
+
+.obux-dashboard-header-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+
+.obux-dashboard-header-status span,
+.obux-dashboard-context span,
+.obux-dashboard-chip,
+.obux-dashboard-state-chip {
+    border: 1px solid rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.035);
+    color: var(--ob-text, #f4f1ff);
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 10px;
+    font-weight: 760;
+}
+
+
+.obux-dashboard-shell {
+    display: grid;
+    gap: 22px;
+}
+
+
+.obux-dashboard-kicker {
+    color: var(--ob-gold, #e9c26f);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+
+.obux-dashboard-now {
+    padding: 28px;
+    border-color: rgba(233,194,111,0.22);
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(127,102,255,0.10),
+            transparent 34%
+        ),
+        rgba(10,8,20,0.78);
+}
+
+
+.obux-dashboard-now-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 22px;
+}
+
+
+.obux-dashboard-now h2 {
+    margin: 7px 0 8px;
+    max-width: 900px;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+}
+
+
+.obux-dashboard-lead {
+    margin: 0;
+    max-width: 880px;
+    color: rgba(238,233,255,0.76);
+    font-size: 15px;
+    line-height: 1.68;
+}
+
+
+.obux-dashboard-context {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+
+.obux-dashboard-meaning-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 22px;
+}
+
+
+.obux-dashboard-meaning-grid article {
+    min-height: 126px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 15px;
+    background: rgba(0,0,0,0.16);
+}
+
+
+.obux-dashboard-meaning-grid span,
+.obux-dashboard-next span,
+.obux-dashboard-position-risk span,
+.obux-dashboard-explain span,
+.obux-dashboard-metric > span,
+.obux-dashboard-score > span {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--ob-gold, #e9c26f);
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+
+.obux-dashboard-meaning-grid p,
+.obux-dashboard-explain p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.58;
+}
+
+
+.obux-dashboard-action-state {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-size: 13px;
+}
+
+
+.obux-dashboard-action-state.calm {
+    border: 1px solid rgba(123,224,195,0.20);
+    background: rgba(123,224,195,0.055);
+}
+
+
+.obux-dashboard-action-state.active {
+    border: 1px solid rgba(233,194,111,0.23);
+    background: rgba(233,194,111,0.055);
+}
+
+
+.obux-dashboard-section {
+    display: grid;
+    gap: 13px;
+}
+
+
+.obux-dashboard-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 18px;
+}
+
+
+.obux-dashboard-section-head h3,
+.obux-dashboard-since h3,
+.obux-dashboard-market-context h3 {
+    margin: 5px 0;
+    font-size: clamp(20px, 2.8vw, 27px);
+    letter-spacing: -0.025em;
+}
+
+
+.obux-dashboard-section-head p,
+.obux-dashboard-since p,
+.obux-dashboard-market-context p {
+    margin: 0;
+    max-width: 840px;
+    color: rgba(238,233,255,0.70);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+.obux-dashboard-state-chip {
+    text-transform: capitalize;
+}
+
+
+.obux-dashboard-state-chip.steady,
+.obux-dashboard-state-chip.calm {
+    color: #7be0c3;
+}
+
+
+.obux-dashboard-state-chip.selective {
+    color: var(--ob-gold, #e9c26f);
+}
+
+
+.obux-dashboard-state-chip.attention {
+    color: #ff7ea2;
+}
+
+
+.obux-dashboard-metric-grid,
+.obux-dashboard-source-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+}
+
+
+.obux-dashboard-source-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+
+.obux-dashboard-metric {
+    min-height: 138px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    background: rgba(10,8,20,0.58);
+}
+
+
+.obux-dashboard-metric strong {
+    display: block;
+    margin: 5px 0 8px;
+    font-size: 21px;
+}
+
+
+.obux-dashboard-metric p {
+    margin: 0;
+    color: rgba(238,233,255,0.65);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+.obux-dashboard-since {
+    padding: 20px 22px;
+}
+
+
+.obux-dashboard-attention-grid,
+.obux-dashboard-position-grid,
+.obux-dashboard-hot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 11px;
+}
+
+
+.obux-dashboard-attention-card,
+.obux-dashboard-position-card,
+.obux-dashboard-hot-card {
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,0.075);
+    border-radius: 18px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(127,102,255,0.06),
+            transparent 36%
+        ),
+        rgba(10,8,20,0.64);
+}
+
+
+.obux-dashboard-hot-card.actionable {
+    border-color: rgba(123,224,195,0.24);
+}
+
+
+.obux-dashboard-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+
+.obux-dashboard-card-top > div {
+    display: grid;
+    gap: 4px;
+}
+
+
+.obux-symbol {
+    font-size: 17px;
+    font-weight: 900;
+}
+
+
+.obux-dashboard-chip.attention {
+    color: #ff7ea2;
+}
+
+
+.obux-dashboard-chip.actionable {
+    color: #7be0c3;
+}
+
+
+.obux-dashboard-chip.watch {
+    color: var(--ob-gold, #e9c26f);
+}
+
+
+.obux-dashboard-position-risk {
+    margin: 14px 0 10px;
+}
+
+
+.obux-dashboard-position-card > p,
+.obux-dashboard-attention-card > p {
+    margin: 0;
+    color: rgba(238,233,255,0.72);
+    font-size: 12px;
+    line-height: 1.58;
+}
+
+
+.obux-dashboard-next {
+    display: grid;
+    gap: 2px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.065);
+}
+
+
+.obux-dashboard-next strong {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+.obux-dashboard-score {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px 12px;
+    align-items: end;
+    margin: 16px 0;
+    padding-bottom: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.065);
+}
+
+
+.obux-dashboard-score strong {
+    grid-row: span 2;
+    font-size: 28px;
+}
+
+
+.obux-dashboard-score small {
+    color: var(--ob-gold, #e9c26f);
+}
+
+
+.obux-dashboard-explain + .obux-dashboard-explain {
+    margin-top: 13px;
+}
+
+
+.obux-dashboard-calm-card {
+    padding: 20px 22px;
+    border-color: rgba(123,224,195,0.16);
+}
+
+
+.obux-dashboard-calm-card > strong {
+    color: #7be0c3;
+}
+
+
+.obux-dashboard-calm-card p {
+    margin: 7px 0 0;
+    color: rgba(238,233,255,0.67);
+    font-size: 13px;
+    line-height: 1.58;
+}
+
+
+.obux-dashboard-market-context {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr auto;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 20px;
+}
+
+
+.obux-dashboard-evidence {
+    overflow: hidden;
+}
+
+
+.obux-dashboard-evidence > summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 20px;
+    cursor: pointer;
+    list-style: none;
+}
+
+
+.obux-dashboard-evidence > summary::-webkit-details-marker {
+    display: none;
+}
+
+
+.obux-dashboard-evidence-plus {
+    color: var(--ob-gold, #e9c26f);
+    font-size: 24px;
+    transition: transform 140ms ease;
+}
+
+
+.obux-dashboard-evidence[open] .obux-dashboard-evidence-plus {
+    transform: rotate(45deg);
+}
+
+
+.obux-dashboard-evidence-body {
+    padding: 18px 20px 20px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+
+.obux-dashboard-evidence-body > p {
+    margin-top: 0;
+    color: rgba(238,233,255,0.67);
+    font-size: 12px;
+    line-height: 1.58;
+}
+
+
+.obux-dashboard-evidence-sink {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+
+.obux-dashboard-evidence-empty {
+    color: rgba(238,233,255,0.55);
+    font-size: 11px;
+}
+
+
+.obux-dashboard-evidence-sink > * {
+    margin: 0 !important;
+    opacity: 0.88;
+}
+
+
+.obux-dashboard-evidence-sink .ob-panel {
+    box-shadow: none !important;
+}
+
+
+/* Legacy Dashboard proof panels should not visually compete with Soulaana. */
+[data-obux-dashboard-evidence-moved="true"] {
+    max-width: 100%;
+}
+
+
+@media (max-width: 1120px) {
+
+    .obux-dashboard-meaning-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+
+    .obux-dashboard-metric-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 860px) {
+
+    .obux-dashboard-now-top,
+    .obux-dashboard-section-head,
+    .obux-dashboard-market-context {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .obux-dashboard-context {
+        justify-content: flex-start;
+    }
+
+
+    .obux-dashboard-attention-grid,
+    .obux-dashboard-position-grid,
+    .obux-dashboard-hot-grid,
+    .obux-dashboard-source-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 620px) {
+
+    .obux-dashboard-now {
+        padding: 20px;
+    }
+
+
+    .obux-dashboard-meaning-grid,
+    .obux-dashboard-metric-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .obux-dashboard-action-state {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}

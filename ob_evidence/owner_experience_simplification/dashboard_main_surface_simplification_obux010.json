@@ -1,0 +1,20 @@
+{
+  "generated_at_utc": "2026-08-13T14:44:39.970037+00:00",
+  "package": "OBUX010",
+  "payload": {
+    "beta_admin_panels_moved_to_drawer": true,
+    "drawer_default_open": false,
+    "drawer_label": "Show me why",
+    "engineering_panels_moved_to_drawer": true,
+    "gate_state": "dashboard_main_surface_simplification_sealed",
+    "historic_panels_deleted": false,
+    "historic_scripts_preserved": true,
+    "package": "OBUX010",
+    "proof_panels_moved_to_drawer": true,
+    "readiness_panels_moved_to_drawer": true,
+    "receipts_moved_to_drawer": true,
+    "recommendation": "GO_FOR_OWNER_DASHBOARD_VISUAL_REVIEW",
+    "title": "Dashboard Main-Surface Simplification and Evidence Drawer"
+  },
+  "title": "Dashboard Main-Surface Simplification and Evidence Drawer"
+}
