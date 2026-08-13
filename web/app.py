@@ -118,6 +118,15 @@ from engine_v2.final_brain_live_helpers import (
 )
 
 # --- APP INIT ---
+
+# TOWER_CLOUDS_CANONICAL_PACK1_REGISTRATION
+try:
+    from tower.tower_clouds_native_launch import (
+        register_tower_clouds_native_launch,
+    )
+except Exception:
+    register_tower_clouds_native_launch = None
+
 app = Flask(__name__)
 
 
@@ -20192,6 +20201,15 @@ if "tower_ob_walkthrough" not in app.blueprints:
         tower_ob_walkthrough_bp
     )
 # END TOWER OBSERVATORY WALKTHROUGH BLUEPRINT
+
+
+# TOWER_CLOUDS_CANONICAL_PACK1_REGISTRATION
+if register_tower_clouds_native_launch is not None:
+    try:
+        register_tower_clouds_native_launch(app)
+        print("PACK CLOUDS-001: Canonical Tower Clouds owner launch routes registered.")
+    except Exception as exc:
+        print(f"PACK CLOUDS-001: Canonical Tower Clouds registration skipped: {exc}")
 
 if __name__ == "__main__":
     try:
@@ -51583,4 +51601,3 @@ def _tower_obux006_010_dashboard_server_render_response(response):
 
     except Exception:
         return response
-
