@@ -361,3 +361,20 @@ The guided-attention layer may recommend review, watching, snooze,
 dismissal, detail expansion, or protected app entry.
 
 GP022 does not persist snooze/dismiss choices and performs no downstream action.
+
+## GP023 — Owner Settings / Command Preferences Surface
+
+GP023 adds owner-controlled command presentation preferences.
+
+The default owner profile uses:
+
+- Soulaana: explain everything
+- evidence: on request
+- quiet cards: collapsed
+- attention threshold: review + action
+- status chips: visible
+- why-it-matters explanations: visible
+- owner next steps: visible
+
+Preferences are presentation-only and cannot weaken Tower,
+remove step-up requirements, change downstream authority, or execute actions.
