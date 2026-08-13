@@ -897,3 +897,25 @@ from .owner_intent_review_service import (
     get_owner_intent_review_surface_payload,
     get_owner_intent_reviews,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP033
+# HANDOFF AUTHORIZATION DECISION / OWNER CONFIRMATION BOUNDARY
+# ============================================================
+
+from .handoff_authorization_decision import (
+    HandoffAuthorizationDecision,
+    HandoffAuthorizationRecord,
+    HandoffAuthorizationState,
+    HandoffAuthorizationSurface,
+)
+
+from .handoff_authorization_decision_service import (
+    get_clouds_gp033_status_payload,
+    get_gp033_authorized_fixture,
+    get_gp033_declined_fixture,
+    get_handoff_authorization_surface,
+    get_handoff_authorization_surface_payload,
+    record_handoff_authorization_decision,
+)

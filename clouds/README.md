@@ -610,3 +610,20 @@ A green GP032 review means the intent may proceed to a separate
 handoff-authorization decision.
 
 GP032 does not authorize or deliver the handoff.
+
+## GP033 — Handoff Authorization Decision / Owner Confirmation Boundary
+
+GP033 records the owner's explicit decision about whether a green GP032
+intent review may move into protected handoff preparation.
+
+Supported decisions:
+
+- authorize;
+- decline.
+
+Authorization means Clouds may prepare the protected handoff package.
+
+Authorization does not deliver the package, invoke Tower, open another
+application, move capital, or execute downstream work.
+
+The decline path is also explicitly verified and remains fail-closed.
