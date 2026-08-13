@@ -335,3 +335,29 @@ Raw technical evidence is hidden by default.
 
 Clouds uses progressive disclosure and safe navigation references.
 Protected application entry remains Tower-mediated.
+
+## GP022 — Owner Command Detail Drawers / Guided Attention Experience
+
+GP022 adds progressive disclosure beneath every GP021 owner-command card.
+
+The owner experience moves through:
+
+1. glance;
+2. Soulaana explanation;
+3. deeper details;
+4. technical evidence only when requested.
+
+Each source receives drawers for:
+
+- Soulaana Explains
+- Why This Matters
+- What Is Happening
+- What Can Wait
+- What You Can Do Next
+- Status Details
+- Technical Evidence
+
+The guided-attention layer may recommend review, watching, snooze,
+dismissal, detail expansion, or protected app entry.
+
+GP022 does not persist snooze/dismiss choices and performs no downstream action.

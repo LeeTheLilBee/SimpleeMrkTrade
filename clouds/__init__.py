@@ -630,3 +630,29 @@ from .owner_command_experience_service import (
     get_owner_command_experience_payload,
     get_owner_command_sections,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP022
+# OWNER COMMAND DETAIL DRAWERS / GUIDED ATTENTION EXPERIENCE
+# ============================================================
+
+from .owner_command_detail_drawers import (
+    DetailDrawerDisclosure,
+    DetailDrawerKind,
+    GuidedAttentionAction,
+    GuidedAttentionStep,
+    GuidedAttentionSurface,
+    OwnerCommandDetailExperience,
+    OwnerCommandDrawer,
+    filter_detail_experiences,
+)
+
+from .owner_command_detail_drawers_service import (
+    filter_owner_command_detail_experiences,
+    get_clouds_gp022_status_payload,
+    get_guided_attention_surface,
+    get_guided_attention_surface_payload,
+    get_owner_command_detail_experience,
+    get_owner_command_detail_experiences,
+)
