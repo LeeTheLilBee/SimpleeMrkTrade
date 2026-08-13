@@ -385,3 +385,129 @@ def get_ob_route_guard_report() -> Dict[str, Any]:
         'default_deny_unmapped': True,
         'human_reason': 'OB route guard foundation is loaded. Public routes must be deliberate; unmapped private routes default deny.',
     }
+
+# TOWER_OB_REAL_SURFACE_ROUTE_MAP_REPAIR_2593_2602_FINAL
+# Approved real OB route map repair for hosted integration walkthrough.
+#
+# This is intentionally narrow:
+# - adds approved six-room static routes
+# - adds approved dynamic symbol route recognition for /ob/symbol/<SYMBOL>
+# - preserves existing default-deny for all unmapped routes
+# - does not authorize broker/capital/Manual Live/Live Auto/production
+
+def _tower_ob_real_surface_policy_2593_2602(
+    *,
+    route_key,
+    action,
+    clearance,
+    risk_floor,
+    room,
+    purpose,
+    soulaana_translation,
+):
+    return {
+        "route_key": route_key,
+        "action": action,
+        "clearance": clearance,
+        "risk_floor": risk_floor,
+        "room": room,
+        "purpose": purpose,
+        "soulaana_translation": soulaana_translation,
+    }
+
+
+OB_ROUTE_GUARD_MAP.update({
+    "/ob/dashboard": _tower_ob_real_surface_policy_2593_2602(
+        route_key="dashboard",
+        action="view",
+        clearance="owner",
+        risk_floor=10,
+        room="Dashboard",
+        purpose="Approved real Observatory Dashboard surface.",
+        soulaana_translation="Soulaana: This is the Observatory Dashboard. I can open it through Tower clearance.",
+    ),
+    "/ob/market-map": _tower_ob_real_surface_policy_2593_2602(
+        route_key="dashboard",
+        action="view",
+        clearance="owner",
+        risk_floor=15,
+        room="Market Map",
+        purpose="Approved real Observatory Market Map surface.",
+        soulaana_translation="Soulaana: This is the Market Map. It is now on the Tower map and still protected by clearance.",
+    ),
+    "/ob/trade-center": _tower_ob_real_surface_policy_2593_2602(
+        route_key="dashboard",
+        action="view",
+        clearance="owner",
+        risk_floor=25,
+        room="Trade Center",
+        purpose="Approved real Observatory Trade Center surface. View only; no broker action.",
+        soulaana_translation="Soulaana: This is the Trade Center view. I can show it, but no broker submission or capital action is authorized.",
+    ),
+    "/ob/review-center": _tower_ob_real_surface_policy_2593_2602(
+        route_key="dashboard",
+        action="view",
+        clearance="owner",
+        risk_floor=15,
+        room="Review Center",
+        purpose="Approved real Observatory Review Center surface.",
+        soulaana_translation="Soulaana: This is the Review Center. It is mapped for owner review and receipts.",
+    ),
+    "/ob/owner-console": _tower_ob_real_surface_policy_2593_2602(
+        route_key="dashboard",
+        action="view",
+        clearance="owner",
+        risk_floor=30,
+        room="Owner Console",
+        purpose="Approved real Observatory Owner Console surface. Controls remain locked.",
+        soulaana_translation="Soulaana: This is the Owner Console. I can show the control room while dangerous controls stay locked.",
+    ),
+})
+
+
+_tower_ob_original_match_ob_guard_policy_2593_2602 = match_ob_guard_policy
+
+
+def match_ob_guard_policy(path: str) -> Dict[str, Any]:
+    normalized = normalize_request_path(path)
+
+    # Let the original map handle every route it already knows.
+    original_match = _tower_ob_original_match_ob_guard_policy_2593_2602(normalized)
+    if original_match.get("match_type") != "unmapped_default_deny":
+        return original_match
+
+    # Narrow dynamic-symbol repair for real OB Symbol Page.
+    # This allows /ob/symbol/AMD and similar ticker-shaped symbols only.
+    symbol_prefix = "/ob/symbol/"
+    if normalized.startswith(symbol_prefix):
+        symbol = normalized[len(symbol_prefix):].strip().upper()
+
+        allowed_chars = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-")
+        symbol_is_safe = (
+            1 <= len(symbol) <= 16
+            and symbol[0].isalpha()
+            and all(char in allowed_chars for char in symbol)
+            and ".." not in symbol
+            and "/" not in symbol
+            and "\\" not in symbol
+        )
+
+        if symbol_is_safe:
+            return {
+                "ok": True,
+                "path": normalized,
+                "match_type": "dynamic_real_surface_symbol",
+                "policy": _tower_ob_real_surface_policy_2593_2602(
+                    route_key="dashboard",
+                    action="view",
+                    clearance="owner",
+                    risk_floor=20,
+                    room="Symbol Page",
+                    purpose="Approved real Observatory dynamic Symbol Page surface.",
+                    soulaana_translation="Soulaana: This symbol room is now on the Tower map and still protected by clearance.",
+                ),
+            }
+
+    # Everything else remains fail-closed through the original default-deny decision.
+    return original_match
+
