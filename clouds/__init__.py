@@ -237,3 +237,44 @@ from .executive_dashboard_service import (
     get_executive_dashboard_summary,
     get_executive_recommendations,
 )
+
+
+# ============================================================
+# CLOUDS CLEAN REBUILD GP008
+# EXECUTIVE DASHBOARD SECTION DETAIL SURFACE
+# ============================================================
+
+from .executive_dashboard_detail import (
+    ExecutiveDashboardSectionDetail,
+    ExecutiveDashboardSectionSummary,
+    ExecutiveDashboardSectionSurface,
+    ExecutiveSectionHealth,
+    ExecutiveSectionId,
+    ExecutiveSectionMetric,
+    ExecutiveSectionMetricKind,
+    ExecutiveSectionNavigationMode,
+    ExecutiveSectionNavigationTarget,
+    ExecutiveSectionReadiness,
+    ExecutiveSectionRecommendation,
+    ExecutiveSectionRecommendationKind,
+    filter_section_details,
+    metric_sort_key,
+    navigation_target_sort_key,
+    recommendation_sort_key,
+    section_sort_key,
+)
+
+from .executive_dashboard_detail_service import (
+    filter_executive_dashboard_sections,
+    get_clouds_gp008_status_payload,
+    get_executive_dashboard_section,
+    get_executive_dashboard_section_detail,
+    get_executive_dashboard_section_detail_payload,
+    get_executive_dashboard_section_surface,
+    get_executive_dashboard_section_surface_payload,
+    get_executive_dashboard_sections,
+    get_executive_section_metrics,
+    get_executive_section_navigation_targets,
+    get_executive_section_recommendations,
+    get_executive_section_summary,
+)

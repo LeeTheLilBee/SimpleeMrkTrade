@@ -15,6 +15,7 @@ The Clouds gives the owner one high-level place to see:
 - strategic priorities
 - executive recommendations
 - combined ecosystem readiness
+- executive section details
 - safe navigation into the correct operating app
 
 ## Locked boundaries
@@ -51,31 +52,40 @@ Clouds must not import operational application packages directly.
 
 `THE CLOUDS — EXECUTIVE OWNER DASHBOARD SURFACE / GP007`
 
-## GP007 Executive Owner Dashboard
+`THE CLOUDS — EXECUTIVE DASHBOARD SECTION DETAIL SURFACE / GP008`
 
-The Executive Owner Dashboard now provides:
+## GP008 Executive Section Details
 
-- a fixed six-section executive surface
-- Today roll-up
-- Priority Board roll-up
-- Owner Attention roll-up
-- Mission Lane roll-up
-- Application Registry roll-up
-- combined readiness scoring
-- combined executive health
-- blocked-priority visibility
-- top and second recommendations
-- watch-next recommendation
-- future-opportunity recommendation
-- dashboard card filtering
-- dashboard detail projections
-- safe internal Clouds navigation
-- source integrity verification
+The Executive Dashboard now provides full detail projections for:
 
-The Executive Dashboard summarizes and recommends.
+- Today
+- Priorities
+- Owner Attention
+- Mission Lanes
+- Applications
+- Overall Readiness
 
-Clouds does not approve or execute the underlying work.
+Each section includes:
+
+- executive summary
+- fixed section identity
+- health
+- readiness
+- readiness score
+- ordered metrics
+- ordered recommendations
+- navigation targets
+- linked applications
+- linked mission lanes
+- owner review questions
+- allowed Clouds actions
+- prohibited Clouds actions
+- fail-closed missing-section behavior
+
+Section details deepen owner visibility only.
+
+Clouds does not approve or execute operational work.
 
 ## Next checkpoint
 
-`THE CLOUDS — EXECUTIVE DASHBOARD SECTION DETAIL SURFACE / GP008`
+`THE CLOUDS — EXECUTIVE DASHBOARD NAVIGATION MAP / GP009`
