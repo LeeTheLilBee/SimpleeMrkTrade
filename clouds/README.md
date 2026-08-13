@@ -234,3 +234,13 @@ GP014 authorizes future submission only.
 
 It does not create a Tower request, deliver an envelope, create a Tower
 receipt, execute a handoff, or execute downstream application work.
+
+## GP015 — Executive Owner Handoff Submission / Tower Intake Preparation Surface
+
+GP015 converts GP014-authorized drafts into deterministic Clouds-side
+submission packets prepared for future Tower intake.
+
+Tower permission and step-up requirements remain preserved.
+
+GP015 does not create a Tower request, deliver anything to Tower,
+create a Tower receipt, execute a handoff, or perform downstream work.
