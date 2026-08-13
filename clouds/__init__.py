@@ -726,3 +726,32 @@ from .operating_feed_ingestion_service import (
     get_projection_feed_validation_receipts,
     validate_operating_feed,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP026
+# OPERATING SNAPSHOT HISTORY / CHANGE MEMORY FOUNDATION
+# ============================================================
+
+from .operating_snapshot_history import (
+    ChangeDirection,
+    ChangeMateriality,
+    ChangeState,
+    HistoricalMetricSnapshot,
+    MetricDelta,
+    MetricDeltaKind,
+    OperatingHistorySurface,
+    OperatingSnapshotDelta,
+    OperatingSourceSnapshot,
+)
+
+from .operating_snapshot_history_service import (
+    compare_operating_snapshots,
+    get_clouds_gp026_status_payload,
+    get_current_projection_snapshots,
+    get_operating_history_surface,
+    get_operating_history_surface_payload,
+    get_prior_projection_snapshots,
+    get_projection_snapshot_delta,
+    get_projection_snapshot_deltas,
+)

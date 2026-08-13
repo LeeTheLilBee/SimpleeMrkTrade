@@ -439,3 +439,30 @@ GP025 proves the boundary using the six existing approved projections.
 It explicitly reports zero live feeds.
 
 No downstream application is imported or called.
+
+## GP026 — Operating Snapshot History / Change Memory Foundation
+
+GP026 gives Clouds the first change-memory contract.
+
+Clouds can now compare a prior operating snapshot with the current
+snapshot and determine:
+
+- whether anything changed;
+- whether health changed;
+- whether readiness changed;
+- whether owner-attention state changed;
+- whether metrics changed;
+- whether the movement is improving, worsening, mixed, or stable;
+- whether the change is material;
+- whether owner attention is required.
+
+Soulaana receives explicit explanation fields for:
+
+- what changed;
+- why it matters;
+- whether the owner needs to care now;
+- what can wait.
+
+GP026 proves this using deterministic projection history only.
+
+No live historical source or live-feed history is claimed.
