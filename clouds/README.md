@@ -106,3 +106,27 @@ The map:
 GP009 does not authenticate, authorize, step-up, approve, trade, move money,
 retrieve raw Vault evidence, operate property workflows, or directly launch
 downstream applications.
+
+## GP010 — Executive Owner Command Workspace Surface
+
+GP010 composes the executive dashboard, section detail layer,
+priority board, owner attention, readiness roll-up, and navigation
+map into a single owner workspace.
+
+The workspace is organized into six fixed panels:
+
+1. Now
+2. Next
+3. Watch
+4. Executive Sections
+5. Applications
+6. Readiness
+
+The workspace explains what matters now, what comes next, what should
+remain visible, which executive sections are available, which downstream
+applications require Tower-mediated entry, and what the current combined
+readiness state means.
+
+Clouds does not authenticate, authorize, perform Tower step-up, approve
+decisions, execute navigation, launch downstream applications directly,
+trade, move money, retrieve raw Vault evidence, or operate property workflows.
