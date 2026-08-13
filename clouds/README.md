@@ -189,3 +189,26 @@ It does not mean:
 Clouds still performs no authentication, authorization, Tower step-up,
 approval, handoff execution, trading, payment execution, raw Vault retrieval,
 or property operations.
+
+## GP013 — Executive Owner Handoff Request Draft / Tower Delivery Envelope Surface
+
+GP013 converts eligible GP012 Tower-prepared reviews into deterministic,
+Clouds-side handoff request drafts.
+
+Each eligible draft now has a matching Tower delivery envelope containing:
+
+- source review identity;
+- source workspace item;
+- source action intent;
+- protected destination;
+- Tower route reference;
+- source application and mission lane;
+- owner permission requirement;
+- step-up requirement;
+- deterministic SHA-256 payload integrity hash.
+
+The envelope remains a draft.
+
+GP013 does not record owner approval, authorize submission, create a Tower
+request, deliver anything to Tower, create a Tower receipt, execute a handoff,
+or execute downstream application work.
