@@ -989,6 +989,7 @@ def launch_observatory():
     if _tower_ob_native_is_walkthrough_redirect(
         legacy_result
     ):
+        # TOWER_NATIVE_GP046_REAL_WALKTHROUGH_SESSION_STORE_TAKE2_2603_2612
         _tower_ob_native_store_walkthrough_handoff()
 
         return legacy_result
@@ -1483,3 +1484,634 @@ def register_tower_human_login(
                 owner_session_active=owner_session_active(),
             )
         )
+
+# TOWER_NATIVE_GP046_HUMAN_LAUNCH_BASELINE_REPAIR_TAKE2_2603_2612
+# Native GP046 human launch compatibility repair.
+#
+# This is intentionally appended after current Tower source so current
+# launch_observatory() resolves these helpers at call time without a wholesale
+# historical cherry-pick.
+#
+# Contract preserved:
+# - _tower_ob_native_extract_payload returns normalized["payload"]
+# - _tower_ob_native_restore_response accepts normalized + payload
+# - _tower_ob_native_build_launch accepts payload and returns native payload
+# - real walkthrough redirect stores SESSION_OB_NATIVE_LAUNCH_HANDOFF
+# - current tower_ob_launch receipts are accepted as compatible with
+#   tower_ob_human_launch for GP046 native handoff construction.
+
+from collections.abc import Mapping as _TowerNativeMapping2603
+
+try:
+    SESSION_OB_NATIVE_LAUNCH_HANDOFF
+except NameError:
+    SESSION_OB_NATIVE_LAUNCH_HANDOFF = "tower_ob_native_launch_handoff"
+
+try:
+    SESSION_OB_LAUNCH_RECEIPT
+except NameError:
+    SESSION_OB_LAUNCH_RECEIPT = "tower_ob_launch_receipt"
+
+
+def _tower_ob_native_first_nonempty(*values):
+    for value in values:
+        if value not in (None, "", [], {}):
+            return value
+    return None
+
+
+def _tower_ob_native_request_value(*names):
+    try:
+        for name in names:
+            value = request.args.get(name)
+            if value not in (None, ""):
+                return value
+    except RuntimeError:
+        pass
+    except Exception:
+        pass
+
+    return None
+
+
+def _tower_ob_native_session_value(*names):
+    try:
+        for name in names:
+            value = session.get(name)
+            if value not in (None, ""):
+                return value
+    except RuntimeError:
+        pass
+    except Exception:
+        pass
+
+    return None
+
+
+def _tower_ob_native_mapping_value(mappings, *names):
+    for mapping in mappings:
+        if not isinstance(mapping, _TowerNativeMapping2603):
+            continue
+
+        for name in names:
+            value = mapping.get(name)
+            if value not in (None, ""):
+                return value
+
+    return None
+
+
+def _tower_ob_native_extract_payload(result):
+    """
+    Normalize supported Flask/Tower return forms while preserving the original
+    outer response structure.
+
+    Supported:
+    - mapping payload
+    - tuple mapping
+    - Flask JSON response
+    - tuple Flask JSON response
+    """
+
+    outer_kind = "mapping"
+    status_code = None
+    headers = None
+    response_object = None
+    payload = None
+
+    if isinstance(result, tuple):
+        outer_kind = "tuple"
+
+        if not result:
+            raise RuntimeError("tower_ob_native_empty_response_tuple")
+
+        response_object = result[0]
+
+        if len(result) >= 2:
+            status_code = result[1]
+
+        if len(result) >= 3:
+            headers = result[2]
+
+    else:
+        response_object = result
+
+    if isinstance(response_object, _TowerNativeMapping2603):
+        payload = dict(response_object)
+
+    elif hasattr(response_object, "get_json"):
+        payload = response_object.get_json(silent=True)
+
+        if not isinstance(payload, _TowerNativeMapping2603):
+            raise RuntimeError("tower_ob_native_json_mapping_required")
+
+        payload = dict(payload)
+
+        if outer_kind != "tuple":
+            outer_kind = "flask_response"
+
+    else:
+        raise RuntimeError("tower_ob_native_supported_response_required")
+
+    return {
+        "outer_kind": outer_kind,
+        "status_code": status_code,
+        "headers": headers,
+        "response_object": response_object,
+        "payload": payload,
+    }
+
+
+def _tower_ob_native_restore_response(normalized, payload):
+    outer_kind = normalized["outer_kind"]
+
+    if outer_kind == "mapping":
+        return payload
+
+    response_object = normalized["response_object"]
+
+    if hasattr(response_object, "get_json"):
+        rebuilt = jsonify(payload)
+    else:
+        rebuilt = payload
+
+    if outer_kind == "flask_response":
+        return rebuilt
+
+    status_code = normalized["status_code"]
+    headers = normalized["headers"]
+
+    if headers is not None:
+        return rebuilt, status_code, headers
+
+    if status_code is not None:
+        return rebuilt, status_code
+
+    return (rebuilt,)
+
+
+def _tower_ob_native_redirect_location_path(result):
+    response_object = result
+    tuple_status = None
+
+    if isinstance(result, tuple):
+        if not result:
+            return None
+
+        response_object = result[0]
+
+        if len(result) >= 2:
+            tuple_status = result[1]
+
+    if isinstance(response_object, _TowerNativeMapping2603):
+        return None
+
+    status_code = _tower_ob_native_first_nonempty(
+        tuple_status,
+        getattr(response_object, "status_code", None),
+    )
+
+    try:
+        numeric_status = int(status_code)
+    except (TypeError, ValueError):
+        return None
+
+    if not (300 <= numeric_status < 400):
+        return None
+
+    headers = getattr(response_object, "headers", None)
+    if headers is None:
+        return None
+
+    try:
+        location = headers.get("Location")
+    except Exception:
+        return None
+
+    if not location:
+        return None
+
+    try:
+        from urllib.parse import urlparse
+        return urlparse(str(location)).path or str(location)
+    except Exception:
+        return str(location)
+
+
+def _tower_ob_native_is_walkthrough_redirect(result):
+    location_path = _tower_ob_native_redirect_location_path(result)
+
+    if not location_path:
+        return False
+
+    try:
+        from urllib.parse import urlparse
+        expected_path = (
+            urlparse(str(OBSERVATORY_WALKTHROUGH_PATH)).path
+            or str(OBSERVATORY_WALKTHROUGH_PATH)
+        )
+    except Exception:
+        expected_path = str(OBSERVATORY_WALKTHROUGH_PATH)
+
+    return location_path == expected_path
+
+
+def _tower_ob_native_is_prelaunch_redirect(result):
+    location_path = _tower_ob_native_redirect_location_path(result)
+
+    if not location_path:
+        return False
+
+    try:
+        from urllib.parse import urlparse
+        walkthrough_path = (
+            urlparse(str(OBSERVATORY_WALKTHROUGH_PATH)).path
+            or str(OBSERVATORY_WALKTHROUGH_PATH)
+        )
+    except Exception:
+        walkthrough_path = str(OBSERVATORY_WALKTHROUGH_PATH)
+
+    return location_path != walkthrough_path
+
+
+def _tower_ob_native_normalize_receipt_type(receipt):
+    if not isinstance(receipt, _TowerNativeMapping2603):
+        return {}
+
+    normalized = dict(receipt)
+
+    receipt_type = str(
+        normalized.get("receipt_type")
+        or normalized.get("type")
+        or ""
+    ).strip()
+
+    if receipt_type == "tower_ob_launch":
+        normalized["receipt_type"] = "tower_ob_human_launch"
+        normalized["current_receipt_type"] = "tower_ob_launch"
+        normalized["receipt_compatibility"] = (
+            "tower_ob_launch_accepted_for_gp046_native_handoff"
+        )
+
+    elif receipt_type == "tower_ob_human_launch":
+        normalized["receipt_type"] = "tower_ob_human_launch"
+        normalized["receipt_compatibility"] = "tower_ob_human_launch_native"
+
+    return normalized
+
+
+def _tower_ob_native_build_from_launch_receipt(receipt):
+    if not isinstance(receipt, _TowerNativeMapping2603):
+        raise RuntimeError("tower_ob_native_launch_receipt_required")
+
+    receipt = _tower_ob_native_normalize_receipt_type(receipt)
+
+    if str(receipt.get("receipt_type") or "").strip() != "tower_ob_human_launch":
+        raise RuntimeError("tower_ob_native_launch_receipt_type_invalid")
+
+    owner_id = str(receipt.get("owner_id") or "").strip()
+    receipt_hash = str(receipt.get("receipt_hash") or "").strip()
+    step_up_verified = receipt.get("step_up_verified") is True
+
+    if not owner_id:
+        raise RuntimeError("tower_ob_native_launch_receipt_owner_required")
+
+    if (
+        len(receipt_hash) != 64
+        or any(character not in "0123456789abcdefABCDEF" for character in receipt_hash)
+    ):
+        raise RuntimeError("tower_ob_native_launch_receipt_hash_invalid")
+
+    if not step_up_verified:
+        raise RuntimeError("tower_ob_native_launch_receipt_step_up_required")
+
+    receipt_token = receipt_hash[:32].lower()
+
+    step_up_until = str(
+        session.get(SESSION_STEP_UP_UNTIL)
+        or receipt.get("created_at")
+        or receipt_hash
+    )
+
+    step_up_digest = hashlib.sha256(step_up_until.encode("utf-8")).hexdigest()[:32]
+
+    tower_session_id = "tower-human-session-" + receipt_token
+    step_up_reference = "tower-human-step-up-" + step_up_digest
+    clearance_decision_ref = receipt_hash.lower()
+
+    destination = str(
+        receipt.get("destination")
+        or receipt.get("requested_path")
+        or "/dashboard"
+    )
+
+    requested_path = (
+        "/dashboard"
+        if destination == OBSERVATORY_WALKTHROUGH_PATH
+        else destination
+    )
+
+    room_id = "dashboard" if requested_path in {"/dashboard", "/ob/dashboard"} else "dashboard"
+
+    legacy_handoff = {
+        "handoff_id": "tower-human-launch-" + receipt_token,
+        "owner_id": owner_id,
+        "session_id": tower_session_id,
+        "tower_session_id": tower_session_id,
+        "requested_path": requested_path,
+        "requested_mode": "manual_live",
+        "mode": "manual_live",
+        "step_up_verified": True,
+        "step_up_reference": step_up_reference,
+        "clearance_verified": True,
+        "clearance_decision_ref": clearance_decision_ref,
+        "room_id": room_id,
+        "mission_account_id": "",
+        "symbol": "",
+        "rehearsal_status": "passed",
+    }
+
+    payload = {
+        "allowed": True,
+        "owner_id": owner_id,
+        "tower_session_id": tower_session_id,
+        "requested_path": requested_path,
+        "requested_mode": "manual_live",
+        "step_up_verified": True,
+        "step_up_reference": step_up_reference,
+        "clearance_verified": True,
+        "clearance_decision_ref": clearance_decision_ref,
+        "room_id": room_id,
+        "mission_account_id": "",
+        "symbol": "",
+        "rehearsal_status": "passed",
+        "launch_handoff": legacy_handoff,
+        "receipt_compatibility": receipt.get("receipt_compatibility"),
+        "current_receipt_type": receipt.get("current_receipt_type"),
+    }
+
+    return _tower_ob_native_build_launch(payload)
+
+
+def _tower_ob_native_store_walkthrough_handoff():
+    receipt = session.get(SESSION_OB_LAUNCH_RECEIPT)
+
+    native_payload = _tower_ob_native_build_from_launch_receipt(receipt)
+    native_handoff = native_payload.get("launch_handoff")
+
+    if not isinstance(native_handoff, _TowerNativeMapping2603):
+        raise RuntimeError("tower_ob_native_walkthrough_handoff_required")
+
+    session[SESSION_OB_NATIVE_LAUNCH_HANDOFF] = dict(native_handoff)
+
+    try:
+        session.modified = True
+    except Exception:
+        pass
+
+    return dict(native_handoff)
+
+
+def _tower_ob_native_build_launch(payload):
+    if not isinstance(payload, _TowerNativeMapping2603):
+        raise RuntimeError("tower_ob_native_launch_payload_required")
+
+    payload = dict(payload)
+
+    legacy_handoff = payload.get("launch_handoff")
+
+    if not isinstance(legacy_handoff, _TowerNativeMapping2603):
+        raise RuntimeError("tower_ob_native_launch_handoff_required")
+
+    legacy_handoff = dict(legacy_handoff)
+
+    # Accept current launch receipt naming narrowly.
+    receipt = payload.get("tower_ob_launch")
+    if isinstance(receipt, _TowerNativeMapping2603):
+        receipt = _tower_ob_native_normalize_receipt_type(receipt)
+        payload.setdefault("receipt_compatibility", receipt.get("receipt_compatibility"))
+        payload.setdefault("current_receipt_type", receipt.get("current_receipt_type"))
+
+    context_mappings = [
+        payload,
+        legacy_handoff,
+        receipt if isinstance(receipt, _TowerNativeMapping2603) else {},
+    ]
+
+    owner_id = _tower_ob_native_first_nonempty(
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "owner_id",
+            "user_id",
+            "actor_id",
+            "subject_id",
+        ),
+        _tower_ob_native_session_value(
+            "owner_id",
+            "user_id",
+            "actor_id",
+            "subject_id",
+        ),
+    )
+
+    tower_session_id = _tower_ob_native_first_nonempty(
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "tower_session_id",
+            "session_id",
+        ),
+        _tower_ob_native_session_value(
+            "tower_session_id",
+            "session_id",
+        ),
+    )
+
+    requested_path = _tower_ob_native_first_nonempty(
+        _tower_ob_native_request_value(
+            "requested_path",
+            "path",
+            "room_path",
+            "next",
+        ),
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "requested_path",
+            "path",
+            "room_path",
+            "target_path",
+            "launch_path",
+        ),
+        "/dashboard",
+    )
+
+    requested_mode = _tower_ob_native_first_nonempty(
+        _tower_ob_native_request_value(
+            "mode",
+            "requested_mode",
+        ),
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "requested_mode",
+            "mode",
+        ),
+        "manual_live",
+    )
+
+    mission_account_id = (
+        _tower_ob_native_first_nonempty(
+            _tower_ob_native_request_value("mission_account_id"),
+            _tower_ob_native_mapping_value(
+                context_mappings,
+                "mission_account_id",
+            ),
+            "",
+        )
+        or ""
+    )
+
+    symbol = (
+        _tower_ob_native_first_nonempty(
+            _tower_ob_native_request_value("symbol"),
+            _tower_ob_native_mapping_value(
+                context_mappings,
+                "symbol",
+            ),
+            "",
+        )
+        or ""
+    )
+
+    step_up_verified = _tower_ob_native_first_nonempty(
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "step_up_verified",
+            "step_up_active",
+        ),
+        True if step_up_active() else None,
+    )
+
+    clearance_verified = _tower_ob_native_first_nonempty(
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "clearance_verified",
+            "clearance_granted",
+            "allowed",
+        ),
+    )
+
+    clearance_decision_ref = _tower_ob_native_first_nonempty(
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "clearance_decision_ref",
+            "clearance_decision_reference",
+            "decision_ref",
+        ),
+        _tower_ob_native_session_value(
+            "clearance_decision_ref",
+            "clearance_decision_reference",
+            "decision_ref",
+        ),
+    )
+
+    room_id = _tower_ob_native_first_nonempty(
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "room_id",
+            "target_room_id",
+            "room",
+        ),
+        "dashboard"
+        if requested_path in ("/dashboard", "/ob/dashboard")
+        else None,
+    )
+
+    missing = []
+
+    for field_name, value in [
+        ("owner_id", owner_id),
+        ("tower_session_id", tower_session_id),
+        ("requested_path", requested_path),
+        ("requested_mode", requested_mode),
+        ("step_up_verified", step_up_verified),
+        ("clearance_verified", clearance_verified),
+        ("clearance_decision_ref", clearance_decision_ref),
+        ("room_id", room_id),
+    ]:
+        if value in (None, "", False):
+            missing.append(field_name)
+
+    if missing:
+        raise RuntimeError(
+            "tower_ob_native_launch_context_missing:"
+            + ",".join(missing)
+        )
+
+    step_up_reference = _tower_ob_native_first_nonempty(
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "step_up_reference",
+            "step_up_receipt_id",
+            "step_up_id",
+        ),
+        _tower_ob_native_session_value(
+            "step_up_reference",
+            "step_up_receipt_id",
+            "step_up_id",
+        ),
+        "tower-human-owner-step-up-active"
+        if bool(step_up_verified)
+        else None,
+    )
+
+    if not step_up_reference:
+        raise RuntimeError("tower_ob_native_launch_context_missing:step_up_reference")
+
+    rehearsal_status = _tower_ob_native_first_nonempty(
+        _tower_ob_native_mapping_value(
+            context_mappings,
+            "rehearsal_status",
+        ),
+        "passed",
+    )
+
+    native_legacy_handoff = dict(legacy_handoff)
+    native_legacy_handoff["clearance_decision_ref"] = str(clearance_decision_ref)
+
+    native_handoff = build_native_gp046_handoff(
+        legacy_handoff=native_legacy_handoff,
+        owner_id=str(owner_id),
+        session_id=str(tower_session_id),
+        requested_path=str(requested_path),
+        mode=str(requested_mode),
+        step_up_reference=str(step_up_reference),
+        mission_account_id=str(mission_account_id),
+        symbol=str(symbol),
+        rehearsal_status=str(rehearsal_status),
+    )
+
+    if not isinstance(native_handoff, _TowerNativeMapping2603):
+        raise RuntimeError("tower_ob_native_launch_handoff_required")
+
+    native_handoff = dict(native_handoff)
+
+    # Locked safety boundary: force false/locked even if upstream shape evolves.
+    native_handoff["dry_run_only"] = True
+    native_handoff["production_manual_live_authorized"] = False
+    native_handoff["broker_submission_enabled"] = False
+    native_handoff["real_capital_movement_enabled"] = False
+    native_handoff["direct_vault_upload_enabled"] = False
+    native_handoff["live_auto_locked"] = True
+
+    payload["launch_handoff"] = native_handoff
+    payload["gp046_native_contract"] = True
+    payload["runtime_contract_adapter_required"] = False
+
+    payload["dry_run_only"] = True
+    payload["production_manual_live_authorized"] = False
+    payload["broker_submission_enabled"] = False
+    payload["real_capital_movement_enabled"] = False
+    payload["direct_vault_upload_enabled"] = False
+    payload["live_auto_locked"] = True
+
+    return payload
+
