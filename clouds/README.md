@@ -251,3 +251,23 @@ GP016 validates every GP015 submission as a strict Tower intake package.
 
 All packages remain Clouds-side only. No Tower request, delivery,
 receipt, handoff, or downstream execution occurs.
+
+## GP017 — Clouds Handoff Delivery Boundary / Closeout Receipt Surface
+
+GP017 closes the Clouds side of the protected Tower handoff corridor.
+
+Clouds now proves that its validated intake packages are ready for a
+separate Tower-controlled intake process.
+
+The closeout explicitly states:
+
+- Clouds-side preparation is complete;
+- the Tower boundary is preserved;
+- external Tower intake is still required;
+- nothing has been delivered to Tower;
+- Tower acceptance has not occurred;
+- no Tower receipt exists;
+- no handoff has executed.
+
+The next Clouds corridor moves away from handoff plumbing and begins
+the real Simplee operating-data adapter foundation.
