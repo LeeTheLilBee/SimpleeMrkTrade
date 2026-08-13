@@ -652,3 +652,29 @@ Prepared does not mean delivered.
 
 GP034 does not release the package, deliver it to Tower or another
 application, move capital, approve downstream work, or execute anything.
+
+## GP035 — Protected Handoff Delivery Release / Authorization Gate
+
+GP035 creates a separate owner-controlled authorization gate for release
+of the exact frozen GP034 protected handoff package.
+
+The gate verifies:
+
+- the GP034 package is prepared;
+- the package schema remains unchanged;
+- the deterministic integrity hash matches;
+- all protected package bindings remain unchanged;
+- the selected owner option remains unchanged;
+- the owning application remains unchanged;
+- the delivery target remains unchanged;
+- Tower mediation remains unchanged;
+- credentials remain excluded;
+- Tower session material remains excluded;
+- raw evidence remains excluded.
+
+The owner may authorize release or decline release.
+
+Release authorization does not release or deliver the package.
+
+GP035 performs no Tower intake, navigation, downstream approval, capital
+movement, or downstream execution.

@@ -940,3 +940,25 @@ from .protected_handoff_package_service import (
     get_protected_handoff_preparation_surface,
     get_protected_handoff_preparation_surface_payload,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP035
+# PROTECTED HANDOFF DELIVERY RELEASE / AUTHORIZATION GATE
+# ============================================================
+
+from .protected_handoff_delivery_release import (
+    ProtectedHandoffReleaseAuthorization,
+    ProtectedHandoffReleaseAuthorizationSurface,
+    ProtectedHandoffReleaseDecision,
+    ProtectedHandoffReleaseState,
+)
+
+from .protected_handoff_delivery_release_service import (
+    get_clouds_gp035_status_payload,
+    get_gp035_authorized_fixture,
+    get_gp035_declined_fixture,
+    get_protected_handoff_release_authorization_surface,
+    get_protected_handoff_release_authorization_surface_payload,
+    record_delivery_release_decision,
+)
