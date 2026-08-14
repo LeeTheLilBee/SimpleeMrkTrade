@@ -1287,3 +1287,71 @@ from .executive_money_command_surface_service import (
     get_executive_money_command_surface,
     get_executive_money_command_surface_payload,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP053
+# SOULAANA DAILY OWNER BRIEF
+# ============================================================
+
+from .soulaana_owner_brief import (
+    SoulaanaBriefItem,
+    SoulaanaOwnerBrief,
+)
+
+from .soulaana_owner_brief_service import (
+    build_soulaana_owner_brief,
+    get_chief_of_staff_agenda_items,
+    get_chief_of_staff_projection_deltas,
+    get_clouds_gp053_status_payload,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP054
+# CONSEQUENCES / BLOCKERS / DEPENDENCIES
+# ============================================================
+
+from .owner_consequence_blocker import (
+    ConsequenceBlockerSurface,
+    OwnerBlockerItem,
+    OwnerConsequenceItem,
+)
+
+from .owner_consequence_blocker_service import (
+    build_consequence_blocker_surface,
+    get_clouds_gp054_status_payload,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP055
+# OWNER FOLLOW-UP / ATTENTION RECOVERY
+# ============================================================
+
+from .owner_follow_up import (
+    OwnerFollowUpItem,
+    OwnerFollowUpSurface,
+)
+
+from .owner_follow_up_service import (
+    build_owner_follow_up_surface,
+    get_clouds_gp055_status_payload,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP056
+# SOULAANA CHIEF OF STAFF
+# ============================================================
+
+from .soulaana_chief_of_staff import (
+    SoulaanaChiefOfStaffSurface,
+)
+
+from .soulaana_chief_of_staff_service import (
+    build_soulaana_chief_of_staff_surface,
+    get_clouds_gp056_status_payload,
+    get_soulaana_chief_of_staff_surface,
+    get_soulaana_chief_of_staff_surface_payload,
+)
