@@ -841,3 +841,79 @@ The adapter layer is now ready for real external source connections.
 This does NOT mean real live feeds are connected.
 
 Current real-live connection count remains zero.
+
+## GP045 — Owner Memory / Persistent Attention State Foundation
+
+GP045 gives Clouds a persistent owner-attention memory contract.
+
+Memory is keyed to the stable GP028 agenda item ID and stores a
+deterministic material-attention fingerprint.
+
+The owner-memory ledger uses schema versioning, an integrity hash, and
+atomic file replacement.
+
+The file-backed contract is verified across new store instances.
+
+This proves the persistence contract, not hosted durable storage.
+A hosted persistent volume or production database remains unverified.
+
+## GP046 — Owner Attention Controls / Memory State Transitions
+
+GP046 adds owner-controlled attention-state transitions:
+
+- review;
+- pin;
+- unpin;
+- acknowledge;
+- snooze;
+- dismiss;
+- reopen.
+
+These controls change Clouds memory only.
+
+They do not alter Tower authority, approve downstream work, move capital,
+or execute another application.
+
+## GP047 — Soulaana Continuity Memory / Change-Aware Reopen Rules
+
+GP047 teaches Soulaana to interpret owner-memory history.
+
+An acknowledged, dismissed, or actively snoozed item remains quiet when
+its material attention fingerprint is unchanged.
+
+A page refresh alone does not reopen the item.
+
+When the material fingerprint changes, Soulaana may reopen the memory
+item into active attention and explains:
+
+- what the owner previously told her;
+- what changed;
+- why the item is being shown again;
+- what the owner can do next.
+
+Automatic reopen modifies Clouds memory state only. It is not a business
+decision or downstream action.
+
+## GP048 — Owner Memory Command Surface / Persistence Readiness Closeout
+
+GP048 combines agenda state and owner memory into the Soulaana continuity
+surface.
+
+The surface tracks:
+
+- reviewed items;
+- pins;
+- acknowledgments;
+- snoozes;
+- dismissals;
+- reopened material changes;
+- quiet unchanged items;
+- review history.
+
+The owner-memory persistence contract is now ready.
+
+Hosted durable storage is still explicitly unverified.
+
+Closeout conclusion:
+
+`CLOUDS_PHASE_II_OWNER_MEMORY_CONTINUITY_LAYER_READY`

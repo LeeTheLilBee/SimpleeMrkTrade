@@ -1139,3 +1139,83 @@ from .ecosystem_feed_adapter_registry_service import (
     get_registered_adapter_specs,
     get_registered_certification_results,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP045
+# OWNER MEMORY / PERSISTENT ATTENTION STATE FOUNDATION
+# ============================================================
+
+from .owner_attention_memory import (
+    OWNER_MEMORY_FINGERPRINT_POLICY,
+    OWNER_MEMORY_SCHEMA_VERSION,
+    OwnerAttentionMemoryLedger,
+    OwnerAttentionMemoryRecord,
+    OwnerMemoryDisposition,
+)
+
+from .owner_attention_memory_service import (
+    DEFAULT_OWNER_ID,
+    OwnerAttentionMemoryStore,
+    agenda_material_payload,
+    build_new_memory_record,
+    fingerprint_agenda_item,
+    get_clouds_gp045_status_payload,
+    get_default_owner_attention_memory_store,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP046
+# OWNER ATTENTION CONTROLS / MEMORY STATE TRANSITIONS
+# ============================================================
+
+from .owner_attention_controls import (
+    OwnerAttentionControlReceipt,
+)
+
+from .owner_attention_controls_service import (
+    acknowledge_attention_item,
+    dismiss_attention_item,
+    get_clouds_gp046_status_payload,
+    pin_attention_item,
+    reopen_attention_item,
+    review_attention_item,
+    snooze_attention_item,
+    unpin_attention_item,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP047
+# SOULAANA CONTINUITY MEMORY / CHANGE-AWARE REOPEN RULES
+# ============================================================
+
+from .soulaana_continuity_memory import (
+    OwnerContinuityItem,
+    OwnerContinuityState,
+)
+
+from .soulaana_continuity_memory_service import (
+    apply_change_aware_reopens,
+    evaluate_owner_continuity,
+    evaluate_owner_continuity_item,
+    get_clouds_gp047_status_payload,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP048
+# OWNER MEMORY COMMAND SURFACE / PERSISTENCE READINESS CLOSEOUT
+# ============================================================
+
+from .owner_memory_command_surface import (
+    OwnerMemoryCommandSurface,
+)
+
+from .owner_memory_command_surface_service import (
+    build_owner_memory_command_surface,
+    get_clouds_gp048_status_payload,
+    get_owner_memory_command_surface,
+    get_owner_memory_command_surface_payload,
+)
