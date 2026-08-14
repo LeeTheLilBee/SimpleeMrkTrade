@@ -769,3 +769,75 @@ This does not mean a real Tower delivery has occurred.
 External transport, Tower receipt, Tower acceptance, and actual handoff
 delivery remain unverified until the real external integration is
 connected.
+
+## GP041 — Tower + Observatory Real Summary Feed Adapter Contracts
+
+GP041 begins the real ecosystem summary-feed adapter layer.
+
+Tower and Observatory now each have source-specific adapter contracts
+that convert externally supplied compact summaries into the canonical
+GP025 `clouds-operating-feed-v1` envelope.
+
+The adapters reuse the GP025 validator and integrity model.
+
+No Tower or Observatory internal package is imported.
+
+GP041 certification uses non-live projection fixtures only.
+
+A live payload is rejected unless a verified external source connection
+is explicitly present.
+
+Certification fixtures are prohibited from masquerading as live feeds.
+
+## GP042 — ATM Operations + Archive Vault Real Summary Feed Adapter Contracts
+
+GP042 adds source-specific adapter contracts for ATM Operations and
+Archive Vault.
+
+Both adapters target the same canonical GP025 feed envelope.
+
+The contracts are ready for future externally published compact summaries,
+but GP042 does not claim either source is connected live.
+
+No ATM Operations or Archive Vault internals are imported.
+
+## GP043 — Teller + Grounds Real Summary Feed Adapter Contracts
+
+GP043 adds source-specific adapter contracts for Teller and Grounds.
+
+Both adapters preserve the same narrow summary-only integration doctrine.
+
+Clouds does not directly operate payment, people, property, acquisition,
+or other source-owned workflows.
+
+The adapters are contract-ready but not claimed live.
+
+## GP044 — Six-Source Real Feed Adapter Registry / Live Connection Readiness Gate
+
+GP044 registers the complete six-source Simplee ecosystem feed boundary:
+
+1. Observatory
+2. Tower
+3. Teller
+4. Grounds
+5. Archive Vault
+6. ATM Operations
+
+Every adapter:
+
+- targets `clouds-operating-feed-v1`;
+- reuses the GP025 validator;
+- supports bounded projection and live modes;
+- requires a verified external connection for live mode;
+- rejects fixture-based live claims;
+- performs no raw source access;
+- performs no downstream execution;
+- uses no cross-application imports.
+
+All six certification fixtures pass the canonical feed validator.
+
+The adapter layer is now ready for real external source connections.
+
+This does NOT mean real live feeds are connected.
+
+Current real-live connection count remains zero.

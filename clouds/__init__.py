@@ -1056,3 +1056,86 @@ from .protected_handoff_corridor_closeout_service import (
     get_protected_handoff_corridor_closeout,
     get_protected_handoff_corridor_closeout_payload,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP041
+# REAL SUMMARY FEED ADAPTER FOUNDATION
+# TOWER + OBSERVATORY
+# ============================================================
+
+from .real_summary_feed_adapter import (
+    ExternalOperatingSummaryPayload,
+    ExternalSummaryMetric,
+    RealSummaryFeedAdapterResult,
+    RealSummaryFeedAdapterSpec,
+)
+
+from .real_summary_feed_adapter_service import (
+    adapt_external_summary,
+    build_adapter_spec,
+    build_certification_payload,
+    build_certification_result,
+)
+
+from .tower_ob_summary_feed_adapter_service import (
+    OBSERVATORY_SUMMARY_ADAPTER,
+    TOWER_SUMMARY_ADAPTER,
+    adapt_observatory_summary,
+    adapt_tower_summary,
+    get_clouds_gp041_status_payload,
+    get_gp041_adapter_specs,
+    get_gp041_certification_results,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP042
+# ATM OPERATIONS + ARCHIVE VAULT SUMMARY FEED ADAPTERS
+# ============================================================
+
+from .atm_vault_summary_feed_adapter_service import (
+    ARCHIVE_VAULT_SUMMARY_ADAPTER,
+    ATM_OPERATIONS_SUMMARY_ADAPTER,
+    adapt_archive_vault_summary,
+    adapt_atm_operations_summary,
+    get_clouds_gp042_status_payload,
+    get_gp042_adapter_specs,
+    get_gp042_certification_results,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP043
+# TELLER + GROUNDS SUMMARY FEED ADAPTERS
+# ============================================================
+
+from .teller_grounds_summary_feed_adapter_service import (
+    GROUNDS_SUMMARY_ADAPTER,
+    TELLER_SUMMARY_ADAPTER,
+    adapt_grounds_summary,
+    adapt_teller_summary,
+    get_clouds_gp043_status_payload,
+    get_gp043_adapter_specs,
+    get_gp043_certification_results,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP044
+# SIX-SOURCE REAL FEED ADAPTER REGISTRY / LIVE READINESS
+# ============================================================
+
+from .ecosystem_feed_adapter_registry import (
+    EcosystemFeedAdapterRegistrySurface,
+)
+
+from .ecosystem_feed_adapter_registry_service import (
+    adapt_registered_external_summary,
+    get_clouds_gp044_status_payload,
+    get_ecosystem_feed_adapter_registry_surface,
+    get_ecosystem_feed_adapter_registry_surface_payload,
+    get_real_summary_feed_adapter_spec,
+    get_registered_adapter_specs,
+    get_registered_certification_results,
+)
