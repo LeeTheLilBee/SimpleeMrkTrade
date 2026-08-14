@@ -1,0 +1,22 @@
+{
+  "assertions": [
+    "Open Book and Hot Now share one command surface",
+    "position cards remain explanation-first",
+    "interesting does not imply actionable",
+    "static fallback cannot fabricate confirmed positions"
+  ],
+  "branch": "ob-dashboard-soulaana-command-room",
+  "broker_execution_enabled": false,
+  "capital_action_enabled": false,
+  "created_at_utc": "2026-08-14T14:33:53.903322+00:00",
+  "dashboard_role": "normal",
+  "gp066_advanced": false,
+  "hosted_visual_acceptance": false,
+  "live_auto_locked": true,
+  "owner_console_modified_here": false,
+  "owner_dashboard_built_here": false,
+  "pack": "OBUX019",
+  "parent": "71fae93b8d9a459916dff3cfbde97c9583ef2213",
+  "status": "BUILT_PENDING_TEST_AND_OWNER_VISUAL_ACCEPTANCE",
+  "title": "Compact Open Book + Hot Now live board"
+}
