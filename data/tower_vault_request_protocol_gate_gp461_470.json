@@ -1,0 +1,61 @@
+{
+  "pack_id": "GP461-GP470",
+  "title": "TOWER VAULT REQUEST PROTOCOL GATE",
+  "source_app": "tower",
+  "receives_from": "teller",
+  "target_app_when_allowed": "vault",
+  "doctrine": {
+    "tower": "face and permission authority",
+    "teller": "workflow request source",
+    "vault": "sealed memory that answers Tower only",
+    "key_rule": "Teller can ask. Tower must decide. Vault only answers Tower."
+  },
+  "tower_owns": [
+    "identity check",
+    "role check",
+    "clearance check",
+    "step-up requirement",
+    "owner/admin approval requirement",
+    "redaction decision",
+    "Vault protocol request permission",
+    "workflow-safe return to Teller",
+    "Tower decision receipt"
+  ],
+  "tower_does_not_do_yet": [
+    "Vault authorized view rendering",
+    "Vault authorized download delivery",
+    "Vault raw file retrieval",
+    "Vault external collaborator sharing",
+    "public link creation"
+  ],
+  "gate_decisions": [
+    "allowed",
+    "blocked",
+    "needs_step_up",
+    "needs_owner_approval",
+    "read_only",
+    "redacted",
+    "expired_clearance",
+    "role_mismatch",
+    "lane_mismatch",
+    "invalid_packet"
+  ],
+  "safe_outputs_to_teller": [
+    "workflow-safe status",
+    "Tower decision receipt id",
+    "redaction applied flag",
+    "next Teller action",
+    "safe Vault reference label"
+  ],
+  "prevented_behaviors": [
+    "raw Vault links to Teller",
+    "raw Vault files to Teller",
+    "direct Teller-to-Vault access",
+    "public Vault links",
+    "shared Vault folders",
+    "unapproved preview",
+    "unapproved download"
+  ],
+  "next_corridor": "GP471-GP480 \u2014 Tower Authorized View Protocol",
+  "status": "tower_vault_request_protocol_gate_ready"
+}
