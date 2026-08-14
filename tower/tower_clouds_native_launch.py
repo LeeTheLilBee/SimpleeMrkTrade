@@ -977,3 +977,321 @@ def _tower_clouds_pack1_ob_default_deny_recovery(response: Response) -> Response
     except Exception:
         return response
 
+# ====================================================================================================
+# # BEGIN GP081 HOSTED REHEARSAL PROBES
+# ====================================================================================================
+
+GP081_HOSTED_ASSEMBLY_MARKER = "gp081-a5dae833c0d64ff89223c740cf9eeed7"
+
+GP081_HOSTED_PROBE_PATH = (
+    "/tower/clouds/gp081-hosted-probe"
+)
+
+GP081_HOSTED_SOURCE_TRUTH_PATH = (
+    "/clouds/hosted-source-truth.json"
+)
+
+
+@tower_clouds_native_bp.route(
+    GP081_HOSTED_PROBE_PATH,
+    methods=["GET"],
+)
+def tower_clouds_gp081_hosted_probe():
+    """
+    Deployment-presence probe.
+
+    Anonymous callers receive only:
+    - access denied
+    - checkpoint
+    - non-secret assembly marker
+
+    No owner/system evidence is disclosed without Tower authentication.
+    """
+
+    if not owner_session_active():
+
+        return jsonify({
+            "allowed":
+            False,
+
+            "checkpoint":
+            "GP081",
+
+            "assembly_marker":
+            GP081_HOSTED_ASSEMBLY_MARKER,
+
+            "reason_code":
+            "tower_owner_session_required",
+
+            "default_deny":
+            True,
+
+            "downstream_execution_performed":
+            False,
+        }), 401
+
+
+    from clouds.phase_ii_beta_closeout_service import (
+        get_clouds_gp060_status_payload,
+    )
+
+
+    gp060 = (
+        get_clouds_gp060_status_payload()
+    )
+
+
+    return jsonify({
+        "allowed":
+        True,
+
+        "checkpoint":
+        "GP081",
+
+        "assembly_marker":
+        GP081_HOSTED_ASSEMBLY_MARKER,
+
+        "clouds_pack":
+        gp060.get(
+            "pack"
+        ),
+
+        "clouds_status":
+        gp060.get(
+            "status"
+        ),
+
+        "clouds_conclusion":
+        gp060.get(
+            "conclusion"
+        ),
+
+        "real_live_feeds_connected":
+        False,
+
+        "default_deny":
+        True,
+
+        "downstream_execution_performed":
+        False,
+    })
+
+
+@tower_clouds_native_bp.route(
+    GP081_HOSTED_SOURCE_TRUTH_PATH,
+    methods=["GET"],
+)
+def tower_clouds_gp081_hosted_source_truth():
+    """
+    Protected hosted mixed-source truth endpoint.
+
+    Requires:
+    - Tower owner session
+    - Tower-defined Clouds integration handoff
+    """
+
+    owner_gate = (
+        _require_owner_or_redirect()
+    )
+
+    if owner_gate is not None:
+
+        return owner_gate
+
+
+    if not (
+        _tower_clouds_integration_handoff_active()
+    ):
+
+        return jsonify({
+            "allowed":
+            False,
+
+            "reason_code":
+            "tower_clouds_integration_handoff_required",
+
+            "default_deny":
+            True,
+
+            "downstream_execution_performed":
+            False,
+        }), 403
+
+
+    from tower.tower_clouds_gp077_source_availability_service import (
+        get_clouds_gp077_status_payload,
+    )
+
+    from tower.tower_clouds_gp078_mixed_source_rehearsal_service import (
+        get_clouds_gp078_status_payload,
+    )
+
+    from tower.tower_clouds_gp079_soulaana_mixed_source_service import (
+        get_clouds_gp079_status_payload,
+    )
+
+    from tower.tower_clouds_gp080_prehosted_staging_readiness_service import (
+        get_clouds_gp080_status_payload,
+    )
+
+
+    gp077 = (
+        get_clouds_gp077_status_payload()
+    )
+
+    gp078 = (
+        get_clouds_gp078_status_payload()
+    )
+
+    gp079 = (
+        get_clouds_gp079_status_payload()
+    )
+
+    gp080 = (
+        get_clouds_gp080_status_payload()
+    )
+
+
+    safe = all([
+        gp077.get(
+            "status"
+        ) == "ready",
+
+        gp078.get(
+            "status"
+        ) == "ready",
+
+        gp079.get(
+            "status"
+        ) == "ready",
+
+        gp080.get(
+            "status"
+        ) == "ready",
+
+        gp078.get(
+            "projection_only_count"
+        ) == 3,
+
+        gp078.get(
+            "missing_count"
+        ) == 3,
+
+        gp078.get(
+            "healthy_live_count"
+        ) == 0,
+
+        gp078.get(
+            "false_urgency_count"
+        ) == 0,
+
+        gp079.get(
+            "soulaana_explanation_first"
+        ) is True,
+    ])
+
+
+    return jsonify({
+        "allowed":
+        bool(
+            safe
+        ),
+
+        "checkpoint":
+        "GP083",
+
+        "assembly_marker":
+        GP081_HOSTED_ASSEMBLY_MARKER,
+
+        "soulaana_explanation_first":
+        gp079.get(
+            "soulaana_explanation_first"
+        ),
+
+        "soulaana_lead_explanation":
+        gp079.get(
+            "lead_explanation"
+        ),
+
+        "soulaana_what_it_means":
+        gp079.get(
+            "what_it_means"
+        ),
+
+        "soulaana_what_needs_attention":
+        gp079.get(
+            "what_needs_attention"
+        ),
+
+        "soulaana_what_can_wait":
+        gp079.get(
+            "what_can_wait"
+        ),
+
+        "soulaana_next_action":
+        gp079.get(
+            "next_action"
+        ),
+
+        "projection_only_source_count":
+        gp078.get(
+            "projection_only_count"
+        ),
+
+        "unavailable_source_count":
+        gp078.get(
+            "missing_count"
+        ),
+
+        "verified_live_source_count":
+        gp078.get(
+            "healthy_live_count"
+        ),
+
+        "trusted_current_source_count":
+        gp078.get(
+            "trusted_current_source_count"
+        ),
+
+        "false_urgency_count":
+        gp078.get(
+            "false_urgency_count"
+        ),
+
+        "business_risk_inference_count":
+        gp078.get(
+            "business_risk_inference_count"
+        ),
+
+        "last_known_falsely_current_count":
+        gp078.get(
+            "last_known_falsely_current_count"
+        ),
+
+        "safe_degradation_verified":
+        gp080.get(
+            "safe_degradation_verified"
+        ),
+
+        "real_live_feeds_connected":
+        False,
+
+        "capital_movement_performed":
+        False,
+
+        "automatic_business_decision_performed":
+        False,
+
+        "downstream_execution_performed":
+        False,
+    }), (
+        200
+        if safe
+        else 503
+    )
+
+
+# ====================================================================================================
+# # END GP081 HOSTED REHEARSAL PROBES
+# ====================================================================================================
+
