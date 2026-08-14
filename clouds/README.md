@@ -1057,3 +1057,92 @@ Soulaana remains advisory and interpretive.
 
 She does not replace Tower authority, owner approval, source authority,
 capital authority, or downstream execution.
+
+## GP057 — Feed Resilience / Stale + Missing + Conflict Detection
+
+GP057 adds the operating-feed resilience layer.
+
+Clouds can distinguish:
+
+- current valid live data;
+- projection-only data;
+- missing data;
+- stale live data;
+- conflicting current data;
+- invalid/rejected input.
+
+Feed degradation is treated as a data-quality state.
+
+It does not automatically become business risk or owner business urgency.
+
+## GP058 — Safe Degradation / No False Urgency + Fallback Interpretation
+
+GP058 defines safe degraded behavior.
+
+When source data is stale, missing, conflicting, or invalid:
+
+- current-source truth is withheld;
+- last-known data cannot be shown as current;
+- reference data must remain visibly labeled;
+- system-review attention may be shown;
+- business health is not automatically overridden;
+- business urgency is not automatically escalated.
+
+Projection data remains reference/planning context only.
+
+## GP059 — Phase II Owner Walkthrough / Tower-Clouds Readiness Rehearsal
+
+GP059 extends the owner walkthrough across Phase II.
+
+The walkthrough certifies:
+
+- the original GP024 owner experience remains intact;
+- Soulaana explain-everything behavior remains active;
+- Chief of Staff active-attention and no-action states;
+- strict money separation;
+- missing-feed degradation;
+- stale-feed degradation;
+- conflict-feed degradation;
+- no false urgency during degraded input;
+- Tower authority remains outside Clouds;
+- real live feed claims remain locked;
+- hosted external readiness remains unclaimed.
+
+The walkthrough is software-side rehearsal only.
+
+## GP060 — Clouds Phase II Beta Readiness Closeout
+
+GP060 closes Clouds Phase II from GP025 through GP060.
+
+Clouds-side Phase II capabilities include:
+
+- canonical real-feed boundary;
+- operating change memory;
+- cross-business impact interpretation;
+- executive owner agenda;
+- decision preparation;
+- protected handoff corridor;
+- six-source external adapter registry;
+- persistent owner memory;
+- Soulaana continuity;
+- executive money reality;
+- capital competition interpretation;
+- Soulaana Chief of Staff;
+- feed resilience;
+- safe degraded-source behavior;
+- Phase II owner walkthrough.
+
+The closeout conclusion is:
+
+`CLOUDS_PHASE_II_READY_FOR_TOWER_INTEGRATION_AND_REAL_FEED_CONNECTION`
+
+This does NOT mean externally beta-ready.
+
+The following remain false until separately proven:
+
+- real live feeds connected;
+- hosted Tower integration verified;
+- hosted staging verified;
+- external beta acceptance recorded.
+
+Clouds remains fail-closed on external readiness.
