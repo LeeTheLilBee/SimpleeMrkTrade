@@ -112,6 +112,7 @@ CANONICAL_WALKTHROUGH_LABELS = [
 ]
 
 OWNER_EXPERIENCE_IMPORT_CANDIDATES = [
+    "clouds.owner_command_experience_service",
     "clouds.owner_command_experience",
     "clouds.owner_command_service",
     "clouds.owner_command",
