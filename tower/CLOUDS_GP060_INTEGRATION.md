@@ -97,3 +97,82 @@ Closeout:
 Next:
 
 GP069–GP072 — Source Connection Wave 1.
+
+## GP069–GP072 — Source Connection Wave 1
+
+Wave 1 source publishers:
+
+1. Tower
+2. Observatory
+3. Archive Vault
+
+### GP069 — Tower
+
+Tower owns a compact source publisher using:
+
+`tower-clouds-summary-v1`
+
+### GP070 — Observatory
+
+Observatory owns its publisher on:
+
+`ob-clouds-source-wave1`
+
+Source package:
+
+`ob_owner_experience/`
+
+Contract:
+
+`observatory-clouds-summary-v1`
+
+Publisher commit:
+
+`98781c18ba433782592f2577196f60ff8b0ac1c0`
+
+### GP071 — Archive Vault
+
+Archive Vault owns its publisher on:
+
+`vault-clouds-source-wave1`
+
+Source package:
+
+`vault/`
+
+Contract:
+
+`archive-vault-clouds-summary-v1`
+
+Publisher commit:
+
+`131facb2849773e64f6f3a2cd737b8e30db757be`
+
+### GP072 — Cross-contract certification
+
+All three publishers passed:
+
+- source-local publisher tests;
+- projection/live-claim firewall;
+- signed transport compatibility;
+- body-integrity verification;
+- signature verification;
+- actual Clouds GP060 adapter certification.
+
+Certification fixtures remain projection-only.
+
+No real source endpoint was contacted.
+
+No real live feed is claimed connected.
+
+No production secret material is persisted.
+
+No capital movement or downstream execution occurs.
+
+Closeout:
+
+`TOWER_CLOUDS_SOURCE_WAVE_1_PUBLISHERS_READY_FOR_EXTERNAL_CONNECTION_CERTIFICATION`
+
+Next:
+
+GP073–GP076 — Teller, Grounds, and ATM Operations source publishers.
