@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
 <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_dashboard_soulaana_obux.css') }}" />
 </head>
-<body>
+<body data-ob-dashboard-role="normal">
 <!-- OBSERVATORY_DASHBOARD_V16_REAL_ROOM -->
 <div id="ob-app">
 <div class="ob-v23-lock-marker" hidden>Live Auto Locked</div>
@@ -24,6 +24,8 @@
         <span>Live Auto locked</span>
       </div>
     </div>
+
+    <div id="obNormalDashboardRole" data-dashboard-role="normal" data-owner-dashboard="false" data-owner-console="false" hidden>NORMAL_OB_DASHBOARD_ONLY</div>
 
     <div id="dashboardMount"></div>
   </div>
