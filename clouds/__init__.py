@@ -986,3 +986,73 @@ from .protected_handoff_release_record_service import (
     get_protected_handoff_release_preparation_surface,
     get_protected_handoff_release_preparation_surface_payload,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP037
+# PROTECTED HANDOFF RELEASE EXECUTION / DELIVERY ATTEMPT BOUNDARY
+# ============================================================
+
+from .protected_handoff_release_execution import (
+    ProtectedHandoffReleaseExecution,
+    ProtectedReleaseExecutionState,
+)
+
+from .protected_handoff_release_execution_service import (
+    execute_protected_handoff_release,
+    get_clouds_gp037_status_payload,
+    get_gp037_release_execution,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP038
+# DELIVERY ATTEMPT RECORD / EXTERNAL RECEIPT PREPARATION
+# ============================================================
+
+from .protected_handoff_delivery_attempt import (
+    ProtectedDeliveryAttemptState,
+    ProtectedHandoffDeliveryAttemptRecord,
+)
+
+from .protected_handoff_delivery_attempt_service import (
+    build_delivery_attempt_record,
+    get_clouds_gp038_status_payload,
+    get_gp038_delivery_attempt_record,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP039
+# EXTERNAL RECEIPT / ACCEPTANCE VALIDATION CONTRACT
+# ============================================================
+
+from .external_handoff_receipt import (
+    ExternalHandoffReceiptClaim,
+    ExternalHandoffReceiptValidation,
+    ExternalReceiptAcceptanceState,
+    ExternalReceiptValidationState,
+)
+
+from .external_handoff_receipt_service import (
+    build_gp039_certification_fixture,
+    get_clouds_gp039_status_payload,
+    get_gp039_fixture_validation,
+    validate_external_handoff_receipt,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP040
+# PROTECTED HANDOFF CORRIDOR CLOSEOUT / EXTERNAL BOUNDARY SEAL
+# ============================================================
+
+from .protected_handoff_corridor_closeout import (
+    ProtectedHandoffCorridorCloseout,
+)
+
+from .protected_handoff_corridor_closeout_service import (
+    get_clouds_gp040_status_payload,
+    get_protected_handoff_corridor_closeout,
+    get_protected_handoff_corridor_closeout_payload,
+)

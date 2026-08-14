@@ -702,3 +702,70 @@ GP036 prepares release artifacts only.
 It does not execute release, attempt delivery, contact Tower, create a
 session, launch an application, move capital, approve downstream work,
 or perform downstream execution.
+
+## GP037 — Protected Handoff Release Execution / Delivery Attempt Boundary
+
+GP037 executes the Clouds-side release of the sealed GP036 delivery
+envelope to the external-delivery boundary.
+
+The envelope remains bound to its package, release record, selected
+option, owning application, delivery target, Tower mediation requirement,
+and integrity hashes.
+
+GP037 does not invoke external transport, contact Tower, attempt external
+delivery, receive a receipt, mark the handoff delivered, move capital,
+or execute downstream work.
+
+## GP038 — Delivery Attempt Record / External Receipt Preparation
+
+GP038 creates the bounded record describing the next external-delivery
+attempt.
+
+The attempt remains waiting for an external transport adapter.
+
+Clouds does not pretend that Tower or another application has been
+contacted. A real external receipt remains required before delivery may
+be marked verified.
+
+## GP039 — External Receipt / Acceptance Validation Contract
+
+GP039 defines the strict validation contract for future Tower or other
+external delivery receipts.
+
+A valid external receipt must bind to the exact delivery-attempt record,
+delivery envelope, target, and integrity hash.
+
+GP039 includes a certification fixture for testing the validator.
+
+The fixture is explicitly marked fixture-only and can never count as a
+real external receipt or real handoff delivery.
+
+No real Tower receipt is currently claimed.
+
+## GP040 — Protected Handoff Corridor Closeout / External Boundary Seal
+
+GP040 closes the Clouds-side protected handoff corridor.
+
+Clouds now has a complete internal chain covering:
+
+- owner decision preparation;
+- explicit owner intent;
+- intent review;
+- handoff preparation authorization;
+- protected package creation;
+- package release authorization;
+- release record creation;
+- delivery envelope creation;
+- Clouds-side release execution;
+- external delivery-attempt preparation;
+- external receipt validation.
+
+The closeout conclusion is:
+
+`CLOUDS_PHASE_II_HANDOFF_CORRIDOR_READY_FOR_EXTERNAL_TOWER_INTEGRATION`
+
+This does not mean a real Tower delivery has occurred.
+
+External transport, Tower receipt, Tower acceptance, and actual handoff
+delivery remain unverified until the real external integration is
+connected.
