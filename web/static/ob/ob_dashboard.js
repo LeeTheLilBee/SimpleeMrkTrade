@@ -1639,6 +1639,7 @@
   // REAL RENDERER
   // ================================================================================================
 
+
   function obRenderDashboard() {
     const mount = document.getElementById(
       "dashboardMount"
@@ -1766,7 +1767,7 @@
         ? "Selective opportunity"
         : hotSymbols.length
           ? "Watch-first"
-          : "Quiet"
+          : "Quiet sky"
     );
 
 
@@ -1802,170 +1803,317 @@
     mount.innerHTML = `
       <main
         id="obuxDashboardShell"
-        class="obux-dashboard-shell obux-dashboard-shell-v2"
-        data-obux-version="OBUX011-OBUX015"
+        class="obux-dashboard-shell ob-command-room"
+        data-obux-version="OBUX016-OBUX020"
+        data-dashboard-role="normal"
       >
 
         <!-- =======================================================================================
-             OBUX011 — SOULAANA MARKET BRIEFING
+             OBUX016 — OBSERVATORY HERO / SOULAANA COMMAND STAGE
              ======================================================================================= -->
 
-        <section class="obux-soulaana-hero">
+        <section
+          class="ob-command-stage"
+          aria-label="Soulaana market briefing"
+        >
 
-          <div class="obux-soulaana-orbit">
-            <span>${compact(account.accountName)}</span>
-            <span>${compact(account.mode)}</span>
-            <span>Live Auto locked</span>
-          </div>
+          <div class="ob-command-stage-main">
 
+            <div class="ob-command-stage-meta">
 
-          <div class="obux-soulaana-intro">
+              <span>
+                ${compact(account.accountName)}
+              </span>
 
-            <div class="obux-dashboard-kicker">
-              SOULAANA · RIGHT NOW
+              <span>
+                ${compact(account.mode)}
+              </span>
+
+              <span>
+                Normal Dashboard
+              </span>
+
+              <span>
+                Live Auto locked
+              </span>
+
             </div>
 
-            <h2>
-              ${compact(soulaanaBrief.headline)}
-            </h2>
 
-            <p class="obux-soulaana-opening">
-              ${compact(soulaanaBrief.market_read)}
-            </p>
+            <div class="ob-command-soulaana-line">
 
-          </div>
+              <div
+                class="ob-command-soulaana-sigil"
+                aria-hidden="true"
+              >
+                S
+              </div>
+
+              <div>
+                <div class="obux-dashboard-kicker">
+                  SOULAANA · RIGHT NOW
+                </div>
+
+                <div class="ob-command-market-label">
+                  MARKET READ
+                </div>
+              </div>
+
+            </div>
 
 
-          <div class="obux-soulaana-brief-grid">
+            <div class="ob-command-soulaana-story">
 
-            <article class="obux-soulaana-brief-card market-read">
-              <span>MARKET READ</span>
+              <h2>
+                ${compact(soulaanaBrief.headline)}
+              </h2>
 
-              <h3>
-                ${compact(soulaanaBrief.market_label)}
-              </h3>
-
-              <p>
+              <p class="ob-command-opening">
                 ${compact(soulaanaBrief.market_read)}
               </p>
 
-              <div class="obux-brief-foot">
-                ${compact(soulaanaBrief.regime)}
+            </div>
+
+
+            <div class="ob-command-translation-pair">
+
+              <article class="ob-command-translation meaning">
+
+                <span>
+                  WHAT THIS MEANS · WHY IT MATTERS
+                </span>
+
+                <p>
+                  ${compact(
+                    existingMeaning
+                    || soulaanaBrief.what_it_means
+                  )}
+                </p>
+
+              </article>
+
+
+              <article class="ob-command-translation account">
+
+                <span>
+                  YOUR ACCOUNT
+                </span>
+
+                <p>
+                  ${compact(soulaanaBrief.account_read)}
+                </p>
+
+              </article>
+
+            </div>
+
+
+            <div class="ob-command-decision-bar">
+
+              <div class="ob-command-needs">
+
+                <span>
+                  WHAT NEEDS YOU
+                </span>
+
+                <strong>
+                  ${compact(soulaanaBrief.attention_read)}
+                </strong>
+
               </div>
-            </article>
 
 
-            <article class="obux-soulaana-brief-card meaning-read">
-              <span>WHAT THIS MEANS · WHY IT MATTERS</span>
+              <div class="ob-command-next">
 
-              <p>
-                ${compact(
-                  existingMeaning
-                  || soulaanaBrief.what_it_means
-                )}
-              </p>
-            </article>
+                <span>
+                  NEXT BEST MOVE
+                </span>
 
+                <strong>
+                  ${compact(soulaanaBrief.next_move)}
+                </strong>
 
-            <article class="obux-soulaana-brief-card account-read">
-              <span>YOUR ACCOUNT</span>
+              </div>
 
-              <p>
-                ${compact(soulaanaBrief.account_read)}
-              </p>
-            </article>
+            </div>
 
 
-            <article class="obux-soulaana-brief-card watch-read">
-              <span>WHAT I'M WATCHING</span>
+            <div
+              class="ob-command-bottom-line ${soulaanaBrief.no_action_needed ? "calm" : "active"}"
+            >
 
-              <p>
-                ${compact(soulaanaBrief.watching)}
-              </p>
-            </article>
+              <span class="ob-command-bottom-dot"></span>
 
+              <strong>
+                ${
+                  soulaanaBrief.no_action_needed
+                    ? "Nothing needs you right now."
+                    : "There is something worth your attention."
+                }
+              </strong>
 
-            <article class="obux-soulaana-brief-card attention-read">
-              <span>WHAT NEEDS YOU</span>
+              <span>
+                ${compact(brief.next)}
+              </span>
 
-              <p>
-                ${compact(soulaanaBrief.attention_read)}
-              </p>
-            </article>
-
-
-            <article class="obux-soulaana-brief-card change-read">
-              <span>WHAT CHANGED</span>
-
-              <p>
-                ${compact(soulaanaBrief.what_changed)}
-              </p>
-            </article>
-
-
-            <article class="obux-soulaana-brief-card wait-read">
-              <span>WHAT CAN WAIT</span>
-
-              <p>
-                ${compact(soulaanaBrief.what_can_wait)}
-              </p>
-            </article>
-
-
-            <article class="obux-soulaana-brief-card next-read">
-              <span>NEXT BEST MOVE</span>
-
-              <p>
-                ${compact(soulaanaBrief.next_move)}
-              </p>
-            </article>
+            </div>
 
           </div>
 
 
-          <div class="obux-soulaana-bottom-line ${soulaanaBrief.no_action_needed ? "calm" : "active"}">
+          <!-- =====================================================================================
+               SKY INSTRUMENT
+               ===================================================================================== -->
 
-            <strong>
-              ${
-                soulaanaBrief.no_action_needed
-                  ? "Nothing needs you right now."
-                  : "There is something worth your attention."
-              }
-            </strong>
+          <aside
+            class="ob-command-sky-instrument"
+            aria-label="Market posture instrument"
+          >
 
-            <span>
-              ${compact(brief.next)}
-            </span>
+            <div class="ob-command-orbit">
 
-          </div>
+              <div class="ob-command-orbit-ring ring-one"></div>
+              <div class="ob-command-orbit-ring ring-two"></div>
+              <div class="ob-command-orbit-ring ring-three"></div>
+
+              <span class="ob-command-star star-a"></span>
+              <span class="ob-command-star star-b"></span>
+              <span class="ob-command-star star-c"></span>
+              <span class="ob-command-star star-d"></span>
+
+              <div class="ob-command-orbit-core">
+
+                <span>
+                  MARKET POSTURE
+                </span>
+
+                <strong>
+                  ${compact(marketPosture)}
+                </strong>
+
+                <small>
+                  ${compact(marketHealth.regime)}
+                </small>
+
+              </div>
+
+            </div>
+
+
+            <div class="ob-command-orbit-stats">
+
+              <article>
+                <span>OPEN BOOK</span>
+                <strong>${positions.length}</strong>
+                <small>${compact(openBookPosture)}</small>
+              </article>
+
+              <article>
+                <span>ATTENTION</span>
+                <strong>
+                  ${
+                    attentionPositions.length
+                    + actionableHot.length
+                  }
+                </strong>
+                <small>
+                  ${
+                    soulaanaBrief.no_action_needed
+                      ? "No immediate need"
+                      : "Review surfaced"
+                  }
+                </small>
+              </article>
+
+              <article>
+                <span>WORTH EYES</span>
+                <strong>${hotSymbols.length}</strong>
+                <small>${compact(watchPosture)}</small>
+              </article>
+
+            </div>
+
+          </aside>
 
         </section>
 
 
         <!-- =======================================================================================
-             OBUX013 — BROKEN-GEOMETRY SUPPORT MOSAIC
+             OBUX017 — SECONDARY SOULAANA INTELLIGENCE STRIP
              ======================================================================================= -->
 
-        <section class="obux-dashboard-support">
+        <section class="ob-command-intelligence-strip">
 
-          <div class="obux-dashboard-section-title">
+          <article>
+
+            <span>
+              WHAT I'M WATCHING
+            </span>
+
+            <p>
+              ${compact(soulaanaBrief.watching)}
+            </p>
+
+          </article>
+
+
+          <article>
+
+            <span>
+              WHAT CHANGED
+            </span>
+
+            <p>
+              ${compact(soulaanaBrief.what_changed)}
+            </p>
+
+          </article>
+
+
+          <article>
+
+            <span>
+              WHAT CAN WAIT
+            </span>
+
+            <p>
+              ${compact(soulaanaBrief.what_can_wait)}
+            </p>
+
+          </article>
+
+        </section>
+
+
+        <!-- =======================================================================================
+             OBUX018 — ASYMMETRIC INSTRUMENT BOARD
+             ======================================================================================= -->
+
+        <section class="ob-command-instrument-section">
+
+          <div class="ob-command-section-heading">
+
             <div>
               <div class="obux-dashboard-kicker">
-                QUICK READ
+                INSTRUMENTS
               </div>
 
               <h3>
-                The instruments behind Soulaana's briefing
+                The board behind the briefing
               </h3>
             </div>
 
             <p>
-              Short states only. The explanation stays with Soulaana.
+              Soulaana gives you the meaning. These instruments show the state she used.
             </p>
+
           </div>
 
 
-          <div class="obux-support-mosaic">
+          <div
+            class="ob-command-instrument-grid"
+            data-obux-legacy-contract="obux-support-mosaic"
+          >
 
             ${supportTile(
               "risk-tile",
@@ -1973,20 +2121,8 @@
               risk.label,
               (
                 risk.state === "limited"
-                  ? "I do not have enough trustworthy risk data to pretend certainty."
-                  : "This is the account-risk posture I used in the briefing above."
-              )
-            )}
-
-
-            ${supportTile(
-              "book-tile",
-              "OPEN BOOK",
-              openBookPosture,
-              (
-                positions.length
-                  ? "Confirmed position preview only."
-                  : "I am not turning watched symbols into fake positions."
+                  ? "No trustworthy risk number is being invented."
+                  : "Account-risk posture used in Soulaana's read."
               )
             )}
 
@@ -1996,6 +2132,18 @@
               "MARKET",
               marketPosture,
               marketHealth.breadth
+            )}
+
+
+            ${supportTile(
+              "book-tile",
+              "OPEN BOOK",
+              openBookPosture,
+              (
+                positions.length
+                  ? "Confirmed-position preview only."
+                  : "Watched symbols are not being called positions."
+              )
             )}
 
 
@@ -2011,7 +2159,7 @@
               "mode-tile",
               "MODE",
               account.mode,
-              "Mode changes permission, not what the market actually is."
+              "Mode changes permission, not market reality."
             )}
 
 
@@ -2028,118 +2176,100 @@
 
 
         <!-- =======================================================================================
-             OBUX008 PRESERVED — THIN CHANGE RIBBON
+             OBUX019 — LIVE BOARD / OPEN BOOK + HOT NOW
              ======================================================================================= -->
 
-        <section class="obux-since-ribbon">
+        <section class="ob-command-live-board">
 
-          <div>
-            <span>SINCE YOU WERE HERE</span>
+          <div class="ob-command-live-column open-book-column">
 
-            <strong>
-              ${compact(since.headline)}
-            </strong>
-          </div>
+            <div class="ob-command-live-heading">
 
-          <p>
-            ${compact(since.explanation)}
-          </p>
+              <div>
+                <span>OPEN BOOK</span>
 
-        </section>
-
-
-        <!-- =======================================================================================
-             OPEN BOOK — COMPACT EXPLANATION-FIRST
-             ======================================================================================= -->
-
-        <section class="obux-dashboard-cluster">
-
-          <div class="obux-dashboard-section-title">
-            <div>
-              <div class="obux-dashboard-kicker">
-                OPEN BOOK
+                <h3>
+                  What you already have alive
+                </h3>
               </div>
 
-              <h3>
-                What you already have alive
-              </h3>
+              <small>
+                ${positions.length} confirmed
+              </small>
+
             </div>
 
-            <p>
-              I explain the position first. Detail stays one click deeper.
-            </p>
+
+            ${
+              positions.length
+                ? `
+                  <div class="ob-command-openbook-grid">
+                    ${positions.map(
+                      renderPosition
+                    ).join("")}
+                  </div>
+                `
+                : `
+                  <div class="ob-command-empty-state">
+                    <strong>
+                      No confirmed open-position preview.
+                    </strong>
+
+                    <span>
+                      I am not filling empty space with watched symbols and calling them positions.
+                    </span>
+                  </div>
+                `
+            }
+
           </div>
 
 
-          ${
-            positions.length
-              ? `
-                <div class="obux-openbook-grid">
-                  ${positions.map(
-                    renderPosition
-                  ).join("")}
-                </div>
-              `
-              : `
-                <div class="obux-small-calm-panel">
-                  <strong>
-                    No confirmed open-position preview.
-                  </strong>
+          <div class="ob-command-live-column hot-now-column">
 
-                  <span>
-                    I am not filling empty space with watched symbols and calling them positions.
-                  </span>
-                </div>
-              `
-          }
+            <div class="ob-command-live-heading">
 
-        </section>
+              <div>
+                <span>HOT NOW</span>
 
-
-        <!-- =======================================================================================
-             HOT NOW — SMALLER, INTERPRETIVE
-             ======================================================================================= -->
-
-        <section class="obux-dashboard-cluster">
-
-          <div class="obux-dashboard-section-title">
-            <div>
-              <div class="obux-dashboard-kicker">
-                HOT NOW
+                <h3>
+                  Worth your eyes — not automatically your money
+                </h3>
               </div>
 
-              <h3>
-                Worth your eyes — not automatically your money
-              </h3>
+              <small>
+                selective attention only
+              </small>
+
             </div>
 
-            <p>
-              The card tells you why I care. The deeper evidence stays closed until you ask.
-            </p>
+
+            ${
+              hotSymbols.length
+                ? `
+                  <div class="ob-command-hot-stack">
+                    ${hotSymbols
+                      .slice(0, 4)
+                      .map(
+                        renderHot
+                      )
+                      .join("")}
+                  </div>
+                `
+                : `
+                  <div class="ob-command-empty-state">
+                    <strong>
+                      Nothing is elevated enough to interrupt you.
+                    </strong>
+
+                    <span>
+                      I will surface something when the market gives me a cleaner reason.
+                    </span>
+                  </div>
+                `
+            }
+
           </div>
-
-
-          ${
-            hotSymbols.length
-              ? `
-                <div class="obux-hot-mosaic">
-                  ${hotSymbols.map(
-                    renderHot
-                  ).join("")}
-                </div>
-              `
-              : `
-                <div class="obux-small-calm-panel">
-                  <strong>
-                    Nothing is elevated enough to interrupt you.
-                  </strong>
-
-                  <span>
-                    I will surface something when the market gives me a cleaner reason.
-                  </span>
-                </div>
-              `
-          }
 
         </section>
 
@@ -2148,10 +2278,13 @@
              MARKET MAP HANDOFF
              ======================================================================================= -->
 
-        <section class="obux-market-handoff">
+        <section class="ob-command-map-handoff">
 
           <div>
-            <span>WANT TO SEE THE SKY?</span>
+
+            <span>
+              WANT TO SEE THE SKY?
+            </span>
 
             <strong>
               ${compact(marketHealth.label)}
@@ -2160,7 +2293,9 @@
             <p>
               The Dashboard tells you what matters. The Market Map shows you where it is happening.
             </p>
+
           </div>
+
 
           <a
             class="dashboard-action-button"
@@ -2173,15 +2308,16 @@
 
 
         <!-- =======================================================================================
-             OBUX015 — RAW DATA / TECHNICAL EVIDENCE STAYS DOWN HERE
+             RAW FACTS / EVIDENCE — CLOSED BY DEFAULT
              ======================================================================================= -->
 
         <details
           id="obuxDashboardEvidence"
-          class="ob-panel obux-dashboard-evidence"
+          class="ob-panel obux-dashboard-evidence ob-command-evidence"
         >
 
           <summary>
+
             <div>
               <div class="obux-dashboard-kicker">
                 DEEPER DETAIL
@@ -2195,14 +2331,15 @@
             <span class="obux-dashboard-evidence-plus">
               +
             </span>
+
           </summary>
 
 
           <div class="obux-dashboard-evidence-body">
 
             <p>
-              Here are the raw account facts, source state, feed plumbing, readiness proof,
-              receipts, diagnostics, and technical evidence supporting the briefing above.
+              Raw account facts, source state, feed plumbing, readiness proof,
+              receipts, diagnostics, and technical evidence stay here until you ask for them.
             </p>
 
 
@@ -2290,8 +2427,32 @@
 
     window.OBUX_DASHBOARD_STATE = {
       version: (
+        "OBUX016-OBUX020"
+      ),
+
+      foundation_version: (
         "OBUX011-OBUX015"
       ),
+
+      dashboard_role: (
+        "normal"
+      ),
+
+      normal_dashboard_only: true,
+
+      owner_dashboard_surface: false,
+
+      owner_console_surface: false,
+
+      owner_admin_controls_primary: false,
+
+      soulaana_is_primary_intelligence: true,
+
+      observatory_command_stage: true,
+
+      asymmetric_instrument_board: true,
+
+      compact_live_board: true,
 
       source_state: sourceState,
 
@@ -2345,6 +2506,7 @@
       )
     );
   }
+
 
 
   document.addEventListener(
