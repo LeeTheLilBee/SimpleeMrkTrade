@@ -41,3 +41,59 @@ Closeout:
 Next:
 
 GP065–GP068 — Real Feed Connection Foundation.
+
+## GP065–GP068 — Real Feed Connection Foundation
+
+GP065 registers the six canonical source identities and the exact existing
+Clouds source-contract versions.
+
+The registry stores credential references only. It does not store secret
+material.
+
+GP066 defines a signed summary-transport boundary using HMAC-SHA256.
+
+The contract verifies:
+
+- source identity;
+- source contract;
+- signing-key reference;
+- payload body hash;
+- transport signature;
+- message ID replay;
+- nonce replay;
+- tampering.
+
+Certification secrets are fixture-only and cannot count as a production
+connection.
+
+GP067 defines connection lifecycle and freshness behavior:
+
+- disconnected;
+- connected but unverified;
+- certification verified;
+- externally verified;
+- degraded;
+- revoked.
+
+Stale, replayed, unauthenticated, disconnected, and revoked inputs fail
+closed.
+
+GP068 closes the feed-connection foundation.
+
+Wave 1 is:
+
+1. Tower
+2. Observatory
+3. Archive Vault
+
+No source endpoint has been contacted by this foundation layer.
+
+No real live feed is connected.
+
+Closeout:
+
+`TOWER_CLOUDS_REAL_FEED_CONNECTION_FOUNDATION_READY_FOR_SOURCE_WAVE_1`
+
+Next:
+
+GP069–GP072 — Source Connection Wave 1.
