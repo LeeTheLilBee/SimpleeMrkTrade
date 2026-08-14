@@ -1219,3 +1219,71 @@ from .owner_memory_command_surface_service import (
     get_owner_memory_command_surface,
     get_owner_memory_command_surface_payload,
 )
+
+
+# ============================================================
+# CLOUDS PHASE II GP049
+# CAPITAL CLASSIFICATION / MONEY REALITY
+# ============================================================
+
+from .capital_classification import (
+    CapitalClassification,
+    CapitalEntry,
+    CapitalReality,
+)
+
+from .capital_classification_service import (
+    build_capital_entry,
+    get_clouds_gp049_status_payload,
+    get_gp049_certification_entries,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP050
+# EXECUTIVE MONEY SNAPSHOT
+# ============================================================
+
+from .executive_money_snapshot import (
+    ExecutiveMoneySnapshot,
+)
+
+from .executive_money_snapshot_service import (
+    build_executive_money_snapshot,
+    format_money,
+    get_clouds_gp050_status_payload,
+    get_gp050_certification_money_snapshot,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP051
+# CAPITAL NEED / COMPETITION
+# ============================================================
+
+from .capital_competition import (
+    CapitalCompetitionSurface,
+    CapitalNeedView,
+)
+
+from .capital_competition_service import (
+    build_capital_need_views,
+    get_capital_competition_surface,
+    get_clouds_gp051_status_payload,
+)
+
+
+# ============================================================
+# CLOUDS PHASE II GP052
+# SOULAANA EXECUTIVE MONEY COMMAND SURFACE
+# ============================================================
+
+from .executive_money_command_surface import (
+    ExecutiveMoneyCommandSurface,
+)
+
+from .executive_money_command_surface_service import (
+    get_clouds_gp052_status_payload,
+    get_executive_money_command_surface,
+    get_executive_money_command_surface_payload,
+)

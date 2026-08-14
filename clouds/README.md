@@ -917,3 +917,74 @@ Hosted durable storage is still explicitly unverified.
 Closeout conclusion:
 
 `CLOUDS_PHASE_II_OWNER_MEMORY_CONTINUITY_LAYER_READY`
+
+## GP049 — Capital Classification / Money Reality Foundation
+
+GP049 creates the strict Clouds money-reality model.
+
+Capital is explicitly classified as available, committed, projected,
+target, or need.
+
+Each amount is also labeled as verified real, planning projection, or
+simulation.
+
+Verified-real money requires a real externally connected and verified
+source.
+
+Certification fixtures cannot claim real money.
+
+Simulation never counts as available capital.
+
+## GP050 — Executive Money Snapshot / Strict Money-Separation Surface
+
+GP050 builds the executive money snapshot.
+
+The snapshot separately totals:
+
+- externally verified real available;
+- externally verified real committed;
+- externally verified spendable;
+- planning available;
+- planning committed;
+- projected;
+- simulated;
+- targets;
+- capital needs.
+
+Simulation, projection, and target figures are prohibited from entering
+the verified spendable total.
+
+## GP051 — Capital Need / Competition Interpretation
+
+GP051 interprets capital competition.
+
+Capital needs use the existing GP028 owner agenda to determine review
+order.
+
+Review order is not allocation.
+
+Clouds does not move money, authorize spending, place trades, or execute
+payments.
+
+## GP052 — Soulaana Executive Money Command Surface / Layer Closeout
+
+GP052 creates the Soulaana-first executive money picture.
+
+Soulaana explains:
+
+- what is actually verified real;
+- what is already spoken for;
+- what is only planning;
+- what is projected;
+- what is simulated;
+- what is a target;
+- what needs capital;
+- which needs currently deserve review first;
+- what can wait;
+- when no verified funding claim can be made.
+
+The closeout conclusion is:
+
+`CLOUDS_PHASE_II_EXECUTIVE_MONEY_PICTURE_LAYER_READY`
+
+Certification data does not represent real owner or business balances.
