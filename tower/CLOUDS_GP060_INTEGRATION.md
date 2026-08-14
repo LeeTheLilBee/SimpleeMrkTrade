@@ -267,3 +267,90 @@ Conclusion:
 
 GP077 hosted end-to-end staging remains fail-closed until the operational
 source systems are actually connected and verified.
+
+## GP077–GP080 — Mixed-Source Pre-Hosted Rehearsal
+
+A later repository review confirmed that Clouds GP057 and GP058 already
+support safe operation when sources are projection-only or unavailable.
+
+Therefore hosted Clouds staging does not require every downstream business
+application to be operational first.
+
+### Current staging truth model
+
+Projection/reference only:
+
+- Tower
+- The Observatory
+- Archive Vault
+
+Unavailable / operational source not yet verified:
+
+- The Teller
+- The Grounds
+- ATM Operations
+
+No source in this rehearsal is called verified live.
+
+### GP077
+
+Creates the six-source availability and truth-state matrix.
+
+### GP078
+
+Runs the actual Clouds GP057 / GP058 implementation from:
+
+`clouds-rebuild-dev`
+
+Commit:
+
+`9606ccef44045634eaf977f1df641751aefd866b`
+
+The rehearsal proves:
+
+- three projection-only sources;
+- three missing sources;
+- zero trusted live sources;
+- zero inferred business danger;
+- zero business-attention escalation from missing data;
+- zero false urgency;
+- three current-state claims withheld;
+- three projection references visibly labeled;
+- zero last-known values falsely shown as current.
+
+### GP079
+
+Soulaana explains the mixed-source condition before raw evidence.
+
+She explicitly distinguishes:
+
+- what is planning/reference;
+- what is unavailable;
+- what this means;
+- what must not be assumed;
+- what can wait;
+- what happens next.
+
+### GP080
+
+Authorizes entry into a hosted staging rehearsal.
+
+This DOES NOT certify that hosted staging already passed.
+
+Still false:
+
+- hosted Tower integration verified;
+- hosted staging verified;
+- verified live feeds;
+- external beta acceptance;
+- externally beta ready;
+- capital movement;
+- downstream execution.
+
+Closeout:
+
+`TOWER_CLOUDS_MIXED_SOURCE_PREHOSTED_REHEARSAL_READY_FOR_HOSTED_STAGING`
+
+Next:
+
+GP081–GP084 — Hosted Tower→Clouds end-to-end staging rehearsal.
