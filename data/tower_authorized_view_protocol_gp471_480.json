@@ -1,0 +1,47 @@
+{
+  "pack_id": "GP471-GP480",
+  "title": "TOWER AUTHORIZED VIEW PROTOCOL",
+  "source_app": "tower",
+  "target_app_when_allowed": "vault",
+  "receives_from": "GP461-GP470 Tower Vault Request Protocol Gate",
+  "doctrine": {
+    "tower": "face and permission authority",
+    "teller": "workflow request source",
+    "vault": "sealed memory that answers Tower only",
+    "key_rule": "Teller can ask. Tower must decide. Vault only answers Tower."
+  },
+  "purpose": [
+    "prepare Tower-controlled Vault view-only request",
+    "carry redaction scope from Tower gate",
+    "return only workflow-safe status to Teller",
+    "prevent raw Vault files and links"
+  ],
+  "allowed_here": [
+    "authorized view scope",
+    "view-only request to Vault",
+    "redaction-required flag",
+    "Tower view receipt",
+    "workflow-safe Teller status"
+  ],
+  "not_allowed_here": [
+    "download protocol",
+    "raw Vault file delivery",
+    "raw Vault URL delivery",
+    "public links",
+    "shared folders",
+    "external collaborator links",
+    "Teller direct Vault access"
+  ],
+  "safe_outputs_to_teller": [
+    "request id",
+    "view prepared status",
+    "workflow-safe summary",
+    "Tower decision receipt id",
+    "authorized view receipt id",
+    "redaction applied flag",
+    "next Teller action",
+    "safe Vault reference label"
+  ],
+  "next_corridor": "GP481-GP490 \u2014 Tower Authorized Download Protocol",
+  "status": "tower_authorized_view_protocol_ready"
+}
