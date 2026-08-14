@@ -176,3 +176,94 @@ Closeout:
 Next:
 
 GP073–GP076 — Teller, Grounds, and ATM Operations source publishers.
+
+## GP073–GP076 — Source Connection Wave 2
+
+Wave 2 source IDs:
+
+1. Teller
+2. Grounds
+3. ATM Operations
+
+Repository discovery found that dedicated operational source packages were
+not yet verified for this wave.
+
+Therefore GP073–GP075 create source-owned summary-contract bootstraps only.
+
+### GP073 — Teller
+
+Base branch:
+
+`tower-teller-vault-handoff-dev`
+
+Publisher branch:
+
+`teller-clouds-source-wave2`
+
+Contract:
+
+`teller-clouds-summary-v1`
+
+Commit:
+
+`3a04683e74aafba24d89a4904d84fb73ccdc6a3f`
+
+### GP074 — Grounds
+
+Base branch:
+
+`main`
+
+Publisher branch:
+
+`grounds-clouds-source-wave2`
+
+Contract:
+
+`grounds-clouds-summary-v1`
+
+Commit:
+
+`4034f967d714b9db44016ea8dfba380ddd95b0a0`
+
+### GP075 — ATM Operations
+
+Base branch:
+
+`main`
+
+Publisher branch:
+
+`atm-operations-clouds-source-wave2`
+
+Contract:
+
+`atm-operations-clouds-summary-v1`
+
+Commit:
+
+`9f5aa9f220b4cd72bc54ff200a46dcacdf985fac`
+
+### GP076 — Truth-state closeout
+
+All three source contracts pass:
+
+- source-local tests
+- signed transport certification
+- actual Clouds adapter compatibility
+- projection/live-claim firewall
+
+They DO NOT establish:
+
+- operational business-system verification
+- real business-data connection
+- source endpoint availability
+- real live feed connection
+- hosted staging readiness
+
+Conclusion:
+
+`TOWER_CLOUDS_SOURCE_WAVE_2_CONTRACT_BOOTSTRAP_READY_REAL_SOURCE_IMPLEMENTATION_REQUIRED`
+
+GP077 hosted end-to-end staging remains fail-closed until the operational
+source systems are actually connected and verified.
