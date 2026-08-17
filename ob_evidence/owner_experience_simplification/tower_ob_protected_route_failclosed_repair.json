@@ -1,0 +1,26 @@
+{
+  "anonymous_direct_room_access": "redirect_to_tower_login",
+  "approved_normal_rooms": [
+    "/ob/dashboard",
+    "/ob/market-map",
+    "/ob/symbol/<SYMBOL>",
+    "/ob/trade-center",
+    "/ob/review-center"
+  ],
+  "base_main": "4acd633e671d05a1137cfbcba0361bc779273fbe",
+  "branch": "tower-ob-protected-route-failclosed-repair",
+  "broker_execution_enabled": false,
+  "capital_action_enabled": false,
+  "created_at_utc": "2026-08-17T14:07:56.486735+00:00",
+  "gp066_advanced": false,
+  "live_auto_locked": true,
+  "normal_room_without_step_up": "redirect_to_tower_access_home",
+  "owner_console_ui_modified": false,
+  "owner_dashboard_modified": false,
+  "owner_only_room": "/ob/owner-console",
+  "staging_deployment_performed": false,
+  "title": "Tower real Observatory web-route fail-closed repair",
+  "trigger": "Hosted no-redirect probe returned HTTP 200 with protected Soulaana content at /ob/dashboard.",
+  "unknown_ob_route": "403_default_deny",
+  "wiring_strategy": "Register fail-closed OB web enforcement immediately after the unique register_tower_human_login(app) call."
+}

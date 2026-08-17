@@ -50702,6 +50702,14 @@ from tower.tower_human_login_ob_launch import (
 
 register_tower_human_login(app)
 
+
+# TOWER_OB_WEB_FAILCLOSED_ENFORCEMENT_V1
+# Security-critical registration is intentionally not hidden behind Tower route-planning helpers.
+# If this boundary cannot load, the hosted app must not silently boot with exposed Observatory rooms.
+from tower.ob_web_route_enforcement import register_ob_protected_route_enforcement
+
+register_ob_protected_route_enforcement(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
