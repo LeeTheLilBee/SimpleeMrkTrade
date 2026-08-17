@@ -1,0 +1,913 @@
+/* =================================================================================================
+   THE OBSERVATORY — OBUX026-OBUX030
+   SAME GALAXY · DIFFERENT WEATHER
+
+   OBUX026_SHARED_OBSERVATORY_ATMOSPHERE_ENGINE
+   OBUX027_ROOM_WEATHER_PROFILES
+   OBUX028_PROTECTED_ROOM_ATMOSPHERE_WIRING
+   OBUX029_LEGACY_BASE_ATMOSPHERE_INTEGRATION
+   OBUX030_VISUAL_SCOPE_SAFETY_GUARD
+   ================================================================================================= */
+
+
+/* -------------------------------------------------------------------------------------------------
+   SHARED CANVAS
+   ------------------------------------------------------------------------------------------------- */
+
+:root {
+  --ob-atmo-canvas: #050617;
+
+  --ob-star-opacity: 0.62;
+  --ob-star-a: 126px 126px;
+  --ob-star-b: 211px 211px;
+  --ob-star-c: 337px 337px;
+  --ob-star-d: 487px 487px;
+
+  --ob-weather-opacity: 0.78;
+  --ob-grid-opacity: 0.02;
+  --ob-horizon-opacity: 0.42;
+
+  --ob-horizon-color: rgba(159, 120, 255, 0.18);
+
+  --ob-room-weather-id: observatory-default;
+}
+
+
+body[data-ob-room] {
+  position: relative;
+  isolation: isolate;
+  background: var(--ob-atmo-canvas) !important;
+}
+
+
+/*
+   Retire the older one-size-fits-all body stars/grid when a room has
+   opted into the OBUX026 atmosphere system.
+*/
+body[data-ob-room]::before,
+body[data-ob-room]::after {
+  content: none !important;
+}
+
+
+/*
+   The modern protected rooms previously paint the entire sky inside
+   #ob-app. Their room UI remains untouched; only that old uniform sky
+   is retired so the shared atmosphere can show through.
+*/
+body[data-ob-room] #ob-app {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
+
+
+body[data-ob-room] #ob-app::before,
+body[data-ob-room] #ob-app::after {
+  content: none !important;
+  animation: none !important;
+}
+
+
+/*
+   Owner Dashboard keeps every accepted component/layout rule.
+   Only its private page-level canvas gives way to the common sky.
+*/
+body[data-ob-room="owner-dashboard"] #ob-owner-dashboard-app {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
+
+
+body[data-ob-room="owner-dashboard"] #ob-owner-dashboard-app::before {
+  content: none !important;
+}
+
+
+/*
+   Base-backed Observatory pages already place .observatory-shell at z=1.
+   These explicit guards make the layering contract obvious.
+*/
+body[data-ob-room] .observatory-shell,
+body[data-ob-room] .ob-owner-shell,
+body[data-ob-room] .ob-layer {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   SKY LAYERS
+   ------------------------------------------------------------------------------------------------- */
+
+.ob-sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  background: var(
+    --ob-sky-scene,
+    linear-gradient(
+      160deg,
+      #050617 0%,
+      #0d0d28 46%,
+      #050617 100%
+    )
+  );
+
+  transform: translateZ(0);
+}
+
+
+/*
+   STAR FIELD
+*/
+.ob-sky::before {
+  content: "";
+  position: absolute;
+  inset: -8%;
+
+  opacity: var(--ob-star-opacity);
+
+  background-image:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.90) 0 0.8px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle,
+      rgba(179, 188, 255, 0.70) 0 0.9px,
+      transparent 1.7px
+    ),
+    radial-gradient(
+      circle,
+      rgba(233, 194, 111, 0.62) 0 0.85px,
+      transparent 1.7px
+    ),
+    radial-gradient(
+      circle,
+      rgba(221, 151, 255, 0.44) 0 0.8px,
+      transparent 1.6px
+    );
+
+  background-size:
+    var(--ob-star-a),
+    var(--ob-star-b),
+    var(--ob-star-c),
+    var(--ob-star-d);
+
+  background-position:
+    0 0,
+    37px 71px,
+    91px 31px,
+    143px 116px;
+
+  animation:
+    obSharedStarsDrift
+    110s
+    linear
+    infinite;
+}
+
+
+/*
+   DEPTH / VIGNETTE
+*/
+.ob-sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 44%,
+      transparent 0%,
+      transparent 44%,
+      rgba(1, 2, 10, 0.18) 72%,
+      rgba(1, 2, 10, 0.66) 100%
+    );
+
+  pointer-events: none;
+}
+
+
+/*
+   LARGE MOVING WEATHER
+*/
+.ob-sky__weather {
+  position: absolute;
+  inset: -16%;
+
+  opacity: var(--ob-weather-opacity);
+
+  background: var(
+    --ob-weather-layer,
+    radial-gradient(
+      circle at 30% 30%,
+      rgba(118, 83, 255, 0.12),
+      transparent 36%
+    )
+  );
+
+  filter: blur(36px);
+
+  transform: scale(1.04);
+
+  animation:
+    obSharedWeatherDrift
+    82s
+    ease-in-out
+    infinite alternate;
+}
+
+
+/*
+   DISTANT HORIZON
+*/
+.ob-sky__horizon {
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  bottom: -34vh;
+
+  height: 62vh;
+
+  opacity: var(--ob-horizon-opacity);
+
+  border-radius:
+    50%
+    50%
+    0
+    0;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 100%,
+      var(--ob-horizon-color) 0%,
+      rgba(118, 83, 255, 0.05) 34%,
+      transparent 69%
+    );
+
+  filter: blur(18px);
+}
+
+
+/*
+   OPTIONAL ARCHITECTURAL GRID.
+   Nearly invisible in normal rooms; stronger in Owner Console.
+*/
+.ob-sky__grid {
+  position: absolute;
+  inset: 0;
+
+  opacity: var(--ob-grid-opacity);
+
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(211, 216, 255, 0.24) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      180deg,
+      rgba(211, 216, 255, 0.24) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    118px
+    118px;
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      black 0%,
+      rgba(0, 0, 0, 0.72) 52%,
+      transparent 92%
+    );
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse at center,
+      black 0%,
+      rgba(0, 0, 0, 0.72) 52%,
+      transparent 92%
+    );
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   OBUX027 — ROOM WEATHER
+   ------------------------------------------------------------------------------------------------- */
+
+
+/* ================================================================================================
+   ROOM WEATHER: LEGACY / BASE
+   Balanced Observatory night.
+   ================================================================================================ */
+
+body[data-ob-room="legacy"] {
+  --ob-room-weather-id: legacy-balanced-observatory;
+
+  --ob-star-opacity: 0.50;
+  --ob-grid-opacity: 0.018;
+  --ob-weather-opacity: 0.70;
+  --ob-horizon-opacity: 0.34;
+
+  --ob-horizon-color:
+    rgba(123, 104, 255, 0.17);
+
+  --ob-sky-scene:
+    radial-gradient(
+      ellipse at 13% 18%,
+      rgba(111, 77, 255, 0.19),
+      transparent 29%
+    ),
+    radial-gradient(
+      ellipse at 84% 20%,
+      rgba(224, 80, 255, 0.10),
+      transparent 27%
+    ),
+    radial-gradient(
+      ellipse at 61% 78%,
+      rgba(61, 128, 255, 0.09),
+      transparent 31%
+    ),
+    linear-gradient(
+      158deg,
+      #050617 0%,
+      #0a0c25 48%,
+      #050617 100%
+    );
+
+  --ob-weather-layer:
+    radial-gradient(
+      ellipse at 20% 70%,
+      rgba(103, 70, 255, 0.13),
+      transparent 31%
+    ),
+    radial-gradient(
+      ellipse at 75% 34%,
+      rgba(184, 74, 255, 0.09),
+      transparent 29%
+    );
+}
+
+
+/* ================================================================================================
+   ROOM WEATHER: NORMAL DASHBOARD
+   Active market-energy nebula.
+   Soulaana has already studied a moving sky.
+   ================================================================================================ */
+
+body[data-ob-room="dashboard"] {
+  --ob-room-weather-id: dashboard-active-market-nebula;
+
+  --ob-star-opacity: 0.68;
+  --ob-star-a: 118px 118px;
+  --ob-star-b: 197px 197px;
+  --ob-star-c: 311px 311px;
+  --ob-star-d: 463px 463px;
+
+  --ob-grid-opacity: 0.008;
+  --ob-weather-opacity: 0.88;
+  --ob-horizon-opacity: 0.45;
+
+  --ob-horizon-color:
+    rgba(87, 122, 255, 0.23);
+
+  --ob-sky-scene:
+    radial-gradient(
+      ellipse at 16% 22%,
+      rgba(91, 73, 255, 0.24),
+      transparent 29%
+    ),
+    radial-gradient(
+      ellipse at 82% 12%,
+      rgba(226, 72, 255, 0.18),
+      transparent 26%
+    ),
+    radial-gradient(
+      ellipse at 70% 74%,
+      rgba(55, 126, 255, 0.14),
+      transparent 31%
+    ),
+    radial-gradient(
+      ellipse at 28% 92%,
+      rgba(233, 194, 111, 0.08),
+      transparent 24%
+    ),
+    linear-gradient(
+      150deg,
+      #06071b 0%,
+      #11103a 42%,
+      #090b29 68%,
+      #040617 100%
+    );
+
+  --ob-weather-layer:
+    radial-gradient(
+      ellipse at 20% 64%,
+      rgba(118, 76, 255, 0.22),
+      transparent 32%
+    ),
+    radial-gradient(
+      ellipse at 78% 34%,
+      rgba(224, 72, 255, 0.16),
+      transparent 28%
+    ),
+    radial-gradient(
+      ellipse at 57% 82%,
+      rgba(52, 131, 255, 0.12),
+      transparent 31%
+    );
+}
+
+
+/* ================================================================================================
+   ROOM WEATHER: OWNER DASHBOARD
+   Highest altitude.
+   Wider sky, royal violet, distant gold horizon, larger dark breathing zones.
+   ================================================================================================ */
+
+body[data-ob-room="owner-dashboard"] {
+  --ob-room-weather-id: owner-dashboard-high-altitude-royal-horizon;
+
+  --ob-star-opacity: 0.72;
+
+  --ob-star-a: 144px 144px;
+  --ob-star-b: 239px 239px;
+  --ob-star-c: 379px 379px;
+  --ob-star-d: 553px 553px;
+
+  --ob-grid-opacity: 0.005;
+  --ob-weather-opacity: 0.84;
+  --ob-horizon-opacity: 0.64;
+
+  --ob-horizon-color:
+    rgba(233, 194, 111, 0.25);
+
+  --ob-sky-scene:
+    radial-gradient(
+      ellipse at 9% 14%,
+      rgba(103, 70, 255, 0.28),
+      transparent 27%
+    ),
+    radial-gradient(
+      ellipse at 83% 17%,
+      rgba(201, 62, 255, 0.18),
+      transparent 25%
+    ),
+    radial-gradient(
+      ellipse at 68% 67%,
+      rgba(55, 99, 226, 0.11),
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 24% 82%,
+      rgba(236, 91, 218, 0.08),
+      transparent 25%
+    ),
+    radial-gradient(
+      ellipse at 52% 110%,
+      rgba(233, 194, 111, 0.12),
+      transparent 32%
+    ),
+    linear-gradient(
+      155deg,
+      #050518 0%,
+      #100d32 36%,
+      #080921 66%,
+      #030511 100%
+    );
+
+  --ob-weather-layer:
+    radial-gradient(
+      ellipse at 11% 58%,
+      rgba(91, 66, 241, 0.19),
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 78% 27%,
+      rgba(221, 77, 255, 0.14),
+      transparent 27%
+    ),
+    radial-gradient(
+      ellipse at 47% 91%,
+      rgba(233, 194, 111, 0.08),
+      transparent 28%
+    );
+}
+
+
+/* ================================================================================================
+   ROOM WEATHER: MARKET MAP
+   Open starfield.
+   Less fog. More navigable empty sky.
+   ================================================================================================ */
+
+body[data-ob-room="market-map"] {
+  --ob-room-weather-id: market-map-open-constellation-sky;
+
+  --ob-star-opacity: 0.84;
+
+  --ob-star-a: 91px 91px;
+  --ob-star-b: 157px 157px;
+  --ob-star-c: 263px 263px;
+  --ob-star-d: 421px 421px;
+
+  --ob-grid-opacity: 0.012;
+  --ob-weather-opacity: 0.46;
+  --ob-horizon-opacity: 0.24;
+
+  --ob-horizon-color:
+    rgba(93, 120, 255, 0.14);
+
+  --ob-sky-scene:
+    radial-gradient(
+      ellipse at 18% 20%,
+      rgba(65, 92, 228, 0.13),
+      transparent 24%
+    ),
+    radial-gradient(
+      ellipse at 80% 74%,
+      rgba(112, 71, 255, 0.10),
+      transparent 27%
+    ),
+    linear-gradient(
+      158deg,
+      #020513 0%,
+      #060b20 48%,
+      #02040f 100%
+    );
+
+  --ob-weather-layer:
+    radial-gradient(
+      ellipse at 62% 31%,
+      rgba(111, 78, 255, 0.09),
+      transparent 26%
+    ),
+    radial-gradient(
+      ellipse at 24% 79%,
+      rgba(62, 131, 255, 0.07),
+      transparent 29%
+    );
+}
+
+
+/* ================================================================================================
+   ROOM WEATHER: SYMBOL PAGE
+   One-star environment.
+   Localized spectral halo; darker negative space elsewhere.
+   ================================================================================================ */
+
+body[data-ob-room="symbol"] {
+  --ob-room-weather-id: symbol-localized-spectral-halo;
+
+  --ob-star-opacity: 0.58;
+  --ob-grid-opacity: 0.006;
+  --ob-weather-opacity: 0.64;
+  --ob-horizon-opacity: 0.20;
+
+  --ob-horizon-color:
+    rgba(106, 95, 255, 0.13);
+
+  --ob-sky-scene:
+    radial-gradient(
+      circle at 72% 34%,
+      rgba(255, 238, 190, 0.18),
+      transparent 8%
+    ),
+    radial-gradient(
+      circle at 72% 34%,
+      rgba(178, 90, 255, 0.20),
+      transparent 18%
+    ),
+    radial-gradient(
+      ellipse at 72% 34%,
+      rgba(64, 112, 255, 0.13),
+      transparent 31%
+    ),
+    radial-gradient(
+      ellipse at 20% 80%,
+      rgba(83, 63, 212, 0.08),
+      transparent 24%
+    ),
+    linear-gradient(
+      153deg,
+      #030411 0%,
+      #090820 55%,
+      #02030d 100%
+    );
+
+  --ob-weather-layer:
+    radial-gradient(
+      circle at 70% 34%,
+      rgba(209, 89, 255, 0.15),
+      transparent 23%
+    ),
+    radial-gradient(
+      ellipse at 66% 45%,
+      rgba(73, 124, 255, 0.10),
+      transparent 31%
+    );
+}
+
+
+/* ================================================================================================
+   ROOM WEATHER: TRADE CENTER
+   Tight decision corridor.
+   Dark edges, concentrated center illumination.
+   ================================================================================================ */
+
+body[data-ob-room="trade-center"] {
+  --ob-room-weather-id: trade-center-focused-decision-corridor;
+
+  --ob-star-opacity: 0.44;
+  --ob-grid-opacity: 0.014;
+  --ob-weather-opacity: 0.68;
+  --ob-horizon-opacity: 0.28;
+
+  --ob-horizon-color:
+    rgba(233, 194, 111, 0.15);
+
+  --ob-sky-scene:
+    radial-gradient(
+      ellipse at 50% 36%,
+      rgba(112, 78, 255, 0.22),
+      transparent 25%
+    ),
+    radial-gradient(
+      ellipse at 54% 58%,
+      rgba(233, 194, 111, 0.08),
+      transparent 21%
+    ),
+    radial-gradient(
+      ellipse at 50% 40%,
+      rgba(65, 124, 255, 0.08),
+      transparent 39%
+    ),
+    linear-gradient(
+      90deg,
+      #02030d 0%,
+      #070717 19%,
+      #0c0a29 50%,
+      #070717 81%,
+      #02030d 100%
+    );
+
+  --ob-weather-layer:
+    radial-gradient(
+      ellipse at 50% 42%,
+      rgba(124, 80, 255, 0.16),
+      transparent 29%
+    ),
+    radial-gradient(
+      ellipse at 54% 64%,
+      rgba(233, 194, 111, 0.06),
+      transparent 23%
+    );
+}
+
+
+/* ================================================================================================
+   ROOM WEATHER: REVIEW CENTER
+   Calm after-action sky.
+   Cool blue-violet with restrained warm remnants.
+   ================================================================================================ */
+
+body[data-ob-room="review-center"] {
+  --ob-room-weather-id: review-center-after-action-dusk;
+
+  --ob-star-opacity: 0.42;
+  --ob-grid-opacity: 0.008;
+  --ob-weather-opacity: 0.66;
+  --ob-horizon-opacity: 0.46;
+
+  --ob-horizon-color:
+    rgba(162, 126, 255, 0.16);
+
+  --ob-sky-scene:
+    radial-gradient(
+      ellipse at 19% 22%,
+      rgba(63, 112, 222, 0.15),
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 80% 24%,
+      rgba(135, 91, 225, 0.13),
+      transparent 27%
+    ),
+    radial-gradient(
+      ellipse at 25% 88%,
+      rgba(233, 156, 111, 0.07),
+      transparent 25%
+    ),
+    radial-gradient(
+      ellipse at 70% 78%,
+      rgba(85, 128, 224, 0.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      160deg,
+      #050718 0%,
+      #0a1028 49%,
+      #060719 100%
+    );
+
+  --ob-weather-layer:
+    radial-gradient(
+      ellipse at 18% 72%,
+      rgba(69, 112, 225, 0.11),
+      transparent 31%
+    ),
+    radial-gradient(
+      ellipse at 77% 33%,
+      rgba(147, 91, 228, 0.10),
+      transparent 27%
+    ),
+    radial-gradient(
+      ellipse at 30% 90%,
+      rgba(233, 156, 111, 0.05),
+      transparent 22%
+    );
+}
+
+
+/* ================================================================================================
+   ROOM WEATHER: OWNER CONSOLE
+   Machinery room.
+   Near-black architecture, sharper grid, contained illumination.
+   ================================================================================================ */
+
+body[data-ob-room="owner-console"] {
+  --ob-room-weather-id: owner-console-architectural-control-night;
+
+  --ob-star-opacity: 0.24;
+  --ob-grid-opacity: 0.072;
+  --ob-weather-opacity: 0.42;
+  --ob-horizon-opacity: 0.18;
+
+  --ob-horizon-color:
+    rgba(233, 194, 111, 0.11);
+
+  --ob-sky-scene:
+    radial-gradient(
+      ellipse at 12% 12%,
+      rgba(103, 74, 226, 0.13),
+      transparent 22%
+    ),
+    radial-gradient(
+      ellipse at 88% 20%,
+      rgba(72, 112, 218, 0.08),
+      transparent 23%
+    ),
+    radial-gradient(
+      ellipse at 50% 60%,
+      rgba(233, 194, 111, 0.035),
+      transparent 19%
+    ),
+    linear-gradient(
+      165deg,
+      #02030a 0%,
+      #050717 48%,
+      #02030b 100%
+    );
+
+  --ob-weather-layer:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(106, 81, 228, 0.045) 49.7%,
+      rgba(233, 194, 111, 0.045) 50%,
+      rgba(106, 81, 228, 0.045) 50.3%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse at 50% 50%,
+      rgba(91, 74, 204, 0.08),
+      transparent 26%
+    );
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   MOVEMENT
+   ------------------------------------------------------------------------------------------------- */
+
+@keyframes obSharedStarsDrift {
+  from {
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      );
+  }
+
+  to {
+    transform:
+      translate3d(
+        -72px,
+        48px,
+        0
+      );
+  }
+}
+
+
+@keyframes obSharedWeatherDrift {
+  0% {
+    transform:
+      translate3d(
+        -1.5%,
+        0,
+        0
+      )
+      scale(
+        1.03
+      );
+  }
+
+  100% {
+    transform:
+      translate3d(
+        1.5%,
+        -1.4%,
+        0
+      )
+      scale(
+        1.08
+      );
+  }
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   REDUCED MOTION
+   ------------------------------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ob-sky::before,
+  .ob-sky__weather {
+    animation:
+      none
+      !important;
+  }
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   MOBILE ATMOSPHERE
+   ------------------------------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+
+  .ob-sky__weather {
+    filter:
+      blur(
+        28px
+      );
+  }
+
+  .ob-sky__horizon {
+    bottom:
+      -24vh;
+
+    height:
+      52vh;
+  }
+
+  body[data-ob-room] {
+    --ob-star-opacity:
+      0.46;
+  }
+
+  body[data-ob-room="market-map"] {
+    --ob-star-opacity:
+      0.66;
+  }
+
+  body[data-ob-room="owner-console"] {
+    --ob-grid-opacity:
+      0.045;
+  }
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   SAFETY / SCOPE MARKERS
+
+   visual_only: true
+   route_changes: false
+   permission_changes: false
+   broker_execution: false
+   capital_action: false
+   live_auto_locked: true
+   gp066_advanced: false
+   ------------------------------------------------------------------------------------------------- */

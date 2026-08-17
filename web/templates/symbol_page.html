@@ -4,8 +4,19 @@
 <meta charset="UTF-8" />
 <title>OB Symbol Page</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}" />
 </head>
-<body>
+<body data-ob-room="symbol">
+<div
+  class="ob-sky"
+  data-ob-atmosphere-version="OBUX026-OBUX030"
+  aria-hidden="true"
+>
+  <div class="ob-sky__weather"></div>
+  <div class="ob-sky__horizon"></div>
+  <div class="ob-sky__grid"></div>
+</div>
+
 <div class="ob-v23-lock-marker" hidden>Live Auto Locked</div>
 <!-- OBSERVATORY_SYMBOL_PAGE_V12_REAL_STAR_ROOM -->
 <div id="ob-app" data-symbol="{{ symbol|default('MU') }}">

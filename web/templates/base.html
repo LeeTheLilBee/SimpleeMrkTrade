@@ -1010,8 +1010,19 @@
         }
 
 </style>
+<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}" />
 </head>
-<body class="{{ current_theme }}">
+<body class="{{ current_theme }}" data-ob-room="{{ ob_room|default('legacy') }}">
+<div
+  class="ob-sky"
+  data-ob-atmosphere-version="OBUX026-OBUX030"
+  aria-hidden="true"
+>
+  <div class="ob-sky__weather"></div>
+  <div class="ob-sky__horizon"></div>
+  <div class="ob-sky__grid"></div>
+</div>
+
 
 <!-- OBSERVATORY_GLOBAL_SETTINGS_THEMES_TRANSLATION_001_PANEL -->
 <div class="ob-settings-floating" id="obSettingsRoot">

@@ -1,0 +1,31 @@
+{
+  "branch": "ob-observatory-atmosphere-obux026-030",
+  "broker_execution_enabled": false,
+  "capital_action_enabled": false,
+  "created_at_utc": "2026-08-17T14:52:57.052838+00:00",
+  "design_rule": "same galaxy, different weather",
+  "gp066_advanced": false,
+  "live_auto_locked": true,
+  "normal_dashboard_composition_css_modified": false,
+  "owner_console_logic_modified": false,
+  "owner_dashboard_composition_accepted": true,
+  "owner_dashboard_composition_css_modified": false,
+  "pack": "OBUX027",
+  "parent_owner_dashboard": "a0207e510aa4ae4ea8e2e7362c690a3e59b1b994",
+  "permission_changes": false,
+  "room_weather_profiles": [
+    "legacy",
+    "dashboard",
+    "owner-dashboard",
+    "market-map",
+    "symbol",
+    "trade-center",
+    "review-center",
+    "owner-console"
+  ],
+  "route_changes": false,
+  "status": "BUILT_PENDING_MULTI_ROOM_VISUAL_ACCEPTANCE",
+  "title": "Room Weather Profiles",
+  "tower_modified": false,
+  "web_app_modified": false
+}
