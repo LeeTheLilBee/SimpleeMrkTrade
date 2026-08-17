@@ -1,0 +1,48 @@
+{
+  "base_main": "babb555c94b17c7820b2f43c6f83f26ae7ec02b2",
+  "branch": "tower-app-registry-security-map-twr001-005",
+  "broker_execution_enabled": false,
+  "capital_action_enabled": false,
+  "clouds_access_opened": false,
+  "created_at_utc": "2026-08-17T16:24:24.653916+00:00",
+  "grounds_access_opened": false,
+  "live_auto_locked": true,
+  "new_modules": [
+    "tower/app_registry.py",
+    "tower/security_map_service.py",
+    "tower/security_map_web.py"
+  ],
+  "new_routes": [
+    "/tower/security-map",
+    "/tower/security-map.json"
+  ],
+  "ob_page_design_modified": false,
+  "owner_only_routes": [
+    "/ob/owner-console",
+    "/ob/owner-dashboard"
+  ],
+  "registered_apps": [
+    "observatory",
+    "teller",
+    "vault",
+    "clouds",
+    "grounds"
+  ],
+  "registered_ob_routes": [
+    "/ob/dashboard",
+    "/ob/market-map",
+    "/ob/symbol/<symbol>",
+    "/ob/trade-center",
+    "/ob/review-center",
+    "/ob/owner-console",
+    "/ob/owner-dashboard"
+  ],
+  "teller_access_opened": false,
+  "temporary_placeholder_routes": [
+    "/ob/owner-dashboard"
+  ],
+  "title": "Tower App Registry + Security Map Room / TWR001-TWR005",
+  "tower_security_modified": true,
+  "unknown_ob_route": "403_default_deny",
+  "vault_access_opened": false
+}
