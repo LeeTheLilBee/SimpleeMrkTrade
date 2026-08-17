@@ -15,19 +15,25 @@ APP = (
 ).read_text(encoding="utf-8")
 
 
-def test_obux025_owner_dashboard_design_is_dormant_behind_tower_reserved_route():
+def test_obux025_history_is_preserved_after_activation_handoff():
+    # OBUX025 records the historical dormant design stage.
     assert "OBUX025_DORMANT_OWNER_DASHBOARD" in TEMPLATE
-    assert 'data-ob-owner-dashboard-role="owner-only-dormant"' in TEMPLATE
-    assert 'data-ob-owner-dashboard-route-state="tower-reserved-placeholder"' in TEMPLATE
-    assert 'data-ob-owner-dashboard-design-activated="false"' in TEMPLATE
-    assert "Door not activated" in TEMPLATE
-    # Tower owns/protects the doorway before this design is activated.
-    assert '@app.route("/ob/owner-dashboard")' in APP
-    assert "def ob_owner_dashboard_v17():" in APP
-    assert 'return render_template("owner_console.html")' in APP
 
-    # The actual OBUX025 design remains dormant.
-    assert 'return render_template("owner_dashboard.html")' not in APP
+    # The later activation handoff is now the current state.
+    assert "OWNER_DASHBOARD_ACTIVATION_HANDOFF" in TEMPLATE
+    assert 'data-ob-owner-dashboard-role="owner-only-active"' in TEMPLATE
+    assert 'data-ob-owner-dashboard-route-state="tower-protected-active"' in TEMPLATE
+    assert 'data-ob-owner-dashboard-design-activated="true"' in TEMPLATE
+    assert "Tower Protected" in TEMPLATE
+
+    # Only the canonical protected OB route remains.
+    assert '@app.route("/ob/owner-dashboard")' in APP
+    assert '@app.route("/owner-dashboard")' not in APP
+
+    assert (
+        'def ob_owner_dashboard_v17():\n'
+        '    return render_template("owner_dashboard.html")'
+    ) in APP
 
 
 def test_obux025_owner_dashboard_does_not_load_owner_console_stack():
@@ -46,6 +52,6 @@ def test_obux025_visual_identity_is_high_altitude_observatory():
     assert "radial-gradient" in CSS
 
 
-def test_obux025_live_auto_lock_is_visible():
+def test_obux025_live_auto_lock_remains_visible_after_activation():
     assert "Live Auto Locked" in TEMPLATE
-    assert "owner-only-dormant" in TEMPLATE
+    assert "owner-only-active" in TEMPLATE

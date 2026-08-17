@@ -3,6 +3,7 @@ from tower.app_registry import (
     protected_ob_routes,
     registered_apps,
     registered_routes,
+    route_by_path,
     step_up_routes,
     temporary_placeholder_routes,
 )
@@ -44,12 +45,20 @@ def test_normal_ob_routes_require_step_up():
     assert "/ob/owner-dashboard" not in routes
 
 
-def test_owner_dashboard_is_marked_temporary_placeholder():
+def test_owner_dashboard_is_real_protected_surface_not_placeholder():
     placeholders = temporary_placeholder_routes()
 
-    assert placeholders == [
-        "/ob/owner-dashboard",
-    ]
+    assert "/ob/owner-dashboard" not in placeholders
+
+    route = route_by_path("/ob/owner-dashboard")
+
+    assert route is not None
+    assert route["owner_only"] is True
+    assert route["requires_owner_session"] is True
+    assert route["requires_step_up"] is False
+    assert route["default_denied_when_unknown"] is True
+    assert route["temporary_placeholder"] is False
+    assert route["lock_state"] == "owner_only_protected"
 
 
 def test_security_map_summary_exposes_locks_and_default_deny():

@@ -7,6 +7,7 @@
 
   <!--
     OBUX025_DORMANT_OWNER_DASHBOARD
+    OWNER_DASHBOARD_ACTIVATION_HANDOFF
 
     NORMAL DASHBOARD:
       everyday Observatory intelligence
@@ -34,9 +35,9 @@
 </head>
 
 <body
-  data-ob-owner-dashboard-role="owner-only-dormant"
-  data-ob-owner-dashboard-route-state="tower-reserved-placeholder"
-  data-ob-owner-dashboard-design-activated="false"
+  data-ob-owner-dashboard-role="owner-only-active"
+  data-ob-owner-dashboard-route-state="tower-protected-active"
+  data-ob-owner-dashboard-design-activated="true"
   data-ob-live-auto-locked="true" data-ob-room="owner-dashboard">
 <div
   class="ob-sky"
@@ -60,7 +61,7 @@
 
         <div class="ob-owner-shell-status">
           <span class="ob-owner-chip owner">Owner only</span>
-          <span class="ob-owner-chip dormant">Door not activated</span>
+          <span class="ob-owner-chip owner">Tower Protected</span>
           <span class="ob-owner-chip locked">Live Auto Locked</span>
         </div>
       </header>

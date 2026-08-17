@@ -28,17 +28,19 @@ def test_obux030_is_visual_only():
     assert "gp066_advanced: false" in CSS
 
 
-def test_obux030_atmosphere_does_not_activate_owner_dashboard_design():
-    # OBUX030 itself remains visual-only and does not authorize route changes.
+def test_obux030_history_remains_visual_only_after_later_activation():
+    # OBUX030 itself still made no route or permission changes.
     assert "route_changes: false" in CSS
+    assert "permission_changes: false" in CSS
 
-    # A later Tower layer may reserve/protect the doorway.
+    # The later activation handoff may activate the dedicated route.
     assert '@app.route("/ob/owner-dashboard")' in APP
-    assert "def ob_owner_dashboard_v17():" in APP
-    assert 'return render_template("owner_console.html")' in APP
+    assert '@app.route("/owner-dashboard")' not in APP
 
-    # Atmosphere still must not activate the dormant Owner Dashboard design.
-    assert 'return render_template("owner_dashboard.html")' not in APP
+    assert (
+        'def ob_owner_dashboard_v17():\n'
+        '    return render_template("owner_dashboard.html")'
+    ) in APP
 
 
 def test_obux030_atmosphere_contains_no_behavioral_javascript():

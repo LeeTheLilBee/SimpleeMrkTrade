@@ -244,12 +244,12 @@ TOWER_ROUTE_REGISTRY: Tuple[TowerRouteRegistration, ...] = (
         requires_owner_session=True,
         requires_step_up=False,
         default_denied_when_unknown=True,
-        temporary_placeholder=True,
+        temporary_placeholder=False,
         risk_level="high",
-        lock_state="owner_only_protected_placeholder",
+        lock_state="owner_only_protected",
         explanation=(
-            "Owner Dashboard is protected now and temporarily renders through the "
-            "Owner Console template until the OB design pass gives it a dedicated page."
+            "Owner Dashboard is the dedicated Observatory owner intelligence surface "
+            "behind Tower owner-session protection. Owner Console remains separate."
         ),
     ),
 )
