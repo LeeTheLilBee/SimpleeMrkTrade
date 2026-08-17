@@ -50717,6 +50717,10 @@ from tower.ob_web_route_enforcement import register_ob_protected_route_enforceme
 
 register_ob_protected_route_enforcement(app)
 
+# TOWER_SECURITY_MAP_ROOM_TWR001_005
+from tower.security_map_web import register_tower_security_map_routes
+register_tower_security_map_routes(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
