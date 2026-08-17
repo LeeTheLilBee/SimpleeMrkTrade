@@ -15,12 +15,19 @@ APP = (
 ).read_text(encoding="utf-8")
 
 
-def test_obux025_owner_dashboard_is_explicitly_dormant():
+def test_obux025_owner_dashboard_design_is_dormant_behind_tower_reserved_route():
     assert "OBUX025_DORMANT_OWNER_DASHBOARD" in TEMPLATE
     assert 'data-ob-owner-dashboard-role="owner-only-dormant"' in TEMPLATE
-    assert 'data-ob-owner-dashboard-route-registered="false"' in TEMPLATE
+    assert 'data-ob-owner-dashboard-route-state="tower-reserved-placeholder"' in TEMPLATE
+    assert 'data-ob-owner-dashboard-design-activated="false"' in TEMPLATE
     assert "Door not activated" in TEMPLATE
-    assert "/ob/owner-dashboard" not in APP
+    # Tower owns/protects the doorway before this design is activated.
+    assert '@app.route("/ob/owner-dashboard")' in APP
+    assert "def ob_owner_dashboard_v17():" in APP
+    assert 'return render_template("owner_console.html")' in APP
+
+    # The actual OBUX025 design remains dormant.
+    assert 'return render_template("owner_dashboard.html")' not in APP
 
 
 def test_obux025_owner_dashboard_does_not_load_owner_console_stack():

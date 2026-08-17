@@ -462,6 +462,16 @@ OB_ROUTE_GUARD_MAP.update({
         purpose="Approved real Observatory Owner Console surface. Controls remain locked.",
         soulaana_translation="Soulaana: This is the Owner Console. I can show the control room while dangerous controls stay locked.",
     ),
+
+    "/ob/owner-dashboard": _tower_ob_real_surface_policy_2593_2602(
+        route_key="dashboard",
+        action="view",
+        clearance="owner",
+        risk_floor=30,
+        room="Owner Dashboard",
+        purpose="Approved real Observatory Owner Dashboard surface. Controls remain locked.",
+        soulaana_translation="Soulaana: This is the Owner Dashboard. I can show the control room while dangerous controls stay locked.",
+    ),
 })
 
 

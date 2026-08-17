@@ -1,0 +1,28 @@
+{
+  "anonymous_direct_owner_console_access": "redirect_to_tower_login",
+  "anonymous_direct_owner_dashboard_access": "redirect_to_tower_login",
+  "base_main": "9b60bab5eaca797d236d4f33fd33b1e967ae13e6",
+  "branch": "tower-ob-owner-dashboard-security-extension",
+  "broker_execution_enabled": false,
+  "capital_action_enabled": false,
+  "created_at_utc": "2026-08-17T15:44:14.551853+00:00",
+  "existing_owner_route_reconfirmed": "/ob/owner-console",
+  "live_auto_locked": true,
+  "new_protected_route": "/ob/owner-dashboard",
+  "normal_room_without_step_up": "redirect_to_tower_access_home",
+  "ob_page_design_modified": false,
+  "owner_dashboard_template_status": "temporary_owner_console_template_until_ob_design_pass",
+  "owner_only_routes": [
+    "/ob/owner-console",
+    "/ob/owner-dashboard"
+  ],
+  "precise_route_maps_patched": [
+    "tower/ob_web_route_enforcement.py",
+    "tower/ob_route_guard.py",
+    "tower/tower_ob_real_surface_route_map.py",
+    "web/app.py"
+  ],
+  "title": "Tower OB Owner Dashboard security extension",
+  "tower_security_modified": true,
+  "unknown_ob_route": "403_default_deny"
+}

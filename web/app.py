@@ -9727,6 +9727,13 @@ def ob_dashboard_v16():
 def ob_owner_console_v17():
     return render_template("owner_console.html")
 
+
+# OBSERVATORY_OWNER_DASHBOARD_V17_REAL_ROOM_ROUTE
+@app.route("/owner-dashboard")
+@app.route("/ob/owner-dashboard")
+def ob_owner_dashboard_v17():
+    return render_template("owner_console.html")
+
 # OBSERVATORY_BETA_READINESS_CHECKPOINT_V24_ROUTE
 @app.route("/ob/beta-readiness-checkpoint.json")
 def ob_beta_readiness_checkpoint_v24():
@@ -50709,6 +50716,10 @@ register_tower_human_login(app)
 from tower.ob_web_route_enforcement import register_ob_protected_route_enforcement
 
 register_ob_protected_route_enforcement(app)
+
+# TOWER_SECURITY_MAP_ROOM_TWR001_005
+from tower.security_map_web import register_tower_security_map_routes
+register_tower_security_map_routes(app)
 
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
