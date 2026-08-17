@@ -1,0 +1,1115 @@
+{
+  "architecture": "existing canonical engine -> existing snapshot bridge -> canonical read-only web projection -> room contracts",
+  "artifact_authority": {
+    "account_snapshot.json": "ACCOUNT_STATE_NOT_MARKET_QUOTE_AUTHORITY",
+    "account_state.json": "ACCOUNT_STATE_NOT_MARKET_QUOTE_AUTHORITY",
+    "candidate_log.json": "CANDIDATE_HISTORY_PROVENANCE_REQUIRED",
+    "canonical_reporting_snapshot.json": "DERIVED_REVIEW_HISTORY_PROVENANCE_REQUIRED",
+    "closed_positions.json": "HISTORICAL_POSITION_STATE_PROVENANCE_REQUIRED",
+    "execution_summary.json": "DERIVED_INHERITS_EXECUTION_PROVENANCE",
+    "execution_universe.json": "DERIVED_INHERITS_SIGNALS_PROVENANCE",
+    "market_universe.json": "DISCOVERY_UNIVERSE_NOT_QUOTE_TRUTH",
+    "my_plays.json": "USER_PLAY_STATE_PROVENANCE_REQUIRED",
+    "open_positions.json": "OPEN_POSITION_STATE_PROVENANCE_REQUIRED",
+    "pipeline_status.json": "PIPELINE_FRESHNESS_METADATA_NOT_MARKET_TRUTH",
+    "positions.json": "POSITION_STATE_PROVENANCE_REQUIRED",
+    "signals.json": "SEED_OR_EXTERNAL_PROVENANCE_REQUIRED",
+    "symbol_intelligence.json": "DERIVED_INHERITS_SIGNALS_AND_EXECUTION_PROVENANCE",
+    "system_state.json": "SYSTEM_STATE_PROVENANCE_REQUIRED",
+    "trade_details.json": "TRADE_STATE_PROVENANCE_REQUIRED",
+    "user_positions.json": "USER_POSITION_STATE_PROVENANCE_REQUIRED"
+  },
+  "authority_doctrine": {
+    "canonical_does_not_mean_live": true,
+    "demo_and_rehearsal_can_be_kept_but_not_promoted_to_current": true,
+    "derived_outputs_inherit_input_provenance": true,
+    "missing_provenance_must_not_be_synthesized": true,
+    "seed_data_can_be_kept_but_not_promoted_to_current": true,
+    "static_market_universe_membership_is_not_quote_truth": true
+  },
+  "data_inventory": {
+    "account_snapshot.json": {
+      "authority": "ACCOUNT_STATE_NOT_MARKET_QUOTE_AUTHORITY",
+      "code_references": [
+        "web/app.py:5728:        \"data/account_snapshot.json\","
+      ],
+      "exists": true,
+      "sample_item_keys": [],
+      "size_bytes": 88,
+      "source_markers": [],
+      "timestamp_examples": [],
+      "top_level_keys": [
+        "estimated_account_value",
+        "buying_power",
+        "open_positions"
+      ],
+      "top_level_type": "object"
+    },
+    "account_state.json": {
+      "authority": "ACCOUNT_STATE_NOT_MARKET_QUOTE_AUTHORITY",
+      "code_references": [
+        "engine/account_state.py:63:FILE = \"data/account_state.json\"",
+        "engine/api_state.py:13:        \"account\": load_json_file(\"data/account_state.json\", {}),",
+        "engine/controlled_test_harness.py:13:    - data/account_state.json",
+        "engine/controlled_test_harness.py:42:    \"data/account_state.json\",",
+        "engine/observatory_recovery_diagnostics.py:217:        DATA_ROOT / \"account_state.json\",",
+        "engine/observatory_recovery_diagnostics.py:1973:        data_dir / \"account_state.json\",",
+        "engine/observatory_recovery_diagnostics.py:2268:        data_dir / \"account_state.json\",",
+        "engine/pdt_guard.py:10:ACCOUNT_STATE_FILE = \"data/account_state.json\"",
+        "engine/portfolio_summary.py:17:4. Account equity is not trusted blindly from account_state.json.",
+        "engine/portfolio_summary.py:42:ACCOUNT_FILE = \"data/account_state.json\"",
+        "engine/portfolio_summary.py:167:    If account_state is temporarily unavailable, fall back to account_state.json.",
+        "engine/rebuild_open_positions.py:8:ACCOUNT_STATE_FILE = \"data/account_state.json\"",
+        "engine/reset_contaminated_runtime.py:7:    \"account_state\": \"data/account_state.json\",",
+        "engine/reset_runtime_state.py:6:ACCOUNT_FILE = \"data/account_state.json\"",
+        "engine/trade_activity_bridge.py:17:    2. data/account_state.json[\"activity_log\"]",
+        "engine/trade_activity_bridge.py:36:ACCOUNT_STATE_PATH = DATA_DIR / \"account_state.json\""
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "event_type",
+        "symbol",
+        "trade_id",
+        "timestamp",
+        "date_key",
+        "price",
+        "size",
+        "cost",
+        "pnl",
+        "metadata"
+      ],
+      "size_bytes": 65583,
+      "source_markers": [
+        "source",
+        "mode",
+        "timestamp"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "timestamp",
+          "value": "2026-05-05T03:58:32.816044"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-05T05:07:16.688379"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-05T05:31:05.789372"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-05T16:27:29.771954"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-04T23:51:30.586393"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-22T14:12:38.584717"
+        }
+      ],
+      "top_level_keys": [
+        "equity",
+        "cash",
+        "buying_power",
+        "estimated_account_value",
+        "open_market_value",
+        "open_cost_basis",
+        "open_unrealized_pnl",
+        "open_positions",
+        "account_type",
+        "trade_history",
+        "activity_log",
+        "reserve_mode",
+        "reserve_value",
+        "last_account_sync",
+        "last_account_sync_adjustment",
+        "account_math_basis",
+        "vehicle_mix",
+        "option_safety",
+        "stale_trade_history_cleanup",
+        "calculated_equity",
+        "bad_option_close_cash_cleanup_applied",
+        "bad_option_close_cash_cleanup_at",
+        "bad_option_close_cash_cleanup_amount",
+        "bad_option_close_cash_cleanup_reason",
+        "bad_option_close_cash_cleanup_backup",
+        "last_activity_event",
+        "last_activity_update"
+      ],
+      "top_level_type": "object"
+    },
+    "candidate_log.json": {
+      "authority": "CANDIDATE_HISTORY_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/admin_product_analytics.py:7:CANDIDATE_FILE = \"data/candidate_log.json\"",
+        "engine/api_state.py:17:        \"candidate_log\": load_json_file(\"data/candidate_log.json\", []),",
+        "engine/candidate_log.py:7:FILE = \"data/candidate_log.json\"",
+        "engine/market_universe.py:14:    \"candidate_log\": \"data/candidate_log.json\",",
+        "engine/process_signals.py:3325:    candidate_log = _observatory_readiness_wire_load_json_20260521(data_dir / \"candidate_log.json\", [])",
+        "engine/process_signals.py:3470:            _observatory_readiness_wire_write_json_20260521(data_dir / \"candidate_log.json\", evaluated)",
+        "engine/process_signals.py:3798:    for filename in (\"readiness_report.json\", \"candidate_log.json\", \"top_candidates.json\", \"live_signals.json\"):",
+        "engine/reset_contaminated_runtime.py:10:    \"candidate_log\": \"data/candidate_log.json\",",
+        "engine/trade_cooldown_guard.py:44:    DATA_DIR / \"candidate_log.json\",",
+        "web/app.py:1273:            candidate_log = load_json(\"data/candidate_log.json\", [])",
+        "web/app.py:5736:        \"data/candidate_log.json\",",
+        "web/app.py:6203:    candidate_log = load_json(\"data/candidate_log.json\", [])",
+        "web/app.py:8615:    candidate_rows = load_json(\"data/candidate_log.json\", [])",
+        "web/app.py:10032:        \"candidate_log\": read_json_safe(data_dir / \"candidate_log.json\"),",
+        "web/app.py:10212:        \"candidate_log.json\",",
+        "web/app.py:10505:        {\"name\": \"candidate_log\", \"filename\": \"candidate_log.json\", \"room\": \"Trade Center\", \"purpose\": \"candidate queue mapping\"},",
+        "web/static/ob/ob_owner_source_audit.js:127:        action: \"Regenerate candidate_log.json from the real engine before tester reliance.\""
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "trade_id",
+        "symbol",
+        "company_name",
+        "sector",
+        "status",
+        "source",
+        "timestamp",
+        "strategy",
+        "direction",
+        "vehicle_selected",
+        "selected_vehicle",
+        "vehicle",
+        "vehicle_reason",
+        "score",
+        "base_score",
+        "fused_score",
+        "confidence",
+        "base_confidence",
+        "v2_confidence",
+        "grade",
+        "setup_type",
+        "setup_family",
+        "entry_quality",
+        "trend",
+        "regime",
+        "breadth",
+        "volatility_state",
+        "mode",
+        "trading_mode",
+        "trading_mode_label",
+        "mode_context",
+        "price",
+        "entry",
+        "current_price",
+        "requested_price",
+        "fill_price",
+        "stop",
+        "target",
+        "atr",
+        "rsi"
+      ],
+      "size_bytes": 2663915,
+      "source_markers": [
+        "source",
+        "mode",
+        "preview",
+        "simulation",
+        "paper",
+        "timestamp"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:11.886297"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:27.150474"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:11.886297"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:27.150474"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:14.042381"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:27.150474"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:14.042381"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:27.150474"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:05.938662"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-06-01T16:47:27.150474"
+        }
+      ],
+      "top_level_keys": [],
+      "top_level_type": "array"
+    },
+    "canonical_reporting_snapshot.json": {
+      "authority": "DERIVED_REVIEW_HISTORY_PROVENANCE_REQUIRED",
+      "code_references": [
+        "web/app.py:1218:        save_json(\"data/canonical_reporting_snapshot.json\", snapshot)",
+        "web/app.py:1486:    snapshot = load_json(\"data/canonical_reporting_snapshot.json\", {})",
+        "web/app.py:1493:    snapshot = load_json(\"data/canonical_reporting_snapshot.json\", {})",
+        "web/app.py:1500:    snapshot = load_json(\"data/canonical_reporting_snapshot.json\", {})",
+        "web/app.py:1507:    snapshot = load_json(\"data/canonical_reporting_snapshot.json\", {})",
+        "web/app.py:1514:    snapshot = load_json(\"data/canonical_reporting_snapshot.json\", {})"
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "symbol",
+        "direction",
+        "pnl",
+        "outcome",
+        "opened_at",
+        "closed_at",
+        "raw",
+        "score",
+        "confidence",
+        "setup_family",
+        "entry_quality",
+        "exit_reason",
+        "exit_explanation",
+        "failure_reason",
+        "success_reason",
+        "market_regime",
+        "volatility_state",
+        "breadth",
+        "engine_agreement",
+        "thesis",
+        "notes"
+      ],
+      "size_bytes": 17067,
+      "source_markers": [
+        "timestamp"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "opened_at",
+          "value": "2026-03-24T03:14:35.371852"
+        },
+        {
+          "key": "closed_at",
+          "value": "2026-03-24T03:14:35.542393"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-24T03:14:35.371852"
+        },
+        {
+          "key": "closed_at",
+          "value": "2026-03-24T03:14:35.542393"
+        },
+        {
+          "key": "opened_at",
+          "value": "2026-03-24T03:14:35.380488"
+        },
+        {
+          "key": "closed_at",
+          "value": "2026-03-24T03:14:35.626573"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-24T03:14:35.380488"
+        },
+        {
+          "key": "closed_at",
+          "value": "2026-03-24T03:14:35.626573"
+        },
+        {
+          "key": "opened_at",
+          "value": "2026-03-24T03:52:50.598489"
+        },
+        {
+          "key": "closed_at",
+          "value": "2026-03-24T04:40:34.407556"
+        }
+      ],
+      "top_level_keys": [
+        "ledger",
+        "performance",
+        "analytics",
+        "portfolio_summary",
+        "unrealized",
+        "strategy_performance",
+        "drawdown_history",
+        "final_account_snapshot"
+      ],
+      "top_level_type": "object"
+    },
+    "closed_positions.json": {
+      "authority": "HISTORICAL_POSITION_STATE_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/account_state.py:65:CLOSED_POSITIONS_FILE = \"data/closed_positions.json\"",
+        "engine/api_state.py:15:        \"closed_positions\": load_json_file(\"data/closed_positions.json\", []),",
+        "engine/close_trade.py:17:CLOSED_FILE = \"data/closed_positions.json\"",
+        "engine/closed_trade_stats.py:4:FILE = \"data/closed_positions.json\"",
+        "engine/controlled_test_harness.py:15:    - data/closed_positions.json",
+        "engine/controlled_test_harness.py:44:    \"data/closed_positions.json\",",
+        "engine/journal_history_cleaner.py:24:CLOSED_FILE = \"data/closed_positions.json\"",
+        "engine/market_universe.py:18:    \"closed_positions\": \"data/closed_positions.json\",",
+        "engine/paper_portfolio.py:73:CLOSED_FILE = \"data/closed_positions.json\"",
+        "engine/portfolio_summary.py:41:CLOSED_FILE = \"data/closed_positions.json\"",
+        "engine/position_store.py:19:# - data/closed_positions.json",
+        "engine/position_store.py:39:CLOSED_POSITIONS_FILE = DATA_DIR / \"closed_positions.json\"",
+        "engine/process_signals.py:794:        (\"data/closed_positions.json\", [\"closed_positions\", \"positions\", \"trades\", \"ledger\"]),",
+        "engine/rebuild_open_positions.py:10:CLOSED_FILE = \"data/closed_positions.json\"",
+        "engine/reentry_discipline_guard.py:31:CLOSED_POSITIONS_FILE = DATA_DIR / \"closed_positions.json\"",
+        "engine/reentry_guard.py:7:CLOSED_FILE = \"data/closed_positions.json\"",
+        "engine/reset_contaminated_runtime.py:9:    \"closed_positions\": \"data/closed_positions.json\",",
+        "engine/strategy_performance.py:10:CLOSED_FILE = \"data/closed_positions.json\"",
+        "engine/strategy_performance.py:519:    trade_log.json is only a fallback for older runs where closed_positions.json",
+        "engine/trade_cooldown_guard.py:40:    DATA_DIR / \"closed_positions.json\",",
+        "engine/trade_journal_export.py:11:CLOSED_FILE = \"data/closed_positions.json\"",
+        "web/app.py:1243:            closed_positions = load_json(\"data/closed_positions.json\", [])",
+        "web/app.py:6202:    closed_positions = load_json(\"data/closed_positions.json\", [])"
+      ],
+      "exists": true,
+      "sample_item_keys": [],
+      "size_bytes": 7963760,
+      "source_markers": [
+        "source",
+        "mode",
+        "preview",
+        "simulation",
+        "paper",
+        "timestamp"
+      ],
+      "timestamp_examples": [],
+      "top_level_keys": [],
+      "top_level_type": "large_file_not_fully_parsed"
+    },
+    "execution_summary.json": {
+      "authority": "DERIVED_INHERITS_EXECUTION_PROVENANCE",
+      "code_references": [
+        "engine/run_execution_selection.py:41:    save_json(\"data/execution_summary.json\", summary)",
+        "web/app.py:3579:            lambda: load_json(\"data/execution_summary.json\", {}),",
+        "web/app.py:6443:    summary = load_json(\"data/execution_summary.json\", {})"
+      ],
+      "exists": true,
+      "sample_item_keys": [],
+      "size_bytes": 258,
+      "source_markers": [],
+      "timestamp_examples": [],
+      "top_level_keys": [
+        "selected_symbols",
+        "selected_count",
+        "eligible_count",
+        "rejected_count",
+        "cap",
+        "regime",
+        "volatility"
+      ],
+      "top_level_type": "object"
+    },
+    "execution_universe.json": {
+      "authority": "DERIVED_INHERITS_SIGNALS_PROVENANCE",
+      "code_references": [
+        "engine/bot.py:458:        execution_universe = load_json(\"data/execution_universe.json\", {})",
+        "engine/execution_source.py:594:    universe = load_json(\"data/execution_universe.json\", {})",
+        "engine/execution_universe_builder.py:10:EXECUTION_UNIVERSE_PATH = \"data/execution_universe.json\"",
+        "engine/run_execution_selection.py:40:    save_json(\"data/execution_universe.json\", universe)",
+        "engine/run_symbol_intelligence.py:31:    execution_universe = load_json(\"data/execution_universe.json\", {})"
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "symbol",
+        "company_name",
+        "score",
+        "confidence",
+        "grade",
+        "price",
+        "current_price",
+        "entry",
+        "atr",
+        "rsi",
+        "strategy",
+        "trend",
+        "volatility_state",
+        "mode",
+        "sector",
+        "avg_volume",
+        "momentum",
+        "eligible",
+        "timestamp",
+        "option_chain",
+        "has_option_chain",
+        "best_option_preview",
+        "source"
+      ],
+      "size_bytes": 418706,
+      "source_markers": [
+        "source",
+        "mode",
+        "preview",
+        "timestamp"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "timestamp",
+          "value": "2026-05-18T16:47:35.898062"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-18T16:47:36.611694"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-18T16:47:38.473772"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-18T16:47:37.259289"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-18T16:47:35.898062"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-18T16:47:36.611694"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-18T16:47:38.473772"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-18T16:47:37.259289"
+        }
+      ],
+      "top_level_keys": [
+        "selected",
+        "spotlight",
+        "meta"
+      ],
+      "top_level_type": "object"
+    },
+    "market_universe.json": {
+      "authority": "DISCOVERY_UNIVERSE_NOT_QUOTE_TRUTH",
+      "code_references": [
+        "engine/market_universe.py:6:MARKET_UNIVERSE_FILE = \"data/market_universe.json\"",
+        "web/app.py:9790:    market_universe = read_json_safe(data_dir / \"market_universe.json\")",
+        "web/app.py:9800:        warnings.append(\"market_universe.json unavailable; frontend preview fallback should remain active.\")",
+        "web/app.py:9855:        \"source\": \"market_universe_json\" if sectors else \"fallback_needed\",",
+        "web/app.py:10036:        \"market_universe\": read_json_safe(data_dir / \"market_universe.json\"),",
+        "web/app.py:10216:        \"market_universe.json\",",
+        "web/app.py:10509:        {\"name\": \"market_universe\", \"filename\": \"market_universe.json\", \"room\": \"Market Map\", \"purpose\": \"constellation/source labels\"},"
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "symbol",
+        "company_name",
+        "asset_type",
+        "source_tags",
+        "priority_rank",
+        "last_seen_at"
+      ],
+      "size_bytes": 51824,
+      "source_markers": [
+        "source",
+        "seed",
+        "saved_at"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "saved_at",
+          "value": "2026-05-30T20:07:49.218920"
+        }
+      ],
+      "top_level_keys": [
+        "rows",
+        "meta"
+      ],
+      "top_level_type": "object"
+    },
+    "my_plays.json": {
+      "authority": "USER_PLAY_STATE_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/market_universe.py:20:    \"my_plays\": \"data/my_plays.json\",",
+        "engine/my_plays.py:5:PLAYS_FILE = \"data/my_plays.json\""
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "play_id",
+        "symbol",
+        "entry",
+        "stop",
+        "target",
+        "current_price",
+        "conviction",
+        "thesis",
+        "notes",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "size_bytes": 398,
+      "source_markers": [],
+      "timestamp_examples": [
+        {
+          "key": "updated_at",
+          "value": "2026-03-26T00:39:25.738245"
+        }
+      ],
+      "top_level_keys": [],
+      "top_level_type": "array"
+    },
+    "open_positions.json": {
+      "authority": "OPEN_POSITION_STATE_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/account_state.py:10:3. Open market value is computed from open_positions.json.",
+        "engine/account_state.py:27:    open_positions.json. If account_state immediately syncs against that stale",
+        "engine/account_state.py:64:OPEN_POSITIONS_FILE = \"data/open_positions.json\"",
+        "engine/api_state.py:14:        \"open_positions\": load_json_file(\"data/open_positions.json\", []),",
+        "engine/close_trade.py:16:OPEN_FILE = \"data/open_positions.json\"",
+        "engine/close_trade.py:1732:#   - data/open_positions.json",
+        "engine/close_trade.py:1750:        data_dir / \"open_positions.json\",",
+        "engine/close_trade.py:1973:        data_dir / \"open_positions.json\",",
+        "engine/controlled_test_harness.py:14:    - data/open_positions.json",
+        "engine/controlled_test_harness.py:43:    \"data/open_positions.json\",",
+        "engine/controlled_test_harness.py:428:    Adds a test position to open_positions.json only.",
+        "engine/controlled_test_harness.py:433:    rows = _safe_read_json(\"data/open_positions.json\", [])",
+        "engine/controlled_test_harness.py:444:    _safe_write_json(\"data/open_positions.json\", rows)",
+        "engine/execution_loop.py:1420:        data = _load_json(\"data/open_positions.json\", [])",
+        "engine/market_universe.py:17:    \"open_positions\": \"data/open_positions.json\",",
+        "engine/observatory_recovery_diagnostics.py:214:        DATA_ROOT / \"open_positions.json\",",
+        "engine/observatory_recovery_diagnostics.py:1971:        data_dir / \"open_positions.json\",",
+        "engine/observatory_recovery_diagnostics.py:2266:        data_dir / \"open_positions.json\",",
+        "engine/paper_portfolio.py:70:OPEN_FILE = \"data/open_positions.json\"",
+        "engine/paper_portfolio.py:2104:#   data/open_positions.json",
+        "engine/portfolio_summary.py:8:1. Open position value is recalculated from open_positions.json.",
+        "engine/portfolio_summary.py:40:OPEN_FILE = \"data/open_positions.json\"",
+        "engine/position_store.py:14:# - data/open_positions.json",
+        "engine/position_store.py:36:OPEN_POSITIONS_FILE = DATA_DIR / \"open_positions.json\""
+      ],
+      "exists": true,
+      "sample_item_keys": [],
+      "size_bytes": 27323450,
+      "source_markers": [
+        "source",
+        "mode",
+        "simulation",
+        "paper",
+        "timestamp"
+      ],
+      "timestamp_examples": [],
+      "top_level_keys": [],
+      "top_level_type": "large_file_not_fully_parsed"
+    },
+    "pipeline_status.json": {
+      "authority": "PIPELINE_FRESHNESS_METADATA_NOT_MARKET_TRUTH",
+      "code_references": [
+        "engine/market_universe.py:7:PIPELINE_STATUS_FILE = \"data/pipeline_status.json\"",
+        "engine/symbols.py:13:PIPELINE_STATUS_FILE = \"data/pipeline_status.json\"",
+        "web/app.py:3208:    status = load_json(\"data/pipeline_status.json\", {})",
+        "web/app.py:5740:        \"data/pipeline_status.json\",",
+        "web/app.py:5979:        \"data/pipeline_status.json\": {",
+        "web/app.py:6071:                action=\"Rebuild symbol intelligence and confirm fresh writes to symbol_intelligence.json and pipeline_status.json.\",",
+        "web/app.py:9791:    pipeline_status = read_json_safe(data_dir / \"pipeline_status.json\")",
+        "web/app.py:9804:        warnings.append(\"pipeline_status.json unavailable; status fallback should remain active.\")",
+        "web/app.py:10037:        \"pipeline_status\": read_json_safe(data_dir / \"pipeline_status.json\"),",
+        "web/app.py:10217:        \"pipeline_status.json\",",
+        "web/app.py:10510:        {\"name\": \"pipeline_status\", \"filename\": \"pipeline_status.json\", \"room\": \"Owner Console\", \"purpose\": \"engine pipeline diagnostics\"},",
+        "web/static/ob/ob_owner_source_audit.js:171:        action: \"Update pipeline_status.json after the next engine/snapshot run.\""
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "diversity_seed",
+        "equity_seed",
+        "signals",
+        "symbol_intelligence",
+        "symbol_meta",
+        "symbol_news",
+        "candidate_log",
+        "trade_details",
+        "positions",
+        "open_positions",
+        "closed_positions",
+        "user_positions",
+        "my_plays"
+      ],
+      "size_bytes": 1956,
+      "source_markers": [
+        "source",
+        "seed"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "market_universe_run_at",
+          "value": "2026-05-30T20:07:49.221816"
+        }
+      ],
+      "top_level_keys": [
+        "market_universe_run_at",
+        "market_universe_count",
+        "market_universe_source_status",
+        "news_sync_at",
+        "symbol_news_sync"
+      ],
+      "top_level_type": "object"
+    },
+    "positions.json": {
+      "authority": "POSITION_STATE_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/account_state.py:10:3. Open market value is computed from open_positions.json.",
+        "engine/account_state.py:27:    open_positions.json. If account_state immediately syncs against that stale",
+        "engine/account_state.py:64:OPEN_POSITIONS_FILE = \"data/open_positions.json\"",
+        "engine/account_state.py:65:CLOSED_POSITIONS_FILE = \"data/closed_positions.json\"",
+        "engine/api_state.py:14:        \"open_positions\": load_json_file(\"data/open_positions.json\", []),",
+        "engine/api_state.py:15:        \"closed_positions\": load_json_file(\"data/closed_positions.json\", []),",
+        "engine/close_trade.py:16:OPEN_FILE = \"data/open_positions.json\"",
+        "engine/close_trade.py:17:CLOSED_FILE = \"data/closed_positions.json\"",
+        "engine/close_trade.py:1732:#   - data/open_positions.json",
+        "engine/close_trade.py:1733:#   - data/positions.json",
+        "engine/close_trade.py:1734:#   - data/user_positions.json",
+        "engine/close_trade.py:1750:        data_dir / \"open_positions.json\",",
+        "engine/close_trade.py:1751:        data_dir / \"positions.json\",",
+        "engine/close_trade.py:1752:        data_dir / \"user_positions.json\",",
+        "engine/close_trade.py:1973:        data_dir / \"open_positions.json\",",
+        "engine/close_trade.py:1974:        data_dir / \"positions.json\",",
+        "engine/close_trade.py:1975:        data_dir / \"user_positions.json\",",
+        "engine/closed_trade_stats.py:4:FILE = \"data/closed_positions.json\"",
+        "engine/controlled_test_harness.py:14:    - data/open_positions.json",
+        "engine/controlled_test_harness.py:15:    - data/closed_positions.json",
+        "engine/controlled_test_harness.py:43:    \"data/open_positions.json\",",
+        "engine/controlled_test_harness.py:44:    \"data/closed_positions.json\",",
+        "engine/controlled_test_harness.py:428:    Adds a test position to open_positions.json only.",
+        "engine/controlled_test_harness.py:433:    rows = _safe_read_json(\"data/open_positions.json\", [])"
+      ],
+      "exists": true,
+      "sample_item_keys": [],
+      "size_bytes": 27323450,
+      "source_markers": [
+        "source",
+        "mode",
+        "simulation",
+        "paper",
+        "timestamp"
+      ],
+      "timestamp_examples": [],
+      "top_level_keys": [],
+      "top_level_type": "large_file_not_fully_parsed"
+    },
+    "signals.json": {
+      "authority": "SEED_OR_EXTERNAL_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/bootstrap_signal_universe.py:12:def bootstrap_signals(output_path=\"data/signals.json\"):",
+        "engine/market_universe.py:10:    \"signals\": \"data/signals.json\",",
+        "engine/process_signals.py:3798:    for filename in (\"readiness_report.json\", \"candidate_log.json\", \"top_candidates.json\", \"live_signals.json\"):",
+        "engine/research_signal_writer.py:8:FILE = \"data/research_signals.json\"",
+        "engine/run_execution_selection.py:31:    signals = load_json(\"data/signals.json\", [])",
+        "engine/run_symbol_intelligence.py:30:    signals = load_json(\"data/signals.json\", [])",
+        "engine/signal_feed.py:5:FILE = \"data/live_signals.json\"",
+        "web/app.py:377:        signals = load_json(\"data/signals.json\", [])",
+        "web/app.py:3269:    signals = load_json(\"data/signals.json\", [])",
+        "web/app.py:3938:        signals = load_json(\"data/signals.json\", [])",
+        "web/app.py:5722:        \"data/signals.json\",",
+        "web/app.py:5964:        \"data/signals.json\": {",
+        "web/app.py:6478:    signals = load_json(\"data/signals.json\", [])"
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "symbol",
+        "score",
+        "confidence",
+        "company_name",
+        "opinion",
+        "timestamp",
+        "sector",
+        "setup_type"
+      ],
+      "size_bytes": 21566,
+      "source_markers": [
+        "timestamp"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        }
+      ],
+      "top_level_keys": [],
+      "top_level_type": "array"
+    },
+    "symbol_intelligence.json": {
+      "authority": "DERIVED_INHERITS_SIGNALS_AND_EXECUTION_PROVENANCE",
+      "code_references": [
+        "engine/market_universe.py:11:    \"symbol_intelligence\": \"data/symbol_intelligence.json\",",
+        "engine/run_symbol_intelligence.py:34:    save_json(\"data/symbol_intelligence.json\", symbols)",
+        "web/app.py:3270:    symbol_intel = load_json(\"data/symbol_intelligence.json\", {})",
+        "web/app.py:5723:        \"data/symbol_intelligence.json\",",
+        "web/app.py:5803:    symbol_intel = safe_dict(load_json(\"data/symbol_intelligence.json\", {}))",
+        "web/app.py:5969:        \"data/symbol_intelligence.json\": {",
+        "web/app.py:6071:                action=\"Rebuild symbol intelligence and confirm fresh writes to symbol_intelligence.json and pipeline_status.json.\","
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "symbol",
+        "score",
+        "previous_score",
+        "confidence",
+        "opinion",
+        "timestamp",
+        "execution",
+        "intelligence"
+      ],
+      "size_bytes": 157241,
+      "source_markers": [
+        "timestamp"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-03-21T15:00:00"
+        }
+      ],
+      "top_level_keys": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "AVGO",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "PLTR",
+        "SNOW",
+        "SHOP",
+        "UBER",
+        "COIN",
+        "INTC",
+        "QCOM",
+        "MU",
+        "MRVL",
+        "ARM",
+        "SMCI",
+        "TSM",
+        "MDB",
+        "XOM",
+        "CVX",
+        "COP",
+        "SLB",
+        "EOG",
+        "OXY",
+        "HAL",
+        "DVN",
+        "MPC",
+        "PSX",
+        "JPM",
+        "BAC",
+        "GS",
+        "MS"
+      ],
+      "top_level_type": "object"
+    },
+    "system_state.json": {
+      "authority": "SYSTEM_STATE_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/run_execution_selection.py:33:        \"data/system_state.json\",",
+        "web/app.py:383:            \"data/system_state.json\",",
+        "web/app.py:3940:            \"data/system_state.json\",",
+        "web/app.py:5739:        \"data/system_state.json\",",
+        "web/app.py:6459:    system = load_json(\"data/system_state.json\", {})"
+      ],
+      "exists": true,
+      "sample_item_keys": [],
+      "size_bytes": 79,
+      "source_markers": [],
+      "timestamp_examples": [],
+      "top_level_keys": [
+        "regime",
+        "volatility",
+        "engine_state"
+      ],
+      "top_level_type": "object"
+    },
+    "trade_details.json": {
+      "authority": "TRADE_STATE_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/market_universe.py:15:    \"trade_details\": \"data/trade_details.json\",",
+        "engine/trade_detail_builder.py:6:FILE = \"data/trade_details.json\"",
+        "web/app.py:751:        (\"data/trade_details.json\", \"json\"),",
+        "web/app.py:1255:            trade_details = load_json(\"data/trade_details.json\", [])",
+        "web/app.py:5735:        \"data/trade_details.json\",",
+        "web/app.py:6200:    trade_details = load_json(\"data/trade_details.json\", [])",
+        "web/app.py:8611:    trades = load_json(\"data/trade_details.json\", [])"
+      ],
+      "exists": true,
+      "sample_item_keys": [
+        "trade_id",
+        "timestamp",
+        "symbol",
+        "strategy",
+        "score",
+        "confidence",
+        "entry",
+        "atr",
+        "regime",
+        "mode",
+        "volatility_state",
+        "breadth",
+        "source",
+        "risk",
+        "signal_decay",
+        "crowd_pressure",
+        "thesis",
+        "narrative",
+        "context",
+        "why_not_this_trade",
+        "timeline"
+      ],
+      "size_bytes": 598085,
+      "source_markers": [
+        "source",
+        "mode",
+        "paper",
+        "timestamp"
+      ],
+      "timestamp_examples": [
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:36:54.413253"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:36:58.856225"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:36:58.879172"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:37:04.954770"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:37:04.976776"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:37:09.828368"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:37:09.908644"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:37:09.959979"
+        },
+        {
+          "key": "timestamp",
+          "value": "2026-05-19T16:37:12.907264"
+        }
+      ],
+      "top_level_keys": [],
+      "top_level_type": "array"
+    },
+    "user_positions.json": {
+      "authority": "USER_POSITION_STATE_PROVENANCE_REQUIRED",
+      "code_references": [
+        "engine/close_trade.py:1734:#   - data/user_positions.json",
+        "engine/close_trade.py:1752:        data_dir / \"user_positions.json\",",
+        "engine/close_trade.py:1975:        data_dir / \"user_positions.json\",",
+        "engine/market_universe.py:19:    \"user_positions\": \"data/user_positions.json\",",
+        "engine/my_plays.py:6:USER_POSITIONS_FILE = \"data/user_positions.json\"",
+        "engine/observatory_recovery_diagnostics.py:1972:        data_dir / \"user_positions.json\",",
+        "engine/observatory_recovery_diagnostics.py:2267:        data_dir / \"user_positions.json\",",
+        "engine/paper_portfolio.py:72:LEGACY_USER_POSITIONS_FILE = \"data/user_positions.json\"",
+        "engine/paper_portfolio.py:2106:#   data/user_positions.json",
+        "engine/position_store.py:16:# - data/user_positions.json",
+        "engine/position_store.py:38:USER_POSITIONS_FILE = DATA_DIR / \"user_positions.json\"",
+        "engine/trade_cooldown_guard.py:36:    DATA_DIR / \"user_positions.json\","
+      ],
+      "exists": true,
+      "sample_item_keys": [],
+      "size_bytes": 27323450,
+      "source_markers": [
+        "source",
+        "mode",
+        "simulation",
+        "paper",
+        "timestamp"
+      ],
+      "timestamp_examples": [],
+      "top_level_keys": [],
+      "top_level_type": "large_file_not_fully_parsed"
+    }
+  },
+  "do_not_build_second_engine": true,
+  "engine_snapshot_route": {
+    "canonical_or_data_token_hits": [
+      "market_universe",
+      "pipeline_status",
+      "positions",
+      "review_summary",
+      "positions_preview",
+      "candidates_preview",
+      "manual_live_queue"
+    ],
+    "classification": "ROUTE_FOUND_REQUIRES_PROVENANCE_GUARD",
+    "occurrence_lines": [
+      9773
+    ],
+    "path": "/ob/engine-feed-snapshot.json",
+    "suspicious_term_hits": [
+      "preview",
+      "fallback",
+      "demo"
+    ],
+    "web_app_sha256": "cdc342dbabb22ad107b10064c9ed0d3d7fc262d67ae45c1d76c4de17ec46dc7d"
+  },
+  "generated_at_utc": "2026-08-17T16:10:02.916014+00:00",
+  "legacy_tests_encoding_preview_behavior": [
+    "tests/test_dashboard_account_health_obux007.py",
+    "tests/test_dashboard_broken_geometry_obux013.py",
+    "tests/test_dashboard_command_stage_obux016.py",
+    "tests/test_dashboard_hot_now_obux009.py",
+    "tests/test_dashboard_instrument_board_obux018.py",
+    "tests/test_dashboard_less_data_more_explanation_obux015.py",
+    "tests/test_dashboard_live_board_obux019.py",
+    "tests/test_dashboard_nebula_visual_obux014.py",
+    "tests/test_dashboard_normal_role_scope_obux020.py",
+    "tests/test_dashboard_simplification_obux010.py",
+    "tests/test_dashboard_since_you_were_here_obux008.py",
+    "tests/test_dashboard_soulaana_hierarchy_obux017.py",
+    "tests/test_dashboard_soulaana_market_brief_obux011.py",
+    "tests/test_dashboard_soulaana_now_obux006.py",
+    "tests/test_dashboard_soulaana_translation_obux012.py",
+    "tests/test_dashboard_source_truth_obux006_010.py",
+    "tests/test_ob_atmosphere_obux026_shared_engine.py",
+    "tests/test_ob_atmosphere_obux027_room_weather.py",
+    "tests/test_ob_atmosphere_obux028_room_wiring.py",
+    "tests/test_ob_atmosphere_obux029_base_integration.py",
+    "tests/test_ob_atmosphere_obux030_visual_scope_guard.py",
+    "tests/test_owner_dashboard_obux021_contract.py",
+    "tests/test_owner_dashboard_obux022_soulaana.py",
+    "tests/test_owner_dashboard_obux023_mission_sky.py",
+    "tests/test_owner_dashboard_obux024_owner_intelligence.py",
+    "tests/test_owner_dashboard_obux025_dormant_surface.py",
+    "tests/test_tower_clouds_owner_access_native_launch_pack1.py",
+    "tests/test_tower_human_login_ob_native_launch.py",
+    "tests/test_tower_ob_gp046_native_contract.py",
+    "tests/test_tower_ob_live_flask_protection.py",
+    "tests/test_tower_ob_web_route_enforcement.py"
+  ],
+  "module_authority": {
+    "engine/bootstrap_signal_universe.py": {
+      "class": "SEED_GENERATOR_NOT_LIVE_MARKET_AUTHORITY",
+      "meaning": "Development/bootstrap signal generator. Generated score/confidence/opinion and fixed timestamp must not be presented as current market truth."
+    },
+    "engine/canonical_candidate.py": {
+      "class": "CANONICAL_PROCESSOR"
+    },
+    "engine/canonical_decision_gate.py": {
+      "class": "CANONICAL_PROCESSOR"
+    },
+    "engine/canonical_decision_object.py": {
+      "class": "CANONICAL_SCHEMA_PROCESSOR"
+    },
+    "engine/canonical_execution_guard.py": {
+      "class": "CANONICAL_GUARD_PROCESSOR"
+    },
+    "engine/canonical_trade_state.py": {
+      "class": "CANONICAL_STATE_PROCESSOR"
+    },
+    "engine/market_universe.py": {
+      "class": "DISCOVERY_AGGREGATOR_WITH_STATIC_SEEDS",
+      "meaning": "Useful symbol/universe discovery layer. Static diversity/equity seeds define membership and priority, not current price, signal, or market state."
+    },
+    "engine/run_execution_selection.py": {
+      "class": "DERIVED_PROCESSOR_INHERITS_INPUT_PROVENANCE",
+      "meaning": "Transforms signals + system state into execution universe/summary. Canonical transformation does not upgrade seed inputs into live truth."
+    },
+    "engine/run_full_pipeline.py": {
+      "class": "PIPELINE_ORCHESTRATOR_CURRENTLY_SEED_BOOTSTRAPPED",
+      "meaning": "Existing pipeline orchestrator. Current first stage calls bootstrap_signal_universe.py, so its downstream outputs inherit seed provenance unless another process replaces those inputs."
+    },
+    "engine/run_symbol_intelligence.py": {
+      "class": "DERIVED_PROCESSOR_INHERITS_INPUT_PROVENANCE",
+      "meaning": "Builds symbol intelligence from signals and execution universe. Output provenance follows those inputs."
+    }
+  },
+  "source_branch": "ob-observatory-atmosphere-obux026-030",
+  "source_sha": "0288927ac8c0734b475767087f92301761ebef69",
+  "web_contamination_before": {
+    "adapter_guarded_route_uses_preview": true,
+    "adapter_uses_v22_preview_fallback": true,
+    "market_static_fixture_present": true,
+    "nav_claims_tower_clear": true,
+    "v22_contains_fallback_sector": true,
+    "v22_defaults_symbol_to_mu": true,
+    "v22_forces_mu_amd_intc_positions": true,
+    "v22_generates_manual_live_queue": true,
+    "v22_generates_market_health_score": true
+  }
+}

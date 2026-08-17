@@ -1,0 +1,18 @@
+{
+  "canonical_reporting_snapshot": "DERIVED_REVIEW_HISTORY_PROVENANCE_REQUIRED",
+  "generated_at_utc": "2026-08-17T16:10:02.946280+00:00",
+  "live_fixture_contains_market_claims": false,
+  "live_market_fixture": "web/static/ob/ob_market_data.js",
+  "market_universe_static_seeds": "DISCOVERY_ONLY",
+  "pack": "OBDATA002",
+  "rules": {
+    "demo_can_be_current": false,
+    "derived_output_upgrades_provenance": false,
+    "rehearsal_can_be_current": false,
+    "seed_can_be_current": false
+  },
+  "seed_generator_classification": "SEED_GENERATOR_NOT_LIVE_MARKET_AUTHORITY",
+  "source_sha": "0288927ac8c0734b475767087f92301761ebef69",
+  "static_market_fixture_preserved": "web/static/ob/demo/ob_market_data_demo.js",
+  "title": "Seed / Demo / Rehearsal Contamination Boundary"
+}

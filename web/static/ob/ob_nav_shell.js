@@ -103,7 +103,7 @@
 
       <div class="ob-route-actions">
         <span class="ob-route-chip gold">Paper Mode</span>
-        <span class="ob-route-chip green">Tower Clear</span>
+        <span class="ob-route-chip green">Tower Protected</span>
         <span class="ob-route-chip red">Live Auto Locked</span>
         <span class="ob-route-chip">Settings</span>
         <span class="ob-route-chip">Notifications</span>

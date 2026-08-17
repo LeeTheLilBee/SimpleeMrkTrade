@@ -1,0 +1,21 @@
+{
+  "accepted_dashboard_modified": false,
+  "atmosphere_modified": false,
+  "auto_execution_enabled": false,
+  "broker_api_enabled": false,
+  "capital_movement_enabled": false,
+  "data_json_modified": false,
+  "engine_files_modified": false,
+  "generated_at_utc": "2026-08-17T16:10:02.946280+00:00",
+  "gp066_advanced": false,
+  "hardcoded_tower_clear_removed_if_present": true,
+  "live_auto_locked": true,
+  "order_submission_enabled": false,
+  "owner_dashboard_modified": false,
+  "pack": "OBDATA005",
+  "preview_fallback_removed": true,
+  "static_market_fixture_quarantined": true,
+  "title": "Fake Fallback Removal + Truth Acceptance",
+  "tower_modified": false,
+  "web_app_modified": false
+}

@@ -1,0 +1,26 @@
+{
+  "creates_new_engine": false,
+  "endpoint": "/ob/engine-feed-snapshot.json",
+  "generated_at_utc": "2026-08-17T16:10:02.946280+00:00",
+  "pack": "OBDATA003",
+  "preview_fallback_enabled": false,
+  "projection_location": "web/static/ob/ob_engine_feed_adapter.js",
+  "refresh": {
+    "poll_seconds": 60,
+    "refresh_on_focus": true,
+    "refresh_on_visibility": true
+  },
+  "requires_as_of_for_current": true,
+  "requires_source_for_current": true,
+  "route_classification": "ROUTE_FOUND_REQUIRES_PROVENANCE_GUARD",
+  "states": [
+    "fresh",
+    "stale",
+    "provenance_required",
+    "quarantined",
+    "rehearsal",
+    "guarded",
+    "unavailable"
+  ],
+  "title": "Canonical Web Projection"
+}
