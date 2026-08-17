@@ -43,6 +43,10 @@ def build_app(monkeypatch, *, owner, step_up):
     def owner_console():
         return "OWNER CONSOLE"
 
+    @app.route("/ob/owner-dashboard")
+    def owner_dashboard():
+        return "OWNER DASHBOARD"
+
     @app.route("/tower/login")
     def tower_login():
         return "LOGIN"
@@ -65,6 +69,22 @@ ROOMS = [
     "/ob/trade-center",
     "/ob/review-center",
     "/ob/owner-console",
+    "/ob/owner-dashboard",
+]
+
+
+NORMAL_ROOMS = [
+    "/ob/dashboard",
+    "/ob/market-map",
+    "/ob/symbol/AMD",
+    "/ob/trade-center",
+    "/ob/review-center",
+]
+
+
+OWNER_ONLY_ROOMS = [
+    "/ob/owner-console",
+    "/ob/owner-dashboard",
 ]
 
 
@@ -105,13 +125,7 @@ def test_owner_without_step_up_cannot_enter_normal_rooms(monkeypatch):
 
     client = app.test_client()
 
-    for route in [
-        "/ob/dashboard",
-        "/ob/market-map",
-        "/ob/symbol/AMD",
-        "/ob/trade-center",
-        "/ob/review-center",
-    ]:
+    for route in NORMAL_ROOMS:
         response = client.get(
             route,
             follow_redirects=False,
@@ -130,20 +144,22 @@ def test_owner_without_step_up_cannot_enter_normal_rooms(monkeypatch):
         )
 
 
-def test_owner_console_remains_owner_session_only(monkeypatch):
+def test_owner_only_rooms_remain_owner_session_only(monkeypatch):
     app = build_app(
         monkeypatch,
         owner=True,
         step_up=False,
     )
 
-    response = app.test_client().get(
-        "/ob/owner-console",
-        follow_redirects=False,
-    )
+    client = app.test_client()
 
-    assert response.status_code == 200
-    assert response.data == b"OWNER CONSOLE"
+    for route in OWNER_ONLY_ROOMS:
+        response = client.get(
+            route,
+            follow_redirects=False,
+        )
+
+        assert response.status_code == 200
 
 
 def test_owner_with_step_up_can_enter_all_rooms(monkeypatch):

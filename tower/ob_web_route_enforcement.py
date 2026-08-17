@@ -15,11 +15,18 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
         "/ob/trade-center",
         "/ob/review-center",
         "/ob/owner-console",
+        "/ob/owner-dashboard",
     }
 )
 
 PROTECTED_SYMBOL_PREFIX = "/ob/symbol/"
-OWNER_ONLY_OB_ROUTE = "/ob/owner-console"
+
+OWNER_ONLY_OB_ROUTES = frozenset(
+    {
+        "/ob/owner-console",
+        "/ob/owner-dashboard",
+    }
+)
 
 
 def normalize_ob_web_path(path: str) -> str:
@@ -47,18 +54,20 @@ def is_approved_ob_web_room(path: str) -> bool:
     return False
 
 
+def is_owner_only_ob_web_room(path: str) -> bool:
+    return normalize_ob_web_path(path) in OWNER_ONLY_OB_ROUTES
+
+
 def register_ob_protected_route_enforcement(app):
     """
     Attach the real HTTP fail-closed boundary for Observatory rooms.
-
-    This protects the actual Flask request before an OB room handler can render.
 
     Rules:
       - every /ob/* request is private by default
       - unknown/unapproved /ob/* paths return 403
       - approved rooms require an active Tower owner session
       - normal rooms additionally require active Tower owner step-up
-      - Owner Console remains owner-session-only per native-launch doctrine
+      - Owner Console and Owner Dashboard remain owner-session-only rooms
     """
 
     marker = "_tower_ob_web_failclosed_registered"
@@ -75,22 +84,15 @@ def register_ob_protected_route_enforcement(app):
         if not path.startswith("/ob/"):
             return None
 
-        # Default deny first. A valid session does not make an unknown
-        # Observatory path permissible.
         if not is_approved_ob_web_room(path):
             abort(403)
 
-        # No anonymous direct room access.
         if not owner_session_active():
             return redirect("/tower/login")
 
-        # Owner Console is already defined by Tower native-launch doctrine
-        # as owner-only rather than ordinary room step-up access.
-        if path == OWNER_ONLY_OB_ROUTE:
+        if is_owner_only_ob_web_room(path):
             return None
 
-        # Normal Observatory rooms require the owner session plus the
-        # Tower step-up that precedes the protected native handoff.
         if not step_up_active():
             return redirect("/tower/access-home")
 

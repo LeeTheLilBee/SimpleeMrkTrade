@@ -26,6 +26,7 @@ APPROVED_STATIC_ROUTES: Dict[str, str] = {
     "trade_center": "/ob/trade-center",
     "review_center": "/ob/review-center",
     "owner_console": "/ob/owner-console",
+    "owner_dashboard": "/ob/owner-dashboard",
 }
 
 APPROVED_DYNAMIC_PATTERNS: Dict[str, str] = {
