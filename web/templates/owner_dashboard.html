@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OB Owner Dashboard</title>
+
+  <!--
+    OBUX025_DORMANT_OWNER_DASHBOARD
+
+    NORMAL DASHBOARD:
+      everyday Observatory intelligence
+
+    OWNER DASHBOARD:
+      additional Solice-only strategic Observatory intelligence
+
+    OWNER CONSOLE:
+      deep administration / diagnostics / controls
+
+    IMPORTANT:
+      This template does not create or authorize a route.
+      Tower doorway work is deliberately separate.
+  -->
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_theme.css') }}"
+  />
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_owner_dashboard.css') }}"
+  />
+</head>
+
+<body
+  data-ob-owner-dashboard-role="owner-only-dormant"
+  data-ob-owner-dashboard-route-registered="false"
+  data-ob-live-auto-locked="true"
+>
+  <div id="ob-owner-dashboard-app">
+    <div class="ob-owner-shell">
+      <header class="ob-owner-shell-header">
+        <div class="ob-owner-shell-title">
+          <strong>The Observatory · Owner Dashboard</strong>
+          <span>
+            additional owner intelligence · not Owner Console
+          </span>
+        </div>
+
+        <div class="ob-owner-shell-status">
+          <span class="ob-owner-chip owner">Owner only</span>
+          <span class="ob-owner-chip dormant">Door not activated</span>
+          <span class="ob-owner-chip locked">Live Auto Locked</span>
+        </div>
+      </header>
+
+      <div id="ownerDashboardMount"></div>
+    </div>
+  </div>
+
+  <!--
+    Do NOT load the legacy Owner Console panel stack here.
+    Owner Dashboard fetches read-only JSON intelligence through its
+    own guarded contract instead of rendering the diagnostic walls.
+  -->
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard_contract.js') }}"
+  ></script>
+  <script
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard_soulaana.js') }}"
+  ></script>
+  <script
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard.js') }}"
+  ></script>
+</body>
+</html>
