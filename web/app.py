@@ -50721,6 +50721,10 @@ register_ob_protected_route_enforcement(app)
 from tower.security_map_web import register_tower_security_map_routes
 register_tower_security_map_routes(app)
 
+# TOWER_OWNER_DASHBOARD_PEOPLE_ACCESS_DESK_TWR006_010
+from tower.owner_dashboard_web import register_tower_owner_dashboard_routes
+register_tower_owner_dashboard_routes(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 

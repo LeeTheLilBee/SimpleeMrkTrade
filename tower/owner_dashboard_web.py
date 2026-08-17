@@ -1,0 +1,349 @@
+from __future__ import annotations
+
+from flask import jsonify, redirect
+
+from tower.owner_dashboard_service import (
+    build_tower_owner_dashboard,
+    owner_dashboard_status_cards,
+)
+from tower.tower_human_login_ob_launch import owner_session_active
+
+
+def _tower_owner_dashboard_html() -> str:
+    dashboard = build_tower_owner_dashboard()
+    summary = dashboard["summary"]
+    cards = owner_dashboard_status_cards()
+    people = dashboard["people"]
+    invites = dashboard["invite_drafts"]
+    requests = dashboard["access_requests"]
+
+    card_html = "\n".join(
+        f"""
+        <article class="owner-card owner-card-{card['status']}">
+          <div class="owner-card-label">{card['title']}</div>
+          <div class="owner-card-value">{card['value']}</div>
+          <p>{card['meaning']}</p>
+        </article>
+        """
+        for card in cards
+    )
+
+    people_html = "\n".join(
+        f"""
+        <article class="owner-row">
+          <div class="owner-row-main">
+            <strong>{person['display_name']}</strong>
+            <span>{person['access_status']}</span>
+          </div>
+          <div class="owner-chips">
+            <span>{person['primary_role']}</span>
+            <span>{person['clearance_level']}</span>
+            <span>{person['relationship']}</span>
+          </div>
+          <p>{person['notes']}</p>
+        </article>
+        """
+        for person in people
+    )
+
+    invite_html = "\n".join(
+        f"""
+        <article class="owner-row">
+          <div class="owner-row-main">
+            <strong>{invite['display_name']}</strong>
+            <span>{invite['status']}</span>
+          </div>
+          <div class="owner-chips">
+            <span>{invite['invite_type']}</span>
+            <span>{invite['target_role']}</span>
+            <span>{', '.join(invite['target_apps'])}</span>
+          </div>
+          <p>{invite['message']}</p>
+        </article>
+        """
+        for invite in invites
+    )
+
+    request_html = "\n".join(
+        f"""
+        <article class="owner-row">
+          <div class="owner-row-main">
+            <strong>{request['request_id']}</strong>
+            <span>{request['status']}</span>
+          </div>
+          <div class="owner-chips">
+            <span>{request['requested_role']}</span>
+            <span>{request['risk_level']}</span>
+            <span>{'auto-grant blocked' if not request['can_auto_grant'] else 'auto-grant allowed'}</span>
+          </div>
+          <p>{request['tower_reason']}</p>
+        </article>
+        """
+        for request in requests
+    )
+
+    return f"""
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Tower · Owner Dashboard</title>
+        <style>
+          :root {{
+            --bg: #070411;
+            --panel: rgba(255,255,255,0.075);
+            --panel-strong: rgba(255,255,255,0.13);
+            --text: #fff8ff;
+            --muted: #cab9ee;
+            --gold: #f8d978;
+            --violet: #9b7cff;
+            --pink: #ffb8e6;
+            --border: rgba(248,217,120,0.28);
+            --good: #b8f8cf;
+            --warn: #ffd6a0;
+          }}
+
+          * {{
+            box-sizing: border-box;
+          }}
+
+          body {{
+            margin: 0;
+            min-height: 100vh;
+            background:
+              radial-gradient(circle at 8% 4%, rgba(155,124,255,0.34), transparent 34rem),
+              radial-gradient(circle at 88% 10%, rgba(255,184,230,0.16), transparent 28rem),
+              radial-gradient(circle at 50% 88%, rgba(248,217,120,0.10), transparent 30rem),
+              var(--bg);
+            color: var(--text);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          }}
+
+          main {{
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 36px 0 58px;
+          }}
+
+          .owner-hero {{
+            border: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.035));
+            box-shadow: 0 24px 80px rgba(0,0,0,0.40);
+            border-radius: 30px;
+            padding: 32px;
+            margin-bottom: 22px;
+          }}
+
+          .eyebrow {{
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            font-size: 12px;
+            font-weight: 900;
+          }}
+
+          h1 {{
+            margin: 10px 0 12px;
+            font-size: clamp(34px, 5vw, 64px);
+            line-height: .95;
+          }}
+
+          .hero-copy {{
+            color: var(--muted);
+            font-size: 18px;
+            max-width: 900px;
+            line-height: 1.55;
+          }}
+
+          .summary-grid {{
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin: 22px 0;
+          }}
+
+          .owner-card {{
+            border: 1px solid rgba(255,255,255,0.12);
+            background: var(--panel);
+            border-radius: 22px;
+            padding: 18px;
+            min-height: 150px;
+          }}
+
+          .owner-card-label {{
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+          }}
+
+          .owner-card-value {{
+            color: var(--gold);
+            font-size: 34px;
+            font-weight: 950;
+            margin: 10px 0;
+          }}
+
+          .owner-card p,
+          .owner-row p {{
+            color: var(--muted);
+            line-height: 1.45;
+            margin-bottom: 0;
+          }}
+
+          .owner-section {{
+            margin-top: 24px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(0,0,0,0.18);
+            border-radius: 26px;
+            padding: 22px;
+          }}
+
+          .owner-section h2 {{
+            margin: 0 0 14px;
+            font-size: 24px;
+          }}
+
+          .owner-row {{
+            border: 1px solid rgba(255,255,255,0.10);
+            background: var(--panel);
+            border-radius: 18px;
+            padding: 16px;
+            margin-top: 12px;
+          }}
+
+          .owner-row-main {{
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+          }}
+
+          .owner-row-main span {{
+            color: var(--gold);
+            font-size: 13px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .10em;
+          }}
+
+          .owner-chips {{
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+          }}
+
+          .owner-chips span {{
+            border: 1px solid rgba(248,217,120,0.25);
+            background: rgba(248,217,120,0.08);
+            color: var(--gold);
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 850;
+          }}
+
+          .owner-warning {{
+            margin-top: 22px;
+            border: 1px solid rgba(255,214,160,0.30);
+            background: rgba(255,214,160,0.09);
+            border-radius: 22px;
+            padding: 18px;
+            color: var(--warn);
+          }}
+
+          .owner-next {{
+            margin-top: 14px;
+            border: 1px solid rgba(184,248,207,0.28);
+            background: rgba(184,248,207,0.08);
+            border-radius: 22px;
+            padding: 18px;
+          }}
+
+          .owner-next strong {{
+            color: var(--good);
+          }}
+
+          @media (max-width: 820px) {{
+            .summary-grid {{
+              grid-template-columns: 1fr;
+            }}
+
+            .owner-row-main {{
+              align-items: flex-start;
+              flex-direction: column;
+            }}
+          }}
+        </style>
+      </head>
+      <body>
+        <main>
+          <section class="owner-hero">
+            <div class="eyebrow">Tower Owner Dashboard</div>
+            <h1>The owner desk is coming online.</h1>
+            <p class="hero-copy">{summary['tower_meaning']}</p>
+          </section>
+
+          <section class="summary-grid">
+            {card_html}
+          </section>
+
+          <section class="owner-section">
+            <h2>People + seats</h2>
+            {people_html}
+          </section>
+
+          <section class="owner-section">
+            <h2>Invite drafts</h2>
+            {invite_html}
+          </section>
+
+          <section class="owner-section">
+            <h2>Access requests</h2>
+            {request_html}
+          </section>
+
+          <section class="owner-warning">
+            <strong>Locked boundary:</strong>
+            This page can show people, invite drafts, and access requests, but it cannot create real accounts,
+            send real invites, or grant real app access yet.
+          </section>
+
+          <section class="owner-next">
+            <strong>Owner next move:</strong>
+            {summary['owner_next_action']}
+          </section>
+        </main>
+      </body>
+    </html>
+    """
+
+
+def register_tower_owner_dashboard_routes(app):
+    marker = "_tower_owner_dashboard_routes_registered"
+
+    if getattr(app, marker, False):
+        return app
+
+    @app.route("/tower/owner-dashboard")
+    def tower_owner_dashboard_page():
+        if not owner_session_active():
+            return redirect("/tower/login")
+        return _tower_owner_dashboard_html()
+
+    @app.route("/tower/owner-dashboard.json")
+    def tower_owner_dashboard_json():
+        if not owner_session_active():
+            return redirect("/tower/login")
+        return jsonify(build_tower_owner_dashboard())
+
+    setattr(
+        app,
+        marker,
+        True,
+    )
+
+    return app

@@ -1,0 +1,35 @@
+{
+  "base_main": "77d9509cdc9519576951faab4cba4e31aa1de7bb",
+  "branch": "tower-owner-dashboard-people-access-desk-twr006-010",
+  "broker_execution_enabled": false,
+  "capital_action_enabled": false,
+  "clouds_access_opened": false,
+  "created_at_utc": "2026-08-17T16:50:31.214755+00:00",
+  "grounds_access_opened": false,
+  "live_auto_locked": true,
+  "new_modules": [
+    "tower/owner_people_registry.py",
+    "tower/owner_dashboard_service.py",
+    "tower/owner_dashboard_web.py"
+  ],
+  "new_routes": [
+    "/tower/owner-dashboard",
+    "/tower/owner-dashboard.json"
+  ],
+  "ob_page_design_modified": false,
+  "owner_dashboard_scope": [
+    "people_roster",
+    "staged_future_seats",
+    "invite_drafts",
+    "access_requests",
+    "owner_review_queue",
+    "danger_locks"
+  ],
+  "real_access_grants_enabled": false,
+  "real_account_creation_enabled": false,
+  "real_invites_sent": false,
+  "teller_access_opened": false,
+  "title": "Tower Owner Dashboard + People Access Desk / TWR006-TWR010",
+  "tower_security_modified": true,
+  "vault_access_opened": false
+}
