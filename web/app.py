@@ -50705,6 +50705,10 @@ register_tower_people_profile_rooms(app)
 from tower.owner_people_search_consolidation import register_tower_people_search_consolidation
 register_tower_people_search_consolidation(app)
 
+# TOWER_ADD_PERSON_DRAFT_CHANGE_QUEUE_TWR026_030
+from tower.owner_people_change_queue import register_tower_people_change_queue
+register_tower_people_change_queue(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
