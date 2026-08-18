@@ -1,0 +1,31 @@
+{
+  "access_home_replaced": false,
+  "after_request_injection": true,
+  "base_tower_dev": "1e28b730638da9a04d342df2928a6cb465b37948",
+  "branch": "tower-access-home-owner-dashboard-launch-card-twr011-015",
+  "broker_execution_enabled": false,
+  "built_from": "tower-dev",
+  "capital_action_enabled": false,
+  "created_at_utc": "2026-08-18T14:06:47.372007+00:00",
+  "enhanced_existing_route": "/tower/access-home",
+  "launch_cards": [
+    {
+      "href": "/tower/owner-dashboard",
+      "meaning": "People + Access Desk launch card visible from Access Home.",
+      "title": "Owner Dashboard"
+    },
+    {
+      "href": "/tower/security-map",
+      "meaning": "Lock map launch card visible from Access Home.",
+      "title": "Security Map"
+    }
+  ],
+  "live_auto_locked": true,
+  "new_json_route": "/tower/access-home-launches.json",
+  "new_module": "tower/access_home_owner_launches.py",
+  "patched_file": "web/app.py",
+  "real_access_grants_enabled": false,
+  "real_account_creation_enabled": false,
+  "real_invites_sent": false,
+  "title": "Tower Access Home Owner Dashboard Launch Card / TWR011-TWR015"
+}

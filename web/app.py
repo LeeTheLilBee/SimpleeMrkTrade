@@ -50724,6 +50724,10 @@ register_tower_security_map_routes(app)
 from tower.owner_dashboard_web import register_tower_owner_dashboard_routes
 register_tower_owner_dashboard_routes(app)
 
+# TOWER_ACCESS_HOME_OWNER_DASHBOARD_LAUNCH_CARD_TWR011_015
+from tower.access_home_owner_launches import register_tower_access_home_owner_launches
+register_tower_access_home_owner_launches(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
