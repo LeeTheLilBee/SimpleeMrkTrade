@@ -50732,6 +50732,10 @@ register_tower_access_home_owner_launches(app)
 from tower.owner_people_profile_rooms import register_tower_people_profile_rooms
 register_tower_people_profile_rooms(app)
 
+# TOWER_PEOPLE_DESK_SEARCH_CONSOLIDATION_TWR021_025
+from tower.owner_people_search_consolidation import register_tower_people_search_consolidation
+register_tower_people_search_consolidation(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
