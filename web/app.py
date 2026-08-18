@@ -50717,6 +50717,10 @@ register_tower_bottom_people_seats_preference(app)
 from tower.owner_people_combined_rooms import register_tower_people_combined_rooms
 register_tower_people_combined_rooms(app)
 
+# TOWER_PEOPLE_SEATS_REAL_DESK_TWR041_045
+from tower.owner_people_real_desk import register_tower_people_real_desk
+register_tower_people_real_desk(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
