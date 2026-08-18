@@ -50709,6 +50709,10 @@ register_tower_people_search_consolidation(app)
 from tower.owner_people_change_queue import register_tower_people_change_queue
 register_tower_people_change_queue(app)
 
+# TOWER_KEEP_BOTTOM_PEOPLE_SEATS_SEARCH_TWR031_035
+from tower.owner_people_bottom_section_preference import register_tower_bottom_people_seats_preference
+register_tower_bottom_people_seats_preference(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
