@@ -1,0 +1,19 @@
+{
+  "auto_execution_enabled": false,
+  "base_main": "9e33f5c6ace9a73427b1353159f44af888ca9b2f",
+  "branch": "ob-market-map-experience-obux031-035",
+  "broker_api_enabled": false,
+  "canonical_adapter_modified": false,
+  "canonical_contract_modified": false,
+  "capital_movement_enabled": false,
+  "created_at_utc": "2026-08-18T14:49:48.971563+00:00",
+  "engine_replaced": false,
+  "independent_market_fetch": false,
+  "independent_market_polling": false,
+  "live_auto_locked": true,
+  "market_map_executes_trade": false,
+  "order_submission_enabled": false,
+  "symbol_route": "/ob/symbol/<symbol>",
+  "title": "Constellation interaction",
+  "visual_geometry_has_market_meaning": false
+}

@@ -1,124 +1,404 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>OB Market Map</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}" />
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <title>
+    Market Map · The Observatory
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_theme.css') }}"
+  />
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}"
+  />
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_market_map.css') }}"
+  />
 </head>
-<body data-ob-room="market-map">
-<div
-  class="ob-sky"
-  data-ob-atmosphere-version="OBUX026-OBUX030"
-  aria-hidden="true"
+
+<body
+  data-ob-room="market-map"
+  data-ob-market-map-version="OBUX031-OBUX035"
+  data-ob-market-map-live-updates="canonical-adapter"
+  data-ob-live-auto-locked="true"
 >
-  <div class="ob-sky__weather"></div>
-  <div class="ob-sky__horizon"></div>
-  <div class="ob-sky__grid"></div>
-</div>
-
-<!-- OBSERVATORY_MARKET_MAP_V11_REAL_MARKET_MAP_ROOM -->
-<div id="ob-app">
-<div class="ob-v23-lock-marker" hidden>Live Auto Locked</div>
-  <div class="ob-layer">
-    <div class="ob-header">
-      <div>
-        <h1 class="ob-title-xl">Market Map</h1>
-        <div class="ob-subtitle">OB://MarketMap · Paper Mode · Tower Clear · Full Sky View</div>
-      </div>
-
-      <div class="ob-panel soulaana-panel">
-        <div class="ob-label">Soulaana · Market Read</div>
-        <div class="soulaana-text">
-          Look at the sky, not the noise. The brightest stars are where OB has attention. The dim ones still exist, but they are not leading right now. We follow what is glowing, not what is begging.
-        </div>
-        <div class="legend">
-          <div class="legend-item"><span class="legend-dot legend-green"></span>Strong sector</div>
-          <div class="legend-item"><span class="legend-dot legend-gold"></span>Hot watched star</div>
-          <div class="legend-item"><span class="legend-dot legend-dim"></span>Background star</div>
-          <div class="legend-item"><span class="legend-dot legend-red"></span>Weak / gated risk</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sky-layout">
-      <div class="ob-panel sky-field" id="skyField"></div>
-      <div class="ob-panel detail-panel" id="detailPanel"></div>
-    </div>
+  <div
+    class="ob-sky"
+    data-ob-atmosphere-version="OBUX026-OBUX030"
+    aria-hidden="true"
+  >
+    <div class="ob-sky__weather"></div>
+    <div class="ob-sky__horizon"></div>
+    <div class="ob-sky__grid"></div>
   </div>
-</div>
 
-<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_market_map_symbol_page.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_mission_accounts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_notifications_settings.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_readiness.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_visual_consistency.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_snapshot_display.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_room_data_polish.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_candidate_cards.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_receipts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_tester_ops.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_qa.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_expansion.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_diagnostics.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_trust_labels.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_room_mapping.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_source_audit.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_launch_control.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_invite_packet.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_feedback_intake.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_feedback_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_session_runbook.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_issue_triage.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_session_closeout.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_fix_verification.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_next_tester_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_account_experience.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_level1_operating_room.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_receipts_review_foundation.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_tower_lock_polish.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_safety_preflight_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_decision_packet.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_broker_checklist_fill_capture.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_position_monitor_exit_close_capture.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_final_trade_review_performance_receipt.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_l1_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_rehearsal_engine.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_record_contracts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_review_center_rehearsal_command_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_input_persistence_prep.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_mission_account_capital_rule_rehearsal_overlay.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_tower_step_up_enforcement_prep.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_real_candidate_rehearsal_adapter.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_owner_rehearsal_final_readiness.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_quality_freshness_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_pre_live_lock_wall.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_persistence_adapter_dry_run.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_loop_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_session_detail_drawer.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_lesson_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_loop_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_repetition_metrics_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_review_polish_guidance.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_focus_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_review_compact_snapshot.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_review_polish_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_step_confidence_checklist.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_scenario_confidence_review.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_improvement_plan.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_persistence.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_history_review.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_receipts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_proof_packet_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_evidence_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_candidate_decision_handoff.js') }}"></script>
-  <script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
+  <div
+    id="ob-app"
+    class="market-map-app"
+  >
+    <main class="market-map-shell">
+
+      <!-- OBUX031_MARKET_MAP_REAL_SURFACE -->
+      <header class="market-map-hero">
+
+        <section class="market-map-heading">
+          <div class="market-map-kicker">
+            THE OBSERVATORY · MARKET SKY
+          </div>
+
+          <h1>
+            Market Map
+          </h1>
+
+          <p>
+            See where the canonical Observatory projection has
+            source-backed market attention without digging through
+            engine plumbing or proof pages.
+          </p>
+
+          <div class="market-map-lock-row">
+            <span class="market-map-chip protected">
+              Tower Protected
+            </span>
+
+            <span class="market-map-chip">
+              Read-only
+            </span>
+
+            <span class="market-map-chip locked">
+              Live Auto Locked
+            </span>
+          </div>
+        </section>
+
+
+        <!-- OBUX033_SOULAANA_LIVE_INTERPRETATION -->
+        <section
+          class="market-map-soulaana"
+          aria-labelledby="marketMapSoulaanaTitle"
+        >
+          <div class="market-map-card-head">
+            <div>
+              <span class="market-map-eyebrow">
+                SOULAANA
+              </span>
+
+              <h2 id="marketMapSoulaanaTitle">
+                What the sky means
+              </h2>
+            </div>
+
+            <span
+              id="marketMapTruthBadge"
+              class="market-map-truth-badge"
+            >
+              checking truth
+            </span>
+          </div>
+
+          <div class="market-map-soulaana-lead">
+            <span>
+              What I see
+            </span>
+
+            <strong id="marketMapWhatISee">
+              I’m checking the canonical feed before I tell you
+              what deserves attention.
+            </strong>
+          </div>
+
+          <div class="market-map-soulaana-grid">
+            <article>
+              <span>
+                What it means
+              </span>
+
+              <p id="marketMapWhatItMeans">
+                Waiting for verified market context.
+              </p>
+            </article>
+
+            <article>
+              <span>
+                What changed
+              </span>
+
+              <p id="marketMapWhatChanged">
+                Waiting for the first canonical projection.
+              </p>
+            </article>
+
+            <article>
+              <span>
+                What needs you
+              </span>
+
+              <p id="marketMapNeedsYou">
+                Nothing yet.
+              </p>
+            </article>
+
+            <article>
+              <span>
+                What can wait
+              </span>
+
+              <p id="marketMapCanWait">
+                Background context can wait.
+              </p>
+            </article>
+
+            <article class="wide">
+              <span>
+                Next best move
+              </span>
+
+              <p id="marketMapNextMove">
+                Let the truth check finish.
+              </p>
+            </article>
+          </div>
+
+          <div
+            id="marketMapNoAction"
+            class="market-map-no-action"
+            hidden
+          >
+            No action needed.
+          </div>
+        </section>
+
+      </header>
+
+
+      <!-- OBUX032_LIVE_CANONICAL_FEED -->
+      <section
+        class="market-map-feed-strip"
+        aria-label="Live canonical feed state"
+      >
+        <div>
+          <span>Feed</span>
+
+          <strong id="marketMapFeedState">
+            checking
+          </strong>
+        </div>
+
+        <div>
+          <span>Source</span>
+
+          <strong id="marketMapSource">
+            checking
+          </strong>
+        </div>
+
+        <div>
+          <span>Market as of</span>
+
+          <strong id="marketMapAsOf">
+            checking
+          </strong>
+        </div>
+
+        <div>
+          <span>Age</span>
+
+          <strong id="marketMapAge">
+            checking
+          </strong>
+        </div>
+
+        <div>
+          <span>Canonical cadence</span>
+
+          <strong>
+            60 sec
+          </strong>
+        </div>
+      </section>
+
+
+      <section class="market-map-main-grid">
+
+        <!-- OBUX034_CONSTELLATION_FIELD -->
+        <section
+          class="market-map-sky-panel"
+          aria-labelledby="marketMapSkyTitle"
+        >
+          <div class="market-map-card-head">
+            <div>
+              <span class="market-map-eyebrow">
+                SOURCE-BACKED CONSTELLATIONS
+              </span>
+
+              <h2 id="marketMapSkyTitle">
+                The current Observatory sky
+              </h2>
+            </div>
+
+            <span
+              id="marketMapCountLabel"
+              class="market-map-muted-status"
+            >
+              waiting for projection
+            </span>
+          </div>
+
+          <div
+            id="marketMapSky"
+            class="market-map-sky-field"
+            aria-live="polite"
+          ></div>
+        </section>
+
+
+        <aside
+          class="market-map-attention-panel"
+          aria-labelledby="marketMapAttentionTitle"
+        >
+          <div class="market-map-card-head compact">
+            <div>
+              <span class="market-map-eyebrow">
+                ATTENTION
+              </span>
+
+              <h2 id="marketMapAttentionTitle">
+                What is actually on the board
+              </h2>
+            </div>
+          </div>
+
+          <div
+            id="marketMapAttention"
+            class="market-map-attention-grid"
+          ></div>
+
+          <div class="market-map-boundary">
+            <strong>
+              Observation is not permission.
+            </strong>
+
+            <p>
+              A bright star means the canonical projection contains
+              a source-backed attention state there. Market Map never
+              places an order or moves capital.
+            </p>
+          </div>
+        </aside>
+
+      </section>
+
+
+      <!-- OBUX035_EVIDENCE_SECONDARY -->
+      <details class="market-map-evidence">
+        <summary>
+          Data truth & technical evidence
+        </summary>
+
+        <div class="market-map-evidence-grid">
+          <div>
+            <span>
+              Projection
+            </span>
+
+            <strong id="marketMapEvidenceProjection">
+              unavailable
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              Current eligible
+            </span>
+
+            <strong id="marketMapEvidenceCurrent">
+              no
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              Display eligible
+            </span>
+
+            <strong id="marketMapEvidenceDisplay">
+              no
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              Latest feed event
+            </span>
+
+            <strong id="marketMapEvidenceEvent">
+              not observed yet
+            </strong>
+          </div>
+
+          <div class="wide">
+            <span>
+              Reason
+            </span>
+
+            <strong id="marketMapEvidenceReason">
+              No canonical projection loaded.
+            </strong>
+          </div>
+        </div>
+
+        <p>
+          Missing truth stays missing. No sample, seed, preview,
+          demo, fallback sector, or invented symbol state is substituted.
+        </p>
+      </details>
+
+    </main>
+  </div>
+
+
+  <!--
+    MARKET MAP LOAD ORDER
+
+    1. canonical room contracts
+    2. canonical engine projection adapter
+    3. shared navigation
+    4. Soulaana interpretation
+    5. Market Map renderer
+
+    Market Map performs no independent data fetch.
+  -->
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_market_map_soulaana.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_market_map.js') }}"
+  ></script>
 </body>
 </html>

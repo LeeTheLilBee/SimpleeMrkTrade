@@ -7529,44 +7529,11 @@ def position_detail_page(trade_id):
     )
 
 
+
+# OBUX035_MARKET_MAP_LEGACY_COMPATIBILITY_REDIRECT
 @app.route("/market-map")
 def market_map_page():
-    maybe_track_page_view("/market-map")
-
-    v2_market_map = get_v2_market_map()
-    v2_market_interactions = get_v2_market_map_interactions()
-    v2_map_layers = get_v2_map_layers()
-
-    grouped = v2_market_map.get("grouped_tiles", {}) if isinstance(v2_market_map, dict) else {}
-    mapped_constellations = {}
-
-    if isinstance(grouped, dict):
-        for bucket, tiles in grouped.items():
-            try:
-                mapped_constellations[bucket] = map_tiles_to_constellation(bucket, tiles)
-            except Exception as e:
-                print(f"[MAP_CONSTELLATION_{bucket}] {e}")
-                mapped_constellations[bucket] = {
-                    "bucket": bucket,
-                    "constellation": "fallback",
-                    "label": "Fallback",
-                    "stars": [],
-                    "overflow": [],
-                    "lines": [],
-                }
-
-    return render_template_safe(
-        "market_map.html",
-        **template_context(
-            {
-                "v2_market_map": v2_market_map,
-                "v2_market_interactions": v2_market_interactions,
-                "v2_map_layers": v2_map_layers,
-                "mapped_constellations": mapped_constellations,
-            }
-        ),
-    )
-
+    return "", 302, {"Location": "/ob/market-map"}
 
 @app.route("/admin/intelligence")
 def admin_intelligence_page():
@@ -9688,10 +9655,12 @@ def _pack053_register_mode_guard_once(_app):
 _pack053_register_mode_guard_once(app)
 
 # OBSERVATORY_MARKET_MAP_V10_TEMPLATE_READY_ROUTE
+
+# OBUX035_MARKET_MAP_V10_COMPATIBILITY_REDIRECT
 @app.route("/market-map-v10")
 @app.route("/ob/market-map-v10")
 def ob_market_map_v10():
-    return render_template("market_map_v10.html")
+    return "", 302, {"Location": "/ob/market-map"}
 
 # OBSERVATORY_MARKET_MAP_V11_OB_ALIAS_ROUTE
 @app.route("/ob/market-map")
