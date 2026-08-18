@@ -1,0 +1,29 @@
+{
+  "base_main": "f70cda0534fc5933e3395e30b35004cf65ee19d6",
+  "branch": "tower-people-desk-search-consolidation-twr021-025",
+  "broker_execution_enabled": false,
+  "built_from": "tower-dev",
+  "capital_action_enabled": false,
+  "created_at_utc": "2026-08-18T15:14:15.330402+00:00",
+  "duplicate_people_rooms_dock_removed": true,
+  "enhanced_route": "/tower/owner-dashboard",
+  "homepage_policy": "one_people_section_search_first",
+  "live_auto_locked": true,
+  "new_module": "tower/owner_people_search_consolidation.py",
+  "open_room_chips_added": true,
+  "patched_file": "web/app.py",
+  "people_search_bar_preserved": true,
+  "person_names_clickable": true,
+  "person_routes_preserved": [
+    "/tower/owner-dashboard/person/future-manager-seat",
+    "/tower/owner-dashboard/person/future-family-friend-seat",
+    "/tower/owner-dashboard/person/future-trustee-advisor-seat",
+    "/tower/owner-dashboard/person/future-beta-tester-seat"
+  ],
+  "preferred_home_surface": "existing_people_and_seats_search_section",
+  "real_access_grants_enabled": false,
+  "real_account_creation_enabled": false,
+  "real_invites_sent": false,
+  "real_permission_changes_enabled": false,
+  "title": "Tower People Desk Search Consolidation / TWR021-TWR025"
+}
