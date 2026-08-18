@@ -1,0 +1,42 @@
+{
+  "back_buttons": [
+    "Back to Access Home",
+    "People + Access Desk",
+    "Security Map"
+  ],
+  "base_main": "642bd426742629eeb44afbc6f375abd2c17d93d6",
+  "branch": "tower-people-profile-rooms-back-nav-twr016-020",
+  "broker_execution_enabled": false,
+  "built_from": "tower-dev",
+  "capital_action_enabled": false,
+  "created_at_utc": "2026-08-18T14:51:02.443542+00:00",
+  "enhanced_routes": [
+    "/tower/owner-dashboard",
+    "/tower/security-map"
+  ],
+  "homepage_policy": "calm_home_power_behind_names",
+  "live_auto_locked": true,
+  "new_module": "tower/owner_people_profile_rooms.py",
+  "new_routes": [
+    "/tower/owner-dashboard/people.json",
+    "/tower/owner-dashboard/person/<person_id>",
+    "/tower/owner-dashboard/person/<person_id>.json",
+    "/tower/owner-dashboard/person/<person_id>/designation-draft",
+    "/tower/owner-dashboard/person/<person_id>/app-access-draft",
+    "/tower/owner-dashboard/person/<person_id>/freeze-draft"
+  ],
+  "patched_file": "web/app.py",
+  "person_room_controls": [
+    "identity_snapshot",
+    "designation_controls",
+    "app_access_matrix",
+    "danger_locks",
+    "freeze_draft",
+    "owner_review_required"
+  ],
+  "real_access_grants_enabled": false,
+  "real_account_creation_enabled": false,
+  "real_invites_sent": false,
+  "real_permission_changes_enabled": false,
+  "title": "Tower People Profile Rooms + Back Navigation / TWR016-TWR020"
+}

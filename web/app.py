@@ -50728,6 +50728,10 @@ register_tower_owner_dashboard_routes(app)
 from tower.access_home_owner_launches import register_tower_access_home_owner_launches
 register_tower_access_home_owner_launches(app)
 
+# TOWER_PEOPLE_PROFILE_ROOMS_BACK_NAV_TWR016_020
+from tower.owner_people_profile_rooms import register_tower_people_profile_rooms
+register_tower_people_profile_rooms(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
