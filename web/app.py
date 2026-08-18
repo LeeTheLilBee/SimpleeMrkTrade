@@ -50713,6 +50713,10 @@ register_tower_people_change_queue(app)
 from tower.owner_people_bottom_section_preference import register_tower_bottom_people_seats_preference
 register_tower_bottom_people_seats_preference(app)
 
+# TOWER_COMBINE_PEOPLE_SEATS_ROOMS_TWR036_040
+from tower.owner_people_combined_rooms import register_tower_people_combined_rooms
+register_tower_people_combined_rooms(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
