@@ -50737,6 +50737,10 @@ register_tower_person_event_ledger(app)
 from tower.owner_person_decision_workflow import register_tower_person_owner_decision
 register_tower_person_owner_decision(app)
 
+# TOWER_PERSON_EXISTING_VAULT_HANDOFF_ADAPTER_TWR066_070
+from tower.owner_person_vault_handoff_adapter import register_tower_person_vault_handoff_adapter
+register_tower_person_vault_handoff_adapter(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 

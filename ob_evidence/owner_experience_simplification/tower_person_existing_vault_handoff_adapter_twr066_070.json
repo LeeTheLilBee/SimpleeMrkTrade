@@ -1,0 +1,267 @@
+{
+  "branch": "tower-person-control-room-twr046-050",
+  "browser_direct_vault_access": false,
+  "created_at_utc": "2026-08-20T15:23:24.067357+00:00",
+  "creates_new_vault_transport": false,
+  "existing_source_candidates": [
+    {
+      "function": "build_archive_vault_handoff_record",
+      "path": "tower/archive_vault_handoff.py",
+      "score": 5
+    },
+    {
+      "function": "list_archive_vault_handoffs",
+      "path": "tower/archive_vault_handoff.py",
+      "score": 5
+    },
+    {
+      "function": "queue_archive_vault_handoff",
+      "path": "tower/archive_vault_handoff.py",
+      "score": 5
+    },
+    {
+      "function": "summarize_archive_vault_handoffs",
+      "path": "tower/archive_vault_handoff.py",
+      "score": 5
+    },
+    {
+      "function": "_pack074_archive_vault_handoff_panel_html",
+      "path": "tower/security_command_page.py",
+      "score": 5
+    },
+    {
+      "function": "vault_clouds_handoff_contract_json",
+      "path": "vault/vault_routes.py",
+      "score": 5
+    },
+    {
+      "function": "vault_open_app_handoff_json",
+      "path": "vault/vault_routes.py",
+      "score": 5
+    },
+    {
+      "function": "vault_file_object_registry_insert_handoff_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp040_controlled_packet_next_section_handoff_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_post_closeout_handoff_blockers_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_post_closeout_handoff_events_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_post_closeout_handoff_lock_contract_record_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_post_closeout_handoff_next_step_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_post_closeout_handoff_policies_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_post_closeout_handoff_requirements_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_post_closeout_handoff_validation_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_real_provider_post_closeout_handoff_lock_contract_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp091_real_provider_post_closeout_handoff_lock_contract_page",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_post_closeout_handoff_receipt_blockers_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_post_closeout_handoff_receipt_events_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_post_closeout_handoff_receipt_ledger_record_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_post_closeout_handoff_receipt_next_step_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_post_closeout_handoff_receipt_policies_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_post_closeout_handoff_receipt_validation_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_post_closeout_handoff_receipts_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_real_provider_post_closeout_handoff_receipt_ledger_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp092_real_provider_post_closeout_handoff_receipt_ledger_page",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_post_closeout_handoff_owner_review_blockers_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_post_closeout_handoff_owner_review_events_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_post_closeout_handoff_owner_review_items_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_post_closeout_handoff_owner_review_next_step_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_post_closeout_handoff_owner_review_policies_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_post_closeout_handoff_owner_review_queue_record_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_post_closeout_handoff_owner_review_validation_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_real_provider_post_closeout_handoff_owner_review_queue_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp093_real_provider_post_closeout_handoff_owner_review_queue_page",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_post_closeout_handoff_owner_review_decision_blockers_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_post_closeout_handoff_owner_review_decision_events_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_post_closeout_handoff_owner_review_decision_lock_contract_record_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_post_closeout_handoff_owner_review_decision_next_step_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_post_closeout_handoff_owner_review_decision_policies_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_post_closeout_handoff_owner_review_decision_requirements_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_post_closeout_handoff_owner_review_decision_validation_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_real_provider_post_closeout_handoff_owner_review_decision_lock_contract_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp094_real_provider_post_closeout_handoff_owner_review_decision_lock_contract_page",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp095_post_closeout_handoff_owner_review_decision_receipt_blockers_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp095_post_closeout_handoff_owner_review_decision_receipt_events_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp095_post_closeout_handoff_owner_review_decision_receipt_lock_contract_record_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp095_post_closeout_handoff_owner_review_decision_receipt_next_step_json",
+      "path": "web/app.py",
+      "score": 5
+    },
+    {
+      "function": "vault_gp095_post_closeout_handoff_owner_review_decision_receipt_policies_json",
+      "path": "web/app.py",
+      "score": 5
+    }
+  ],
+  "explicit_acceptance_required_for_vault_sealed": true,
+  "fail_closed_when_handoff_unresolved": true,
+  "live_auto": "LOCKED",
+  "owner_approval_required": true,
+  "parent": "14c624369a7a05dca07b80a751a4711cd03c592b",
+  "ready_for_vault_required": true,
+  "real_permission_changes": false,
+  "runtime_existing_callable_pointer": "TOWER_VAULT_HANDOFF_CALLABLE",
+  "title": "Tower Person Existing Vault Handoff Adapter / TWR066-TWR070"
+}
