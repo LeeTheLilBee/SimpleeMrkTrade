@@ -432,6 +432,70 @@
         reason
         ||
         "Canonical engine projection is unavailable.",
+      options:
+        [],
+
+      research_contracts:
+        [],
+
+      ranked_contracts:
+        [],
+
+      options_by_symbol:
+        {},
+
+      option_chains:
+        {},
+
+      options_chains:
+        {},
+
+      options_projection: {
+        schema_version:
+          "OB_OPTIONS_RESEARCH_V1",
+
+        authority:
+          "UNAVAILABLE",
+
+        selection_authority:
+          "USER",
+
+        research_contracts:
+          [],
+
+        ranked_contracts:
+          [],
+
+        options_by_symbol:
+          {},
+
+        option_chains:
+          {},
+
+        diagnostics: {
+          contract_count:
+            0,
+
+          symbols_with_contracts:
+            0,
+
+          no_fake_fallback:
+            true,
+
+          ob_selected_contract:
+            false,
+
+          brokerage_execution:
+            false,
+
+          automatic_execution:
+            false,
+
+          automatic_contract_selection:
+            false,
+        },
+      },
+
 
       market_health:
         {},
@@ -500,6 +564,85 @@
       safeObject(
         payload
       );
+
+    // ----------------------------------------------------------------------------------------------
+    // OBDATA007_OPTIONS_RESEARCH_PROJECTION
+    //
+    // Reuses existing engine option intelligence.
+    //
+    // Ranking evidence may be projected.
+    // Engine selection does NOT become user selection.
+    // ----------------------------------------------------------------------------------------------
+
+    const optionsResearchContract =
+      window.OBOptionsResearchContract;
+
+    const optionsProjection =
+      (
+        optionsResearchContract
+        &&
+        typeof optionsResearchContract.buildProjection
+          === "function"
+      )
+        ? optionsResearchContract.buildProjection(
+            safe
+          )
+        : {
+            schema_version:
+              "OB_OPTIONS_RESEARCH_V1",
+
+            authority:
+              "UNAVAILABLE",
+
+            selection_authority:
+              "USER",
+
+            research_contracts:
+              [],
+
+            ranked_contracts:
+              [],
+
+            options_by_symbol:
+              {},
+
+            option_chains:
+              {},
+
+            diagnostics: {
+              contract_count:
+                0,
+
+              symbols_with_contracts:
+                0,
+
+              no_fake_fallback:
+                true,
+
+              direct_market_fetch:
+                false,
+
+              browser_yfinance:
+                false,
+
+              ob_selected_contract:
+                false,
+
+              brokerage_execution:
+                false,
+
+              automatic_execution:
+                false,
+
+              automatic_contract_selection:
+                false,
+
+              reason:
+                "options_research_contract_not_loaded",
+            },
+          };
+
+
 
 
     const source =
@@ -837,7 +980,128 @@
             "Source and/or as-of provenance is incomplete."
         ),
 
-      // NO generated numbers below.
+
+      // --------------------------------------------------------------------------------------------
+      // OBDATA007 — SOURCE-BACKED OPTIONS RESEARCH
+      //
+      // The SAME displayEligible gate used for market truth also controls option intelligence.
+      //
+      // No provenance bypass.
+      // No rehearsal leakage.
+      // No demo/fallback leakage.
+      // --------------------------------------------------------------------------------------------
+
+      options:
+        displayEligible
+          ? clone(
+              optionsProjection.research_contracts
+              ||
+              []
+            )
+          : [],
+
+      research_contracts:
+        displayEligible
+          ? clone(
+              optionsProjection.research_contracts
+              ||
+              []
+            )
+          : [],
+
+      ranked_contracts:
+        displayEligible
+          ? clone(
+              optionsProjection.ranked_contracts
+              ||
+              []
+            )
+          : [],
+
+      options_by_symbol:
+        displayEligible
+          ? clone(
+              optionsProjection.options_by_symbol
+              ||
+              {}
+            )
+          : {},
+
+      option_chains:
+        displayEligible
+          ? clone(
+              optionsProjection.option_chains
+              ||
+              {}
+            )
+          : {},
+
+      options_chains:
+        displayEligible
+          ? clone(
+              optionsProjection.option_chains
+              ||
+              {}
+            )
+          : {},
+
+      options_projection:
+        displayEligible
+          ? clone(
+              optionsProjection
+            )
+          : {
+              schema_version:
+                "OB_OPTIONS_RESEARCH_V1",
+
+              authority:
+                optionsProjection.authority
+                ||
+                "UNAVAILABLE",
+
+              selection_authority:
+                "USER",
+
+              research_contracts:
+                [],
+
+              ranked_contracts:
+                [],
+
+              options_by_symbol:
+                {},
+
+              option_chains:
+                {},
+
+              diagnostics: {
+                contract_count:
+                  0,
+
+                symbols_with_contracts:
+                  0,
+
+                no_fake_fallback:
+                  true,
+
+                ob_selected_contract:
+                  false,
+
+                brokerage_execution:
+                  false,
+
+                automatic_execution:
+                  false,
+
+                automatic_contract_selection:
+                  false,
+
+                projection_blocked_by_market_truth_gate:
+                  true,
+              },
+            },
+
+// NO generated numbers below.
       market_health:
         displayEligible
           ? clone(
