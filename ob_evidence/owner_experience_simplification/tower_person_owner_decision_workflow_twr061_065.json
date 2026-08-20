@@ -1,0 +1,17 @@
+{
+  "title": "Tower Person Owner Decision Workflow / TWR061-TWR065",
+  "branch": "tower-person-control-room-twr046-050",
+  "parent": "d6112a5022eb0accf16bfd3eb7eb5ad1a509e58f",
+  "created_at_utc": "2026-08-20T15:19:22.897617+00:00",
+  "decisions": [
+    "APPROVED",
+    "REJECTED",
+    "HOLD",
+    "RETURN_FOR_CHANGES"
+  ],
+  "source_event_mutation": false,
+  "approved_effective_vault_status": "READY_FOR_VAULT",
+  "vault_delivery_enabled": false,
+  "real_permission_changes": false,
+  "live_auto": "LOCKED"
+}

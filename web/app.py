@@ -50733,6 +50733,10 @@ register_tower_person_control_draft_wiring(app)
 from tower.owner_person_event_ledger import register_tower_person_event_ledger
 register_tower_person_event_ledger(app)
 
+# TOWER_PERSON_OWNER_DECISION_TWR061_065
+from tower.owner_person_decision_workflow import register_tower_person_owner_decision
+register_tower_person_owner_decision(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
