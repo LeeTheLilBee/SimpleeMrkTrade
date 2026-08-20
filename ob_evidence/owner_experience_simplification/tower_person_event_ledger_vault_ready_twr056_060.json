@@ -1,0 +1,33 @@
+{
+  "append_only_store": true,
+  "broker_execution": false,
+  "browser_direct_vault_access": false,
+  "capital_action": false,
+  "created_at_utc": "2026-08-20T15:08:54.248319+00:00",
+  "event_route": "/tower/owner-dashboard/person/<person_id>/event",
+  "event_schema_version": "tower.person.event.v1",
+  "feature_branch": "tower-person-control-room-twr046-050",
+  "history_route": "/tower/owner-dashboard/person/<person_id>/history.json",
+  "live_auto": "LOCKED",
+  "local_file_backing": true,
+  "parent_commit": "957da924e364de182d85420581522d9f41d2039c",
+  "product_rule": "tower_keeps_operational_person_history_vault_remains_sealed_archive",
+  "production_archival_durability": false,
+  "real_access_granted": false,
+  "real_access_revoked": false,
+  "real_permission_changes": false,
+  "real_person_frozen": false,
+  "real_person_restored": false,
+  "title": "Tower Person Event Ledger + Vault-Ready Packets / TWR056-TWR060",
+  "vault_delivery_enabled": false,
+  "vault_packet_preview_route": "/tower/owner-dashboard/person/<person_id>/event/<event_id>/vault-packet.json",
+  "vault_packet_schema_version": "tower.vault.person-change-proof.v1",
+  "vault_packet_type": "TOWER_PERSON_CHANGE_PROOF",
+  "vault_required_for_sealed_archive": true,
+  "vault_statuses": [
+    "NOT_READY_FOR_VAULT",
+    "READY_FOR_VAULT",
+    "VAULT_DELIVERY_FAILED",
+    "VAULT_SEALED"
+  ]
+}

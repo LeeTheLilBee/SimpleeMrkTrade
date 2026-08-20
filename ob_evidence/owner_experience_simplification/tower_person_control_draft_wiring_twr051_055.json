@@ -1,0 +1,33 @@
+{
+  "broker_execution": false,
+  "capital_action": false,
+  "control_actions": [
+    "designation",
+    "app_access",
+    "responsibility",
+    "status",
+    "freeze",
+    "restore",
+    "paperwork_note"
+  ],
+  "control_draft_route": "/tower/owner-dashboard/person/<person_id>/control-draft",
+  "control_room_json_route": "/tower/owner-dashboard/person/<person_id>/control-room.json",
+  "created_at_utc": "2026-08-20T14:47:21.231716+00:00",
+  "draft_receipts": true,
+  "durable_persistence_enabled": false,
+  "existing_draft_builders_reused": true,
+  "feature_branch": "tower-person-control-room-twr046-050",
+  "live_auto": "LOCKED",
+  "parent_twr046_050": "28cddf770dfa14f05639caef739277f2f3c5a2f8",
+  "person_queue_projection": true,
+  "product_rule": "person_control_room_actions_create_validated_drafts_not_live_mutations",
+  "real_access_granted": false,
+  "real_access_revoked": false,
+  "real_account_creation": false,
+  "real_invites_sent": false,
+  "real_permission_changes": false,
+  "real_person_frozen": false,
+  "real_person_restored": false,
+  "real_profile_binding": true,
+  "title": "Tower Person Control Draft Wiring / TWR051-TWR055"
+}
