@@ -50721,6 +50721,10 @@ register_tower_people_combined_rooms(app)
 from tower.owner_people_real_desk import register_tower_people_real_desk
 register_tower_people_real_desk(app)
 
+# TOWER_PERSON_CONTROL_ROOM_TWR046_050
+from tower.owner_person_control_room import register_tower_person_control_room
+register_tower_person_control_room(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
