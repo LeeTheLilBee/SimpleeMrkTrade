@@ -1,0 +1,22 @@
+{
+  "archive_vault_app_wired": false,
+  "branch": "tower-person-control-room-twr046-050",
+  "browser_direct_vault_access": false,
+  "created_at_utc": "2026-08-20T15:34:33.116216+00:00",
+  "creates_parallel_transport": false,
+  "existing_builder": "build_archive_vault_handoff_record",
+  "existing_current_handoff_status": "queued",
+  "existing_handoff_module": "tower.archive_vault_handoff",
+  "existing_queue_callable": "queue_archive_vault_handoff",
+  "existing_source_truth": "Archive Vault app is not wired yet. This record is a safe queued handoff stub.",
+  "live_auto": "LOCKED",
+  "owner_approval_required": true,
+  "parent": "13a577aafc4b3855c50bf536caaefc55a37ee82d",
+  "person_source_type": "tower_person_change_proof",
+  "ready_for_vault_required": true,
+  "real_permission_changes": false,
+  "title": "Tower Person Real Archive Vault Queue Binding / TWR071-TWR075",
+  "vault_accepted": false,
+  "vault_queue_status": "VAULT_HANDOFF_QUEUED",
+  "vault_sealed": false
+}
