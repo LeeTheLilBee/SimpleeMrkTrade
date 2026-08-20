@@ -50729,6 +50729,10 @@ register_tower_person_control_room(app)
 from tower.owner_person_control_draft_wiring import register_tower_person_control_draft_wiring
 register_tower_person_control_draft_wiring(app)
 
+# TOWER_PERSON_EVENT_LEDGER_VAULT_READY_TWR056_060
+from tower.owner_person_event_ledger import register_tower_person_event_ledger
+register_tower_person_event_ledger(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
