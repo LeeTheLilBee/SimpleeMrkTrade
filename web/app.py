@@ -50745,6 +50745,10 @@ register_tower_person_vault_handoff_adapter(app)
 from tower.owner_person_archive_vault_queue_binding import register_tower_person_archive_vault_queue_binding
 register_tower_person_archive_vault_queue_binding(app)
 
+# TOWER_ARCHIVE_VAULT_INTAKE_ACCEPTANCE_TWR076_080
+from tower.archive_vault_intake_acceptance import register_archive_vault_intake_acceptance
+register_archive_vault_intake_acceptance(app)
+
 # END TOWER HUMAN LOGIN TO OB REGISTRATION
 
 
