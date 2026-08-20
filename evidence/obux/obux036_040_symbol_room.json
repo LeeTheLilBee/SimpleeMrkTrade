@@ -1,0 +1,39 @@
+{
+  "base": "87c60ede441593652e6718cdb0ce6e609eee2948",
+  "branch": "ob-symbol-room-obux036-040",
+  "market_map_ancestor": "43d28c9b6a723256d46a85cc34d07f58585fafc0",
+  "modes": {
+    "automated": "locked",
+    "hybrid": "objective_filter_matches_user_choice",
+    "manual_live_1": "owner_review_and_independent_choice",
+    "paper": "practice",
+    "survey": "observe"
+  },
+  "packs": [
+    "OBUX036",
+    "OBUX037",
+    "OBUX038",
+    "OBUX039",
+    "OBUX040"
+  ],
+  "product_flow": [
+    "market_map",
+    "symbol_room",
+    "trade_center",
+    "owner_brokerage_execution",
+    "ob_tracking"
+  ],
+  "room": "symbol",
+  "route": "/ob/symbol/<symbol>",
+  "safety": {
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_api": false,
+    "brokerage_execution": false,
+    "demo_market_fixture_loaded": false,
+    "fake_market_fallback": false,
+    "symbol_room_self_grants_mode": false,
+    "tower_files_modified": false
+  },
+  "title": "OB Symbol Room Options-First + Mode-Aware Rebuild"
+}

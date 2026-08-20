@@ -1,120 +1,473 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>OB Symbol Page</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OB · Symbol Room</title>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_theme.css') }}"
+  />
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}"
+  />
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_symbol_room.css') }}"
+  />
 </head>
-<body data-ob-room="symbol">
-<div
-  class="ob-sky"
-  data-ob-atmosphere-version="OBUX026-OBUX030"
-  aria-hidden="true"
+
+<body
+  data-ob-room="symbol"
+  data-ob-symbol="{{ symbol|default('') }}"
 >
-  <div class="ob-sky__weather"></div>
-  <div class="ob-sky__horizon"></div>
-  <div class="ob-sky__grid"></div>
-</div>
-
-<div class="ob-v23-lock-marker" hidden>Live Auto Locked</div>
-<!-- OBSERVATORY_SYMBOL_PAGE_V12_REAL_STAR_ROOM -->
-<div id="ob-app" data-symbol="{{ symbol|default('MU') }}">
-  <div class="ob-layer">
-    <div class="ob-header">
-      <div>
-        <h1 class="ob-title-xl" id="symbolRoomTitle">Symbol Page</h1>
-        <div class="ob-subtitle" id="symbolRoomSubtitle">OB://SymbolPage · Paper Mode · Tower Clear · Star Observation Room</div>
-      </div>
-
-      <div class="ob-panel soulaana-panel">
-        <div class="ob-label">Soulaana · Star Room</div>
-        <div class="soulaana-text" id="symbolHeroSoulaana">
-          We are not looking at the whole sky anymore. We are inside one star now. Read what changed, respect the permission, and move clean.
-        </div>
-        <div class="legend">
-          <div class="legend-item"><span class="legend-dot legend-gold"></span>Star facts</div>
-          <div class="legend-item"><span class="legend-dot legend-green"></span>Paper allowed</div>
-          <div class="legend-item"><span class="legend-dot legend-red"></span>Live auto locked</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="symbolRoomMount"></div>
+  <div
+    class="ob-sky"
+    data-ob-atmosphere-version="OBUX026-OBUX030"
+    aria-hidden="true"
+  >
+    <div class="ob-sky__weather"></div>
+    <div class="ob-sky__horizon"></div>
+    <div class="ob-sky__grid"></div>
   </div>
-</div>
 
-<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_symbol_page.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_mission_accounts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_notifications_settings.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_readiness.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_visual_consistency.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_snapshot_display.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_room_data_polish.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_candidate_cards.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_receipts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_tester_ops.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_qa.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_expansion.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_diagnostics.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_trust_labels.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_room_mapping.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_source_audit.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_launch_control.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_invite_packet.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_feedback_intake.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_feedback_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_session_runbook.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_issue_triage.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_session_closeout.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_fix_verification.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_next_tester_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_account_experience.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_level1_operating_room.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_receipts_review_foundation.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_tower_lock_polish.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_safety_preflight_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_decision_packet.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_broker_checklist_fill_capture.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_position_monitor_exit_close_capture.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_final_trade_review_performance_receipt.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_l1_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_rehearsal_engine.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_record_contracts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_review_center_rehearsal_command_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_input_persistence_prep.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_mission_account_capital_rule_rehearsal_overlay.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_tower_step_up_enforcement_prep.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_real_candidate_rehearsal_adapter.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_owner_rehearsal_final_readiness.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_quality_freshness_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_pre_live_lock_wall.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_persistence_adapter_dry_run.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_loop_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_session_detail_drawer.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_lesson_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_loop_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_repetition_metrics_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_review_polish_guidance.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_focus_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_review_compact_snapshot.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_review_polish_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_step_confidence_checklist.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_scenario_confidence_review.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_improvement_plan.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_persistence.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_history_review.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_receipts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_proof_packet_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_evidence_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_candidate_decision_handoff.js') }}"></script>
-  <script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
+  <!--
+    OBUX036–040 SYMBOL ROOM
+
+    Market Map  = discovery
+    Symbol Room = investigation
+    Trade Center = decision preparation
+    Brokerage   = owner execution
+  -->
+
+  <main
+    id="obSymbolRoom"
+    class="ob-symbol-room"
+    data-symbol="{{ symbol|default('') }}"
+  >
+    <header class="ob-symbol-topbar">
+      <a
+        class="ob-symbol-back"
+        href="/ob/market-map"
+        aria-label="Return to Market Map"
+      >
+        ← Market Map
+      </a>
+
+      <div class="ob-symbol-topbar__status">
+        <span id="symbolModeChip" class="ob-symbol-chip">
+          Mode loading
+        </span>
+
+        <span
+          id="symbolTruthChip"
+          class="ob-symbol-chip ob-symbol-chip--guarded"
+        >
+          Checking data
+        </span>
+      </div>
+    </header>
+
+    <section id="symbolModeBanner" class="ob-mode-banner">
+      <div>
+        <span class="ob-symbol-eyebrow">CURRENT MODE</span>
+        <h2 id="symbolModeTitle">Survey · Observe</h2>
+        <p id="symbolModeMessage">
+          Reading authorized Symbol Room mode.
+        </p>
+      </div>
+
+      <div
+        id="symbolModeSafety"
+        class="ob-mode-banner__safety"
+      >
+        No broker execution
+      </div>
+    </section>
+
+    <section
+      id="symbolUnavailableNotice"
+      class="ob-symbol-notice"
+      hidden
+    ></section>
+
+    <section class="ob-symbol-hero">
+      <div class="ob-symbol-identity">
+        <span class="ob-symbol-eyebrow">SYMBOL ROOM</span>
+
+        <h1 id="symbolTicker">—</h1>
+        <p id="symbolCompany">Company unavailable</p>
+
+        <div class="ob-symbol-meta">
+          <span id="symbolSector">Constellation unavailable</span>
+          <span>·</span>
+          <span id="symbolMarketState">State unavailable</span>
+        </div>
+      </div>
+
+      <div class="ob-symbol-truth">
+        <div>
+          <span>Source</span>
+          <strong id="symbolSource">Unavailable</strong>
+        </div>
+
+        <div>
+          <span>As of</span>
+          <strong id="symbolAsOf">Unavailable</strong>
+        </div>
+
+        <div>
+          <span>Freshness</span>
+          <strong id="symbolFreshness">Unavailable</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="ob-symbol-grid ob-symbol-grid--lead">
+      <article class="ob-symbol-card">
+        <span class="ob-symbol-eyebrow">WHAT CHANGED?</span>
+        <h2>Evidence first.</h2>
+        <p id="symbolWhatChanged">
+          Waiting for canonical symbol evidence.
+        </p>
+
+        <div
+          id="symbolEvidenceFlags"
+          class="ob-symbol-evidence-flags"
+        ></div>
+      </article>
+
+      <article class="ob-symbol-card ob-symbol-card--soulaana">
+        <span class="ob-symbol-eyebrow">SOULAANA · SYMBOL READ</span>
+
+        <div class="ob-soulaana-read">
+          <div>
+            <span>What she sees</span>
+            <p id="symbolSoulaanaSees">Waiting for verified evidence.</p>
+          </div>
+
+          <div>
+            <span>Why it matters</span>
+            <p id="symbolSoulaanaMeans">
+              No interpretation available yet.
+            </p>
+          </div>
+
+          <div>
+            <span>Be careful</span>
+            <p id="symbolSoulaanaCaution">
+              Unknown fields stay unknown.
+            </p>
+          </div>
+
+          <div>
+            <span>Inspect next</span>
+            <p id="symbolSoulaanaNext">
+              Wait for source-backed context.
+            </p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="ob-symbol-card">
+      <div class="ob-symbol-section-head">
+        <div>
+          <span class="ob-symbol-eyebrow">UNDERLYING</span>
+          <h2>What is the star actually doing?</h2>
+        </div>
+
+        <span id="symbolUnderlyingTrust" class="ob-symbol-mini-status">
+          Source-backed fields only
+        </span>
+      </div>
+
+      <div
+        id="symbolUnderlyingMetrics"
+        class="ob-symbol-metric-grid"
+      ></div>
+
+      <div
+        id="symbolStarFacts"
+        class="ob-symbol-facts"
+      ></div>
+    </section>
+
+    <section class="ob-symbol-card ob-options-sky">
+      <div class="ob-symbol-section-head">
+        <div>
+          <span class="ob-symbol-eyebrow">OPTIONS SKY ✦</span>
+          <h2>Inspect the ways this move can be expressed.</h2>
+          <p>
+            Facts and objective filters only. OB does not choose
+            the contract for you.
+          </p>
+        </div>
+
+        <span id="symbolOptionsTrust" class="ob-symbol-mini-status">
+          Checking canonical options evidence
+        </span>
+      </div>
+
+      <div
+        id="symbolOptionsOverview"
+        class="ob-symbol-metric-grid"
+      ></div>
+
+      <div class="ob-options-workspace">
+        <div>
+          <span class="ob-symbol-eyebrow">EXPIRATION MAP</span>
+          <div
+            id="symbolExpirations"
+            class="ob-expiration-strip"
+          ></div>
+        </div>
+
+        <div>
+          <span class="ob-symbol-eyebrow">STRIKE FIELD</span>
+          <div
+            id="symbolChain"
+            class="ob-chain-shell"
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="symbolContractPanel"
+      class="ob-symbol-card"
+      hidden
+    >
+      <div class="ob-symbol-section-head">
+        <div>
+          <span class="ob-symbol-eyebrow">CONTRACT DETAIL</span>
+          <h2 id="symbolContractTitle">Selected contract</h2>
+        </div>
+
+        <button
+          id="symbolClearContract"
+          class="ob-symbol-button ob-symbol-button--quiet"
+          type="button"
+        >
+          Clear
+        </button>
+      </div>
+
+      <div
+        id="symbolContractMetrics"
+        class="ob-symbol-metric-grid"
+      ></div>
+
+      <div
+        id="symbolContractRisk"
+        class="ob-contract-risk"
+      ></div>
+    </section>
+
+    <section
+      id="symbolHybridPanel"
+      class="ob-symbol-card"
+      hidden
+    >
+      <div class="ob-symbol-section-head">
+        <div>
+          <span class="ob-symbol-eyebrow">HYBRID · OPTION SET</span>
+          <h2>Filter. Compare. You choose.</h2>
+          <p>
+            OB surfaces contracts that match the displayed objective
+            filters. It does not rank a “best” contract.
+          </p>
+        </div>
+
+        <span class="ob-symbol-mini-status">
+          YOU CHOOSE THE OPTION
+        </span>
+      </div>
+
+      <div class="ob-hybrid-filter-grid">
+        <label>
+          Minimum open interest
+          <input
+            id="symbolFilterOI"
+            type="number"
+            min="0"
+            step="1"
+            value="0"
+          />
+        </label>
+
+        <label>
+          Maximum spread %
+          <input
+            id="symbolFilterSpread"
+            type="number"
+            min="0"
+            step="0.1"
+            placeholder="No limit"
+          />
+        </label>
+
+        <label>
+          Minimum delta
+          <input
+            id="symbolFilterDeltaMin"
+            type="number"
+            min="-1"
+            max="1"
+            step="0.01"
+            placeholder="No minimum"
+          />
+        </label>
+
+        <label>
+          Maximum delta
+          <input
+            id="symbolFilterDeltaMax"
+            type="number"
+            min="-1"
+            max="1"
+            step="0.01"
+            placeholder="No maximum"
+          />
+        </label>
+      </div>
+
+      <button
+        id="symbolApplyHybridFilters"
+        class="ob-symbol-button"
+        type="button"
+      >
+        Surface filter matches
+      </button>
+
+      <div
+        id="symbolOptionSet"
+        class="ob-option-set"
+      ></div>
+    </section>
+
+    <section
+      id="symbolPaperPanel"
+      class="ob-symbol-card"
+      hidden
+    >
+      <div class="ob-symbol-section-head">
+        <div>
+          <span class="ob-symbol-eyebrow">PAPER IDEA</span>
+          <h2>Practice without putting money behind it.</h2>
+        </div>
+
+        <span class="ob-symbol-mini-status">
+          PAPER · NO LIVE ORDER
+        </span>
+      </div>
+
+      <div class="ob-paper-builder">
+        <label>
+          Hypothetical quantity
+          <input
+            id="symbolPaperQuantity"
+            type="number"
+            min="1"
+            step="1"
+            value="1"
+          />
+        </label>
+
+        <label>
+          Hypothetical entry
+          <input
+            id="symbolPaperEntry"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Optional"
+          />
+        </label>
+
+        <label>
+          Hypothetical stop
+          <input
+            id="symbolPaperStop"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Optional"
+          />
+        </label>
+
+        <label>
+          Hypothetical target
+          <input
+            id="symbolPaperTarget"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Optional"
+          />
+        </label>
+      </div>
+
+      <div id="symbolPaperSummary" class="ob-paper-summary">
+        Select a contract to build a hypothetical paper idea.
+      </div>
+    </section>
+
+    <section class="ob-symbol-card">
+      <div class="ob-symbol-section-head">
+        <div>
+          <span class="ob-symbol-eyebrow">RISK + GUARDRAILS</span>
+          <h2>Unknown does not mean clear.</h2>
+        </div>
+
+        <span id="symbolExecutionStatus" class="ob-symbol-mini-status">
+          Broker execution disabled
+        </span>
+      </div>
+
+      <div
+        id="symbolRiskGrid"
+        class="ob-symbol-metric-grid"
+      ></div>
+    </section>
+
+    <section class="ob-symbol-card ob-symbol-next">
+      <div>
+        <span class="ob-symbol-eyebrow">NEXT</span>
+        <h2 id="symbolNextTitle">Keep investigating.</h2>
+        <p id="symbolNextMessage">
+          The current mode determines what can leave this room.
+        </p>
+      </div>
+
+      <div id="symbolActionBar" class="ob-symbol-actions"></div>
+    </section>
+  </main>
+
+  <!--
+    DEPENDENCY ORDER MATTERS:
+
+    1. canonical engine adapter
+    2. canonical room contracts
+    3. account/mode authority state (read only)
+    4. Symbol Room mode contract
+    5. Symbol Room renderer
+    6. support shell
+
+    No demo market-data fixture is loaded.
+  -->
+
+  <script src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}"></script>
+  <script src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"></script>
+  <script src="{{ url_for('static', filename='ob/ob_account_experience.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='ob/ob_symbol_room_modes.js') }}"></script>
+  <script src="{{ url_for('static', filename='ob/ob_symbol_page.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
+  <script src="{{ url_for('static', filename='ob/ob_mission_accounts.js') }}"></script>
+  <script src="{{ url_for('static', filename='ob/ob_notifications_settings.js') }}"></script>
 </body>
 </html>

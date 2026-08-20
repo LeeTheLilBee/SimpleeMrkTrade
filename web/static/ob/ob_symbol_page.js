@@ -1,636 +1,2834 @@
-// OBSERVATORY_SYMBOL_PAGE_V12_REAL_STAR_ROOM_JS
+// =================================================================================================
+// THE OBSERVATORY — SYMBOL ROOM
+// OBUX036–OBUX040
+//
+// CANONICAL DATA ONLY.
+// NO independent fetch.
+// NO static market fixture.
+// NO fabricated market values.
+// NO broker execution.
+// =================================================================================================
 
-function obFindSymbol(symbol) {
-  const sectors = (window.OB_MARKET_DATA && window.OB_MARKET_DATA.sectors) || [];
-  const wanted = String(symbol || "MU").toUpperCase();
+(function () {
+  "use strict";
 
-  for (const sector of sectors) {
-    const found = sector.symbols.find(item => String(item.symbol).toUpperCase() === wanted);
-    if (found) {
-      return { sector, symbolObj: found };
+  const VERSION = "OBUX036_OBUX040_SYMBOL_ROOM";
+  const HANDOFF_KEY = "ob_symbol_room_trade_center_handoff_v1";
+
+  let selectedExpiration = null;
+  let selectedContract = null;
+  let latestState = null;
+  let latestFeedEventAt = null;
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function safeObject(value) {
+    return (
+      value &&
+      typeof value === "object" &&
+      !Array.isArray(value)
+    )
+      ? value
+      : {};
+  }
+
+  function safeArray(value) {
+    return Array.isArray(value)
+      ? value
+      : [];
+  }
+
+  function firstDefined(...values) {
+    for (const value of values) {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== ""
+      ) {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
+  function text(value, fallback = "—") {
+    return (
+      value === null ||
+      value === undefined ||
+      value === ""
+    )
+      ? fallback
+      : String(value);
+  }
+
+  function number(value) {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return null;
+    }
+
+    const parsed = Number(value);
+    return Number.isFinite(parsed)
+      ? parsed
+      : null;
+  }
+
+  function formatNumber(value, digits = 2) {
+    const parsed = number(value);
+    if (parsed === null) return "—";
+
+    return parsed.toLocaleString(
+      undefined,
+      {
+        maximumFractionDigits: digits,
+      }
+    );
+  }
+
+  function formatPercent(value) {
+    const parsed = number(value);
+    if (parsed === null) return "—";
+
+    const sign = parsed > 0 ? "+" : "";
+    return sign + parsed.toFixed(2) + "%";
+  }
+
+  function formatMoney(value) {
+    const parsed = number(value);
+    if (parsed === null) return "—";
+
+    return parsed.toLocaleString(
+      undefined,
+      {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2,
+      }
+    );
+  }
+
+  function formatDate(value) {
+    if (!value) return "Unavailable";
+
+    const parsed = new Date(value);
+
+    if (Number.isNaN(parsed.getTime())) {
+      return String(value);
+    }
+
+    return parsed.toLocaleString();
+  }
+
+  function routeSymbol() {
+    const room =
+      byId("obSymbolRoom");
+
+    return String(
+      (
+        room &&
+        room.getAttribute("data-symbol")
+      ) ||
+      (
+        document.body &&
+        document.body.getAttribute("data-ob-symbol")
+      ) ||
+      ""
+    )
+      .trim()
+      .toUpperCase();
+  }
+
+  function canonicalProjection() {
+    const api =
+      window.OB_ENGINE_FEED_ADAPTER_V25 ||
+      window.OB_CANONICAL_WEB_PROJECTION_OBDATA003_API;
+
+    if (
+      api &&
+      typeof api.getProjection === "function"
+    ) {
+      return safeObject(
+        api.getProjection()
+      );
+    }
+
+    return safeObject(
+      window.OB_ENGINE_FEED_SNAPSHOT_V25
+    );
+  }
+
+  function symbolContract(symbol) {
+    const contracts =
+      window.OB_DATA_CONTRACTS_V22;
+
+    if (
+      contracts &&
+      typeof contracts.symbolPageContract === "function"
+    ) {
+      return safeObject(
+        contracts.symbolPageContract(symbol)
+      );
+    }
+
+    return {
+      symbol_header: {
+        symbol,
+        unavailable: true,
+      },
+      star_state: {},
+      star_facts: null,
+      soulaana_read: {},
+      risk_permission: {},
+      movement_field: {},
+      trade_context: {},
+      source: null,
+      as_of: null,
+      freshness: "unavailable",
+    };
+  }
+
+  function modeState() {
+    const modes =
+      window.OB_SYMBOL_ROOM_MODES_OBUX037;
+
+    if (
+      modes &&
+      typeof modes.current === "function"
+    ) {
+      return modes.current();
+    }
+
+    return {
+      key: "survey",
+      label: "Survey",
+      verb: "Observe",
+      message:
+        "Mode authority is unavailable, so the Symbol Room failed closed to Survey.",
+      observation: true,
+      inspect_options: true,
+      compare_facts: true,
+      paper_build: false,
+      scenario_test: false,
+      live_signal_context: false,
+      objective_option_set: false,
+      contract_selection: false,
+      trade_handoff: false,
+      trade_handoff_kind: null,
+      broker_api: false,
+      brokerage_execution: false,
+      automatic_contract_selection: false,
+      automatic_execution: false,
+      locked: false,
+      authorization: {
+        requested: "survey",
+        effective: "survey",
+        permitted: true,
+        locked: false,
+      },
+    };
+  }
+
+  function symbolMatches(value, symbol) {
+    const raw =
+      typeof value === "string"
+        ? value
+        : firstDefined(
+            value && value.symbol,
+            value && value.ticker,
+            value && value.underlying,
+            value && value.underlying_symbol
+          );
+
+    return String(raw || "")
+      .trim()
+      .toUpperCase() === symbol;
+  }
+
+  function recordsForSymbol(values, symbol) {
+    return safeArray(values)
+      .filter(
+        item =>
+          symbolMatches(
+            item,
+            symbol
+          )
+      );
+  }
+
+  function sourceEvidence(projection, symbol) {
+    return {
+      signals:
+        recordsForSymbol(
+          projection.signals,
+          symbol
+        ),
+
+      candidates:
+        recordsForSymbol(
+          projection.candidates_preview,
+          symbol
+        ),
+
+      watchlist:
+        recordsForSymbol(
+          projection.watchlist,
+          symbol
+        ),
+
+      positions:
+        recordsForSymbol(
+          projection.positions_preview,
+          symbol
+        ),
+
+      manualLive:
+        recordsForSymbol(
+          projection.manual_live_queue,
+          symbol
+        ),
+    };
+  }
+
+  function findRawSymbol(projection, symbol) {
+    const direct =
+      safeArray(projection.symbols)
+        .find(
+          item =>
+            symbolMatches(
+              item,
+              symbol
+            )
+        );
+
+    if (direct) return safeObject(direct);
+
+    for (const sector of safeArray(projection.sectors)) {
+      const match =
+        safeArray(sector.symbols)
+          .find(
+            item =>
+              symbolMatches(
+                item,
+                symbol
+              )
+          );
+
+      if (match) {
+        return {
+          ...safeObject(match),
+          sector:
+            firstDefined(
+              match.sector,
+              sector.name,
+              sector.sector
+            ),
+          constellationName:
+            firstDefined(
+              match.constellationName,
+              sector.constellationName
+            ),
+        };
+      }
+    }
+
+    return {};
+  }
+
+  function underlyingFrom(
+    projection,
+    contract,
+    symbol
+  ) {
+    const header =
+      safeObject(
+        contract.symbol_header
+      );
+
+    const facts =
+      safeObject(
+        contract.star_facts
+      );
+
+    const raw =
+      {
+        ...findRawSymbol(
+          projection,
+          symbol
+        ),
+        ...safeObject(facts.raw),
+        ...facts,
+        ...header,
+      };
+
+    return {
+      symbol,
+      company:
+        firstDefined(
+          raw.company,
+          raw.company_name,
+          raw.name
+        ),
+
+      sector:
+        firstDefined(
+          raw.constellationName,
+          raw.sectorName,
+          raw.sector
+        ),
+
+      state:
+        firstDefined(
+          raw.market_state,
+          raw.state,
+          raw.position,
+          raw.status,
+          raw.tier
+        ),
+
+      price:
+        firstDefined(
+          raw.price,
+          raw.last,
+          raw.last_price,
+          raw.mark,
+          raw.current_price
+        ),
+
+      change:
+        firstDefined(
+          raw.change_percent,
+          raw.change_pct,
+          raw.percent_change,
+          raw.pct_change
+        ),
+
+      volume:
+        firstDefined(
+          raw.volume,
+          raw.day_volume
+        ),
+
+      relativeVolume:
+        firstDefined(
+          raw.relative_volume,
+          raw.relativeVolume,
+          raw.rvol
+        ),
+
+      dayLow:
+        firstDefined(
+          raw.day_low,
+          raw.low
+        ),
+
+      dayHigh:
+        firstDefined(
+          raw.day_high,
+          raw.high
+        ),
+
+      iv:
+        firstDefined(
+          raw.implied_volatility,
+          raw.iv
+        ),
+
+      trend:
+        firstDefined(
+          raw.trend,
+          raw.direction
+        ),
+
+      momentum:
+        firstDefined(
+          raw.momentum,
+          raw.momentum_state
+        ),
+
+      relativeStrength:
+        firstDefined(
+          raw.relative_strength,
+          raw.relativeStrength
+        ),
+
+      permission:
+        firstDefined(
+          raw.permission,
+          safeObject(
+            contract.risk_permission
+          ).permission
+        ),
+
+      risk:
+        firstDefined(
+          raw.risk,
+          safeObject(
+            contract.risk_permission
+          ).risk
+        ),
+
+      role:
+        raw.role || null,
+      why:
+        firstDefined(
+          raw.why,
+          raw.opinion
+        ),
+      fact:
+        raw.fact || null,
+
+      raw,
+    };
+  }
+
+  // -----------------------------------------------------------------------------------------------
+  // OPTIONS DATA NORMALIZATION
+  //
+  // This layer intentionally accepts OPTIONS DATA ONLY IF IT IS PRESENT
+  // in the canonical projection / canonical symbol record.
+  //
+  // It does not fetch a separate chain.
+  // It does not fabricate a chain.
+  // -----------------------------------------------------------------------------------------------
+
+  function optionsContainers(
+    projection,
+    underlying
+  ) {
+    return [
+      underlying.raw.options,
+      underlying.raw.option_chain,
+      underlying.raw.options_chain,
+
+      projection.options &&
+        projection.options[
+          underlying.symbol
+        ],
+
+      projection.options_by_symbol &&
+        projection.options_by_symbol[
+          underlying.symbol
+        ],
+
+      projection.option_chains &&
+        projection.option_chains[
+          underlying.symbol
+        ],
+
+      projection.options_chains &&
+        projection.options_chains[
+          underlying.symbol
+        ],
+    ].filter(Boolean);
+  }
+
+  function normalizeContract(
+    value,
+    expirationHint
+  ) {
+    const raw = safeObject(value);
+
+    const strike =
+      number(
+        firstDefined(
+          raw.strike,
+          raw.strike_price
+        )
+      );
+
+    const type =
+      String(
+        firstDefined(
+          raw.type,
+          raw.option_type,
+          raw.right,
+          raw.call_put
+        ) || ""
+      )
+        .trim()
+        .toLowerCase();
+
+    const expiration =
+      firstDefined(
+        raw.expiration,
+        raw.expiry,
+        raw.expiration_date,
+        expirationHint
+      );
+
+    const symbol =
+      firstDefined(
+        raw.contract_symbol,
+        raw.contract,
+        raw.symbol,
+        raw.local_symbol
+      );
+
+    return {
+      id:
+        String(
+          symbol ||
+          [
+            expiration || "unknown-expiry",
+            strike === null ? "unknown-strike" : strike,
+            type || "option",
+          ].join(":")
+        ),
+
+      symbol:
+        symbol || null,
+
+      expiration:
+        expiration || null,
+
+      strike,
+
+      type:
+        type.includes("put")
+          ? "put"
+          : (
+              type.includes("call")
+                ? "call"
+                : type || null
+            ),
+
+      bid:
+        number(raw.bid),
+
+      ask:
+        number(raw.ask),
+
+      last:
+        number(
+          firstDefined(
+            raw.last,
+            raw.last_price
+          )
+        ),
+
+      mark:
+        number(
+          firstDefined(
+            raw.mark,
+            raw.mid,
+            raw.midpoint
+          )
+        ),
+
+      volume:
+        number(raw.volume),
+
+      openInterest:
+        number(
+          firstDefined(
+            raw.open_interest,
+            raw.openInterest,
+            raw.oi
+          )
+        ),
+
+      iv:
+        number(
+          firstDefined(
+            raw.implied_volatility,
+            raw.iv
+          )
+        ),
+
+      delta:
+        number(raw.delta),
+
+      gamma:
+        number(raw.gamma),
+
+      theta:
+        number(raw.theta),
+
+      vega:
+        number(raw.vega),
+
+      dte:
+        number(
+          firstDefined(
+            raw.dte,
+            raw.days_to_expiration
+          )
+        ),
+
+      raw,
+    };
+  }
+
+  function normalizeOptions(
+    projection,
+    underlying
+  ) {
+    const containers =
+      optionsContainers(
+        projection,
+        underlying
+      );
+
+    const contracts = [];
+    let overview = {};
+
+    function add(value, expirationHint) {
+      const normalized =
+        normalizeContract(
+          value,
+          expirationHint
+        );
+
+      if (
+        normalized.strike === null &&
+        !normalized.symbol
+      ) {
+        return;
+      }
+
+      contracts.push(normalized);
+    }
+
+    for (const containerValue of containers) {
+      const container =
+        safeObject(containerValue);
+
+      overview = {
+        ...overview,
+        ...safeObject(
+          container.overview
+        ),
+      };
+
+      const directContracts =
+        firstDefined(
+          container.contracts,
+          container.options,
+          container.chain
+        );
+
+      if (Array.isArray(directContracts)) {
+        directContracts.forEach(
+          item =>
+            add(
+              item,
+              null
+            )
+        );
+      }
+
+      for (const expiration of safeArray(container.expirations)) {
+        if (
+          typeof expiration === "string"
+        ) {
+          continue;
+        }
+
+        const expiry =
+          firstDefined(
+            expiration.expiration,
+            expiration.expiry,
+            expiration.date
+          );
+
+        safeArray(
+          firstDefined(
+            expiration.contracts,
+            expiration.options,
+            expiration.chain
+          )
+        ).forEach(
+          item =>
+            add(
+              item,
+              expiry
+            )
+        );
+
+        safeArray(expiration.calls)
+          .forEach(
+            item =>
+              add(
+                {
+                  ...item,
+                  type: "call",
+                },
+                expiry
+              )
+          );
+
+        safeArray(expiration.puts)
+          .forEach(
+            item =>
+              add(
+                {
+                  ...item,
+                  type: "put",
+                },
+                expiry
+              )
+          );
+      }
+
+      safeArray(container.calls)
+        .forEach(
+          item =>
+            add(
+              {
+                ...item,
+                type: "call",
+              },
+              container.expiration
+            )
+        );
+
+      safeArray(container.puts)
+        .forEach(
+          item =>
+            add(
+              {
+                ...item,
+                type: "put",
+              },
+              container.expiration
+            )
+        );
+    }
+
+    const deduped = [];
+    const seen = new Set();
+
+    for (const item of contracts) {
+      const key =
+        [
+          item.id,
+          item.expiration,
+          item.strike,
+          item.type,
+        ].join("|");
+
+      if (seen.has(key)) continue;
+      seen.add(key);
+      deduped.push(item);
+    }
+
+    const expirations =
+      Array.from(
+        new Set(
+          deduped
+            .map(
+              item =>
+                item.expiration
+            )
+            .filter(Boolean)
+        )
+      )
+        .sort();
+
+    return {
+      available:
+        deduped.length > 0 ||
+        Object.keys(overview).length > 0,
+
+      overview,
+      contracts: deduped,
+      expirations,
+    };
+  }
+
+  function spreadPercent(contract) {
+    if (
+      contract.bid === null ||
+      contract.ask === null ||
+      contract.ask <= 0
+    ) {
+      return null;
+    }
+
+    const mid =
+      (
+        contract.bid +
+        contract.ask
+      ) / 2;
+
+    if (mid <= 0) return null;
+
+    return (
+      (
+        contract.ask -
+        contract.bid
+      ) /
+      mid
+    ) * 100;
+  }
+
+  function setText(id, value, fallback = "—") {
+    const node = byId(id);
+    if (!node) return;
+
+    node.textContent =
+      text(
+        value,
+        fallback
+      );
+  }
+
+  function metric(label, value, note = null) {
+    return `
+      <div class="ob-symbol-metric">
+        <span>${label}</span>
+        <strong>${text(value)}</strong>
+        ${note ? `<small>${note}</small>` : ""}
+      </div>
+    `;
+  }
+
+  function truthClass(projection) {
+    if (projection.current_eligible) {
+      return "current";
+    }
+
+    if (projection.display_eligible) {
+      return "stale";
+    }
+
+    return "guarded";
+  }
+
+  function renderTruth(projection) {
+    const chip =
+      byId("symbolTruthChip");
+
+    const cls =
+      truthClass(projection);
+
+    if (chip) {
+      chip.className =
+        "ob-symbol-chip ob-symbol-chip--" +
+        cls;
+
+      chip.textContent =
+        projection.current_eligible
+          ? "Live · source-backed"
+          : (
+              projection.display_eligible
+                ? "Stale · context only"
+                : "Current truth unavailable"
+            );
+    }
+
+    setText(
+      "symbolSource",
+      projection.source,
+      "Unavailable"
+    );
+
+    setText(
+      "symbolAsOf",
+      formatDate(
+        projection.as_of
+      ),
+      "Unavailable"
+    );
+
+    setText(
+      "symbolFreshness",
+      projection.freshness,
+      "Unavailable"
+    );
+  }
+
+  function renderMode(mode) {
+    const chip =
+      byId("symbolModeChip");
+
+    if (chip) {
+      chip.textContent =
+        mode.label +
+        " · " +
+        mode.verb;
+
+      chip.dataset.mode =
+        mode.key;
+    }
+
+    setText(
+      "symbolModeTitle",
+      mode.label +
+      " · " +
+      mode.verb
+    );
+
+    setText(
+      "symbolModeMessage",
+      (
+        mode.authorization &&
+        mode.authorization.locked &&
+        mode.authorization.reason
+      )
+        ? (
+            mode.authorization.reason +
+            " Safe Symbol Room behavior remains restricted."
+          )
+        : mode.message
+    );
+
+    const safety =
+      byId("symbolModeSafety");
+
+    if (safety) {
+      safety.textContent =
+        mode.key === "manual_live_1"
+          ? "OWNER DECISION REQUIRED · OWNER EXECUTES"
+          : (
+              mode.key === "hybrid"
+                ? "YOU CHOOSE THE OPTION · OWNER EXECUTES"
+                : (
+                    mode.key === "automated"
+                      ? "AUTOMATED LOCKED"
+                      : "NO BROKER EXECUTION"
+                  )
+            );
+    }
+
+    const banner =
+      byId("symbolModeBanner");
+
+    if (banner) {
+      banner.dataset.mode =
+        mode.key;
+
+      banner.dataset.locked =
+        mode.locked ||
+        (
+          mode.authorization &&
+          mode.authorization.locked
+        )
+          ? "true"
+          : "false";
     }
   }
 
-  return { sector: sectors[0], symbolObj: sectors[0] && sectors[0].symbols[0] };
-}
+  function renderEvidence(
+    projection,
+    underlying,
+    evidence,
+    contract
+  ) {
+    let changed =
+      underlying.why;
 
-function obStatusFromTier(tier) {
-  if (tier === "hot") return "Brightening Watch";
-  if (tier === "watch") return "Guarded Watch";
-  if (tier === "blocked") return "Blocked / Gated";
-  return "Background Star";
-}
+    if (!changed) {
+      if (evidence.signals.length) {
+        changed =
+          "The canonical projection currently carries a signal record for " +
+          underlying.symbol +
+          ". Inspect the source-backed fields before deciding what deserves attention.";
+      }
 
-function obStarTypeFromTier(tier) {
-  if (tier === "hot") return "Green-Gold Active Star";
-  if (tier === "watch") return "Gold-Aqua Watch Star";
-  if (tier === "blocked") return "Red-Gold Gated Star";
-  return "Dim Background Star";
-}
+      else if (evidence.candidates.length) {
+        changed =
+          underlying.symbol +
+          " is present in the canonical candidate evidence. Candidate status is context, not an order instruction.";
+      }
 
-function obStarClass(tier) {
-  if (tier === "hot") return "hot";
-  if (tier === "watch") return "watch";
-  if (tier === "blocked") return "blocked";
-  return "background";
-}
+      else if (evidence.positions.length) {
+        changed =
+          underlying.symbol +
+          " appears in current position evidence. This room will not invent a new signal story around it.";
+      }
 
-function obSignalColor(tier) {
-  if (tier === "hot") return "Green-Gold";
-  if (tier === "watch") return "Gold-Aqua";
-  if (tier === "blocked") return "Red-Gold";
-  return "Blue-Gray";
-}
+      else if (evidence.watchlist.length) {
+        changed =
+          underlying.symbol +
+          " is present on the canonical watchlist. Watch status alone is not an action instruction.";
+      }
 
-function obSoulaanaDeepRead(symbolObj, sector) {
-  if (symbolObj.tier === "hot") {
-    return {
-      lead: "Okay, this star is talking. Not whispering. Talking. But bright does not mean automatic. Bright means we slow down, inspect the reason, and make sure the glow is earned.",
-      sees: symbolObj.symbol + " is brightening inside " + sector.constellationName + ". The symbol is not just present. It is asking for attention.",
-      means: "OB sees strength, participation, and enough movement to justify a closer read. This is a watch-first situation, not a chase-first situation.",
-      careful: "The danger is excitement. A bright star can still get pulled down if the constellation gets crowded or the broader market cools.",
-      next: "Open trade context only if permission, risk, and movement stay aligned. Let the signal keep proving itself."
-    };
+      else if (projection.display_eligible) {
+        changed =
+          "No source-backed signal, candidate, position, or watchlist change is currently attached to this symbol.";
+      }
+
+      else {
+        changed =
+          "Current canonical evidence is not display-eligible. Prior market stories are not carried forward.";
+      }
+    }
+
+    setText(
+      "symbolWhatChanged",
+      changed
+    );
+
+    const flags = [];
+
+    if (evidence.signals.length) {
+      flags.push("Signal evidence");
+    }
+
+    if (evidence.candidates.length) {
+      flags.push("Candidate evidence");
+    }
+
+    if (evidence.positions.length) {
+      flags.push("Position evidence");
+    }
+
+    if (evidence.watchlist.length) {
+      flags.push("Watchlist");
+    }
+
+    if (evidence.manualLive.length) {
+      flags.push("Manual Live queue");
+    }
+
+    const mount =
+      byId("symbolEvidenceFlags");
+
+    if (mount) {
+      mount.innerHTML =
+        flags.length
+          ? flags
+              .map(
+                item =>
+                  `<span>${item}</span>`
+              )
+              .join("")
+          : `<span>No active evidence flags</span>`;
+    }
+
+    const soulaana =
+      safeObject(
+        contract.soulaana_read
+      );
+
+    setText(
+      "symbolSoulaanaSees",
+      firstDefined(
+        soulaana.summary,
+        changed
+      ),
+      "No verified symbol interpretation is available."
+    );
+
+    setText(
+      "symbolSoulaanaMeans",
+      projection.current_eligible
+        ? (
+            "These fields are current enough to investigate. Investigation is still not permission to execute."
+          )
+        : (
+            projection.display_eligible
+              ? "This evidence can provide context, but it is not current enough to treat as live truth."
+              : "The room does not have enough canonical truth to form a current market interpretation."
+          )
+    );
+
+    setText(
+      "symbolSoulaanaCaution",
+      firstDefined(
+        soulaana.caution,
+        projection.reason,
+        "Unknown fields stay unknown. A missing value is never silently treated as clear."
+      )
+    );
+
+    setText(
+      "symbolSoulaanaNext",
+      firstDefined(
+        soulaana.next,
+        "Inspect the underlying and options evidence before deciding whether anything deserves to move forward."
+      )
+    );
   }
 
-  if (symbolObj.tier === "watch") {
-    return {
-      lead: "This one is leaning forward, but it has not stepped into the light yet. I like that OB is watching it, but I do not like rushing a star before it proves itself.",
-      sees: symbolObj.symbol + " is forming, but it is not fully lit yet. It is on the edge of attention.",
-      means: "OB is tracking the symbol because something is developing, but it has not earned full confidence.",
-      careful: "The danger is acting early because you want to be first. First is not the goal. Clean is the goal.",
-      next: "Keep it on watch. Wait for cleaner follow-through before treating it like an action-ready star."
-    };
-  }
+  function renderUnderlying(underlying) {
+    setText(
+      "symbolTicker",
+      underlying.symbol,
+      "—"
+    );
 
-  return {
-    lead: "This one is quiet. Quiet is not bad, but quiet is not a command either. OB can keep it in the sky without making it the center of your attention.",
-    sees: symbolObj.symbol + " is visible in the sky, but it is not leading the move.",
-    means: "OB keeps it in the background for context. It may matter later, but right now it is not the priority.",
-    careful: "The danger is getting bored and trying to make a quiet symbol interesting.",
-    next: "Leave it in the background until it earns a brighter state."
-  };
-}
+    setText(
+      "symbolCompany",
+      underlying.company,
+      "Company unavailable"
+    );
 
-function obMovementData(symbolObj) {
-  if (symbolObj.tier === "hot") {
-    return {
-      phase: "Brightening",
-      direction: "Upward pressure",
-      current: "+4.8%",
-      volume: "Above average",
-      keyLevel: "Hold above entry zone",
-      nextLevel: "Target zone approaching",
-      invalidation: "Dims if sector weakens",
-      soulaana: "This star is moving with purpose. That does not mean chase it. It means watch whether the move keeps proving itself without getting sloppy."
-    };
-  }
+    setText(
+      "symbolSector",
+      underlying.sector,
+      "Constellation unavailable"
+    );
 
-  if (symbolObj.tier === "watch") {
-    return {
-      phase: "Forming",
-      direction: "Trying to confirm",
-      current: "+1.6%",
-      volume: "Normal",
-      keyLevel: "Needs clean follow-through",
-      nextLevel: "Confirmation zone",
-      invalidation: "Fails if volume dries up",
-      soulaana: "This one is not ready to be trusted yet. It is showing interest, but interest is not permission. Let it confirm before you act like it already won."
-    };
-  }
+    setText(
+      "symbolMarketState",
+      underlying.state,
+      "State unavailable"
+    );
 
-  return {
-    phase: "Quiet",
-    direction: "No clear leadership",
-    current: "-0.4%",
-    volume: "Light",
-    keyLevel: "Background only",
-    nextLevel: "Needs to brighten first",
-    invalidation: "No action until state changes",
-    soulaana: "This star is present, but it is not speaking loudly. Leave it in the background until it earns attention."
-  };
-}
+    const metrics =
+      byId("symbolUnderlyingMetrics");
 
-function obRiskPermissionState(symbolObj) {
-  if (symbolObj.tier === "hot") {
-    return {
-      riskLevel: "Moderate",
-      accountFit: "Paper review allowed",
-      crowding: symbolObj.risk || "Moderate",
-      duplicate: "Check before action",
-      cooldown: "Clear",
-      tower: "Tower allows observation and paper review. Live automated remains locked.",
-      action: "Review only. Manual or live action requires owner/Tower clearance."
-    };
-  }
+    if (metrics) {
+      metrics.innerHTML = [
+        metric(
+          "Price",
+          formatMoney(
+            underlying.price
+          )
+        ),
 
-  if (symbolObj.tier === "watch") {
-    return {
-      riskLevel: "Guarded",
-      accountFit: "Watch first",
-      crowding: symbolObj.risk || "Guarded",
-      duplicate: "Not action-ready",
-      cooldown: "Waiting",
-      tower: "Tower keeps this in watch/review territory until the signal confirms.",
-      action: "Do not escalate until movement, permission, and risk all improve."
-    };
-  }
+        metric(
+          "Change",
+          formatPercent(
+            underlying.change
+          )
+        ),
 
-  return {
-    riskLevel: "Low action priority",
-    accountFit: "Background only",
-    crowding: symbolObj.risk || "No active risk",
-    duplicate: "No trade context",
-    cooldown: "N/A",
-    tower: "Tower does not need to open action permissions for a background star.",
-    action: "No action. Keep it visible for context only."
-  };
-}
+        metric(
+          "Volume",
+          formatNumber(
+            underlying.volume,
+            0
+          )
+        ),
 
-function obTradeContextData(symbolObj) {
-  if (symbolObj.tier === "hot") {
-    return {
-      status: "Needs owner review",
-      strategy: "Momentum continuation",
-      confidence: "82",
-      actionWindow: "20 minutes",
-      direction: "Bullish watch",
-      asset: symbolObj.tradeType || "Option-first",
-      contract: symbolObj.symbol + " next monthly call",
-      entry: "Review entry zone before action",
-      stop: "Premium-based stop required",
-      target: "Target zone only if movement confirms",
-      blocker: "Live automated locked. Manual review only.",
-      soulaana: "This is where we slow down on purpose. A good-looking setup still has to pass risk, permission, and movement checks."
-    };
-  }
+        metric(
+          "Relative volume",
+          formatNumber(
+            underlying.relativeVolume
+          )
+        ),
 
-  if (symbolObj.tier === "watch") {
-    return {
-      status: "Watch only",
-      strategy: "Developing setup",
-      confidence: "61",
-      actionWindow: "No action window yet",
-      direction: "Needs confirmation",
-      asset: symbolObj.tradeType || "Watch",
-      contract: "No order ticket yet",
-      entry: "Wait for confirmation",
-      stop: "Not assigned",
-      target: "Not assigned",
-      blocker: "Signal is not action-ready.",
-      soulaana: "Attention is not permission. This one can stay on the board, but it does not get a trade card until it proves itself cleaner."
-    };
-  }
+        metric(
+          "Day low",
+          formatMoney(
+            underlying.dayLow
+          )
+        ),
 
-  return {
-    status: "Background only",
-    strategy: "No active setup",
-    confidence: "32",
-    actionWindow: "None",
-    direction: "No clear leadership",
-    asset: symbolObj.tradeType || "Watch only",
-    contract: "No order ticket",
-    entry: "No entry",
-    stop: "No stop",
-    target: "No target",
-    blocker: "Background star. No trade context should open for action.",
-    soulaana: "This is not where we spend energy right now. Let it stay in the sky. It can earn attention later."
-  };
-}
+        metric(
+          "Day high",
+          formatMoney(
+            underlying.dayHigh
+          )
+        ),
 
-function obOpenTradeContext(symbol) {
-  const { sector, symbolObj } = obFindSymbol(symbol);
-  const context = obTradeContextData(symbolObj);
-  const panel = document.getElementById("symbolSidePanel");
+        metric(
+          "Trend",
+          underlying.trend
+        ),
 
-  panel.innerHTML = `
-    <button class="back-button" onclick="obRenderSymbolRoom('${symbolObj.symbol}')">Back to Symbol</button>
+        metric(
+          "Momentum",
+          underlying.momentum
+        ),
 
-    <div style="height: 14px;"></div>
+        metric(
+          "Relative strength",
+          underlying.relativeStrength
+        ),
 
-    <div class="detail-title">Trade Context</div>
-    <div class="detail-sub">${symbolObj.symbol} · ${symbolObj.starName}</div>
+        metric(
+          "Underlying IV",
+          underlying.iv
+        ),
+      ].join("");
+    }
 
-    <div class="trade-context-shell">
-      <div class="trade-context-card gold">
-        <span>Status</span>
-        <strong>${context.status}</strong>
-      </div>
+    const facts =
+      byId("symbolStarFacts");
 
-      <div class="trade-context-card green">
-        <span>Strategy</span>
-        <strong>${context.strategy} · Confidence ${context.confidence}</strong>
-      </div>
+    if (facts) {
+      const items = [];
 
-      <div class="trade-context-card">
-        <span>Direction / asset</span>
-        <strong>${context.direction} · ${context.asset}</strong>
-      </div>
+      if (underlying.role) {
+        items.push(
+          `<div><span>Market role</span><strong>${text(underlying.role)}</strong></div>`
+        );
+      }
 
-      <div class="trade-context-card red">
-        <span>Blocker</span>
-        <strong>${context.blocker}</strong>
-      </div>
+      if (underlying.permission) {
+        items.push(
+          `<div><span>Permission</span><strong>${text(underlying.permission)}</strong></div>`
+        );
+      }
 
-      <div class="ticket-box">
-        <div class="ticket-line"><span>Contract</span><strong>${context.contract}</strong></div>
-        <div class="ticket-line"><span>Entry</span><strong>${context.entry}</strong></div>
-        <div class="ticket-line"><span>Stop</span><strong>${context.stop}</strong></div>
-        <div class="ticket-line"><span>Target</span><strong>${context.target}</strong></div>
-        <div class="ticket-line"><span>Window</span><strong>${context.actionWindow}</strong></div>
-      </div>
+      if (underlying.risk) {
+        items.push(
+          `<div><span>Observed risk</span><strong>${text(underlying.risk)}</strong></div>`
+        );
+      }
 
-      <div class="fun-facts">
-        <strong style="color: var(--ob-purple);">Soulaana:</strong><br>
-        ${context.soulaana}
-      </div>
+      if (underlying.fact) {
+        items.push(
+          `<div class="ob-symbol-fun-fact"><span>Star fact ✦</span><strong>${text(underlying.fact)}</strong></div>`
+        );
+      }
 
-      <div class="trade-context-actions">
-        <button class="trade-context-button" onclick="obRecordTradeContextAction('${symbolObj.symbol}', 'Approve for manual placement')">Approve for manual placement</button>
-        <button class="trade-context-button reject" onclick="obRecordTradeContextAction('${symbolObj.symbol}', 'Rejected')">Reject</button>
-        <button class="trade-context-button watch" onclick="obRecordTradeContextAction('${symbolObj.symbol}', 'Snooze / watch')">Snooze / watch</button>
-      </div>
-
-      <div class="trade-context-receipt" id="tradeContextReceipt">
-        <strong>No receipt yet.</strong><br>
-        Choose an action to create a review receipt preview.
-      </div>
-    </div>
-  `;
-}
-
-function obRecordTradeContextAction(symbol, action) {
-  const receipt = document.getElementById("tradeContextReceipt");
-  if (!receipt) return;
-
-  const now = new Date().toLocaleString();
-
-  receipt.innerHTML = `
-    <strong>Receipt updated:</strong><br>
-    Symbol: ${symbol}<br>
-    Action: ${action}<br>
-    Time: ${now}<br>
-    Execution responsibility: Owner at brokerage only if later approved.<br>
-    OB status: ${action === "Approve for manual placement" ? "Awaiting broker checklist review" : action}
-  `;
-}
-
-function obRenderSymbolRoom(symbol) {
-  const found = obFindSymbol(symbol);
-  const sector = found.sector;
-  const symbolObj = found.symbolObj;
-  const mount = document.getElementById("symbolRoomMount");
-  const side = document.getElementById("symbolSidePanel");
-  const narrative = obSoulaanaDeepRead(symbolObj, sector);
-  const movement = obMovementData(symbolObj);
-  const risk = obRiskPermissionState(symbolObj);
-  const tierClass = obStarClass(symbolObj.tier);
-
-  document.getElementById("symbolRoomTitle").textContent = symbolObj.symbol;
-  document.getElementById("symbolRoomSubtitle").textContent = `OB://SymbolPage/${symbolObj.symbol} · ${sector.constellationName} · ${obStatusFromTier(symbolObj.tier)}`;
-  document.getElementById("symbolHeroSoulaana").textContent = narrative.lead;
-
-  mount.innerHTML = `
-    <div class="sky-layout">
-      <div class="symbol-room">
-        <div class="ob-panel symbol-header">
-          <div class="symbol-header-top">
+      facts.innerHTML =
+        items.length
+          ? items.join("")
+          : `
             <div>
-              <div class="symbol-ticker">${symbolObj.symbol}</div>
-              <div class="symbol-company">${symbolObj.company || symbolObj.symbol}</div>
-              <div class="detail-sub">${sector.constellationName} · ${obStatusFromTier(symbolObj.tier)}</div>
+              <span>Star facts</span>
+              <strong>No source-backed star facts supplied.</strong>
             </div>
+          `;
+    }
+  }
 
-            <div class="chip-row">
-              <span class="ob-chip ob-chip-green">${String(symbolObj.permission || "").includes("Paper") ? "Paper Eligible" : "Watch Only"}</span>
-              <span class="ob-chip ob-chip-gold">${symbolObj.position || "Watch"}</span>
-              <span class="ob-chip ob-chip-red">Live Auto Locked</span>
-            </div>
-          </div>
+  function renderOptionsOverview(options) {
+    const mount =
+      byId("symbolOptionsOverview");
+
+    const trust =
+      byId("symbolOptionsTrust");
+
+    if (!mount) return;
+
+    if (!options.available) {
+      mount.innerHTML = `
+        <div class="ob-options-empty">
+          <strong>Options feed unavailable in the canonical projection.</strong>
+          <span>
+            OBUX036–040 does not invent strikes, Greeks, volume,
+            IV, or expirations when the canonical source has not supplied them.
+          </span>
         </div>
+      `;
 
-        <div class="symbol-main-grid">
-          <div class="ob-panel main-star-panel">
-            <div class="ob-label">Main Symbol Star</div>
-            <div class="main-star-stage">
-              <div class="mini-orbit-star one"></div>
-              <div class="mini-orbit-star two"></div>
-              <div class="mini-orbit-star three"></div>
-              <div class="symbol-orb ${tierClass}"></div>
-            </div>
-          </div>
+      if (trust) {
+        trust.textContent =
+          "No canonical options chain";
+      }
 
-          <div class="ob-panel star-facts-panel">
-            <div class="ob-label">Star Facts</div>
-            <div class="detail-row"><span>Symbol</span><strong>${symbolObj.symbol}</strong></div>
-            <div class="detail-row"><span>Star Name</span><strong>${symbolObj.starName || symbolObj.symbol + " Star"}</strong></div>
-            <div class="detail-row"><span>Star Type</span><strong>${obStarTypeFromTier(symbolObj.tier)}</strong></div>
-            <div class="detail-row"><span>Market Role</span><strong>${symbolObj.role || "Market watch"}</strong></div>
-            <div class="detail-row"><span>Permission</span><strong>${symbolObj.permission || "Watch Only"}</strong></div>
-            <div class="fun-facts"><strong style="color: var(--ob-gold);">Fun fact:</strong><br>${symbolObj.fact || "OB is still learning this star."}</div>
-          </div>
+      return;
+    }
+
+    if (trust) {
+      trust.textContent =
+        "Source-backed options evidence";
+    }
+
+    const overview =
+      safeObject(
+        options.overview
+      );
+
+    const totalVolume =
+      firstDefined(
+        overview.volume,
+        overview.total_volume
+      );
+
+    const totalOI =
+      firstDefined(
+        overview.open_interest,
+        overview.total_open_interest,
+        overview.oi
+      );
+
+    const iv =
+      firstDefined(
+        overview.iv,
+        overview.implied_volatility
+      );
+
+    const putCall =
+      firstDefined(
+        overview.put_call_ratio,
+        overview.putCallRatio
+      );
+
+    const liquidity =
+      firstDefined(
+        overview.liquidity,
+        overview.liquidity_quality
+      );
+
+    mount.innerHTML = [
+      metric(
+        "Options volume",
+        formatNumber(
+          totalVolume,
+          0
+        )
+      ),
+      metric(
+        "Open interest",
+        formatNumber(
+          totalOI,
+          0
+        )
+      ),
+      metric(
+        "IV",
+        iv
+      ),
+      metric(
+        "Put / Call",
+        putCall
+      ),
+      metric(
+        "Liquidity",
+        liquidity
+      ),
+      metric(
+        "Contracts visible",
+        options.contracts.length
+      ),
+    ].join("");
+  }
+
+  function renderExpirations(options) {
+    const mount =
+      byId("symbolExpirations");
+
+    if (!mount) return;
+
+    if (!options.expirations.length) {
+      selectedExpiration = null;
+
+      mount.innerHTML = `
+        <span class="ob-options-empty-inline">
+          No source-backed expiration set available.
+        </span>
+      `;
+
+      return;
+    }
+
+    if (
+      !selectedExpiration ||
+      !options.expirations.includes(
+        selectedExpiration
+      )
+    ) {
+      selectedExpiration =
+        options.expirations[0];
+    }
+
+    mount.innerHTML =
+      options.expirations
+        .map(
+          expiry => `
+            <button
+              type="button"
+              class="ob-expiration-button ${
+                expiry === selectedExpiration
+                  ? "is-active"
+                  : ""
+              }"
+              data-expiration="${text(expiry)}"
+            >
+              ${text(expiry)}
+            </button>
+          `
+        )
+        .join("");
+
+    mount
+      .querySelectorAll(
+        "[data-expiration]"
+      )
+      .forEach(
+        button => {
+          button.addEventListener(
+            "click",
+            () => {
+              selectedExpiration =
+                button.dataset.expiration;
+
+              selectedContract = null;
+
+              renderInteractiveOptions(
+                latestState
+              );
+            }
+          );
+        }
+      );
+  }
+
+  function contractsForSelectedExpiration(options) {
+    if (!selectedExpiration) {
+      return options.contracts;
+    }
+
+    return options.contracts
+      .filter(
+        item =>
+          String(
+            item.expiration || ""
+          ) ===
+          String(
+            selectedExpiration
+          )
+      );
+  }
+
+  function contractLabel(contract) {
+    const parts = [
+      contract.symbol,
+      contract.expiration,
+      contract.strike !== null
+        ? "$" + contract.strike
+        : null,
+      contract.type
+        ? contract.type.toUpperCase()
+        : null,
+    ].filter(Boolean);
+
+    return parts.join(" · ");
+  }
+
+  function renderChain(
+    options,
+    mode
+  ) {
+    const mount =
+      byId("symbolChain");
+
+    if (!mount) return;
+
+    const contracts =
+      contractsForSelectedExpiration(
+        options
+      );
+
+    if (!contracts.length) {
+      mount.innerHTML = `
+        <div class="ob-options-empty">
+          <strong>No source-backed contracts for this expiration.</strong>
         </div>
+      `;
+      return;
+    }
 
-        <div class="ob-panel soulaana-wide">
-          <div class="ob-label">Soulaana · Symbol Read</div>
-          <div class="soulaana-wide-text">${narrative.lead}</div>
+    const sorted =
+      [...contracts].sort(
+        (a, b) => {
+          const strikeA =
+            a.strike === null
+              ? Number.MAX_SAFE_INTEGER
+              : a.strike;
 
-          <div class="soulaana-guidance-grid">
-            <div class="soulaana-beat"><span>What she sees</span><p>${narrative.sees}</p></div>
-            <div class="soulaana-beat"><span>What it means</span><p>${narrative.means}</p></div>
-            <div class="soulaana-beat"><span>Be careful</span><p>${narrative.careful}</p></div>
-            <div class="soulaana-beat"><span>Next move</span><p>${narrative.next}</p></div>
-          </div>
-        </div>
+          const strikeB =
+            b.strike === null
+              ? Number.MAX_SAFE_INTEGER
+              : b.strike;
 
-        <div class="symbol-main-grid">
-          <div class="ob-panel state-panel">
-            <div class="ob-label">Position / Watch State</div>
-            <div class="state-grid">
-              <div class="state-card"><span>Status</span><strong>${symbolObj.position || "Watch"}</strong></div>
-              <div class="state-card"><span>Asset Type</span><strong>${symbolObj.tradeType || "Watch only"}</strong></div>
-              <div class="state-card"><span>Current State</span><strong>${obStatusFromTier(symbolObj.tier)}</strong></div>
-              <div class="state-card"><span>Risk Glow</span><strong>${symbolObj.risk || risk.riskLevel}</strong></div>
-            </div>
-          </div>
+          if (strikeA !== strikeB) {
+            return strikeA - strikeB;
+          }
 
-          <div class="ob-panel state-panel why-ob-panel">
-            <div class="ob-label">Why OB Is Watching</div>
-            <div class="fun-facts">${symbolObj.why || "OB is tracking this star as part of its constellation context."}</div>
+          return String(
+            a.type || ""
+          ).localeCompare(
+            String(
+              b.type || ""
+            )
+          );
+        }
+      );
 
-            <div class="symbol-action-strip">
-              <div class="symbol-action watch" onclick="obOpenTradeContext('${symbolObj.symbol}')">Open Trade Context</div>
-              <div class="symbol-action">Add to Watch</div>
-              <div class="symbol-action locked">Live Auto Locked</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ob-panel risk-permission-panel">
-          <div class="ob-label">Risk + Permission State</div>
-          <div class="risk-permission-layout">
-            <div class="risk-stack">
-              <div class="risk-card gold"><span>Risk level</span><strong>${risk.riskLevel}</strong></div>
-              <div class="risk-card green"><span>Account fit</span><strong>${risk.accountFit}</strong></div>
-              <div class="risk-card gold"><span>Crowding / exposure</span><strong>${risk.crowding}</strong></div>
-              <div class="risk-card gold"><span>Duplicate / cooldown</span><strong>${risk.duplicate} · ${risk.cooldown}</strong></div>
-              <div class="tower-boundary-note"><strong>Tower boundary:</strong><br>${risk.tower}<br><br>${risk.action}</div>
-            </div>
-
-            <div>
-              <div class="permission-orbit">
-                <div class="permission-core"></div>
-                <div class="permission-tag green" style="left: 50%; top: 19%;">Paper</div>
-                <div class="permission-tag gold" style="left: 22%; top: 52%;">Manual guarded</div>
-                <div class="permission-tag red" style="left: 72%; top: 52%;">Live auto locked</div>
-                <div class="permission-tag gold" style="left: 50%; top: 82%;">Tower gate</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ob-panel movement-panel">
-          <div class="ob-label">Movement Field / Price-Premium Path</div>
-          <div class="movement-field">
-            <svg class="movement-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <polyline points="4,72 18,66 33,70 48,48 64,44 78,30 94,26"></polyline>
-            </svg>
-            <div class="path-dot" style="left: 18%; top: 66%;"></div>
-            <div class="path-dot" style="left: 48%; top: 48%;"></div>
-            <div class="path-dot" style="left: 78%; top: 30%;"></div>
-            <div class="movement-marker" style="left: 18%; top: 66%;">Entry</div>
-            <div class="movement-marker" style="left: 48%; top: 48%;">Shift</div>
-            <div class="movement-marker" style="left: 78%; top: 30%;">Now</div>
-          </div>
-
-          <div class="movement-info-grid">
-            <div>
-              <div class="movement-stat-grid">
-                <div class="movement-stat"><span>Phase</span><strong>${movement.phase}</strong></div>
-                <div class="movement-stat"><span>Direction</span><strong>${movement.direction}</strong></div>
-                <div class="movement-stat"><span>Change</span><strong>${movement.current}</strong></div>
-                <div class="movement-stat"><span>Volume</span><strong>${movement.volume}</strong></div>
-              </div>
-
-              <div class="movement-note" style="margin-top: 12px;">
-                <strong style="color: var(--ob-gold);">Soulaana:</strong><br>${movement.soulaana}
-              </div>
-            </div>
-
-            <div class="movement-alert-list">
-              <div class="movement-alert"><strong>Key level:</strong><br>${movement.keyLevel}</div>
-              <div class="movement-alert"><strong>Next level:</strong><br>${movement.nextLevel}</div>
-              <div class="movement-alert"><strong>Invalidation:</strong><br>${movement.invalidation}</div>
-            </div>
-          </div>
-        </div>
+    mount.innerHTML = `
+      <div class="ob-chain-head">
+        <span>Type</span>
+        <span>Strike</span>
+        <span>Bid</span>
+        <span>Ask</span>
+        <span>Volume</span>
+        <span>OI</span>
+        <span>IV</span>
+        <span>Delta</span>
       </div>
 
-      <div class="ob-panel detail-panel" id="symbolSidePanel"></div>
-    </div>
-  `;
-
-  side.innerHTML = `
-    <div class="detail-title">${symbolObj.symbol}</div>
-    <div class="detail-sub">${symbolObj.starName || symbolObj.symbol + " Star"}</div>
-    <div class="detail-row"><span>Constellation</span><strong>${sector.constellationName}</strong></div>
-    <div class="detail-row"><span>Current State</span><strong>${obStatusFromTier(symbolObj.tier)}</strong></div>
-    <div class="detail-row"><span>Signal Color</span><strong>${obSignalColor(symbolObj.tier)}</strong></div>
-    <div class="detail-row"><span>Permission</span><strong>${symbolObj.permission || "Watch Only"}</strong></div>
-    <div class="fun-facts"><strong style="color: var(--ob-purple);">Soulaana:</strong><br>This is the private observation room for one star. We stop looking at the whole sky and ask what this one symbol is actually doing.</div>
-  `;
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  const app = document.getElementById("ob-app");
-  const symbol = app ? app.getAttribute("data-symbol") : "MU";
-  obRenderSymbolRoom(symbol || "MU");
-});
-
-// OBSERVATORY_V22_REAL_ENGINE_DATA_WIRING_PREP_CONTRACT_HOOK
-if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.symbolPageContract) {
-  window.OB_SYMBOL_PAGE_CONTRACT_V22_READY = true;
-}
-
-// OBSERVATORY_V23_FINAL_VISUAL_CONSISTENCY_PASS_ROOM_FLAG
-window.OB_V23_ROOM_VISUAL_READY = true;
-
-// OBSERVATORY_V25_SAFE_ENGINE_FEED_ADAPTER_ROOM_FLAG
-window.OB_V25_ENGINE_FEED_READY = true;
-
-// OBSERVATORY_V26_REAL_SNAPSHOT_DISPLAY_WIRING_ROOM_FLAG
-window.OB_V26_SNAPSHOT_DISPLAY_READY = true;
-
-// OBSERVATORY_V27_ROOM_LEVEL_REAL_DATA_POLISH_ROOM_FLAG
-window.OB_V27_ROOM_DATA_POLISH_READY = true;
-
-// OBSERVATORY_V28_CANDIDATE_SIGNAL_CARD_NORMALIZATION_ROOM_FLAG
-window.OB_V28_CANDIDATE_CARDS_READY = true;
-
-// OBSERVATORY_V29_MANUAL_LIVE_RECEIPTS_REVIEW_INTEGRATION_ROOM_FLAG
-window.OB_V29_MANUAL_LIVE_RECEIPTS_READY = true;
-
-// OBSERVATORY_V31_FINAL_PRIVATE_BETA_QA_PASS_ROOM_FLAG
-window.OB_V31_PRIVATE_BETA_QA_READY = true;
-
-// OBSERVATORY_V32_REAL_ENGINE_FEED_EXPANSION_READ_ONLY_ROOM_FLAG
-window.OB_V32_ENGINE_FEED_EXPANSION_READY = true;
-
-// OBSERVATORY_V34_ENGINE_FEED_TRUST_LABELS_ROOM_WARNINGS_ROOM_FLAG
-window.OB_V34_ENGINE_TRUST_LABELS_READY = true;
-
-// OBSERVATORY_V35_ENGINE_FEED_CANONICAL_ROOM_MAPPING_ROOM_FLAG
-window.OB_V35_ENGINE_ROOM_MAPPING_READY = true;
-
-// OBSERVATORY_V36_OWNER_CONSOLE_SOURCE_AUDIT_ACTION_PLAN_ROOM_FLAG
-window.OB_V36_OWNER_SOURCE_AUDIT_READY = true;
-
-// OBSERVATORY_V37_PRIVATE_BETA_LAUNCH_CONTROL_CHECKLIST_ROOM_FLAG
-window.OB_V37_PRIVATE_BETA_LAUNCH_CONTROL_READY = true;
-
-// OBSERVATORY_V38_PRIVATE_BETA_TESTER_INVITE_PACKET_BUILDER_ROOM_FLAG
-window.OB_V38_PRIVATE_BETA_INVITE_PACKET_READY = true;
-
-// OBSERVATORY_V39_TESTER_FEEDBACK_INTAKE_CONFUSION_REPORT_PACKET_ROOM_FLAG
-window.OB_V39_PRIVATE_BETA_FEEDBACK_INTAKE_READY = true;
-
-// OBSERVATORY_V40_OWNER_TESTER_FEEDBACK_REVIEW_QUEUE_ROOM_FLAG
-window.OB_V40_PRIVATE_BETA_FEEDBACK_REVIEW_QUEUE_READY = true;
-
-// OBSERVATORY_V41_GUIDED_PRIVATE_BETA_SESSION_RUNBOOK_ROOM_FLAG
-window.OB_V41_PRIVATE_BETA_SESSION_RUNBOOK_READY = true;
-
-// OBSERVATORY_V42_PRIVATE_BETA_ISSUE_TRIAGE_FIX_PRIORITY_ROOM_FLAG
-window.OB_V42_PRIVATE_BETA_ISSUE_TRIAGE_READY = true;
-
-// OBSERVATORY_V43_PRIVATE_BETA_SESSION_CLOSEOUT_REPORT_ROOM_FLAG
-window.OB_V43_PRIVATE_BETA_SESSION_CLOSEOUT_READY = true;
-
-// OBSERVATORY_V44_PRIVATE_BETA_FIX_VERIFICATION_CHECKLIST_ROOM_FLAG
-window.OB_V44_PRIVATE_BETA_FIX_VERIFICATION_READY = true;
-
-// OBSERVATORY_V45_NEXT_TESTER_CLEARANCE_GATE_ROOM_FLAG
-window.OB_V45_PRIVATE_BETA_NEXT_TESTER_GATE_READY = true;
-
-// OB_GIANT_PACK_001_OWNER_USER_ACCOUNT_EXPERIENCE_ROOM_FLAG
-window.OB_GIANT_PACK_001_ACCOUNT_EXPERIENCE_READY = true;
-
-// OB_GIANT_PACK_002_MANUAL_LIVE_LEVEL_1_OPERATING_ROOM_FLAG
-window.OB_GIANT_PACK_002_MANUAL_LIVE_L1_READY = true;
-
-// OB_GIANT_PACK_003_RECEIPTS_REVIEW_CENTER_FOUNDATION_FLAG
-window.OB_GIANT_PACK_003_RECEIPTS_REVIEW_READY = true;
-
-// OB_GIANT_PACK_004_PRIVATE_BETA_TOWER_LOCK_POLISH_FLAG
-window.OB_GIANT_PACK_004_PRIVATE_BETA_TOWER_LOCK_READY = true;
-
-// OB_GIANT_PACK_005_MANUAL_LIVE_SAFETY_PREFLIGHT_GATE_FLAG
-window.OB_GIANT_PACK_005_MANUAL_LIVE_PREFLIGHT_READY = true;
-
-// OB_GIANT_PACK_006_MANUAL_LIVE_DECISION_PACKET_FLAG
-window.OB_GIANT_PACK_006_MANUAL_LIVE_DECISION_PACKET_READY = true;
-
-// OB_GIANT_PACK_007_MANUAL_BROKER_CHECKLIST_FILL_CAPTURE_FLAG
-window.OB_GIANT_PACK_007_MANUAL_BROKER_CHECKLIST_FILL_CAPTURE_READY = true;
-
-// OB_GIANT_PACK_008_POSITION_MONITOR_EXIT_CLOSE_CAPTURE_FLAG
-window.OB_GIANT_PACK_008_POSITION_MONITOR_EXIT_CLOSE_CAPTURE_READY = true;
-
-// OB_GIANT_PACK_009_FINAL_TRADE_REVIEW_PERFORMANCE_RECEIPT_FLAG
-window.OB_GIANT_PACK_009_FINAL_TRADE_REVIEW_PERFORMANCE_READY = true;
-
-// OB_GIANT_PACK_010_MANUAL_LIVE_L1_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_010_MANUAL_LIVE_L1_READINESS_READY = true;
-
-// OB_GIANT_PACK_011_OWNER_REHEARSAL_ENGINE_FLAG
-window.OB_GIANT_PACK_011_OWNER_REHEARSAL_ENGINE_READY = true;
-
-// OB_GIANT_PACK_012_REHEARSAL_RECORD_PERSISTENCE_CONTRACT_FLAG
-window.OB_GIANT_PACK_012_REHEARSAL_RECORD_CONTRACTS_READY = true;
-
-// OB_GIANT_PACK_013_REVIEW_CENTER_REHEARSAL_COMMAND_BOARD_FLAG
-window.OB_GIANT_PACK_013_REVIEW_CENTER_REHEARSAL_COMMAND_BOARD_READY = true;
-
-// OB_GIANT_PACK_014_OWNER_INPUT_PERSISTENCE_PREP_FLAG
-window.OB_GIANT_PACK_014_OWNER_INPUT_PERSISTENCE_PREP_READY = true;
-
-// OB_GIANT_PACK_015_MISSION_ACCOUNT_CAPITAL_RULE_REHEARSAL_OVERLAY_FLAG
-window.OB_GIANT_PACK_015_MISSION_ACCOUNT_CAPITAL_RULE_REHEARSAL_OVERLAY_READY = true;
-
-// OB_GIANT_PACK_016_TOWER_STEP_UP_ENFORCEMENT_WIRING_PREP_FLAG
-window.OB_GIANT_PACK_016_TOWER_STEP_UP_ENFORCEMENT_PREP_READY = true;
-
-// OB_GIANT_PACK_017_REAL_CANDIDATE_REHEARSAL_ADAPTER_FLAG
-window.OB_GIANT_PACK_017_REAL_CANDIDATE_REHEARSAL_ADAPTER_READY = true;
-
-// OB_GIANT_PACK_018_MANUAL_LIVE_OWNER_REHEARSAL_FINAL_READINESS_FLAG
-window.OB_GIANT_PACK_018_MANUAL_LIVE_OWNER_REHEARSAL_FINAL_READINESS_READY = true;
-
-// OB_GIANT_PACK_019_REHEARSAL_QUALITY_FRESHNESS_GATE_FLAG
-window.OB_GIANT_PACK_019_REHEARSAL_QUALITY_FRESHNESS_GATE_READY = true;
-
-// OB_GIANT_PACK_020_MANUAL_LIVE_PRE_LIVE_LOCK_WALL_FLAG
-window.OB_GIANT_PACK_020_MANUAL_LIVE_PRE_LIVE_LOCK_WALL_READY = true;
-
-// OB_GIANT_PACK_021_REHEARSAL_PERSISTENCE_ADAPTER_DRY_RUN_CONTRACT_FLAG
-window.OB_GIANT_PACK_021_REHEARSAL_PERSISTENCE_ADAPTER_DRY_RUN_READY = true;
-
-// OB_GIANT_PACK_022_OWNER_PRACTICE_LOOP_BOARD_FLAG
-window.OB_GIANT_PACK_022_OWNER_PRACTICE_LOOP_BOARD_READY = true;
-
-// OB_GIANT_PACK_023_PRACTICE_SESSION_DETAIL_DRAWER_FLAG
-window.OB_GIANT_PACK_023_PRACTICE_SESSION_DETAIL_DRAWER_READY = true;
-
-// OB_GIANT_PACK_024_PRACTICE_LESSON_REVIEW_QUEUE_FLAG
-window.OB_GIANT_PACK_024_PRACTICE_LESSON_REVIEW_QUEUE_READY = true;
-
-// OB_GIANT_PACK_025_OWNER_PRACTICE_LOOP_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_025_OWNER_PRACTICE_LOOP_READINESS_CHECKPOINT_READY = true;
-
-// OB_GIANT_PACK_026_PRACTICE_REPETITION_METRICS_BOARD_FLAG
-window.OB_GIANT_PACK_026_PRACTICE_REPETITION_METRICS_BOARD_READY = true;
-
-// OB_GIANT_PACK_027_OWNER_REVIEW_POLISH_GUIDANCE_FLAG
-window.OB_GIANT_PACK_027_OWNER_REVIEW_POLISH_GUIDANCE_READY = true;
-
-// OB_GIANT_PACK_028_OWNER_PRACTICE_FOCUS_QUEUE_FLAG
-window.OB_GIANT_PACK_028_OWNER_PRACTICE_FOCUS_QUEUE_READY = true;
-
-// OB_GIANT_PACK_029_PRACTICE_REVIEW_COMPACT_SNAPSHOT_FLAG
-window.OB_GIANT_PACK_029_PRACTICE_REVIEW_COMPACT_SNAPSHOT_READY = true;
-
-// OB_GIANT_PACK_030_PRACTICE_REVIEW_POLISH_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_030_PRACTICE_REVIEW_POLISH_READINESS_CHECKPOINT_READY = true;
-
-// OB_GIANT_PACK_031_MANUAL_LIVE_OPERATOR_CONFIDENCE_BOARD_FLAG
-window.OB_GIANT_PACK_031_MANUAL_LIVE_OPERATOR_CONFIDENCE_BOARD_READY = true;
-
-// OB_GIANT_PACK_032_MANUAL_LIVE_OPERATOR_STEP_CONFIDENCE_CHECKLIST_FLAG
-window.OB_GIANT_PACK_032_MANUAL_LIVE_OPERATOR_STEP_CONFIDENCE_CHECKLIST_READY = true;
-
-// OB_GIANT_PACK_033_MANUAL_LIVE_OPERATOR_SCENARIO_CONFIDENCE_REVIEW_FLAG
-window.OB_GIANT_PACK_033_MANUAL_LIVE_OPERATOR_SCENARIO_CONFIDENCE_REVIEW_READY = true;
-
-// OB_GIANT_PACK_034_MANUAL_LIVE_OPERATOR_CONFIDENCE_IMPROVEMENT_PLAN_FLAG
-window.OB_GIANT_PACK_034_MANUAL_LIVE_OPERATOR_CONFIDENCE_IMPROVEMENT_PLAN_READY = true;
-
-// OB_GIANT_PACK_035_MANUAL_LIVE_OPERATOR_CONFIDENCE_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_035_MANUAL_LIVE_OPERATOR_CONFIDENCE_READINESS_CHECKPOINT_READY = true;
-
-// OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE_FLAG
-window.OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE_READY = true;
-
-// OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW_FLAG
-window.OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW_READY = true;
-
-// OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE_FLAG
-window.OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE_READY = true;
-
-// OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE_FLAG
-window.OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE_READY = true;
-
-// OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT_READY = true;
-
-// OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF_FLAG
-window.OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF_READY = true;
+      ${sorted
+        .map(
+          item => `
+            <button
+              class="ob-chain-row"
+              type="button"
+              data-contract-id="${text(item.id)}"
+              aria-label="Inspect ${contractLabel(item)}"
+            >
+              <span>${text(item.type, "option").toUpperCase()}</span>
+              <strong>${item.strike === null ? "—" : "$" + item.strike}</strong>
+              <span>${formatMoney(item.bid)}</span>
+              <span>${formatMoney(item.ask)}</span>
+              <span>${formatNumber(item.volume, 0)}</span>
+              <span>${formatNumber(item.openInterest, 0)}</span>
+              <span>${item.iv === null ? "—" : formatNumber(item.iv)}</span>
+              <span>${item.delta === null ? "—" : formatNumber(item.delta)}</span>
+            </button>
+          `
+        )
+        .join("")}
+    `;
+
+    mount
+      .querySelectorAll(
+        "[data-contract-id]"
+      )
+      .forEach(
+        button => {
+          button.addEventListener(
+            "click",
+            () => {
+              const match =
+                options.contracts.find(
+                  item =>
+                    String(item.id) ===
+                    String(
+                      button.dataset.contractId
+                    )
+                );
+
+              if (!match) return;
+
+              // Survey may inspect a contract, but it does not
+              // create a selected trade object.
+              selectedContract =
+                mode.contract_selection
+                  ? match
+                  : null;
+
+              renderContractDetail(
+                match,
+                mode,
+                mode.contract_selection
+              );
+
+              renderActionBar(
+                latestState
+              );
+
+              renderPaperPanel(
+                latestState
+              );
+            }
+          );
+        }
+      );
+  }
+
+  function renderContractDetail(
+    contract,
+    mode,
+    selectable
+  ) {
+    const panel =
+      byId("symbolContractPanel");
+
+    const metrics =
+      byId("symbolContractMetrics");
+
+    const risk =
+      byId("symbolContractRisk");
+
+    if (
+      !panel ||
+      !metrics ||
+      !risk
+    ) {
+      return;
+    }
+
+    panel.hidden = false;
+
+    setText(
+      "symbolContractTitle",
+      contractLabel(contract),
+      "Contract detail"
+    );
+
+    const spread =
+      spreadPercent(contract);
+
+    metrics.innerHTML = [
+      metric(
+        "Bid",
+        formatMoney(
+          contract.bid
+        )
+      ),
+      metric(
+        "Ask",
+        formatMoney(
+          contract.ask
+        )
+      ),
+      metric(
+        "Spread",
+        spread === null
+          ? "—"
+          : spread.toFixed(2) + "%"
+      ),
+      metric(
+        "Volume",
+        formatNumber(
+          contract.volume,
+          0
+        )
+      ),
+      metric(
+        "Open interest",
+        formatNumber(
+          contract.openInterest,
+          0
+        )
+      ),
+      metric(
+        "IV",
+        contract.iv
+      ),
+      metric(
+        "Delta",
+        contract.delta
+      ),
+      metric(
+        "Gamma",
+        contract.gamma
+      ),
+      metric(
+        "Theta",
+        contract.theta
+      ),
+      metric(
+        "Vega",
+        contract.vega
+      ),
+      metric(
+        "DTE",
+        contract.dte
+      ),
+    ].join("");
+
+    const notes = [];
+
+    if (
+      spread !== null &&
+      spread > 10
+    ) {
+      notes.push(
+        "Wide bid/ask spread may increase slippage."
+      );
+    }
+
+    if (
+      contract.openInterest !== null &&
+      contract.openInterest === 0
+    ) {
+      notes.push(
+        "Open interest is reported as zero."
+      );
+    }
+
+    if (
+      contract.theta !== null &&
+      contract.theta < 0
+    ) {
+      notes.push(
+        "Negative theta indicates time-decay exposure."
+      );
+    }
+
+    if (!notes.length) {
+      notes.push(
+        "No additional risk conclusion is invented from missing fields."
+      );
+    }
+
+    risk.innerHTML = `
+      <strong>
+        ${
+          selectable
+            ? "User-selectable in the current mode."
+            : "Inspection only in the current mode."
+        }
+      </strong>
+
+      ${notes
+        .map(
+          note =>
+            `<span>${note}</span>`
+        )
+        .join("")}
+
+      <span>
+        OB is displaying contract facts. It is not declaring this
+        contract suitable or preferred.
+      </span>
+    `;
+  }
+
+  function hybridFilterValues() {
+    function field(id) {
+      const node = byId(id);
+      if (!node) return null;
+
+      return number(node.value);
+    }
+
+    return {
+      minOI:
+        field(
+          "symbolFilterOI"
+        ),
+
+      maxSpread:
+        field(
+          "symbolFilterSpread"
+        ),
+
+      minDelta:
+        field(
+          "symbolFilterDeltaMin"
+        ),
+
+      maxDelta:
+        field(
+          "symbolFilterDeltaMax"
+        ),
+    };
+  }
+
+  function filterMatches(
+    contracts,
+    filters
+  ) {
+    return contracts.filter(
+      contract => {
+        if (
+          filters.minOI !== null &&
+          contract.openInterest !== null &&
+          contract.openInterest < filters.minOI
+        ) {
+          return false;
+        }
+
+        if (
+          filters.maxSpread !== null
+        ) {
+          const spread =
+            spreadPercent(
+              contract
+            );
+
+          if (
+            spread !== null &&
+            spread > filters.maxSpread
+          ) {
+            return false;
+          }
+        }
+
+        if (
+          filters.minDelta !== null &&
+          contract.delta !== null &&
+          contract.delta < filters.minDelta
+        ) {
+          return false;
+        }
+
+        if (
+          filters.maxDelta !== null &&
+          contract.delta !== null &&
+          contract.delta > filters.maxDelta
+        ) {
+          return false;
+        }
+
+        return true;
+      }
+    );
+  }
+
+  function renderHybridOptionSet(state) {
+    const panel =
+      byId("symbolHybridPanel");
+
+    const mount =
+      byId("symbolOptionSet");
+
+    if (
+      !panel ||
+      !mount
+    ) {
+      return;
+    }
+
+    const mode =
+      state.mode;
+
+    panel.hidden =
+      !mode.objective_option_set;
+
+    if (!mode.objective_option_set) {
+      mount.innerHTML = "";
+      return;
+    }
+
+    if (!state.options.available) {
+      mount.innerHTML = `
+        <div class="ob-options-empty">
+          No canonical options contracts are available to filter.
+        </div>
+      `;
+      return;
+    }
+
+    const filters =
+      hybridFilterValues();
+
+    const available =
+      contractsForSelectedExpiration(
+        state.options
+      );
+
+    const matches =
+      filterMatches(
+        available,
+        filters
+      );
+
+    mount.innerHTML = `
+      <div class="ob-option-set-note">
+        ${matches.length} contract(s) match the displayed filters.
+        Order is not a recommendation ranking.
+      </div>
+
+      ${matches.length
+        ? matches
+            .map(
+              item => `
+                <button
+                  class="ob-option-match"
+                  type="button"
+                  data-hybrid-contract-id="${text(item.id)}"
+                >
+                  <strong>${contractLabel(item)}</strong>
+                  <span>
+                    Surfaced because it matches the displayed objective filters.
+                  </span>
+                  <small>
+                    OI ${formatNumber(item.openInterest, 0)}
+                    · Spread ${
+                      spreadPercent(item) === null
+                        ? "—"
+                        : spreadPercent(item).toFixed(2) + "%"
+                    }
+                    · Delta ${formatNumber(item.delta)}
+                  </small>
+                  <b>Inspect / choose</b>
+                </button>
+              `
+            )
+            .join("")
+        : `
+            <div class="ob-options-empty">
+              No contracts match the displayed filters.
+            </div>
+          `}
+    `;
+
+    mount
+      .querySelectorAll(
+        "[data-hybrid-contract-id]"
+      )
+      .forEach(
+        button => {
+          button.addEventListener(
+            "click",
+            () => {
+              const match =
+                state.options.contracts.find(
+                  item =>
+                    String(item.id) ===
+                    String(
+                      button.dataset.hybridContractId
+                    )
+                );
+
+              if (!match) return;
+
+              // Critical Hybrid doctrine:
+              // THE USER chooses the contract.
+              selectedContract =
+                match;
+
+              renderContractDetail(
+                match,
+                mode,
+                true
+              );
+
+              renderActionBar(
+                latestState
+              );
+            }
+          );
+        }
+      );
+  }
+
+  function renderPaperPanel(state) {
+    const panel =
+      byId("symbolPaperPanel");
+
+    const summary =
+      byId("symbolPaperSummary");
+
+    if (
+      !panel ||
+      !summary
+    ) {
+      return;
+    }
+
+    panel.hidden =
+      !state.mode.paper_build;
+
+    if (!state.mode.paper_build) {
+      return;
+    }
+
+    if (!selectedContract) {
+      summary.textContent =
+        "Select a contract to build a hypothetical paper idea.";
+      return;
+    }
+
+    const quantity =
+      number(
+        byId("symbolPaperQuantity")?.value
+      ) || 1;
+
+    const entry =
+      number(
+        byId("symbolPaperEntry")?.value
+      );
+
+    const stop =
+      number(
+        byId("symbolPaperStop")?.value
+      );
+
+    const target =
+      number(
+        byId("symbolPaperTarget")?.value
+      );
+
+    summary.innerHTML = `
+      <strong>PAPER · NO LIVE ORDER</strong>
+      <span>${contractLabel(selectedContract)}</span>
+      <span>Hypothetical quantity: ${quantity}</span>
+      <span>Hypothetical entry: ${entry === null ? "not set" : formatMoney(entry)}</span>
+      <span>Hypothetical stop: ${stop === null ? "not set" : formatMoney(stop)}</span>
+      <span>Hypothetical target: ${target === null ? "not set" : formatMoney(target)}</span>
+    `;
+  }
+
+  function renderRisk(state) {
+    const mount =
+      byId("symbolRiskGrid");
+
+    if (!mount) return;
+
+    const underlying =
+      state.underlying;
+
+    const mode =
+      state.mode;
+
+    const contract =
+      selectedContract;
+
+    const spread =
+      contract
+        ? spreadPercent(contract)
+        : null;
+
+    mount.innerHTML = [
+      metric(
+        "Observed symbol risk",
+        underlying.risk
+      ),
+
+      metric(
+        "Permission field",
+        underlying.permission
+      ),
+
+      metric(
+        "Options liquidity",
+        contract
+          ? (
+              contract.openInterest === null
+                ? "Unknown"
+                : (
+                    contract.openInterest > 0
+                      ? "OI present"
+                      : "OI zero"
+                  )
+            )
+          : "Unknown"
+      ),
+
+      metric(
+        "Selected spread",
+        spread === null
+          ? "Unknown"
+          : spread.toFixed(2) + "%"
+      ),
+
+      metric(
+        "Mode",
+        mode.label
+      ),
+
+      metric(
+        "Owner decision",
+        mode.owner_decision_required
+          ? "Required"
+          : "No trade decision"
+      ),
+
+      metric(
+        "Broker API",
+        "Disabled"
+      ),
+
+      metric(
+        "Broker execution",
+        "Disabled"
+      ),
+
+      metric(
+        "Automatic contract selection",
+        "Disabled"
+      ),
+
+      metric(
+        "Automatic execution",
+        "Disabled"
+      ),
+    ].join("");
+
+    setText(
+      "symbolExecutionStatus",
+      "Broker execution disabled"
+    );
+  }
+
+  function paperPayload() {
+    return {
+      quantity:
+        number(
+          byId("symbolPaperQuantity")?.value
+        ) || 1,
+
+      entry:
+        number(
+          byId("symbolPaperEntry")?.value
+        ),
+
+      stop:
+        number(
+          byId("symbolPaperStop")?.value
+        ),
+
+      target:
+        number(
+          byId("symbolPaperTarget")?.value
+        ),
+    };
+  }
+
+  function buildHandoff(state) {
+    const mode =
+      state.mode;
+
+    if (!mode.trade_handoff) {
+      return null;
+    }
+
+    if (!selectedContract) {
+      return null;
+    }
+
+    return {
+      version:
+        "OB_SYMBOL_ROOM_HANDOFF_V1",
+
+      created_at:
+        new Date().toISOString(),
+
+      source_room:
+        "symbol_room",
+
+      destination_room:
+        "trade_center",
+
+      symbol:
+        state.underlying.symbol,
+
+      mode:
+        mode.key,
+
+      handoff_kind:
+        mode.trade_handoff_kind,
+
+      owner_decision_required:
+        true,
+
+      owner_selected_contract:
+        true,
+
+      ob_selected_contract:
+        false,
+
+      broker_api:
+        false,
+
+      brokerage_execution:
+        false,
+
+      automatic_execution:
+        false,
+
+      automatic_contract_selection:
+        false,
+
+      contract:
+        {
+          ...selectedContract,
+          raw: undefined,
+        },
+
+      paper:
+        mode.paper_build
+          ? paperPayload()
+          : null,
+
+      provenance: {
+        source:
+          state.projection.source ||
+          null,
+
+        as_of:
+          state.projection.as_of ||
+          null,
+
+        freshness:
+          state.projection.freshness ||
+          "unavailable",
+
+        current_eligible:
+          Boolean(
+            state.projection.current_eligible
+          ),
+
+        display_eligible:
+          Boolean(
+            state.projection.display_eligible
+          ),
+      },
+    };
+  }
+
+  function handoffToTradeCenter(state) {
+    const packet =
+      buildHandoff(state);
+
+    if (!packet) {
+      return;
+    }
+
+    sessionStorage.setItem(
+      HANDOFF_KEY,
+      JSON.stringify(packet)
+    );
+
+    const symbol =
+      encodeURIComponent(
+        packet.symbol
+      );
+
+    window.location.assign(
+      "/ob/trade-center?symbol=" +
+      symbol +
+      "&from=symbol-room"
+    );
+  }
+
+  function actionButton(
+    label,
+    action,
+    extraClass = ""
+  ) {
+    return `
+      <button
+        type="button"
+        class="ob-symbol-button ${extraClass}"
+        data-symbol-action="${action}"
+      >
+        ${label}
+      </button>
+    `;
+  }
+
+  function renderActionBar(state) {
+    const mount =
+      byId("symbolActionBar");
+
+    if (!mount) return;
+
+    const mode =
+      state.mode;
+
+    const actions = [
+      actionButton(
+        "Return to Market Map",
+        "market-map",
+        "ob-symbol-button--quiet"
+      ),
+    ];
+
+    if (mode.key === "survey") {
+      actions.unshift(
+        actionButton(
+          "Inspect Options",
+          "options"
+        ),
+        actionButton(
+          "Compare Facts",
+          "facts"
+        )
+      );
+
+      setText(
+        "symbolNextTitle",
+        "Observe. Investigate. Nothing has to become a trade."
+      );
+
+      setText(
+        "symbolNextMessage",
+        "Survey keeps the room informational. Trade handoff is disabled."
+      );
+    }
+
+    else if (mode.key === "paper") {
+      actions.unshift(
+        actionButton(
+          "Build Paper Idea",
+          "paper"
+        )
+      );
+
+      if (selectedContract) {
+        actions.unshift(
+          actionButton(
+            "Send Paper Idea to Trade Center",
+            "trade-center"
+          )
+        );
+      }
+
+      setText(
+        "symbolNextTitle",
+        "Practice the idea."
+      );
+
+      setText(
+        "symbolNextMessage",
+        selectedContract
+          ? "The selected contract can leave this room only as a paper-only packet."
+          : "Choose a contract yourself before a paper-only Trade Center handoff is available."
+      );
+    }
+
+    else if (mode.key === "manual_live_1") {
+      actions.unshift(
+        actionButton(
+          "Review Signal Evidence",
+          "evidence"
+        ),
+        actionButton(
+          "Inspect Options",
+          "options"
+        )
+      );
+
+      if (selectedContract) {
+        actions.unshift(
+          actionButton(
+            "Send My Selection to Trade Center",
+            "trade-center"
+          )
+        );
+      }
+
+      setText(
+        "symbolNextTitle",
+        "OWNER DECISION REQUIRED"
+      );
+
+      setText(
+        "symbolNextMessage",
+        selectedContract
+          ? "You selected this contract. Trade Center may prepare the review. You still execute at the brokerage."
+          : "OB does not choose your contract in Manual Live 1. Inspect the chain and decide independently."
+      );
+    }
+
+    else if (mode.key === "hybrid") {
+      actions.unshift(
+        actionButton(
+          "Open Option Set",
+          "hybrid"
+        ),
+        actionButton(
+          "Compare Contracts",
+          "options"
+        )
+      );
+
+      if (selectedContract) {
+        actions.unshift(
+          actionButton(
+            "Send My Choice to Trade Center",
+            "trade-center"
+          )
+        );
+      }
+
+      setText(
+        "symbolNextTitle",
+        "YOU CHOOSE THE OPTION"
+      );
+
+      setText(
+        "symbolNextMessage",
+        selectedContract
+          ? "Your selected filter match can move to Trade Center. OB has not selected it for you."
+          : "Use objective filters, inspect the matches, and make the selection yourself."
+      );
+    }
+
+    else {
+      actions.unshift(
+        actionButton(
+          "Automated Locked",
+          "locked",
+          "ob-symbol-button--danger"
+        )
+      );
+
+      setText(
+        "symbolNextTitle",
+        "Automated is locked."
+      );
+
+      setText(
+        "symbolNextMessage",
+        "No automated trade handoff or execution exists in this layer."
+      );
+    }
+
+    mount.innerHTML =
+      actions.join("");
+
+    mount
+      .querySelectorAll(
+        "[data-symbol-action]"
+      )
+      .forEach(
+        button => {
+          button.addEventListener(
+            "click",
+            () => {
+              const action =
+                button.dataset.symbolAction;
+
+              if (action === "market-map") {
+                window.location.assign(
+                  "/ob/market-map"
+                );
+                return;
+              }
+
+              if (action === "trade-center") {
+                handoffToTradeCenter(
+                  latestState
+                );
+                return;
+              }
+
+              if (action === "options") {
+                document
+                  .querySelector(
+                    ".ob-options-sky"
+                  )
+                  ?.scrollIntoView(
+                    {
+                      behavior: "smooth",
+                      block: "start",
+                    }
+                  );
+                return;
+              }
+
+              if (action === "paper") {
+                byId("symbolPaperPanel")
+                  ?.scrollIntoView(
+                    {
+                      behavior: "smooth",
+                      block: "start",
+                    }
+                  );
+                return;
+              }
+
+              if (action === "hybrid") {
+                byId("symbolHybridPanel")
+                  ?.scrollIntoView(
+                    {
+                      behavior: "smooth",
+                      block: "start",
+                    }
+                  );
+                return;
+              }
+
+              if (action === "evidence") {
+                byId("symbolEvidenceFlags")
+                  ?.scrollIntoView(
+                    {
+                      behavior: "smooth",
+                      block: "center",
+                    }
+                  );
+                return;
+              }
+
+              if (action === "facts") {
+                byId("symbolUnderlyingMetrics")
+                  ?.scrollIntoView(
+                    {
+                      behavior: "smooth",
+                      block: "center",
+                    }
+                  );
+              }
+            }
+          );
+        }
+      );
+  }
+
+  function renderUnavailable(state) {
+    const notice =
+      byId("symbolUnavailableNotice");
+
+    if (!notice) return;
+
+    const unavailable =
+      !state.projection.display_eligible ||
+      (
+        state.contract.symbol_header &&
+        state.contract.symbol_header.unavailable
+      );
+
+    notice.hidden =
+      !unavailable;
+
+    if (!unavailable) {
+      notice.textContent = "";
+      return;
+    }
+
+    notice.innerHTML = `
+      <strong>Current Symbol Room truth is limited.</strong>
+      <span>
+        ${
+          text(
+            state.projection.reason,
+            "The canonical projection does not currently provide display-eligible symbol evidence."
+          )
+        }
+      </span>
+      <span>
+        OB will not replace missing current data with the quarantined demo fixture.
+      </span>
+    `;
+  }
+
+  function renderInteractiveOptions(state) {
+    renderExpirations(
+      state.options
+    );
+
+    renderChain(
+      state.options,
+      state.mode
+    );
+
+    renderHybridOptionSet(
+      state
+    );
+  }
+
+  function render(state) {
+    latestState = state;
+
+    renderTruth(
+      state.projection
+    );
+
+    renderMode(
+      state.mode
+    );
+
+    renderUnavailable(
+      state
+    );
+
+    renderUnderlying(
+      state.underlying
+    );
+
+    renderEvidence(
+      state.projection,
+      state.underlying,
+      state.evidence,
+      state.contract
+    );
+
+    renderOptionsOverview(
+      state.options
+    );
+
+    renderInteractiveOptions(
+      state
+    );
+
+    renderPaperPanel(
+      state
+    );
+
+    renderRisk(
+      state
+    );
+
+    renderActionBar(
+      state
+    );
+  }
+
+  function readState() {
+    const symbol =
+      routeSymbol();
+
+    const projection =
+      canonicalProjection();
+
+    const contract =
+      symbolContract(
+        symbol
+      );
+
+    const underlying =
+      underlyingFrom(
+        projection,
+        contract,
+        symbol
+      );
+
+    const evidence =
+      sourceEvidence(
+        projection,
+        symbol
+      );
+
+    const options =
+      normalizeOptions(
+        projection,
+        underlying
+      );
+
+    const mode =
+      modeState();
+
+    return {
+      version: VERSION,
+      symbol,
+      projection,
+      contract,
+      underlying,
+      evidence,
+      options,
+      mode,
+      latestFeedEventAt,
+    };
+  }
+
+  function refresh() {
+    const next =
+      readState();
+
+    // Clear a selected contract if it disappeared
+    // from the latest canonical options evidence.
+    if (selectedContract) {
+      const stillExists =
+        next.options.contracts.some(
+          item =>
+            String(item.id) ===
+            String(
+              selectedContract.id
+            )
+        );
+
+      if (!stillExists) {
+        selectedContract = null;
+
+        const panel =
+          byId(
+            "symbolContractPanel"
+          );
+
+        if (panel) {
+          panel.hidden = true;
+        }
+      }
+    }
+
+    render(next);
+  }
+
+  function wireStaticControls() {
+    byId("symbolClearContract")
+      ?.addEventListener(
+        "click",
+        () => {
+          selectedContract = null;
+
+          const panel =
+            byId(
+              "symbolContractPanel"
+            );
+
+          if (panel) {
+            panel.hidden = true;
+          }
+
+          if (latestState) {
+            renderPaperPanel(
+              latestState
+            );
+
+            renderRisk(
+              latestState
+            );
+
+            renderActionBar(
+              latestState
+            );
+          }
+        }
+      );
+
+    byId("symbolApplyHybridFilters")
+      ?.addEventListener(
+        "click",
+        () => {
+          if (latestState) {
+            renderHybridOptionSet(
+              latestState
+            );
+          }
+        }
+      );
+
+    [
+      "symbolPaperQuantity",
+      "symbolPaperEntry",
+      "symbolPaperStop",
+      "symbolPaperTarget",
+    ].forEach(
+      id => {
+        byId(id)
+          ?.addEventListener(
+            "input",
+            () => {
+              if (latestState) {
+                renderPaperPanel(
+                  latestState
+                );
+              }
+            }
+          );
+      }
+    );
+  }
+
+  function boot() {
+    wireStaticControls();
+    refresh();
+
+    window.addEventListener(
+      "obEngineFeedAdapterUpdated",
+      event => {
+        latestFeedEventAt =
+          new Date().toISOString();
+
+        refresh();
+      }
+    );
+
+    window.addEventListener(
+      "obAccountExperienceUpdated",
+      () => {
+        refresh();
+      }
+    );
+
+    window.addEventListener(
+      "obAuthorizedModeChanged",
+      () => {
+        selectedContract = null;
+        refresh();
+      }
+    );
+  }
+
+  window.OB_SYMBOL_ROOM_OBUX036_040 = Object.freeze({
+    VERSION,
+    HANDOFF_KEY,
+    readState,
+    refresh,
+    normalizeOptions,
+    spreadPercent,
+    buildHandoff,
+  });
+
+  if (
+    document.readyState === "loading"
+  ) {
+    document.addEventListener(
+      "DOMContentLoaded",
+      boot
+    );
+  } else {
+    boot();
+  }
+})();
