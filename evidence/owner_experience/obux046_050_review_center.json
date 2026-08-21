@@ -1,0 +1,55 @@
+{
+  "base": "c864c3940268ce2face5df170ed2bf00efd7786b",
+  "boundaries": {
+    "auto_close": false,
+    "auto_execution": false,
+    "broker_execution": false,
+    "broker_read": false,
+    "fake_performance_fallback": false,
+    "live_auto_locked": true
+  },
+  "branch": "ob-review-center-obux046-050",
+  "canonical_projection": true,
+  "existing_sources": [
+    "receipts_review_foundation",
+    "position_monitor_exit_close_capture",
+    "final_trade_review_performance_receipt",
+    "manual_live_dry_run_outcome_finalization",
+    "manual_live_outcome_receipt_materialization",
+    "OB_SERVER_DATA review/receipt/close/outcome projections"
+  ],
+  "legacy_static_rows_removed": true,
+  "negative_dive": {
+    "deepest_drawdown": true,
+    "fabricate_missing_metrics": false,
+    "mae": true,
+    "mfe": true,
+    "overtime": true,
+    "planned_actual_entry": true,
+    "planned_actual_exit": true,
+    "planned_actual_hold": true,
+    "time_below_stop": true,
+    "time_negative": true
+  },
+  "official_performance_modes": [
+    "manual_live",
+    "paper"
+  ],
+  "process_review": {
+    "cause_taxonomy": true,
+    "lesson_record": true,
+    "losses_audited": true,
+    "outcome_separate_from_process": true,
+    "soulaana_explanation": true,
+    "wins_audited": true
+  },
+  "room": "Review Center",
+  "truth_modes": [
+    "manual_live",
+    "paper",
+    "rehearsal",
+    "proof",
+    "quarantined"
+  ],
+  "version": "OBUX046-OBUX050"
+}

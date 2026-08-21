@@ -1,0 +1,40 @@
+{
+  "active_money_first": true,
+  "automatic_execution": false,
+  "branch": "ob-trade-center-obux041-045",
+  "broker_execution": false,
+  "browser_yfinance": false,
+  "build": "OBUX041-045",
+  "canonical_room": true,
+  "direct_market_fetch": false,
+  "existing_lifecycle_preserved": true,
+  "existing_manual_live_stack_preserved": true,
+  "existing_options_engine_preserved": true,
+  "fabricated_monthly_contract": false,
+  "fake_confidence": false,
+  "hardcoded_symbols": false,
+  "hero_trade_workspace": true,
+  "hybrid_auto_contract_selection": false,
+  "legacy_proof_mount_hidden": true,
+  "lifecycle": [
+    "research",
+    "contract",
+    "preflight",
+    "entry",
+    "manage",
+    "exit",
+    "review"
+  ],
+  "list_first": false,
+  "manual_live_auto_contract_selection": false,
+  "modes": {
+    "automated": "locked",
+    "hybrid": "ranked set and user chooses",
+    "manual_live_1": "owner chooses and externally executes",
+    "paper": "user chooses simulated contract",
+    "survey": "observe"
+  },
+  "name": "Canonical Options-First Trade Center",
+  "parent": "f2c5fcbb62febbfc61f80b90ddc41d2bede0a11f",
+  "tower_scope": false
+}

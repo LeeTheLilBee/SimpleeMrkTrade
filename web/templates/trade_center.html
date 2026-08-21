@@ -2,14 +2,31 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>OB Trade Center</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}" />
+<title>Trade Center · The Observatory</title>
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='ob/ob_theme.css') }}"
+/>
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}"
+/>
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='ob/ob_trade_center.css') }}"
+/>
 </head>
-<body data-ob-room="trade-center">
+
+<body
+  data-ob-room="trade-center"
+  data-ob-surface="canonical"
+>
 <div
   class="ob-sky"
-  data-ob-atmosphere-version="OBUX026-OBUX030"
+  data-ob-atmosphere-version="OBUX041-OBUX045"
   aria-hidden="true"
 >
   <div class="ob-sky__weather"></div>
@@ -17,35 +34,493 @@
   <div class="ob-sky__grid"></div>
 </div>
 
-<!-- OBSERVATORY_TRADE_CENTER_V14_REAL_ROOM -->
-<div id="ob-app">
-<div class="ob-v23-lock-marker" hidden>Live Auto Locked</div>
-  <div class="ob-layer">
-    <div class="ob-header">
-      <div>
-        <h1 class="ob-title-xl">Trade Center</h1>
-        <div class="ob-subtitle">OB://TradeCenter · Positions · Signals · Watchlist · Candidates · Manual Live Queue</div>
+<main
+  id="ob-trade-center"
+  class="obtc"
+  aria-label="The Observatory Trade Center"
+>
+  <header class="obtc-topbar">
+    <div>
+      <p class="obtc-eyebrow">THE OBSERVATORY</p>
+
+      <div class="obtc-title-row">
+        <h1>Trade Center</h1>
+
+        <span
+          id="obtc-mode-chip"
+          class="obtc-chip obtc-chip--mode"
+        >
+          Survey
+        </span>
       </div>
 
-      <div class="ob-panel soulaana-panel">
-        <div class="ob-label">Soulaana · Trade Center</div>
-        <div class="soulaana-text">
-          This is where attention becomes discipline. A star can be bright, a setup can be interesting, and the answer can still be no. We manage first. We act only when the whole chain is clean.
-        </div>
-        <div class="legend">
-          <div class="legend-item"><span class="legend-dot legend-green"></span>Allowed review</div>
-          <div class="legend-item"><span class="legend-dot legend-gold"></span>Needs discipline</div>
-          <div class="legend-item"><span class="legend-dot legend-red"></span>Blocked / locked</div>
-        </div>
-      </div>
+      <p
+        id="obtc-room-summary"
+        class="obtc-room-summary"
+      >
+        Loading trade intelligence…
+      </p>
     </div>
 
-    <div id="tradeCenterMount"></div>
-  </div>
-</div>
+    <div class="obtc-status-row">
+      <span
+        id="obtc-account-chip"
+        class="obtc-chip"
+      >
+        Mission account
+      </span>
 
-<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_trade_center.js') }}"></script>
+      <span
+        id="obtc-risk-chip"
+        class="obtc-chip"
+      >
+        Risk —
+      </span>
+    </div>
+  </header>
+
+
+  <section class="obtc-layout">
+
+    <!-- ========================================================================================= -->
+    <!-- ATTENTION RAIL -->
+    <!-- ========================================================================================= -->
+
+    <aside class="obtc-attention">
+
+      <section class="obtc-panel">
+        <header class="obtc-panel-head">
+          <div>
+            <p class="obtc-kicker">MONEY IN MOTION</p>
+            <h2>Active Positions</h2>
+          </div>
+
+          <span
+            id="obtc-position-count"
+            class="obtc-count"
+          >0</span>
+        </header>
+
+        <div
+          id="obtc-active-positions"
+          class="obtc-card-stack"
+        >
+          <div class="obtc-empty">
+            No active positions.
+          </div>
+        </div>
+      </section>
+
+
+      <section class="obtc-panel">
+        <header class="obtc-panel-head">
+          <div>
+            <p class="obtc-kicker">NEEDS YOU</p>
+            <h2>Decision Queue</h2>
+          </div>
+
+          <span
+            id="obtc-decision-count"
+            class="obtc-count"
+          >0</span>
+        </header>
+
+        <div
+          id="obtc-decision-queue"
+          class="obtc-card-stack"
+        >
+          <div class="obtc-empty">
+            Nothing waiting.
+          </div>
+        </div>
+
+        <button
+          id="obtc-view-candidates"
+          class="obtc-quiet-button"
+          type="button"
+        >
+          View candidates
+        </button>
+      </section>
+
+    </aside>
+
+
+    <!-- ========================================================================================= -->
+    <!-- HERO WORKSPACE -->
+    <!-- ========================================================================================= -->
+
+    <section
+      id="obtc-workspace"
+      class="obtc-workspace"
+      aria-live="polite"
+    >
+
+      <header class="obtc-workspace-head">
+        <div>
+          <p class="obtc-kicker">TODAY'S TRADE DESK</p>
+
+          <div class="obtc-symbol-row">
+            <h2 id="obtc-symbol">
+              Select a trade
+            </h2>
+
+            <span
+              id="obtc-lifecycle-chip"
+              class="obtc-chip obtc-chip--lifecycle"
+            >
+              RESEARCH
+            </span>
+          </div>
+
+          <p
+            id="obtc-thesis"
+            class="obtc-thesis"
+          >
+            Choose a position or decision to open its operating workspace.
+          </p>
+        </div>
+
+        <button
+          id="obtc-open-symbol"
+          class="obtc-quiet-button"
+          type="button"
+          disabled
+        >
+          Open Symbol
+        </button>
+      </header>
+
+
+      <!-- CONTRACT HERO -->
+      <section class="obtc-contract">
+        <div class="obtc-contract-head">
+          <div>
+            <p class="obtc-kicker">
+              CONTRACT
+            </p>
+
+            <h3 id="obtc-contract-title">
+              No contract selected
+            </h3>
+
+            <p id="obtc-contract-subtitle">
+              Contract intelligence appears here.
+            </p>
+          </div>
+
+          <span
+            id="obtc-contract-source"
+            class="obtc-chip"
+          >
+            Source —
+          </span>
+        </div>
+
+        <div class="obtc-metrics obtc-metrics--six">
+          <div>
+            <span>Premium</span>
+            <strong id="obtc-premium">—</strong>
+          </div>
+
+          <div>
+            <span>Bid / Ask</span>
+            <strong id="obtc-bid-ask">—</strong>
+          </div>
+
+          <div>
+            <span>IV</span>
+            <strong id="obtc-iv">—</strong>
+          </div>
+
+          <div>
+            <span>Delta</span>
+            <strong id="obtc-delta">—</strong>
+          </div>
+
+          <div>
+            <span>Liquidity</span>
+            <strong id="obtc-liquidity">—</strong>
+          </div>
+
+          <div>
+            <span>Rank</span>
+            <strong id="obtc-rank">—</strong>
+          </div>
+        </div>
+
+
+        <section
+          id="obtc-ranked-options"
+          class="obtc-ranked-options"
+          hidden
+        >
+          <header class="obtc-panel-head">
+            <div>
+              <p class="obtc-kicker">
+                OBJECTIVE OPTION SET
+              </p>
+
+              <h3>
+                You choose the contract
+              </h3>
+            </div>
+          </header>
+
+          <div
+            id="obtc-ranked-option-list"
+            class="obtc-option-list"
+          ></div>
+        </section>
+      </section>
+
+
+      <!-- LIFECYCLE + FLIGHT PLAN -->
+      <section class="obtc-operating-grid">
+
+        <aside class="obtc-lifecycle">
+          <p class="obtc-kicker">
+            FLIGHT PATH
+          </p>
+
+          <ol id="obtc-lifecycle-rail">
+            <li data-stage="research">
+              <span>✦</span>
+              <strong>Research</strong>
+            </li>
+
+            <li data-stage="contract">
+              <span>✦</span>
+              <strong>Contract</strong>
+            </li>
+
+            <li data-stage="preflight">
+              <span>✦</span>
+              <strong>Preflight</strong>
+            </li>
+
+            <li data-stage="entry">
+              <span>✦</span>
+              <strong>Entry</strong>
+            </li>
+
+            <li data-stage="manage">
+              <span>✦</span>
+              <strong>Manage</strong>
+            </li>
+
+            <li data-stage="exit">
+              <span>✦</span>
+              <strong>Exit</strong>
+            </li>
+
+            <li data-stage="review">
+              <span>✦</span>
+              <strong>Review</strong>
+            </li>
+          </ol>
+        </aside>
+
+
+        <div class="obtc-flight">
+
+          <section>
+            <p class="obtc-kicker">
+              TRADE FLIGHT PLAN
+            </p>
+
+            <div class="obtc-metrics obtc-metrics--five">
+              <div>
+                <span>Entry</span>
+                <strong id="obtc-entry">—</strong>
+              </div>
+
+              <div>
+                <span>Stop</span>
+                <strong id="obtc-stop">—</strong>
+              </div>
+
+              <div>
+                <span>Target</span>
+                <strong id="obtc-target">—</strong>
+              </div>
+
+              <div>
+                <span>Max risk</span>
+                <strong id="obtc-max-risk">—</strong>
+              </div>
+
+              <div>
+                <span>Expected hold</span>
+                <strong id="obtc-hold-window">—</strong>
+              </div>
+            </div>
+          </section>
+
+
+          <section class="obtc-subsection">
+            <p class="obtc-kicker">
+              WHY THIS TRADE
+            </p>
+
+            <div
+              id="obtc-evidence"
+              class="obtc-evidence"
+            >
+              <span class="obtc-muted">
+                No canonical evidence supplied.
+              </span>
+            </div>
+          </section>
+
+
+          <section
+            id="obtc-position-health"
+            class="obtc-subsection"
+            hidden
+          >
+            <header class="obtc-panel-head">
+              <div>
+                <p class="obtc-kicker">
+                  POSITION HEALTH
+                </p>
+
+                <h3 id="obtc-health-state">
+                  Monitoring
+                </h3>
+              </div>
+
+              <strong id="obtc-return">
+                —
+              </strong>
+            </header>
+
+            <div class="obtc-metrics obtc-metrics--four">
+              <div>
+                <span>Current premium</span>
+                <strong id="obtc-current-premium">—</strong>
+              </div>
+
+              <div>
+                <span>Time in trade</span>
+                <strong id="obtc-time-in-trade">—</strong>
+              </div>
+
+              <div>
+                <span>Thesis</span>
+                <strong id="obtc-thesis-health">—</strong>
+              </div>
+
+              <div>
+                <span>Contract</span>
+                <strong id="obtc-contract-health">—</strong>
+              </div>
+            </div>
+          </section>
+
+
+          <section
+            id="obtc-mode-zone"
+            class="obtc-mode-zone"
+          >
+            <p
+              id="obtc-mode-eyebrow"
+              class="obtc-kicker"
+            >
+              OBSERVE
+            </p>
+
+            <h3 id="obtc-mode-title">
+              Observe the setup
+            </h3>
+
+            <p
+              id="obtc-mode-instruction"
+              class="obtc-muted"
+            >
+              Research only.
+            </p>
+
+            <div
+              id="obtc-actions"
+              class="obtc-actions"
+            ></div>
+          </section>
+
+        </div>
+      </section>
+    </section>
+  </section>
+
+
+  <!-- =========================================================================================== -->
+  <!-- SOULAANA -->
+  <!-- =========================================================================================== -->
+
+  <button
+    id="obtc-soulaana-orb"
+    class="obtc-soulaana-orb"
+    type="button"
+    aria-expanded="false"
+    aria-controls="obtc-soulaana-drawer"
+  >
+    <span class="obtc-soulaana-star">✦</span>
+
+    <span>
+      <strong>Soulaana</strong>
+      <small id="obtc-soulaana-line">
+        Select a trade and I’ll explain what matters.
+      </small>
+    </span>
+  </button>
+
+
+  <aside
+    id="obtc-soulaana-drawer"
+    class="obtc-soulaana-drawer"
+    hidden
+  >
+    <header class="obtc-panel-head">
+      <div>
+        <p class="obtc-kicker">SOULAANA</p>
+        <h2>Trade explanation</h2>
+      </div>
+
+      <button
+        id="obtc-close-soulaana"
+        class="obtc-quiet-button"
+        type="button"
+      >
+        Close
+      </button>
+    </header>
+
+    <div id="obtc-soulaana-detail">
+      Select a trade to inspect its setup, contract, risk, and next action.
+    </div>
+  </aside>
+
+
+  <!-- =========================================================================================== -->
+  <!-- LEGACY / PROOF COMPATIBILITY MOUNT
+       Existing proof/rehearsal/manual-live scripts remain loaded.
+       Their old surfaces do NOT become the canonical beta-facing room.
+  ============================================================================================ -->
+
+  <section
+    id="obtc-proof-compatibility"
+    hidden
+    aria-hidden="true"
+  >
+    <div id="tradeCenterMount"></div>
+  </section>
+
+</main>
+
+
+<!-- CANONICAL DATA / OPTIONS -->
+<script src="{{ url_for('static', filename='ob/ob_options_research_contract.js') }}"></script>
+
 <script src="{{ url_for('static', filename='ob/ob_manual_live.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_mission_accounts.js') }}"></script>
@@ -116,7 +591,12 @@
 <script src="{{ url_for('static', filename='ob/ob_manual_live_proof_packet_review_queue.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_manual_live_evidence_readiness_checkpoint.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_manual_live_candidate_decision_handoff.js') }}"></script>
-  <script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
-  <script src="/static/ob/ob_manual_live_dry_run_outcome_finalization.js"></script>
+<script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
+<script src="/static/ob/ob_manual_live_dry_run_outcome_finalization.js"></script>
+
+<!-- CANONICAL TRADE CENTER -->
+<script src="{{ url_for('static', filename='ob/ob_trade_center_modes.js') }}"></script>
+<script src="{{ url_for('static', filename='ob/ob_trade_center.js') }}"></script>
+
 </body>
 </html>
