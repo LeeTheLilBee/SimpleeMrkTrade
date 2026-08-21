@@ -1,0 +1,48 @@
+{
+  "base": "a5e4fe0ba95d5eec04bc6bdbb58e39b185f5f0e0",
+  "boundaries": {
+    "auto_close": false,
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_execution": false,
+    "broker_read": false,
+    "live_auto_locked": true,
+    "read_only": true,
+    "tower_scope": false
+  },
+  "branch": "ob-owner-console-obux051-055",
+  "canonical_owner_deck": true,
+  "existing_sources_preserved": [
+    "engine_feed_diagnostics_v33",
+    "engine_trust_labels_v34",
+    "engine_room_mapping_v35",
+    "owner_source_audit_v36",
+    "review_center_projection",
+    "mission_account_state",
+    "readiness_layers",
+    "manual_live_safety_layers"
+  ],
+  "four_questions": [
+    "is_ob_healthy",
+    "is_money_safe",
+    "what_needs_owner",
+    "what_is_locked_or_degraded"
+  ],
+  "owner_attention": {
+    "diagnostics": true,
+    "readiness": true,
+    "review_center": true,
+    "room_mapping": true,
+    "source_audit": true
+  },
+  "room": "Owner Console",
+  "truth_rules": {
+    "fake_balance": false,
+    "fake_capital_health": false,
+    "fallback_promoted_to_healthy": false,
+    "hardcoded_health": false,
+    "hardcoded_room_count": false,
+    "unknown_promoted_to_healthy": false
+  },
+  "version": "OBUX051-OBUX055"
+}

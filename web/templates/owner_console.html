@@ -1,51 +1,511 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8" />
-<title>OB Owner Console</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}" />
+  <meta charset="UTF-8" />
+
+  <title>
+    Owner Console · The Observatory
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_theme.css') }}"
+  />
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}"
+  />
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_owner_console_obux.css') }}"
+  />
 </head>
-<body data-ob-room="owner-console">
-<div
-  class="ob-sky"
-  data-ob-atmosphere-version="OBUX026-OBUX030"
-  aria-hidden="true"
+
+<body
+  data-ob-room="owner-console"
+  data-ob-owner-console-version="OBUX051-OBUX055"
 >
-  <div class="ob-sky__weather"></div>
-  <div class="ob-sky__horizon"></div>
-  <div class="ob-sky__grid"></div>
-</div>
 
-<!-- OBSERVATORY_OWNER_CONSOLE_V17_REAL_ROOM -->
-<div id="ob-app">
-<div class="ob-v23-lock-marker" hidden>Live Auto Locked</div>
-  <div class="ob-layer">
-    <div class="ob-header">
-      <div>
-        <h1 class="ob-title-xl">Owner Console</h1>
-        <div class="ob-subtitle">OB://OwnerConsole · Monitoring · Analytics · Intelligence · Diagnostics · Security · Preview Controls</div>
-      </div>
-
-      <div class="ob-panel soulaana-panel">
-        <div class="ob-label">Soulaana · Owner Console</div>
-        <div class="soulaana-text">
-          This room is system truth. Not marketing. Not pretty proof. Here we check what is working, what is guarded, what is private, and what The Tower should keep locked.
-        </div>
-        <div class="legend">
-          <div class="legend-item"><span class="legend-dot legend-green"></span>Healthy</div>
-          <div class="legend-item"><span class="legend-dot legend-gold"></span>Needs review</div>
-          <div class="legend-item"><span class="legend-dot legend-red"></span>Locked / owner-only</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="ownerConsoleMount"></div>
+  <div
+    class="ob-sky"
+    data-ob-atmosphere-version="OBUX051-OBUX055"
+    aria-hidden="true"
+  >
+    <div class="ob-sky__weather"></div>
+    <div class="ob-sky__horizon"></div>
+    <div class="ob-sky__grid"></div>
   </div>
-</div>
 
-<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_console.js') }}"></script>
+
+  <main
+    id="ob-owner-console"
+    class="oboc"
+  >
+
+    <!-- ========================================================================================= -->
+    <!-- HEADER -->
+    <!-- ========================================================================================= -->
+
+    <header class="oboc-header">
+
+      <div>
+        <span class="oboc-path">
+          OB://OwnerConsole
+        </span>
+
+        <h1>
+          Owner Console
+        </h1>
+
+        <p>
+          System truth · Capital boundaries · Source health · Owner attention
+        </p>
+      </div>
+
+
+      <div class="oboc-header-state">
+
+        <span
+          id="oboc-overall-chip"
+          class="oboc-chip"
+        >
+          SYSTEM UNKNOWN
+        </span>
+
+        <span class="oboc-chip locked">
+          LIVE AUTO 🔒
+        </span>
+
+        <span class="oboc-chip">
+          READ ONLY
+        </span>
+
+      </div>
+
+    </header>
+
+
+    <!-- ========================================================================================= -->
+    <!-- FOUR QUESTIONS -->
+    <!-- ========================================================================================= -->
+
+    <section
+      id="oboc-question-strip"
+      class="oboc-question-strip"
+    >
+
+      <article class="oboc-question-card">
+        <span>
+          IS OB HEALTHY?
+        </span>
+
+        <strong id="oboc-health-answer">
+          UNKNOWN
+        </strong>
+
+        <small id="oboc-health-detail">
+          Waiting for diagnostics.
+        </small>
+      </article>
+
+
+      <article class="oboc-question-card">
+        <span>
+          IS MY MONEY SAFE?
+        </span>
+
+        <strong id="oboc-money-answer">
+          GUARDED
+        </strong>
+
+        <small id="oboc-money-detail">
+          No broker execution. Live Auto locked.
+        </small>
+      </article>
+
+
+      <article class="oboc-question-card">
+        <span>
+          WHAT NEEDS ME?
+        </span>
+
+        <strong id="oboc-attention-answer">
+          —
+        </strong>
+
+        <small id="oboc-attention-detail">
+          Loading owner attention.
+        </small>
+      </article>
+
+
+      <article class="oboc-question-card">
+        <span>
+          WHAT IS DEGRADED?
+        </span>
+
+        <strong id="oboc-degraded-answer">
+          —
+        </strong>
+
+        <small id="oboc-degraded-detail">
+          Checking source truth.
+        </small>
+      </article>
+
+    </section>
+
+
+    <!-- ========================================================================================= -->
+    <!-- MAIN OWNER DECK -->
+    <!-- ========================================================================================= -->
+
+    <section class="oboc-main-grid">
+
+      <!-- OWNER ATTENTION -->
+      <aside class="oboc-panel oboc-attention-panel">
+
+        <div class="oboc-panel-head">
+          <div>
+            <span class="oboc-eyebrow">
+              NEEDS OWNER
+            </span>
+
+            <h2>
+              Attention Queue
+            </h2>
+          </div>
+
+          <span
+            id="oboc-attention-count"
+            class="oboc-count"
+          >
+            0
+          </span>
+        </div>
+
+        <div
+          id="oboc-attention-list"
+          class="oboc-attention-list"
+        >
+          <div class="oboc-empty">
+            Waiting for system truth.
+          </div>
+        </div>
+
+      </aside>
+
+
+      <!-- SYSTEM TRUTH -->
+      <section class="oboc-panel oboc-system-panel">
+
+        <div class="oboc-panel-head">
+          <div>
+            <span class="oboc-eyebrow">
+              SYSTEM TRUTH
+            </span>
+
+            <h2>
+              Observatory Health
+            </h2>
+          </div>
+
+          <span
+            id="oboc-system-state"
+            class="oboc-status-chip"
+          >
+            UNKNOWN
+          </span>
+        </div>
+
+        <div
+          id="oboc-health-grid"
+          class="oboc-health-grid"
+        ></div>
+
+
+        <div class="oboc-soulaana">
+
+          <div class="oboc-soulaana-mark">
+            ✦
+          </div>
+
+          <div>
+            <span>
+              Soulaana
+            </span>
+
+            <p id="oboc-soulaana-line">
+              I’m waiting for source-backed system truth.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+    </section>
+
+
+    <!-- ========================================================================================= -->
+    <!-- SECONDARY OWNER GRID -->
+    <!-- ========================================================================================= -->
+
+    <section class="oboc-secondary-grid">
+
+
+      <!-- MISSION ACCOUNTS -->
+      <section class="oboc-panel">
+
+        <div class="oboc-panel-head">
+          <div>
+            <span class="oboc-eyebrow">
+              CAPITAL + OPERATIONS
+            </span>
+
+            <h2>
+              Mission Accounts
+            </h2>
+          </div>
+
+          <span class="oboc-muted-chip">
+            POLICY ≠ BALANCE
+          </span>
+        </div>
+
+        <p class="oboc-panel-copy">
+          Mission rules are visible here. Live balances and capital health stay unavailable until a canonical financial source provides them.
+        </p>
+
+        <div
+          id="oboc-mission-list"
+          class="oboc-mission-list"
+        ></div>
+
+      </section>
+
+
+      <!-- SOURCE TRUTH -->
+      <section class="oboc-panel">
+
+        <div class="oboc-panel-head">
+          <div>
+            <span class="oboc-eyebrow">
+              ENGINE + SOURCE TRUTH
+            </span>
+
+            <h2>
+              Data Health
+            </h2>
+          </div>
+
+          <span
+            id="oboc-source-chip"
+            class="oboc-status-chip"
+          >
+            UNKNOWN
+          </span>
+        </div>
+
+        <div
+          id="oboc-source-grid"
+          class="oboc-source-grid"
+        ></div>
+
+        <button
+          id="oboc-source-details-button"
+          class="oboc-text-button"
+          type="button"
+        >
+          Show source details
+        </button>
+
+      </section>
+
+    </section>
+
+
+    <!-- ========================================================================================= -->
+    <!-- ROOM CHAIN -->
+    <!-- ========================================================================================= -->
+
+    <section class="oboc-panel oboc-room-panel">
+
+      <div class="oboc-panel-head">
+
+        <div>
+          <span class="oboc-eyebrow">
+            OPERATING CHAIN
+          </span>
+
+          <h2>
+            Room Health
+          </h2>
+        </div>
+
+        <span class="oboc-muted-chip">
+          SOURCE-BACKED ONLY
+        </span>
+
+      </div>
+
+
+      <div
+        id="oboc-room-chain"
+        class="oboc-room-chain"
+      ></div>
+
+    </section>
+
+
+    <!-- ========================================================================================= -->
+    <!-- LOCK WALL -->
+    <!-- ========================================================================================= -->
+
+    <section class="oboc-lock-wall">
+
+      <div>
+        <span class="oboc-eyebrow">
+          HARD SAFETY
+        </span>
+
+        <h2>
+          What Owner Console cannot do
+        </h2>
+      </div>
+
+
+      <div class="oboc-lock-grid">
+
+        <div>
+          <span>
+            Broker read
+          </span>
+
+          <strong>
+            DISABLED
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Broker execution
+          </span>
+
+          <strong>
+            DISABLED
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Auto close
+          </span>
+
+          <strong>
+            DISABLED
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Auto execution
+          </span>
+
+          <strong>
+            DISABLED
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Auto contract selection
+          </span>
+
+          <strong>
+            DISABLED
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Live Auto
+          </span>
+
+          <strong>
+            LOCKED 🔒
+          </strong>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================================================================= -->
+    <!-- PROGRESSIVE SOURCE DRAWER -->
+    <!-- ========================================================================================= -->
+
+    <aside
+      id="oboc-source-drawer"
+      class="oboc-source-drawer"
+      hidden
+    >
+
+      <div class="oboc-panel-head">
+
+        <div>
+          <span class="oboc-eyebrow">
+            SOURCE AUDIT
+          </span>
+
+          <h2>
+            What is feeding OB?
+          </h2>
+        </div>
+
+        <button
+          id="oboc-source-drawer-close"
+          class="oboc-text-button"
+          type="button"
+        >
+          Close
+        </button>
+
+      </div>
+
+      <div
+        id="oboc-source-detail-list"
+        class="oboc-source-detail-list"
+      ></div>
+
+    </aside>
+
+
+    <!-- ========================================================================================= -->
+    <!-- HIDDEN COMPATIBILITY MOUNT
+         Older operating scripts may still look for .ob-layer / ownerConsoleMount.
+         They stay behind the owner-facing surface.
+    ========================================================================================== -->
+
+    <section
+      id="oboc-compatibility"
+      class="ob-layer"
+      hidden
+      aria-hidden="true"
+    >
+      <div id="ownerConsoleMount"></div>
+    </section>
+
+  </main>
+
+
+  <!-- ============================================================================================
+       EXISTING OWNER / DIAGNOSTIC / READINESS / MISSION / SAFETY STACK
+       ============================================================================================ -->
+
 <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_mission_accounts.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_notifications_settings.js') }}"></script>
@@ -115,7 +575,21 @@
 <script src="{{ url_for('static', filename='ob/ob_manual_live_proof_packet_review_queue.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_manual_live_evidence_readiness_checkpoint.js') }}"></script>
 <script src="{{ url_for('static', filename='ob/ob_manual_live_candidate_decision_handoff.js') }}"></script>
-  <script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
-  <script src="/static/ob/ob_manual_live_owner_first_run_readiness.js"></script>
+<script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
+<script src="/static/ob/ob_manual_live_owner_first_run_readiness.js"></script>
+
+
+  <!-- ============================================================================================
+       CANONICAL OWNER CONSOLE
+       ============================================================================================ -->
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_owner_console_projection.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_owner_console.js') }}"
+  ></script>
+
 </body>
 </html>
