@@ -1,0 +1,22 @@
+{
+  "acceptance_state": "VAULT_ACCEPTED",
+  "acceptance_store": "tower/data/archive_vault_acceptance_records.jsonl",
+  "accepted_packet_schema": "tower.vault.person-change-proof.v1",
+  "accepted_packet_type": "TOWER_PERSON_CHANGE_PROOF",
+  "application_level_sealed_record": true,
+  "branch": "tower-person-control-room-twr046-050",
+  "created_at_utc": "2026-08-20T15:43:19.938317+00:00",
+  "duplicate_acceptance_blocked": true,
+  "external_hardened_archive_storage": false,
+  "live_auto": "LOCKED",
+  "packet_integrity_validation": true,
+  "parent": "986b5009555cc1be73eafb1766284e7ae92ca262",
+  "person_history_acceptance_event": true,
+  "queue_source": "tower/data/archive_vault_handoff_queue.json",
+  "queue_state": "VAULT_HANDOFF_QUEUED",
+  "real_permission_changes": false,
+  "sealed_state": "VAULT_SEALED",
+  "title": "Archive Vault Intake + Acceptance Receipt / TWR076-TWR080",
+  "tower_event_integrity_link_validation": true,
+  "vault_acceptance_receipt": true
+}
