@@ -1,0 +1,30 @@
+{
+  "automated_ux_unlocked": false,
+  "automatic_contract_selection": false,
+  "automatic_execution": false,
+  "branch": "ob-options-research-projection-obdata006-008",
+  "broker_api": false,
+  "brokerage_execution": false,
+  "browser_direct_option_fetch": false,
+  "browser_yfinance": false,
+  "build": "OBDATA006-008",
+  "canonical_adapter": "projectPayload(payload)",
+  "display_gate": "displayEligible",
+  "duplicate_options_lifecycle": false,
+  "engine_ranking_preserved": true,
+  "existing_authorities": [
+    "engine/options_intelligence.py",
+    "engine/options_lifecycle.py",
+    "engine/vehicle_selector.py",
+    "engine/option_repricing.py"
+  ],
+  "fake_option_fallback": false,
+  "human_choice_required_hybrid": true,
+  "human_choice_required_manual_live_1": true,
+  "name": "Existing Options Intelligence Projection Bridge",
+  "new_options_engine": false,
+  "ob_selects_contract_hybrid": false,
+  "ob_selects_contract_manual_live_1": false,
+  "parent": "7cbd8216c58387c263fdb2895c22816d60832a71",
+  "symbol_room_consumer": "optionsContainers(projection, underlying)"
+}
