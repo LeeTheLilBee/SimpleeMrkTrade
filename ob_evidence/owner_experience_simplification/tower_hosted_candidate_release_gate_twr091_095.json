@@ -1,0 +1,22 @@
+{
+  "broker_submission_authorized": false,
+  "capital_movement_authorized": false,
+  "created_at_utc": "2026-08-24T14:13:39.849873+00:00",
+  "deploy_render": false,
+  "deployment_authorized": false,
+  "fail_recommendation": "HOLD",
+  "input_contract": "TWR086-TWR090 hosted candidate parity result",
+  "live_auto_authorized": false,
+  "manual_live_authorized": false,
+  "merge_pr22": false,
+  "owner_review_required": true,
+  "packet_integrity_sha256": true,
+  "parent": "62223707538b9792581f2f7e66e16033c4ceef64",
+  "pass_recommendation": "READY_FOR_OWNER_REVIEW",
+  "pr": 22,
+  "production_promotion_authorized": false,
+  "promote_main": false,
+  "promotion_authorized": false,
+  "staging_ready_changed": false,
+  "title": "Tower Hosted Candidate Release Decision Packet / TWR091-TWR095"
+}
