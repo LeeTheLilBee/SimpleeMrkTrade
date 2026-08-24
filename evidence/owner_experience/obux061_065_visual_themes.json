@@ -1,0 +1,34 @@
+{
+  "pack": "OBUX061-065",
+  "expected_parent": "7d134d81274adab6dd8122ce94984cdc56120528",
+  "dashboard_layout_preserved": true,
+  "themes": {
+    "default": "obsidian-plum",
+    "available": [
+      "obsidian-plum",
+      "velvet-night",
+      "eclipse-gold"
+    ],
+    "appearance_only": true,
+    "browser_preference": true
+  },
+  "normal_beta_surface": {
+    "room_data_polish_visible": false,
+    "mission_account_bar_visible": false,
+    "engine_status_bar_visible": false,
+    "snapshot_verification_visible": false,
+    "permanent_route_bar": false,
+    "permanent_global_session_bar": false,
+    "compact_control_drawer": true
+  },
+  "owner_boundary": {
+    "owner_dashboard_cleanup": false,
+    "owner_console_cleanup": false,
+    "mission_accounts_owner_only": true
+  },
+  "safety": {
+    "broker_execution_added": false,
+    "automatic_contract_selection_added": false,
+    "live_auto_unlocked": false
+  }
+}

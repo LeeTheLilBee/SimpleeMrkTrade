@@ -42,6 +42,7 @@
       6000
     );
   </script>
+  <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux061065" />
 </head>
 
 <body
@@ -94,27 +95,7 @@
             and where to move next.
           </p>
         </div>
-
-        <div
-          class="ob-user-header-actions"
-        >
-          <button
-            type="button"
-            class="ob-soft-button"
-            data-ob-action="open-beta-guide"
-          >
-            Beta Guide
-          </button>
-
-          <button
-            type="button"
-            class="ob-soft-button"
-            data-ob-action="open-my-ob"
-          >
-            My OB
-          </button>
-        </div>
-      </header>
+</header>
 
       <section
         class="ob-account-snapshot"
@@ -622,5 +603,7 @@
   <script
     src="{{ url_for('static', filename='ob/ob_global_session_shell.js') }}"
   ></script>
+  <script src="/static/ob/ob_theme_switcher.js?v=obux061065"></script>
+  <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux061065"></script>
 </body>
 </html>
