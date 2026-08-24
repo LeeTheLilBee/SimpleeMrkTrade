@@ -1,0 +1,184 @@
+{
+  "pack": "OBUX056-060",
+  "surface": "Canonical User Dashboard + Arrival / Session",
+  "expected_parent": "6f90bd54c7f9c395e7483dd95f5742861a8ce91f",
+  "branch": "ob-dashboard-arrival-obux056-060",
+  "product_split": {
+    "dashboard": "What is happening in my OB account?",
+    "owner_dashboard": "How is my owner mission/account operation doing?",
+    "owner_console": "Is OB itself healthy, safe, sourced, guarded, degraded, stale, missing, or unknown?"
+  },
+  "boundaries": {
+    "mission_accounts_on_normal_dashboard": false,
+    "broker_execution": false,
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "automated_locked": true,
+    "checkin_changes_market_truth": false
+  },
+  "arrival": {
+    "dark_blurred_inactive_background": true,
+    "beta_sop_carousel": true,
+    "side_arrows": true,
+    "page_dots": true,
+    "keyboard_arrows": true,
+    "touch_swipe": true,
+    "versioned_ack": true,
+    "whats_changed": true,
+    "optional_checkin": true,
+    "safe_resume": true,
+    "multi_tab_guard": true,
+    "guided_first_session": true,
+    "failure_safe_unlock": true
+  },
+  "session": {
+    "api": "OBSessionState",
+    "persistent_key": "ob.session.state.v1",
+    "ephemeral_key": "ob.session.ephemeral.v1",
+    "checkin_default": "session-only",
+    "checkin_history_requires_opt_in": true,
+    "optional_session_reflection": true
+  },
+  "global_shell": {
+    "feedback": true,
+    "back_to_tower": true,
+    "sign_out_of_ob": true,
+    "full_tower_signout_owned_by_tower": true,
+    "active_tracking_warning": true,
+    "idle_privacy_cover": true
+  },
+  "historical_checkin_recovery_scan": [
+    {
+      "pattern": "how are you",
+      "matches": [
+        "0469ce5e94a7d001cd1567c249ed85c01240bc7f|2026-06-02|Save approved OB dashboard artist-reserved design - 2026-06-02 16:50",
+        "a3ea4830440fafd13b4fdf6ca3267a6a2b9c4d3b|2026-04-14|update SimpleeMrkTrade",
+        "4a19136dd1b6b4be90911eb080d06159844060f4|2026-04-13|update SimpleeMrkTrade",
+        "798c2d30d4fefa3a1152eb7902d61bc5b2e6e3d5|2026-04-13|update SimpleeMrkTrade",
+        "ecc2e9fbfca55546b4ecacaf5766c5c8532f516c|2026-04-13|update SimpleeMrkTrade"
+      ]
+    },
+    {
+      "pattern": "how.*feeling",
+      "matches": [
+        "e244392c42b8ab8ec91e722d072a05a3992de74e|2026-06-11|Polish Observatory market discovery rooms",
+        "a3ea4830440fafd13b4fdf6ca3267a6a2b9c4d3b|2026-04-14|update SimpleeMrkTrade",
+        "4a19136dd1b6b4be90911eb080d06159844060f4|2026-04-13|update SimpleeMrkTrade",
+        "798c2d30d4fefa3a1152eb7902d61bc5b2e6e3d5|2026-04-13|update SimpleeMrkTrade",
+        "ecc2e9fbfca55546b4ecacaf5766c5c8532f516c|2026-04-13|update SimpleeMrkTrade",
+        "0a97d24e6fa3a9bcb963891cb18bd5ab954115e9|2026-04-13|update SimpleeMrkTrade",
+        "b18d31386b382eb33a62369427da223a3cdd3d76|2026-04-12|update SimpleeMrkTrade",
+        "84e0a9be5439c30d9b2b35e2f8a3829e057445d2|2026-04-11|update SimpleeMrkTrade"
+      ]
+    },
+    {
+      "pattern": "feeling",
+      "matches": [
+        "d0931116d5de5211c62872faf81390960b49eb09|2026-06-30|Add OB Giant Packs 031-033 manual live operator confidence layer",
+        "2bf48601ac04f747bbddeb697ef6fd9ca4865185|2026-06-30|Add OB Giant Packs 026-030 practice review polish layer",
+        "2827647478ed3d3e51282b809f05eac889420499|2026-06-16|Add OB V21 beta readiness tester flow",
+        "e244392c42b8ab8ec91e722d072a05a3992de74e|2026-06-11|Polish Observatory market discovery rooms",
+        "a3ea4830440fafd13b4fdf6ca3267a6a2b9c4d3b|2026-04-14|update SimpleeMrkTrade",
+        "4a19136dd1b6b4be90911eb080d06159844060f4|2026-04-13|update SimpleeMrkTrade",
+        "798c2d30d4fefa3a1152eb7902d61bc5b2e6e3d5|2026-04-13|update SimpleeMrkTrade",
+        "ecc2e9fbfca55546b4ecacaf5766c5c8532f516c|2026-04-13|update SimpleeMrkTrade",
+        "0a97d24e6fa3a9bcb963891cb18bd5ab954115e9|2026-04-13|update SimpleeMrkTrade",
+        "b18d31386b382eb33a62369427da223a3cdd3d76|2026-04-12|update SimpleeMrkTrade",
+        "84e0a9be5439c30d9b2b35e2f8a3829e057445d2|2026-04-11|update SimpleeMrkTrade"
+      ]
+    },
+    {
+      "pattern": "mood",
+      "matches": [
+        "7c237d8d17ee931f0eb0a84bb83b92087a89bd2e|2026-08-18|OBUX031-035 rebuild live Market Map experience",
+        "6d6045eb7360661d4400fb2e9c152f441f7c37f7|2026-08-17|OBDATA001-005 canonical web projection and market truth boundary",
+        "de1291d66abb9ecbddf5ea3ee8685eb39542a6ad|2026-06-16|Add OB V22 real engine data wiring prep",
+        "5c51d2f3f793612cf0e67ef7059523e56a874d48|2026-06-15|Add OB V10 market map symbol star room preview",
+        "e244392c42b8ab8ec91e722d072a05a3992de74e|2026-06-11|Polish Observatory market discovery rooms",
+        "0469ce5e94a7d001cd1567c249ed85c01240bc7f|2026-06-02|Save approved OB dashboard artist-reserved design - 2026-06-02 16:50",
+        "a3ea4830440fafd13b4fdf6ca3267a6a2b9c4d3b|2026-04-14|update SimpleeMrkTrade",
+        "4a19136dd1b6b4be90911eb080d06159844060f4|2026-04-13|update SimpleeMrkTrade",
+        "798c2d30d4fefa3a1152eb7902d61bc5b2e6e3d5|2026-04-13|update SimpleeMrkTrade",
+        "ecc2e9fbfca55546b4ecacaf5766c5c8532f516c|2026-04-13|update SimpleeMrkTrade",
+        "0a97d24e6fa3a9bcb963891cb18bd5ab954115e9|2026-04-13|update SimpleeMrkTrade",
+        "ccd5db631db59a9a89cd772bccdec1dc88f09a7e|2026-04-13|update SimpleeMrkTrade",
+        "b18d31386b382eb33a62369427da223a3cdd3d76|2026-04-12|update SimpleeMrkTrade",
+        "84e0a9be5439c30d9b2b35e2f8a3829e057445d2|2026-04-11|update SimpleeMrkTrade"
+      ]
+    },
+    {
+      "pattern": "check.?in",
+      "matches": [
+        "6f90bd54c7f9c395e7483dd95f5742861a8ce91f|2026-08-21|OBUX051-055 canonical source-backed Owner Console",
+        "7cbd8216c58387c263fdb2895c22816d60832a71|2026-08-20|OBUX036-040 options-first mode-aware Symbol Room",
+        "7c237d8d17ee931f0eb0a84bb83b92087a89bd2e|2026-08-18|OBUX031-035 rebuild live Market Map experience",
+        "6d6045eb7360661d4400fb2e9c152f441f7c37f7|2026-08-17|OBDATA001-005 canonical web projection and market truth boundary",
+        "0670317aea7319d1a8e44dd22bd435c40da5a58e|2026-06-18|Add OB V29 manual live receipts review integration",
+        "25767b6646fb2cbe40f97b24cae70eb141f26ee6|2026-06-16|Add OB V17 Owner Console real room",
+        "e244392c42b8ab8ec91e722d072a05a3992de74e|2026-06-11|Polish Observatory market discovery rooms",
+        "3a2a10bb24d1a4fe100a168baf1de65870a9d78e|2026-06-11|Polish Observatory account utility rooms",
+        "c8214e057a930566a32ff9e136b6748f7928c51b|2026-06-08|Polish Observatory research cluster rooms",
+        "0469ce5e94a7d001cd1567c249ed85c01240bc7f|2026-06-02|Save approved OB dashboard artist-reserved design - 2026-06-02 16:50",
+        "a3ea4830440fafd13b4fdf6ca3267a6a2b9c4d3b|2026-04-14|update SimpleeMrkTrade",
+        "4a19136dd1b6b4be90911eb080d06159844060f4|2026-04-13|update SimpleeMrkTrade",
+        "798c2d30d4fefa3a1152eb7902d61bc5b2e6e3d5|2026-04-13|update SimpleeMrkTrade",
+        "6ba0c5d81072b82a93af90454e38c8c81d2252ad|2026-04-13|update SimpleeMrkTrade",
+        "ecc2e9fbfca55546b4ecacaf5766c5c8532f516c|2026-04-13|update SimpleeMrkTrade",
+        "a7af34eac0ba9b95cf463dc390298e47f810e2d9|2026-04-13|update SimpleeMrkTrade",
+        "0a97d24e6fa3a9bcb963891cb18bd5ab954115e9|2026-04-13|update SimpleeMrkTrade",
+        "ccd5db631db59a9a89cd772bccdec1dc88f09a7e|2026-04-13|update SimpleeMrkTrade",
+        "b18d31386b382eb33a62369427da223a3cdd3d76|2026-04-12|update SimpleeMrkTrade",
+        "84e0a9be5439c30d9b2b35e2f8a3829e057445d2|2026-04-11|update SimpleeMrkTrade"
+      ]
+    },
+    {
+      "pattern": "energy",
+      "matches": [
+        "7cbd8216c58387c263fdb2895c22816d60832a71|2026-08-20|OBUX036-040 options-first mode-aware Symbol Room",
+        "7c237d8d17ee931f0eb0a84bb83b92087a89bd2e|2026-08-18|OBUX031-035 rebuild live Market Map experience",
+        "6d6045eb7360661d4400fb2e9c152f441f7c37f7|2026-08-17|OBDATA001-005 canonical web projection and market truth boundary",
+        "0288927ac8c0734b475767087f92301761ebef69|2026-08-17|Build Observatory room weather system OBUX026-OBUX030",
+        "3013f56d9ff6532b85db352257c0c8266301993a|2026-08-13|Refine Soulaana-first Dashboard experience OBUX011-OBUX015",
+        "5f3ec16cda70fb545c032971129ab3e8a706cc93|2026-08-13|Refine Soulaana-first Dashboard experience OBUX011-OBUX015",
+        "79f9102d54b2fdbc67f85636f1ba330b9e37dc3f|2026-06-15|Add OB V12 real Symbol Page star room",
+        "5c51d2f3f793612cf0e67ef7059523e56a874d48|2026-06-15|Add OB V10 market map symbol star room preview",
+        "e244392c42b8ab8ec91e722d072a05a3992de74e|2026-06-11|Polish Observatory market discovery rooms",
+        "127cbf40724b525de459fdb710b9f1d7a6d1446d|2026-04-01|update SimpleeMrkTrade",
+        "0a5fbf6cbd81cad2fe47e7dffba221313d370084|2026-04-01|update SimpleeMrkTrade"
+      ]
+    },
+    {
+      "pattern": "focus",
+      "matches": [
+        "6f90bd54c7f9c395e7483dd95f5742861a8ce91f|2026-08-21|OBUX051-055 canonical source-backed Owner Console",
+        "b79ba306b1918b3ac549a00e492fd2fd7303490a|2026-08-21|OBUX046-050 canonical forensic Review Center with negative dive",
+        "c864c3940268ce2face5df170ed2bf00efd7786b|2026-08-21|OBUX041-045 canonical options-first lifecycle-aware Trade Center",
+        "7cbd8216c58387c263fdb2895c22816d60832a71|2026-08-20|OBUX036-040 options-first mode-aware Symbol Room",
+        "7c237d8d17ee931f0eb0a84bb83b92087a89bd2e|2026-08-18|OBUX031-035 rebuild live Market Map experience",
+        "6d6045eb7360661d4400fb2e9c152f441f7c37f7|2026-08-17|OBDATA001-005 canonical web projection and market truth boundary",
+        "0288927ac8c0734b475767087f92301761ebef69|2026-08-17|Build Observatory room weather system OBUX026-OBUX030",
+        "aee9f26b149195f613d89f930f58bb8e9f5e9aaa|2026-08-13|Apply real Soulaana Dashboard experience OBUX006-OBUX010",
+        "6967c39eebf1e9f5107479b080a2305c8776b99f|2026-08-13|Apply real Soulaana Dashboard experience OBUX006-OBUX010",
+        "82c4b4225e4be293ba549554f344661a19732b38|2026-08-13|Apply real Soulaana Dashboard experience OBUX006-OBUX010",
+        "91b9fce1d35e1390bbab2d03126d76fd99036d52|2026-06-30|Add OB Giant Packs 034-035 manual live confidence readiness",
+        "d0931116d5de5211c62872faf81390960b49eb09|2026-06-30|Add OB Giant Packs 031-033 manual live operator confidence layer",
+        "2bf48601ac04f747bbddeb697ef6fd9ca4865185|2026-06-30|Add OB Giant Packs 026-030 practice review polish layer",
+        "344524bf0ed1175846ae99a7f9f1fc82c1dc4866|2026-06-29|Add OB Giant Pack 004 private beta tower lock polish",
+        "63cde3e72988e18e915cd2b099910946592f0a55|2026-06-29|Add OB Giant Pack 003 receipts review center foundation",
+        "60f7c4e4f1562129353158ef7ba3f843860e7a33|2026-06-29|Add OB Giant Pack 002 manual live level one operating room",
+        "be6056d8a8d307006ea1eac0c3578258c144b553|2026-06-29|Add OB Giant Pack 001 owner user account experience",
+        "933720193d1c3404db2318219f9fa5d6de315068|2026-06-18|Add OB V36 owner source audit action plan",
+        "b51a8eef06dd1a09cccd48b0549605e8824e267f|2026-06-18|Add OB V35 engine feed canonical room mapping",
+        "75c6aba0e4a49e92ce58f5e6de7da75bd30807e9|2026-06-18|Add OB V34 engine feed trust labels room warnings"
+      ]
+    },
+    {
+      "pattern": "session intent",
+      "matches": []
+    },
+    {
+      "pattern": "ready today",
+      "matches": []
+    }
+  ]
+}
