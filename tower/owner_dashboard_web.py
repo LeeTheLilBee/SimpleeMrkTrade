@@ -1,4 +1,7 @@
+
 from __future__ import annotations
+
+from html import escape
 
 from flask import jsonify, redirect
 
@@ -10,12 +13,20 @@ from tower.tower_human_login_ob_launch import owner_session_active
 
 
 def _tower_owner_dashboard_html() -> str:
+    from tower.hosted_owner_release_candidate_state import (
+        owner_release_dashboard_snapshot,
+    )
+
     dashboard = build_tower_owner_dashboard()
     summary = dashboard["summary"]
     cards = owner_dashboard_status_cards()
     people = dashboard["people"]
     invites = dashboard["invite_drafts"]
     requests = dashboard["access_requests"]
+    release_snapshot = owner_release_dashboard_snapshot()
+    release_label = escape(release_snapshot["label"])
+    release_detail = escape(release_snapshot["detail"])
+    release_state = escape(release_snapshot["state"])
 
     card_html = "\n".join(
         f"""
@@ -210,6 +221,17 @@ def _tower_owner_dashboard_html() -> str:
             color: var(--muted);
           }}
 
+          .owner-release-state {{
+            display: inline-flex;
+            margin-top: 10px;
+            padding: 6px 11px;
+            border: 1px solid rgba(248,217,120,0.28);
+            border-radius: 999px;
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: 850;
+          }}
+
           .owner-release-link {{
             color: var(--gold);
             text-decoration: none;
@@ -321,7 +343,10 @@ def _tower_owner_dashboard_html() -> str:
           <section class="owner-release-card" data-tower-release-review-entry="true">
             <div>
               <div class="eyebrow">Owner release review</div>
-              <p>Review a sealed hosted candidate and record an owner-only decision.</p>
+              <span class="owner-release-state" data-tower-release-state="{release_state}">
+                {release_label}
+              </span>
+              <p>{release_detail}</p>
             </div>
             <a class="owner-release-link" href="/tower/owner/release-review">
               Open release review

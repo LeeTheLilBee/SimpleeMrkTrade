@@ -1,0 +1,51 @@
+{
+  "atomic_packet_publication": true,
+  "broker_submission_authorized": false,
+  "candidate_states": [
+    "OWNER_VERIFICATION_REQUIRED",
+    "NO_CANDIDATE",
+    "STALE_CANDIDATE",
+    "CANDIDATE_CHANGED",
+    "CANDIDATE_INVALID",
+    "DECISION_STATE_UNAVAILABLE",
+    "READY_FOR_OWNER_REVIEW",
+    "OWNER_APPROVED",
+    "OWNER_HELD",
+    "OWNER_REJECTED"
+  ],
+  "capital_movement_authorized": false,
+  "client_supplied_host_revision_or_parity_trusted": false,
+  "deployment_authorized": false,
+  "exact_candidate_receipt_hash_required": true,
+  "fake_candidate_fallback_allowed": false,
+  "genuine_https_hosted_parity_required": true,
+  "hosted_durable_packet_store_required": true,
+  "layers": {
+    "TWR106": "Genuine passing HTTPS hosted parity creates the exact owner-review candidate",
+    "TWR107": "Atomic, locked, fsynced, integrity-sealed canonical candidate publication",
+    "TWR108": "Owner-only candidate lifecycle and exact receipt-bound approval, hold, rejection state",
+    "TWR109": "Existing Tower owner dashboard and release room display real candidate and decision state",
+    "TWR110": "Full candidate publication, owner review, explicit decision, verified receipt certification"
+  },
+  "live_auto_authorized": false,
+  "manual_live_authorized": false,
+  "observatory_modified": false,
+  "owner_session_and_step_up_required": true,
+  "pack_label": "TWR106\u2013TWR110 \u2014 Candidate Publication + Owner Decision State",
+  "production_promotion_authorized": false,
+  "promotion_authorized": false,
+  "routes": {
+    "owner_candidate_publication": "/tower/owner/release-review/publish",
+    "owner_candidate_state": "/tower/owner/release-review/state.json",
+    "owner_decision": "/tower/owner/release-review/decision",
+    "owner_receipt": "/tower/owner/release-review/receipt/<receipt_id>",
+    "owner_review": "/tower/owner/release-review"
+  },
+  "same_origin_and_csrf_required": true,
+  "same_revision_republication_allowed": false,
+  "schema_version": "tower.candidate-publication-owner-decision-state.twr106-110.v1",
+  "separate_release_execution_gate_required": true,
+  "staging_ready_changed": false,
+  "tower_branch": "tower-hosted-runtime-identity-twr081-085",
+  "tower_parent_commit": "ac6184ab00aa572f592fab8d2e515527565c747e"
+}

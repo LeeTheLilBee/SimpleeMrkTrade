@@ -1,4 +1,5 @@
 
+
 """Protected, owner-facing Tower release review room / TWR102-TWR105."""
 
 from __future__ import annotations
@@ -22,6 +23,11 @@ from tower.hosted_owner_release_review import (
     record_owner_release_decision,
     verify_owner_release_decision_receipt,
 )
+from tower.hosted_owner_release_candidate_state import (
+    DECISION_STATES,
+    project_owner_release_candidate_state,
+)
+from tower.hosted_release_candidate_publication import publish_hosted_release_candidate
 from tower.hosted_release_packet_provider import load_canonical_release_packet
 from tower.tower_human_login_ob_launch import (
     SESSION_STEP_UP_UNTIL,
@@ -38,6 +44,8 @@ RELEASE_REVIEW_PATH = "/tower/owner/release-review"
 RELEASE_REVIEW_JSON_PATH = "/tower/owner/release-review.json"
 RELEASE_STEP_UP_PATH = "/tower/owner/release-review/step-up"
 RELEASE_DECISION_PATH = "/tower/owner/release-review/decision"
+RELEASE_PUBLICATION_PATH = "/tower/owner/release-review/publish"
+RELEASE_STATE_PATH = "/tower/owner/release-review/state.json"
 RELEASE_RECEIPT_PATH = "/tower/owner/release-review/receipt/<receipt_id>"
 RELEASE_CSRF_SESSION_KEY = "tower_owner_release_review_csrf"
 RELEASE_ROOM_MARKER = "tower-owner-release-review-room-twr101-105"
@@ -136,6 +144,44 @@ def _step_up_required():
     return None
 
 
+def _publication_form(*, label: str = "Check hosted candidate") -> str:
+    token = escape(_csrf_token())
+    return (
+        f'<form method="post" action="{RELEASE_PUBLICATION_PATH}">'
+        f'<input type="hidden" name="csrf_token" value="{token}">'
+        f'<div class="actions"><button type="submit">{escape(label)}</button></div>'
+        "</form>"
+    )
+
+
+def _decided_candidate_html(state: dict[str, Any]) -> str:
+    _csrf_token()
+    decision = escape(str(state.get("owner_decision") or ""))
+    revision = escape(str(state.get("expected_revision") or ""))
+    receipt_id = escape(str(state.get("receipt_id") or ""))
+    receipt_path = f"{RELEASE_REVIEW_PATH}/receipt/{receipt_id}"
+    body = (
+        '<section class="hero"><span class="eyebrow">Tower owner release state</span>'
+        '<h1>Decision recorded</h1><p class="quiet">Your exact hosted candidate '
+        f'decision is recorded and verified.</p><span class="chip">{decision}'
+        '</span></section><section class="grid">'
+        f'<article class="card"><span class="label">Candidate</span>'
+        f'<strong class="value">{revision[:12]}</strong></article>'
+        '<article class="card"><span class="label">Receipt integrity</span>'
+        '<strong class="value">Verified</strong></article>'
+        '<article class="card"><span class="label">Execution</span>'
+        '<strong class="value">Still locked</strong></article></section>'
+        '<section class="card"><span class="eyebrow">Owner decision</span>'
+        '<p class="quiet">This candidate already has an owner decision. A second '
+        'decision is not available.</p>'
+        f'<a class="button" href="{receipt_path}">View verified receipt</a>'
+        f'{_publication_form(label="Check for a newly deployed candidate")}'
+        '<p class="notice">Deployment, promotion, broker execution, capital movement, '
+        'and live trading remain locked.</p></section>'
+    )
+    return _page("Tower · Owner Release Decision State", body)
+
+
 def _review_room_html(candidate: dict[str, Any]) -> str:
     if not candidate.get("reviewable"):
         reason = escape(str(candidate.get("reason") or "packet_source_missing"))
@@ -146,7 +192,22 @@ def _review_room_html(candidate: dict[str, Any]) -> str:
             'release candidate available for owner review.</p><span class="chip">'
             'NO REVIEWABLE CANDIDATE</span></section><section class="card">'
             f'<span class="label">Why the room is waiting</span><p>{reason}</p>'
-            "<p class=\"quiet\">No decision or release action is available.</p></section>",
+            "<p class=\"quiet\">No decision or release action is available.</p>"
+            f"{_publication_form()}</section>",
+        )
+
+    state = project_owner_release_candidate_state(
+        owner_context=owner_release_session_context()
+    )
+    if state.get("candidate_state") in DECISION_STATES.values():
+        return _decided_candidate_html(state)
+    if state.get("candidate_state") == "DECISION_STATE_UNAVAILABLE":
+        return _page(
+            "Tower · Owner Release Decision State",
+            '<section class="hero"><span class="eyebrow">Tower owner review</span>'
+            '<h1>Decision state unavailable</h1><p class="quiet">Tower could not '
+            'verify the existing owner decision ledger. All decisions remain locked.'
+            '</p></section>',
         )
 
     review = build_owner_release_review(
@@ -207,7 +268,8 @@ def _review_room_html(candidate: dict[str, Any]) -> str:
         '<textarea id="release-reason" name="reason" maxlength="1000" '
         'rows="3" required placeholder="Why are you making this decision?"></textarea>'
         f'<div class="actions">{"".join(buttons)}</div></form>'
-        f'<details><summary>Candidate evidence</summary>{detail}</details></section>'
+        f'<details><summary>Candidate evidence</summary>{detail}</details>'
+        f'{_publication_form(label="Refresh hosted candidate")}</section>'
     )
     return _page("Tower · Owner Release Review", body)
 
@@ -303,6 +365,9 @@ def register_tower_owner_release_review_routes(app):
         return jsonify(
             {
                 "candidate_state": candidate["candidate_state"],
+                "owner_decision_state": project_owner_release_candidate_state(
+                    owner_context=owner_release_session_context()
+                ),
                 "review": build_owner_release_review(
                     candidate["packet"],
                     owner_context=owner_release_session_context(),
@@ -310,6 +375,42 @@ def register_tower_owner_release_review_routes(app):
                 "csrf_token": _csrf_token(),
             }
         )
+
+    @app.get(RELEASE_STATE_PATH)
+    def tower_owner_release_candidate_state_json():
+        denied = _step_up_required()
+        if denied is not None:
+            return denied
+        return jsonify(
+            project_owner_release_candidate_state(
+                owner_context=owner_release_session_context()
+            )
+        )
+
+    @app.post(RELEASE_PUBLICATION_PATH)
+    def tower_owner_release_candidate_publish():
+        denied = _step_up_required()
+        if denied is not None:
+            return denied
+        if not _same_origin() or not _csrf_valid():
+            return _deny("tower_owner_release_publication_request_rejected", 403)
+        result = publish_hosted_release_candidate()
+        if not result.get("published"):
+            if request.is_json:
+                return jsonify(result), 422
+            reason = escape(str(result.get("reason") or "hosted_candidate_unavailable"))
+            body = (
+                '<section class="hero"><span class="eyebrow">Tower owner review</span>'
+                '<h1>Candidate check unavailable</h1><p class="quiet">Tower could '
+                'not publish a genuine verified hosted candidate.</p>'
+                f'<span class="chip">{reason}</span></section>'
+                '<section class="card"><p class="quiet">No candidate was fabricated '
+                'and no release or trading boundary was opened.</p></section>'
+            )
+            return _page("Tower · Hosted Candidate Check", body), 422
+        if request.is_json:
+            return jsonify(result), 201
+        return redirect(RELEASE_REVIEW_PATH, code=303)
 
     @app.post(RELEASE_DECISION_PATH)
     def tower_owner_release_decision_submit():
