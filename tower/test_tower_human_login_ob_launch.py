@@ -223,10 +223,14 @@ def test_step_up_then_launches_ob(client):
 
     assert launch.status_code == 302
 
+    # OBUX076–080:
+    # Normal owner launch now enters the real Observatory product.
+    # The historical walkthrough remains available separately for
+    # proof/evidence and compatibility review.
     assert launch.headers[
         "Location"
     ].endswith(
-        "/tower/observatory-walkthrough"
+        "/ob/dashboard"
     )
 
     with client.session_transaction() as session:

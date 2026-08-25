@@ -306,9 +306,7 @@
     const testerOps = document.getElementById("obBetaTesterOpsPanel");
     const receipts = document.getElementById("obManualLiveReceiptsPanel");
     const candidate = document.getElementById("obCandidateCardsPanel");
-    const polish = document.getElementById("obRoomDataPolishPanel");
     const snapshot = document.getElementById("obSnapshotDisplayPanel");
-    const engineBar = document.getElementById("obEngineFeedBar");
 
     const wrapper = document.createElement("div");
     wrapper.innerHTML = panelHtml();
@@ -322,12 +320,8 @@
       receipts.insertAdjacentElement("afterend", panel);
     } else if (candidate && candidate.parentNode) {
       candidate.insertAdjacentElement("afterend", panel);
-    } else if (polish && polish.parentNode) {
-      polish.insertAdjacentElement("afterend", panel);
     } else if (snapshot && snapshot.parentNode) {
       snapshot.insertAdjacentElement("afterend", panel);
-    } else if (engineBar && engineBar.parentNode) {
-      engineBar.insertAdjacentElement("afterend", panel);
     } else {
       layer.appendChild(panel);
     }

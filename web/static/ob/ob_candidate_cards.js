@@ -399,29 +399,16 @@
     const layer = document.querySelector(".ob-layer");
     if (!layer) return;
 
-    const roomPolish = document.getElementById("obRoomDataPolishPanel");
     const snapshot = document.getElementById("obSnapshotDisplayPanel");
-    const engineBar = document.getElementById("obEngineFeedBar");
-    const dataBar = document.getElementById("obDataStatusBar");
-    const missionBar = document.getElementById("obMissionBar");
-    const routeBar = document.getElementById("obRouteBar");
 
     const wrapper = document.createElement("div");
     wrapper.innerHTML = panelHtml();
     const panel = wrapper.firstElementChild;
 
-    if (roomPolish && roomPolish.parentNode) {
-      roomPolish.insertAdjacentElement("afterend", panel);
-    } else if (snapshot && snapshot.parentNode) {
+    // OBUX078:
+    // Product panels may follow product panels, never hidden proof chrome.
+    if (snapshot && snapshot.parentNode) {
       snapshot.insertAdjacentElement("afterend", panel);
-    } else if (engineBar && engineBar.parentNode) {
-      engineBar.insertAdjacentElement("afterend", panel);
-    } else if (dataBar && dataBar.parentNode) {
-      dataBar.insertAdjacentElement("afterend", panel);
-    } else if (missionBar && missionBar.parentNode) {
-      missionBar.insertAdjacentElement("afterend", panel);
-    } else if (routeBar && routeBar.parentNode) {
-      routeBar.insertAdjacentElement("afterend", panel);
     } else {
       layer.prepend(panel);
     }

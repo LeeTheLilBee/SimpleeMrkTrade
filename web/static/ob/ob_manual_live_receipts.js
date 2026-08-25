@@ -367,12 +367,7 @@
     if (!layer) return;
 
     const candidatePanel = document.getElementById("obCandidateCardsPanel");
-    const roomPolishPanel = document.getElementById("obRoomDataPolishPanel");
     const snapshotPanel = document.getElementById("obSnapshotDisplayPanel");
-    const engineBar = document.getElementById("obEngineFeedBar");
-    const dataBar = document.getElementById("obDataStatusBar");
-    const missionBar = document.getElementById("obMissionBar");
-    const routeBar = document.getElementById("obRouteBar");
 
     const wrapper = document.createElement("div");
     wrapper.innerHTML = panelHtml();
@@ -380,18 +375,8 @@
 
     if (candidatePanel && candidatePanel.parentNode) {
       candidatePanel.insertAdjacentElement("afterend", panel);
-    } else if (roomPolishPanel && roomPolishPanel.parentNode) {
-      roomPolishPanel.insertAdjacentElement("afterend", panel);
     } else if (snapshotPanel && snapshotPanel.parentNode) {
       snapshotPanel.insertAdjacentElement("afterend", panel);
-    } else if (engineBar && engineBar.parentNode) {
-      engineBar.insertAdjacentElement("afterend", panel);
-    } else if (dataBar && dataBar.parentNode) {
-      dataBar.insertAdjacentElement("afterend", panel);
-    } else if (missionBar && missionBar.parentNode) {
-      missionBar.insertAdjacentElement("afterend", panel);
-    } else if (routeBar && routeBar.parentNode) {
-      routeBar.insertAdjacentElement("afterend", panel);
     } else {
       layer.prepend(panel);
     }

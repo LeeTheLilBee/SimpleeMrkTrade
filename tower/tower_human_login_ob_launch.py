@@ -988,6 +988,98 @@ def _launch_observatory_legacy():
 # END TOWER UI V2 OBSERVATORY LAUNCH HELPER
 
 
+def _tower_ob_native_store_product_handoff():
+    """
+    Convert the accepted legacy walkthrough handoff into the
+    canonical Observatory product-entry handoff.
+
+    The walkthrough handoff remains an internal compatibility and
+    evidence producer. It is not the owner-facing product destination.
+    """
+    legacy_handoff = (
+        _tower_ob_native_store_walkthrough_handoff()
+    )
+
+    try:
+        handoff = dict(
+            legacy_handoff
+            or {}
+        )
+    except Exception as exc:
+        raise RuntimeError(
+            "tower_ob_product_handoff_mapping_required"
+        ) from exc
+
+    handoff[
+        "handoff_type"
+    ] = "tower_ob_product_entry"
+
+    handoff[
+        "requested_path"
+    ] = OBSERVATORY_PRODUCT_ENTRY_PATH
+
+    handoff[
+        "destination"
+    ] = OBSERVATORY_PRODUCT_ENTRY_PATH
+
+    handoff[
+        "proof_walkthrough_path"
+    ] = OBSERVATORY_WALKTHROUGH_PATH
+
+    handoff[
+        "walkthrough_required_for_product_entry"
+    ] = False
+
+    handoff[
+        "proof_only_walkthrough"
+    ] = True
+
+    handoff[
+        "broker_submission"
+    ] = False
+
+    handoff[
+        "capital_movement"
+    ] = False
+
+    handoff[
+        "manual_live_authorized"
+    ] = False
+
+    handoff[
+        "live_auto_authorized"
+    ] = False
+
+    handoff[
+        "dangerous_action_unlocked"
+    ] = False
+
+    session[
+        "tower_ob_product_handoff"
+    ] = dict(
+        handoff
+    )
+
+    if (
+        "SESSION_OB_NATIVE_LAUNCH_HANDOFF"
+        in globals()
+    ):
+        session[
+            SESSION_OB_NATIVE_LAUNCH_HANDOFF
+        ] = dict(
+            handoff
+        )
+
+    try:
+        session.modified = True
+    except Exception:
+        pass
+
+    return dict(
+        handoff
+    )
+
+
 @tower_human_login_bp.get(
     OBSERVATORY_LAUNCH_PATH
 )
@@ -1001,7 +1093,7 @@ def launch_observatory():
         # Preserve the already-accepted Tower native handoff/receipt
         # construction, but promote the public owner experience out of
         # the proof walkthrough and into the real Observatory product.
-        _tower_ob_native_store_walkthrough_handoff()
+        _tower_ob_native_store_product_handoff()
 
         return redirect(
             OBSERVATORY_PRODUCT_ENTRY_PATH

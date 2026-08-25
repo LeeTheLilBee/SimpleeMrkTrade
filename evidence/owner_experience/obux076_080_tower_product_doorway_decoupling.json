@@ -1,0 +1,29 @@
+{
+  "automatic_contract_selection_added": false,
+  "automatic_execution_added": false,
+  "broker_submission_added": false,
+  "canonical_owner_launch_destination": "/ob/dashboard",
+  "capital_movement_added": false,
+  "launch_receipt_safety_regression_preserved": true,
+  "legacy_login_previous_destination": "/tower/observatory-walkthrough",
+  "legacy_login_regression_migrated": true,
+  "legacy_receipt_compatibility_preserved": true,
+  "live_auto_authorized": false,
+  "manual_live_authorized_by_doorway": false,
+  "pack": "OBUX076-080",
+  "parent": "9be8e124acb7d23d15e7a788bb2fe459565f0d37",
+  "product_consumer_decoupling": [
+    "web/static/ob/ob_snapshot_display.js",
+    "web/static/ob/ob_candidate_cards.js",
+    "web/static/ob/ob_manual_live_receipts.js",
+    "web/static/ob/ob_private_beta_qa.js",
+    "web/static/ob/ob_engine_feed_expansion.js"
+  ],
+  "product_entry": "/ob/dashboard",
+  "proof_walkthrough": "/tower/observatory-walkthrough",
+  "step_up_requirement_preserved": true,
+  "title": "Tower Product Doorway / Walkthrough Decoupling",
+  "walkthrough_proof_tests_preserved": true,
+  "walkthrough_required_for_product_entry": false,
+  "walkthrough_route_removed": false
+}
