@@ -193,6 +193,33 @@ def _tower_owner_dashboard_html() -> str:
             margin-bottom: 0;
           }}
 
+          .owner-release-card {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin: 20px 0 24px;
+            padding: 22px;
+            border: 1px solid rgba(248,217,120,0.30);
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(155,124,255,0.12), rgba(248,217,120,0.05));
+          }}
+
+          .owner-release-card p {{
+            margin: 7px 0 0;
+            color: var(--muted);
+          }}
+
+          .owner-release-link {{
+            color: var(--gold);
+            text-decoration: none;
+            white-space: nowrap;
+            border: 1px solid rgba(248,217,120,0.32);
+            border-radius: 999px;
+            padding: 10px 15px;
+            font-weight: 850;
+          }}
+
           .owner-section {{
             margin-top: 24px;
             border: 1px solid rgba(255,255,255,0.10);
@@ -291,6 +318,16 @@ def _tower_owner_dashboard_html() -> str:
             {card_html}
           </section>
 
+          <section class="owner-release-card" data-tower-release-review-entry="true">
+            <div>
+              <div class="eyebrow">Owner release review</div>
+              <p>Review a sealed hosted candidate and record an owner-only decision.</p>
+            </div>
+            <a class="owner-release-link" href="/tower/owner/release-review">
+              Open release review
+            </a>
+          </section>
+
           <section class="owner-section">
             <h2>People + seats</h2>
             {people_html}
@@ -339,6 +376,12 @@ def register_tower_owner_dashboard_routes(app):
         if not owner_session_active():
             return redirect("/tower/login")
         return jsonify(build_tower_owner_dashboard())
+
+    from tower.hosted_owner_release_review_web import (
+        register_tower_owner_release_review_routes,
+    )
+
+    register_tower_owner_release_review_routes(app)
 
     setattr(
         app,
