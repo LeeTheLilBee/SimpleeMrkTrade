@@ -450,7 +450,7 @@ def test_locked_safety_boundaries_remain_false_or_locked(
 
 
 # TOWER_TEST_REAL_HUMAN_REDIRECT_NATIVE_SESSION_HANDOFF_V1
-def test_real_walkthrough_redirect_stores_native_handoff(
+def test_real_walkthrough_redirect_promotes_to_product_entry_and_stores_native_handoff(
     monkeypatch,
 ):
     receipt_hash = "a" * 64
@@ -543,7 +543,7 @@ def test_real_walkthrough_redirect_stores_native_handoff(
         "Location"
     ].endswith(
         launch_module
-        .OBSERVATORY_WALKTHROUGH_PATH
+        .OBSERVATORY_PRODUCT_ENTRY_PATH
     )
 
     assert (

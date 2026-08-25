@@ -803,3 +803,235 @@ body.ob-beta-product-surface #obSnapshotDisplayPanel {
       none !important;
   }
 }
+
+
+/* =================================================================================================
+   OBUX068_THEME_OWNS_PRODUCT_SKY
+
+   OBUX026/027 atmosphere remains in the repository for historical geometry,
+   legacy/proof compatibility, and old tests.
+
+   On modern themed Observatory product surfaces, however, the ACTIVE visible
+   sky belongs to the selected OBUX061+ theme.
+
+   This prevents the older blue room-weather palette from painting underneath
+   Obsidian Plum, Velvet Night, or Eclipse Gold.
+================================================================================================= */
+
+
+html[data-ob-theme]
+body[data-ob-room] {
+  --ob-room-weather-id:
+    obux068-theme-owned-product-sky;
+
+  --ob-star-opacity:
+    .58;
+
+  --ob-grid-opacity:
+    .006;
+
+  --ob-weather-opacity:
+    .58;
+
+  --ob-horizon-opacity:
+    .34;
+
+  --ob-horizon-color:
+    color-mix(
+      in srgb,
+      var(--ob-theme-gold) 30%,
+      transparent
+    );
+}
+
+
+html[data-ob-theme]
+body[data-ob-room]
+.ob-sky {
+  background:
+    radial-gradient(
+      ellipse at 16% 18%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-accent) 22%,
+        transparent
+      ),
+      transparent 31%
+    ),
+    radial-gradient(
+      ellipse at 84% 16%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-accent) 12%,
+        transparent
+      ),
+      transparent 28%
+    ),
+    radial-gradient(
+      ellipse at 68% 82%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-gold) 8%,
+        transparent
+      ),
+      transparent 30%
+    ),
+    linear-gradient(
+      155deg,
+      var(--ob-theme-bg) 0%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-surface-2) 72%,
+        var(--ob-theme-bg)
+      ) 48%,
+      var(--ob-theme-bg) 100%
+    ) !important;
+}
+
+
+html[data-ob-theme]
+body[data-ob-room]
+.ob-sky::before {
+  opacity:
+    .62 !important;
+
+  background-image:
+    radial-gradient(
+      circle,
+      color-mix(
+        in srgb,
+        var(--ob-theme-text) 84%,
+        transparent
+      ) 0 .8px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle,
+      color-mix(
+        in srgb,
+        var(--ob-theme-accent) 58%,
+        transparent
+      ) 0 .9px,
+      transparent 1.7px
+    ),
+    radial-gradient(
+      circle,
+      color-mix(
+        in srgb,
+        var(--ob-theme-gold) 54%,
+        transparent
+      ) 0 .85px,
+      transparent 1.7px
+    ) !important;
+}
+
+
+html[data-ob-theme]
+body[data-ob-room]
+.ob-sky__weather {
+  opacity:
+    .58 !important;
+
+  background:
+    radial-gradient(
+      ellipse at 22% 66%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-accent) 18%,
+        transparent
+      ),
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 76% 30%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-accent) 12%,
+        transparent
+      ),
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 56% 88%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-gold) 7%,
+        transparent
+      ),
+      transparent 32%
+    ) !important;
+
+  filter:
+    blur(42px) !important;
+}
+
+
+html[data-ob-theme]
+body[data-ob-room]
+.ob-sky__horizon {
+  opacity:
+    .36 !important;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 100%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-gold) 20%,
+        transparent
+      ) 0%,
+      color-mix(
+        in srgb,
+        var(--ob-theme-accent) 8%,
+        transparent
+      ) 38%,
+      transparent 70%
+    ) !important;
+}
+
+
+html[data-ob-theme]
+body[data-ob-room]
+.ob-sky__grid {
+  opacity:
+    .006 !important;
+
+  background-image:
+    linear-gradient(
+      90deg,
+      color-mix(
+        in srgb,
+        var(--ob-theme-text) 14%,
+        transparent
+      ) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(
+        in srgb,
+        var(--ob-theme-text) 14%,
+        transparent
+      ) 1px,
+      transparent 1px
+    ) !important;
+}
+
+
+/*
+   V27 proof/status widgets are not product atmosphere.
+
+   If a legacy runtime injects them late, the OBUX061 cleanup observer
+   removes them. This CSS guard is a second fail-closed presentation wall.
+*/
+body.ob-beta-product-surface
+[data-ob-room-polish],
+
+body.ob-beta-product-surface
+[data-room-data-polish],
+
+body.ob-beta-product-surface
+[data-ob-v27-proof] {
+  display:
+    none !important;
+}

@@ -141,15 +141,15 @@
         "WHAT CHANGED",
 
       title:
-        "Dashboard is now your OB account home.",
+        "Tower now opens the real Observatory.",
 
       body:
-        "The normal Dashboard focuses on your access, "
-        + "mode, alerts, activity, market context, "
-        + "sessions, and account tools.",
+        "The normal Tower launch now lands on the protected "
+        + "Dashboard product surface instead of sending you "
+        + "through an internal walkthrough page first.",
 
       foot:
-        "OBUX056–060",
+        "OBUX066–070",
     },
 
     {
@@ -157,16 +157,15 @@
         "NEW",
 
       title:
-        "Soulaana meets you at the door.",
+        "The arrival sequence is finally on the real doorway.",
 
       body:
-        "Beta guidance, optional session check-in, "
-        + "safe resume, feedback context, "
-        + "and private session closeout now belong "
-        + "to one arrival system.",
+        "Versioned beta guidance, Soulaana check-in, "
+        + "safe resume, and first-session guidance now run "
+        + "on the Dashboard users actually enter.",
 
       foot:
-        "One session. One modal system.",
+        "SOP → Soulaana → Dashboard.",
     },
 
     {
@@ -174,16 +173,16 @@
         "NEW",
 
       title:
-        "Tower is always one clean exit away.",
+        "Your selected Observatory theme now owns the sky.",
 
       body:
-        "Back to Tower preserves Tower authority. "
-        + "Sign out of OB closes OB-local session state "
-        + "and returns to Tower. "
-        + "Full identity signout remains Tower-owned.",
+        "Obsidian Plum, Velvet Night, and Eclipse Gold "
+        + "now control the visible Observatory atmosphere. "
+        + "The old V27 blue room-weather palette no longer "
+        + "wins underneath the product theme.",
 
       foot:
-        "The Tower controls the door.",
+        "Same Observatory. Your chosen night sky.",
 
       final:
         true,
@@ -845,7 +844,8 @@
 
 
   function openSop(
-    force
+    force,
+    allowClose
   ) {
     const body =
       document.body.dataset;
@@ -885,7 +885,7 @@
 
             allowClose:
               Boolean(
-                force
+                allowClose
               ),
 
             onComplete:
@@ -1067,12 +1067,15 @@
   }
 
 
-  function openCheckIn() {
+  function openCheckIn(
+    force
+  ) {
     const current =
       state().snapshot();
 
     if (
-      current
+      !force
+      && current
         .ephemeral
         .checkIn
         .status
@@ -1552,12 +1555,15 @@
   }
 
 
-  function openGuideOffer() {
+  function openGuideOffer(
+    force
+  ) {
     const current =
       state().snapshot();
 
     if (
-      current
+      !force
+      && current
         .persistent
         .guidedFirstSessionComplete
     ) {
@@ -1812,6 +1818,16 @@
       const body =
         document.body.dataset;
 
+      const parameters =
+        new URLSearchParams(
+          global.location.search
+        );
+
+      const forceFreshArrival =
+        parameters.get(
+          "ob_arrival"
+        ) === "fresh";
+
       const current =
         state().snapshot();
 
@@ -1825,9 +1841,17 @@
           !== body.obSopVersion;
 
       if (
+        forceFreshArrival
+      ) {
+        await openSop(
+          true,
+          false
+        );
+      } else if (
         needsSop
       ) {
         await openSop(
+          false,
           false
         );
       } else if (
@@ -1844,18 +1868,50 @@
         );
       }
 
-      await openCheckIn();
-
-      const resumed =
-        await openResumeChoice();
+      await openCheckIn(
+        forceFreshArrival
+      );
 
       if (
-        resumed
+        !forceFreshArrival
       ) {
-        return;
+        const resumed =
+          await openResumeChoice();
+
+        if (
+          resumed
+        ) {
+          return;
+        }
       }
 
-      await openGuideOffer();
+      await openGuideOffer(
+        forceFreshArrival
+      );
+
+      if (
+        forceFreshArrival
+        && global.history
+        && typeof global.history.replaceState
+          === "function"
+      ) {
+        const cleanUrl =
+          new URL(
+            global.location.href
+          );
+
+        cleanUrl.searchParams.delete(
+          "ob_arrival"
+        );
+
+        global.history.replaceState(
+          {},
+          "",
+          cleanUrl.pathname
+          + cleanUrl.search
+          + cleanUrl.hash
+        );
+      }
 
       document
         .body
@@ -1914,6 +1970,7 @@
         openSop:
           function () {
             return openSop(
+              true,
               true
             );
           },

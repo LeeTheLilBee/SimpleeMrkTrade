@@ -1,0 +1,50 @@
+{
+  "pack": "OBUX066-070",
+  "parent": "2d074ccdb3be60f06f3de84544de0a07594896ed",
+  "canonical_product_entry": {
+    "tower_launch": "/tower/launch/observatory",
+    "product_destination": "/ob/dashboard",
+    "historical_walkthrough_retained": true,
+    "historical_walkthrough_primary": false,
+    "tower_owner_session_required": true,
+    "tower_step_up_required": true
+  },
+  "arrival": {
+    "build": "OBUX066-070",
+    "sop_version": "beta-sop-v2",
+    "whats_new_version": "obux066-070-v1",
+    "fresh_replay": "/ob/dashboard?ob_arrival=fresh",
+    "fresh_replay_flow": [
+      "sop",
+      "soulaana_checkin",
+      "guide_offer",
+      "dashboard"
+    ]
+  },
+  "v27_retirement": {
+    "legacy_atmosphere_file_deleted": false,
+    "legacy_geometry_retained": true,
+    "legacy_blue_palette_authoritative": false,
+    "theme_owned_product_sky": true,
+    "themes": [
+      "obsidian-plum",
+      "velvet-night",
+      "eclipse-gold"
+    ]
+  },
+  "dashboard_layout": {
+    "changed": false,
+    "soulaana_right_now_preserved": true,
+    "account_snapshot_preserved": true,
+    "since_you_were_here_preserved": true,
+    "activity_preserved": true,
+    "market_now_preserved": true
+  },
+  "safety": {
+    "broker_submission_added": false,
+    "capital_movement_added": false,
+    "automatic_contract_choice_added": false,
+    "automatic_execution_added": false,
+    "live_auto_unlocked": false
+  }
+}

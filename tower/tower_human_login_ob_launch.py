@@ -80,6 +80,15 @@ OBSERVATORY_WALKTHROUGH_PATH = (
     "/tower/observatory-walkthrough"
 )
 
+# Canonical product doorway.
+#
+# The historical walkthrough remains available as a proof/evidence
+# surface. Normal Tower -> Observatory launch now enters the real
+# protected Dashboard instead.
+OBSERVATORY_PRODUCT_ENTRY_PATH = (
+    "/ob/dashboard"
+)
+
 LOGIN_PATH = "/tower/login"
 START_PATH = "/tower/start"
 ACCESS_HOME_PATH = "/tower/access-home"
@@ -989,10 +998,14 @@ def launch_observatory():
     if _tower_ob_native_is_walkthrough_redirect(
         legacy_result
     ):
-        # TOWER_NATIVE_GP046_REAL_WALKTHROUGH_SESSION_STORE_TAKE2_2603_2612
+        # Preserve the already-accepted Tower native handoff/receipt
+        # construction, but promote the public owner experience out of
+        # the proof walkthrough and into the real Observatory product.
         _tower_ob_native_store_walkthrough_handoff()
 
-        return legacy_result
+        return redirect(
+            OBSERVATORY_PRODUCT_ENTRY_PATH
+        )
 
     if _tower_ob_native_is_prelaunch_redirect(
         legacy_result
@@ -2114,4 +2127,3 @@ def _tower_ob_native_build_launch(payload):
     payload["live_auto_locked"] = True
 
     return payload
-

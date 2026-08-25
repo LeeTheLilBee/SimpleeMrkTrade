@@ -449,6 +449,13 @@
               Dashboard / My OB
             </a>
 
+            <a
+              class="ob-control-action"
+              href="/ob/dashboard?ob_arrival=fresh"
+            >
+              Replay welcome & Soulaana check-in
+            </a>
+
             <button
               type="button"
               class="ob-control-action"
