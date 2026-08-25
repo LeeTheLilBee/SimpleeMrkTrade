@@ -1035,3 +1035,247 @@ body.ob-beta-product-surface
   display:
     none !important;
 }
+
+
+/* =================================================================================================
+   OBUX074_DASHBOARD_THEME_OWNS_SKY_GEOMETRY
+
+   The normal Dashboard no longer imports ob_atmosphere.css.
+
+   These are geometry/motion rules only.
+   Color remains completely owned by the selected modern theme.
+================================================================================================= */
+
+
+body[data-ob-surface="user-dashboard"] {
+  position:
+    relative;
+
+  isolation:
+    isolate;
+}
+
+
+body[data-ob-surface="user-dashboard"]
+.ob-sky {
+  position:
+    fixed;
+
+  inset:
+    0;
+
+  z-index:
+    0;
+
+  overflow:
+    hidden;
+
+  pointer-events:
+    none;
+
+  transform:
+    translateZ(0);
+
+  background:
+    var(--ob-theme-bg);
+}
+
+
+body[data-ob-surface="user-dashboard"]
+.ob-sky::before {
+  content:
+    "";
+
+  position:
+    absolute;
+
+  inset:
+    -8%;
+
+  background-size:
+    118px 118px,
+    197px 197px,
+    311px 311px;
+
+  background-position:
+    0 0,
+    37px 71px,
+    91px 31px;
+
+  animation:
+    obThemeStarsDrift
+    110s
+    linear
+    infinite;
+}
+
+
+body[data-ob-surface="user-dashboard"]
+.ob-sky::after {
+  content:
+    "";
+
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  pointer-events:
+    none;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 44%,
+      transparent 0%,
+      transparent 48%,
+      rgba(0, 0, 0, .18) 74%,
+      rgba(0, 0, 0, .62) 100%
+    );
+}
+
+
+body[data-ob-surface="user-dashboard"]
+.ob-sky__weather {
+  position:
+    absolute;
+
+  inset:
+    -16%;
+
+  transform:
+    scale(1.04);
+
+  animation:
+    obThemeWeatherDrift
+    82s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+body[data-ob-surface="user-dashboard"]
+.ob-sky__horizon {
+  position:
+    absolute;
+
+  left:
+    -12%;
+
+  right:
+    -12%;
+
+  bottom:
+    -34vh;
+
+  height:
+    62vh;
+
+  border-radius:
+    50%
+    50%
+    0
+    0;
+
+  filter:
+    blur(18px);
+}
+
+
+body[data-ob-surface="user-dashboard"]
+.ob-sky__grid {
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  background-size:
+    118px 118px;
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      black 0%,
+      rgba(0, 0, 0, .72) 52%,
+      transparent 92%
+    );
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse at center,
+      black 0%,
+      rgba(0, 0, 0, .72) 52%,
+      transparent 92%
+    );
+}
+
+
+body[data-ob-surface="user-dashboard"]
+#ob-app,
+
+body[data-ob-surface="user-dashboard"]
+.ob-layer {
+  position:
+    relative;
+
+  z-index:
+    1;
+}
+
+
+@keyframes obThemeStarsDrift {
+  from {
+    transform:
+      translate3d(
+        0,
+        0,
+        0
+      );
+  }
+
+  to {
+    transform:
+      translate3d(
+        28px,
+        18px,
+        0
+      );
+  }
+}
+
+
+@keyframes obThemeWeatherDrift {
+  from {
+    transform:
+      scale(1.04)
+      translate3d(
+        -1.5%,
+        -1%,
+        0
+      );
+  }
+
+  to {
+    transform:
+      scale(1.08)
+      translate3d(
+        2%,
+        1.5%,
+        0
+      );
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-ob-surface="user-dashboard"]
+  .ob-sky::before,
+
+  body[data-ob-surface="user-dashboard"]
+  .ob-sky__weather {
+    animation:
+      none !important;
+  }
+}

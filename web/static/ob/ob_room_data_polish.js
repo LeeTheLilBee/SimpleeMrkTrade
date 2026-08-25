@@ -1,6 +1,104 @@
 // OBSERVATORY_V27_ROOM_LEVEL_REAL_DATA_POLISH_JS
 
 (function () {
+  /*
+    OBUX073 — V27 PRODUCT-SURFACE RETIREMENT
+
+    V27 remains in source history for old proof/evidence
+    surfaces only.
+
+    It is forbidden from rendering anywhere under /ob/*.
+  */
+
+  const currentPath =
+    String(
+      window.location.pathname
+      || "/"
+    )
+      .toLowerCase()
+      .replace(
+        /\/+$/,
+        ""
+      )
+    || "/";
+
+  const productSurface =
+    currentPath
+      .startsWith(
+        "/ob/"
+      );
+
+  if (
+    productSurface
+  ) {
+    function removeV27Residue() {
+      [
+        "#obRoomDataPolishPanel",
+        ".ob-room-polish-panel",
+        "[data-ob-v27-room-data-polish]",
+        "[data-ob-v27-proof]",
+      ].forEach(
+        function (
+          selector
+        ) {
+          document
+            .querySelectorAll(
+              selector
+            )
+            .forEach(
+              function (
+                node
+              ) {
+                node.remove();
+              }
+            );
+        }
+      );
+
+      if (
+        document.body
+      ) {
+        document.body
+          .removeAttribute(
+            "data-ob-v27-room-data-polish"
+          );
+      }
+    }
+
+    if (
+      document.readyState
+        === "loading"
+    ) {
+      document.addEventListener(
+        "DOMContentLoaded",
+        removeV27Residue
+      );
+    } else {
+      removeV27Residue();
+    }
+
+    window.addEventListener(
+      "obEngineFeedAdapterUpdated",
+      removeV27Residue
+    );
+
+    window.OB_ROOM_DATA_POLISH_V27 =
+      Object.freeze(
+        {
+          active:
+            false,
+
+          retiredOnProductSurface:
+            true,
+
+          reason:
+            "v27_proof_ui_not_allowed_on_ob_product_routes",
+        }
+      );
+
+    return;
+  }
+
   const VERSION = "OB_V27_ROOM_LEVEL_REAL_DATA_POLISH";
 
   // V27 SMOKE MARKERS

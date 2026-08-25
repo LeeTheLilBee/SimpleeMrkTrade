@@ -1,6 +1,101 @@
 // OBSERVATORY_V18_MISSION_ACCOUNT_SWITCHER_SESSION_CONTINUITY_JS
 
 (function () {
+  /*
+    OBUX072 — OWNER-DASHBOARD-ONLY SOURCE GATE
+
+    This historical V18 file may remain available
+    for Owner Dashboard compatibility.
+
+    It is forbidden from initializing mission-account
+    data or UI on the normal Dashboard, Market Map,
+    Symbol Room, Trade Center, Review Center,
+    Owner Console, or any other surface.
+  */
+
+  const currentPath =
+    String(
+      window.location.pathname
+      || "/"
+    )
+      .toLowerCase()
+      .replace(
+        /\/+$/,
+        ""
+      )
+    || "/";
+
+  const ownerDashboardSurface =
+    currentPath
+      === "/ob/owner-dashboard";
+
+  if (
+    !ownerDashboardSurface
+  ) {
+    function removeMissionResidue() {
+      [
+        "#obMissionBar",
+        ".ob-mission-bar",
+        "#obMissionDrawer",
+        "#obMissionDrawerBackdrop",
+        ".ob-mission-drawer-backdrop",
+      ].forEach(
+        function (
+          selector
+        ) {
+          document
+            .querySelectorAll(
+              selector
+            )
+            .forEach(
+              function (
+                node
+              ) {
+                node.remove();
+              }
+            );
+        }
+      );
+
+      if (
+        document.body
+      ) {
+        document.body
+          .removeAttribute(
+            "data-ob-mission"
+          );
+      }
+    }
+
+    if (
+      document.readyState
+        === "loading"
+    ) {
+      document.addEventListener(
+        "DOMContentLoaded",
+        removeMissionResidue
+      );
+    } else {
+      removeMissionResidue();
+    }
+
+    window.OB_MISSION_ACCOUNTS_V18 =
+      Object.freeze(
+        {
+          active:
+            false,
+
+          ownerDashboardOnly:
+            true,
+
+          reason:
+            "mission_accounts_owner_dashboard_only",
+        }
+      );
+
+    return;
+  }
+
   const MISSION_KEY = "ob.selectedMissionAccount.v18";
 
   const missionAccounts = [

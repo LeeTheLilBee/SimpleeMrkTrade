@@ -159,7 +159,7 @@ def test_obux067_dashboard_versions_force_one_new_real_arrival():
     source = text(DASH)
 
     assert (
-        'data-ob-build="OBUX066-070"'
+        'data-ob-build="OBUX071-075"'
         in source
     )
 

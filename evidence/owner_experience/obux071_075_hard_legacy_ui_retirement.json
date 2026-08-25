@@ -1,0 +1,57 @@
+{
+  "pack": "OBUX071-075",
+  "parent": "2c0d459927d40447cbc8a1968b89caf7771dce30",
+  "root_cause": {
+    "mission_renderer_active": true,
+    "v27_renderer_active": true,
+    "v27_delayed_reinsertion": true,
+    "dashboard_loaded_legacy_atmosphere": true,
+    "prior_cache_identity_stale": true
+  },
+  "normal_dashboard_after": {
+    "mission_ui_allowed": false,
+    "v27_ui_allowed": false,
+    "legacy_atmosphere_loaded": false,
+    "modern_theme_owns_sky_geometry": true,
+    "hard_surface_policy": true,
+    "build": "OBUX071-075"
+  },
+  "owner_dashboard": {
+    "mission_ui_allowed": true,
+    "canonical_path": "/ob/owner-dashboard"
+  },
+  "v27": {
+    "allowed_on_ob_product_routes": false,
+    "historical_source_deleted": false,
+    "historical_non_product_proof_behavior_retained": true
+  },
+  "reference_audit": {
+    "ob_mission_accounts.js": [
+      "tests/test_ob_canonical_beta_entry_obux066_070.py",
+      "tests/test_ob_dashboard_obux056_060.py",
+      "tests/test_ob_owner_console_obux051_055.py",
+      "web/templates/owner_console.html",
+      "web/templates/review_center.html",
+      "web/templates/symbol_page.html",
+      "web/templates/trade_center.html"
+    ],
+    "ob_room_data_polish.js": [
+      "web/templates/owner_console.html",
+      "web/templates/trade_center.html"
+    ],
+    "Room-Level Data Polish": [
+      "docs/owner_experience/obux061_065_visual_themes.md",
+      "web/static/ob/ob_room_data_polish.js"
+    ],
+    "Current Mission Account": [
+      "web/static/ob/ob_mission_accounts.js"
+    ]
+  },
+  "safety": {
+    "broker_submission_added": false,
+    "capital_movement_added": false,
+    "automatic_contract_selection_added": false,
+    "automatic_execution_added": false,
+    "live_auto_unlocked": false
+  }
+}
