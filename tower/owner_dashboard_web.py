@@ -1,4 +1,5 @@
 
+
 from __future__ import annotations
 
 from html import escape
@@ -16,6 +17,9 @@ def _tower_owner_dashboard_html() -> str:
     from tower.hosted_owner_release_candidate_state import (
         owner_release_dashboard_snapshot,
     )
+    from tower.hosted_owner_release_readiness import (
+        owner_hosted_readiness_dashboard_snapshot,
+    )
 
     dashboard = build_tower_owner_dashboard()
     summary = dashboard["summary"]
@@ -27,6 +31,9 @@ def _tower_owner_dashboard_html() -> str:
     release_label = escape(release_snapshot["label"])
     release_detail = escape(release_snapshot["detail"])
     release_state = escape(release_snapshot["state"])
+    hosted_snapshot = owner_hosted_readiness_dashboard_snapshot()
+    hosted_readiness_label = escape(hosted_snapshot["label"])
+    hosted_readiness_state = escape(hosted_snapshot["state"])
 
     card_html = "\n".join(
         f"""
@@ -242,6 +249,15 @@ def _tower_owner_dashboard_html() -> str:
             font-weight: 850;
           }}
 
+          .owner-hosted-readiness {{
+            display: inline-flex;
+            margin-top: 9px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 750;
+          }}
+
           .owner-section {{
             margin-top: 24px;
             border: 1px solid rgba(255,255,255,0.10);
@@ -347,6 +363,11 @@ def _tower_owner_dashboard_html() -> str:
                 {release_label}
               </span>
               <p>{release_detail}</p>
+              <a class="owner-hosted-readiness"
+                 data-tower-hosted-readiness="{hosted_readiness_state}"
+                 href="/tower/owner/release-review/walkthrough">
+                Hosted readiness · {hosted_readiness_label}
+              </a>
             </div>
             <a class="owner-release-link" href="/tower/owner/release-review">
               Open release review

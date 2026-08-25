@@ -1,5 +1,6 @@
 
 
+
 """Protected, owner-facing Tower release review room / TWR102-TWR105."""
 
 from __future__ import annotations
@@ -193,7 +194,9 @@ def _review_room_html(candidate: dict[str, Any]) -> str:
             'NO REVIEWABLE CANDIDATE</span></section><section class="card">'
             f'<span class="label">Why the room is waiting</span><p>{reason}</p>'
             "<p class=\"quiet\">No decision or release action is available.</p>"
-            f"{_publication_form()}</section>",
+            f"{_publication_form()}"
+            '<p><a class="back" href="/tower/owner/release-review/walkthrough">'
+            'View hosted readiness and your next move</a></p></section>',
         )
 
     state = project_owner_release_candidate_state(
@@ -476,4 +479,10 @@ def register_tower_owner_release_review_routes(app):
         return _deny("tower_owner_release_receipt_not_found", 404)
 
     setattr(app, marker, True)
+
+    from tower.hosted_owner_release_walkthrough_web import (
+        register_tower_hosted_owner_walkthrough_routes,
+    )
+
+    register_tower_hosted_owner_walkthrough_routes(app)
     return app
