@@ -3,7 +3,7 @@
   "use strict";
 
   const VERSION =
-    "OBUX081-085";
+    "OBUX086-090";
 
   const NORMAL_DASHBOARD =
     "/ob/dashboard";
@@ -37,10 +37,15 @@
 
 
   function missionUiAllowed() {
-    return (
-      normalizedPath()
-      === OWNER_DASHBOARD
-    );
+    /*
+      OBUX086:
+      Legacy Mission Account UI is retired from every /ob/* product route.
+
+      Owner Dashboard now owns a separate Capital Lanes experience.
+      Historical/proof surfaces outside the canonical OB product may
+      preserve old evidence renderers.
+    */
+    return !isObProductRoute();
   }
 
 
@@ -61,6 +66,8 @@
     "#obMissionDrawer",
     "#obMissionDrawerBackdrop",
     ".ob-mission-drawer-backdrop",
+    "#obAccountExperiencePanel",
+    ".ob-account-experience-panel",
   ];
 
 
@@ -113,6 +120,16 @@
       document.body
         .removeAttribute(
           "data-ob-mission-layout"
+        );
+
+      document.body
+        .removeAttribute(
+          "data-ob-mission-account-enabled"
+        );
+
+      document.body
+        .removeAttribute(
+          "data-ob-giant-pack-001-account-experience"
         );
     }
 
@@ -167,7 +184,9 @@
         .ob-mission-bar,
         #obMissionDrawer,
         #obMissionDrawerBackdrop,
-        .ob-mission-drawer-backdrop {
+        .ob-mission-drawer-backdrop,
+        #obAccountExperiencePanel,
+        .ob-account-experience-panel {
           display: none !important;
           visibility: hidden !important;
           pointer-events: none !important;

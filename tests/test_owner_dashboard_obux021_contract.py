@@ -1,38 +1,96 @@
 from pathlib import Path
+import re
+
 
 ROOT = Path(__file__).resolve().parents[1]
+
 CONTRACT = (
     ROOT / "web/static/ob/ob_owner_dashboard_contract.js"
-).read_text(encoding="utf-8")
+).read_text(
+    encoding="utf-8",
+    errors="replace",
+)
 
 
-def test_obux021_uses_guarded_existing_owner_intelligence_endpoints():
-    assert "/ob/account-experience.json" in CONTRACT
-    assert "/ob/engine-feed-trust-labels.json" in CONTRACT
-    assert "/ob/manual-live-operator-confidence-readiness-checkpoint.json" in CONTRACT
-    assert "/ob/private-beta-launch-control.json" in CONTRACT
+def compact(value):
+    return re.sub(
+        r"\s+",
+        "",
+        value,
+    )
+
+
+def test_obux021_guarded_owner_sources_remain_after_capital_lane_redesign():
+    # Generic account-experience is deliberately retired from
+    # the owner Capital Lane contract.
+    assert (
+        "/ob/account-experience.json"
+        not in CONTRACT
+    )
+
+    for endpoint in [
+        "/ob/engine-feed-trust-labels.json",
+        "/ob/manual-live-operator-confidence-readiness-checkpoint.json",
+        "/ob/private-beta-launch-control.json",
+    ]:
+        assert endpoint in CONTRACT
+
     assert "sourceLooksVerified" in CONTRACT
-    assert "credentials: \"same-origin\"" in CONTRACT
+
+    assert (
+        'credentials:"same-origin"'
+        in compact(CONTRACT)
+    )
 
 
-def test_obux021_does_not_turn_policy_text_into_fake_capital_truth():
-    assert "actual_capital_known: false" in CONTRACT
-    assert "capital_progress_known: false" in CONTRACT
-    assert "verified_snapshot: false" in CONTRACT
-    assert "Policy text is not a balance" in CONTRACT
-    assert "OB_OWNER_MISSION_SNAPSHOT" in CONTRACT
+def test_obux021_policy_never_becomes_fake_capital_truth():
+    source = compact(
+        CONTRACT
+    )
+
+    for marker in [
+        "actual_capital_known:false",
+        "actual_capital_value:null",
+        "capital_progress_known:false",
+        "capital_progress_percent:null",
+        "verified_snapshot:false",
+        "needs_attention:false",
+    ]:
+        assert marker in source
+
+    assert (
+        "OB_OWNER_CAPITAL_LANE_SNAPSHOT"
+        in CONTRACT
+    )
 
 
 def test_obux021_execution_boundaries_remain_fail_closed():
-    assert "broker_api_enabled: false" in CONTRACT
-    assert "broker_order_submission_enabled: false" in CONTRACT
-    assert "real_capital_movement_enabled: false" in CONTRACT
-    assert "auto_execution_enabled: false" in CONTRACT
-    assert "live_auto_locked: true" in CONTRACT
-    assert "gp066_advanced: false" in CONTRACT
+    source = compact(
+        CONTRACT
+    )
+
+    for marker in [
+        "owner_only:true",
+        "capital_lanes_owner_dashboard_only:true",
+        "non_owner_capital_lane_delivery:false",
+        "read_only_intelligence:true",
+        "lane_selection_changes_context_only:true",
+        "broker_api_enabled:false",
+        "broker_order_submission_enabled:false",
+        "real_capital_movement_enabled:false",
+        "automatic_contract_selection_enabled:false",
+        "auto_execution_enabled:false",
+        "live_auto_locked:true",
+    ]:
+        assert marker in source
 
 
 def test_obux021_does_not_resurrect_legacy_fake_position_logic():
     assert '["MU", "AMD", "INTC"]' not in CONTRACT
+
     assert "sample_signals" not in CONTRACT
-    assert "static_market_fallback_actionable" not in CONTRACT
+
+    assert (
+        "static_market_fallback_actionable"
+        not in CONTRACT
+    )

@@ -67,33 +67,22 @@ def test_obux081_dashboard_has_no_mission_renderer_dependency():
         assert forbidden not in source
 
 
-def test_obux081_mission_settings_are_owner_dashboard_only():
+def test_obux081_mission_setting_is_now_fully_retired():
     source = text(SETTINGS)
 
     assert (
-        "function missionSettingsAllowed()"
-        in source
+        "missionSettingsAllowed"
+        not in source
     )
 
     assert (
-        '=== "/ob/owner-dashboard"'
-        in source
-    )
-
-    normalized = " ".join(
-        source.split()
+        "Mission bar"
+        not in source
     )
 
     assert (
-        'document.body.removeAttribute( '
-        '"data-ob-mission-layout" );'
-        in normalized
-    )
-
-    assert (
-        "missionSettingsAllowed()\n"
-        "            ? settingSelect("
-        in source
+        "missionLayout"
+        not in source
     )
 
 
@@ -238,13 +227,13 @@ def test_obux084_dashboard_has_fresh_product_policy():
     source = text(DASH)
 
     assert (
-        "ob_product_surface_policy.js?v=obux081085"
+        "ob_product_surface_policy.js?v=obux086090"
         in source
     )
 
     assert (
         source.index(
-            "ob_product_surface_policy.js?v=obux081085"
+            "ob_product_surface_policy.js?v=obux086090"
         )
         < source.index(
             "<body"
@@ -256,7 +245,6 @@ def test_obux085_dashboard_layout_remains_product_dashboard():
     source = text(DASH)
 
     for required in [
-        "Account snapshot",
         "SOULAANA · RIGHT NOW",
         "SINCE YOU WERE HERE",
         "YOUR ACTIVITY",
@@ -269,7 +257,7 @@ def test_obux085_dashboard_layout_remains_product_dashboard():
 
 def test_obux085_dashboard_build_marker_current():
     assert (
-        'data-ob-build="OBUX081-085"'
+        'data-ob-build="OBUX086-090"'
         in text(DASH)
     )
 

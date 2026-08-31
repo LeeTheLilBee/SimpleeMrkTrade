@@ -98,7 +98,6 @@ def test_obux056_is_normal_user_dashboard():
     )
 
     for phrase in [
-        "Account snapshot",
         "SINCE YOU WERE HERE",
         "YOUR ACTIVITY",
         "MARKET NOW",

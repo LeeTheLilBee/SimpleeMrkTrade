@@ -118,7 +118,6 @@ def test_dashboard_layout_is_preserved():
 
     for token in [
         "SOULAANA · RIGHT NOW",
-        "Account snapshot",
         "SINCE YOU WERE HERE",
         "YOUR ACTIVITY",
         "MARKET NOW",

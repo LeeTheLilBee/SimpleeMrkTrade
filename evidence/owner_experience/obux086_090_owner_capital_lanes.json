@@ -1,0 +1,29 @@
+{
+  "automatic_contract_selection_added": false,
+  "automatic_execution_added": false,
+  "broker_submission_added": false,
+  "capital_lanes": [
+    "trust",
+    "personal",
+    "simplee_world",
+    "atm",
+    "apartment",
+    "proof_demo"
+  ],
+  "capital_lanes_owner_dashboard_only": true,
+  "capital_movement_added": false,
+  "deeper_intelligence_collapsed": true,
+  "explicit_enter_required": true,
+  "lane_click_changes_context": false,
+  "legacy_mission_runtime_on_canonical_product": false,
+  "legacy_mission_setting": false,
+  "live_auto_authorized": false,
+  "max_owner_attention_visible": 3,
+  "normal_dashboard_account_snapshot": false,
+  "one_drawer_at_a_time": true,
+  "pack": "OBUX086-090",
+  "parent": "25497056d408197fe36a298c3e0d96953a5c0982",
+  "reduced_motion_supported": true,
+  "title": "Owner Capital Lanes + ADHD-Friendly Owner Dashboard",
+  "tower_modified": false
+}

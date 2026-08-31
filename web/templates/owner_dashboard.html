@@ -5,6 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OB Owner Dashboard</title>
 
+
+  <script>
+    /*
+      OBUX088 — Owner Dashboard first-paint theme authority.
+    */
+    (function () {
+      var key =
+        "ob.appearance.theme.v2";
+
+      var allowed = {
+        "aurora-ink": true,
+        "deep-field": true,
+        "lunar-sage": true
+      };
+
+      var theme =
+        "aurora-ink";
+
+      try {
+        var stored =
+          window.localStorage
+            .getItem(
+              key
+            );
+
+        if (
+          stored
+          && allowed[stored]
+        ) {
+          theme = stored;
+        }
+      } catch (_) {}
+
+      document
+        .documentElement
+        .setAttribute(
+          "data-ob-theme",
+          theme
+        );
+    })();
+  </script>
+
+  <script src="/static/ob/ob_product_surface_policy.js?v=obux086090"></script>
+
   <!--
     OBUX025_DORMANT_OWNER_DASHBOARD
     OWNER_DASHBOARD_ACTIVATION_HANDOFF
@@ -27,19 +71,30 @@
     rel="stylesheet"
     href="{{ url_for('static', filename='ob/ob_theme.css') }}"
   />
+
   <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='ob/ob_owner_dashboard.css') }}"
+    href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}"
   />
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}" />
-  <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
+
+  <link
+    rel="stylesheet"
+    href="/static/ob/ob_interchangeable_themes.css?v=obux081085"
+  />
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_owner_dashboard.css') }}?v=obux086090"
+  />
 </head>
 
 <body
   data-ob-owner-dashboard-role="owner-only-active"
   data-ob-owner-dashboard-route-state="tower-protected-active"
   data-ob-owner-dashboard-design-activated="true"
-  data-ob-live-auto-locked="true" data-ob-room="owner-dashboard">
+  data-ob-owner-capital-lanes="true"
+  data-ob-live-auto-locked="true"
+  data-ob-room="owner-dashboard">
 <div
   class="ob-sky"
   data-ob-atmosphere-version="OBUX026-OBUX030"
@@ -56,7 +111,7 @@
         <div class="ob-owner-shell-title">
           <strong>The Observatory · Owner Dashboard</strong>
           <span>
-            additional owner intelligence · not Owner Console
+            focused capital lanes · owner intelligence · no proof wall
           </span>
         </div>
 
@@ -78,13 +133,13 @@
   -->
 
   <script
-    src="{{ url_for('static', filename='ob/ob_owner_dashboard_contract.js') }}"
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard_contract.js') }}?v=obux086090"
   ></script>
   <script
-    src="{{ url_for('static', filename='ob/ob_owner_dashboard_soulaana.js') }}"
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard_soulaana.js') }}?v=obux086090"
   ></script>
   <script
-    src="{{ url_for('static', filename='ob/ob_owner_dashboard.js') }}"
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard.js') }}?v=obux086090"
   ></script>
 <script src="/static/ob/ob_session_state.js"></script>
 <script src="/static/ob/ob_nav_shell.js"></script>

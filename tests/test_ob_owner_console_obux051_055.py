@@ -147,11 +147,19 @@ def test_existing_diagnostics_stack_preserved():
         assert marker in source
 
 
-def test_existing_mission_and_readiness_stack_preserved():
+def test_existing_readiness_stack_preserved_after_mission_runtime_retirement():
     source = text(TEMPLATE)
 
+    # OBUX086–090 retires the shared legacy Mission Account
+    # runtime from canonical OB product rooms, including
+    # Owner Console.
+    assert (
+        "ob_mission_accounts.js"
+        not in source
+    )
+
+    # Owner Console readiness / safety infrastructure remains.
     required = [
-        "ob_mission_accounts.js",
         "ob_beta_readiness.js",
         "ob_beta_readiness_checkpoint.js",
         "ob_manual_live_l1_readiness_checkpoint.js",

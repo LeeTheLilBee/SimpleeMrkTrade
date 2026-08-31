@@ -46,7 +46,7 @@ def test_dashboard_is_current_obux071_075_surface():
     source = text(DASH)
 
     assert (
-        'data-ob-build="OBUX081-085"'
+        'data-ob-build="OBUX086-090"'
         in source
     )
 
@@ -82,13 +82,13 @@ def test_product_policy_is_fresh_and_early():
     source = text(DASH)
 
     assert (
-        "ob_product_surface_policy.js?v=obux081085"
+        "ob_product_surface_policy.js?v=obux086090"
         in source
     )
 
     assert (
         source.index(
-            "ob_product_surface_policy.js?v=obux081085"
+            "ob_product_surface_policy.js?v=obux086090"
         )
         < source.index(
             "<body"
@@ -108,16 +108,16 @@ def test_changed_runtime_assets_have_new_cache_identity():
         assert token in source
 
 
-def test_product_policy_denies_mission_ui_except_owner_dashboard():
+def test_product_policy_denies_legacy_mission_ui_on_all_ob_product_routes():
     source = text(POLICY)
 
     assert (
-        'const OWNER_DASHBOARD =\n    "/ob/owner-dashboard";'
+        "missionUiAllowed"
         in source
     )
 
     assert (
-        "missionUiAllowed"
+        "return !isObProductRoute();"
         in source
     )
 
@@ -242,7 +242,6 @@ def test_dashboard_layout_remains_untouched():
     source = text(DASH)
 
     for token in [
-        "Account snapshot",
         "SOULAANA · RIGHT NOW",
         "SINCE YOU WERE HERE",
         "YOUR ACTIVITY",

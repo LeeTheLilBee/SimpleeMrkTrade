@@ -5,34 +5,12 @@
   const READ_KEY = "ob.v20.readNotifications";
 
 
-  function normalizedPath() {
-    return String(
-      window.location.pathname
-      || "/"
-    )
-      .toLowerCase()
-      .replace(
-        /\/+$/,
-        ""
-      )
-      || "/";
-  }
-
-
-  function missionSettingsAllowed() {
-    return (
-      normalizedPath()
-      === "/ob/owner-dashboard"
-    );
-  }
-
 
   const defaultSettings = {
     themeVariant: "cosmic",
     starGlow: "normal",
     motion: "full",
-    soulaanaIntensity: "auntie",
-    missionLayout: "full"
+    soulaanaIntensity: "auntie"
   };
 
   const notifications = [
@@ -107,19 +85,13 @@
     document.body.setAttribute("data-ob-motion", settings.motion);
     document.body.setAttribute("data-ob-soulaana-intensity", settings.soulaanaIntensity);
 
-    if (
-      missionSettingsAllowed()
-      && settings.missionLayout
-    ) {
-      document.body.setAttribute(
-        "data-ob-mission-layout",
-        settings.missionLayout
-      );
-    } else {
-      document.body.removeAttribute(
-        "data-ob-mission-layout"
-      );
-    }
+    /*
+      Legacy mission-layout state is retired everywhere.
+      Owner Capital Lanes use their own owner-only context.
+    */
+    document.body.removeAttribute(
+      "data-ob-mission-layout"
+    );
   }
 
   function closeDrawer() {
@@ -255,7 +227,10 @@
     const body = `
       <div class="ob-drawer-section gold">
         <span>Settings</span>
-        <strong>These preferences affect the OB visual layer only. Tower still owns access, identity, billing, permissions, and locks.</strong>
+        <strong>
+          These preferences affect the OB visual layer only.
+          Tower still owns access, identity, permissions, and locks.
+        </strong>
       </div>
 
       <div class="ob-settings-grid" style="margin-top: 12px;">
@@ -276,95 +251,110 @@
           { value: "reduced", label: "Reduced motion" }
         ])}
 
-        ${settingSelect("obSettingSoulaana", "Soulaana intensity", settings.soulaanaIntensity, [
-          { value: "clear", label: "Clear and simple" },
-          { value: "auntie", label: "Auntie guidance" },
-          { value: "strict", label: "Strict auntie" }
-        ])}
-
-        ${
-          missionSettingsAllowed()
-            ? settingSelect(
-                "obSettingMissionLayout",
-                "Mission bar",
-                settings.missionLayout,
-                [
-                  {
-                    value: "full",
-                    label: "Full mission context"
-                  },
-                  {
-                    value: "compact",
-                    label: "Compact mission context"
-                  }
-                ]
-              )
-            : ""
-        }
+        ${settingSelect(
+          "obSettingSoulaana",
+          "Soulaana intensity",
+          settings.soulaanaIntensity,
+          [
+            { value: "clear", label: "Clear and simple" },
+            { value: "auntie", label: "Auntie guidance" },
+            { value: "strict", label: "Strict auntie" }
+          ]
+        )}
       </div>
 
       <div class="ob-settings-note">
         <strong style="color: var(--ob-gold);">Soulaana:</strong><br>
-        Change the room lighting if you need to, but do not change the rules. Pretty is not permission. The Tower still holds the lock.
+        Change the room lighting if you need to.
+        Appearance never changes permission.
       </div>
 
       <div class="ob-notification-actions" style="margin-top: 12px;">
-        <button class="ob-drawer-button" id="obSaveSettings">Save settings</button>
-        <button class="ob-drawer-button aqua" id="obResetSettings">Reset defaults</button>
-        <button class="ob-drawer-button red" id="obCloseSettings">Close</button>
+        <button class="ob-drawer-button" id="obSaveSettings">
+          Save settings
+        </button>
+
+        <button class="ob-drawer-button aqua" id="obResetSettings">
+          Reset defaults
+        </button>
+
+        <button class="ob-drawer-button red" id="obCloseSettings">
+          Close
+        </button>
       </div>
     `;
 
     drawerShell(
       "Settings",
-      missionSettingsAllowed()
-        ? "Theme, star glow, motion, Soulaana intensity, and owner mission display options."
-        : "Theme, star glow, motion, and Soulaana intensity.",
+      "Theme, star glow, motion, and Soulaana intensity.",
       body
     );
 
-    const save = document.getElementById("obSaveSettings");
+    const save =
+      document.getElementById(
+        "obSaveSettings"
+      );
+
     if (save) {
-      save.addEventListener("click", function () {
-        const next = {
-          themeVariant: document.getElementById("obSettingTheme").value,
-          starGlow: document.getElementById("obSettingGlow").value,
-          motion: document.getElementById("obSettingMotion").value,
-          soulaanaIntensity: document.getElementById("obSettingSoulaana").value
-        };
+      save.addEventListener(
+        "click",
+        function () {
+          const next = {
+            themeVariant:
+              document.getElementById(
+                "obSettingTheme"
+              ).value,
 
-        if (
-          missionSettingsAllowed()
-        ) {
-          const missionLayout =
-            document.getElementById(
-              "obSettingMissionLayout"
-            );
+            starGlow:
+              document.getElementById(
+                "obSettingGlow"
+              ).value,
 
-          if (
-            missionLayout
-          ) {
-            next.missionLayout =
-              missionLayout.value;
-          }
+            motion:
+              document.getElementById(
+                "obSettingMotion"
+              ).value,
+
+            soulaanaIntensity:
+              document.getElementById(
+                "obSettingSoulaana"
+              ).value
+          };
+
+          saveSettings(next);
+          openSettingsDrawer();
         }
-
-        saveSettings(next);
-        openSettingsDrawer();
-      });
+      );
     }
 
-    const reset = document.getElementById("obResetSettings");
+    const reset =
+      document.getElementById(
+        "obResetSettings"
+      );
+
     if (reset) {
-      reset.addEventListener("click", function () {
-        saveSettings({ ...defaultSettings });
-        openSettingsDrawer();
-      });
+      reset.addEventListener(
+        "click",
+        function () {
+          saveSettings({
+            ...defaultSettings
+          });
+
+          openSettingsDrawer();
+        }
+      );
     }
 
-    const close = document.getElementById("obCloseSettings");
+    const close =
+      document.getElementById(
+        "obCloseSettings"
+      );
+
     if (close) {
-      close.addEventListener("click", closeDrawer);
+      close.addEventListener(
+        "click",
+        closeDrawer
+      );
     }
   }
 

@@ -159,7 +159,7 @@ def test_obux067_dashboard_versions_force_one_new_real_arrival():
     source = text(DASH)
 
     assert (
-        'data-ob-build="OBUX081-085"'
+        'data-ob-build="OBUX086-090"'
         in source
     )
 
@@ -263,7 +263,6 @@ def test_obux069_dashboard_layout_remains_intact():
     source = text(DASH)
 
     for token in [
-        "Account snapshot",
         "SOULAANA · RIGHT NOW",
         "SINCE YOU WERE HERE",
         "YOUR ACTIVITY",
