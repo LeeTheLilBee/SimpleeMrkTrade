@@ -1,0 +1,37 @@
+{
+  "name": "dual_dashboard_clean_slate_replacement",
+  "owner_dashboard": {
+    "canonical_engine_projection_required": true,
+    "capital_lanes_secondary": true,
+    "max_owner_attention": 3,
+    "options_first_research": true,
+    "owner_only": true,
+    "progressive_disclosure": true,
+    "selection_authority": "OWNER",
+    "soulaana_primary": true,
+    "today_edge": [
+      "NOW",
+      "WATCH",
+      "NOT_YET"
+    ]
+  },
+  "pack": "OBUX091-095",
+  "safety": {
+    "live_auto_locked": true,
+    "no_automatic_contract_selection": true,
+    "no_automatic_execution": true,
+    "no_broker_submission": true,
+    "no_capital_movement": true,
+    "no_fake_candidate_fill": true
+  },
+  "user_dashboard": {
+    "attention_first": true,
+    "max_primary_market_items": 3,
+    "option_contract_recommendations": false,
+    "owner_candidate_payloads": false,
+    "owner_capital_lanes": false,
+    "personalized_security_recommendations": false,
+    "self_directed": true,
+    "survey_and_paper_first": true
+  }
+}

@@ -1,18 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
 
-  <title>The Observatory · Dashboard</title>
-
+  <title>
+    The Observatory · Dashboard
+  </title>
 
   <script>
     /*
-      OBUX082 — FIRST-PAINT OBSERVATORY THEME AUTHORITY.
-
-      Apply the current Observatory theme before theme CSS paints.
-      Legacy plum/gold theme IDs are intentionally ignored.
+      OBUX091–095
+      First-paint Observatory theme authority.
     */
     (function () {
       var key =
@@ -58,32 +61,15 @@
 
   <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='ob/ob_dashboard_obux.css') }}"
+    href="/static/ob/ob_interchangeable_themes.css?v=obux081085"
   />
 
-  <script>
-    /*
-      Immediate visual privacy during arrival.
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_dashboard_obux.css') }}?v=obux091095"
+  />
 
-      Fail-safe:
-      if the canonical arrival controller never wakes up,
-      this boot class automatically falls away.
-    */
-    document.documentElement.classList.add(
-      "ob-arrival-booting"
-    );
-
-    window.setTimeout(
-      function () {
-        document.documentElement.classList.remove(
-          "ob-arrival-booting"
-        );
-      },
-      6000
-    );
-  </script>
   <script src="/static/ob/ob_product_surface_policy.js?v=obux086090"></script>
-  <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
 </head>
 
 <body
@@ -93,9 +79,15 @@
   data-ob-owner-dashboard="false"
   data-ob-owner-console="false"
   data-ob-beta="true"
-  data-ob-build="OBUX086-090"
+  data-ob-build="OBUX091-095"
+  data-ob-advisory-surface="self-directed-observation-and-paper"
+  data-ob-owner-grade-candidates="false"
+  data-ob-personalized-security-recommendations="false"
+  data-ob-option-contract-recommendations="false"
+  data-ob-live-recommendations="false"
+  data-ob-live-auto-locked="true"
   data-ob-sop-version="beta-sop-v2"
-  data-ob-whats-new-version="obux066-070-v1"
+  data-ob-whats-new-version="obux091-095-v1"
   data-ob-tower-return="/tower/return/observatory"
 >
   <div
@@ -105,7 +97,6 @@
     <div class="ob-sky__weather"></div>
     <div class="ob-sky__horizon"></div>
     <div class="ob-sky__grid"></div>
-    <div class="ob-user-stars"></div>
   </div>
 
   <div
@@ -113,429 +104,233 @@
     class="ob-user-app"
   >
     <div
-      class="ob-layer ob-user-layer"
+      class="ob-user-shell"
     >
       <header
         class="ob-user-header"
       >
         <div>
-          <div
+          <span
             class="ob-user-eyebrow"
           >
             THE OBSERVATORY · PRIVATE BETA
-          </div>
+          </span>
 
           <h1>
             Dashboard
           </h1>
 
           <p>
-            What changed,
-            what matters,
-            and where to move next.
+            See the market.
+            Learn how OB reads it.
+            Practice without live recommendations.
           </p>
         </div>
-</header>
+
+        <div
+          class="ob-user-boundary"
+          aria-label="Dashboard mode boundary"
+        >
+          <span>
+            Survey
+          </span>
+
+          <span>
+            Paper
+          </span>
+
+          <span class="locked">
+            Live Auto Locked
+          </span>
+        </div>
+      </header>
 
       <main
-        class="ob-user-dashboard-grid"
+        class="ob-user-dashboard"
       >
         <section
-          class="ob-panel ob-soulaana-panel"
-          aria-labelledby="soulaanaRightNowTitle"
+          class="ob-user-focus"
+          aria-labelledby="obUserBriefingTitle"
         >
           <div
-            class="ob-orb"
+            class="ob-user-focus-orb"
             aria-hidden="true"
-          >
-            <span></span>
-          </div>
+          ></div>
 
-          <div>
+          <div
+            class="ob-user-focus-copy"
+          >
             <span
               class="ob-kicker"
             >
-              SOULAANA · RIGHT NOW
+              SOULAANA · MARKET BRIEFING
             </span>
 
             <h2
-              id="soulaanaRightNowTitle"
+              id="obUserBriefingTitle"
             >
-              I’m checking your sky.
+              I’m checking the market.
             </h2>
 
             <p
-              id="obSoulaanaSummary"
+              id="obUserBriefingSummary"
             >
-              I’ll keep the important things up front
-              and leave unavailable truth unavailable.
+              I’ll keep this simple:
+              what the market is doing,
+              what is worth studying,
+              and where you can practice safely.
             </p>
 
             <div
-              class="ob-inline-actions"
+              class="ob-user-focus-actions"
             >
-              <button
-                type="button"
-                class="ob-text-button"
-                data-ob-action="explain-dashboard"
+              <a
+                class="ob-primary-action"
+                href="/ob/market-map"
               >
-                Why am I seeing this?
-              </button>
+                Open Market Map
+              </a>
 
-              <button
-                type="button"
-                class="ob-text-button"
-                data-ob-action="open-feedback"
+              <a
+                class="ob-secondary-action"
+                href="/trade-center"
               >
-                Something feels wrong
-              </button>
+                Paper Practice
+              </a>
             </div>
           </div>
         </section>
 
         <section
-          class="ob-panel"
-          aria-labelledby="sinceTitle"
+          class="ob-user-paths"
+          aria-label="Where to go next"
         >
-          <div
-            class="ob-section-heading"
+          <a
+            href="/ob/market-map"
+            class="ob-user-path"
           >
-            <div>
-              <span
-                class="ob-kicker"
-              >
-                SINCE YOU WERE HERE
-              </span>
-
-              <h2
-                id="sinceTitle"
-              >
-                Meaningful changes
-              </h2>
-            </div>
-          </div>
-
-          <div
-            id="obSinceYouWereHere"
-            class="ob-card-stack"
-          ></div>
-        </section>
-
-        <section
-          class="ob-panel"
-          aria-labelledby="activityTitle"
-        >
-          <div
-            class="ob-section-heading"
-          >
-            <div>
-              <span
-                class="ob-kicker"
-              >
-                YOUR ACTIVITY
-              </span>
-
-              <h2
-                id="activityTitle"
-              >
-                Open work & recent review
-              </h2>
-            </div>
-          </div>
-
-          <div
-            id="obUserActivity"
-            class="ob-card-stack"
-          ></div>
-        </section>
-
-        <section
-          class="ob-panel ob-market-panel"
-          aria-labelledby="marketNowTitle"
-        >
-          <div
-            class="ob-section-heading"
-          >
-            <div>
-              <span
-                class="ob-kicker"
-              >
-                MARKET NOW
-              </span>
-
-              <h2
-                id="marketNowTitle"
-              >
-                What deserves a look
-              </h2>
-            </div>
-
-            <a
-              class="ob-text-link"
-              href="/ob/market-map"
-            >
-              Open Market Map →
-            </a>
-          </div>
-
-          <div
-            id="obMarketNow"
-            class="ob-market-strip"
-          ></div>
-        </section>
-
-        <section
-          class="ob-panel ob-loop-panel"
-          aria-labelledby="loopTitle"
-        >
-          <div
-            class="ob-section-heading"
-          >
-            <div>
-              <span
-                class="ob-kicker"
-              >
-                YOUR OPERATING LOOP
-              </span>
-
-              <h2
-                id="loopTitle"
-              >
-                Move through the real rooms
-              </h2>
-            </div>
-          </div>
-
-          <nav
-            class="ob-room-loop"
-            aria-label="Observatory operating loop"
-          >
-            <a
-              href="/ob/market-map"
-              data-guide-room="market-map"
-            >
-              <strong>01</strong>
-              <span>Market Map</span>
-              <small>See the sky</small>
-            </a>
-
-            <span
-              class="ob-loop-arrow"
-              aria-hidden="true"
-            >
-              →
+            <span>
+              01
             </span>
+
+            <strong>
+              See the sky
+            </strong>
+
+            <small>
+              Market Map
+            </small>
+          </a>
+
+          <a
+            href="/ob/market-map"
+            class="ob-user-path"
+          >
+            <span>
+              02
+            </span>
+
+            <strong>
+              Study a symbol
+            </strong>
+
+            <small>
+              Choose from real market data
+            </small>
+          </a>
+
+          <a
+            href="/trade-center"
+            class="ob-user-path"
+          >
+            <span>
+              03
+            </span>
+
+            <strong>
+              Practice
+            </strong>
+
+            <small>
+              Paper Trade Center
+            </small>
+          </a>
+        </section>
+
+        <section
+          class="ob-user-glance"
+          aria-labelledby="obUserGlanceTitle"
+        >
+          <div
+            class="ob-section-head"
+          >
+            <div>
+              <span
+                class="ob-kicker"
+              >
+                MARKET GLANCE
+              </span>
+
+              <h2
+                id="obUserGlanceTitle"
+              >
+                Three things max.
+              </h2>
+            </div>
 
             <a
               href="/ob/market-map"
-              data-guide-room="symbol"
             >
-              <strong>02</strong>
-              <span>Symbol Room</span>
-              <small>Choose a real symbol first</small>
+              Explore everything →
             </a>
+          </div>
 
-            <span
-              class="ob-loop-arrow"
-              aria-hidden="true"
-            >
-              →
-            </span>
-
-            <a
-              href="/trade-center"
-              data-guide-room="trade-center"
-            >
-              <strong>03</strong>
-              <span>Trade Center</span>
-              <small>Work the lifecycle</small>
-            </a>
-
-            <span
-              class="ob-loop-arrow"
-              aria-hidden="true"
-            >
-              →
-            </span>
-
-            <a
-              href="/review-center"
-              data-guide-room="review-center"
-            >
-              <strong>04</strong>
-              <span>Review Center</span>
-              <small>Learn from process</small>
-            </a>
-          </nav>
-
-          <p
-            class="ob-loop-note"
-          >
-            Symbol Room is a destination from a real symbol.
-            Dashboard will not fabricate a ticker
-            just to make a shortcut look active.
-          </p>
+          <div
+            id="obUserMarketGlance"
+            class="ob-user-glance-grid"
+          ></div>
         </section>
 
-        <section
-          class="ob-panel ob-my-ob-preview"
-          aria-labelledby="myObPreviewTitle"
+        <details
+          class="ob-user-more"
         >
-          <div
-            class="ob-section-heading"
-          >
-            <div>
-              <span
-                class="ob-kicker"
-              >
-                MY OB
-              </span>
-
-              <h2
-                id="myObPreviewTitle"
-              >
-                Your account tools
-              </h2>
-            </div>
-          </div>
+          <summary>
+            More from your Observatory
+          </summary>
 
           <div
-            class="ob-tool-grid"
-          >
-            <button
-              type="button"
-              data-ob-action="open-my-ob"
-              data-my-ob-section="notifications"
-            >
-              <strong>
-                Notifications
-              </strong>
+            id="obUserMoreContent"
+            class="ob-user-more-grid"
+          ></div>
+        </details>
 
-              <span>
-                Can Soulaana reach you?
-              </span>
-            </button>
+        <section
+          class="ob-user-boundary-note"
+          aria-label="Self-directed beta boundary"
+        >
+          <strong>
+            This Dashboard is for observation,
+            learning,
+            and paper practice.
+          </strong>
 
-            <button
-              type="button"
-              data-ob-action="open-my-ob"
-              data-my-ob-section="access"
-            >
-              <strong>
-                Access & modes
-              </strong>
-
-              <span>
-                See what is open or locked
-              </span>
-            </button>
-
-            <button
-              type="button"
-              data-ob-action="open-my-ob"
-              data-my-ob-section="sessions"
-            >
-              <strong>
-                Recent sessions
-              </strong>
-
-              <span>
-                Return with context
-              </span>
-            </button>
-
-            <button
-              type="button"
-              data-ob-action="open-feedback"
-            >
-              <strong>
-                Beta feedback
-              </strong>
-
-              <span>
-                Tell us what worked or didn’t
-              </span>
-            </button>
-          </div>
+          <span>
+            It does not provide owner-only Capital Lanes,
+            individualized live security recommendations,
+            option-contract recommendations,
+            broker submission,
+            or automatic execution.
+          </span>
         </section>
       </main>
     </div>
   </div>
 
-  <aside
-    id="obMyObDrawer"
-    class="ob-drawer"
-    aria-hidden="true"
-    aria-label="My OB"
-  >
-    <div
-      class="ob-drawer-scrim"
-      data-ob-action="close-my-ob"
-    ></div>
-
-    <div
-      class="ob-drawer-panel"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="myObTitle"
-    >
-      <header>
-        <div>
-          <span
-            class="ob-kicker"
-          >
-            MY OB
-          </span>
-
-          <h2
-            id="myObTitle"
-          >
-            Account & session
-          </h2>
-        </div>
-
-        <button
-          type="button"
-          class="ob-icon-button"
-          data-ob-action="close-my-ob"
-          aria-label="Close My OB"
-        >
-          ×
-        </button>
-      </header>
-
-      <div
-        id="obMyObContent"
-        class="ob-drawer-content"
-      ></div>
-    </div>
-  </aside>
-
-  <div
-    id="obArrivalRoot"
-  ></div>
-
   <noscript>
-    <div
-      class="ob-noscript"
-    >
-      <strong>
-        OB needs JavaScript
-        for the private beta experience.
-      </strong>
-
-      <a
-        href="/tower/return/observatory"
-      >
-        Return to Tower
-      </a>
+    <div class="ob-noscript">
+      OB needs JavaScript for this private beta experience.
     </div>
   </noscript>
-
-  <!--
-    Data / truth support only.
-    No owner mission-account UI script is loaded here.
-  -->
 
   <script
     src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"
@@ -554,27 +349,11 @@
   ></script>
 
   <script
-    src="{{ url_for('static', filename='ob/ob_engine_room_mapping.js') }}"
-  ></script>
-
-  <script
-    src="{{ url_for('static', filename='ob/ob_beta_readiness.js') }}"
-  ></script>
-
-  <script
-    src="{{ url_for('static', filename='ob/ob_notifications_settings.js') }}?v=obux086090"
-  ></script>
-
-  <script
-    src="{{ url_for('static', filename='ob/ob_private_beta_feedback_intake.js') }}"
-  ></script>
-
-  <script
     src="{{ url_for('static', filename='ob/ob_session_state.js') }}"
   ></script>
 
   <script
-    src="{{ url_for('static', filename='ob/ob_dashboard_projection.js') }}"
+    src="{{ url_for('static', filename='ob/ob_dashboard_projection.js') }}?v=obux091095"
   ></script>
 
   <script
@@ -582,7 +361,7 @@
   ></script>
 
   <script
-    src="{{ url_for('static', filename='ob/ob_dashboard.js') }}"
+    src="{{ url_for('static', filename='ob/ob_dashboard.js') }}?v=obux091095"
   ></script>
 
   <script
@@ -592,6 +371,7 @@
   <script
     src="{{ url_for('static', filename='ob/ob_global_session_shell.js') }}"
   ></script>
+
   <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
   <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
 </body>

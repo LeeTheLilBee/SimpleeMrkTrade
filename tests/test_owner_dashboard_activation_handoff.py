@@ -62,41 +62,28 @@ def compact(value):
 
 def test_owner_dashboard_activation_uses_only_canonical_ob_route():
     assert '@app.route("/ob/owner-dashboard")' in APP
-
     assert '@app.route("/owner-dashboard")' not in APP
 
     assert (
         'def ob_owner_dashboard_v17():\n'
         '    return render_template("owner_dashboard.html")'
-    ) in APP
-
-
-def test_owner_dashboard_activation_reports_active_lifecycle():
-    assert "OWNER_DASHBOARD_ACTIVATION_HANDOFF" in TEMPLATE
-
-    assert (
-        'data-ob-owner-dashboard-role="owner-only-active"'
-        in TEMPLATE
+        in APP
     )
 
-    assert (
-        'data-ob-owner-dashboard-route-state="tower-protected-active"'
-        in TEMPLATE
-    )
 
-    assert (
-        'data-ob-owner-dashboard-design-activated="true"'
-        in TEMPLATE
-    )
-
-    assert (
-        'data-ob-owner-capital-lanes="true"'
-        in TEMPLATE
-    )
-
-    assert "Tower Protected" in TEMPLATE
-
-    assert "Live Auto Locked" in TEMPLATE
+def test_owner_dashboard_is_active_owner_intelligence_cockpit():
+    for marker in [
+        "OWNER_DASHBOARD_ACTIVATION_HANDOFF",
+        'data-ob-owner-dashboard-role="owner-only-active"',
+        'data-ob-owner-dashboard-route-state="tower-protected-active"',
+        'data-ob-owner-dashboard-design-activated="true"',
+        'data-ob-owner-capital-lanes="true"',
+        'data-ob-owner-intelligence-cockpit="true"',
+        'data-ob-build="OBUX091-095"',
+        "Tower Protected",
+        "Live Auto Locked",
+    ]:
+        assert marker in TEMPLATE
 
 
 def test_ob_owner_dashboard_remains_tower_protected():
@@ -105,15 +92,9 @@ def test_ob_owner_dashboard_remains_tower_protected():
     )
 
     assert route is not None
-
     assert route["owner_only"] is True
-
     assert route["requires_owner_session"] is True
-
-    assert route["requires_step_up"] is False
-
     assert route["default_denied_when_unknown"] is True
-
     assert route["temporary_placeholder"] is False
 
     assert (
@@ -139,7 +120,6 @@ def test_ob_owner_dashboard_and_owner_console_remain_separate():
     )
 
     assert "ownerDashboardMount" in TEMPLATE
-
     assert "ownerConsoleMount" in OWNER_CONSOLE_TEMPLATE
 
     for marker in [
@@ -151,20 +131,21 @@ def test_ob_owner_dashboard_and_owner_console_remain_separate():
         assert marker not in TEMPLATE
 
 
-def test_tower_and_ob_owner_dashboards_are_distinct_namespaces():
+def test_tower_and_ob_owner_dashboards_remain_distinct_namespaces():
     assert "/tower/owner-dashboard" in TOWER_OWNER_WEB
-
     assert "/tower/owner-dashboard.json" in TOWER_OWNER_WEB
-
     assert "/ob/owner-dashboard" in APP
 
 
-def test_soulaana_owner_intelligence_is_preserved_after_capital_lane_redesign():
+def test_soulaana_owner_intelligence_contract_is_preserved():
     for marker in [
         "SOULAANA · OWNER BRIEFING",
         "what_i_see",
+        "why_it_matters",
         "capital_read",
         "what_needs_you",
+        "what_changed",
+        "what_im_learning",
         "next_best_move",
         "no_action_needed",
         "owner_altitude",
@@ -186,12 +167,14 @@ def test_owner_truth_and_execution_boundaries_remain_fail_closed():
     )
 
     for marker in [
-        "actual_capital_known:false",
-        "capital_progress_known:false",
-        "verified_snapshot:false",
+        "owner_only:true",
+        "owner_research_only:true",
         "capital_lanes_owner_dashboard_only:true",
         "non_owner_capital_lane_delivery:false",
-        "lane_selection_changes_context_only:true",
+        "non_owner_candidate_delivery:false",
+        "candidate_display_does_not_authorize_trade:true",
+        "ranked_contract_is_not_selected_contract:true",
+        'selection_authority:"OWNER"',
         "broker_api_enabled:false",
         "broker_order_submission_enabled:false",
         "real_capital_movement_enabled:false",

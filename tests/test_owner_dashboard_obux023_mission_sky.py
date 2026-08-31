@@ -34,7 +34,7 @@ def compact(value):
     )
 
 
-def test_obux023_six_owner_capital_lanes_are_defined():
+def test_obux023_six_owner_capital_lanes_remain_defined():
     source = compact(
         CONTRACT
     )
@@ -50,36 +50,36 @@ def test_obux023_six_owner_capital_lanes_are_defined():
         assert marker in source
 
 
-def test_obux023_capital_lanes_are_real_owner_surface():
+def test_obux023_owner_intelligence_now_precedes_capital_context():
     for marker in [
+        "TODAY’S EDGE",
+        "Now. Watch. Not yet.",
+        "WHAT NEEDS YOU",
         "CAPITAL LANES",
+        "Capital context — secondary.",
         "CURRENT CAPITAL LANE",
         "One lane at a time.",
         "data-capital-lane-open",
         "Capital truth unavailable",
-        "No verified alert",
         "Enter this lane",
     ]:
         assert marker in SURFACE
 
 
-def test_obux023_capital_lane_layout_is_focused_not_table_wall():
+def test_obux023_focused_owner_layout_has_no_old_mission_wall():
     for marker in [
+        ".ob-owner-hero",
+        ".ob-owner-edge-grid",
+        ".ob-edge-card.now",
+        ".ob-owner-attention-section",
+        ".ob-owner-more",
         ".ob-capital-lanes-section",
         ".ob-capital-focus",
         ".ob-capital-lane-nodes",
         ".ob-capital-lane-node",
         ".ob-capital-lane-star",
-        ".ob-capital-drawer",
+        ".ob-owner-drawer",
     ]:
         assert marker in CSS
 
-    assert (
-        "display: grid"
-        in CSS
-    )
-
-    assert (
-        "radial-gradient"
-        in CSS
-    )
+    assert "radial-gradient" in CSS

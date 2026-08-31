@@ -1,14 +1,22 @@
-// OBUX086–090 — OWNER CAPITAL LANES
-// ADHD-friendly rule:
-//   one focus
-//   one drawer
-//   one explicit switch
-//   deeper information collapsed
+
+// OBUX091–095 — IMMACULATE OWNER INTELLIGENCE COCKPIT
+//
+// ATTENTION ARCHITECTURE:
+//   1. Soulaana
+//   2. Today's Edge: NOW / WATCH / NOT YET
+//   3. three compact owner context tiles
+//   4. everything else collapsed
+//   5. Capital Lanes are secondary owner context
+//
+// NO TABLE WALL.
+// NO GIANT LIST.
+// ONE DRAWER AT A TIME.
+//
 (() => {
   "use strict";
 
   const VERSION =
-    "OBUX086_090_OWNER_CAPITAL_LANES_SURFACE";
+    "OBUX091_095_OWNER_INTELLIGENCE_COCKPIT";
 
   const STORAGE_KEY =
     "ob.owner.capital-lane.v1";
@@ -48,46 +56,43 @@
   );
 
 
-  const money = (
+  const fmtNumber = (
+    value,
+    digits = 2
+  ) => {
+    const number =
+      Number(
+        value
+      );
+
+    return Number.isFinite(number)
+      ? number.toFixed(
+          digits
+        )
+      : "—";
+  };
+
+
+  const fmtWhole = (
     value
   ) => {
-    if (
-      !Number.isFinite(
-        Number(
-          value
-        )
-      )
-    ) {
-      return "Unavailable";
-    }
-
-    return new Intl
-      .NumberFormat(
-        "en-US",
-        {
-          style:
-            "currency",
-
-          currency:
-            "USD",
-
-          maximumFractionDigits:
-            0
-        }
-      )
-      .format(
-        Number(
-          value
-        )
+    const number =
+      Number(
+        value
       );
+
+    return Number.isFinite(number)
+      ? Math.round(
+          number
+        ).toLocaleString()
+      : "—";
   };
 
 
   const readSelectedLane = () => {
     try {
       return (
-        window
-          .localStorage
+        window.localStorage
           .getItem(
             STORAGE_KEY
           )
@@ -103,8 +108,7 @@
     laneId
   ) => {
     try {
-      window
-        .localStorage
+      window.localStorage
         .setItem(
           STORAGE_KEY,
           laneId
@@ -126,309 +130,63 @@
 
 
   const findLane = (
-    contract,
     laneId
   ) => (
     lanes(
-      contract
+      currentContract
     ).find(
-      function (
-        lane
-      ) {
-        return (
-          lane.lane_id
-          === laneId
-        );
-      }
+      lane =>
+        lane.lane_id
+        === laneId
     )
     || null
   );
 
 
-  const selectedLane = (
-    contract
-  ) => {
+  const selectedLane = () => {
     const stored =
       readSelectedLane();
 
     return stored
       ? findLane(
-          contract,
           stored
         )
       : null;
   };
 
 
-  const truthLabel = (
-    lane
-  ) => {
-    if (
-      lane.actual_capital_known
-    ) {
-      return (
-        money(
-          lane.actual_capital_value
-        )
-        + " verified"
-      );
-    }
-
-    if (
-      lane.capital_progress_known
-    ) {
-      return (
-        `${Math.round(
-          Number(
-            lane.capital_progress_percent
-          )
-        )}% verified progress`
-      );
-    }
-
-    return (
-      "Capital truth unavailable"
-    );
-  };
-
-
-  const attentionTone = (
-    value
-  ) => {
-    if (
-      value === "high"
-    ) {
-      return "danger";
-    }
-
-    if (
-      value === "medium"
-    ) {
-      return "watch";
-    }
-
-    return "calm";
-  };
-
-
-  const sourceChip = (
-    verified,
-    label
-  ) => `
-    <span
-      class="ob-owner-chip ${
-        verified
-          ? "verified"
-          : "guarded"
-      }"
-    >
-      ${
-        verified
-          ? "Verified"
-          : "Guarded"
-      }
-      ·
-      ${esc(label)}
-    </span>
-  `;
-
-
-  const laneNode = (
-    lane,
-    selected
-  ) => `
-    <button
-      type="button"
-      class="ob-capital-lane-node ${
-        selected
-          ? "selected"
-          : ""
-      }"
-      data-capital-lane-open="${esc(
-        lane.lane_id
-      )}"
-      aria-pressed="${
-        selected
-          ? "true"
-          : "false"
-      }"
-    >
-      <span
-        class="ob-capital-lane-star"
-        aria-hidden="true"
-      ></span>
-
-      <span
-        class="ob-capital-lane-node-copy"
-      >
-        <strong>
-          ${esc(
-            lane.label
-          )}
-        </strong>
-
-        <small>
-          ${esc(
-            lane.risk_profile
-          )}
-        </small>
-      </span>
-
-      <span
-        class="ob-capital-lane-node-state"
-      >
-        ${
-          selected
-            ? "Current"
-            : "Review"
-        }
-      </span>
-    </button>
-  `;
-
-
-  const focusedLaneHtml = (
-    lane
-  ) => {
-    if (
-      !lane
-    ) {
-      return `
-        <article
-          class="ob-capital-focus empty"
-        >
-          <div>
-            <span
-              class="ob-owner-kicker"
-            >
-              CURRENT CAPITAL LANE
-            </span>
-
-            <h2>
-              No lane selected
-            </h2>
-
-            <p>
-              Pick one lane when you need its context.
-              Nothing changes until you explicitly enter it.
-            </p>
-          </div>
-
-          <div
-            class="ob-capital-focus-empty-rule"
-          >
-            <strong>
-              One lane at a time.
-            </strong>
-
-            <span>
-              Clicking a lane below opens details only.
-            </span>
-          </div>
-        </article>
-      `;
-    }
-
-    return `
-      <article
-        class="ob-capital-focus"
-      >
-        <div
-          class="ob-capital-focus-main"
-        >
+  const sourceBadge = (
+    item
+  ) => (
+    item
+    && item.verified
+      ? `
           <span
-            class="ob-owner-kicker"
+            class="ob-research-source verified"
           >
-            CURRENT CAPITAL LANE
+            VERIFIED
           </span>
-
-          <div
-            class="ob-capital-focus-title-row"
+        `
+      : `
+          <span
+            class="ob-research-source guarded"
           >
-            <h2>
-              ${esc(
-                lane.display_label
-              )}
-            </h2>
-
-            <span
-              class="ob-capital-active-chip"
-            >
-              Active owner context
-            </span>
-          </div>
-
-          <p>
-            ${esc(
-              lane.purpose
-            )}
-          </p>
-
-          <div
-            class="ob-capital-focus-chips"
-          >
-            <span>
-              ${esc(
-                lane.risk_profile
-              )}
-            </span>
-
-            <span>
-              ${esc(
-                truthLabel(
-                  lane
-                )
-              )}
-            </span>
-
-            <span>
-              ${
-                lane.needs_attention
-                  ? "Needs attention"
-                  : "No verified alert"
-              }
-            </span>
-          </div>
-        </div>
-
-        <div
-          class="ob-capital-next"
-        >
-          <span>
-            SOULAANA · NEXT
+            GUARDED
           </span>
-
-          <strong>
-            ${esc(
-              lane.next_action
-            )}
-          </strong>
-
-          <button
-            type="button"
-            data-capital-lane-open="${esc(
-              lane.lane_id
-            )}"
-          >
-            Review this lane
-          </button>
-        </div>
-      </article>
-    `;
-  };
+        `
+  );
 
 
-  const closeLaneDrawer = () => {
-    const existing =
-      document
-        .getElementById(
-          "obCapitalLaneDrawerBackdrop"
-        );
+  const closeDrawer = () => {
+    const current =
+      document.getElementById(
+        "obOwnerDrawerBackdrop"
+      );
 
     if (
-      existing
+      current
     ) {
-      existing.remove();
+      current.remove();
     }
   };
 
@@ -469,24 +227,21 @@
         event
       ) {
         if (
-          event.key
-          === "Escape"
+          event.key === "Escape"
         ) {
-          closeLaneDrawer();
+          closeDrawer();
           return;
         }
 
         if (
-          event.key
-          !== "Tab"
+          event.key !== "Tab"
         ) {
           return;
         }
 
         if (
           event.shiftKey
-          && document.activeElement
-            === first
+          && document.activeElement === first
         ) {
           event.preventDefault();
           last.focus();
@@ -495,8 +250,7 @@
 
         if (
           !event.shiftKey
-          && document.activeElement
-            === last
+          && document.activeElement === last
         ) {
           event.preventDefault();
           first.focus();
@@ -505,22 +259,432 @@
     );
 
     window.setTimeout(
-      function () {
-        first.focus();
-      },
+      () => first.focus(),
       0
     );
+  };
+
+
+  const optionCard = (
+    option
+  ) => `
+    <article
+      class="ob-option-research-card"
+    >
+      <div
+        class="ob-option-research-head"
+      >
+        <strong>
+          ${esc(option.option_type)}
+          ${option.strike === null ? "" : esc(option.strike)}
+        </strong>
+
+        <span>
+          ${esc(option.expiration)}
+        </span>
+      </div>
+
+      <div
+        class="ob-option-research-metrics"
+      >
+        <span>
+          Bid
+          <strong>
+            ${fmtNumber(option.bid)}
+          </strong>
+        </span>
+
+        <span>
+          Ask
+          <strong>
+            ${fmtNumber(option.ask)}
+          </strong>
+        </span>
+
+        <span>
+          OI
+          <strong>
+            ${fmtWhole(option.open_interest)}
+          </strong>
+        </span>
+
+        <span>
+          Vol
+          <strong>
+            ${fmtWhole(option.volume)}
+          </strong>
+        </span>
+      </div>
+
+      <details>
+        <summary>
+          Greeks & volatility
+        </summary>
+
+        <div
+          class="ob-option-greeks"
+        >
+          <span>
+            Δ ${fmtNumber(option.delta, 3)}
+          </span>
+
+          <span>
+            Γ ${fmtNumber(option.gamma, 3)}
+          </span>
+
+          <span>
+            Θ ${fmtNumber(option.theta, 3)}
+          </span>
+
+          <span>
+            Vega ${fmtNumber(option.vega, 3)}
+          </span>
+
+          <span>
+            IV ${fmtNumber(option.implied_volatility, 3)}
+          </span>
+        </div>
+      </details>
+
+      <small>
+        Research candidate only · owner chooses
+      </small>
+    </article>
+  `;
+
+
+  const openCandidateDrawer = (
+    candidate
+  ) => {
+    closeDrawer();
+
+    if (
+      !candidate
+    ) {
+      return;
+    }
+
+    const backdrop =
+      document.createElement(
+        "div"
+      );
+
+    backdrop.id =
+      "obOwnerDrawerBackdrop";
+
+    backdrop.className =
+      "ob-owner-drawer-backdrop";
+
+    const drawer =
+      document.createElement(
+        "aside"
+      );
+
+    drawer.className =
+      "ob-owner-drawer";
+
+    drawer.setAttribute(
+      "role",
+      "dialog"
+    );
+
+    drawer.setAttribute(
+      "aria-modal",
+      "true"
+    );
+
+    drawer.setAttribute(
+      "aria-labelledby",
+      "obOwnerCandidateTitle"
+    );
+
+    drawer.innerHTML = `
+      <header
+        class="ob-owner-drawer-head"
+      >
+        <div>
+          <span
+            class="ob-owner-kicker"
+          >
+            OWNER RESEARCH · ${esc(candidate.bucket.replaceAll("_", " ").toUpperCase())}
+          </span>
+
+          <h2
+            id="obOwnerCandidateTitle"
+          >
+            ${esc(candidate.symbol)}
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          data-owner-drawer-close
+          aria-label="Close analysis"
+        >
+          ×
+        </button>
+      </header>
+
+      <div
+        class="ob-owner-drawer-body"
+      >
+        <div
+          class="ob-candidate-summary"
+        >
+          ${sourceBadge(candidate)}
+
+          <span>
+            ${esc(candidate.direction)}
+          </span>
+
+          ${
+            candidate.score === null
+              ? ""
+              : `
+                  <span>
+                    Source score · ${esc(candidate.score)}
+                  </span>
+                `
+          }
+        </div>
+
+        <section>
+          <span
+            class="ob-owner-kicker"
+          >
+            WHY IT SURFACED
+          </span>
+
+          <h3>
+            ${esc(candidate.setup)}
+          </h3>
+
+          <p>
+            ${esc(candidate.thesis)}
+          </p>
+        </section>
+
+        <div
+          class="ob-candidate-facts"
+        >
+          <article>
+            <span>
+              Catalyst
+            </span>
+
+            <strong>
+              ${esc(candidate.catalyst)}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Entry evidence
+            </span>
+
+            <strong>
+              ${esc(candidate.entry_zone)}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Invalidation
+            </span>
+
+            <strong>
+              ${esc(candidate.invalidation)}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Hold window
+            </span>
+
+            <strong>
+              ${esc(candidate.hold_window)}
+            </strong>
+          </article>
+        </div>
+
+        <section
+          class="ob-candidate-risk"
+        >
+          <span
+            class="ob-owner-kicker"
+          >
+            RISK
+          </span>
+
+          <p>
+            ${esc(candidate.risk)}
+          </p>
+        </section>
+
+        <section
+          class="ob-option-research"
+        >
+          <div
+            class="ob-option-research-title"
+          >
+            <div>
+              <span
+                class="ob-owner-kicker"
+              >
+                OPTIONS FIRST · RESEARCH ONLY
+              </span>
+
+              <h3>
+                Verified contract research
+              </h3>
+            </div>
+
+            <span>
+              ${candidate.option_contract_count} available
+            </span>
+          </div>
+
+          <div
+            class="ob-option-research-grid"
+          >
+            ${
+              candidate.option_contracts.length
+                ? candidate.option_contracts
+                    .map(
+                      optionCard
+                    )
+                    .join("")
+                : `
+                    <div
+                      class="ob-empty-research"
+                    >
+                      No source-backed option contract
+                      is available for this symbol.
+                    </div>
+                  `
+            }
+          </div>
+        </section>
+
+        <div
+          class="ob-owner-safety-note"
+        >
+          <strong>
+            You choose the security and contract.
+          </strong>
+
+          <span>
+            This analysis does not submit an order,
+            move capital,
+            select a contract automatically,
+            or unlock execution.
+          </span>
+        </div>
+
+        <details
+          class="ob-owner-evidence"
+        >
+          <summary>
+            Show me why
+          </summary>
+
+          <div>
+            <span>
+              Source · ${esc(candidate.source)}
+            </span>
+
+            <span>
+              Freshness · ${esc(candidate.freshness)}
+            </span>
+
+            <span>
+              Source order · ${esc(candidate.source_order)}
+            </span>
+
+            <span>
+              Selection authority · OWNER
+            </span>
+          </div>
+        </details>
+      </div>
+    `;
+
+    backdrop.appendChild(
+      drawer
+    );
+
+    document.body.appendChild(
+      backdrop
+    );
+
+    drawer
+      .querySelector(
+        "[data-owner-drawer-close]"
+      )
+      .addEventListener(
+        "click",
+        closeDrawer
+      );
+
+    backdrop.addEventListener(
+      "click",
+      function (
+        event
+      ) {
+        if (
+          event.target === backdrop
+        ) {
+          closeDrawer();
+        }
+      }
+    );
+
+    trapFocus(
+      drawer
+    );
+  };
+
+
+  const truthLabel = (
+    lane
+  ) => {
+    if (
+      lane.actual_capital_known
+    ) {
+      return (
+        "$"
+        + Number(
+            lane.actual_capital_value
+          )
+          .toLocaleString()
+      );
+    }
+
+    if (
+      lane.capital_progress_known
+    ) {
+      return (
+        Math.round(
+          Number(
+            lane.capital_progress_percent
+          )
+        )
+        + "% verified"
+      );
+    }
+
+    return "Capital truth unavailable";
   };
 
 
   const openLaneDrawer = (
     laneId
   ) => {
-    closeLaneDrawer();
+    closeDrawer();
 
     const lane =
       findLane(
-        currentContract,
         laneId
       );
 
@@ -536,10 +700,10 @@
       );
 
     backdrop.id =
-      "obCapitalLaneDrawerBackdrop";
+      "obOwnerDrawerBackdrop";
 
     backdrop.className =
-      "ob-capital-drawer-backdrop";
+      "ob-owner-drawer-backdrop";
 
     const drawer =
       document.createElement(
@@ -547,7 +711,7 @@
       );
 
     drawer.className =
-      "ob-capital-drawer";
+      "ob-owner-drawer ob-capital-drawer";
 
     drawer.setAttribute(
       "role",
@@ -559,14 +723,9 @@
       "true"
     );
 
-    drawer.setAttribute(
-      "aria-labelledby",
-      "obCapitalLaneDrawerTitle"
-    );
-
     drawer.innerHTML = `
-      <div
-        class="ob-capital-drawer-head"
+      <header
+        class="ob-owner-drawer-head"
       >
         <div>
           <span
@@ -575,172 +734,116 @@
             OWNER CAPITAL LANE
           </span>
 
-          <h2
-            id="obCapitalLaneDrawerTitle"
-          >
-            ${esc(
-              lane.display_label
-            )}
+          <h2>
+            ${esc(lane.display_label)}
           </h2>
         </div>
 
         <button
           type="button"
-          class="ob-capital-drawer-close"
-          id="obCapitalLaneDrawerClose"
-          aria-label="Close Capital Lane details"
+          data-owner-drawer-close
+          aria-label="Close Capital Lane"
         >
           ×
         </button>
-      </div>
+      </header>
 
       <div
-        class="ob-capital-drawer-summary"
+        class="ob-owner-drawer-body"
       >
         <p>
-          ${esc(
-            lane.purpose
-          )}
+          ${esc(lane.purpose)}
         </p>
-      </div>
-
-      <div
-        class="ob-capital-drawer-grid"
-      >
-        <div>
-          <span>
-            Risk
-          </span>
-
-          <strong>
-            ${esc(
-              lane.risk_profile
-            )}
-          </strong>
-        </div>
-
-        <div>
-          <span>
-            Capital truth
-          </span>
-
-          <strong>
-            ${esc(
-              truthLabel(
-                lane
-              )
-            )}
-          </strong>
-        </div>
-
-        <div>
-          <span>
-            Status
-          </span>
-
-          <strong>
-            ${esc(
-              lane.current_status
-            )}
-          </strong>
-        </div>
-
-        <div>
-          <span>
-            Goal
-          </span>
-
-          <strong>
-            ${esc(
-              lane.capital_goal
-            )}
-          </strong>
-        </div>
-      </div>
-
-      <div
-        class="ob-capital-drawer-section"
-      >
-        <span
-          class="ob-owner-kicker"
-        >
-          ALLOWED CONTEXT
-        </span>
 
         <div
-          class="ob-capital-mode-list"
+          class="ob-candidate-facts"
         >
-          ${
-            lane
-              .allowed_modes
-              .map(
-                function (
-                  mode
-                ) {
-                  return `
-                    <span>
-                      ${esc(
-                        mode
-                      )}
-                    </span>
-                  `;
-                }
-              )
-              .join(
-                ""
-              )
-          }
+          <article>
+            <span>
+              Risk
+            </span>
+
+            <strong>
+              ${esc(lane.risk_profile)}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Capital
+            </span>
+
+            <strong>
+              ${esc(truthLabel(lane))}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Status
+            </span>
+
+            <strong>
+              ${esc(lane.current_status)}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Goal
+            </span>
+
+            <strong>
+              ${esc(lane.capital_goal)}
+            </strong>
+          </article>
         </div>
-      </div>
 
-      <div
-        class="ob-capital-drawer-section"
-      >
-        <span
-          class="ob-owner-kicker"
+        <section>
+          <span
+            class="ob-owner-kicker"
+          >
+            SOULAANA · NEXT
+          </span>
+
+          <p>
+            ${esc(lane.next_action)}
+          </p>
+        </section>
+
+        <div
+          class="ob-owner-safety-note"
         >
-          SOULAANA · NEXT
-        </span>
+          <strong>
+            Entering a lane changes owner context only.
+          </strong>
 
-        <strong
-          class="ob-capital-drawer-next"
+          <span>
+            It does not move capital,
+            submit an order,
+            automatically select a contract,
+            or unlock execution.
+          </span>
+        </div>
+
+        <div
+          class="ob-lane-actions"
         >
-          ${esc(
-            lane.next_action
-          )}
-        </strong>
-      </div>
+          <button
+            type="button"
+            class="primary"
+            id="obCapitalLaneEnter"
+          >
+            Enter this lane
+          </button>
 
-      <div
-        class="ob-capital-context-boundary"
-      >
-        <strong>
-          Entering a lane changes owner context only.
-        </strong>
-
-        <span>
-          It does not move capital, place an order,
-          select a contract, or unlock execution.
-        </span>
-      </div>
-
-      <div
-        class="ob-capital-drawer-actions"
-      >
-        <button
-          type="button"
-          class="primary"
-          id="obCapitalLaneEnter"
-        >
-          Enter this lane
-        </button>
-
-        <button
-          type="button"
-          id="obCapitalLaneCancel"
-        >
-          Close
-        </button>
+          <button
+            type="button"
+            data-owner-drawer-close-secondary
+          >
+            Close
+          </button>
+        </div>
       </div>
     `;
 
@@ -752,29 +855,34 @@
       backdrop
     );
 
+
     /*
-      OBUX088:
       Clicking a lane never switches owner context.
-      Selection changes ONLY after "Enter this lane".
+
+      DETAIL ONLY.
+                No automatic context switch.
     */
 
-    document
-      .getElementById(
-        "obCapitalLaneDrawerClose"
+
+    drawer
+      .querySelector(
+        "[data-owner-drawer-close]"
       )
       .addEventListener(
         "click",
-        closeLaneDrawer
+        closeDrawer
       );
 
-    document
-      .getElementById(
-        "obCapitalLaneCancel"
+
+    drawer
+      .querySelector(
+        "[data-owner-drawer-close-secondary]"
       )
       .addEventListener(
         "click",
-        closeLaneDrawer
+        closeDrawer
       );
+
 
     document
       .getElementById(
@@ -787,7 +895,7 @@
             lane.lane_id
           );
 
-          closeLaneDrawer();
+          closeDrawer();
 
           render(
             currentContract
@@ -819,19 +927,20 @@
         }
       );
 
+
     backdrop.addEventListener(
       "click",
       function (
         event
       ) {
         if (
-          event.target
-          === backdrop
+          event.target === backdrop
         ) {
-          closeLaneDrawer();
+          closeDrawer();
         }
       }
     );
+
 
     trapFocus(
       drawer
@@ -839,50 +948,201 @@
   };
 
 
-  const attentionCard = (
-    item,
-    index
-  ) => `
-    <article
-      class="ob-owner-attention-card ${
-        attentionTone(
-          item.priority
-        )
-      }"
-    >
-      <span
-        class="ob-owner-attention-number"
-      >
-        ${String(
-          index + 1
-        ).padStart(
-          2,
-          "0"
-        )}
-      </span>
-
-      <div>
-        <span
-          class="ob-owner-kicker"
+  const edgeCard = (
+    label,
+    candidate,
+    tone
+  ) => {
+    if (
+      !candidate
+    ) {
+      return `
+        <article
+          class="ob-edge-card ${tone} empty"
         >
-          ${esc(
-            item.source
-            || "owner intelligence"
-          )}
+          <div
+            class="ob-edge-card-top"
+          >
+            <span>
+              ${label}
+            </span>
+
+            <span
+              class="ob-edge-dot"
+              aria-hidden="true"
+            ></span>
+          </div>
+
+          <strong>
+            Nothing verified here.
+          </strong>
+
+          <p>
+            OB will not fill this card with fake certainty.
+          </p>
+        </article>
+      `;
+    }
+
+    return `
+      <button
+        type="button"
+        class="ob-edge-card ${tone}"
+        data-owner-candidate="${esc(candidate.bucket)}:${esc(candidate.source_order)}"
+      >
+        <div
+          class="ob-edge-card-top"
+        >
+          <span>
+            ${label}
+          </span>
+
+          ${sourceBadge(candidate)}
+        </div>
+
+        <strong
+          class="ob-edge-symbol"
+        >
+          ${esc(candidate.symbol)}
+        </strong>
+
+        <span
+          class="ob-edge-direction"
+        >
+          ${esc(candidate.direction)}
         </span>
 
-        <h3>
-          ${esc(
-            item.title
-          )}
-        </h3>
-
         <p>
-          ${esc(
-            item.detail
-          )}
+          ${esc(candidate.thesis)}
         </p>
-      </div>
+
+        <small>
+          ${
+            candidate.option_contract_count
+              ? (
+                  candidate.option_contract_count
+                  + " option contract"
+                  + (
+                      candidate.option_contract_count === 1
+                        ? ""
+                        : "s"
+                    )
+                  + " in research"
+                )
+              : "Stock research"
+          }
+        </small>
+
+        <span
+          class="ob-edge-open"
+        >
+          Open analysis →
+        </span>
+      </button>
+    `;
+  };
+
+
+  const findCandidate = (
+    key
+  ) => {
+    const parts =
+      String(
+        key
+      ).split(
+        ":"
+      );
+
+    const bucket =
+      parts[0];
+
+    const sourceOrder =
+      Number(
+        parts[1]
+      );
+
+    const items =
+      (
+        currentContract
+        && currentContract.today_edge
+        && Array.isArray(
+          currentContract.today_edge[
+            bucket
+          ]
+        )
+      )
+        ? currentContract.today_edge[
+            bucket
+          ]
+        : [];
+
+    return (
+      items.find(
+        item =>
+          Number(
+            item.source_order
+          )
+          === sourceOrder
+      )
+      || null
+    );
+  };
+
+
+  const activeLaneChip = (
+    lane
+  ) => `
+    <button
+      type="button"
+      class="ob-active-lane-chip"
+      ${
+        lane
+          ? `data-capital-lane-open="${esc(lane.lane_id)}"`
+          : "data-capital-lanes-more"
+      }
+    >
+      <span>
+        CAPITAL LANE
+      </span>
+
+      <strong>
+        ${
+          lane
+            ? esc(lane.display_label)
+            : "No lane selected"
+        }
+      </strong>
+
+      <small>
+        ${
+          lane
+            ? esc(lane.risk_profile)
+            : "Choose only when you need capital context"
+        }
+      </small>
+    </button>
+  `;
+
+
+  const contextTile = (
+    kicker,
+    value,
+    detail
+  ) => `
+    <article
+      class="ob-owner-context-tile"
+    >
+      <span>
+        ${esc(kicker)}
+      </span>
+
+      <strong>
+        ${esc(value)}
+      </strong>
+
+      <small>
+        ${esc(detail)}
+      </small>
     </article>
   `;
 
@@ -891,16 +1151,12 @@
     contract
   ) => {
     currentContract =
-      contract
-      || {};
-
-    closeLaneDrawer();
+      contract;
 
     const mount =
-      document
-        .getElementById(
-          "ownerDashboardMount"
-        );
+      document.getElementById(
+        "ownerDashboardMount"
+      );
 
     if (
       !mount
@@ -908,211 +1164,191 @@
       return;
     }
 
-    const soulaanaApi =
+    const briefingApi =
       window
         .OB_OWNER_DASHBOARD_SOULAANA_V22;
 
     const briefing =
-      (
-        soulaanaApi
-        && soulaanaApi
-          .buildBriefing
-      )
-        ? soulaanaApi
-            .buildBriefing(
-              currentContract
+      briefingApi
+      && typeof briefingApi.buildBriefing
+        === "function"
+          ? briefingApi.buildBriefing(
+              contract
             )
-        : {
-            eyebrow:
-              "SOULAANA · OWNER BRIEFING",
+          : {
+              eyebrow:
+                "SOULAANA · OWNER BRIEFING",
 
-            headline:
-              "Owner intelligence is loading.",
+              headline:
+                "Owner intelligence is loading.",
 
-            what_i_see:
-              "I am waiting for guarded owner truth.",
+              what_i_see:
+                "Verified truth stays verified.",
 
-            capital_read:
-              "",
+              why_it_matters:
+                "Unavailable stays unavailable.",
 
-            what_needs_you:
-              "",
+              next_best_move:
+                "No forced move."
+            };
 
-            next_best_move:
-              "",
+    const edge =
+      contract.today_edge
+      || {
+        now: [],
+        watch: [],
+        not_yet: []
+      };
 
-            no_action_needed:
-              false
-          };
+    const lane =
+      selectedLane();
 
-    const laneList =
-      lanes(
-        currentContract
-      );
+    const context =
+      contract.owner_context
+      || {};
 
-    const active =
-      selectedLane(
-        currentContract
-      );
+    const positions =
+      context.positions
+      || {
+        count: 0
+      };
+
+    const alerts =
+      context.alerts
+      || {
+        count: 0
+      };
+
+    const market =
+      context.market
+      || {
+        label:
+          "Unavailable"
+      };
+
+    const readiness =
+      contract.readiness
+      || {};
 
     const attention =
       Array.isArray(
-        currentContract.owner_attention
+        contract.owner_attention
       )
-        ? currentContract
-            .owner_attention
+        ? contract.owner_attention
             .slice(
               0,
               3
             )
         : [];
 
-    const trust =
-      currentContract.trust
-      || {};
-
-    const readiness =
-      currentContract.readiness
-      || {};
-
-    const beta =
-      currentContract.beta
-      || {};
-
-    const history =
-      (
-        currentContract
-          .since_you_were_here
-        && Array.isArray(
-          currentContract
-            .since_you_were_here
-            .items
-        )
+    const laneNodes =
+      lanes(
+        contract
       )
-        ? currentContract
-            .since_you_were_here
-            .items
-            .slice(
-              0,
-              5
-            )
-        : [];
+        .map(
+          item => `
+            <button
+              type="button"
+              class="ob-capital-lane-node"
+              data-capital-lane-open="${esc(item.lane_id)}"
+            >
+              <span
+                class="ob-capital-lane-star"
+                aria-hidden="true"
+              ></span>
 
-    const patterns =
-      (
-        currentContract.patterns
-        && Array.isArray(
-          currentContract
-            .patterns
-            .items
+              <strong>
+                ${esc(item.label)}
+              </strong>
+
+              <small>
+                ${esc(item.risk_profile)}
+              </small>
+            </button>
+          `
         )
-      )
-        ? currentContract
-            .patterns
-            .items
-            .slice(
-              0,
-              3
-            )
-        : [];
+        .join(
+          ""
+        );
+
 
     mount.innerHTML = `
       <main
-        class="ob-owner-dashboard"
-        data-owner-dashboard-role="owner-only"
-        data-owner-capital-lanes="true"
+        class="ob-owner-cockpit"
       >
         <section
           class="ob-owner-hero"
         >
-          <div>
-            <div
-              class="ob-owner-hero-top"
+          <div
+            class="ob-owner-hero-copy"
+          >
+            <span
+              class="ob-owner-kicker"
             >
-              <span
-                class="ob-owner-kicker"
-              >
-                ${esc(
-                  briefing.eyebrow
-                )}
-              </span>
+              ${esc(briefing.eyebrow)}
+            </span>
 
-              <div
-                class="ob-owner-chip-row"
-              >
-                <span
-                  class="ob-owner-chip owner"
-                >
-                  Owner only
-                </span>
-
-                <span
-                  class="ob-owner-chip locked"
-                >
-                  Live Auto Locked
-                </span>
-              </div>
-            </div>
-
-            <h1>
-              ${esc(
-                briefing.headline
-              )}
-            </h1>
+            <h2>
+              ${esc(briefing.headline)}
+            </h2>
 
             <p
-              class="ob-owner-lead"
+              class="ob-owner-hero-read"
             >
-              ${esc(
-                briefing.what_i_see
-              )}
+              ${esc(briefing.what_i_see)}
+            </p>
+
+            <p
+              class="ob-owner-hero-why"
+            >
+              ${esc(briefing.why_it_matters)}
             </p>
 
             <div
-              class="ob-owner-brief-grid"
+              class="ob-owner-next"
             >
-              <div>
-                <span>
-                  CAPITAL
-                </span>
+              <span>
+                NEXT
+              </span>
 
-                <strong>
-                  ${esc(
-                    briefing.capital_read
-                  )}
-                </strong>
-              </div>
+              <strong>
+                ${esc(briefing.next_best_move)}
+              </strong>
+            </div>
+          </div>
 
-              <div>
-                <span>
-                  WHAT NEEDS YOU
-                </span>
+          <div
+            class="ob-owner-hero-context"
+          >
+            ${activeLaneChip(lane)}
 
-                <strong>
-                  ${esc(
-                    briefing.what_needs_you
-                  )}
-                </strong>
-              </div>
+            <div
+              class="ob-owner-hero-truth"
+            >
+              <span>
+                MARKET TRUTH
+              </span>
 
-              <div>
-                <span>
-                  NEXT
-                </span>
+              <strong>
+                ${esc(
+                  edge.source_state
+                    .projection_status
+                )}
+              </strong>
 
-                <strong>
-                  ${esc(
-                    briefing.next_best_move
-                  )}
-                </strong>
-              </div>
+              <small>
+                ${esc(
+                  edge.source_state
+                    .source
+                )}
+              </small>
             </div>
           </div>
         </section>
 
         <section
-          class="ob-capital-lanes-section"
-          aria-labelledby="obCapitalLanesTitle"
+          class="ob-owner-edge-section"
+          aria-labelledby="obOwnerEdgeTitle"
         >
           <div
             class="ob-owner-section-head"
@@ -1121,61 +1357,89 @@
               <span
                 class="ob-owner-kicker"
               >
-                CAPITAL LANES
+                TODAY’S EDGE
               </span>
 
               <h2
-                id="obCapitalLanesTitle"
+                id="obOwnerEdgeTitle"
               >
-                One lane at a time.
+                Now. Watch. Not yet.
               </h2>
             </div>
 
-            <p>
-              Your capital has different jobs.
-              Review a lane first.
-              Enter it only when you want that owner context.
-            </p>
+            <span
+              class="ob-owner-three-rule"
+            >
+              Three things max.
+            </span>
           </div>
-
-          ${
-            focusedLaneHtml(
-              active
-            )
-          }
 
           <div
-            class="ob-capital-lane-nodes"
-            aria-label="Owner Capital Lanes"
+            class="ob-owner-edge-grid"
           >
-            ${
-              laneList
-                .map(
-                  function (
-                    lane
-                  ) {
-                    return laneNode(
-                      lane,
-                      (
-                        active
-                        && active.lane_id
-                          === lane.lane_id
-                      )
-                    );
-                  }
-                )
-                .join(
-                  ""
-                )
-            }
+            ${edgeCard(
+              "NOW",
+              edge.now[0],
+              "now"
+            )}
+
+            ${edgeCard(
+              "WATCH",
+              edge.watch[0],
+              "watch"
+            )}
+
+            ${edgeCard(
+              "NOT YET",
+              edge.not_yet[0],
+              "not-yet"
+            )}
           </div>
+        </section>
+
+        <section
+          class="ob-owner-context-grid"
+        >
+          ${contextTile(
+            "MARKET STATE",
+            market.label,
+            market.verified
+              ? "Current verified projection"
+              : "Guarded"
+          )}
+
+          ${contextTile(
+            "TRACKED POSITIONS",
+            String(
+              positions.count
+              || 0
+            ),
+            (
+              positions.count
+                ? "Open Trade Center for lifecycle detail"
+                : "No source-backed position needs the front page"
+            )
+          )}
+
+          ${contextTile(
+            "OWNER ALERTS",
+            String(
+              alerts.count
+              || 0
+            ),
+            (
+              alerts.count
+                ? "Review the highest-priority alert"
+                : "No source-backed owner alert"
+            )
+          )}
         </section>
 
         <section
           class="ob-owner-attention-section"
         >
           <div
-            class="ob-owner-section-head compact"
+            class="ob-owner-section-head"
           >
             <div>
               <span
@@ -1189,23 +1453,52 @@
               </h2>
             </div>
 
-            <p>
+            <span
+              class="ob-owner-three-rule"
+            >
               No giant queue.
-              Lower-priority owner intelligence stays collapsed.
-            </p>
+            </span>
           </div>
 
           <div
             class="ob-owner-attention-grid"
           >
             ${
-              attention
-                .map(
-                  attentionCard
-                )
-                .join(
-                  ""
-                )
+              attention.length
+                ? attention
+                    .map(
+                      (item, index) => `
+                        <article
+                          class="ob-owner-attention-card"
+                        >
+                          <span>
+                            0${index + 1}
+                          </span>
+
+                          <strong>
+                            ${esc(item.title)}
+                          </strong>
+
+                          <p>
+                            ${esc(item.detail)}
+                          </p>
+                        </article>
+                      `
+                    )
+                    .join("")
+                : `
+                    <article
+                      class="ob-owner-attention-card empty"
+                    >
+                      <strong>
+                        Nothing verified is asking for you.
+                      </strong>
+
+                      <p>
+                        Stay focused.
+                      </p>
+                    </article>
+                  `
             }
           </div>
         </section>
@@ -1218,228 +1511,170 @@
           </summary>
 
           <div
-            class="ob-owner-more-grid"
+            class="ob-owner-more-content"
           >
-            <article>
-              <span
-                class="ob-owner-kicker"
-              >
-                SYSTEM TRUST
-              </span>
-
-              <div>
-                ${
-                  sourceChip(
-                    !!trust.verified,
-                    trust.label
-                    || "engine trust"
-                  )
-                }
-              </div>
-
-              <p>
-                ${
-                  trust.verified
+            <div
+              class="ob-owner-instrument-grid"
+            >
+              ${contextTile(
+                "MANUAL LIVE READINESS",
+                readiness.label
+                || "Unavailable",
+                (
+                  readiness.blockers
+                  && readiness.blockers.length
                     ? (
-                        trust.freshness_score
-                          != null
-                          ? (
-                              "Freshness "
-                              + esc(
-                                  trust.freshness_score
-                                )
-                            )
-                          : "Verified trust state available."
+                        readiness.blockers.length
+                        + " blocker"
+                        + (
+                            readiness.blockers.length === 1
+                              ? ""
+                              : "s"
+                          )
                       )
-                    : "Trust truth is guarded."
-                }
-              </p>
-            </article>
-
-            <article>
-              <span
-                class="ob-owner-kicker"
-              >
-                MANUAL LIVE READINESS
-              </span>
-
-              <div>
-                ${
-                  sourceChip(
-                    !!readiness.verified,
-                    readiness.label
-                    || "readiness"
-                  )
-                }
-              </div>
-
-              <p>
-                ${
-                  readiness.verified
-                    && readiness.score
-                      != null
-                    ? (
-                        esc(
-                          readiness.score
-                        )
-                        + "% evidence score"
-                      )
-                    : "Readiness remains guarded."
-                }
-              </p>
-            </article>
-
-            <article>
-              <span
-                class="ob-owner-kicker"
-              >
-                PRIVATE BETA
-              </span>
-
-              <div>
-                ${
-                  sourceChip(
-                    !!beta.verified,
-                    beta.label
-                    || "private beta"
-                  )
-                }
-              </div>
-
-              <p>
-                Private stays private.
-              </p>
-            </article>
-          </div>
-
-          <div
-            class="ob-owner-more-two"
-          >
-            <article>
-              <span
-                class="ob-owner-kicker"
-              >
-                SINCE YOU WERE HERE
-              </span>
-
-              ${
-                history
-                  .map(
-                    function (
-                      item
-                    ) {
-                      return `
-                        <div
-                          class="ob-owner-mini-item"
-                        >
-                          <strong>
-                            ${esc(
-                              item.title
-                            )}
-                          </strong>
-
-                          <span>
-                            ${esc(
-                              item.detail
-                            )}
-                          </span>
-                        </div>
-                      `;
-                    }
-                  )
-                  .join(
-                    ""
-                  )
-              }
-            </article>
-
-            <article>
-              <span
-                class="ob-owner-kicker"
-              >
-                WHAT I'M LEARNING
-              </span>
-
-              ${
-                patterns
-                  .map(
-                    function (
-                      item
-                    ) {
-                      return `
-                        <div
-                          class="ob-owner-mini-item"
-                        >
-                          <strong>
-                            ${esc(
-                              item.title
-                            )}
-                          </strong>
-
-                          <span>
-                            ${esc(
-                              item.detail
-                            )}
-                          </span>
-                        </div>
-                      `;
-                    }
-                  )
-                  .join(
-                    ""
-                  )
-              }
-            </article>
-          </div>
-        </details>
-
-        <details
-          class="ob-owner-evidence"
-        >
-          <summary>
-            Show me why
-          </summary>
-
-          <div
-            class="ob-owner-evidence-body"
-          >
-            <p>
-              ${esc(
-                briefing.evidence_rule
-                || (
-                  "Short answer first. "
-                  + "Deeper evidence stays here."
+                    : "No verified blocker count"
                 )
               )}
-            </p>
 
-            <pre>${
-              esc(
-                JSON.stringify(
-                  {
-                    source_state:
-                      currentContract
-                        .source_state,
-
-                    interpretation_state:
-                      currentContract
-                        .interpretation_state,
-
-                    boundaries:
-                      currentContract
-                        .boundaries
-                  },
-                  null,
-                  2
+              ${contextTile(
+                "SYSTEM TRUST",
+                contract.trust.label,
+                (
+                  contract.trust.verified
+                    ? "Verified source"
+                    : "Guarded"
                 )
-              )
-            }</pre>
+              )}
+
+              ${contextTile(
+                "PRIVATE BETA",
+                contract.beta.label,
+                "Private only"
+              )}
+            </div>
+
+            <section
+              class="ob-capital-lanes-section"
+            >
+              <div
+                class="ob-owner-section-head"
+              >
+                <div>
+                  <span
+                    class="ob-owner-kicker"
+                  >
+                    CAPITAL LANES
+                  </span>
+
+                  <h3>
+                    Capital context — secondary.
+                  </h3>
+                </div>
+
+                <span
+                  class="ob-owner-three-rule"
+                >
+                  CURRENT CAPITAL LANE
+                </span>
+              </div>
+
+              <div
+                class="ob-capital-focus"
+              >
+                <strong>
+                  ${
+                    lane
+                      ? esc(lane.display_label)
+                      : "No lane selected"
+                  }
+                </strong>
+
+                <span>
+                  One lane at a time.
+                </span>
+              </div>
+
+              <div
+                class="ob-capital-lane-nodes"
+              >
+                ${laneNodes}
+              </div>
+            </section>
+
+            <details
+              class="ob-owner-evidence"
+            >
+              <summary>
+                Show me why
+              </summary>
+
+              <div>
+                <span>
+                  source_state
+                </span>
+
+                <span>
+                  interpretation_state
+                </span>
+
+                <span>
+                  boundaries
+                </span>
+
+                <span>
+                  Ranked contract ≠ selected contract
+                </span>
+              </div>
+            </details>
           </div>
         </details>
+
+        <div
+          class="ob-owner-boundary"
+        >
+          <strong>
+            Research is not execution.
+          </strong>
+
+          <span>
+            No broker submission ·
+            no capital movement ·
+            no automatic contract selection ·
+            no automatic execution ·
+            Live Auto Locked
+          </span>
+        </div>
       </main>
     `;
 
-    document
+
+    mount
+      .querySelectorAll(
+        "[data-owner-candidate]"
+      )
+      .forEach(
+        function (
+          button
+        ) {
+          button.addEventListener(
+            "click",
+            function () {
+              const candidate =
+                findCandidate(
+                  button.dataset
+                    .ownerCandidate
+                );
+
+              openCandidateDrawer(
+                candidate
+              );
+            }
+          );
+        }
+      );
+
+
+    mount
       .querySelectorAll(
         "[data-capital-lane-open]"
       )
@@ -1454,126 +1689,113 @@
                 DETAIL ONLY.
                 No automatic context switch.
               */
+
               openLaneDrawer(
-                this.getAttribute(
-                  "data-capital-lane-open"
-                )
+                button.dataset
+                  .capitalLaneOpen
               );
             }
           );
         }
       );
 
-    document.body.setAttribute(
-      "data-ob-owner-dashboard-surface",
-      "capital-lanes"
-    );
 
-    document.body.setAttribute(
-      "data-ob-owner-dashboard-owner-only",
-      "true"
-    );
-
-    document.body.setAttribute(
-      "data-ob-owner-capital-lanes",
-      "true"
-    );
-
-    document.body.setAttribute(
-      "data-ob-owner-dashboard-live-auto-locked",
-      "true"
-    );
+    const noLane =
+      mount.querySelector(
+        "[data-capital-lanes-more]"
+      );
 
     if (
-      active
+      noLane
     ) {
-      document.body.setAttribute(
-        "data-ob-owner-capital-lane",
-        active.lane_id
-      );
-    } else {
-      document.body.removeAttribute(
-        "data-ob-owner-capital-lane"
+      noLane.addEventListener(
+        "click",
+        function () {
+          const first =
+            lanes(
+              currentContract
+            )[0];
+
+          if (
+            first
+          ) {
+            openLaneDrawer(
+              first.lane_id
+            );
+          }
+        }
       );
     }
+
+
+    document.body.setAttribute(
+      "data-ob-owner-intelligence-state",
+      contract.status
+    );
   };
 
 
-  const boot = async () => {
-    const contractApi =
+  const hydrateAndRender = async () => {
+    const api =
       window
         .OB_OWNER_DASHBOARD_CONTRACT_V21;
 
     if (
-      !contractApi
+      !api
+      || typeof api.hydrate
+        !== "function"
     ) {
-      throw new Error(
-        "Owner Capital Lanes contract did not load."
-      );
+      return;
     }
+
+    const contract =
+      await api.hydrate();
 
     render(
-      contractApi
-        .getContract()
+      contract
     );
-
-    try {
-      const hydrated =
-        await contractApi.hydrate();
-
-      render(
-        hydrated
-      );
-
-    } catch (_) {
-      /*
-        Fail closed.
-        Guarded local owner policy remains visible.
-      */
-      render(
-        contractApi
-          .getContract()
-      );
-    }
   };
 
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    boot
+  window.addEventListener(
+    "obEngineFeedAdapterUpdated",
+    function () {
+      hydrateAndRender();
+    }
   );
 
 
-  window
-    .OB_OWNER_DASHBOARD_SURFACE_V23_25 =
-      Object.freeze({
-        version:
-          VERSION,
+  if (
+    document.readyState
+    === "loading"
+  ) {
+    document.addEventListener(
+      "DOMContentLoaded",
+      hydrateAndRender,
+      {
+        once:
+          true
+      }
+    );
+  } else {
+    hydrateAndRender();
+  }
 
-        storage_key:
-          STORAGE_KEY,
 
-        render,
+  window.OB_OWNER_DASHBOARD_V23 =
+    Object.freeze({
+      version:
+        VERSION,
 
-        boot,
+      render,
 
-        openLaneDrawer,
+      hydrateAndRender,
 
-        closeLaneDrawer,
-
-        owner_only:
-          true,
-
-        capital_lanes:
-          true,
-
-        lane_selection_context_only:
-          true,
-
-        broker_action_performed:
+      safety: {
+        broker_submission:
           false,
 
-        capital_action_performed:
+        capital_movement:
           false,
 
         automatic_contract_selection:
@@ -1584,6 +1806,7 @@
 
         live_auto_locked:
           true
-      });
+      }
+    });
 
 })();

@@ -1,1067 +1,594 @@
-// OBSERVATORY_OBUX057_USER_DASHBOARD_PROJECTION
 
+// OBUX091–095 — CALM SELF-DIRECTED USER DASHBOARD PROJECTION
+//
+// The normal Dashboard receives ONLY:
+//   - broad market state
+//   - neutral symbol-study prompts
+//   - Paper / Survey context
+//   - review/session summaries
+//
+// It deliberately does NOT project:
+//   - owner Capital Lanes
+//   - ranked owner candidates
+//   - entry / stop / target
+//   - option contract recommendations
+//   - individualized live recommendations
+//
 (function (global) {
   "use strict";
 
-  const ACCOUNT_ENDPOINT =
-    "/ob/account-experience.json";
+  const VERSION =
+    "OBUX091_095_USER_DASHBOARD_PROJECTION";
+
+  const BOUNDARIES =
+    Object.freeze({
+      owner_capital_lanes:
+        false,
+
+      owner_candidate_payloads:
+        false,
+
+      personalized_security_recommendations:
+        false,
+
+      option_contract_recommendations:
+        false,
+
+      manual_live_recommendations:
+        false,
+
+      broker_submission:
+        false,
+
+      capital_movement:
+        false,
+
+      automatic_contract_selection:
+        false,
+
+      automatic_execution:
+        false,
+
+      live_auto_locked:
+        true,
+
+      survey_and_paper_first:
+        true
+    });
 
 
-  async function fetchJson(
-    url
-  ) {
-    try {
-      const response =
-        await fetch(
-          url,
-          {
-            credentials:
-              "same-origin",
-
-            headers: {
-              Accept:
-                "application/json",
-            },
-          }
-        );
-
-      if (!response.ok) {
-        return null;
-      }
-
-      return await response.json();
-    } catch (_) {
-      return null;
-    }
-  }
-
-
-  function serverData() {
-    if (
-      global.OB_SERVER_DATA
-      && typeof global
-        .OB_SERVER_DATA
-        === "object"
-    ) {
-      return global
-        .OB_SERVER_DATA;
-    }
-
-    return {};
-  }
-
-
-  function cleanArray(
+  function safeArray(
     value
   ) {
     return Array.isArray(
       value
     )
-      ? value.filter(
-          Boolean
-        )
+      ? value
       : [];
   }
 
 
-  function browserNotificationState() {
+  function safeObject(
+    value
+  ) {
+    return (
+      value
+      && typeof value === "object"
+      && !Array.isArray(value)
+    )
+      ? value
+      : {};
+  }
+
+
+  function safeText(
+    value,
+    fallback
+  ) {
     if (
-      !(
-        "Notification"
-        in global
-      )
+      value === undefined
+      || value === null
+      || value === ""
     ) {
-      return "unsupported";
+      return fallback;
     }
 
-    return (
-      global
-        .Notification
-        .permission
-      || "default"
+    return String(
+      value
     );
   }
 
 
-  function selectedMode(
-    session
-  ) {
-    if (
-      session
-      && session.persistent
-      && session
-        .persistent
-        .selectedMode
-    ) {
-      return session
-        .persistent
-        .selectedMode;
-    }
+  function canonicalProjection() {
+    const server =
+      safeObject(
+        global.OB_SERVER_DATA
+      );
 
-    return "Survey";
-  }
-
-
-  function accountProfileFromPayload(
-    payload
-  ) {
-    if (
-      !payload
-      || typeof payload
-        !== "object"
-    ) {
-      return null;
-    }
-
-    /*
-      NORMAL DASHBOARD BOUNDARY
-
-      The old endpoint may also contain
-      owner mission-account policy.
-
-      This projection deliberately consumes
-      ONLY the normal/beta user account view.
-    */
-
-    return (
-      payload.beta_user_account
-      || payload.user_account
-      || payload.account
-      || null
+    return safeObject(
+      server.canonical_web_projection
+      || server.engine_feed_v25
+      || global.OB_ENGINE_FEED_SNAPSHOT_V25
     );
   }
 
 
-  function modePermissions(
-    profile
-  ) {
-    const raw =
-      profile
-      && (
-        profile.modes
-        || profile.mode_permissions
-        || profile.mode_chips
+  function selectedMode() {
+    try {
+      const session =
+        global.OBSessionState
+          ? global
+              .OBSessionState
+              .snapshot()
+          : null;
+
+      return (
+        session
+        && session.persistent
+        && session.persistent.selectedMode
       )
-        ? (
-            profile.modes
-            || profile.mode_permissions
-            || profile.mode_chips
+        ? String(
+            session.persistent.selectedMode
           )
-        : [];
+        : "Survey";
 
-    if (
-      !Array.isArray(
-        raw
-      )
+    } catch (_) {
+      return "Survey";
+    }
+  }
+
+
+  function neutralSymbolFacts(
+    projection
+  ) {
+    const sourceSymbols =
+      safeArray(
+        projection.symbols
+      );
+
+    const sourceCandidates =
+      safeArray(
+        projection.candidates_preview
+      );
+
+    const seen =
+      new Set();
+
+    const facts = [];
+
+
+    function addFact(
+      symbol,
+      sourceLabel
     ) {
-      return [];
+      const clean =
+        safeText(
+          symbol,
+          ""
+        )
+          .trim()
+          .toUpperCase();
+
+      if (
+        !clean
+        || seen.has(clean)
+      ) {
+        return;
+      }
+
+      seen.add(
+        clean
+      );
+
+      facts.push({
+        symbol:
+          clean,
+
+        title:
+          clean,
+
+        detail:
+          "Source-backed market activity is available to study.",
+
+        source:
+          sourceLabel,
+
+        href:
+          (
+            "/ob/symbol/"
+            + encodeURIComponent(
+                clean
+              )
+          )
+      });
     }
 
-    return raw.map(
+
+    sourceSymbols.forEach(
       function (
         item
       ) {
         if (
-          typeof item
-          === "string"
+          facts.length >= 3
         ) {
-          return {
-            name: item,
-            state:
-              "unknown",
-          };
+          return;
         }
 
-        return {
-          name:
-            item.name
-            || item.label
-            || item.mode
-            || "Unknown",
+        if (
+          typeof item === "string"
+        ) {
+          addFact(
+            item,
+            "canonical market projection"
+          );
+          return;
+        }
 
-          state:
-            item.state
-            || item.status
-            || (
-              item.locked
-                ? "locked"
-                : (
-                    item.active
-                      ? "active"
-                      : "unknown"
-                  )
-            ),
-        };
+        const obj =
+          safeObject(
+            item
+          );
+
+        addFact(
+          (
+            obj.symbol
+            || obj.ticker
+          ),
+          (
+            obj.source
+            || projection.source
+            || "canonical market projection"
+          )
+        );
       }
+    );
+
+
+    sourceCandidates.forEach(
+      function (
+        item
+      ) {
+        if (
+          facts.length >= 3
+        ) {
+          return;
+        }
+
+        const obj =
+          safeObject(
+            item
+          );
+
+        addFact(
+          (
+            obj.symbol
+            || obj.ticker
+          ),
+          (
+            obj.source
+            || projection.source
+            || "canonical candidate projection"
+          )
+        );
+      }
+    );
+
+
+    return facts.slice(
+      0,
+      3
     );
   }
 
 
-  function sourceBackedCandidates(
-    data
+  function marketState(
+    projection
   ) {
-    const possible = [
-      data.dashboard_candidates,
-      data.candidates,
-      data.candidate_cards,
-      data.market_candidates,
-      data.market_map
-        && data.market_map.candidates,
-      data.options_projection
-        && data.options_projection.candidates,
-    ];
+    const health =
+      safeObject(
+        projection.market_health
+      );
 
-    for (
-      const value
-      of possible
-    ) {
-      if (
-        Array.isArray(
-          value
-        )
-        && value.length
-      ) {
-        return value;
-      }
-    }
-
-    return [];
-  }
-
-
-  function sourceBackedReviews(
-    data
-  ) {
-    const possible = [
-      data.reviews,
-      data.review_center,
-      data.final_reviews,
-      data.outcomes,
-    ];
-
-    for (
-      const value
-      of possible
-    ) {
-      if (
-        Array.isArray(
-          value
-        )
-        && value.length
-      ) {
-        return value;
-      }
-
-      if (
-        value
-        && Array.isArray(
-          value.items
-        )
-        && value.items.length
-      ) {
-        return value.items;
-      }
-    }
-
-    return [];
-  }
-
-
-  function sourceBackedPositions(
-    data
-  ) {
-    const possible = [
-      data.open_positions,
-      data.positions,
-      data.active_positions,
-      data.position_monitor,
-    ];
-
-    for (
-      const value
-      of possible
-    ) {
-      if (
-        Array.isArray(
-          value
-        )
-        && value.length
-      ) {
-        return value;
-      }
-
-      if (
-        value
-        && Array.isArray(
-          value.items
-        )
-        && value.items.length
-      ) {
-        return value.items;
-      }
-    }
-
-    return [];
-  }
-
-
-  function candidateCard(
-    candidate
-  ) {
-    const symbol =
-      String(
-        candidate.symbol
-        || candidate.ticker
-        || ""
-      ).toUpperCase();
-
-    const thesis =
-      candidate.thesis
-      || candidate.direction
-      || candidate.bias
-      || "Research available";
-
-    let optionCount = null;
+    const projectionStatus =
+      safeText(
+        projection.projection_status,
+        "unavailable"
+      );
 
     if (
-      Number.isFinite(
-        Number(
-          candidate
-            .viable_option_count
-        )
-      )
+      projectionStatus === "fresh"
     ) {
-      optionCount =
-        Number(
-          candidate
-            .viable_option_count
-        );
-    } else if (
-      Array.isArray(
-        candidate.options
-      )
-    ) {
-      optionCount =
-        candidate
-          .options
-          .length;
-    } else if (
-      Array.isArray(
-        candidate.contracts
-      )
-    ) {
-      optionCount =
-        candidate
-          .contracts
-          .length;
+      return {
+        label:
+          safeText(
+            health.label
+            || health.state
+            || health.status,
+            "Fresh market projection"
+          ),
+
+        detail:
+          "Current source-backed market data is available.",
+
+        tone:
+          "ready"
+      };
     }
 
-    const liquidity =
-      candidate.liquidity_label
-      || candidate.option_liquidity
-      || candidate.liquidity
-      || null;
+    if (
+      projectionStatus === "stale"
+    ) {
+      return {
+        label:
+          "Market data is stale",
+
+        detail:
+          "You can inspect it, but OB will not call it current.",
+
+        tone:
+          "watch"
+      };
+    }
 
     return {
-      symbol:
-        symbol
-        || "Symbol unavailable",
+      label:
+        "Current market truth is guarded",
 
-      thesis:
-        String(
-          thesis
+      detail:
+        safeText(
+          projection.reason,
+          "OB is waiting for verified market provenance."
         ),
 
-      options:
-        optionCount === null
-          ? null
-          : (
-              optionCount
-              + " viable contract"
-              + (
-                  optionCount === 1
-                    ? ""
-                    : "s"
-                )
-            ),
-
-      liquidity:
-        liquidity
-          ? String(
-              liquidity
-            )
-          : null,
-
-      href:
-        symbol
-          ? (
-              "/ob/symbol/"
-              + encodeURIComponent(
-                  symbol
-                )
-            )
-          : "/ob/market-map",
-
-      source:
-        candidate.source
-        || candidate.provenance
-        || "canonical candidate projection",
+      tone:
+        "guarded"
     };
   }
 
 
-  function buildSince(
-    session,
-    data
+  function paperState(
+    mode
   ) {
-    const items = [];
+    const normalized =
+      String(
+        mode
+      ).toLowerCase();
 
-    const recent =
-      session
-      && session.persistent
-        ? cleanArray(
-            session
-              .persistent
-              .recentSessions
-          )
-        : [];
+    if (
+      normalized.includes(
+        "paper"
+      )
+    ) {
+      return {
+        label:
+          "Paper mode",
 
-    const feedback =
-      session
-      && session.persistent
-        ? cleanArray(
-            session
-              .persistent
-              .feedback
-          )
-        : [];
+        detail:
+          "Practice is active and remains separate from live performance."
+      };
+    }
 
-    const reviews =
-      sourceBackedReviews(
-        data
+    return {
+      label:
+        "Survey mode",
+
+      detail:
+        "Observe first. Move into Paper when you want to practice."
+    };
+  }
+
+
+  function recentReview() {
+    const server =
+      safeObject(
+        global.OB_SERVER_DATA
+      );
+
+    const projection =
+      canonicalProjection();
+
+    const summary =
+      safeObject(
+        projection.review_summary
+        || server.review_summary
+      );
+
+    const count =
+      Number(
+        summary.count
+        || summary.total
+        || summary.items_count
+        || 0
       );
 
     if (
-      reviews.length
+      Number.isFinite(count)
+      && count > 0
     ) {
-      items.push(
+      return {
+        label:
+          `${count} review item${count === 1 ? "" : "s"}`,
+
+        detail:
+          "Review Center has process evidence available.",
+
+        href:
+          "/review-center"
+      };
+    }
+
+    return {
+      label:
+        "No review item needs the front page",
+
+      detail:
+        "Review history stays quiet until something useful exists.",
+
+      href:
+        "/review-center"
+    };
+  }
+
+
+  function briefing(
+    projection,
+    mode,
+    glance
+  ) {
+    const status =
+      safeText(
+        projection.projection_status,
+        "unavailable"
+      );
+
+    if (
+      status === "fresh"
+      && glance.length
+    ) {
+      return {
+        title:
+          "The market is live enough to study.",
+
+        summary:
+          (
+            `I found ${glance.length} source-backed symbol`
+            + (
+                glance.length === 1
+                  ? ""
+                  : "s"
+              )
+            + " for exploration. "
+            + "This page stays observational; choose what you want to study."
+          )
+      };
+    }
+
+    if (
+      mode.toLowerCase().includes(
+        "paper"
+      )
+    ) {
+      return {
+        title:
+          "Paper is ready when you are.",
+
+        summary:
+          (
+            "Practice the process without turning "
+            + "this Dashboard into a live recommendation screen."
+          )
+      };
+    }
+
+    return {
+      title:
+        "Nothing needs to be forced.",
+
+      summary:
+        (
+          "Current market truth is guarded or quiet. "
+          + "Open Market Map when you want to explore."
+        )
+    };
+  }
+
+
+  function project() {
+    const projection =
+      canonicalProjection();
+
+    const mode =
+      selectedMode();
+
+    const glance =
+      neutralSymbolFacts(
+        projection
+      );
+
+    const brief =
+      briefing(
+        projection,
+        mode,
+        glance
+      );
+
+    return {
+      version:
+        VERSION,
+
+      role:
+        "normal_user",
+
+      mode,
+
+      briefing:
+        brief,
+
+      market_glance:
+        glance,
+
+      more: [
+        {
+          kind:
+            "market_state",
+
+          ...marketState(
+            projection
+          )
+        },
+
+        {
+          kind:
+            "paper_state",
+
+          ...paperState(
+            mode
+          )
+        },
+
         {
           kind:
             "review",
 
-          title:
-            reviews.length
-            + " review item"
-            + (
-                reviews.length
-                  === 1
-                  ? ""
-                  : "s"
-              )
-            + " available",
-
-          detail:
-            "Open Review Center for process and outcome truth.",
-
-          href:
-            "/review-center",
-
-          source:
-            "review projection",
+          ...recentReview()
         }
-      );
-    }
+      ],
 
-    if (
-      feedback.length
-    ) {
-      items.push(
-        {
-          kind:
-            "feedback",
+      source_state: {
+        projection_status:
+          safeText(
+            projection.projection_status,
+            "unavailable"
+          ),
 
-          title:
-            feedback.length
-            + " beta feedback note"
-            + (
-                feedback.length
-                  === 1
-                  ? ""
-                  : "s"
-              )
-            + " saved",
+        source:
+          safeText(
+            projection.source,
+            "unavailable"
+          ),
 
-          detail:
-            "Your local beta feedback queue is available in My OB.",
-
-          href:
-            null,
-
-          source:
-            "OB session state",
-        }
-      );
-    }
-
-    if (
-      recent.length
-    ) {
-      const last =
-        recent[0];
-
-      items.push(
-        {
-          kind:
-            "session",
-
-          title:
-            "Your last OB session has a closeout record",
-
-          detail:
-            [
-              last.lastRoom,
-              last.mode,
-            ]
-              .filter(
-                Boolean
-              )
-              .join(
-                " · "
-              )
-            || "Session record available",
-
-          href:
-            null,
-
-          source:
-            "OB session state",
-        }
-      );
-    }
-
-    if (
-      !items.length
-    ) {
-      items.push(
-        {
-          kind:
-            "empty",
-
-          title:
-            "No source-backed changes to report yet",
-
-          detail:
-            "Soulaana won’t invent activity just to fill the page.",
-
-          href:
-            null,
-
-          source:
-            "canonical empty state",
-        }
-      );
-    }
-
-    return items.slice(
-      0,
-      4
-    );
-  }
-
-
-  function buildActivity(
-    data
-  ) {
-    const positions =
-      sourceBackedPositions(
-        data
-      );
-
-    const reviews =
-      sourceBackedReviews(
-        data
-      );
-
-    const items = [];
-
-    if (
-      positions.length
-    ) {
-      items.push(
-        {
-          kind:
-            "positions",
-
-          count:
-            positions.length,
-
-          title:
-            positions.length
-            + " tracked position"
-            + (
-                positions.length
-                  === 1
-                  ? ""
-                  : "s"
-              ),
-
-          detail:
-            "Open Trade Center to manage the OB lifecycle. External brokerage state is not implied.",
-
-          href:
-            "/trade-center",
-
-          source:
-            "position projection",
-        }
-      );
-    }
-
-    if (
-      reviews.length
-    ) {
-      items.push(
-        {
-          kind:
-            "reviews",
-
-          count:
-            reviews.length,
-
-          title:
-            reviews.length
-            + " review item"
-            + (
-                reviews.length
-                  === 1
-                  ? ""
-                  : "s"
-              ),
-
-          detail:
-            "Review process quality, outcome, and Negative Dive evidence.",
-
-          href:
-            "/review-center",
-
-          source:
-            "review projection",
-        }
-      );
-    }
-
-    if (
-      !items.length
-    ) {
-      items.push(
-        {
-          kind:
-            "empty",
-
-          count: 0,
-
-          title:
-            "No open source-backed work",
-
-          detail:
-            "Research in Market Map or review saved activity when it exists.",
-
-          href:
-            "/ob/market-map",
-
-          source:
-            "canonical empty state",
-        }
-      );
-    }
-
-    return items;
-  }
-
-
-  function soulaanaSummary(
-    mode,
-    activity,
-    market
-  ) {
-    if (
-      mode === "Survey"
-    ) {
-      if (
-        market.length
-      ) {
-        return (
-          "Survey is open. "
-          + "I found source-backed names worth studying; "
-          + "nothing here asks you to trade."
-        );
-      }
-
-      return (
-        "Survey is open. "
-        + "I’ll keep this observational until "
-        + "canonical market candidates arrive."
-      );
-    }
-
-    if (
-      mode === "Paper"
-    ) {
-      return (
-        "Paper mode is active. "
-        + "Practice stays separate from official live performance."
-      );
-    }
-
-    if (
-      mode === "Manual Live"
-    ) {
-      return (
-        "Manual Live is owner-supervised: "
-        + "OB can prepare, alert, track, and review; "
-        + "the owner chooses and places the trade externally."
-      );
-    }
-
-    if (
-      mode === "Hybrid"
-    ) {
-      return (
-        "Hybrid may narrow objective options, "
-        + "but the user still chooses the contract "
-        + "and execution remains separately gated."
-      );
-    }
-
-    return (
-      "Automated mode is locked. "
-      + "This Dashboard does not create an execution path."
-    );
-  }
-
-
-  async function project() {
-    const session =
-      global.OBSessionState
-        ? global
-            .OBSessionState
-            .snapshot()
-        : null;
-
-    const data =
-      serverData();
-
-    const payload =
-      await fetchJson(
-        ACCOUNT_ENDPOINT
-      );
-
-    const profile =
-      accountProfileFromPayload(
-        payload
-      );
-
-    const mode =
-      selectedMode(
-        session
-      );
-
-    const permissions =
-      modePermissions(
-        profile
-      );
-
-    const market =
-      sourceBackedCandidates(
-        data
-      )
-        .map(
-          candidateCard
-        )
-        .slice(
-          0,
-          4
-        );
-
-    const activity =
-      buildActivity(
-        data
-      );
-
-    const notification =
-      session
-      && session.persistent
-        ? (
-            session
-              .persistent
-              .notificationReadiness
-            || {}
+        as_of:
+          safeText(
+            projection.as_of,
+            "unavailable"
           )
-        : {};
-
-    const browserPermission =
-      browserNotificationState();
-
-    const snapshotCards = [
-      {
-        label:
-          "Access",
-
-        value:
-          profile
-          && (
-            profile.title
-            || profile.subtitle
-          )
-            ? (
-                profile.title
-                || profile.subtitle
-              )
-            : "OB user",
-
-        state:
-          profile
-            ? "source-backed"
-            : "guarded",
-
-        detail:
-          profile
-          && profile.subtitle
-            ? profile.subtitle
-            : (
-                "Account detail source unavailable; "
-                + "normal-user boundary remains enforced."
-              ),
-
-        source:
-          profile
-            ? ACCOUNT_ENDPOINT
-            : "guarded projection",
       },
 
-      {
-        label:
-          "Mode",
-
-        value:
-          mode,
-
-        state:
-          mode === "Automated"
-            ? "locked"
-            : "active",
-
-        detail:
-          permissions.length
-            ? permissions
-                .map(
-                  function (
-                    item
-                  ) {
-                    return (
-                      item.name
-                      + ": "
-                      + item.state
-                    );
-                  }
-                )
-                .join(
-                  " · "
-                )
-            : "Mode permission detail unavailable.",
-
-        source:
-          permissions.length
-            ? ACCOUNT_ENDPOINT
-            : "OB session state",
-      },
-
-      {
-        label:
-          "Alerts",
-
-        value:
-          browserPermission
-            === "granted"
-              ? "Browser allowed"
-              : (
-                  browserPermission
-                    === "denied"
-                      ? "Browser blocked"
-                      : (
-                          browserPermission
-                            === "unsupported"
-                              ? "Browser unsupported"
-                              : "Browser not decided"
-                        )
-                ),
-
-        state:
-          browserPermission
-            === "granted"
-              ? "ready"
-              : "attention",
-
-        detail:
-          notification.email
-          && notification.email
-            !== "unknown"
-              ? (
-                  "Email: "
-                  + notification.email
-                )
-              : (
-                  "Email delivery status unavailable "
-                  + "until a canonical source says otherwise."
-                ),
-
-        source:
-          "browser permission + OB notification state",
-      },
-
-      {
-        label:
-          "Private Beta",
-
-        value:
-          document.body
-            ? (
-                document.body
-                  .dataset
-                  .obBuild
-                || "Build unavailable"
-              )
-            : "Build unavailable",
-
-        state:
-          "beta",
-
-        detail:
-          document.body
-            ? (
-                "Guide "
-                + (
-                    document.body
-                      .dataset
-                      .obSopVersion
-                    || "version unavailable"
-                  )
-              )
-            : "Guide version unavailable",
-
-        source:
-          "deployed UI build identity",
-      },
-    ];
-
-    return {
-      generatedAt:
-        new Date()
-          .toISOString(),
-
-      profile,
-
-      mode,
-
-      permissions,
-
-      snapshotCards,
-
-      since:
-        buildSince(
-          session,
-          data
-        ),
-
-      activity,
-
-      market,
-
-      summary:
-        soulaanaSummary(
-          mode,
-          activity,
-          market
-        ),
-
-      notification: {
-        browser:
-          browserPermission,
-
-        inApp:
-          notification.inApp
-          || "unknown",
-
-        email:
-          notification.email
-          || "unknown",
-
-        lastDelivery:
-          notification.lastDelivery
-          || null,
-
-        source:
-          notification.source
-          || "not_connected",
-      },
-
-      recentSessions:
-        session
-        && session.persistent
-          ? cleanArray(
-              session
-                .persistent
-                .recentSessions
-            )
-          : [],
-
-      feedback:
-        session
-        && session.persistent
-          ? cleanArray(
-              session
-                .persistent
-                .feedback
-            )
-          : [],
-
-      boundaries: {
-        missionAccountsOnUserDashboard:
-          false,
-
-        brokerExecution:
-          false,
-
-        automaticContractSelection:
-          false,
-
-        automaticExecution:
-          false,
-
-        automatedModeLocked:
-          true,
-
-        checkInChangesMarketTruth:
-          false,
-      },
+      boundaries:
+        BOUNDARIES
     };
   }
 
 
-  global.OBDashboardProjection =
-    Object.freeze(
-      {
-        project,
+  global.OB_USER_DASHBOARD_PROJECTION =
+    Object.freeze({
+      version:
+        VERSION,
 
-        fetchAccountContext:
-          async function () {
-            return accountProfileFromPayload(
-              await fetchJson(
-                ACCOUNT_ENDPOINT
-              )
-            );
-          },
-      }
-    );
+      boundaries:
+        BOUNDARIES,
+
+      project
+    });
 
 })(window);

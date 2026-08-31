@@ -1,27 +1,33 @@
-// OBUX086–090 — SOULAANA OWNER CAPITAL-LANE BRIEFING
+
+// OBUX091–095 — SOULAANA OWNER INTELLIGENCE BRIEFING
 (() => {
   "use strict";
 
   const VERSION =
-    "OBUX086_090_SOULAANA_OWNER_CAPITAL_LANES";
+    "OBUX091_095_SOULAANA_OWNER_INTELLIGENCE";
+
+
+  const safeArray = (
+    value
+  ) => (
+    Array.isArray(
+      value
+    )
+      ? value
+      : []
+  );
 
 
   const safeText = (
     value,
     fallback = ""
-  ) => {
-    if (
-      value === undefined
-      || value === null
-      || value === ""
-    ) {
-      return fallback;
-    }
-
-    return String(
-      value
-    );
-  };
+  ) => (
+    value === undefined
+    || value === null
+    || value === ""
+      ? fallback
+      : String(value)
+  );
 
 
   const buildBriefing = (
@@ -31,19 +37,29 @@
       contract
       || {};
 
-    const lanes =
-      Array.isArray(
-        safe.capital_lanes
-      )
-        ? safe.capital_lanes
-        : [];
+    const edge =
+      safe.today_edge
+      || {};
+
+    const now =
+      safeArray(
+        edge.now
+      );
+
+    const watch =
+      safeArray(
+        edge.watch
+      );
+
+    const notYet =
+      safeArray(
+        edge.not_yet
+      );
 
     const attention =
-      Array.isArray(
+      safeArray(
         safe.owner_attention
-      )
-        ? safe.owner_attention
-        : [];
+      );
 
     const trust =
       safe.trust
@@ -53,126 +69,93 @@
       safe.readiness
       || {};
 
-    const beta =
-      safe.beta
-      || {};
-
-    const interpretation =
-      safe.interpretation_state
-      || {};
-
-    const guarded = [
-      !trust.verified
-        ? "engine trust"
-        : null,
-
-      !readiness.verified
-        ? "Manual Live readiness"
-        : null,
-
-      !beta.verified
-        ? "private beta"
-        : null
-    ].filter(
-      Boolean
-    );
-
-    const high =
-      attention.filter(
-        function (
-          item
-        ) {
-          return (
-            item.priority
-            === "high"
-          );
-        }
+    const lanes =
+      safeArray(
+        safe.capital_lanes
       );
 
-    const verifiedCapital =
-      lanes.filter(
-        function (
-          lane
-        ) {
-          return (
-            lane.actual_capital_known
-            || lane.capital_progress_known
-          );
-        }
+    const guarded =
+      !(
+        edge.source_state
+        && edge
+          .source_state
+          .verified_current_market
       );
+
 
     let headline;
     let whatISee;
+    let nextMove;
+
 
     if (
-      high.length
+      now.length
     ) {
       headline =
-        "I found something that actually needs you.";
+        "I found verified research that deserves your eyes.";
 
       whatISee =
         (
-          `${high.length} owner-level item(s) `
-          + "deserve attention. Start there."
+          `${now.length} setup${now.length === 1 ? "" : "s"} `
+          + "made it into NOW from current source-backed engine truth."
+        );
+
+      nextMove =
+        (
+          "Open the first NOW setup, "
+          + "read why it surfaced, "
+          + "then decide whether you want to study the stock or its option contracts."
         );
 
     } else if (
-      guarded.length
+      watch.length
     ) {
       headline =
-        "Your lanes are organized. Some truth is still guarded.";
+        "Nothing is screaming. I do have things worth watching.";
 
       whatISee =
         (
-          `I can see ${lanes.length} Capital Lanes. `
-          + `${guarded.join(", ")} ${
-              guarded.length === 1
-                ? "is"
-                : "are"
-            } still unverified.`
+          `${watch.length} current setup${watch.length === 1 ? "" : "s"} `
+          + "made WATCH, but the source did not prove a NOW state."
         );
+
+      nextMove =
+        "Open WATCH only if you want more context.";
+
+    } else if (
+      guarded
+    ) {
+      headline =
+        "Some truth is still guarded.";
+
+      whatISee =
+        (
+          "I do not have enough current verified candidate truth "
+          + "to manufacture a trade idea."
+        );
+
+      nextMove =
+        "No forced move. Verify the market source first.";
 
     } else {
       headline =
-        "The Observatory is calm at owner altitude.";
+        "Nothing verified is forcing an owner decision.";
 
       whatISee =
-        (
-          "Nothing verified is forcing an owner decision. "
-          + "You can stay focused."
-        );
+        "The Observatory is quiet at owner altitude.";
+
+      nextMove =
+        "No forced move. Pick a Capital Lane only when you need that context.";
     }
 
-    const capitalRead =
-      verifiedCapital.length
-        ? (
-            `${verifiedCapital.length} Capital Lane(s) `
-            + "have verified capital or progress truth."
-          )
-        : (
-            "Capital policy is visible. "
-            + "Unverified balances stay unverified."
-          );
 
-    const nextMove =
-      high.length
-        ? (
-            "Start with: "
-            + safeText(
-                high[0].title,
-                "the highest-priority owner item"
-              )
-          )
-        : guarded.length
-          ? (
-              "Next: verify "
-              + guarded[0]
-              + "."
-            )
-          : (
-              "No forced move. Pick a Capital Lane "
-              + "only when you need that context."
-            );
+    const verifiedCapital =
+      lanes.filter(
+        lane =>
+          lane.actual_capital_known
+          || lane.capital_progress_known
+      );
+
 
     return {
       version:
@@ -186,23 +169,43 @@
       what_i_see:
         whatISee,
 
+      why_it_matters:
+        (
+          now.length
+            ? (
+                "NOW means the current source supplied enough candidate state "
+                + "to surface it here. It does not mean guaranteed profit."
+              )
+            : (
+                "I would rather show you less than invent certainty."
+              )
+        ),
+
       capital_read:
-        capitalRead,
+        verifiedCapital.length
+          ? (
+              `${verifiedCapital.length} Capital Lane`
+              + (
+                  verifiedCapital.length === 1
+                    ? ""
+                    : "s"
+                )
+              + " has verified capital or progress truth."
+            )
+          : (
+              "Capital policy is visible. "
+              + "Unverified balances stay unverified."
+            ),
 
       what_needs_you:
         attention.length
           ? attention
               .map(
-                function (
-                  item
-                ) {
-                  return (
-                    safeText(
-                      item.title,
-                      "Owner item"
-                    )
-                  );
-                }
+                item =>
+                  safeText(
+                    item.title,
+                    "Owner item"
+                  )
               )
               .join(
                 " · "
@@ -212,18 +215,61 @@
               + "is asking for you."
             ),
 
+      watch_count:
+        watch.length,
+
+      not_yet_count:
+        notYet.length,
+
+      readiness:
+        safeText(
+          readiness.label,
+          "Readiness unavailable"
+        ),
+
+      system_trust:
+        safeText(
+          trust.label,
+          "Trust unavailable"
+        ),
+
+      beta_state:
+        safeText(
+          safe.beta
+          && safe.beta.label,
+          "Beta state unavailable"
+        ),
+
+      what_changed:
+        "No verified owner-change history yet",
+
+      what_im_learning:
+        "No verified cross-lane pattern yet",
+
+      what_can_wait:
+        (
+          "Anything outside NOW, "
+          + "your top-three attention items, "
+          + "or an explicit drawer can wait."
+        ),
+
       next_best_move:
         nextMove,
 
       no_action_needed:
-        interpretation
-          .no_action_needed
-          === true,
+        (
+          safe.interpretation_state
+          && safe
+            .interpretation_state
+            .no_action_needed
+          === true
+        ),
 
       owner_altitude:
         (
           "Normal Dashboard watches the Observatory. "
-          + "Owner Dashboard organizes your capital context."
+          + "Owner Dashboard organizes your capital context "
+          + "and your private research intelligence."
         ),
 
       evidence_rule:
@@ -235,13 +281,12 @@
   };
 
 
-  window
-    .OB_OWNER_DASHBOARD_SOULAANA_V22 =
-      Object.freeze({
-        version:
-          VERSION,
+  window.OB_OWNER_DASHBOARD_SOULAANA_V22 =
+    Object.freeze({
+      version:
+        VERSION,
 
-        buildBriefing
-      });
+      buildBriefing
+    });
 
 })();

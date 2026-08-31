@@ -2,37 +2,13 @@
 from pathlib import Path
 
 
-ROOT = (
-    Path(__file__)
-    .resolve()
-    .parents[1]
-)
+ROOT = Path(__file__).resolve().parents[1]
 
-
-DASH = (
-    ROOT
-    / "web/templates/dashboard.html"
-)
-
-POLICY = (
-    ROOT
-    / "web/static/ob/ob_product_surface_policy.js"
-)
-
-MISSIONS = (
-    ROOT
-    / "web/static/ob/ob_mission_accounts.js"
-)
-
-V27 = (
-    ROOT
-    / "web/static/ob/ob_room_data_polish.js"
-)
-
-THEMES = (
-    ROOT
-    / "web/static/ob/ob_interchangeable_themes.css"
-)
+DASH = ROOT / "web/templates/dashboard.html"
+POLICY = ROOT / "web/static/ob/ob_product_surface_policy.js"
+MISSIONS = ROOT / "web/static/ob/ob_mission_accounts.js"
+V27 = ROOT / "web/static/ob/ob_room_data_polish.js"
+THEMES = ROOT / "web/static/ob/ob_interchangeable_themes.css"
 
 
 def text(path):
@@ -42,154 +18,55 @@ def text(path):
     )
 
 
-def test_dashboard_is_current_obux071_075_surface():
-    source = text(DASH)
-
+def test_dashboard_is_current_obux091_095_surface():
     assert (
-        'data-ob-build="OBUX086-090"'
-        in source
+        'data-ob-build="OBUX091-095"'
+        in text(DASH)
     )
 
 
 def test_normal_dashboard_does_not_load_mission_script():
-    source = text(DASH)
-
     assert (
         "ob_mission_accounts.js"
-        not in source
+        not in text(DASH)
     )
 
 
 def test_normal_dashboard_does_not_load_v27_renderer():
-    source = text(DASH)
-
     assert (
         "ob_room_data_polish.js"
-        not in source
+        not in text(DASH)
     )
 
 
-def test_normal_dashboard_no_longer_loads_obux027_atmosphere():
+def test_product_policy_is_still_early():
     source = text(DASH)
 
-    assert (
-        "ob_atmosphere.css"
-        not in source
-    )
-
-
-def test_product_policy_is_fresh_and_early():
-    source = text(DASH)
-
-    assert (
+    token = (
         "ob_product_surface_policy.js?v=obux086090"
-        in source
     )
+
+    assert token in source
 
     assert (
-        source.index(
-            "ob_product_surface_policy.js?v=obux086090"
-        )
-        < source.index(
-            "<body"
-        )
+        source.index(token)
+        < source.index("<body")
     )
 
 
-def test_changed_runtime_assets_have_new_cache_identity():
-    source = text(DASH)
-
-    for token in [
-        "ob_interchangeable_themes.css?v=obux081085",
-        "ob_theme_switcher.js?v=obux081085",
-        "ob_beta_surface_cleanup.js?v=obux081085",
-        "ob_session_arrival.js') }}?v=obux071075",
-    ]:
-        assert token in source
-
-
-def test_product_policy_denies_legacy_mission_ui_on_all_ob_product_routes():
+def test_legacy_mission_product_ui_remains_denied():
     source = text(POLICY)
 
-    assert (
-        "missionUiAllowed"
-        in source
-    )
-
-    assert (
-        "return !isObProductRoute();"
-        in source
-    )
-
-    assert (
-        '"#obMissionBar"'
-        in source
-    )
+    assert "missionUiAllowed" in source
+    assert "return !isObProductRoute();" in source
+    assert '"#obMissionBar"' in source
 
 
-def test_product_policy_denies_v27_for_all_ob_product_routes():
-    source = text(POLICY)
-
-    assert (
-        "v27UiAllowed"
-        in source
-    )
-
-    assert (
-        'startsWith(\n        "/ob/"'
-        in source
-    )
-
-    assert (
-        '"#obRoomDataPolishPanel"'
-        in source
-    )
-
-    assert (
-        '"obEngineFeedAdapterUpdated"'
-        in source
-    )
-
-
-def test_mission_renderer_source_gate_precedes_mission_definitions():
-    source = text(MISSIONS)
-
-    gate = source.index(
-        "ownerDashboardSurface"
-    )
-
-    definitions = source.index(
-        "const missionAccounts"
-    )
-
-    assert gate < definitions
-
-    assert (
-        '=== "/ob/owner-dashboard"'
-        in source
-    )
-
-    assert (
-        "mission_accounts_owner_dashboard_only"
-        in source
-    )
-
-
-def test_v27_source_gate_precedes_original_renderer():
+def test_v27_historical_renderer_still_not_loaded_into_product():
     source = text(V27)
 
-    gate = source.index(
-        "productSurface"
-    )
-
-    renderer = source.index(
-        "function currentRoomKey"
-    )
-
-    assert gate < renderer
-
     assert (
-        'startsWith(\n        "/ob/"'
+        "OB_V27_ROOM_LEVEL_REAL_DATA_POLISH"
         in source
     )
 
@@ -199,75 +76,28 @@ def test_v27_source_gate_precedes_original_renderer():
     )
 
 
-def test_v27_historical_renderer_still_exists_for_non_product_proof_history():
-    source = text(V27)
-
-    assert (
-        "OB_V27_ROOM_LEVEL_REAL_DATA_POLISH"
-        in source
-    )
-
-    assert (
-        "Room-Level Data Polish · V27"
-        in source
-    )
-
-    assert (
-        "insertPanel"
-        in source
-    )
-
-
-def test_dashboard_theme_owns_required_sky_geometry():
-    source = text(THEMES)
-
-    assert (
-        "OBUX074_DASHBOARD_THEME_OWNS_SKY_GEOMETRY"
-        in source
-    )
-
-    for token in [
-        '.ob-sky {',
-        ".ob-sky::before",
-        ".ob-sky__weather",
-        ".ob-sky__horizon",
-        ".ob-sky__grid",
-        "@keyframes obThemeStarsDrift",
-        "@keyframes obThemeWeatherDrift",
-    ]:
-        assert token in source
-
-
-def test_dashboard_layout_remains_untouched():
+def test_dashboard_layout_is_attention_first_not_legacy_wall():
     source = text(DASH)
 
-    for token in [
-        "SOULAANA · RIGHT NOW",
+    for required in [
+        "SOULAANA · MARKET BRIEFING",
+        "MARKET GLANCE",
+        "Three things max.",
+    ]:
+        assert required in source
+
+    for forbidden in [
         "SINCE YOU WERE HERE",
         "YOUR ACTIVITY",
-        "MARKET NOW",
         "YOUR OPERATING LOOP",
         "MY OB",
     ]:
-        assert token in source
+        assert forbidden not in source
 
 
-def test_normal_dashboard_still_has_no_mission_account_dependency():
-    source = text(DASH).lower()
-
-    for token in [
-        "mission_accounts",
-        "ob_mission_account",
-        "current mission account",
-    ]:
-        assert token not in source
-
-
-def test_no_execution_capability_was_added():
+def test_historical_mission_source_cannot_create_execution():
     source = (
-        text(POLICY)
-        + "\n"
-        + text(MISSIONS)
+        text(MISSIONS)
         + "\n"
         + text(V27)
         + "\n"

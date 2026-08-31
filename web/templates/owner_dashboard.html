@@ -1,14 +1,22 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OB Owner Dashboard</title>
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <title>
+    The Observatory · Owner Dashboard
+  </title>
 
   <script>
     /*
-      OBUX088 — Owner Dashboard first-paint theme authority.
+      OBUX091–095
+      Owner Dashboard first-paint theme authority.
     */
     (function () {
       var key =
@@ -53,18 +61,17 @@
     OBUX025_DORMANT_OWNER_DASHBOARD
     OWNER_DASHBOARD_ACTIVATION_HANDOFF
 
-    NORMAL DASHBOARD:
-      everyday Observatory intelligence
+    OBUX091–095:
+      CLEAN-SLATE OWNER INTELLIGENCE COCKPIT.
 
-    OWNER DASHBOARD:
-      additional Solice-only strategic Observatory intelligence
+    Owner Dashboard:
+      Soulaana
+      verified research
+      Today's Edge
+      positions / market / readiness
+      secondary Capital Lane context
 
-    OWNER CONSOLE:
-      deep administration / diagnostics / controls
-
-    IMPORTANT:
-      This template does not create or authorize a route.
-      Tower doorway work is deliberately separate.
+    Owner Console remains separate.
   -->
 
   <link
@@ -74,76 +81,130 @@
 
   <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}"
-  />
-
-  <link
-    rel="stylesheet"
     href="/static/ob/ob_interchangeable_themes.css?v=obux081085"
   />
 
   <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='ob/ob_owner_dashboard.css') }}?v=obux086090"
+    href="{{ url_for('static', filename='ob/ob_owner_dashboard.css') }}?v=obux091095"
   />
 </head>
 
 <body
+  data-ob-room="owner-dashboard"
+  data-ob-build="OBUX091-095"
   data-ob-owner-dashboard-role="owner-only-active"
   data-ob-owner-dashboard-route-state="tower-protected-active"
   data-ob-owner-dashboard-design-activated="true"
   data-ob-owner-capital-lanes="true"
+  data-ob-owner-intelligence-cockpit="true"
+  data-ob-owner-candidate-research="verified-source-backed"
   data-ob-live-auto-locked="true"
-  data-ob-room="owner-dashboard">
-<div
-  class="ob-sky"
-  data-ob-atmosphere-version="OBUX026-OBUX030"
-  aria-hidden="true"
 >
-  <div class="ob-sky__weather"></div>
-  <div class="ob-sky__horizon"></div>
-  <div class="ob-sky__grid"></div>
-</div>
+  <div
+    class="ob-sky"
+    aria-hidden="true"
+  >
+    <div class="ob-sky__weather"></div>
+    <div class="ob-sky__horizon"></div>
+    <div class="ob-sky__grid"></div>
+  </div>
 
-  <div id="ob-owner-dashboard-app">
-    <div class="ob-owner-shell">
-      <header class="ob-owner-shell-header">
-        <div class="ob-owner-shell-title">
-          <strong>The Observatory · Owner Dashboard</strong>
-          <span>
-            focused capital lanes · owner intelligence · no proof wall
+  <div
+    id="ob-owner-dashboard-app"
+    class="ob-owner-app"
+  >
+    <div
+      class="ob-owner-shell"
+    >
+      <header
+        class="ob-owner-shell-header"
+      >
+        <div>
+          <span
+            class="ob-owner-eyebrow"
+          >
+            THE OBSERVATORY · OWNER
           </span>
+
+          <h1>
+            Owner Dashboard
+          </h1>
+
+          <p>
+            Soulaana,
+            verified research,
+            and only what actually deserves you.
+          </p>
         </div>
 
-        <div class="ob-owner-shell-status">
-          <span class="ob-owner-chip owner">Owner only</span>
-          <span class="ob-owner-chip owner">Tower Protected</span>
-          <span class="ob-owner-chip locked">Live Auto Locked</span>
+        <div
+          class="ob-owner-shell-status"
+        >
+          <span class="ob-owner-chip owner">
+            Owner only
+          </span>
+
+          <span class="ob-owner-chip owner">
+            Tower Protected
+          </span>
+
+          <span class="ob-owner-chip locked">
+            Live Auto Locked
+          </span>
         </div>
       </header>
 
-      <div id="ownerDashboardMount"></div>
+      <div
+        id="ownerDashboardMount"
+      ></div>
     </div>
   </div>
 
-  <!--
-    Do NOT load the legacy Owner Console panel stack here.
-    Owner Dashboard fetches read-only JSON intelligence through its
-    own guarded contract instead of rendering the diagnostic walls.
-  -->
+  <script
+    src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"
+  ></script>
 
   <script
-    src="{{ url_for('static', filename='ob/ob_owner_dashboard_contract.js') }}?v=obux086090"
+    src="{{ url_for('static', filename='ob/ob_options_research_contract.js') }}"
   ></script>
+
   <script
-    src="{{ url_for('static', filename='ob/ob_owner_dashboard_soulaana.js') }}?v=obux086090"
+    src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}"
   ></script>
+
   <script
-    src="{{ url_for('static', filename='ob/ob_owner_dashboard.js') }}?v=obux086090"
+    src="{{ url_for('static', filename='ob/ob_engine_feed_diagnostics.js') }}"
   ></script>
-<script src="/static/ob/ob_session_state.js"></script>
-<script src="/static/ob/ob_nav_shell.js"></script>
-<script src="/static/ob/ob_global_session_shell.js"></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_engine_trust_labels.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard_contract.js') }}?v=obux091095"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard_soulaana.js') }}?v=obux091095"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_owner_dashboard.js') }}?v=obux091095"
+  ></script>
+
+  <script
+    src="/static/ob/ob_session_state.js"
+  ></script>
+
+  <script
+    src="/static/ob/ob_nav_shell.js"
+  ></script>
+
+  <script
+    src="/static/ob/ob_global_session_shell.js"
+  ></script>
+
   <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
   <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
 </body>

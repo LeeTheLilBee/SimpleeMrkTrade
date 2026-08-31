@@ -1,291 +1,302 @@
-// OBUX086–090 — OWNER CAPITAL LANES CONTRACT
+
+// OBUX091–095 — OWNER INTELLIGENCE COCKPIT CONTRACT
+//
+// OWNER ONLY.
+//
+// Existing canonical engine projection is the market-truth authority.
+// This contract interprets; it does not create a second engine.
+//
+// Critical:
+//   ranking evidence may be displayed.
+//   source-provided candidate status may be displayed.
+//   OB does NOT silently select an option contract for execution.
+//
 (() => {
   "use strict";
 
   const VERSION =
-    "OBUX086_090_OWNER_CAPITAL_LANES_CONTRACT";
+    "OBUX091_095_OWNER_INTELLIGENCE_CONTRACT";
 
-  /*
-    Capital Lanes are OWNER-ONLY.
+  const ENDPOINTS =
+    Object.freeze({
+      engine_trust:
+        "/ob/engine-feed-trust-labels.json",
 
-    Normal OB user surfaces do not load this contract and do not
-    receive these lane definitions.
+      manual_live_readiness:
+        "/ob/manual-live-operator-confidence-readiness-checkpoint.json",
 
-    This contract is read-only intelligence.
-    It cannot move capital or place a broker order.
-  */
+      private_beta:
+        "/ob/private-beta-launch-control.json"
+    });
 
-  const ENDPOINTS = Object.freeze({
-    engine_trust:
-      "/ob/engine-feed-trust-labels.json",
 
-    manual_live_readiness:
-      "/ob/manual-live-operator-confidence-readiness-checkpoint.json",
+  const BOUNDARIES =
+    Object.freeze({
+      owner_only:
+        true,
 
-    private_beta:
-      "/ob/private-beta-launch-control.json"
-  });
+      owner_research_only:
+        true,
 
+      capital_lanes_owner_dashboard_only:
+        true,
 
-  const BOUNDARIES = Object.freeze({
-    owner_only:
-      true,
+      non_owner_capital_lane_delivery:
+        false,
 
-    capital_lanes_owner_dashboard_only:
-      true,
+      non_owner_candidate_delivery:
+        false,
 
-    non_owner_capital_lane_delivery:
-      false,
+      read_only_intelligence:
+        true,
 
-    read_only_intelligence:
-      true,
+      lane_selection_changes_context_only:
+        true,
 
-    lane_selection_changes_context_only:
-      true,
+      candidate_display_does_not_authorize_trade:
+        true,
 
-    broker_api_enabled:
-      false,
+      ranked_contract_is_not_selected_contract:
+        true,
 
-    broker_order_submission_enabled:
-      false,
+      selection_authority:
+        "OWNER",
 
-    real_capital_movement_enabled:
-      false,
+      broker_api_enabled:
+        false,
 
-    automatic_contract_selection_enabled:
-      false,
+      broker_order_submission_enabled:
+        false,
 
-    auto_execution_enabled:
-      false,
+      real_capital_movement_enabled:
+        false,
 
-    live_auto_locked:
-      true
-  });
+      automatic_contract_selection_enabled:
+        false,
 
+      auto_execution_enabled:
+        false,
 
-  const POLICY_CAPITAL_LANES = Object.freeze([
-    {
-      lane_id:
-        "trust",
+      live_auto_locked:
+        true
+    });
 
-      account_id:
-        "ob_acct_trust",
 
-      label:
-        "Trust",
+  const POLICY_CAPITAL_LANES =
+    Object.freeze([
+      {
+        lane_id:
+          "trust",
 
-      display_label:
-        "Trust",
+        account_id:
+          "ob_acct_trust",
 
-      purpose:
-        "Protect and grow trust capital without treating protected money like ordinary trading capital.",
+        label:
+          "Trust",
 
-      risk_profile:
-        "Protected / conservative",
+        display_label:
+          "Trust",
 
-      allowed_modes: [
-        "Survey",
-        "Paper",
-        "Manual Live Level 1 · owner only"
-      ],
+        purpose:
+          "Protect and grow trust capital without treating protected money like ordinary trading capital.",
 
-      capital_goal:
-        "Protected family capital and future mission dispersal.",
+        risk_profile:
+          "Protected / conservative",
 
-      current_status:
-        "Policy defined",
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only"
+        ],
 
-      next_action:
-        "Protect the floor first. Use verified capital truth only."
-    },
+        capital_goal:
+          "Protected family capital and future mission dispersal.",
 
-    {
-      lane_id:
-        "personal",
+        current_status:
+          "Policy defined",
 
-      account_id:
-        "ob_acct_personal",
+        next_action:
+          "Protect the floor first. Use verified capital truth only."
+      },
 
-      label:
-        "Personal",
+      {
+        lane_id:
+          "personal",
 
-      display_label:
-        "Personal",
+        account_id:
+          "ob_acct_personal",
 
-      purpose:
-        "Owner learning, personal capital growth, and controlled owner trading review.",
+        label:
+          "Personal",
 
-      risk_profile:
-        "Moderate / capped",
+        display_label:
+          "Personal",
 
-      allowed_modes: [
-        "Survey",
-        "Paper",
-        "Manual Live Level 1 · owner only"
-      ],
+        purpose:
+          "Owner learning, personal capital growth, and controlled owner trading review.",
 
-      capital_goal:
-        "Owner liquidity and skill-building without borrowing from protected lanes.",
+        risk_profile:
+          "Moderate / capped",
 
-      current_status:
-        "Policy defined",
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only"
+        ],
 
-      next_action:
-        "Keep personal capital separate from protected and business capital."
-    },
+        capital_goal:
+          "Owner liquidity and skill-building without borrowing from protected lanes.",
 
-    {
-      lane_id:
-        "simplee_world",
+        current_status:
+          "Policy defined",
 
-      account_id:
-        "ob_acct_simplee_world",
+        next_action:
+          "Keep personal capital separate from protected and business capital."
+      },
 
-      label:
-        "Simplee World",
+      {
+        lane_id:
+          "simplee_world",
 
-      display_label:
-        "Simplee World",
+        account_id:
+          "ob_acct_simplee_world",
 
-      purpose:
-        "Build parent-company capital for the wider Simplee ecosystem.",
+        label:
+          "Simplee World",
 
-      risk_profile:
-        "Growth / controlled",
+        display_label:
+          "Simplee World",
 
-      allowed_modes: [
-        "Survey",
-        "Paper",
-        "Manual Live Level 1 · owner only"
-      ],
+        purpose:
+          "Build parent-company capital for the wider Simplee ecosystem.",
 
-      capital_goal:
-        "Business operating and expansion capital.",
+        risk_profile:
+          "Growth / controlled",
 
-      current_status:
-        "Policy defined",
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only"
+        ],
 
-      next_action:
-        "Keep business purpose and receipts explicit."
-    },
+        capital_goal:
+          "Business operating and expansion capital.",
 
-    {
-      lane_id:
-        "atm",
+        current_status:
+          "Policy defined",
 
-      account_id:
-        "ob_acct_atm",
+        next_action:
+          "Keep business purpose and receipts explicit."
+      },
 
-      label:
-        "ATM",
+      {
+        lane_id:
+          "atm",
 
-      display_label:
-        "SimpleeOnTheGo / ATM",
+        account_id:
+          "ob_acct_atm",
 
-      purpose:
-        "Build capital for ATM route acquisition, vault cash, repair, and expansion.",
+        label:
+          "ATM",
 
-      risk_profile:
-        "Moderate → conservative near deployment",
+        display_label:
+          "SimpleeOnTheGo / ATM",
 
-      allowed_modes: [
-        "Survey",
-        "Paper",
-        "Manual Live Level 1 · owner only"
-      ],
+        purpose:
+          "Build capital for ATM route acquisition, vault cash, repair, and expansion.",
 
-      capital_goal:
-        "ATM acquisition and operating reserve.",
+        risk_profile:
+          "Moderate → conservative near deployment",
 
-      current_status:
-        "Policy defined",
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only"
+        ],
 
-      next_action:
-        "Do not call a milestone reached until verified capital says it is."
-    },
+        capital_goal:
+          "ATM acquisition and operating reserve.",
 
-    {
-      lane_id:
-        "apartment",
+        current_status:
+          "Policy defined",
 
-      account_id:
-        "ob_acct_apartment",
+        next_action:
+          "Do not call a milestone reached until verified capital says it is."
+      },
 
-      label:
-        "The Grounds",
+      {
+        lane_id:
+          "apartment",
 
-      display_label:
-        "The Grounds / Apartment",
+        account_id:
+          "ob_acct_apartment",
 
-      purpose:
-        "Build and protect future property acquisition reserves.",
+        label:
+          "The Grounds",
 
-      risk_profile:
-        "Protected / conservative",
+        display_label:
+          "The Grounds / Apartment",
 
-      allowed_modes: [
-        "Survey",
-        "Paper",
-        "Manual Live Level 1 · owner only when intentionally enabled"
-      ],
+        purpose:
+          "Build and protect future property acquisition reserves.",
 
-      capital_goal:
-        "Acquisition, inspection, closing, repair, and reserve readiness.",
+        risk_profile:
+          "Protected / conservative",
 
-      current_status:
-        "Policy defined",
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only when intentionally enabled"
+        ],
 
-      next_action:
-        "Keep preservation ahead of aggressive growth."
-    },
+        capital_goal:
+          "Acquisition, inspection, closing, repair, and reserve readiness.",
 
-    {
-      lane_id:
-        "proof_demo",
+        current_status:
+          "Policy defined",
 
-      account_id:
-        "ob_acct_proof_demo",
+        next_action:
+          "Keep preservation ahead of aggressive growth."
+      },
 
-      label:
-        "Proof / Demo",
+      {
+        lane_id:
+          "proof_demo",
 
-      display_label:
-        "Proof / Demo",
+        account_id:
+          "ob_acct_proof_demo",
 
-      purpose:
-        "Demonstrate OB safely without exposing private capital or identities.",
+        label:
+          "Proof / Demo",
 
-      risk_profile:
-        "Zero real-capital risk",
+        display_label:
+          "Proof / Demo",
 
-      allowed_modes: [
-        "Survey",
-        "Paper",
-        "Demo"
-      ],
+        purpose:
+          "Demonstrate OB safely without exposing private capital or identities.",
 
-      capital_goal:
-        "No real capital.",
+        risk_profile:
+          "Zero real-capital risk",
 
-      current_status:
-        "Demo only",
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Demo"
+        ],
 
-      next_action:
-        "Use only for safe private proof and beta demonstration."
-    }
-  ]);
+        capital_goal:
+          "No real capital.",
+
+        current_status:
+          "Demo only",
+
+        next_action:
+          "Use only for safe private proof and beta demonstration."
+      }
+    ]);
 
 
   const state = {
-    status:
-      "guarded_local_policy",
-
-    hydrated:
-      false,
-
-    hydrated_at:
-      null,
-
     sources:
       {},
 
@@ -295,6 +306,28 @@
     contract:
       null
   };
+
+
+  const safeArray = (
+    value
+  ) => (
+    Array.isArray(
+      value
+    )
+      ? value
+      : []
+  );
+
+
+  const safeObject = (
+    value
+  ) => (
+    value
+    && typeof value === "object"
+    && !Array.isArray(value)
+      ? value
+      : {}
+  );
 
 
   const safeText = (
@@ -315,15 +348,20 @@
   };
 
 
-  const safeArray = (
+  const num = (
     value
-  ) => (
-    Array.isArray(
-      value
+  ) => {
+    const parsed =
+      Number(
+        value
+      );
+
+    return Number.isFinite(
+      parsed
     )
-      ? value
-      : []
-  );
+      ? parsed
+      : null;
+  };
 
 
   const sourceLooksVerified = (
@@ -343,22 +381,18 @@
       ).toLowerCase();
 
     if (
-      source.includes(
-        "fallback"
-      )
-      || source.includes(
-        "preview"
-      )
-      || source.includes(
-        "demo"
-      )
+      source.includes("fallback")
+      || source.includes("preview")
+      || source.includes("demo")
+      || source.includes("sample")
+      || source.includes("mock")
+      || source.includes("seed")
     ) {
       return false;
     }
 
     if (
-      payload.verified
-      === false
+      payload.verified === false
     ) {
       return false;
     }
@@ -395,48 +429,27 @@
         payload = {};
       }
 
-      if (
-        !response.ok
-      ) {
-        return {
-          name,
-          url,
-          status:
-            "guarded",
-
-          http_status:
-            response.status,
-
-          verified:
-            false,
-
-          payload:
-            null,
-
-          error:
-            `HTTP ${response.status}`
-        };
-      }
-
       return {
         name,
         url,
 
         status:
-          "available",
-
-        http_status:
-          response.status,
+          response.ok
+            ? "available"
+            : "guarded",
 
         verified:
-          sourceLooksVerified(
-            payload
+          (
+            response.ok
+            && sourceLooksVerified(
+              payload
+            )
           ),
 
-        payload,
-
-        error:
-          null
+        payload:
+          response.ok
+            ? payload
+            : null
       };
 
     } catch (
@@ -448,9 +461,6 @@
 
         status:
           "unavailable",
-
-        http_status:
-          null,
 
         verified:
           false,
@@ -467,6 +477,558 @@
           )
       };
     }
+  };
+
+
+  const canonicalProjection = () => {
+    const server =
+      safeObject(
+        window.OB_SERVER_DATA
+      );
+
+    return safeObject(
+      server.canonical_web_projection
+      || server.engine_feed_v25
+      || window.OB_ENGINE_FEED_SNAPSHOT_V25
+    );
+  };
+
+
+  const currentMarketVerified = (
+    projection
+  ) => (
+    projection.current_eligible === true
+    && projection.display_eligible === true
+    && projection.projection_status === "fresh"
+  );
+
+
+  const candidateSourceArray = (
+    projection
+  ) => {
+    const candidates = [
+      projection.candidates_preview,
+      projection.candidates,
+      projection.watched_candidates
+    ];
+
+    for (
+      const value
+      of candidates
+    ) {
+      if (
+        Array.isArray(value)
+        && value.length
+      ) {
+        return value;
+      }
+    }
+
+    return [];
+  };
+
+
+  const optionSourceArray = (
+    projection
+  ) => {
+    const optionsProjection =
+      safeObject(
+        projection.options_projection
+      );
+
+    const ranked =
+      safeArray(
+        optionsProjection.ranked_contracts
+        || projection.ranked_contracts
+      );
+
+    if (
+      ranked.length
+    ) {
+      return ranked;
+    }
+
+    return safeArray(
+      optionsProjection.research_contracts
+      || projection.research_contracts
+      || projection.options
+    );
+  };
+
+
+  const normalizeOption = (
+    raw,
+    sourceVerified,
+    index
+  ) => {
+    const item =
+      safeObject(
+        raw
+      );
+
+    return {
+      source_order:
+        index + 1,
+
+      symbol:
+        safeText(
+          item.symbol
+          || item.underlying
+          || item.ticker,
+          ""
+        ).toUpperCase(),
+
+      contract_symbol:
+        safeText(
+          item.contract_symbol
+          || item.option_symbol
+          || item.occ_symbol,
+          ""
+        ),
+
+      option_type:
+        safeText(
+          item.option_type
+          || item.type
+          || item.right,
+          "Unavailable"
+        ),
+
+      strike:
+        num(
+          item.strike
+        ),
+
+      expiration:
+        safeText(
+          item.expiration
+          || item.expiry
+          || item.expiration_date,
+          "Unavailable"
+        ),
+
+      bid:
+        num(
+          item.bid
+        ),
+
+      ask:
+        num(
+          item.ask
+        ),
+
+      spread:
+        num(
+          item.spread
+        ),
+
+      volume:
+        num(
+          item.volume
+        ),
+
+      open_interest:
+        num(
+          item.open_interest
+          || item.oi
+        ),
+
+      implied_volatility:
+        num(
+          item.implied_volatility
+          || item.iv
+        ),
+
+      delta:
+        num(
+          item.delta
+        ),
+
+      gamma:
+        num(
+          item.gamma
+        ),
+
+      theta:
+        num(
+          item.theta
+        ),
+
+      vega:
+        num(
+          item.vega
+        ),
+
+      source_rank:
+        num(
+          item.rank
+          || item.score_rank
+        ),
+
+      source_verified:
+        sourceVerified === true,
+
+      selection_authority:
+        "OWNER",
+
+      automatically_selected:
+        false
+    };
+  };
+
+
+  const optionContractsBySymbol = (
+    projection
+  ) => {
+    const verified =
+      currentMarketVerified(
+        projection
+      );
+
+    const map =
+      new Map();
+
+    optionSourceArray(
+      projection
+    )
+      .forEach(
+        function (
+          raw,
+          index
+        ) {
+          const contract =
+            normalizeOption(
+              raw,
+              verified,
+              index
+            );
+
+          if (
+            !contract.symbol
+          ) {
+            return;
+          }
+
+          const current =
+            map.get(
+              contract.symbol
+            )
+            || [];
+
+          current.push(
+            contract
+          );
+
+          map.set(
+            contract.symbol,
+            current
+          );
+        }
+      );
+
+    return map;
+  };
+
+
+  const candidateBucket = (
+    raw,
+    verified
+  ) => {
+    const item =
+      safeObject(
+        raw
+      );
+
+    const stateText =
+      [
+        item.status,
+        item.state,
+        item.priority,
+        item.decision,
+        item.recommendation_state,
+        item.candidate_state
+      ]
+        .filter(
+          Boolean
+        )
+        .join(
+          " "
+        )
+        .toLowerCase();
+
+    if (
+      !verified
+      || /(reject|blocked|invalid|guarded|stale|hold|not[_ -]?yet)/i
+        .test(
+          stateText
+        )
+    ) {
+      return "not_yet";
+    }
+
+    if (
+      item.actionable === true
+      || /(approved|ready|qualified|high|top|now)/i
+        .test(
+          stateText
+        )
+    ) {
+      return "now";
+    }
+
+    return "watch";
+  };
+
+
+  const normalizeCandidate = (
+    raw,
+    projection,
+    optionsMap,
+    index
+  ) => {
+    const item =
+      safeObject(
+        raw
+      );
+
+    const verified =
+      currentMarketVerified(
+        projection
+      );
+
+    const symbol =
+      safeText(
+        item.symbol
+        || item.ticker
+        || item.underlying,
+        ""
+      ).toUpperCase();
+
+    const contracts =
+      symbol
+        ? (
+            optionsMap.get(
+              symbol
+            )
+            || []
+          )
+        : [];
+
+    return {
+      source_order:
+        index + 1,
+
+      symbol:
+        symbol
+        || "Unavailable",
+
+      verified,
+
+      freshness:
+        safeText(
+          projection.freshness,
+          "unavailable"
+        ),
+
+      source:
+        safeText(
+          item.source
+          || item.provenance
+          || projection.source,
+          "unavailable"
+        ),
+
+      bucket:
+        candidateBucket(
+          item,
+          verified
+        ),
+
+      direction:
+        safeText(
+          item.direction
+          || item.bias
+          || item.side,
+          "Direction unavailable"
+        ),
+
+      thesis:
+        safeText(
+          item.thesis
+          || item.reason
+          || item.summary
+          || item.setup,
+          "Source did not provide a thesis."
+        ),
+
+      setup:
+        safeText(
+          item.setup
+          || item.pattern
+          || item.signal,
+          "Setup unavailable"
+        ),
+
+      catalyst:
+        safeText(
+          item.catalyst
+          || item.context
+          || item.event,
+          "No verified catalyst supplied."
+        ),
+
+      entry_zone:
+        safeText(
+          item.entry_zone
+          || item.entry
+          || item.entry_range,
+          "Unavailable"
+        ),
+
+      invalidation:
+        safeText(
+          item.invalidation
+          || item.stop
+          || item.stop_loss,
+          "Unavailable"
+        ),
+
+      hold_window:
+        safeText(
+          item.hold_window
+          || item.time_horizon
+          || item.duration,
+          "Unavailable"
+        ),
+
+      risk:
+        safeText(
+          item.risk
+          || item.risk_note
+          || item.risk_summary,
+          "No verified risk note supplied."
+        ),
+
+      score:
+        num(
+          item.score
+          || item.confidence
+          || item.quality_score
+        ),
+
+      option_contracts:
+        contracts.slice(
+          0,
+          3
+        ),
+
+      option_contract_count:
+        contracts.length,
+
+      automatic_contract_selection:
+        false,
+
+      selection_authority:
+        "OWNER"
+    };
+  };
+
+
+  const todayEdge = () => {
+    const projection =
+      canonicalProjection();
+
+    const optionsMap =
+      optionContractsBySymbol(
+        projection
+      );
+
+    const normalized =
+      candidateSourceArray(
+        projection
+      )
+        .map(
+          function (
+            item,
+            index
+          ) {
+            return normalizeCandidate(
+              item,
+              projection,
+              optionsMap,
+              index
+            );
+          }
+        );
+
+    return {
+      now:
+        normalized
+          .filter(
+            item =>
+              item.bucket
+              === "now"
+          )
+          .slice(
+            0,
+            3
+          ),
+
+      watch:
+        normalized
+          .filter(
+            item =>
+              item.bucket
+              === "watch"
+          )
+          .slice(
+            0,
+            3
+          ),
+
+      not_yet:
+        normalized
+          .filter(
+            item =>
+              item.bucket
+              === "not_yet"
+          )
+          .slice(
+            0,
+            3
+          ),
+
+      source_state: {
+        verified_current_market:
+          currentMarketVerified(
+            projection
+          ),
+
+        projection_status:
+          safeText(
+            projection.projection_status,
+            "unavailable"
+          ),
+
+        freshness:
+          safeText(
+            projection.freshness,
+            "unavailable"
+          ),
+
+        source:
+          safeText(
+            projection.source,
+            "unavailable"
+          ),
+
+        as_of:
+          safeText(
+            projection.as_of,
+            "unavailable"
+          )
+      }
+    };
   };
 
 
@@ -501,25 +1063,13 @@
 
 
   const capitalLaneSnapshot = () => {
-    /*
-      A future verified owner-only source may populate:
-
-      window.OB_OWNER_CAPITAL_LANE_SNAPSHOT = {
-        verified: true,
-        lanes: [...]
-      }
-
-      No generic user account endpoint is consumed here.
-    */
-
     const snapshot =
       window
         .OB_OWNER_CAPITAL_LANE_SNAPSHOT;
 
     if (
       !snapshot
-      || snapshot.verified
-        !== true
+      || snapshot.verified !== true
       || !Array.isArray(
         snapshot.lanes
       )
@@ -561,21 +1111,17 @@
 
     const verifiedById =
       new Map(
-        snapshot
-          .lanes
-          .map(
-            function (
+        snapshot.lanes.map(
+          item => [
+            safeText(
+              item.lane_id,
+              ""
+            ),
+            safeObject(
               item
-            ) {
-              return [
-                safeText(
-                  item.lane_id,
-                  ""
-                ),
-                item
-              ];
-            }
-          )
+            )
+          ]
+        )
       );
 
     return base.map(
@@ -594,21 +1140,19 @@
         }
 
         const capitalKnown =
-          live.actual_capital_known
-            === true
-          && Number.isFinite(
-            Number(
+          (
+            live.actual_capital_known === true
+            && num(
               live.actual_capital_value
-            )
+            ) !== null
           );
 
         const progressKnown =
-          live.capital_progress_known
-            === true
-          && Number.isFinite(
-            Number(
+          (
+            live.capital_progress_known === true
+            && num(
               live.capital_progress_percent
-            )
+            ) !== null
           );
 
         return {
@@ -622,7 +1166,7 @@
 
           actual_capital_value:
             capitalKnown
-              ? Number(
+              ? num(
                   live.actual_capital_value
                 )
               : null,
@@ -632,7 +1176,7 @@
 
           capital_progress_percent:
             progressKnown
-              ? Number(
+              ? num(
                   live.capital_progress_percent
                 )
               : null,
@@ -650,8 +1194,7 @@
             ),
 
           needs_attention:
-            live.needs_attention
-              === true
+            live.needs_attention === true
         };
       }
     );
@@ -664,79 +1207,30 @@
       || {};
 
     const payload =
-      source.payload
-      || {};
+      safeObject(
+        source.payload
+      );
 
     const trust =
-      payload.trust
-      || {};
-
-    const verified =
-      source.verified
-      === true;
-
-    const freshness =
-      (
-        verified
-        && Number.isFinite(
-          Number(
-            payload.freshness_score
-          )
-        )
-      )
-        ? Number(
-            payload.freshness_score
-          )
-        : null;
-
-    const level =
-      verified
-        ? safeText(
-            trust.level,
-            "unknown"
-          ).toLowerCase()
-        : "guarded";
+      safeObject(
+        payload.trust
+      );
 
     return {
-      verified,
+      verified:
+        source.verified === true,
 
       label:
-        verified
+        source.verified === true
           ? safeText(
               trust.label
               || payload.display_label,
-              "Verified source"
+              "Verified"
             )
           : "Guarded · verify source",
 
-      level,
-
-      freshness_score:
-        freshness,
-
       needs_attention:
-        (
-          !verified
-          || [
-            "fallback",
-            "missing",
-            "stale",
-            "guarded"
-          ].includes(
-            level
-          )
-        ),
-
-      explanation:
-        verified
-          ? (
-              "The engine-trust layer supplied "
-              + "a verified owner-wide trust state."
-            )
-          : (
-              "Owner Dashboard does not have "
-              + "verified engine-trust truth yet."
-            )
+        source.verified !== true
     };
   };
 
@@ -749,76 +1243,37 @@
       || {};
 
     const payload =
-      source.payload
-      || {};
+      safeObject(
+        source.payload
+      );
 
     const scorecard =
-      payload.readiness_scorecard
-      || {};
-
-    const verified =
-      source.verified
-      === true;
+      safeObject(
+        payload.readiness_scorecard
+      );
 
     const blockers =
-      verified
+      source.verified === true
         ? safeArray(
-            payload
-              .remaining_live_blockers
-          ).map(
-            function (
-              item
-            ) {
-              return {
-                id:
-                  safeText(
-                    item.blocker_id,
-                    "blocker"
-                  ),
-
-                label:
-                  safeText(
-                    item.label,
-                    "Readiness blocker"
-                  ),
-
-                reason:
-                  safeText(
-                    item.reason,
-                    "Readiness work remains."
-                  ),
-
-                status:
-                  safeText(
-                    item.status,
-                    "blocking"
-                  )
-              };
-            }
+            payload.remaining_live_blockers
           )
         : [];
 
     return {
-      verified,
+      verified:
+        source.verified === true,
 
       label:
-        verified
+        source.verified === true
           ? safeText(
               scorecard.readiness_label,
-              "Owner confidence evidence available"
+              "Readiness evidence available"
             )
           : "Guarded · readiness not verified",
 
       score:
-        (
-          verified
-          && Number.isFinite(
-            Number(
-              scorecard.readiness_score
-            )
-          )
-        )
-          ? Number(
+        source.verified === true
+          ? num(
               scorecard.readiness_score
             )
           : null,
@@ -827,7 +1282,7 @@
 
       needs_attention:
         (
-          !verified
+          source.verified !== true
           || blockers.length > 0
         ),
 
@@ -855,27 +1310,22 @@
       || {};
 
     const payload =
-      source.payload
-      || {};
-
-    const verified =
-      source.verified
-      === true;
-
-    const raw =
-      payload.owner_go_no_go_status
-      || payload.owner_decision
-      || payload.launch_status
-      || payload.status;
+      safeObject(
+        source.payload
+      );
 
     return {
-      verified,
+      verified:
+        source.verified === true,
 
       label:
-        verified
+        source.verified === true
           ? safeText(
-              raw,
-              "Verified private-beta evidence available"
+              payload.owner_go_no_go_status
+              || payload.owner_decision
+              || payload.launch_status
+              || payload.status,
+              "Verified private beta evidence available"
             )
           : "Guarded · beta evidence not verified",
 
@@ -888,182 +1338,28 @@
   };
 
 
-  const historySummary = () => {
-    const snapshot =
-      window
-        .OB_OWNER_CHANGE_HISTORY;
-
-    if (
-      snapshot
-      && snapshot.verified
-        === true
-      && Array.isArray(
-        snapshot.items
-      )
-    ) {
-      return {
-        verified:
-          true,
-
-        items:
-          snapshot
-            .items
-            .slice(
-              0,
-              6
-            )
-      };
-    }
-
-    return {
-      verified:
-        false,
-
-      items: [
-        {
-          title:
-            "No verified owner-change history yet",
-
-          detail:
-            (
-              "I will not invent a "
-              + "'since you were here' story."
-            )
-        }
-      ]
-    };
-  };
-
-
-  const patternSummary = (
-    lanes
-  ) => {
-    const verified =
-      lanes.filter(
-        function (
-          lane
-        ) {
-          return (
-            lane.verified_snapshot
-          );
-        }
-      );
-
-    if (
-      !verified.length
-    ) {
-      return {
-        verified:
-          false,
-
-        items: [
-          {
-            title:
-              "No verified cross-lane pattern yet",
-
-            detail:
-              (
-                "Policy definitions are not "
-                + "performance evidence."
-              )
-          }
-        ]
-      };
-    }
-
-    const attention =
-      verified.filter(
-        function (
-          lane
-        ) {
-          return (
-            lane.needs_attention
-          );
-        }
-      ).length;
-
-    return {
-      verified:
-        true,
-
-      items: [
-        {
-          title:
-            attention
-              ? (
-                  `${attention} verified Capital Lane(s) `
-                  + "need owner attention"
-                )
-              : (
-                  "No verified Capital Lane "
-                  + "is flagging owner attention"
-                ),
-
-          detail:
-            (
-              "This statement comes only "
-              + "from verified owner lane truth."
-            )
-        }
-      ]
-    };
-  };
-
-
   const ownerAttention = (
-    lanes,
+    edge,
     trust,
-    readiness,
-    beta
+    readiness
   ) => {
     const items = [];
 
-    lanes
-      .filter(
-        function (
-          lane
-        ) {
-          return (
-            lane.verified_snapshot
-            && lane.needs_attention
-          );
-        }
-      )
-      .forEach(
-        function (
-          lane
-        ) {
-          items.push({
-            priority:
-              "high",
-
-            source:
-              "verified Capital Lane",
-
-            title:
-              `${lane.display_label} needs you`,
-
-            detail:
-              lane.next_action
-          });
-        }
-      );
-
     if (
-      trust.needs_attention
+      edge.now.length
     ) {
       items.push({
         priority:
           "high",
 
-        source:
-          "engine trust",
-
         title:
-          "Verify the picture Soulaana is using",
+          `${edge.now.length} verified NOW research setup${edge.now.length === 1 ? "" : "s"}`,
 
         detail:
-          trust.explanation
+          "Open Today’s Edge. Review the evidence before making any owner decision.",
+
+        source:
+          "canonical engine projection"
       });
     }
 
@@ -1074,78 +1370,35 @@
         priority:
           "medium",
 
-        source:
-          "Manual Live readiness",
-
         title:
-          "Manual Live remains guarded",
+          "Manual Live readiness needs review",
 
         detail:
-          readiness.verified
-            ? (
-                readiness.blockers.length
-                  ? (
-                      `${readiness.blockers.length} `
-                      + "verified blocker(s) remain."
-                    )
-                  : (
-                      "Confidence evidence exists, "
-                      + "but it is not trading permission."
-                    )
-              )
-            : (
-                "Readiness evidence is not verified "
-                + "on this surface."
-              )
+          readiness.label,
+
+        source:
+          "Manual Live readiness"
       });
     }
 
     if (
-      !beta.verified
+      trust.needs_attention
     ) {
       items.push({
         priority:
           "medium",
 
-        source:
-          "private beta",
-
         title:
-          "Do not infer beta expansion readiness",
+          "Engine trust is guarded",
 
         detail:
-          (
-            "Private-beta launch evidence "
-            + "is not verified here yet."
-          )
+          trust.label,
+
+        source:
+          "engine trust"
       });
     }
 
-    if (
-      !items.length
-    ) {
-      items.push({
-        priority:
-          "calm",
-
-        source:
-          "owner intelligence",
-
-        title:
-          "Nothing verified needs you right now",
-
-        detail:
-          (
-            "Soulaana can keep watching "
-            + "without manufacturing urgency."
-          )
-      });
-    }
-
-    /*
-      ADHD-friendly owner surface:
-      show at most three things up front.
-    */
     return items.slice(
       0,
       3
@@ -1153,9 +1406,99 @@
   };
 
 
+  const ownerContext = () => {
+    const projection =
+      canonicalProjection();
+
+    const positions =
+      safeArray(
+        projection.positions_preview
+        || projection.positions
+      );
+
+    const queue =
+      safeArray(
+        projection.manual_live_queue
+      );
+
+    const review =
+      safeObject(
+        projection.review_summary
+      );
+
+    return {
+      market: {
+        label:
+          safeText(
+            safeObject(
+              projection.market_health
+            ).label
+            || safeObject(
+              projection.market_health
+            ).state
+            || projection.projection_status,
+            "Unavailable"
+          ),
+
+        verified:
+          currentMarketVerified(
+            projection
+          )
+      },
+
+      positions: {
+        count:
+          positions.length,
+
+        items:
+          positions.slice(
+            0,
+            3
+          )
+      },
+
+      alerts: {
+        count:
+          queue.length,
+
+        items:
+          queue.slice(
+            0,
+            3
+          )
+      },
+
+      review: {
+        label:
+          safeText(
+            review.label
+            || review.summary
+            || review.status,
+            "No verified review summary"
+          )
+      }
+    };
+  };
+
+
+  const historySummary = () => ({
+    label:
+      "No verified owner-change history yet",
+
+    pattern_label:
+      "No verified cross-lane pattern yet",
+
+    may_claim_change_history:
+      false,
+
+    may_claim_cross_lane_performance_patterns:
+      false
+  });
+
+
   const buildContract = () => {
-    const lanes =
-      capitalLanes();
+    const edge =
+      todayEdge();
 
     const trust =
       trustSummary();
@@ -1166,44 +1509,40 @@
     const beta =
       betaSummary();
 
-    const history =
-      historySummary();
-
-    const patterns =
-      patternSummary(
-        lanes
-      );
+    const lanes =
+      capitalLanes();
 
     const attention =
       ownerAttention(
-        lanes,
+        edge,
         trust,
-        readiness,
-        beta
-      );
-
-    const criticalVerified =
-      (
-        trust.verified
-        && readiness.verified
-        && beta.verified
+        readiness
       );
 
     return {
       version:
         VERSION,
 
-      role:
-        "owner_dashboard",
+      status:
+        (
+          edge
+            .source_state
+            .verified_current_market
+            ? "verified_owner_research"
+            : "guarded_owner_research"
+        ),
 
-      owner_only:
-        true,
-
-      capital_lanes:
-        lanes,
+      today_edge:
+        edge,
 
       owner_attention:
         attention,
+
+      owner_context:
+        ownerContext(),
+
+      capital_lanes:
+        lanes,
 
       trust,
 
@@ -1211,20 +1550,19 @@
 
       beta,
 
-      patterns,
-
-      since_you_were_here:
-        history,
+      history:
+        historySummary(),
 
       source_state: {
-        engine_trust:
+        engine:
+          edge.source_state,
+
+        trust:
           state.sources.engine_trust
           || null,
 
-        manual_live_readiness:
-          state
-            .sources
-            .manual_live_readiness
+        readiness:
+          state.sources.manual_live_readiness
           || null,
 
         private_beta:
@@ -1233,42 +1571,21 @@
       },
 
       interpretation_state: {
-        all_critical_sources_verified:
-          criticalVerified,
-
-        may_claim_cross_lane_performance_patterns:
-          patterns.verified,
-
-        may_claim_change_history:
-          history.verified,
-
-        may_claim_capital_progress:
-          lanes.some(
-            function (
-              lane
-            ) {
-              return (
-                lane
-                  .capital_progress_known
-              );
-            }
-          ),
-
         no_action_needed:
           (
-            criticalVerified
-            && attention.every(
-              function (
-                item
-              ) {
-                return (
-                  item.priority
-                    !== "high"
-                  && item.priority
-                    !== "medium"
-                );
-              }
-            )
+            !attention.length
+            && !edge.now.length
+          )
+      },
+
+      policy_notes: {
+        capital_truth:
+          "Policy text is not a balance.",
+
+        option_truth:
+          (
+            "A ranked contract is research evidence, "
+            + "not an automatically selected contract."
           )
       },
 
@@ -1279,120 +1596,56 @@
 
 
   const hydrate = async () => {
-    state.status =
-      "hydrating";
+    const results =
+      await Promise.all([
+        fetchSource(
+          "engine_trust",
+          ENDPOINTS.engine_trust
+        ),
 
-    state.errors =
-      [];
+        fetchSource(
+          "manual_live_readiness",
+          ENDPOINTS.manual_live_readiness
+        ),
 
-    const [
-      engineTrust,
-      manualLiveReadiness,
-      privateBeta
-    ] = await Promise.all([
-      fetchSource(
-        "engine_trust",
-        ENDPOINTS.engine_trust
-      ),
+        fetchSource(
+          "private_beta",
+          ENDPOINTS.private_beta
+        )
+      ]);
 
-      fetchSource(
-        "manual_live_readiness",
-        ENDPOINTS.manual_live_readiness
-      ),
-
-      fetchSource(
-        "private_beta",
-        ENDPOINTS.private_beta
-      )
-    ]);
-
-    state.sources = {
-      engine_trust:
-        engineTrust,
-
-      manual_live_readiness:
-        manualLiveReadiness,
-
-      private_beta:
-        privateBeta
-    };
-
-    Object
-      .values(
-        state.sources
-      )
-      .forEach(
-        function (
-          source
-        ) {
-          if (
-            source
-            && source.error
-          ) {
-            state.errors.push(
-              `${source.name}: ${source.error}`
-            );
-          }
-        }
-      );
-
-    state.hydrated =
-      true;
-
-    state.hydrated_at =
-      new Date()
-        .toISOString();
-
-    state.status =
-      state.errors.length
-        ? "hydrated_guarded"
-        : "hydrated";
+    results.forEach(
+      function (
+        result
+      ) {
+        state.sources[
+          result.name
+        ] =
+          result;
+      }
+    );
 
     state.contract =
       buildContract();
-
-    window.dispatchEvent(
-      new CustomEvent(
-        "ob:owner-capital-lanes-ready",
-        {
-          detail:
-            state.contract
-        }
-      )
-    );
 
     return state.contract;
   };
 
 
-  state.contract =
-    buildContract();
+  window.OB_OWNER_DASHBOARD_CONTRACT_V21 =
+    Object.freeze({
+      version:
+        VERSION,
 
+      endpoints:
+        ENDPOINTS,
 
-  window
-    .OB_OWNER_DASHBOARD_CONTRACT_V21 =
-      Object.freeze({
-        version:
-          VERSION,
+      boundaries:
+        BOUNDARIES,
 
-        endpoints:
-          ENDPOINTS,
+      buildContract,
 
-        boundaries:
-          BOUNDARIES,
-
-        getState:
-          () => state,
-
-        getContract:
-          () => (
-            state.contract
-            || buildContract()
-          ),
-
-        buildContract,
-
-        hydrate
-      });
+      hydrate
+    });
 
 })();
