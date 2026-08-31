@@ -27,9 +27,6 @@ def _tower_owner_dashboard_html() -> str:
     dashboard = build_tower_owner_dashboard()
     summary = dashboard["summary"]
     cards = owner_dashboard_status_cards()
-    people = dashboard["people"]
-    invites = dashboard["invite_drafts"]
-    requests = dashboard["access_requests"]
     release_snapshot = owner_release_dashboard_snapshot()
     release_label = escape(release_snapshot["label"])
     release_detail = escape(release_snapshot["detail"])
@@ -50,60 +47,6 @@ def _tower_owner_dashboard_html() -> str:
         </article>
         """
         for card in cards
-    )
-
-    people_html = "\n".join(
-        f"""
-        <article class="owner-row">
-          <div class="owner-row-main">
-            <strong>{person['display_name']}</strong>
-            <span>{person['access_status']}</span>
-          </div>
-          <div class="owner-chips">
-            <span>{person['primary_role']}</span>
-            <span>{person['clearance_level']}</span>
-            <span>{person['relationship']}</span>
-          </div>
-          <p>{person['notes']}</p>
-        </article>
-        """
-        for person in people
-    )
-
-    invite_html = "\n".join(
-        f"""
-        <article class="owner-row">
-          <div class="owner-row-main">
-            <strong>{invite['display_name']}</strong>
-            <span>{invite['status']}</span>
-          </div>
-          <div class="owner-chips">
-            <span>{invite['invite_type']}</span>
-            <span>{invite['target_role']}</span>
-            <span>{', '.join(invite['target_apps'])}</span>
-          </div>
-          <p>{invite['message']}</p>
-        </article>
-        """
-        for invite in invites
-    )
-
-    request_html = "\n".join(
-        f"""
-        <article class="owner-row">
-          <div class="owner-row-main">
-            <strong>{request['request_id']}</strong>
-            <span>{request['status']}</span>
-          </div>
-          <div class="owner-chips">
-            <span>{request['requested_role']}</span>
-            <span>{request['risk_level']}</span>
-            <span>{'auto-grant blocked' if not request['can_auto_grant'] else 'auto-grant allowed'}</span>
-          </div>
-          <p>{request['tower_reason']}</p>
-        </article>
-        """
-        for request in requests
     )
 
     return f"""
@@ -354,7 +297,7 @@ def _tower_owner_dashboard_html() -> str:
         <main>
           <section class="owner-hero">
             <div class="eyebrow">Tower Owner Dashboard</div>
-            <h1>The owner desk is coming online.</h1>
+            <h1>Owner Headquarters.</h1>
             <p class="hero-copy">{summary['tower_meaning']}</p>
           </section>
 
@@ -371,7 +314,7 @@ def _tower_owner_dashboard_html() -> str:
               <p>{release_detail}</p>
               <a class="owner-hosted-readiness"
                  data-tower-hosted-readiness="{hosted_readiness_state}"
-                 href="/tower/owner/release-review/walkthrough">
+                 href="/tower/owner/release-review">
                 Hosted readiness · {hosted_readiness_label}
               </a>
               <br>
@@ -387,24 +330,39 @@ def _tower_owner_dashboard_html() -> str:
           </section>
 
           <section class="owner-section">
-            <h2>People + seats</h2>
-            {people_html}
-          </section>
+            <h2>People & access</h2>
 
-          <section class="owner-section">
-            <h2>Invite drafts</h2>
-            {invite_html}
-          </section>
+            <article class="owner-row">
+              <div class="owner-row-main">
+                <strong>People authority</strong>
+                <span>{summary['people_authority_state']}</span>
+              </div>
+              <p>
+                Tower has no authoritative people provider connected.
+                It will not invent people or account totals.
+              </p>
+            </article>
 
-          <section class="owner-section">
-            <h2>Access requests</h2>
-            {request_html}
-          </section>
+            <article class="owner-row">
+              <div class="owner-row-main">
+                <strong>Invitation authority</strong>
+                <span>{summary['invitation_authority_state']}</span>
+              </div>
+              <p>
+                Invitation delivery and lifecycle authority are not configured.
+              </p>
+            </article>
 
-          <section class="owner-warning">
-            <strong>Locked boundary:</strong>
-            This page can show people, invite drafts, and access requests, but it cannot create real accounts,
-            send real invites, or grant real app access yet.
+            <article class="owner-row">
+              <div class="owner-row-main">
+                <strong>Access authority</strong>
+                <span>{summary['access_authority_state']}</span>
+              </div>
+              <p>
+                Access changes remain unavailable until Tower is connected
+                to an authoritative identity and entitlement provider.
+              </p>
+            </article>
           </section>
 
           <section class="owner-next">

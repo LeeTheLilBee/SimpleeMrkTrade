@@ -429,7 +429,7 @@ def test_twr125_default_audit_scope_excludes_tests_and_evidence():
     )
 
 
-def test_twr125_truth_debt_audit_detects_current_placeholder_people():
+def test_twr125_retired_people_surface_no_longer_reports_identity_theater():
 
     report = audit_product_surfaces(
         "/content/SimpleeMrkTrade"
@@ -440,17 +440,10 @@ def test_twr125_truth_debt_audit_detects_current_placeholder_people():
         "tower/owner_people_registry.py",
     )
 
-    rule_ids = {
-        finding["rule_id"]
-        for finding in findings
-    }
-
-    assert "placeholder_language" in rule_ids
-    assert "staged_only_identity" in rule_ids
-    assert "future_identity" in rule_ids
+    assert findings == []
 
 
-def test_twr125_truth_debt_audit_detects_current_invite_draft_surface():
+def test_twr125_retired_owner_dashboard_service_no_longer_reports_control_theater():
 
     report = audit_product_surfaces(
         "/content/SimpleeMrkTrade"
@@ -461,16 +454,10 @@ def test_twr125_truth_debt_audit_detects_current_invite_draft_surface():
         "tower/owner_dashboard_service.py",
     )
 
-    rule_ids = {
-        finding["rule_id"]
-        for finding in findings
-    }
-
-    assert "draft_language" in rule_ids
-    assert "ready_status_claim" in rule_ids
+    assert findings == []
 
 
-def test_twr125_truth_debt_audit_detects_access_home_ready_claim():
+def test_twr125_retired_access_home_shortcuts_no_longer_report_ready_or_draft_debt():
 
     report = audit_product_surfaces(
         "/content/SimpleeMrkTrade"
@@ -481,13 +468,7 @@ def test_twr125_truth_debt_audit_detects_access_home_ready_claim():
         "tower/access_home_owner_launches.py",
     )
 
-    rule_ids = {
-        finding["rule_id"]
-        for finding in findings
-    }
-
-    assert "rooms_ready_claim" in rule_ids
-    assert "draft_language" in rule_ids
+    assert findings == []
 
 
 def test_twr125_future_apps_are_flagged_as_registry_not_product_availability():

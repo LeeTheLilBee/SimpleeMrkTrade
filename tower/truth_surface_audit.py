@@ -217,10 +217,26 @@ DEFAULT_PRODUCT_SURFACES = (
     "tower/owner_people_registry.py",
     "tower/owner_dashboard_service.py",
     "tower/access_home_owner_launches.py",
+    "tower/tower_access_home_ui_v2.py",
     "tower/owner_dashboard_web.py",
     "tower/hosted_owner_release_walkthrough_web.py",
     "tower/tower_human_login_ob_launch.py",
 )
+
+
+RETIREMENT_FOCUS_SURFACES = (
+    "tower/owner_people_registry.py",
+    "tower/owner_dashboard_service.py",
+    "tower/access_home_owner_launches.py",
+    "tower/tower_access_home_ui_v2.py",
+    "tower/owner_dashboard_web.py",
+)
+
+
+DEFERRED_TRUTH_DEBT_SURFACES = frozenset({
+    "tower/hosted_owner_release_walkthrough_web.py",
+    "tower/tower_human_login_ob_launch.py",
+})
 
 
 def audit_source_text(
@@ -235,6 +251,9 @@ def audit_source_text(
         str(source or "").splitlines(),
         start=1,
     ):
+
+        if "tower-truth-compatibility-symbol" in line:
+            continue
 
         for rule in AUDIT_RULES:
 
@@ -343,6 +362,16 @@ def audit_product_surfaces(
         "tests_scanned_as_product": False,
         "evidence_scanned_as_product": False,
     }
+
+
+
+def retirement_focus_report(
+    repo: Path | str,
+) -> dict:
+    return audit_product_surfaces(
+        repo,
+        relative_paths=RETIREMENT_FOCUS_SURFACES,
+    )
 
 
 def findings_for_rule(

@@ -332,7 +332,8 @@ def test_twr112_existing_owner_dashboard_links_to_hosted_readiness(monkeypatch, 
     dashboard.register_tower_owner_dashboard_routes(app)
     body = client.get("/tower/owner-dashboard").get_data(as_text=True)
     assert "Hosted readiness" in body
-    assert 'href="/tower/owner/release-review/walkthrough"' in body
+    assert 'href="/tower/owner/release-review"' in body
+    assert 'href="/tower/owner/release-review/walkthrough"' not in body
     assert 'data-tower-hosted-readiness="HOSTED_AWAITING_CANDIDATE"' in body
 
 

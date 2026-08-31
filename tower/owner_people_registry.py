@@ -1,216 +1,125 @@
+
+"""Tower Owner people/access authority boundary.
+
+TWR126 removes sample human records from hosted Tower truth.
+
+No authoritative people, invitation, role-assignment, or app-entitlement
+provider is configured by this layer. Tower reports that absence explicitly.
+"""
+
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
-
-@dataclass(frozen=True)
-class TowerPersonRecord:
-    person_id: str
-    display_name: str
-    relationship: str
-    contact_status: str
-    access_status: str
-    primary_role: str
-    clearance_level: str
-    allowed_apps: Tuple[str, ...]
-    pending_apps: Tuple[str, ...]
-    blocked_apps: Tuple[str, ...]
-    notes: str
-
-
-@dataclass(frozen=True)
-class TowerInviteDraft:
-    invite_id: str
-    display_name: str
-    invite_type: str
-    target_role: str
-    target_apps: Tuple[str, ...]
-    status: str
-    owner_decision_required: bool
-    message: str
-
-
-@dataclass(frozen=True)
-class TowerAccessRequest:
-    request_id: str
-    person_id: str
-    request_type: str
-    requested_role: str
-    requested_apps: Tuple[str, ...]
-    risk_level: str
-    status: str
-    can_auto_grant: bool
-    tower_reason: str
-
-
-OWNER_PERSON_RECORDS: Tuple[TowerPersonRecord, ...] = (
-    TowerPersonRecord(
-        person_id="owner-solice",
-        display_name="Solice Bowdre",
-        relationship="owner",
-        contact_status="verified_owner",
-        access_status="active_owner",
-        primary_role="owner",
-        clearance_level="tower_owner",
-        allowed_apps=(
-            "tower",
-            "observatory",
-        ),
-        pending_apps=(),
-        blocked_apps=(),
-        notes="Primary owner. Tower owner session required for protected control rooms.",
-    ),
-    TowerPersonRecord(
-        person_id="future-manager-seat",
-        display_name="Future Manager Seat",
-        relationship="future_team",
-        contact_status="not_invited",
-        access_status="staged_only",
-        primary_role="manager_candidate",
-        clearance_level="none",
-        allowed_apps=(),
-        pending_apps=(
-            "teller",
-        ),
-        blocked_apps=(
-            "observatory",
-            "vault",
-            "clouds",
-            "grounds",
-        ),
-        notes="Placeholder seat for future manager access. No real account is created by this layer.",
-    ),
-    TowerPersonRecord(
-        person_id="future-family-seat",
-        display_name="Future Family / Friend Seat",
-        relationship="future_invite",
-        contact_status="not_invited",
-        access_status="staged_only",
-        primary_role="limited_member",
-        clearance_level="none",
-        allowed_apps=(),
-        pending_apps=(
-            "observatory",
-        ),
-        blocked_apps=(
-            "vault",
-            "clouds",
-            "grounds",
-        ),
-        notes="Placeholder seat for future family/friend access with sliding-scale/payment rules later.",
-    ),
+from tower.truth_contract import (
+    NOT_CONFIGURED,
+    not_configured_truth,
 )
 
 
-OWNER_INVITE_DRAFTS: Tuple[TowerInviteDraft, ...] = (
-    TowerInviteDraft(
-        invite_id="draft-manager-teller",
-        display_name="Manager Teller Access Draft",
-        invite_type="role_invite",
-        target_role="manager",
-        target_apps=(
-            "teller",
-        ),
-        status="draft_not_sent",
-        owner_decision_required=True,
-        message="Draft for future manager access to Teller workflows. No invite is sent yet.",
-    ),
-    TowerInviteDraft(
-        invite_id="draft-family-ob-limited",
-        display_name="Family / Friend OB Limited Draft",
-        invite_type="limited_platform_invite",
-        target_role="limited_member",
-        target_apps=(
-            "observatory",
-        ),
-        status="draft_not_sent",
-        owner_decision_required=True,
-        message="Draft for future limited OB access. Billing/sliding scale belongs to a later layer.",
-    ),
+PEOPLE_AUTHORITY_SOURCE_ID = (
+    "tower.identity.people_authority"
+)
+
+INVITATION_AUTHORITY_SOURCE_ID = (
+    "tower.identity.invitation_authority"
+)
+
+ACCESS_AUTHORITY_SOURCE_ID = (
+    "tower.identity.access_authority"
+)
+
+ROLE_AUTHORITY_SOURCE_ID = (
+    "tower.identity.role_authority"
+)
+
+ENTITLEMENT_AUTHORITY_SOURCE_ID = (
+    "tower.identity.entitlement_authority"
 )
 
 
-OWNER_ACCESS_REQUESTS: Tuple[TowerAccessRequest, ...] = (
-    TowerAccessRequest(
-        request_id="access-request-teller-manager-seat",
-        person_id="future-manager-seat",
-        request_type="future_access",
-        requested_role="manager",
-        requested_apps=(
-            "teller",
-        ),
-        risk_level="medium",
-        status="pending_owner_review",
-        can_auto_grant=False,
-        tower_reason="Tower can stage this request but cannot grant real Teller access yet.",
-    ),
-    TowerAccessRequest(
-        request_id="access-request-family-ob-limited",
-        person_id="future-family-seat",
-        request_type="future_access",
-        requested_role="limited_member",
-        requested_apps=(
-            "observatory",
-        ),
-        risk_level="high",
-        status="pending_owner_review",
-        can_auto_grant=False,
-        tower_reason="OB access requires future policy, billing, terms, and owner approval.",
-    ),
-)
+def owner_people_authority_snapshot() -> Dict[str, Any]:
+    return {
+        "status":
+            "tower_people_authority_not_configured",
 
+        "verification_state":
+            NOT_CONFIGURED,
+
+        "authoritative_provider_configured":
+            False,
+
+        "people":
+            not_configured_truth(
+                source_id=PEOPLE_AUTHORITY_SOURCE_ID,
+                reason=(
+                    "authoritative_people_provider_not_configured"
+                ),
+            ).as_dict(),
+
+        "invitations":
+            not_configured_truth(
+                source_id=INVITATION_AUTHORITY_SOURCE_ID,
+                reason=(
+                    "authoritative_invitation_provider_not_configured"
+                ),
+            ).as_dict(),
+
+        "access_control":
+            not_configured_truth(
+                source_id=ACCESS_AUTHORITY_SOURCE_ID,
+                reason=(
+                    "authoritative_access_provider_not_configured"
+                ),
+            ).as_dict(),
+
+        "role_assignments":
+            not_configured_truth(
+                source_id=ROLE_AUTHORITY_SOURCE_ID,
+                reason=(
+                    "authoritative_role_provider_not_configured"
+                ),
+            ).as_dict(),
+
+        "app_entitlements":
+            not_configured_truth(
+                source_id=ENTITLEMENT_AUTHORITY_SOURCE_ID,
+                reason=(
+                    "authoritative_entitlement_provider_not_configured"
+                ),
+            ).as_dict(),
+    }
+
+
+# Compatibility projections intentionally return no human/account records.
+# They exist only so older internal imports fail closed while later packs
+# replace them with the authoritative identity provider.
 
 def owner_people_records() -> List[Dict[str, Any]]:
-    return [
-        asdict(person)
-        for person in OWNER_PERSON_RECORDS
-    ]
+    return []
 
 
-def owner_invite_drafts() -> List[Dict[str, Any]]:
-    return [
-        asdict(invite)
-        for invite in OWNER_INVITE_DRAFTS
-    ]
+def owner_invite_drafts() -> List[Dict[str, Any]]:  # tower-truth-compatibility-symbol
+    return []
 
 
 def owner_access_requests() -> List[Dict[str, Any]]:
-    return [
-        asdict(request)
-        for request in OWNER_ACCESS_REQUESTS
-    ]
+    return []
 
 
 def active_people() -> List[Dict[str, Any]]:
-    return [
-        person
-        for person in owner_people_records()
-        if person["access_status"].startswith("active")
-    ]
+    return []
 
 
 def staged_people() -> List[Dict[str, Any]]:
-    return [
-        person
-        for person in owner_people_records()
-        if person["access_status"] == "staged_only"
-    ]
+    return []
 
 
 def pending_owner_review_requests() -> List[Dict[str, Any]]:
-    return [
-        request
-        for request in owner_access_requests()
-        if request["status"] == "pending_owner_review"
-    ]
+    return []
 
 
-def person_by_id(person_id: str) -> Dict[str, Any] | None:
-    normalized = str(person_id or "").strip()
-
-    for person in owner_people_records():
-        if person["person_id"] == normalized:
-            return person
-
+def person_by_id(
+    person_id: str,
+) -> Dict[str, Any] | None:
     return None

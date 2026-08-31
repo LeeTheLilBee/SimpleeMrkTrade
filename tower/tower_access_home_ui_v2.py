@@ -35,117 +35,16 @@ APP_CARDS = [
     {
         "id": "observatory",
         "name": "The Observatory",
-        "subtitle": "Market intelligence and trading command",
-        "status": "Owner access ready",
-        "tone": "active",
+        "subtitle": "Market intelligence and trading",
+        "status": "Protected entry",
+        "tone": "protected",
         "href": "/tower/launch/observatory",
-        "primary_action": "Open Observatory",
+        "primary_action": "Enter Observatory",
         "description": (
-            "Enter the protected owner walkthrough, rooms, "
-            "signals, review, and command surfaces."
+            "Tower verifies the current owner session and "
+            "required step-up before handing control to OB."
         ),
         "requires_step_up": True,
-    },
-    {
-        "id": "vault",
-        "name": "Archive Vault",
-        "subtitle": "Sealed memory and evidence",
-        "status": "Locked / safe",
-        "tone": "safe",
-        "href": "#vault-preview",
-        "primary_action": "View status",
-        "description": (
-            "Vault remains sealed. Requests and proofs route "
-            "through Tower-controlled boundaries."
-        ),
-        "requires_step_up": False,
-    },
-    {
-        "id": "teller",
-        "name": "The Teller",
-        "subtitle": "People, payroll, payments, and requests",
-        "status": "Workflow planned",
-        "tone": "planned",
-        "href": "#teller-preview",
-        "primary_action": "Preview",
-        "description": (
-            "Future desk for employee, vendor, payroll, "
-            "payment, and request workflows."
-        ),
-        "requires_step_up": False,
-    },
-    {
-        "id": "grounds",
-        "name": "The Grounds",
-        "subtitle": "Property operations and stewardship",
-        "status": "Planned",
-        "tone": "planned",
-        "href": "#grounds-preview",
-        "primary_action": "Preview",
-        "description": (
-            "Future real-estate command for units, vendors, "
-            "leases, maintenance, taxes, and assets."
-        ),
-        "requires_step_up": False,
-    },
-    {
-        "id": "clouds",
-        "name": "The Clouds",
-        "subtitle": "Executive owner summary layer",
-        "status": "Command layer planned",
-        "tone": "planned",
-        "href": "#clouds-preview",
-        "primary_action": "Preview",
-        "description": (
-            "Future owner summary surface across Tower, OB, "
-            "Vault, Teller, Grounds, and business lanes."
-        ),
-        "requires_step_up": False,
-    },
-]
-
-
-OWNER_ACTIONS = [
-    {
-        "label": "Review owner access",
-        "status": "Available",
-        "detail": "Inspect current owner session, role, and launch status.",
-    },
-    {
-        "label": "Open Observatory",
-        "status": "Step-up protected",
-        "detail": "Tower verifies owner permission before opening OB.",
-    },
-    {
-        "label": "Security check",
-        "status": "Clean",
-        "detail": "Anonymous and non-owner access remain denied.",
-    },
-]
-
-
-EVIDENCE_DRAWERS = [
-    {
-        "summary": "Owner session evidence",
-        "body": (
-            "Shows owner role, owner id presence, session state, "
-            "and step-up status. Kept collapsed by default."
-        ),
-    },
-    {
-        "summary": "Launch receipt evidence",
-        "body": (
-            "Shows whether Tower created an OB launch receipt. "
-            "No broker submission, money movement, or live mode "
-            "authorization is included."
-        ),
-    },
-    {
-        "summary": "Return receipt evidence",
-        "body": (
-            "Shows whether the owner returned from OB into Tower "
-            "with session continuity preserved."
-        ),
     },
 ]
 
@@ -216,6 +115,28 @@ def record_ob_return_receipt(
     return deepcopy(receipt)
 
 
+
+def verify_return_receipt(
+    value: Dict[str, Any] | None,
+) -> bool:
+    if not isinstance(value, dict):
+        return False
+
+    supplied = deepcopy(value)
+
+    supplied_hash = str(
+        supplied.pop("receipt_hash", "")
+        or ""
+    )
+
+    if not supplied_hash:
+        return False
+
+    return supplied_hash == receipt_hash(
+        supplied
+    )
+
+
 def owner_session_summary(
     *,
     step_up_active: bool,
@@ -226,7 +147,7 @@ def owner_session_summary(
         ),
         "role": session.get("tower_role"),
         "owner_id_present": bool(session.get("owner_id")),
-        "username": session.get("tower_username", "Owner"),
+        "username": session.get("tower_username"),
         "step_up_active": bool(step_up_active),
         "launch_receipt_present": bool(
             session.get("tower_ob_launch_receipt")
@@ -248,9 +169,9 @@ def ui_v2_contract() -> Dict[str, Any]:
         "clear_tower_to_ob_launch": True,
         "clear_ob_to_tower_return": True,
         "return_receipt_status_panel": True,
-        "owner_actions_panel": True,
+        "owner_actions_panel": False,
         "quick_launch_panel": True,
-        "hidden_evidence_drawers": True,
+        "hidden_evidence_drawers": False,
         "proof_page_main_experience": False,
         "list_heavy_main_surface": False,
         "credentials_committed": False,
@@ -273,56 +194,25 @@ def render_access_home_v2(
 
     return_receipt = active_return_receipt()
 
+    return_verified = verify_return_receipt(
+        return_receipt
+    )
+
     step_status = (
-        "Active"
+        "Verified for protected entry"
         if summary["step_up_active"]
-        else "Required before OB launch"
+        else "Additional verification required"
     )
 
     return_status = (
-        "Returned from The Observatory. Owner session preserved."
-        if return_receipt
-        else "No active OB return yet."
-    )
-
-    return_room = (
-        return_receipt.get("last_room", "unknown")
-        if return_receipt
-        else "—"
-    )
-
-    return_hash = (
-        return_receipt.get("receipt_hash", "")[:14]
-        if return_receipt
-        else "Not created"
+        "Verified return receipt"
+        if return_verified
+        else "No verified return receipt"
     )
 
     card_html = "\n".join(
         _render_app_card(card)
         for card in APP_CARDS
-    )
-
-    owner_action_html = "\n".join(
-        f"""
-        <div class="tower-action-row">
-            <div>
-                <strong>{escape(action["label"])}</strong>
-                <p>{escape(action["detail"])}</p>
-            </div>
-            <span>{escape(action["status"])}</span>
-        </div>
-        """
-        for action in OWNER_ACTIONS
-    )
-
-    evidence_html = "\n".join(
-        f"""
-        <details class="tower-detail">
-            <summary>{escape(drawer["summary"])}</summary>
-            <p>{escape(drawer["body"])}</p>
-        </details>
-        """
-        for drawer in EVIDENCE_DRAWERS
     )
 
     page = f"""
@@ -337,28 +227,42 @@ def render_access_home_v2(
         <title>Tower Access Home</title>
         {_tower_css()}
     </head>
+
     <body>
         <main class="tower-shell">
             <aside class="tower-rail">
                 <div class="tower-mark">T</div>
+
                 <div>
                     <div class="tower-overline">
                         Simplee Tower
                     </div>
-                    <h2>Control Room</h2>
+                    <h2>Access Home</h2>
                 </div>
 
                 <nav class="tower-nav">
-                    <a href="/tower/access-home">Access Home</a>
-                    <a href="/tower/launch/observatory">Observatory</a>
-                    <a href="#owner-actions">Owner Actions</a>
-                    <a href="#evidence-drawers">Evidence</a>
-                    <a href="/tower/logout">Logout</a>
+                    <a href="/tower/access-home">
+                        Access Home
+                    </a>
+
+                    <a href="/tower/launch/observatory">
+                        Observatory
+                    </a>
+
+                    <a href="/tower/owner-dashboard">
+                        Owner Headquarters
+                    </a>
+
+                    <a href="/tower/logout">
+                        Logout
+                    </a>
                 </nav>
 
                 <div class="tower-rail-card">
-                    <span>Owner clearance</span>
-                    <strong>{escape(str(summary["role"] or "locked"))}</strong>
+                    <span>Session role</span>
+                    <strong>
+                        {escape(str(summary["role"] or "UNAVAILABLE"))}
+                    </strong>
                 </div>
             </aside>
 
@@ -366,58 +270,67 @@ def render_access_home_v2(
                 <header class="tower-hero">
                     <div>
                         <div class="tower-overline">
-                            Tower Access Command Center
+                            Tower Access Home
                         </div>
-                        <h1>Welcome back, {escape(username)}.</h1>
+
+                        <h1>
+                            Welcome back, {escape(username)}.
+                        </h1>
+
                         <p>
-                            Choose the door you need. Tower keeps
-                            identity, permission, step-up, and
-                            evidence behind the scenes.
+                            Tower shows only doors and state it can
+                            support. Unpublished products stay out
+                            of the operating surface.
                         </p>
                     </div>
 
                     <div class="tower-session-card">
                         <span>Owner session</span>
+
                         <strong>
-                            {"Verified" if summary["authenticated"] else "Locked"}
+                            {
+                                "Authenticated"
+                                if summary["authenticated"]
+                                else "Not authenticated"
+                            }
                         </strong>
-                        <small>Step-up: {escape(step_status)}</small>
+
+                        <small>
+                            Step-up: {escape(step_status)}
+                        </small>
                     </div>
                 </header>
 
                 <section class="tower-status-grid">
                     <div class="tower-status-tile">
-                        <span>Access</span>
-                        <strong>Owner</strong>
+                        <span>Role</span>
+                        <strong>
+                            {escape(str(summary["role"] or "UNAVAILABLE"))}
+                        </strong>
                     </div>
+
                     <div class="tower-status-tile">
-                        <span>Security</span>
+                        <span>Boundary</span>
                         <strong>Default deny</strong>
                     </div>
+
                     <div class="tower-status-tile">
-                        <span>OB launch</span>
-                        <strong>
-                            {"Receipt ready" if summary["launch_receipt_present"] else "Ready"}
-                        </strong>
+                        <span>OB entry</span>
+                        <strong>{escape(step_status)}</strong>
                     </div>
+
                     <div class="tower-status-tile">
                         <span>Return</span>
-                        <strong>
-                            {"Preserved" if return_receipt else "Waiting"}
-                        </strong>
+                        <strong>{escape(return_status)}</strong>
                     </div>
                 </section>
-
-                <span class="tower-sr-only">Open The Observatory</span>
 
                 <section class="tower-section">
                     <div class="tower-section-head">
                         <div>
-                            <h2>Access Hub</h2>
+                            <h2>Your access</h2>
                             <p>
-                                These are the main doors into Simplee.
-                                Each card shows what opens now and
-                                what stays protected.
+                                Only published product entry belongs here.
                             </p>
                         </div>
                     </div>
@@ -433,73 +346,61 @@ def render_access_home_v2(
                             <span>Return status</span>
                             <strong>OB → Tower</strong>
                         </div>
-                        <h3>{escape(return_status)}</h3>
-                        <p>
-                            Last room: {escape(str(return_room))}
-                        </p>
-                        <p>
-                            Receipt: {escape(return_hash)}
-                        </p>
-                    </article>
 
-                    <article
-                        id="owner-actions"
-                        class="tower-panel"
-                    >
-                        <div class="tower-panel-head">
-                            <span>Owner Actions</span>
-                            <strong>Protected</strong>
-                        </div>
-                        {owner_action_html}
+                        <h3>{escape(return_status)}</h3>
+
+                        <p>
+                            Technical receipt proof is not shown
+                            on the normal Access Home.
+                        </p>
                     </article>
 
                     <article class="tower-panel">
                         <div class="tower-panel-head">
-                            <span>Quick Launch</span>
-                            <strong>Doors</strong>
+                            <span>Owner control</span>
+                            <strong>Protected</strong>
                         </div>
-                        <div class="tower-quick-actions">
-                            <a
-                                class="tower-button"
-                                href="/tower/launch/observatory"
-                            >
-                                Open OB
-                            </a>
-                            <a
-                                class="tower-button secondary"
-                                href="/tower/auth/status.json"
-                            >
-                                Auth status
-                            </a>
-                            <a
-                                class="tower-button secondary"
-                                href="/tower/return/observatory"
-                            >
-                                Simulate return
-                            </a>
+
+                        <h3>Owner Headquarters</h3>
+
+                        <p>
+                            People and access state will remain
+                            explicitly unavailable until authoritative
+                            providers are connected.
+                        </p>
+
+                        <a
+                            class="tower-button secondary"
+                            href="/tower/owner-dashboard"
+                        >
+                            Open Owner Headquarters
+                        </a>
+                    </article>
+
+                    <article class="tower-panel">
+                        <div class="tower-panel-head">
+                            <span>Product entry</span>
+                            <strong>Protected</strong>
                         </div>
+
+                        <h3>The Observatory</h3>
+
+                        <p>
+                            Tower performs the current session and
+                            step-up boundary before product handoff.
+                        </p>
+
+                        <a
+                            class="tower-button"
+                            href="/tower/launch/observatory"
+                        >
+                            Enter Observatory
+                        </a>
                     </article>
                 </section>
 
-                <section
-                    id="evidence-drawers"
-                    class="tower-section tower-evidence"
-                >
-                    <div class="tower-section-head">
-                        <div>
-                            <h2>Evidence drawers</h2>
-                            <p>
-                                Proof stays available, but it no
-                                longer dominates the owner experience.
-                            </p>
-                        </div>
-                    </div>
-
-                    {evidence_html}
-                </section>
-
                 <footer class="tower-footer">
-                    Tower Access Command Center · © Simplee
+                    Tower Access Home · © Simplee
                 </footer>
             </section>
         </main>
@@ -507,26 +408,24 @@ def render_access_home_v2(
     </html>
     """
 
-    return render_template_string(page)
-
-
-def _render_app_card(card: Dict[str, Any]) -> str:
-    classes = (
-        "tower-app-card tower-app-card-active"
-        if card["id"] == "observatory"
-        else "tower-app-card"
+    return render_template_string(
+        page
     )
 
+
+def _render_app_card(
+    card: Dict[str, Any],
+) -> str:
     step_label = (
         "<span>Step-up protected</span>"
         if card.get("requires_step_up")
-        else "<span>View only / planned</span>"
+        else "<span>Protected</span>"
     )
 
     return f"""
     <article
-        id="{escape(card["id"])}-preview"
-        class="{classes}"
+        id="{escape(card["id"])}-entry"
+        class="tower-app-card tower-app-card-active"
     >
         <div class="tower-card-top">
             <span>{escape(card["status"])}</span>
@@ -534,10 +433,14 @@ def _render_app_card(card: Dict[str, Any]) -> str:
         </div>
 
         <h3>{escape(card["name"])}</h3>
+
         <p class="tower-card-subtitle">
             {escape(card["subtitle"])}
         </p>
-        <p>{escape(card["description"])}</p>
+
+        <p>
+            {escape(card["description"])}
+        </p>
 
         <a
             class="tower-button"
@@ -1035,50 +938,11 @@ def _tower_css() -> str:
     </style>
     """
 
-
 def inject_ob_return_button(
     response,
     *,
     owner_session_active: bool,
 ):
-    if (
-        not owner_session_active
-        or response.status_code != 200
-        or not response.content_type
-        or "text/html" not in response.content_type
-        or not request.path.startswith(
-            "/tower/observatory-walkthrough"
-        )
-    ):
-        return response
-
-    body = response.get_data(
-        as_text=True
-    )
-
-    marker = "tower-ob-return-chip"
-
-    if marker in body:
-        return response
-
-    chip = """
-    <a
-        class="tower-ob-return-chip"
-        href="/tower/return/observatory"
-    >
-        Go back to Tower
-    </a>
-    """
-
-    if "</body>" in body:
-        body = body.replace(
-            "</body>",
-            chip + "</body>",
-            1,
-        )
-    else:
-        body += chip
-
-    response.set_data(body)
-
+    # Compatibility symbol only.
+    # Historical UI injection behavior is retired.
     return response
