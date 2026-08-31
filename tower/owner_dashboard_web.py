@@ -20,6 +20,9 @@ def _tower_owner_dashboard_html() -> str:
     from tower.hosted_owner_release_readiness import (
         owner_hosted_readiness_dashboard_snapshot,
     )
+    from tower.hosted_release_prerequisite_certification import (
+        owner_prerequisite_certificate_dashboard_snapshot,
+    )
 
     dashboard = build_tower_owner_dashboard()
     summary = dashboard["summary"]
@@ -34,6 +37,9 @@ def _tower_owner_dashboard_html() -> str:
     hosted_snapshot = owner_hosted_readiness_dashboard_snapshot()
     hosted_readiness_label = escape(hosted_snapshot["label"])
     hosted_readiness_state = escape(hosted_snapshot["state"])
+    prerequisite_snapshot = owner_prerequisite_certificate_dashboard_snapshot()
+    prerequisite_label = escape(prerequisite_snapshot["label"])
+    prerequisite_state = escape(prerequisite_snapshot["state"])
 
     card_html = "\n".join(
         f"""
@@ -367,6 +373,12 @@ def _tower_owner_dashboard_html() -> str:
                  data-tower-hosted-readiness="{hosted_readiness_state}"
                  href="/tower/owner/release-review/walkthrough">
                 Hosted readiness · {hosted_readiness_label}
+              </a>
+              <br>
+              <a class="owner-hosted-readiness"
+                 data-tower-prerequisite-certificate="{prerequisite_state}"
+                 href="/tower/owner/release-review/prerequisites">
+                Release prerequisite certificate · {prerequisite_label}
               </a>
             </div>
             <a class="owner-release-link" href="/tower/owner/release-review">

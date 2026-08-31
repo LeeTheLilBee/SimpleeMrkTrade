@@ -38,11 +38,15 @@ def _walkthrough_action(readiness: dict[str, Any]) -> str:
         return _publication_form(label="Run genuine hosted candidate check")
     if state == HOSTED_AWAITING_OWNER_DECISION:
         return f'<a class="button" href="{RELEASE_REVIEW_PATH}">Review hosted candidate</a>'
-    if state in {
-        HOSTED_OWNER_APPROVED_CERTIFIED,
-        HOSTED_OWNER_HOLD_RECORDED,
-        HOSTED_OWNER_REJECTION_RECORDED,
-    }:
+    if state == HOSTED_OWNER_APPROVED_CERTIFIED:
+        receipt_id = escape(str(readiness.get("receipt_id") or ""))
+        return (
+            f'<a class="button" href="{RELEASE_REVIEW_PATH}/receipt/{receipt_id}">'
+            "View verified owner receipt</a>"
+            '<a class="button" href="/tower/owner/release-review/prerequisites">'
+            "Open prerequisite certificate</a>"
+        )
+    if state in {HOSTED_OWNER_HOLD_RECORDED, HOSTED_OWNER_REJECTION_RECORDED}:
         receipt_id = escape(str(readiness.get("receipt_id") or ""))
         return (
             f'<a class="button" href="{RELEASE_REVIEW_PATH}/receipt/{receipt_id}">'
@@ -131,5 +135,10 @@ def register_tower_hosted_owner_walkthrough_routes(app):
             )
         )
 
+    from tower.hosted_release_prerequisite_certification_web import (
+        register_tower_release_prerequisite_certification_routes,
+    )
+
+    register_tower_release_prerequisite_certification_routes(app)
     setattr(app, marker, True)
     return app
