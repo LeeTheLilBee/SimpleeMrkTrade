@@ -46,7 +46,7 @@ def test_dashboard_is_current_obux071_075_surface():
     source = text(DASH)
 
     assert (
-        'data-ob-build="OBUX071-075"'
+        'data-ob-build="OBUX081-085"'
         in source
     )
 
@@ -82,13 +82,13 @@ def test_product_policy_is_fresh_and_early():
     source = text(DASH)
 
     assert (
-        "ob_product_surface_policy.js?v=obux071075"
+        "ob_product_surface_policy.js?v=obux081085"
         in source
     )
 
     assert (
         source.index(
-            "ob_product_surface_policy.js?v=obux071075"
+            "ob_product_surface_policy.js?v=obux081085"
         )
         < source.index(
             "<body"
@@ -100,9 +100,9 @@ def test_changed_runtime_assets_have_new_cache_identity():
     source = text(DASH)
 
     for token in [
-        "ob_interchangeable_themes.css?v=obux071075",
-        "ob_theme_switcher.js?v=obux071075",
-        "ob_beta_surface_cleanup.js?v=obux071075",
+        "ob_interchangeable_themes.css?v=obux081085",
+        "ob_theme_switcher.js?v=obux081085",
+        "ob_beta_surface_cleanup.js?v=obux081085",
         "ob_session_arrival.js') }}?v=obux071075",
     ]:
         assert token in source

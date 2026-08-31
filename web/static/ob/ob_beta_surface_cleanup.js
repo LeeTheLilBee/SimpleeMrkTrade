@@ -156,6 +156,18 @@
             );
         }
       );
+
+    if (
+      document.body
+    ) {
+      document.body.removeAttribute(
+        "data-ob-mission"
+      );
+
+      document.body.removeAttribute(
+        "data-ob-mission-layout"
+      );
+    }
   }
 
 

@@ -1,61 +1,73 @@
 (function (global) {
   "use strict";
 
+  /*
+    OBUX081–085 — Observatory appearance identity.
+
+    Tower owns plum / violet / gold.
+
+    Observatory themes deliberately use
+    space-black / teal / mint / silver.
+
+    This module changes appearance only.
+    It creates no trading permission.
+  */
+
   const KEY =
-    "ob.appearance.theme.v1";
+    "ob.appearance.theme.v2";
 
   const DEFAULT =
-    "obsidian-plum";
+    "aurora-ink";
 
 
   const THEMES =
     Object.freeze(
       {
-        "obsidian-plum": {
+        "aurora-ink": {
           label:
-            "Obsidian Plum",
+            "Aurora Ink",
 
           colors: [
-            "#07070B",
-            "#15111D",
-            "#2C2038",
-            "#6C4D8E",
-            "#B58A45",
-            "#F3EBDD",
-            "#6E8F6E",
-            "#C46A6A",
+            "#050809",
+            "#0D1717",
+            "#12302D",
+            "#39BFA5",
+            "#A7E8D8",
+            "#D8E2E0",
+            "#49B883",
+            "#C65E67",
           ],
         },
 
-        "velvet-night": {
+        "deep-field": {
           label:
-            "Velvet Night",
+            "Deep Field",
 
           colors: [
-            "#08090D",
-            "#17131F",
-            "#221A2D",
-            "#8E79B7",
-            "#C49A57",
-            "#F5EEDF",
-            "#6D8B6F",
-            "#B86464",
+            "#040707",
+            "#0A1212",
+            "#102421",
+            "#2B9B88",
+            "#8DD8C8",
+            "#DDE8E4",
+            "#5AA47D",
+            "#C65E67",
           ],
         },
 
-        "eclipse-gold": {
+        "lunar-sage": {
           label:
-            "Eclipse Gold",
+            "Lunar Sage",
 
           colors: [
-            "#06070A",
-            "#131017",
-            "#261E2D",
-            "#74618F",
-            "#D0A45D",
-            "#F6F0E6",
-            "#7C8A6A",
-            "#B05A67",
+            "#070A09",
+            "#111816",
+            "#1B2824",
+            "#78A894",
+            "#BFD8CE",
+            "#E8EEEB",
+            "#6FA684",
+            "#C65E67",
           ],
         },
       }
@@ -156,6 +168,7 @@
 
           return {
             id,
+
             label:
               definition.label,
 
@@ -198,7 +211,8 @@
   global.OBThemeSwitcher =
     Object.freeze(
       {
-        key: KEY,
+        key:
+          KEY,
 
         defaultTheme:
           DEFAULT,

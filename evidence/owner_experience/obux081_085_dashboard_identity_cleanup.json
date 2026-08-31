@@ -1,0 +1,35 @@
+{
+  "alternate_themes": [
+    "deep-field",
+    "lunar-sage"
+  ],
+  "automatic_contract_selection_added": false,
+  "automatic_execution_added": false,
+  "broker_submission_added": false,
+  "cache_identity": "obux081085",
+  "capital_movement_added": false,
+  "early_first_paint_theme_authority": true,
+  "live_auto_authorized": false,
+  "manual_live_authorized_by_pack": false,
+  "mission_account_renderer_loaded_on_normal_dashboard": false,
+  "mission_account_system_deleted": false,
+  "mission_display_setting_allowed_on_normal_dashboard": false,
+  "mission_display_setting_owner_dashboard_only": true,
+  "normal_dashboard": "/ob/dashboard",
+  "observatory_default_theme": "aurora-ink",
+  "observatory_palette": {
+    "aurora": "#39BFA5",
+    "background": "#050809",
+    "danger": "#C65E67",
+    "moon_silver": "#A7E8D8",
+    "surface": "#0D1717",
+    "surface_2": "#12302D",
+    "text": "#D8E2E0"
+  },
+  "observatory_theme_storage_key": "ob.appearance.theme.v2",
+  "pack": "OBUX081-085",
+  "parent": "28efa5043b4c0553f7755cf2e283662f61fa816b",
+  "title": "Dashboard Mission Residue Final Retirement + Observatory Color Identity",
+  "tower_modified": false,
+  "tower_plum_gold_identity_preserved": true
+}

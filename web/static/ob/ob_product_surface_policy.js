@@ -3,7 +3,7 @@
   "use strict";
 
   const VERSION =
-    "OBUX071-075";
+    "OBUX081-085";
 
   const NORMAL_DASHBOARD =
     "/ob/dashboard";
@@ -108,6 +108,11 @@
       document.body
         .removeAttribute(
           "data-ob-mission"
+        );
+
+      document.body
+        .removeAttribute(
+          "data-ob-mission-layout"
         );
     }
 

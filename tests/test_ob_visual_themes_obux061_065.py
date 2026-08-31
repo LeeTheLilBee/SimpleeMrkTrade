@@ -46,9 +46,9 @@ def test_three_interchangeable_themes_exist():
     source = text(THEME)
 
     for token in [
-        "obsidian-plum",
-        "velvet-night",
-        "eclipse-gold",
+        "aurora-ink",
+        "deep-field",
+        "lunar-sage",
         "OBThemeSwitcher",
     ]:
         assert token in source
@@ -61,38 +61,38 @@ def test_exact_palette_values_exist():
     )
 
     for token in [
-        "#07070B",
-        "#15111D",
-        "#2C2038",
-        "#6C4D8E",
-        "#B58A45",
-        "#F3EBDD",
+        "#050809",
+        "#0D1717",
+        "#12302D",
+        "#39BFA5",
+        "#A7E8D8",
+        "#D8E2E0",
 
-        "#08090D",
-        "#17131F",
-        "#221A2D",
-        "#8E79B7",
-        "#C49A57",
-        "#F5EEDF",
+        "#040707",
+        "#0A1212",
+        "#102421",
+        "#2B9B88",
+        "#8DD8C8",
+        "#DDE8E4",
 
-        "#06070A",
-        "#131017",
-        "#261E2D",
-        "#74618F",
-        "#D0A45D",
-        "#F6F0E6",
+        "#070A09",
+        "#111816",
+        "#1B2824",
+        "#78A894",
+        "#BFD8CE",
+        "#E8EEEB",
     ]:
         assert token in source
 
 
-def test_default_is_obsidian_plum():
+def test_default_is_aurora_ink():
     assert (
         'const DEFAULT ='
         in text(THEME)
     )
 
     assert (
-        '"obsidian-plum"'
+        '"aurora-ink"'
         in text(THEME)
     )
 
@@ -101,7 +101,7 @@ def test_theme_is_persisted_and_appearance_only():
     source = text(THEME)
 
     assert "localStorage" in source
-    assert "ob.appearance.theme.v1" in source
+    assert "ob.appearance.theme.v2" in source
 
     for forbidden in [
         "placeOrder(",

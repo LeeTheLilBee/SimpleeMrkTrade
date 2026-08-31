@@ -5,131 +5,149 @@
 
 
 /* -------------------------------------------------------------------------------------------------
-   1. OBSIDIAN PLUM
+   OBUX081–085 — OBSERVATORY COLOR IDENTITY
+
+   Tower keeps its royal plum / violet / gold identity.
+
+   The Observatory now owns a separate visual language:
+     deep-space black
+     telescope teal
+     aurora mint
+     moon-silver
+     guarded red
+
+   Older variable names such as --ob-gold and --ob-purple are
+   retained ONLY as compatibility aliases for historical room CSS.
+   Their values are Observatory colors, not Tower plum/gold.
+------------------------------------------------------------------------------------------------- */
+
+
+/* -------------------------------------------------------------------------------------------------
+   1. AURORA INK — DEFAULT
 ------------------------------------------------------------------------------------------------- */
 
 :root,
-html[data-ob-theme="obsidian-plum"] {
-  --ob-theme-bg: #07070B;
-  --ob-theme-surface: #15111D;
-  --ob-theme-surface-2: #2C2038;
-  --ob-theme-accent: #6C4D8E;
-  --ob-theme-gold: #B58A45;
-  --ob-theme-text: #F3EBDD;
-  --ob-theme-muted: #B8AFBE;
-  --ob-theme-green: #6E8F6E;
-  --ob-theme-red: #C46A6A;
-  --ob-theme-shadow: rgba(0, 0, 0, .58);
+html[data-ob-theme="aurora-ink"] {
+  --ob-theme-bg: #050809;
+  --ob-theme-surface: #0D1717;
+  --ob-theme-surface-2: #12302D;
+  --ob-theme-accent: #39BFA5;
+  --ob-theme-highlight: #A7E8D8;
+  --ob-theme-text: #D8E2E0;
+  --ob-theme-muted: #78938D;
+  --ob-theme-green: #49B883;
+  --ob-theme-red: #C65E67;
+  --ob-theme-shadow: rgba(0, 0, 0, .64);
 
-  --ob-bg: #07070B;
-  --ob-panel: rgba(21, 17, 29, .82);
-  --ob-text: #F3EBDD;
-  --ob-muted: #B8AFBE;
-  --ob-faint: #837A8B;
-  --ob-gold: #B58A45;
-  --ob-green: #6E8F6E;
-  --ob-red: #C46A6A;
-  --ob-purple: #6C4D8E;
+  --ob-bg: #050809;
+  --ob-panel: rgba(13, 23, 23, .86);
+  --ob-text: #D8E2E0;
+  --ob-muted: #78938D;
+  --ob-faint: #536963;
 
   /*
-    Legacy variable name retained because older room CSS uses it.
-    The VALUE is muted violet — not cyan.
+    Compatibility aliases for older room CSS.
+    These no longer mean Tower gold/purple.
   */
-  --ob-aqua: #7D688D;
+  --ob-gold: #A7E8D8;
+  --ob-green: #49B883;
+  --ob-red: #C65E67;
+  --ob-purple: #1C6A61;
+  --ob-aqua: #39BFA5;
 
-  --ob-user-bg: #07070B;
-  --ob-user-panel: rgba(21, 17, 29, .84);
-  --ob-user-line: rgba(243, 235, 221, .10);
-  --ob-user-line-bright: rgba(181, 138, 69, .30);
-  --ob-user-text: #F3EBDD;
-  --ob-user-muted: #B8AFBE;
-  --ob-user-dim: #837A8B;
-  --ob-user-violet: #6C4D8E;
-  --ob-user-gold: #B58A45;
-  --ob-user-green: #6E8F6E;
-  --ob-user-red: #C46A6A;
+  --ob-user-bg: #050809;
+  --ob-user-panel: rgba(13, 23, 23, .88);
+  --ob-user-line: rgba(216, 226, 224, .10);
+  --ob-user-line-bright: rgba(57, 191, 165, .32);
+  --ob-user-text: #D8E2E0;
+  --ob-user-muted: #78938D;
+  --ob-user-dim: #536963;
+  --ob-user-violet: #1C6A61;
+  --ob-user-gold: #A7E8D8;
+  --ob-user-green: #49B883;
+  --ob-user-red: #C65E67;
 }
 
 
 /* -------------------------------------------------------------------------------------------------
-   2. VELVET NIGHT
+   2. DEEP FIELD
 ------------------------------------------------------------------------------------------------- */
 
-html[data-ob-theme="velvet-night"] {
-  --ob-theme-bg: #08090D;
-  --ob-theme-surface: #17131F;
-  --ob-theme-surface-2: #221A2D;
-  --ob-theme-accent: #8E79B7;
-  --ob-theme-gold: #C49A57;
-  --ob-theme-text: #F5EEDF;
-  --ob-theme-muted: #B8B1C1;
-  --ob-theme-green: #6D8B6F;
-  --ob-theme-red: #B86464;
-  --ob-theme-shadow: rgba(0, 0, 0, .60);
+html[data-ob-theme="deep-field"] {
+  --ob-theme-bg: #040707;
+  --ob-theme-surface: #0A1212;
+  --ob-theme-surface-2: #102421;
+  --ob-theme-accent: #2B9B88;
+  --ob-theme-highlight: #8DD8C8;
+  --ob-theme-text: #DDE8E4;
+  --ob-theme-muted: #758E87;
+  --ob-theme-green: #5AA47D;
+  --ob-theme-red: #C65E67;
+  --ob-theme-shadow: rgba(0, 0, 0, .68);
 
-  --ob-bg: #08090D;
-  --ob-panel: rgba(23, 19, 31, .84);
-  --ob-text: #F5EEDF;
-  --ob-muted: #B8B1C1;
-  --ob-faint: #807889;
-  --ob-gold: #C49A57;
-  --ob-green: #6D8B6F;
-  --ob-red: #B86464;
-  --ob-purple: #8E79B7;
-  --ob-aqua: #8E79B7;
+  --ob-bg: #040707;
+  --ob-panel: rgba(10, 18, 18, .90);
+  --ob-text: #DDE8E4;
+  --ob-muted: #758E87;
+  --ob-faint: #50645F;
+  --ob-gold: #8DD8C8;
+  --ob-green: #5AA47D;
+  --ob-red: #C65E67;
+  --ob-purple: #176158;
+  --ob-aqua: #2B9B88;
 
-  --ob-user-bg: #08090D;
-  --ob-user-panel: rgba(23, 19, 31, .84);
-  --ob-user-line: rgba(245, 238, 223, .10);
-  --ob-user-line-bright: rgba(196, 154, 87, .30);
-  --ob-user-text: #F5EEDF;
-  --ob-user-muted: #B8B1C1;
-  --ob-user-dim: #807889;
-  --ob-user-violet: #8E79B7;
-  --ob-user-gold: #C49A57;
-  --ob-user-green: #6D8B6F;
-  --ob-user-red: #B86464;
+  --ob-user-bg: #040707;
+  --ob-user-panel: rgba(10, 18, 18, .90);
+  --ob-user-line: rgba(221, 232, 228, .09);
+  --ob-user-line-bright: rgba(43, 155, 136, .34);
+  --ob-user-text: #DDE8E4;
+  --ob-user-muted: #758E87;
+  --ob-user-dim: #50645F;
+  --ob-user-violet: #176158;
+  --ob-user-gold: #8DD8C8;
+  --ob-user-green: #5AA47D;
+  --ob-user-red: #C65E67;
 }
 
 
 /* -------------------------------------------------------------------------------------------------
-   3. ECLIPSE GOLD
+   3. LUNAR SAGE
 ------------------------------------------------------------------------------------------------- */
 
-html[data-ob-theme="eclipse-gold"] {
-  --ob-theme-bg: #06070A;
-  --ob-theme-surface: #131017;
-  --ob-theme-surface-2: #261E2D;
-  --ob-theme-accent: #74618F;
-  --ob-theme-gold: #D0A45D;
-  --ob-theme-text: #F6F0E6;
-  --ob-theme-muted: #B9B1A7;
-  --ob-theme-green: #7C8A6A;
-  --ob-theme-red: #B05A67;
+html[data-ob-theme="lunar-sage"] {
+  --ob-theme-bg: #070A09;
+  --ob-theme-surface: #111816;
+  --ob-theme-surface-2: #1B2824;
+  --ob-theme-accent: #78A894;
+  --ob-theme-highlight: #BFD8CE;
+  --ob-theme-text: #E8EEEB;
+  --ob-theme-muted: #83978F;
+  --ob-theme-green: #6FA684;
+  --ob-theme-red: #C65E67;
   --ob-theme-shadow: rgba(0, 0, 0, .62);
 
-  --ob-bg: #06070A;
-  --ob-panel: rgba(19, 16, 23, .86);
-  --ob-text: #F6F0E6;
-  --ob-muted: #B9B1A7;
-  --ob-faint: #837A72;
-  --ob-gold: #D0A45D;
-  --ob-green: #7C8A6A;
-  --ob-red: #B05A67;
-  --ob-purple: #74618F;
-  --ob-aqua: #74618F;
+  --ob-bg: #070A09;
+  --ob-panel: rgba(17, 24, 22, .88);
+  --ob-text: #E8EEEB;
+  --ob-muted: #83978F;
+  --ob-faint: #5D6F68;
+  --ob-gold: #BFD8CE;
+  --ob-green: #6FA684;
+  --ob-red: #C65E67;
+  --ob-purple: #527F6D;
+  --ob-aqua: #78A894;
 
-  --ob-user-bg: #06070A;
-  --ob-user-panel: rgba(19, 16, 23, .86);
-  --ob-user-line: rgba(246, 240, 230, .10);
-  --ob-user-line-bright: rgba(208, 164, 93, .34);
-  --ob-user-text: #F6F0E6;
-  --ob-user-muted: #B9B1A7;
-  --ob-user-dim: #837A72;
-  --ob-user-violet: #74618F;
-  --ob-user-gold: #D0A45D;
-  --ob-user-green: #7C8A6A;
-  --ob-user-red: #B05A67;
+  --ob-user-bg: #070A09;
+  --ob-user-panel: rgba(17, 24, 22, .90);
+  --ob-user-line: rgba(232, 238, 235, .10);
+  --ob-user-line-bright: rgba(120, 168, 148, .34);
+  --ob-user-text: #E8EEEB;
+  --ob-user-muted: #83978F;
+  --ob-user-dim: #5D6F68;
+  --ob-user-violet: #527F6D;
+  --ob-user-gold: #BFD8CE;
+  --ob-user-green: #6FA684;
+  --ob-user-red: #C65E67;
 }
 
 

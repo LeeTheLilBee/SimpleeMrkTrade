@@ -6,6 +6,51 @@
 
   <title>The Observatory · Dashboard</title>
 
+
+  <script>
+    /*
+      OBUX082 — FIRST-PAINT OBSERVATORY THEME AUTHORITY.
+
+      Apply the current Observatory theme before theme CSS paints.
+      Legacy plum/gold theme IDs are intentionally ignored.
+    */
+    (function () {
+      var key =
+        "ob.appearance.theme.v2";
+
+      var allowed = {
+        "aurora-ink": true,
+        "deep-field": true,
+        "lunar-sage": true
+      };
+
+      var theme =
+        "aurora-ink";
+
+      try {
+        var stored =
+          window.localStorage
+            .getItem(
+              key
+            );
+
+        if (
+          stored
+          && allowed[stored]
+        ) {
+          theme = stored;
+        }
+      } catch (_) {}
+
+      document
+        .documentElement
+        .setAttribute(
+          "data-ob-theme",
+          theme
+        );
+    })();
+  </script>
+
   <link
     rel="stylesheet"
     href="{{ url_for('static', filename='ob/ob_theme.css') }}"
@@ -37,8 +82,8 @@
       6000
     );
   </script>
-  <script src="/static/ob/ob_product_surface_policy.js?v=obux071075"></script>
-  <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux071075" />
+  <script src="/static/ob/ob_product_surface_policy.js?v=obux081085"></script>
+  <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
 </head>
 
 <body
@@ -48,7 +93,7 @@
   data-ob-owner-dashboard="false"
   data-ob-owner-console="false"
   data-ob-beta="true"
-  data-ob-build="OBUX071-075"
+  data-ob-build="OBUX081-085"
   data-ob-sop-version="beta-sop-v2"
   data-ob-whats-new-version="obux066-070-v1"
   data-ob-tower-return="/tower/return/observatory"
@@ -599,7 +644,7 @@
   <script
     src="{{ url_for('static', filename='ob/ob_global_session_shell.js') }}"
   ></script>
-  <script src="/static/ob/ob_theme_switcher.js?v=obux071075"></script>
-  <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux071075"></script>
+  <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
+  <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
 </body>
 </html>

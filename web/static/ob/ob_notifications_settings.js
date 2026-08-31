@@ -4,6 +4,29 @@
   const SETTINGS_KEY = "ob.v20.settings";
   const READ_KEY = "ob.v20.readNotifications";
 
+
+  function normalizedPath() {
+    return String(
+      window.location.pathname
+      || "/"
+    )
+      .toLowerCase()
+      .replace(
+        /\/+$/,
+        ""
+      )
+      || "/";
+  }
+
+
+  function missionSettingsAllowed() {
+    return (
+      normalizedPath()
+      === "/ob/owner-dashboard"
+    );
+  }
+
+
   const defaultSettings = {
     themeVariant: "cosmic",
     starGlow: "normal",
@@ -83,7 +106,20 @@
     document.body.setAttribute("data-ob-star-glow", settings.starGlow);
     document.body.setAttribute("data-ob-motion", settings.motion);
     document.body.setAttribute("data-ob-soulaana-intensity", settings.soulaanaIntensity);
-    document.body.setAttribute("data-ob-mission-layout", settings.missionLayout);
+
+    if (
+      missionSettingsAllowed()
+      && settings.missionLayout
+    ) {
+      document.body.setAttribute(
+        "data-ob-mission-layout",
+        settings.missionLayout
+      );
+    } else {
+      document.body.removeAttribute(
+        "data-ob-mission-layout"
+      );
+    }
   }
 
   function closeDrawer() {
@@ -246,10 +282,25 @@
           { value: "strict", label: "Strict auntie" }
         ])}
 
-        ${settingSelect("obSettingMissionLayout", "Mission bar", settings.missionLayout, [
-          { value: "full", label: "Full mission context" },
-          { value: "compact", label: "Compact mission context" }
-        ])}
+        ${
+          missionSettingsAllowed()
+            ? settingSelect(
+                "obSettingMissionLayout",
+                "Mission bar",
+                settings.missionLayout,
+                [
+                  {
+                    value: "full",
+                    label: "Full mission context"
+                  },
+                  {
+                    value: "compact",
+                    label: "Compact mission context"
+                  }
+                ]
+              )
+            : ""
+        }
       </div>
 
       <div class="ob-settings-note">
@@ -264,7 +315,13 @@
       </div>
     `;
 
-    drawerShell("Settings", "Theme, star glow, motion, Soulaana intensity, and mission display options.", body);
+    drawerShell(
+      "Settings",
+      missionSettingsAllowed()
+        ? "Theme, star glow, motion, Soulaana intensity, and owner mission display options."
+        : "Theme, star glow, motion, and Soulaana intensity.",
+      body
+    );
 
     const save = document.getElementById("obSaveSettings");
     if (save) {
@@ -273,9 +330,24 @@
           themeVariant: document.getElementById("obSettingTheme").value,
           starGlow: document.getElementById("obSettingGlow").value,
           motion: document.getElementById("obSettingMotion").value,
-          soulaanaIntensity: document.getElementById("obSettingSoulaana").value,
-          missionLayout: document.getElementById("obSettingMissionLayout").value
+          soulaanaIntensity: document.getElementById("obSettingSoulaana").value
         };
+
+        if (
+          missionSettingsAllowed()
+        ) {
+          const missionLayout =
+            document.getElementById(
+              "obSettingMissionLayout"
+            );
+
+          if (
+            missionLayout
+          ) {
+            next.missionLayout =
+              missionLayout.value;
+          }
+        }
 
         saveSettings(next);
         openSettingsDrawer();
