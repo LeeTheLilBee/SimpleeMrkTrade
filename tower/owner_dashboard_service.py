@@ -1,11 +1,21 @@
 
-"""Truthful Tower Owner Headquarters identity projection / TWR131-TWR135."""
+"""Tower Owner Headquarters identity + invitation projection / TWR136-TWR140."""
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
-from typing import Any, Dict, List
+from dataclasses import (
+    asdict,
+    dataclass,
+)
+from datetime import (
+    datetime,
+    timezone,
+)
+from typing import (
+    Any,
+    Dict,
+    List,
+)
 
 from tower.owner_people_registry import (
     owner_people_authority_snapshot,
@@ -24,13 +34,18 @@ class TowerOwnerDashboardSummary:
     generated_at_utc: str
 
     people_authority_state: str
+
     invitation_authority_state: str
+    invitation_delivery_state: str
+    access_lifecycle_state: str
+
     access_authority_state: str
     entitlement_authority_state: str
     organization_authority_state: str
 
     people_count: int | None
     invitation_count: int | None
+    pending_invitation_count: int | None
     pending_access_count: int | None
 
     live_auto: str
@@ -51,10 +66,23 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
         owner_people_records()
     )
 
+    invitation_lifecycle = (
+        authority[
+            "invitation_lifecycle"
+        ]
+    )
+
     people_verified = (
         authority[
             "people"
         ][
+            "verification_state"
+        ]
+        == VERIFIED
+    )
+
+    invitation_verified = (
+        invitation_lifecycle[
             "verification_state"
         ]
         == VERIFIED
@@ -84,7 +112,6 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
         }
 
         people_groups = {
-            # Do not claim account lifecycle ACTIVE.
             "active":
                 [],
 
@@ -135,18 +162,6 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
                         ),
                 }
 
-        tower_meaning = (
-            "Owner Headquarters is projecting the configured "
-            "hosted owner identity and current owner-role access "
-            "policy. Invitation, access-mutation, and account "
-            "lifecycle authorities remain separate."
-        )
-
-        owner_next_action = (
-            "Connect the invitation and access-mutation lifecycle "
-            "without changing the verified hosted owner identity."
-        )
-
     else:
 
         status = (
@@ -154,7 +169,6 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
         )
 
         people_count = None
-
         role_counts = {}
 
         people_groups = {
@@ -173,6 +187,60 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
 
         app_attention = {}
 
+    if invitation_verified:
+
+        invitation_count = (
+            invitation_lifecycle[
+                "invitation_count"
+            ]
+        )
+
+        pending_invitation_count = (
+            invitation_lifecycle[
+                "pending_invitation_count"
+            ]
+        )
+
+        invitations = list(
+            invitation_lifecycle[
+                "invitations"
+            ]
+        )
+
+    else:
+
+        invitation_count = None
+        pending_invitation_count = None
+        invitations = []
+
+    if people_verified and invitation_verified:
+
+        tower_meaning = (
+            "Owner Headquarters is projecting the configured hosted owner "
+            "identity plus the durable invitation/onboarding lifecycle. "
+            "Invitation state does not grant account or app access."
+        )
+
+        owner_next_action = (
+            "Use the invitation lifecycle as the onboarding record. "
+            "Delivery and activation remain fail-closed unless their "
+            "authorities are genuinely configured."
+        )
+
+    elif people_verified:
+
+        tower_meaning = (
+            "Owner Headquarters is projecting the configured hosted owner "
+            "identity. Invitation lifecycle storage is not configured."
+        )
+
+        owner_next_action = (
+            "Configure a durable invitation store before creating "
+            "real invitation records."
+        )
+
+    else:
+
         tower_meaning = (
             "Owner Headquarters shows only state Tower can support. "
             "Hosted owner identity remains unavailable until its "
@@ -181,7 +249,7 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
 
         owner_next_action = (
             "Configure the hosted owner identity contract. "
-            "Tower will not manufacture people or counts."
+            "Tower will not manufacture people or invitations."
         )
 
     summary = TowerOwnerDashboardSummary(
@@ -210,6 +278,23 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
             ]
         ),
 
+        invitation_delivery_state=(
+            invitation_lifecycle[
+                "delivery"
+            ][
+                "verification_state"
+            ]
+        ),
+
+        access_lifecycle_state=(
+            authority[
+                "access_lifecycle"
+            ][
+                "verification_state"
+            ]
+        ),
+
+        # Entitlement/account mutation remains separate.
         access_authority_state=(
             authority[
                 "access_control"
@@ -237,13 +322,13 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
         people_count=
             people_count,
 
-        # No invitation provider yet:
-        # missing is not zero.
         invitation_count=
-            None,
+            invitation_count,
 
-        # No access-mutation queue yet:
-        # missing is not zero.
+        pending_invitation_count=
+            pending_invitation_count,
+
+        # Access activation authority still does not exist.
         pending_access_count=
             None,
 
@@ -279,6 +364,12 @@ def build_tower_owner_dashboard() -> Dict[str, Any]:
             list(
                 people
             ),
+
+        "invitations":
+            invitations,
+
+        "invitation_lifecycle":
+            invitation_lifecycle,
 
         "access_requests":
             [],
@@ -335,9 +426,7 @@ def owner_dashboard_status_cards() -> List[Dict[str, Any]]:
                 "People",
 
             "value":
-                (
-                    f"{summary['people_count']} VERIFIED"
-                ),
+                f"{summary['people_count']} VERIFIED",
 
             "status":
                 "verified",
@@ -366,24 +455,82 @@ def owner_dashboard_status_cards() -> List[Dict[str, Any]]:
                 "Hosted owner identity authority is not configured.",
         })
 
-    cards.append({
-        "card_id":
-            "owner-card-invitations",
+    if (
+        summary[
+            "invitation_authority_state"
+        ]
+        == VERIFIED
+    ):
+        cards.append({
+            "card_id":
+                "owner-card-invitations",
 
-        "title":
-            "Invitations",
+            "title":
+                "Invitations",
 
-        "value":
-            summary[
-                "invitation_authority_state"
-            ],
+            "value":
+                str(
+                    summary[
+                        "invitation_count"
+                    ]
+                ),
 
-        "status":
-            "not-configured",
+            "status":
+                "verified",
 
-        "meaning":
-            "Invitation lifecycle authority is not configured.",
-    })
+            "meaning":
+                dashboard[
+                    "invitation_lifecycle"
+                ][
+                    "delivery"
+                ][
+                    "message"
+                ],
+        })
+
+    else:
+        cards.append({
+            "card_id":
+                "owner-card-invitations",
+
+            "title":
+                "Invitations",
+
+            "value":
+                NOT_CONFIGURED,
+
+            "status":
+                "not-configured",
+
+            "meaning":
+                "Invitation lifecycle authority is not configured.",
+        })
+
+    if (
+        summary[
+            "access_lifecycle_state"
+        ]
+        == VERIFIED
+    ):
+        cards.append({
+            "card_id":
+                "owner-card-access-lifecycle",
+
+            "title":
+                "Onboarding lifecycle",
+
+            "value":
+                VERIFIED,
+
+            "status":
+                "verified",
+
+            "meaning":
+                (
+                    "Invitation onboarding state is authoritative. "
+                    "ACTIVE remains unavailable without access activation authority."
+                ),
+        })
 
     cards.append({
         "card_id":
@@ -401,7 +548,7 @@ def owner_dashboard_status_cards() -> List[Dict[str, Any]]:
             "not-configured",
 
         "meaning":
-            "Access-mutation lifecycle authority is not configured.",
+            "Entitlement/account mutation authority is not configured.",
     })
 
     if (

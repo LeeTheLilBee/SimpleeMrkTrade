@@ -14,9 +14,162 @@ from tower.tower_human_login_ob_launch import owner_session_active
 
 
 
+
+def _owner_invitation_html(
+    dashboard,
+) -> str:
+
+    lifecycle = dashboard[
+        "invitation_lifecycle"
+    ]
+
+    summary = dashboard[
+        "summary"
+    ]
+
+    if (
+        lifecycle[
+            "verification_state"
+        ]
+        != "VERIFIED"
+    ):
+        return """
+        <article class="owner-row">
+          <div class="owner-row-main">
+            <strong>Invitation lifecycle</strong>
+            <span>NOT_CONFIGURED</span>
+          </div>
+          <p>
+            Invitation lifecycle storage is not configured.
+            Tower will not manufacture invitation records.
+          </p>
+        </article>
+        """
+
+    delivery_message = escape(
+        str(
+            lifecycle[
+                "delivery"
+            ][
+                "message"
+            ]
+        )
+    )
+
+    invitation_count = escape(
+        str(
+            summary[
+                "invitation_count"
+            ]
+        )
+    )
+
+    pending_count = escape(
+        str(
+            summary[
+                "pending_invitation_count"
+            ]
+        )
+    )
+
+    invitations = list(
+        dashboard.get(
+            "invitations",
+            [],
+        )
+    )
+
+    invitation_rows = []
+
+    for invitation in invitations[:3]:
+
+        target = escape(
+            str(
+                invitation.get(
+                    "target",
+                    "",
+                )
+            )
+        )
+
+        state = escape(
+            str(
+                invitation.get(
+                    "state",
+                    "",
+                )
+            )
+        )
+
+        requested_role = escape(
+            str(
+                invitation.get(
+                    "requested_role",
+                    "",
+                )
+            ).upper()
+        )
+
+        invitation_rows.append(
+            f"""
+            <article class="owner-row">
+              <div class="owner-row-main">
+                <strong>{target}</strong>
+                <span>{state}</span>
+              </div>
+              <div class="owner-chips">
+                <span>ROLE · {requested_role}</span>
+                <span>GRANTED APPS · 0</span>
+              </div>
+              <p>
+                Requested access is not granted access.
+              </p>
+            </article>
+            """
+        )
+
+    records_html = (
+        "\n".join(
+            invitation_rows
+        )
+        if invitation_rows
+        else """
+        <article class="owner-row">
+          <div class="owner-row-main">
+            <strong>No invitation records</strong>
+            <span>0</span>
+          </div>
+          <p>
+            The configured invitation authority currently contains no records.
+          </p>
+        </article>
+        """
+    )
+
+    return f"""
+    <article class="owner-row">
+      <div class="owner-row-main">
+        <strong>Invitation lifecycle</strong>
+        <span>VERIFIED</span>
+      </div>
+
+      <div class="owner-chips">
+        <span>TOTAL · {invitation_count}</span>
+        <span>PENDING · {pending_count}</span>
+        <span>ACCESS ACTIVATION · NOT_CONFIGURED</span>
+      </div>
+
+      <p>{delivery_message}</p>
+    </article>
+
+    {records_html}
+    """
+
+
 def _owner_people_html(
     dashboard,
 ) -> str:
+
     summary = dashboard[
         "summary"
     ]
@@ -25,6 +178,12 @@ def _owner_people_html(
         dashboard.get(
             "people",
             [],
+        )
+    )
+
+    invitation_html = (
+        _owner_invitation_html(
+            dashboard
         )
     )
 
@@ -41,15 +200,7 @@ def _owner_people_html(
           </p>
         </article>
 
-        <article class="owner-row">
-          <div class="owner-row-main">
-            <strong>Invitation authority</strong>
-            <span>{escape(summary['invitation_authority_state'])}</span>
-          </div>
-          <p>
-            Invitation delivery and lifecycle authority are not configured.
-          </p>
-        </article>
+        {invitation_html}
 
         <article class="owner-row">
           <div class="owner-row-main">
@@ -57,8 +208,7 @@ def _owner_people_html(
             <span>{escape(summary['access_authority_state'])}</span>
           </div>
           <p>
-            Access mutation remains unavailable until its
-            authoritative lifecycle is connected.
+            Entitlement/account mutation authority is not configured.
           </p>
         </article>
         """
@@ -140,6 +290,7 @@ def _owner_people_html(
         "app_entitlements",
         [],
     ):
+
         if (
             entitlement.get(
                 "app_id"
@@ -150,6 +301,7 @@ def _owner_people_html(
             break
 
     if observatory:
+
         observatory_policy = escape(
             str(
                 observatory.get(
@@ -175,6 +327,7 @@ def _owner_people_html(
         )
 
     else:
+
         observatory_html = (
             "<span>OBSERVATORY · UNKNOWN</span>"
         )
@@ -207,15 +360,7 @@ def _owner_people_html(
       </p>
     </article>
 
-    <article class="owner-row">
-      <div class="owner-row-main">
-        <strong>Invitation authority</strong>
-        <span>{escape(summary['invitation_authority_state'])}</span>
-      </div>
-      <p>
-        Invitation delivery and lifecycle authority are not configured.
-      </p>
-    </article>
+    {invitation_html}
 
     <article class="owner-row">
       <div class="owner-row-main">
@@ -223,8 +368,8 @@ def _owner_people_html(
         <span>{escape(summary['access_authority_state'])}</span>
       </div>
       <p>
-        The current owner access policy is visible above.
-        Account and entitlement mutation actions are not configured here.
+        Invitation acceptance does not create or activate an account.
+        Entitlement/account mutation authority is not configured.
       </p>
     </article>
     """
