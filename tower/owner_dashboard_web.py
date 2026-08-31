@@ -13,6 +13,223 @@ from tower.owner_dashboard_service import (
 from tower.tower_human_login_ob_launch import owner_session_active
 
 
+
+def _owner_people_html(
+    dashboard,
+) -> str:
+    summary = dashboard[
+        "summary"
+    ]
+
+    people = list(
+        dashboard.get(
+            "people",
+            [],
+        )
+    )
+
+    if not people:
+        return f"""
+        <article class="owner-row">
+          <div class="owner-row-main">
+            <strong>People authority</strong>
+            <span>{escape(summary['people_authority_state'])}</span>
+          </div>
+          <p>
+            Hosted owner identity authority is not configured.
+            Tower will not invent people or account totals.
+          </p>
+        </article>
+
+        <article class="owner-row">
+          <div class="owner-row-main">
+            <strong>Invitation authority</strong>
+            <span>{escape(summary['invitation_authority_state'])}</span>
+          </div>
+          <p>
+            Invitation delivery and lifecycle authority are not configured.
+          </p>
+        </article>
+
+        <article class="owner-row">
+          <div class="owner-row-main">
+            <strong>Access authority</strong>
+            <span>{escape(summary['access_authority_state'])}</span>
+          </div>
+          <p>
+            Access mutation remains unavailable until its
+            authoritative lifecycle is connected.
+          </p>
+        </article>
+        """
+
+    person = people[0]
+
+    display_name = escape(
+        str(
+            person.get(
+                "display_name",
+                "",
+            )
+            or ""
+        )
+    )
+
+    username = escape(
+        str(
+            person.get(
+                "username",
+                "",
+            )
+            or ""
+        )
+    )
+
+    role = escape(
+        str(
+            person.get(
+                "role",
+                "",
+            )
+            or ""
+        ).upper()
+    )
+
+    account_state = escape(
+        str(
+            person.get(
+                "account_state",
+                "",
+            )
+            or ""
+        )
+    )
+
+    organization = person.get(
+        "organization"
+    )
+
+    if isinstance(
+        organization,
+        dict,
+    ):
+        organization_label = escape(
+            str(
+                organization.get(
+                    "organization_name",
+                    "",
+                )
+                or ""
+            )
+        )
+
+        organization_html = (
+            f"<span>ORG · {organization_label}</span>"
+            if organization_label
+            else ""
+        )
+
+    else:
+        organization_html = (
+            "<span>ORG · NOT_CONFIGURED</span>"
+        )
+
+    observatory = None
+
+    for entitlement in person.get(
+        "app_entitlements",
+        [],
+    ):
+        if (
+            entitlement.get(
+                "app_id"
+            )
+            == "observatory"
+        ):
+            observatory = entitlement
+            break
+
+    if observatory:
+        observatory_policy = escape(
+            str(
+                observatory.get(
+                    "access_policy",
+                    "",
+                )
+                or ""
+            )
+        )
+
+        observatory_html = (
+            f"<span>OBSERVATORY · {observatory_policy}</span>"
+        )
+
+        runtime_state = escape(
+            str(
+                observatory.get(
+                    "runtime_availability_state",
+                    "",
+                )
+                or ""
+            )
+        )
+
+    else:
+        observatory_html = (
+            "<span>OBSERVATORY · UNKNOWN</span>"
+        )
+
+        runtime_state = (
+            "UNKNOWN"
+        )
+
+    return f"""
+    <article class="owner-row">
+      <div class="owner-row-main">
+        <strong>{display_name}</strong>
+        <span>VERIFIED</span>
+      </div>
+
+      <p>
+        Configured Tower identity · {username}
+      </p>
+
+      <div class="owner-chips">
+        <span>ROLE · {role}</span>
+        <span>{account_state}</span>
+        {organization_html}
+        {observatory_html}
+      </div>
+
+      <p>
+        Observatory runtime state: {runtime_state}.
+        Access-policy truth does not imply runtime health.
+      </p>
+    </article>
+
+    <article class="owner-row">
+      <div class="owner-row-main">
+        <strong>Invitation authority</strong>
+        <span>{escape(summary['invitation_authority_state'])}</span>
+      </div>
+      <p>
+        Invitation delivery and lifecycle authority are not configured.
+      </p>
+    </article>
+
+    <article class="owner-row">
+      <div class="owner-row-main">
+        <strong>Access mutation</strong>
+        <span>{escape(summary['access_authority_state'])}</span>
+      </div>
+      <p>
+        The current owner access policy is visible above.
+        Account and entitlement mutation actions are not configured here.
+      </p>
+    </article>
+    """
+
+
 def _tower_owner_dashboard_html() -> str:
     from tower.hosted_owner_release_candidate_state import (
         owner_release_dashboard_snapshot,
@@ -47,6 +264,12 @@ def _tower_owner_dashboard_html() -> str:
         </article>
         """
         for card in cards
+    )
+
+    people_html = (
+        _owner_people_html(
+            dashboard
+        )
     )
 
     return f"""
@@ -332,37 +555,7 @@ def _tower_owner_dashboard_html() -> str:
           <section class="owner-section">
             <h2>People & access</h2>
 
-            <article class="owner-row">
-              <div class="owner-row-main">
-                <strong>People authority</strong>
-                <span>{summary['people_authority_state']}</span>
-              </div>
-              <p>
-                Tower has no authoritative people provider connected.
-                It will not invent people or account totals.
-              </p>
-            </article>
-
-            <article class="owner-row">
-              <div class="owner-row-main">
-                <strong>Invitation authority</strong>
-                <span>{summary['invitation_authority_state']}</span>
-              </div>
-              <p>
-                Invitation delivery and lifecycle authority are not configured.
-              </p>
-            </article>
-
-            <article class="owner-row">
-              <div class="owner-row-main">
-                <strong>Access authority</strong>
-                <span>{summary['access_authority_state']}</span>
-              </div>
-              <p>
-                Access changes remain unavailable until Tower is connected
-                to an authoritative identity and entitlement provider.
-              </p>
-            </article>
+            {people_html}
           </section>
 
           <section class="owner-next">
