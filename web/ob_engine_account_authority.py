@@ -1237,6 +1237,59 @@ def build_authority_registry(
                 False,
         },
 
+        "trade_intent": {
+            "authority":
+                "OB_TRADE_INTENT_V1",
+
+            "service":
+                "web/ob_trade_intent.py",
+
+            "authority_scope":
+                "mode_neutral_candidate_to_lifecycle_contract",
+
+            "candidate_authority":
+                "existing_canonical_engine_feed",
+
+            "options_research_authority":
+                "OB_OPTIONS_RESEARCH_V1",
+
+            "account_authority":
+                "OB_ENGINE_ACCOUNT_AUTHORITY_V1",
+
+            "owner_fit_authority":
+                "PENDING_OBRISK",
+
+            "mode_authority":
+                "PENDING_OBMODE",
+
+            "manual_live_downstream":
+                "existing_GP041_candidate_decision_handoff",
+
+            "hybrid_downstream":
+                "LOCKED_PENDING_OBHYB",
+
+            "automated_downstream":
+                "LOCKED_PENDING_OBAUTO",
+
+            "explicit_creation_only":
+                True,
+
+            "auto_created_on_engine_feed_read":
+                False,
+
+            "automatic_contract_selection":
+                False,
+
+            "broker_submission":
+                False,
+
+            "capital_movement":
+                False,
+
+            "automatic_execution":
+                False,
+        },
+
         "position_records": {
             "open_store":
                 "data/open_positions.json",
