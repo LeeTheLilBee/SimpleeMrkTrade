@@ -1202,6 +1202,65 @@
             )
           : null,
 
+
+      // OBENG001-005_ACCOUNT_AUTHORITY_PROJECTION
+      //
+      // Authority metadata is supplied by the protected backend.
+      // This client does not calculate or reconcile account truth.
+      authority_registry:
+        clone(
+          safeObject(
+            safe.authority_registry
+            ||
+            serverData.authority_registry
+          )
+        ),
+
+      account_authority:
+        clone(
+          safeObject(
+            safe.account_authority
+            ||
+            serverData.account_authority
+          )
+        ),
+
+      position_authority:
+        clone(
+          safeObject(
+            safe.position_authority
+            ||
+            serverData.position_authority
+          )
+        ),
+
+      reporting_authority:
+        clone(
+          safeObject(
+            safe.reporting_authority
+            ||
+            serverData.reporting_authority
+          )
+        ),
+
+      authority_source_registry:
+        clone(
+          safeObject(
+            safe.authority_source_registry
+            ||
+            serverData.authority_source_registry
+          )
+        ),
+
+      authority_boundaries:
+        clone(
+          safeObject(
+            safe.authority_boundaries
+            ||
+            serverData.authority_boundaries
+          )
+        ),
+
       data_files:
         clone(
           safeObject(
@@ -1369,6 +1428,48 @@
       account_snapshot:
         clone(
           projected.account_snapshot
+        ),
+
+      authority_registry:
+        clone(
+          projected.authority_registry
+          ||
+          {}
+        ),
+
+      account_authority:
+        clone(
+          projected.account_authority
+          ||
+          {}
+        ),
+
+      position_authority:
+        clone(
+          projected.position_authority
+          ||
+          {}
+        ),
+
+      reporting_authority:
+        clone(
+          projected.reporting_authority
+          ||
+          {}
+        ),
+
+      authority_source_registry:
+        clone(
+          projected.authority_source_registry
+          ||
+          {}
+        ),
+
+      authority_boundaries:
+        clone(
+          projected.authority_boundaries
+          ||
+          {}
         ),
     };
 

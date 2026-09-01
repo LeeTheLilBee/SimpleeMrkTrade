@@ -1,0 +1,336 @@
+{
+  "acceptance": {
+    "account_sources_silently_merged": false,
+    "automatic_execution_authorized": false,
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "empty_position_store_means_zero": false,
+    "existing_engine_remains_candidate_authority": true,
+    "hybrid_execution_authorized": false,
+    "live_auto_authorized": false,
+    "new_public_route_created": false,
+    "options_research_remains_research_only": true,
+    "owner_remains_contract_selection_authority": true,
+    "reporting_overwrites_operational_account": false,
+    "second_engine_created": false,
+    "tower_source_modified": false
+  },
+  "authority_contract": {
+    "account_authority": {
+      "agreed_fields": [],
+      "conflict_fields": [
+        "account_value",
+        "equity",
+        "cash",
+        "buying_power",
+        "open_positions",
+        "unrealized_pnl"
+      ],
+      "conflict_is_data": true,
+      "cross_source_resolved_account": null,
+      "lightweight_snapshot": {
+        "may_overwrite_durable_state": false,
+        "role": "projection_and_compatibility_only",
+        "source": "data/account_snapshot.json",
+        "view": {
+          "account_value": 999.96,
+          "buying_power": 538.27,
+          "cash": null,
+          "equity": 999.96,
+          "open_positions": 3,
+          "realized_pnl": null,
+          "unrealized_pnl": null
+        }
+      },
+      "no_silent_merge": true,
+      "operational_repository_authority": {
+        "activity_event_count": 51,
+        "broker_reconciled": false,
+        "claimed_live_broker_truth": false,
+        "role": "durable_repository_account_state",
+        "source": "data/account_state.json",
+        "trade_history_count": 0,
+        "view": {
+          "account_value": 37612.56,
+          "buying_power": 32314.89,
+          "cash": 32314.89,
+          "equity": 37612.56,
+          "open_positions": 6,
+          "realized_pnl": null,
+          "unrealized_pnl": 1079.0
+        }
+      },
+      "overlap_checks": {
+        "account_value": {
+          "resolved_value": null,
+          "silent_merge": false,
+          "status": "conflict",
+          "values": {
+            "canonical_reporting": 3518.17,
+            "durable_state": 37612.56,
+            "lightweight_snapshot": 999.96
+          }
+        },
+        "buying_power": {
+          "resolved_value": null,
+          "silent_merge": false,
+          "status": "conflict",
+          "values": {
+            "canonical_reporting": 3518.17,
+            "durable_state": 32314.89,
+            "lightweight_snapshot": 538.27
+          }
+        },
+        "cash": {
+          "resolved_value": null,
+          "silent_merge": false,
+          "status": "conflict",
+          "values": {
+            "canonical_reporting": 3518.17,
+            "durable_state": 32314.89
+          }
+        },
+        "equity": {
+          "resolved_value": null,
+          "silent_merge": false,
+          "status": "conflict",
+          "values": {
+            "canonical_reporting": 3518.17,
+            "durable_state": 37612.56,
+            "lightweight_snapshot": 999.96
+          }
+        },
+        "open_positions": {
+          "resolved_value": null,
+          "silent_merge": false,
+          "status": "conflict",
+          "values": {
+            "canonical_reporting": 0,
+            "durable_state": 6,
+            "lightweight_snapshot": 3
+          }
+        },
+        "realized_pnl": {
+          "resolved_value": null,
+          "silent_merge": false,
+          "status": "insufficient_overlap",
+          "values": {
+            "canonical_reporting": 2518.17
+          }
+        },
+        "unrealized_pnl": {
+          "resolved_value": null,
+          "silent_merge": false,
+          "status": "conflict",
+          "values": {
+            "canonical_reporting": 0.0,
+            "durable_state": 1079.0
+          }
+        }
+      },
+      "reconciliation_status": "conflict",
+      "reporting_account": {
+        "may_overwrite_durable_state": false,
+        "role": "historical_reporting_only",
+        "source": "data/canonical_reporting_snapshot.json",
+        "view": {
+          "account_value": 3518.17,
+          "buying_power": 3518.17,
+          "cash": 3518.17,
+          "equity": 3518.17,
+          "open_positions": 0,
+          "realized_pnl": 2518.17,
+          "unrealized_pnl": 0.0
+        }
+      },
+      "schema_version": "OB_ENGINE_ACCOUNT_AUTHORITY_V1"
+    },
+    "authority_registry": {
+      "account_operational_state": {
+        "authority": "data/account_state.json",
+        "authority_scope": "durable_repository_state",
+        "claimed_broker_reconciled": false,
+        "claimed_live_broker_truth": false
+      },
+      "account_snapshot_projection": {
+        "authority": "data/account_snapshot.json",
+        "authority_scope": "lightweight_projection_only",
+        "may_overwrite_operational_state": false
+      },
+      "market_candidate_truth": {
+        "adapter_no_second_engine_boundary": true,
+        "authority": "existing_canonical_engine_feed",
+        "calculates_new_candidates": false,
+        "calculates_new_market_scores": false,
+        "calculates_new_positions": false,
+        "projection_layer": "web/static/ob/ob_engine_feed_adapter.js",
+        "second_engine_created": false
+      },
+      "options_research": {
+        "authority": "OB_OPTIONS_RESEARCH_V1",
+        "automatic_contract_selection": false,
+        "brokerage_execution": false,
+        "contract": "web/static/ob/ob_options_research_contract.js",
+        "contract_present": true,
+        "fake_option_fallback": false,
+        "owner_selection_authority": true,
+        "research_only": true
+      },
+      "performance_reporting": {
+        "authority": "data/canonical_reporting_snapshot.json",
+        "authority_scope": "historical_reporting_only",
+        "may_overwrite_operational_state": false
+      },
+      "position_records": {
+        "closed_store": "data/closed_positions.json",
+        "empty_store_interpreted_as_zero": false,
+        "open_store": "data/open_positions.json",
+        "synthetic_record_fallback": false
+      },
+      "schema_version": "OB_ENGINE_ACCOUNT_AUTHORITY_V1"
+    },
+    "authority_source_registry": {
+      "account_snapshot": {
+        "item_count": 3,
+        "path": "data/account_snapshot.json",
+        "sha256": "4d2125898dac18df0ff9a1debd1e0688274658601a7f91e200a519d625e037df",
+        "shape": "object",
+        "status": "parsed"
+      },
+      "account_state": {
+        "item_count": 27,
+        "path": "data/account_state.json",
+        "sha256": "ffbe7c859dc673a0196ac6abbefd3d95f0d42467e09aa749dbc7a4ade52dcd71",
+        "shape": "object",
+        "status": "parsed"
+      },
+      "candidate_log": {
+        "item_count": 50,
+        "path": "data/candidate_log.json",
+        "sha256": "d0a9db440dda5caf43ce196314f1bbd9957e04f302a5ea095aac54d1cdb908f9",
+        "shape": "array",
+        "status": "parsed"
+      },
+      "canonical_engine_adapter": {
+        "bytes": 40229,
+        "path": "web/static/ob/ob_engine_feed_adapter.js",
+        "sha256": "3bce952b1529e6c5eaecdcefd13bdc134346ba16dabd86ae3cb98a950cd82e33",
+        "status": "present"
+      },
+      "canonical_reporting_snapshot": {
+        "item_count": 8,
+        "path": "data/canonical_reporting_snapshot.json",
+        "sha256": "bb35974a2c15d60cf157e79da8295cfd317059b428fe0e3e9924f64a9ac52a27",
+        "shape": "object",
+        "status": "parsed"
+      },
+      "closed_positions": {
+        "item_count": 35,
+        "path": "data/closed_positions.json",
+        "sha256": "b68b2575e1cb54185f690274ebc4743dc67b916d0cb199d9b4cdbeba6af52763",
+        "shape": "array",
+        "status": "parsed"
+      },
+      "ledger": {
+        "item_count": null,
+        "path": "data/ledger.json",
+        "sha256": null,
+        "shape": null,
+        "status": "missing"
+      },
+      "market_universe": {
+        "item_count": 2,
+        "path": "data/market_universe.json",
+        "sha256": "52472dfb5a7e8ae72bcf1db1364cbb8bee6455567c9378aae84aceed55c6a84d",
+        "shape": "object",
+        "status": "parsed"
+      },
+      "open_positions": {
+        "item_count": 6,
+        "path": "data/open_positions.json",
+        "sha256": "08fb4756c3e7cf7314a4fbbf69991b03933b0ddb22e129f25c9f1c76b1bc2572",
+        "shape": "array",
+        "status": "parsed"
+      },
+      "options_research_contract": {
+        "bytes": 18534,
+        "path": "web/static/ob/ob_options_research_contract.js",
+        "sha256": "2ff9dff2d1914f8f56e90acf66732f8bee4ea31c2d137873cf53f1ad519ab122",
+        "status": "present"
+      },
+      "pipeline_status": {
+        "item_count": 5,
+        "path": "data/pipeline_status.json",
+        "sha256": "e6c3190655c6a3e508703fbe30d0fb2a4be013dbed62fa4447d1be8e958cf5ca",
+        "shape": "object",
+        "status": "parsed"
+      },
+      "trade_log": {
+        "item_count": 76,
+        "path": "data/trade_log.json",
+        "sha256": "b34fc12c09dd19f010567de275a22b487352d7a9495d4158a9bb5e05167a4909",
+        "shape": "array",
+        "status": "parsed"
+      }
+    },
+    "boundaries": {
+      "account_conflict_auto_resolution": false,
+      "automatic_contract_selection": false,
+      "automatic_execution": false,
+      "broker_submission": false,
+      "candidate_recalculation": false,
+      "capital_movement": false,
+      "hybrid_execution": false,
+      "live_auto_locked": true,
+      "market_score_recalculation": false,
+      "read_only_projection": true,
+      "second_engine_created": false,
+      "synthetic_position_records": false
+    },
+    "position_authority": {
+      "closed_position_records": {
+        "authority_status": "explicit_store",
+        "empty_or_unreadable_means_zero": false,
+        "record_count": 35,
+        "source": "data/closed_positions.json"
+      },
+      "durable_account_open_position_count": {
+        "count": 6,
+        "count_only": true,
+        "may_synthesize_position_records": false,
+        "source": "data/account_state.json"
+      },
+      "no_synthetic_position_records": true,
+      "open_position_records": {
+        "authority_status": "explicit_store",
+        "empty_or_unreadable_means_zero": false,
+        "record_count": 6,
+        "source": "data/open_positions.json"
+      },
+      "reporting_history": {
+        "ledger_count": 12,
+        "may_be_treated_as_open_positions": false,
+        "role": "historical_reporting",
+        "source": "data/canonical_reporting_snapshot.json"
+      },
+      "schema_version": "OB_ENGINE_ACCOUNT_AUTHORITY_V1"
+    },
+    "reporting_authority": {
+      "analytics_present": true,
+      "authority": "historical_performance_reporting",
+      "final_account_snapshot_present": true,
+      "ledger_count": 12,
+      "may_authorize_execution": false,
+      "may_override_operational_account_state": false,
+      "performance_present": true,
+      "schema_version": "OB_ENGINE_ACCOUNT_AUTHORITY_V1",
+      "source": "data/canonical_reporting_snapshot.json"
+    },
+    "schema_version": "OB_ENGINE_ACCOUNT_AUTHORITY_V1"
+  },
+  "feature_branch": "ob-engine-account-contracts-obeng001-005",
+  "generated_at_utc": "2026-09-01T15:06:28.260044+00:00",
+  "packet": "OBENG001-005",
+  "parent_commit": "a03bc4ed6f79837bdaf9a8c925f01c129c18a891",
+  "title": "Existing Engine + Account Authority Contract Consolidation"
+}

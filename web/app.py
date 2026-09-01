@@ -20211,6 +20211,102 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 
 
+
+
+# OBENG001-005_ENGINE_ACCOUNT_AUTHORITY_WRAP
+#
+# Existing ob_engine_feed_snapshot_v25 remains the market/candidate authority.
+# This wrapper adds source-role and account reconciliation metadata ONLY.
+#
+# No Tower route changes.
+# No new endpoint.
+# No second engine.
+from web.ob_engine_account_authority import (
+    augment_engine_feed_response
+    as _obeng001_005_augment_engine_feed_response,
+)
+
+_obeng001_005_original_engine_feed = (
+    app.view_functions.get(
+        "ob_engine_feed_snapshot_v25"
+    )
+    or globals().get(
+        "ob_engine_feed_snapshot_v25"
+    )
+)
+
+if not callable(
+    _obeng001_005_original_engine_feed
+):
+    raise RuntimeError(
+        "OBENG001–005 could not resolve "
+        "ob_engine_feed_snapshot_v25"
+    )
+
+
+def _obeng001_005_engine_feed_wrapper(
+    *args,
+    **kwargs,
+):
+    return (
+        _obeng001_005_augment_engine_feed_response(
+            _obeng001_005_original_engine_feed(
+                *args,
+                **kwargs,
+            )
+        )
+    )
+
+
+_obeng001_005_engine_feed_wrapper.__name__ = (
+    getattr(
+        _obeng001_005_original_engine_feed,
+        "__name__",
+        "ob_engine_feed_snapshot_v25",
+    )
+)
+
+_obeng001_005_engine_feed_wrapper.__doc__ = (
+    getattr(
+        _obeng001_005_original_engine_feed,
+        "__doc__",
+        None,
+    )
+)
+
+_obeng001_005_engine_feed_wrapper._obeng001_005_wrapped = (
+    True
+)
+
+# Rebind the global name so OBFIX006–010's room-scoped Market Map feed
+# also receives the same canonical authority contract.
+ob_engine_feed_snapshot_v25 = (
+    _obeng001_005_engine_feed_wrapper
+)
+
+# Replace the already-registered Flask view function without adding or
+# widening any route.
+for (
+    _obeng001_005_endpoint,
+    _obeng001_005_view,
+) in list(
+    app.view_functions.items()
+):
+    if (
+        _obeng001_005_view
+        is
+        _obeng001_005_original_engine_feed
+        or
+        _obeng001_005_endpoint
+        ==
+        "ob_engine_feed_snapshot_v25"
+    ):
+        app.view_functions[
+            _obeng001_005_endpoint
+        ] = (
+            _obeng001_005_engine_feed_wrapper
+        )
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 
