@@ -356,11 +356,11 @@ def test_twr124_future_registration_does_not_mean_published_or_available():
         assert states[REGISTERED]["value"] is True
         assert states[REGISTERED]["verification_state"] == VERIFIED
 
-        assert states[PUBLISHED]["value"] is False
-        assert states[PUBLISHED]["verification_state"] == VERIFIED
+        assert states[PUBLISHED]["value"] is None
+        assert states[PUBLISHED]["verification_state"] == NOT_CONFIGURED
 
         assert states[AVAILABLE]["value"] is None
-        assert states[AVAILABLE]["verification_state"] == UNKNOWN
+        assert states[AVAILABLE]["verification_state"] == NOT_CONFIGURED
 
         assert projection["launchable"] is False
 
@@ -376,16 +376,18 @@ def test_twr124_ob_registry_does_not_fake_current_runtime_availability():
     states = ob["states"]
 
     assert states[REGISTERED]["value"] is True
-    assert states[PUBLISHED]["value"] is True
+
+    assert states[PUBLISHED]["value"] is None
+    assert states[PUBLISHED]["verification_state"] == NOT_CONFIGURED
 
     assert states[ENTITLED]["value"] is None
-    assert states[ENTITLED]["verification_state"] == UNKNOWN
+    assert states[ENTITLED]["verification_state"] == NOT_CONFIGURED
 
     assert states[AUTHORIZED]["value"] is None
     assert states[AUTHORIZED]["verification_state"] == UNKNOWN
 
     assert states[AVAILABLE]["value"] is None
-    assert states[AVAILABLE]["verification_state"] == UNKNOWN
+    assert states[AVAILABLE]["verification_state"] == NOT_CONFIGURED
 
     assert states[ENABLED]["value"] is None
     assert states[ENABLED]["verification_state"] == UNKNOWN

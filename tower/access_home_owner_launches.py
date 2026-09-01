@@ -8,6 +8,13 @@ from typing import Any, Dict, List
 
 from flask import jsonify, redirect, request
 
+from tower.app_publication_authority import (
+    app_publication_authority_snapshot,
+)
+from tower.app_registry import registered_apps
+from tower.app_truth_projection import (
+    verified_launchable_app_ids,
+)
 from tower.owner_people_registry import (
     owner_people_authority_snapshot,
 )
@@ -58,6 +65,9 @@ def access_home_owner_launches() -> List[Dict[str, Any]]:
 def access_home_owner_launch_summary() -> Dict[str, Any]:
     launches = access_home_owner_launches()
     people_authority = owner_people_authority_snapshot()
+    app_authority = app_publication_authority_snapshot()
+    registered = registered_apps()
+    launchable_app_ids = verified_launchable_app_ids()
 
     return {
         "status":
@@ -86,6 +96,21 @@ def access_home_owner_launch_summary() -> Dict[str, Any]:
 
         "people_authority_state":
             people_authority["verification_state"],
+
+        "app_publication_authority_state":
+            app_authority["verification_state"],
+
+        "registered_app_count":
+            len(registered),
+
+        "verified_launchable_app_count":
+            len(launchable_app_ids),
+
+        "launchable_app_ids":
+            launchable_app_ids,
+
+        "registered_apps_are_not_availability":
+            True,
 
         "live_auto":
             "LOCKED",
