@@ -32,6 +32,7 @@
 <body
   data-ob-room="market-map"
   data-ob-market-map-version="OBUX031-OBUX035"
+  data-ob-market-map-open-repair="OBFIX006-010"
   data-ob-market-map-live-updates="canonical-adapter"
   data-ob-live-auto-locked="true"
 >
@@ -385,6 +386,12 @@
   <script
     src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"
   ></script>
+
+  <!-- OBFIX006–010_PROTECTED_ROOM_SCOPED_CANONICAL_FEED -->
+  <script>
+    window.OB_ENGINE_FEED_ENDPOINT =
+      "{{ url_for('ob_market_map_alias_v11') }}?engine_feed=1";
+  </script>
 
   <script
     src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}"

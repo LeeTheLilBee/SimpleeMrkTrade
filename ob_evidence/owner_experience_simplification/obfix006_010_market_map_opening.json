@@ -1,0 +1,43 @@
+{
+  "branch": "ob-market-map-open-repair-obfix006-010",
+  "generated_at_utc": "2026-09-01T14:51:51.369977+00:00",
+  "hosted_visual_verification": {
+    "note": "Source and authenticated Flask behavior are tested here. Hosted visual acceptance remains an owner eyeball check after Render serves the promoted revision.",
+    "status": "PENDING_AFTER_MAIN_PROMOTION"
+  },
+  "locked_boundaries": {
+    "automatic_contract_selection_authorized": false,
+    "automatic_execution_authorized": false,
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "hybrid_execution_authorized": false,
+    "live_auto_authorized": false
+  },
+  "packet": "OBFIX006-010",
+  "parent_commit": "af31fb8d29e87fb5f49015da18d3c0376e40c112",
+  "preserved": {
+    "canonical_engine_projection": true,
+    "market_map_build": "OBUX031-OBUX035",
+    "no_fake_fallback": true,
+    "symbol_handoff": "/ob/symbol/<symbol>"
+  },
+  "proven_defect": {
+    "market_map_independent_market_fetch": false,
+    "market_map_route": "/ob/market-map",
+    "market_map_route_is_approved": true,
+    "previous_adapter_endpoint": "/ob/engine-feed-snapshot.json",
+    "previous_adapter_endpoint_is_approved_ob_room": false,
+    "previous_result": "canonical browser feed request received HTTP 403 and adapter exposed guarded/empty projection",
+    "tower_default_deny_for_unknown_ob_paths": true
+  },
+  "repair": {
+    "protected_room_scoped_feed": "/ob/market-map?engine_feed=1",
+    "public_engine_endpoint_created": false,
+    "same_market_map_session_boundary_reused": true,
+    "same_market_map_step_up_boundary_reused": true,
+    "second_engine_created": false,
+    "shared_adapter_supports_relative_page_override": true,
+    "tower_source_modified": false
+  },
+  "title": "Market Map Protected Canonical Feed and Authenticated Opening Repair"
+}

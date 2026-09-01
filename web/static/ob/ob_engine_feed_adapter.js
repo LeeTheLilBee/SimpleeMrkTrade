@@ -17,8 +17,33 @@
   const ADAPTER_VERSION =
     "OB_V25_CANONICAL_WEB_PROJECTION_OBDATA003";
 
-  const ENDPOINT =
+  const DEFAULT_ENDPOINT =
     "/ob/engine-feed-snapshot.json";
+
+
+  // OBFIX006–010
+  //
+  // Protected rooms may provide a SAME-ORIGIN relative endpoint that
+  // travels through an already-approved room corridor.
+  //
+  // The default remains unchanged for compatibility.
+  // Absolute / protocol-relative URLs are rejected.
+  const REQUESTED_ENDPOINT =
+    (
+      typeof window.OB_ENGINE_FEED_ENDPOINT === "string"
+    )
+      ? window.OB_ENGINE_FEED_ENDPOINT.trim()
+      : "";
+
+
+  const ENDPOINT =
+    (
+      REQUESTED_ENDPOINT.startsWith("/")
+      &&
+      !REQUESTED_ENDPOINT.startsWith("//")
+    )
+      ? REQUESTED_ENDPOINT
+      : DEFAULT_ENDPOINT;
 
   const POLL_MS =
     60 * 1000;

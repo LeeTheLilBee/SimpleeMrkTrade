@@ -9665,6 +9665,21 @@ def ob_market_map_v10():
 # OBSERVATORY_MARKET_MAP_V11_OB_ALIAS_ROUTE
 @app.route("/ob/market-map")
 def ob_market_map_alias_v11():
+    # OBFIX006–010
+    #
+    # The global /ob/engine-feed-snapshot.json URL is intentionally
+    # unavailable through Tower's fail-closed room allowlist.
+    #
+    # Market Map therefore carries its read-only canonical projection
+    # through the SAME already-approved protected room corridor.
+    #
+    # request.path remains /ob/market-map, so the existing owner-session
+    # + step-up boundary applies before this branch can execute.
+    #
+    # No second engine and no public data endpoint are created.
+    if request.args.get("engine_feed") == "1":
+        return ob_engine_feed_snapshot_v25()
+
     return render_template("market_map.html")
 
 # OBSERVATORY_SYMBOL_PAGE_V12_REAL_STAR_ROOM_ROUTE
