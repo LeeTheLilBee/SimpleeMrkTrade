@@ -188,6 +188,7 @@ def render_access_home_v2(
     step_up_active: bool,
     username: str,
 ) -> str:
+
     summary = owner_session_summary(
         step_up_active=step_up_active
     )
@@ -198,10 +199,27 @@ def render_access_home_v2(
         return_receipt
     )
 
+    auth_status = (
+        "Authenticated"
+        if summary["authenticated"]
+        else "Not authenticated"
+    )
+
+    role_status = str(
+        summary["role"]
+        or "UNAVAILABLE"
+    )
+
     step_status = (
         "Verified for protected entry"
         if summary["step_up_active"]
         else "Additional verification required"
+    )
+
+    step_chip = (
+        "STEP-UP ACTIVE"
+        if summary["step_up_active"]
+        else "STEP-UP REQUIRED"
     )
 
     return_status = (
@@ -215,194 +233,524 @@ def render_access_home_v2(
         for card in APP_CARDS
     )
 
+    owner_style = """
+    <style>
+    .tower-main {
+        max-width: 1440px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .tower-owner-home {
+        display: grid;
+        gap: 18px;
+    }
+
+    .tower-access-hero {
+        min-height: 250px;
+    }
+
+    .tower-access-hero h1 {
+        max-width: 820px;
+    }
+
+    .tower-owner-state-strip {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .tower-owner-state-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255,255,255,.045);
+        color: var(--muted);
+        font-size: .78rem;
+        font-weight: 800;
+    }
+
+    .tower-owner-state-chip strong {
+        color: var(--gold);
+        margin-left: 6px;
+    }
+
+    .tower-access-stage {
+        display: grid;
+        grid-template-columns:
+            minmax(0, 1.6fr)
+            minmax(310px, .72fr);
+        gap: 18px;
+        align-items: stretch;
+    }
+
+    .tower-primary-door {
+        border:
+            1px solid
+            rgba(244,210,123,.40);
+        border-radius: 30px;
+        padding: 28px;
+        background:
+            radial-gradient(
+                circle at 86% 8%,
+                rgba(244,210,123,.13),
+                transparent 30%
+            ),
+            linear-gradient(
+                145deg,
+                rgba(125,79,214,.18),
+                rgba(255,255,255,.035)
+            );
+        box-shadow:
+            0 30px 100px
+            rgba(0,0,0,.28);
+    }
+
+    .tower-primary-door > .tower-overline {
+        margin-bottom: 15px;
+    }
+
+    .tower-primary-door .tower-app-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tower-primary-door .tower-app-card {
+        min-height: 305px;
+        border-radius: 26px;
+        padding: 26px;
+    }
+
+    .tower-primary-door .tower-app-card h3 {
+        font-size:
+            clamp(2rem, 4vw, 3.6rem);
+        letter-spacing: -.04em;
+    }
+
+    .tower-primary-door .tower-button {
+        min-height: 50px;
+        padding: 0 22px;
+    }
+
+    .tower-owner-side {
+        display: grid;
+        gap: 14px;
+    }
+
+    .tower-owner-control-card,
+    .tower-return-card,
+    .tower-backstage-details {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(255,255,255,.07),
+                rgba(255,255,255,.03)
+            );
+        box-shadow:
+            0 20px 70px
+            rgba(0,0,0,.20);
+    }
+
+    .tower-owner-control-card,
+    .tower-return-card {
+        padding: 22px;
+    }
+
+    .tower-owner-control-card {
+        border-color:
+            rgba(244,210,123,.26);
+    }
+
+    .tower-owner-control-card h3,
+    .tower-return-card h3 {
+        margin: 7px 0 10px;
+        font-size: 1.35rem;
+    }
+
+    .tower-owner-control-card p,
+    .tower-return-card p,
+    .tower-backstage-details p {
+        color: var(--muted);
+        line-height: 1.5;
+    }
+
+    .tower-owner-control-card .tower-button {
+        margin-top: 4px;
+    }
+
+    .tower-backstage-details {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .tower-backstage-details summary {
+        cursor: pointer;
+        list-style: none;
+        padding: 18px 20px;
+        color: var(--muted);
+        font-weight: 800;
+    }
+
+    .tower-backstage-details
+    summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .tower-backstage-details summary:after {
+        content: "+";
+        float: right;
+        color: var(--gold);
+        font-size: 1.1rem;
+    }
+
+    .tower-backstage-details[open]
+    summary:after {
+        content: "–";
+    }
+
+    .tower-backstage-body {
+        padding: 0 20px 20px;
+    }
+
+    .tower-backstage-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    .tower-access-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        color: var(--dim);
+        padding: 8px 2px 0;
+        font-size: .82rem;
+    }
+
+    @media (max-width: 980px) {
+        .tower-access-stage {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 820px) {
+        .tower-shell {
+            grid-template-columns: 1fr;
+        }
+
+        .tower-rail {
+            position: relative;
+            height: auto;
+            border-right: 0;
+            border-bottom:
+                1px solid var(--line);
+        }
+
+        .tower-main {
+            padding: 20px;
+        }
+    }
+    </style>
+    """
+
     page = f"""
     <!doctype html>
     <html lang="en">
     <head>
         <meta charset="utf-8">
+
         <meta
             name="viewport"
             content="width=device-width,initial-scale=1"
         >
-        <title>Tower Access Home</title>
+
+        <title>
+            Tower Access Home
+        </title>
+
         {_tower_css()}
+        {owner_style}
     </head>
 
     <body>
-        <main class="tower-shell">
+        <main
+            class="tower-shell"
+            data-tower-owner-access-home="twr156-160"
+        >
+
             <aside class="tower-rail">
-                <div class="tower-mark">T</div>
+
+                <div class="tower-mark">
+                    T
+                </div>
 
                 <div>
                     <div class="tower-overline">
                         Simplee Tower
                     </div>
-                    <h2>Access Home</h2>
+
+                    <h2>
+                        Access Home
+                    </h2>
                 </div>
 
-                <nav class="tower-nav">
-                    <a href="/tower/access-home">
+                <nav
+                    class="tower-nav"
+                    aria-label="Tower owner navigation"
+                >
+                    <a
+                        href="/tower/access-home"
+                        aria-current="page"
+                    >
                         Access Home
                     </a>
 
-                    <a href="/tower/launch/observatory">
+                    <a
+                        href="/tower/launch/observatory"
+                    >
                         Observatory
                     </a>
 
-                    <a href="/tower/owner-dashboard">
+                    <a
+                        href="/tower/owner-dashboard"
+                    >
                         Owner Headquarters
                     </a>
 
-                    <a href="/tower/logout">
+                    <a
+                        href="/tower/logout"
+                    >
                         Logout
                     </a>
                 </nav>
 
                 <div class="tower-rail-card">
-                    <span>Session role</span>
+                    <span>
+                        Owner session
+                    </span>
+
                     <strong>
-                        {escape(str(summary["role"] or "UNAVAILABLE"))}
+                        {escape(auth_status)}
                     </strong>
                 </div>
+
             </aside>
 
+
             <section class="tower-main">
-                <header class="tower-hero">
-                    <div>
-                        <div class="tower-overline">
-                            Tower Access Home
-                        </div>
 
-                        <h1>
-                            Welcome back, {escape(username)}.
-                        </h1>
+                <div class="tower-owner-home">
 
-                        <p>
-                            Tower shows only doors and state it can
-                            support. Unpublished products stay out
-                            of the operating surface.
-                        </p>
-                    </div>
+                    <header
+                        class="tower-hero tower-access-hero"
+                        data-tower-owner-front-door="true"
+                    >
 
-                    <div class="tower-session-card">
-                        <span>Owner session</span>
-
-                        <strong>
-                            {
-                                "Authenticated"
-                                if summary["authenticated"]
-                                else "Not authenticated"
-                            }
-                        </strong>
-
-                        <small>
-                            Step-up: {escape(step_status)}
-                        </small>
-                    </div>
-                </header>
-
-                <section class="tower-status-grid">
-                    <div class="tower-status-tile">
-                        <span>Role</span>
-                        <strong>
-                            {escape(str(summary["role"] or "UNAVAILABLE"))}
-                        </strong>
-                    </div>
-
-                    <div class="tower-status-tile">
-                        <span>Boundary</span>
-                        <strong>Default deny</strong>
-                    </div>
-
-                    <div class="tower-status-tile">
-                        <span>OB entry</span>
-                        <strong>{escape(step_status)}</strong>
-                    </div>
-
-                    <div class="tower-status-tile">
-                        <span>Return</span>
-                        <strong>{escape(return_status)}</strong>
-                    </div>
-                </section>
-
-                <section class="tower-section">
-                    <div class="tower-section-head">
                         <div>
-                            <h2>Your access</h2>
+
+                            <div class="tower-overline">
+                                Tower · Owner Access
+                            </div>
+
+                            <h1>
+                                Welcome back, {escape(username)}.
+                            </h1>
+
                             <p>
-                                Only published product entry belongs here.
+                                One front door. One real product entry.
+                                Owner controls stay close. Technical proof
+                                stays backstage.
                             </p>
-                        </div>
-                    </div>
 
-                    <div class="tower-app-grid">
-                        {card_html}
-                    </div>
-                </section>
+                            <div class="tower-owner-state-strip">
 
-                <section class="tower-lower-grid">
-                    <article class="tower-panel tower-return-panel">
-                        <div class="tower-panel-head">
-                            <span>Return status</span>
-                            <strong>OB → Tower</strong>
-                        </div>
+                                <span class="tower-owner-state-chip">
+                                    ROLE
+                                    <strong>
+                                        {escape(role_status)}
+                                    </strong>
+                                </span>
 
-                        <h3>{escape(return_status)}</h3>
+                                <span class="tower-owner-state-chip">
+                                    BOUNDARY
+                                    <strong>
+                                        DEFAULT DENY
+                                    </strong>
+                                </span>
 
-                        <p>
-                            Technical receipt proof is not shown
-                            on the normal Access Home.
-                        </p>
-                    </article>
+                                <span class="tower-owner-state-chip">
+                                    {escape(step_chip)}
+                                </span>
 
-                    <article class="tower-panel">
-                        <div class="tower-panel-head">
-                            <span>Owner control</span>
-                            <strong>Protected</strong>
+                            </div>
+
                         </div>
 
-                        <h3>Owner Headquarters</h3>
 
-                        <p>
-                            People and access state will remain
-                            explicitly unavailable until authoritative
-                            providers are connected.
-                        </p>
+                        <div class="tower-session-card">
 
-                        <a
-                            class="tower-button secondary"
-                            href="/tower/owner-dashboard"
+                            <span>
+                                Protected product entry
+                            </span>
+
+                            <strong>
+                                {escape(step_status)}
+                            </strong>
+
+                            <small>
+                                Tower verifies the current owner
+                                boundary before protected
+                                Observatory handoff.
+                            </small>
+
+                        </div>
+
+                    </header>
+
+
+                    <section
+                        class="tower-access-stage"
+                        aria-label="Tower owner access"
+                    >
+
+                        <section
+                            class="tower-primary-door"
+                            data-tower-primary-owner-action="observatory"
                         >
-                            Open Owner Headquarters
-                        </a>
-                    </article>
 
-                    <article class="tower-panel">
-                        <div class="tower-panel-head">
-                            <span>Product entry</span>
-                            <strong>Protected</strong>
-                        </div>
+                            <div class="tower-overline">
+                                Primary protected product
+                            </div>
 
-                        <h3>The Observatory</h3>
+                            <div class="tower-app-grid">
+                                {card_html}
+                            </div>
 
-                        <p>
-                            Tower performs the current session and
-                            step-up boundary before product handoff.
-                        </p>
+                        </section>
 
-                        <a
-                            class="tower-button"
-                            href="/tower/launch/observatory"
-                        >
-                            Enter Observatory
-                        </a>
-                    </article>
-                </section>
 
-                <footer class="tower-footer">
-                    Tower Access Home · © Simplee
-                </footer>
+                        <aside class="tower-owner-side">
+
+                            <article
+                                id="tower-owner-launch-dock"
+                                class="tower-owner-control-card"
+                                data-tower-owner-control="integrated"
+                            >
+
+                                <div class="tower-overline">
+                                    Owner control
+                                </div>
+
+                                <h3>
+                                    Owner Headquarters
+                                </h3>
+
+                                <p>
+                                    Review Tower owner state,
+                                    people and access truth,
+                                    and operational release review
+                                    without turning technical proof
+                                    into the main product experience.
+                                </p>
+
+                                <a
+                                    class="tower-button secondary"
+                                    href="/tower/owner-dashboard"
+                                >
+                                    Open Owner Headquarters
+                                </a>
+
+                            </article>
+
+
+                            <article
+                                class="
+                                    tower-return-card
+                                    tower-return-panel
+                                "
+                                data-tower-return-status="compact"
+                            >
+
+                                <div class="tower-overline">
+                                    OB → Tower
+                                </div>
+
+                                <h3>
+                                    {escape(return_status)}
+                                </h3>
+
+                                <p>
+                                    Technical receipt proof is not
+                                    shown on the normal Access Home.
+                                </p>
+
+                            </article>
+
+
+                            <details
+                                class="tower-backstage-details"
+                                data-tower-backstage-evidence="true"
+                            >
+
+                                <summary>
+                                    Evidence & audit
+                                </summary>
+
+                                <div class="tower-backstage-body">
+
+                                    <p>
+                                        Walkthroughs, certificates,
+                                        readiness proof, and verification
+                                        records stay in the
+                                        Evidence Basement.
+                                    </p>
+
+                                    <a
+                                        class="tower-backstage-link"
+                                        href="/tower/owner/evidence"
+                                    >
+                                        Open Evidence Basement
+                                    </a>
+
+                                </div>
+
+                            </details>
+
+                        </aside>
+
+                    </section>
+
+
+                    <footer class="tower-access-footer">
+
+                        <span>
+                            Tower Access Home · © Simplee
+                        </span>
+
+                        <span>
+                            No release execution ·
+                            no broker submission ·
+                            no capital movement
+                        </span>
+
+                    </footer>
+
+                </div>
+
             </section>
+
         </main>
     </body>
     </html>
@@ -411,7 +759,6 @@ def render_access_home_v2(
     return render_template_string(
         page
     )
-
 
 def _render_app_card(
     card: Dict[str, Any],
