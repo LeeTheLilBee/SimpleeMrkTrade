@@ -1,0 +1,34 @@
+{
+  "branch": "ob-hosted-runtime-truth-obfix001-005",
+  "finding": {
+    "canonical_dashboard_build": "OBUX091-095",
+    "canonical_dashboard_route": "/ob/dashboard",
+    "canonical_dashboard_template": "web/templates/dashboard.html",
+    "legacy_override_behavior": "replaced successful /ob/dashboard response body after dashboard.html had already rendered",
+    "legacy_runtime_override": "_tower_obux006_010_dashboard_server_render_response",
+    "legacy_runtime_override_found": true
+  },
+  "generated_at_utc": "2026-09-01T14:09:55.209958+00:00",
+  "hosted_verification": {
+    "note": "Source/runtime hijack is repaired in code. Hosted visual verification must occur after the promoted revision is served.",
+    "status": "PENDING_AFTER_MAIN_PROMOTION"
+  },
+  "locked_boundaries": {
+    "automatic_contract_selection_authorized": false,
+    "automatic_execution_authorized": false,
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "hybrid_execution_authorized": false,
+    "live_auto_authorized": false
+  },
+  "packet": "OBFIX001-005",
+  "parent_commit": "c4bfd2f62dd337087535522523741039202930c9",
+  "repair": {
+    "canonical_dashboard_route_preserved": true,
+    "legacy_dashboard_after_request_hijack_retired": true,
+    "legacy_obux006_010_server_html_retired": true,
+    "owner_dashboard_route_preserved": true,
+    "tower_source_modified": false
+  },
+  "title": "Dashboard Runtime Truth and Legacy Response Override Retirement"
+}
