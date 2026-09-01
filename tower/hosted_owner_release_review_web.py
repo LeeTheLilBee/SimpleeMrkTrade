@@ -195,8 +195,11 @@ def _review_room_html(candidate: dict[str, Any]) -> str:
             f'<span class="label">Why the room is waiting</span><p>{reason}</p>'
             "<p class=\"quiet\">No decision or release action is available.</p>"
             f"{_publication_form()}"
-            '<p><a class="back" href="/tower/owner/release-review/walkthrough">'
-            'View hosted readiness and your next move</a></p></section>',
+            '<details><summary>Evidence & readiness details</summary>'
+            '<p class="quiet">Walkthroughs, readiness proof, and certification '
+            'records are available backstage.</p>'
+            '<p><a class="back" href="/tower/owner/evidence">'
+            'Open evidence basement</a></p></details></section>',
         )
 
     state = project_owner_release_candidate_state(

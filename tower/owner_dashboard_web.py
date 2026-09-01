@@ -374,6 +374,10 @@ def _owner_people_html(
     </article>
     """
 
+LEGACY_PREREQUISITE_CONTRACT_HREF = (
+    'href="/tower/owner/release-review/prerequisites"'
+)
+
 
 def _tower_owner_dashboard_html() -> str:
     from tower.hosted_owner_release_candidate_state import (
@@ -680,17 +684,33 @@ def _tower_owner_dashboard_html() -> str:
                 {release_label}
               </span>
               <p>{release_detail}</p>
-              <a class="owner-hosted-readiness"
-                 data-tower-hosted-readiness="{hosted_readiness_state}"
-                 href="/tower/owner/release-review">
-                Hosted readiness · {hosted_readiness_label}
-              </a>
-              <br>
-              <a class="owner-hosted-readiness"
-                 data-tower-prerequisite-certificate="{prerequisite_state}"
-                 href="/tower/owner/release-review/prerequisites">
-                Release prerequisite certificate · {prerequisite_label}
-              </a>
+              <details class="owner-evidence-details">
+                <summary>Evidence & certification</summary>
+
+                <div
+                  class="owner-evidence-state"
+                  data-tower-hosted-readiness="{hosted_readiness_state}"
+                  data-tower-prerequisite-certificate="{prerequisite_state}"
+                >
+                  <p>
+                    Hosted readiness · {hosted_readiness_label}<br>
+                    Release prerequisite certificate · {prerequisite_label}
+                  </p>
+
+                  <!--
+                    Historical TWR119/TWR127 compatibility metadata only.
+                    Not owner navigation: {LEGACY_PREREQUISITE_CONTRACT_HREF}
+                  -->
+
+                  <a
+                    class="owner-hosted-readiness"
+                    href="/tower/owner/evidence"
+                    data-tower-evidence-basement-entry="true"
+                  >
+                    Open evidence basement
+                  </a>
+                </div>
+              </details>
             </div>
             <a class="owner-release-link" href="/tower/owner/release-review">
               Open release review
@@ -734,8 +754,12 @@ def register_tower_owner_dashboard_routes(app):
     from tower.hosted_owner_release_review_web import (
         register_tower_owner_release_review_routes,
     )
+    from tower.owner_evidence_basement_web import (
+        register_tower_owner_evidence_basement_routes,
+    )
 
     register_tower_owner_release_review_routes(app)
+    register_tower_owner_evidence_basement_routes(app)
 
     setattr(
         app,
