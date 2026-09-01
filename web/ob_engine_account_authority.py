@@ -68,6 +68,9 @@ CODE_SOURCES = {
 
     "options_research_contract":
         "web/static/ob/ob_options_research_contract.js",
+
+    "owner_fit_eligibility_service":
+        "web/ob_owner_fit_eligibility.py",
 }
 
 
@@ -1294,6 +1297,112 @@ def build_authority_registry(
 
             "live_auto_locked":
                 True,
+        },
+
+        "owner_fit_eligibility": {
+            "authority":
+                "OB_OWNER_FIT_ELIGIBILITY_V1",
+
+            "service":
+                "web/ob_owner_fit_eligibility.py",
+
+            "authority_scope":
+                "owner_specific_candidate_eligibility",
+
+            "market_truth_authority":
+                "existing_canonical_engine_feed",
+
+            "market_truth_mutated":
+                False,
+
+            "candidate_recalculation":
+                False,
+
+            "market_score_recalculation":
+                False,
+
+            "options_research_authority":
+                "OB_OPTIONS_RESEARCH_V1",
+
+            "operating_profile_authority":
+                "OB_OWNER_OPERATING_PROFILE_V1",
+
+            "trade_intent_authority":
+                "OB_TRADE_INTENT_V1",
+
+            "explicit_account_context_required":
+                True,
+
+            "confirmed_owner_profile_required":
+                True,
+
+            "growth_and_risk_independent":
+                True,
+
+            "risk_limits_are_hard_constraints":
+                True,
+
+            "growth_objective_promises_return":
+                False,
+
+            "buckets": [
+                "NOW",
+                "WATCH",
+                "NOT_YET",
+            ],
+
+            "now_means":
+                "owner_review_eligible",
+
+            "now_means_execute":
+                False,
+
+            "watch_remains_visible":
+                True,
+
+            "not_yet_remains_visible":
+                True,
+
+            "non_now_can_bypass_owner_review":
+                False,
+
+            "owner_selection_authority":
+                True,
+
+            "automatic_contract_selection":
+                False,
+
+            "broker_submission":
+                False,
+
+            "capital_movement":
+                False,
+
+            "hybrid_execution":
+                False,
+
+            "automatic_execution":
+                False,
+
+            "live_auto_locked":
+                True,
+            "market_truth_mutation":
+                False,
+
+            "candidate_rank_recalculation":
+                False,
+
+            "service_present":
+                (
+                    "OB_OWNER_FIT_ELIGIBILITY_V1"
+                    in str(
+                        values.get(
+                            "owner_fit_eligibility"
+                        )
+                        or ""
+                    )
+                ),
+
         },
 
         "trade_intent": {

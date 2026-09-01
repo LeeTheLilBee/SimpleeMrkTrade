@@ -1814,6 +1814,23 @@ def transition_trade_intent(
             )
 
         if (
+            owner_fit.get(
+                "eligible"
+            )
+            is not True
+            or
+            owner_fit.get(
+                "status"
+            )
+            !=
+            "NOW"
+        ):
+            raise ValueError(
+                "OBRISK owner-fit candidate must be eligible NOW "
+                "before owner review."
+            )
+
+        if (
             account_context.get(
                 "status"
             )
@@ -1963,6 +1980,21 @@ def manual_live_handoff_payload(
     ):
         blockers.append(
             "owner_fit_not_evaluated"
+        )
+    elif (
+        owner_fit.get(
+            "eligible"
+        )
+        is not True
+        or
+        owner_fit.get(
+            "status"
+        )
+        !=
+        "NOW"
+    ):
+        blockers.append(
+            "owner_fit_not_eligible_now"
         )
 
     if (
@@ -2122,6 +2154,13 @@ def trade_intent_contract() -> Dict[str, Any]:
 
         "owner_fit_authority":
             "PENDING_OBRISK",
+
+        # OBRISK006–010 concrete owner-fit evaluator.
+        #
+        # The generic field above remains PENDING_OBRISK for
+        # sealed OBENG lifecycle compatibility.
+        "owner_fit_eligibility_authority":
+            "OB_OWNER_FIT_ELIGIBILITY_V1",
 
         "mode_authority":
             "PENDING_OBMODE",
@@ -2558,6 +2597,366 @@ def bind_owner_operating_profile(
 
         "owner_fit_evaluated":
             False,
+
+        "intent":
+            intent,
+    }
+# OBRISK006-010_OWNER_FIT_ELIGIBILITY_BINDING
+#
+# Evaluate the EXISTING canonical candidate + EXISTING options research against
+# the explicitly owner-confirmed, per-account operating profile already bound by
+# OBRISK001–005.
+#
+# This is an OWNER-REVIEW eligibility gate only.
+#
+# NOW      -> may advance to OWNER_REVIEW_READY
+# WATCH    -> stays OWNER_FIT_PENDING
+# NOT_YET  -> stays OWNER_FIT_PENDING and remains visible as market truth
+#
+# NONE of these buckets authorizes broker submission, capital movement, Hybrid
+# execution, or Automated execution.
+#
+def apply_owner_fit_eligibility(
+    intent_id: str,
+    *,
+    evaluation_context: Optional[
+        Dict[str, Any]
+    ] = None,
+    path: Optional[
+        Path
+    ] = None,
+) -> Dict[str, Any]:
+
+    from web.ob_owner_fit_eligibility import (
+        SCHEMA_VERSION
+        as OWNER_FIT_SCHEMA_VERSION,
+    )
+
+    from web.ob_owner_fit_eligibility import (
+        evaluate_owner_fit,
+    )
+
+    intent = (
+        get_trade_intent(
+            intent_id,
+            path=path,
+        )
+    )
+
+    if not intent:
+        raise KeyError(
+            f"Trade intent not found: {intent_id}"
+        )
+
+    if (
+        intent.get(
+            "lifecycle_state"
+        )
+        !=
+        "OWNER_FIT_PENDING"
+    ):
+        raise ValueError(
+            "Owner-fit eligibility may only be evaluated "
+            "while OWNER_FIT_PENDING."
+        )
+
+    account_context = (
+        intent.get(
+            "account_context",
+            {}
+        )
+    )
+
+    if (
+        account_context.get(
+            "status"
+        )
+        !=
+        "BOUND"
+    ):
+        raise ValueError(
+            "Explicit owner account context must be BOUND "
+            "before OBRISK006–010 evaluation."
+        )
+
+    candidate_before = deepcopy(
+        intent[
+            "candidate"
+        ]
+    )
+
+    options_before = deepcopy(
+        intent[
+            "options_research"
+        ]
+    )
+
+    result = (
+        evaluate_owner_fit(
+            intent,
+            context=(
+                evaluation_context
+                or {}
+            ),
+        )
+    )
+
+    owner_fit = deepcopy(
+        result[
+            "owner_fit"
+        ]
+    )
+
+    if (
+        owner_fit.get(
+            "authority"
+        )
+        !=
+        OWNER_FIT_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "Owner-fit authority mismatch."
+        )
+
+    if (
+        intent[
+            "candidate"
+        ]
+        !=
+        candidate_before
+    ):
+        raise RuntimeError(
+            "OBRISK006–010 changed canonical candidate truth."
+        )
+
+    if (
+        intent[
+            "options_research"
+        ]
+        !=
+        options_before
+    ):
+        raise RuntimeError(
+            "OBRISK006–010 changed canonical options research."
+        )
+
+    bucket = (
+        owner_fit[
+            "bucket"
+        ]
+    )
+
+    now = (
+        utc_now_iso()
+    )
+
+    intent[
+        "owner_fit"
+    ] = owner_fit
+
+    if bucket == "NOW":
+        intent[
+            "lifecycle_state"
+        ] = (
+            "OWNER_REVIEW_READY"
+        )
+
+        history_state = (
+            "OWNER_REVIEW_READY"
+        )
+
+        history_reason = (
+            "owner_fit_now_ready_for_owner_review"
+        )
+
+    else:
+        # WATCH and NOT_YET remain visible and re-evaluable.
+        # They are not collapsed into execution-style BLOCKED.
+        intent[
+            "lifecycle_state"
+        ] = (
+            "OWNER_FIT_PENDING"
+        )
+
+        history_state = (
+            "OWNER_FIT_PENDING"
+        )
+
+        history_reason = (
+            "owner_fit_"
+            + bucket.lower()
+        )
+
+    intent[
+        "updated_at"
+    ] = now
+
+    intent[
+        "lifecycle_history"
+    ].append(
+        {
+            "state":
+                history_state,
+
+            "timestamp":
+                now,
+
+            "reason":
+                history_reason,
+
+            "evidence": {
+                "owner_fit_authority":
+                    OWNER_FIT_SCHEMA_VERSION,
+
+                "bucket":
+                    bucket,
+
+                "eligible":
+                    owner_fit.get(
+                        "eligible"
+                    ),
+
+                "evaluation_fingerprint":
+                    owner_fit.get(
+                        "evaluation_fingerprint"
+                    ),
+
+                "market_truth_mutated":
+                    False,
+
+                "market_score_recalculated":
+                    False,
+
+                "contract_selected":
+                    False,
+            },
+        }
+    )
+
+    manual_bridge = (
+        intent.get(
+            "manual_live_bridge"
+        )
+    )
+
+    if isinstance(
+        manual_bridge,
+        dict,
+    ):
+        manual_bridge[
+            "ready"
+        ] = False
+
+        if bucket == "NOW":
+            manual_bridge[
+                "blocked_until"
+            ] = [
+                "Manual Live mode authority",
+                "explicit owner security/contract choice",
+            ]
+        else:
+            manual_bridge[
+                "blocked_until"
+            ] = [
+                "owner_fit status NOW",
+                "Manual Live mode authority",
+            ]
+
+    # OBMODE remains a separate authority pack.
+    # Do NOT touch mode_authority here.
+
+    intent[
+        "intent_hash"
+    ] = (
+        recompute_intent_hash(
+            intent
+        )
+    )
+
+    _store_intent(
+        intent,
+        path=path,
+    )
+
+    _write_event(
+        intent_id=(
+            intent[
+                "intent_id"
+            ]
+        ),
+
+        state=(
+            intent[
+                "lifecycle_state"
+            ]
+        ),
+
+        event_type=(
+            "OWNER_FIT_ELIGIBILITY_EVALUATED"
+        ),
+
+        reason=(
+            history_reason
+        ),
+
+        evidence={
+            "owner_fit_authority":
+                OWNER_FIT_SCHEMA_VERSION,
+
+            "bucket":
+                bucket,
+
+            "eligible":
+                owner_fit.get(
+                    "eligible"
+                ),
+
+            "evaluation_fingerprint":
+                owner_fit.get(
+                    "evaluation_fingerprint"
+                ),
+
+            "hard_failure_reasons":
+                deepcopy(
+                    owner_fit.get(
+                        "hard_failure_reasons",
+                        [],
+                    )
+                ),
+
+            "watch_reasons":
+                deepcopy(
+                    owner_fit.get(
+                        "watch_reasons",
+                        [],
+                    )
+                ),
+        },
+
+        path=path,
+    )
+
+    return {
+        "ok":
+            True,
+
+        "evaluated":
+            True,
+
+        "bucket":
+            bucket,
+
+        "eligible":
+            owner_fit.get(
+                "eligible"
+            ),
+
+        "advanced_to_owner_review":
+            (
+                bucket
+                ==
+                "NOW"
+            ),
 
         "intent":
             intent,

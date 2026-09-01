@@ -1,0 +1,91 @@
+{
+  "authority": "OB_OWNER_FIT_ELIGIBILITY_V1",
+  "classification": {
+    "NOT_YET": "Market setup remains visible; current owner fit fails.",
+    "NOW": "May advance to owner review; never execution permission.",
+    "WATCH": "Market setup remains visible; fit evidence is incomplete."
+  },
+  "compatibility_contract": {
+    "authority_collision": false,
+    "concrete_authority_registered_separately": true,
+    "concrete_owner_fit_eligibility_authority": "OB_OWNER_FIT_ELIGIBILITY_V1",
+    "execution_authorized": false,
+    "generic_seam_preserved_for_obeng006_010": true,
+    "generic_trade_intent_owner_fit_authority": "PENDING_OBRISK",
+    "market_score_recalculated": false,
+    "market_truth_mutated": false
+  },
+  "compatibility_repaired_at_utc": "2026-09-01T17:24:34.417905+00:00",
+  "execution_boundary": {
+    "automatic_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "hybrid_execution": false,
+    "live_auto_locked": true,
+    "mode_authority": "PENDING_OBMODE",
+    "now_is_execution_permission": false
+  },
+  "expected_files": [
+    "ob_evidence/risk_authority/obrisk006_010_owner_fit_eligibility.json",
+    "tests/test_obrisk006_010_owner_fit_eligibility.py",
+    "web/ob_engine_account_authority.py",
+    "web/ob_owner_fit_eligibility.py",
+    "web/ob_trade_intent.py"
+  ],
+  "expected_parent": "f9b9237c299d0460af290353aa22829471cf309c",
+  "flow": [
+    "MARKET_TRUTH",
+    "CANDIDATE",
+    "EXPLICIT_OWNER_ACCOUNT",
+    "GROWTH_OBJECTIVE",
+    "RISK_ENVELOPE",
+    "OWNER_FIT_ELIGIBILITY",
+    "NOW_WATCH_NOT_YET"
+  ],
+  "growth_boundary": {
+    "cagr_target": false,
+    "expected_return_target": false,
+    "growth_and_risk_independent": true,
+    "growth_required": true,
+    "market_score_threshold_created": false,
+    "profit_target": false,
+    "risk_envelope_override": false
+  },
+  "option_research": {
+    "all_research_contracts_may_be_checked": true,
+    "automatic_contract_selection": false,
+    "contract_selected": false,
+    "selection_authority": "OWNER"
+  },
+  "pack": "OBRISK006-010",
+  "risk_dimensions": [
+    "max_loss_per_trade_pct",
+    "max_position_allocation_pct",
+    "daily_loss_cap_pct",
+    "max_concurrent_positions",
+    "max_spread_pct",
+    "min_option_volume",
+    "min_open_interest",
+    "max_correlated_exposure_pct",
+    "max_hold_minutes",
+    "overnight_allowed",
+    "max_implied_volatility_pct",
+    "live_automation_allowed"
+  ],
+  "route_boundary": {
+    "app_py_modified": false,
+    "new_flask_route": false,
+    "new_public_endpoint": false
+  },
+  "service": "web/ob_owner_fit_eligibility.py",
+  "title": "Owner-Fit Candidate Eligibility",
+  "tower_source_modified": false,
+  "truth_boundary": {
+    "candidate_rank_recalculation": false,
+    "existing_engine_is_market_truth_authority": true,
+    "market_score_recalculation": false,
+    "market_truth_mutation": false,
+    "not_yet_hides_market_truth": false,
+    "second_engine_created": false
+  }
+}
