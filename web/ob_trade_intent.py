@@ -2161,3 +2161,404 @@ def trade_intent_contract() -> Dict[str, Any]:
         "boundaries":
             intent_boundaries(),
     }
+
+
+# OBRISK001-005_OWNER_OPERATING_PROFILE_BINDING
+#
+# Bind an explicitly owner-confirmed, per-account operating profile into the
+# existing canonical OBTradeIntent.
+#
+# IMPORTANT:
+#
+# This DOES NOT evaluate the candidate against the risk envelope yet.
+#
+# That belongs to OBRISK006–010.
+#
+# Therefore:
+#
+#     account_context → BOUND
+#
+# but:
+#
+#     owner_fit.evaluated → False
+#     owner_fit.status    → PENDING_OBRISK_ELIGIBILITY
+#     lifecycle_state     → remains unchanged
+#
+# Mode authority also remains untouched / PENDING_OBMODE.
+#
+
+def bind_owner_operating_profile(
+    intent_id: str,
+    profile: Dict[str, Any],
+    path: Optional[
+        Path
+    ] = None,
+) -> Dict[str, Any]:
+
+    from web.ob_owner_operating_profile import (
+        SCHEMA_VERSION
+        as OWNER_PROFILE_SCHEMA_VERSION,
+    )
+
+    from web.ob_owner_operating_profile import (
+        validate_operating_profile,
+    )
+
+    profile = (
+        validate_operating_profile(
+            profile,
+            require_active=True,
+        )
+    )
+
+    intent = (
+        get_trade_intent(
+            intent_id,
+            path=path,
+        )
+    )
+
+    if not intent:
+        raise KeyError(
+            f"Trade intent not found: {intent_id}"
+        )
+
+    current_state = (
+        intent[
+            "lifecycle_state"
+        ]
+    )
+
+    if current_state not in {
+        "RESEARCH_PENDING",
+        "OWNER_FIT_PENDING",
+    }:
+        raise ValueError(
+            "Owner operating profile may only be bound "
+            "before owner-fit review has advanced."
+        )
+
+    account = deepcopy(
+        profile[
+            "account"
+        ]
+    )
+
+    growth = deepcopy(
+        profile[
+            "growth_objective"
+        ]
+    )
+
+    risk = deepcopy(
+        profile[
+            "risk_envelope"
+        ]
+    )
+
+    now = (
+        utc_now_iso()
+    )
+
+    intent[
+        "account_context"
+    ] = {
+        "status":
+            "BOUND",
+
+        "account_key":
+            account[
+                "account_key"
+            ],
+
+        "display_label":
+            account[
+                "display_label"
+            ],
+
+        "explicit_owner_choice":
+            True,
+
+        "implicit_default_allowed":
+            False,
+
+        "authority":
+            OWNER_PROFILE_SCHEMA_VERSION,
+
+        "owner_id":
+            profile[
+                "owner_id"
+            ],
+
+        "profile_id":
+            profile[
+                "profile_id"
+            ],
+
+        "profile_revision":
+            profile[
+                "revision"
+            ],
+
+        "profile_hash":
+            profile[
+                "profile_hash"
+            ],
+    }
+
+    intent[
+        "owner_fit"
+    ] = {
+        "status":
+            "PENDING_OBRISK_ELIGIBILITY",
+
+        "evaluated":
+            False,
+
+        "eligible":
+            None,
+
+        "growth_objective_ref": {
+            "profile_id":
+                profile[
+                    "profile_id"
+                ],
+
+            "growth_key":
+                growth[
+                    "key"
+                ],
+
+            "growth_label":
+                growth[
+                    "label"
+                ],
+        },
+
+        "risk_envelope_ref": {
+            "profile_id":
+                profile[
+                    "profile_id"
+                ],
+
+            "profile_revision":
+                profile[
+                    "revision"
+                ],
+
+            "profile_hash":
+                profile[
+                    "profile_hash"
+                ],
+
+            "risk_key":
+                risk[
+                    "key"
+                ],
+
+            "risk_label":
+                risk[
+                    "label"
+                ],
+
+            "effective_limits":
+                deepcopy(
+                    risk[
+                        "effective_limits"
+                    ]
+                ),
+
+            "limit_units":
+                deepcopy(
+                    risk.get(
+                        "limit_units",
+                        {},
+                    )
+                ),
+        },
+
+        "account_policy_ref": {
+            "account_key":
+                account[
+                    "account_key"
+                ],
+
+            "display_label":
+                account[
+                    "display_label"
+                ],
+
+            "profile_id":
+                profile[
+                    "profile_id"
+                ],
+
+            "profile_revision":
+                profile[
+                    "revision"
+                ],
+        },
+
+        "authority":
+            "PENDING_OBRISK_OWNER_FIT_ELIGIBILITY",
+
+        "reason":
+            (
+                "Owner operating profile is bound. "
+                "Candidate eligibility has not yet been "
+                "evaluated by OBRISK006–010."
+            ),
+    }
+
+    # Manual remains deliberately blocked.
+    manual_bridge = (
+        intent.get(
+            "manual_live_bridge"
+        )
+    )
+
+    if isinstance(
+        manual_bridge,
+        dict,
+    ):
+        manual_bridge[
+            "ready"
+        ] = False
+
+        manual_bridge[
+            "blocked_until"
+        ] = [
+            "OBRISK006-010 owner-fit eligibility",
+            "Manual Live mode authority",
+        ]
+
+    # Do NOT touch mode_authority here.
+    intent[
+        "updated_at"
+    ] = now
+
+    intent[
+        "lifecycle_history"
+    ].append(
+        {
+            "state":
+                current_state,
+
+            "timestamp":
+                now,
+
+            "reason":
+                "owner_operating_profile_bound",
+
+            "evidence": {
+                "profile_id":
+                    profile[
+                        "profile_id"
+                    ],
+
+                "profile_revision":
+                    profile[
+                        "revision"
+                    ],
+
+                "profile_hash":
+                    profile[
+                        "profile_hash"
+                    ],
+
+                "account_key":
+                    account[
+                        "account_key"
+                    ],
+
+                "growth_key":
+                    growth[
+                        "key"
+                    ],
+
+                "risk_key":
+                    risk[
+                        "key"
+                    ],
+            },
+        }
+    )
+
+    intent[
+        "intent_hash"
+    ] = (
+        recompute_intent_hash(
+            intent
+        )
+    )
+
+    _store_intent(
+        intent,
+        path=path,
+    )
+
+    _write_event(
+        intent_id=(
+            intent[
+                "intent_id"
+            ]
+        ),
+
+        state=current_state,
+
+        event_type=(
+            "OWNER_OPERATING_PROFILE_BOUND"
+        ),
+
+        reason=(
+            "explicit_owner_profile_bound"
+        ),
+
+        evidence={
+            "profile_id":
+                profile[
+                    "profile_id"
+                ],
+
+            "profile_revision":
+                profile[
+                    "revision"
+                ],
+
+            "profile_hash":
+                profile[
+                    "profile_hash"
+                ],
+
+            "account_key":
+                account[
+                    "account_key"
+                ],
+
+            "growth_key":
+                growth[
+                    "key"
+                ],
+
+            "risk_key":
+                risk[
+                    "key"
+                ],
+        },
+
+        path=path,
+    )
+
+    return {
+        "ok":
+            True,
+
+        "bound":
+            True,
+
+        "owner_fit_evaluated":
+            False,
+
+        "intent":
+            intent,
+    }

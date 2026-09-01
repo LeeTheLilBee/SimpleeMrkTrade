@@ -1237,6 +1237,65 @@ def build_authority_registry(
                 False,
         },
 
+        "owner_operating_profile": {
+            "authority":
+                "OB_OWNER_OPERATING_PROFILE_V1",
+
+            "service":
+                "web/ob_owner_operating_profile.py",
+
+            "authority_scope":
+                "per_account_owner_growth_and_risk_envelope",
+
+            "per_account":
+                True,
+
+            "explicit_account_selection_required":
+                True,
+
+            "implicit_default_account":
+                False,
+
+            "owner_confirmation_required":
+                True,
+
+            "growth_and_risk_independent":
+                True,
+
+            "software_policy_templates":
+                True,
+
+            "expected_return_target":
+                False,
+
+            "profit_guarantee":
+                False,
+
+            "owner_fit_calculation":
+                False,
+
+            "owner_fit_authority":
+                "PENDING_OBRISK006_010",
+
+            "automatic_contract_selection":
+                False,
+
+            "broker_submission":
+                False,
+
+            "capital_movement":
+                False,
+
+            "hybrid_execution":
+                False,
+
+            "automatic_execution":
+                False,
+
+            "live_auto_locked":
+                True,
+        },
+
         "trade_intent": {
             "authority":
                 "OB_TRADE_INTENT_V1",

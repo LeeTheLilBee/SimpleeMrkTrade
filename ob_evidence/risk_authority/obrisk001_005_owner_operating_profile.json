@@ -1,0 +1,276 @@
+{
+  "acceptance": {
+    "accounts_kept_separate": true,
+    "aggressive_growth_moderate_risk_valid": true,
+    "app_py_modified": false,
+    "automatic_contract_selection": false,
+    "automatic_execution_authorized": false,
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "growth_and_risk_independent": true,
+    "hybrid_execution_authorized": false,
+    "implicit_account_default": false,
+    "live_auto_authorized": false,
+    "most_restrictive_policy_composition": true,
+    "new_engine_created": false,
+    "new_public_route_created": false,
+    "numeric_limits_inspectable": true,
+    "owner_confirmation_required": true,
+    "owner_fit_eligibility_deferred_to": "OBRISK006-010",
+    "per_account_profiles": true,
+    "profile_history_preserved": true,
+    "tower_source_modified": false,
+    "trade_intent_account_context_binding": true,
+    "trade_intent_owner_fit_evaluated": false
+  },
+  "contract": {
+    "accounts": {
+      "personal": {
+        "key": "personal",
+        "label": "Personal"
+      },
+      "proof_demo": {
+        "key": "proof_demo",
+        "label": "Proof / Demo"
+      },
+      "simplee_on_the_go_atm": {
+        "key": "simplee_on_the_go_atm",
+        "label": "SimpleeOnTheGo / ATM"
+      },
+      "simplee_world_business": {
+        "key": "simplee_world_business",
+        "label": "Simplee World / Business"
+      },
+      "the_grounds_apartment": {
+        "key": "the_grounds_apartment",
+        "label": "The Grounds / Apartment"
+      },
+      "trust": {
+        "key": "trust",
+        "label": "Trust"
+      }
+    },
+    "authority": "OWNER_OPERATING_PROFILE",
+    "boundaries": {
+      "automatic_contract_selection": false,
+      "automatic_execution": false,
+      "broker_submission": false,
+      "candidate_ranking_calculated_here": false,
+      "capital_movement": false,
+      "expected_return_target": false,
+      "explicit_account_selection_required": true,
+      "growth_and_risk_independent": true,
+      "hybrid_execution": false,
+      "implicit_account_default": false,
+      "investment_advice_claim": false,
+      "live_auto_locked": true,
+      "market_truth_modified": false,
+      "owner_confirmation_required": true,
+      "owner_fit_calculated_here": false,
+      "per_account": true,
+      "profit_guarantee": false,
+      "software_policy_templates": true
+    },
+    "custom_source": "OWNER_CUSTOM_V1",
+    "growth_and_risk_independent": true,
+    "growth_objectives": {
+      "AGGRESSIVE_GROWTH": {
+        "description": "Seek stronger growth opportunities while remaining constrained by the independently selected risk envelope.",
+        "key": "AGGRESSIVE_GROWTH",
+        "label": "Aggressive Growth"
+      },
+      "CUSTOM": {
+        "description": "Owner-defined growth posture. No return target is implied.",
+        "key": "CUSTOM",
+        "label": "Custom"
+      },
+      "GROWTH": {
+        "description": "Seek meaningful growth opportunities inside the selected risk envelope.",
+        "key": "GROWTH",
+        "label": "Growth"
+      },
+      "PRESERVE": {
+        "description": "Prioritize capital protection and highly selective opportunity flow.",
+        "key": "PRESERVE",
+        "label": "Preserve"
+      },
+      "STEADY": {
+        "description": "Favor controlled, repeatable opportunities without defining a promised return.",
+        "key": "STEADY",
+        "label": "Steady"
+      }
+    },
+    "implicit_default_account": false,
+    "limit_units": {
+      "daily_loss_cap_pct": "percentage_points",
+      "live_automation_allowed": "boolean",
+      "max_concurrent_positions": "count",
+      "max_correlated_exposure_pct": "percentage_points",
+      "max_hold_minutes": "minutes",
+      "max_implied_volatility_pct": "percentage_points",
+      "max_loss_per_trade_pct": "percentage_points",
+      "max_position_allocation_pct": "percentage_points",
+      "max_spread_pct": "percentage_points",
+      "min_open_interest": "contracts",
+      "min_option_volume": "contracts",
+      "overnight_allowed": "boolean"
+    },
+    "most_restrictive_policy_available": true,
+    "owner_confirmation_required": true,
+    "owner_fit_authority": "PENDING_OBRISK006_010",
+    "per_account": true,
+    "preset_source": "OB_PRODUCT_DEFAULT_V1",
+    "profile_authority": "OB_OWNER_OPERATING_PROFILE_V1",
+    "risk_levels": {
+      "CUSTOM": {
+        "key": "CUSTOM",
+        "label": "Custom"
+      },
+      "ELEVATED": {
+        "key": "ELEVATED",
+        "label": "Elevated"
+      },
+      "HIGH": {
+        "key": "HIGH",
+        "label": "High"
+      },
+      "LOW": {
+        "key": "LOW",
+        "label": "Low"
+      },
+      "MODERATE": {
+        "key": "MODERATE",
+        "label": "Moderate"
+      }
+    },
+    "risk_templates": {
+      "ELEVATED": {
+        "daily_loss_cap_pct": 4.0,
+        "live_automation_allowed": false,
+        "max_concurrent_positions": 4,
+        "max_correlated_exposure_pct": 35.0,
+        "max_hold_minutes": 1440,
+        "max_implied_volatility_pct": 180.0,
+        "max_loss_per_trade_pct": 1.5,
+        "max_position_allocation_pct": 15.0,
+        "max_spread_pct": 15.0,
+        "min_open_interest": 100,
+        "min_option_volume": 25,
+        "overnight_allowed": true
+      },
+      "HIGH": {
+        "daily_loss_cap_pct": 5.0,
+        "live_automation_allowed": false,
+        "max_concurrent_positions": 5,
+        "max_correlated_exposure_pct": 50.0,
+        "max_hold_minutes": 2880,
+        "max_implied_volatility_pct": 250.0,
+        "max_loss_per_trade_pct": 2.0,
+        "max_position_allocation_pct": 20.0,
+        "max_spread_pct": 20.0,
+        "min_open_interest": 50,
+        "min_option_volume": 10,
+        "overnight_allowed": true
+      },
+      "LOW": {
+        "daily_loss_cap_pct": 1.5,
+        "live_automation_allowed": false,
+        "max_concurrent_positions": 2,
+        "max_correlated_exposure_pct": 15.0,
+        "max_hold_minutes": 390,
+        "max_implied_volatility_pct": 80.0,
+        "max_loss_per_trade_pct": 0.5,
+        "max_position_allocation_pct": 5.0,
+        "max_spread_pct": 8.0,
+        "min_open_interest": 500,
+        "min_option_volume": 100,
+        "overnight_allowed": false
+      },
+      "MODERATE": {
+        "daily_loss_cap_pct": 2.5,
+        "live_automation_allowed": false,
+        "max_concurrent_positions": 3,
+        "max_correlated_exposure_pct": 25.0,
+        "max_hold_minutes": 780,
+        "max_implied_volatility_pct": 120.0,
+        "max_loss_per_trade_pct": 1.0,
+        "max_position_allocation_pct": 10.0,
+        "max_spread_pct": 10.0,
+        "min_open_interest": 250,
+        "min_option_volume": 50,
+        "overnight_allowed": false
+      }
+    },
+    "schema_version": "OB_OWNER_OPERATING_PROFILE_V1",
+    "service_version": "OBRISK001_005_OWNER_OPERATING_PROFILE"
+  },
+  "feature_branch": "ob-owner-growth-risk-obrisk001-005",
+  "generated_at_utc": "2026-09-01T15:44:01.665432+00:00",
+  "packet": "OBRISK001-005",
+  "parent_commit": "f420353d21992502e22e8c615c21dfca124cd14e",
+  "policy_example": {
+    "account": {
+      "account_key": "trust",
+      "display_label": "Trust",
+      "explicit_owner_choice_required": true,
+      "implicit_default_allowed": false
+    },
+    "expected_return": null,
+    "growth_objective": {
+      "description": "Seek stronger growth opportunities while remaining constrained by the independently selected risk envelope.",
+      "key": "AGGRESSIVE_GROWTH",
+      "label": "Aggressive Growth",
+      "numeric_return_target_defined": false,
+      "return_guarantee": false,
+      "risk_level_implied": false
+    },
+    "market_candidate": null,
+    "owner_confirmed": false,
+    "profit_guarantee": false,
+    "purpose": "Demonstrate that growth objective and risk comfort are independent.",
+    "risk_envelope": {
+      "effective_limits": {
+        "daily_loss_cap_pct": 2.5,
+        "live_automation_allowed": false,
+        "max_concurrent_positions": 3,
+        "max_correlated_exposure_pct": 25.0,
+        "max_hold_minutes": 780,
+        "max_implied_volatility_pct": 120.0,
+        "max_loss_per_trade_pct": 1.0,
+        "max_position_allocation_pct": 10.0,
+        "max_spread_pct": 10.0,
+        "min_open_interest": 250,
+        "min_option_volume": 50,
+        "overnight_allowed": false
+      },
+      "key": "MODERATE",
+      "label": "Moderate",
+      "limit_units": {
+        "daily_loss_cap_pct": "percentage_points",
+        "live_automation_allowed": "boolean",
+        "max_concurrent_positions": "count",
+        "max_correlated_exposure_pct": "percentage_points",
+        "max_hold_minutes": "minutes",
+        "max_implied_volatility_pct": "percentage_points",
+        "max_loss_per_trade_pct": "percentage_points",
+        "max_position_allocation_pct": "percentage_points",
+        "max_spread_pct": "percentage_points",
+        "min_open_interest": "contracts",
+        "min_option_volume": "contracts",
+        "overnight_allowed": "boolean"
+      },
+      "live_automation_allowed": false
+    },
+    "status": "DRAFT_ONLY",
+    "trade": null
+  },
+  "software_template_disclaimer": {
+    "expected_return_model": false,
+    "financial_advice": false,
+    "profit_guarantee": false,
+    "requires_explicit_owner_confirmation": true,
+    "return_guarantee": false,
+    "software_operating_defaults": true
+  },
+  "title": "Owner Growth Objective + Per-Account Risk Envelope"
+}
