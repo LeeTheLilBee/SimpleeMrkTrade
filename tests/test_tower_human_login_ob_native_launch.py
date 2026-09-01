@@ -190,12 +190,12 @@ def test_dashboard_allows_empty_optional_room_values(
         "/tower/observatory/launch"
     ):
         result = (
-            launch_module.launch_observatory.__wrapped__()
+            launch_module.launch_observatory_rehearsal_contract.__wrapped__()
             if hasattr(
-                launch_module.launch_observatory,
+                launch_module.launch_observatory_rehearsal_contract,
                 "__wrapped__",
             )
-            else launch_module.launch_observatory()
+            else launch_module.launch_observatory_rehearsal_contract()
         )
 
     assert result["gp046_native_contract"] is True
@@ -249,12 +249,12 @@ def test_trade_center_preserves_explicit_context(
         )
     ):
         result = (
-            launch_module.launch_observatory.__wrapped__()
+            launch_module.launch_observatory_rehearsal_contract.__wrapped__()
             if hasattr(
-                launch_module.launch_observatory,
+                launch_module.launch_observatory_rehearsal_contract,
                 "__wrapped__",
             )
-            else launch_module.launch_observatory()
+            else launch_module.launch_observatory_rehearsal_contract()
         )
 
     handoff = result["launch_handoff"]
@@ -319,12 +319,12 @@ def test_supported_response_forms(
         )
 
         result = (
-            launch_module.launch_observatory.__wrapped__()
+            launch_module.launch_observatory_rehearsal_contract.__wrapped__()
             if hasattr(
-                launch_module.launch_observatory,
+                launch_module.launch_observatory_rehearsal_contract,
                 "__wrapped__",
             )
-            else launch_module.launch_observatory()
+            else launch_module.launch_observatory_rehearsal_contract()
         )
 
         if isinstance(result, tuple):
@@ -387,10 +387,10 @@ def test_native_wrapper_fails_closed_without_identity(
                 .launch_observatory
                 .__wrapped__()
                 if hasattr(
-                    launch_module.launch_observatory,
+                    launch_module.launch_observatory_rehearsal_contract,
                     "__wrapped__",
                 )
-                else launch_module.launch_observatory()
+                else launch_module.launch_observatory_rehearsal_contract()
             )
 
 
@@ -418,12 +418,12 @@ def test_locked_safety_boundaries_remain_false_or_locked(
         "/tower/observatory/launch"
     ):
         result = (
-            launch_module.launch_observatory.__wrapped__()
+            launch_module.launch_observatory_rehearsal_contract.__wrapped__()
             if hasattr(
-                launch_module.launch_observatory,
+                launch_module.launch_observatory_rehearsal_contract,
                 "__wrapped__",
             )
-            else launch_module.launch_observatory()
+            else launch_module.launch_observatory_rehearsal_contract()
         )
 
     handoff = result["launch_handoff"]
@@ -518,7 +518,7 @@ def test_real_walkthrough_redirect_stores_native_handoff(
         "/tower/observatory/launch"
     ):
         launch_function = (
-            launch_module.launch_observatory
+            launch_module.launch_observatory_rehearsal_contract
         )
 
         result = (
