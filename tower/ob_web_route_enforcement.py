@@ -3,6 +3,7 @@ from __future__ import annotations
 from flask import abort, redirect, request
 
 from tower.tower_human_login_ob_launch import (
+    operational_ob_access_active,
     owner_session_active,
     step_up_active,
 )
@@ -95,6 +96,9 @@ def register_ob_protected_route_enforcement(app):
 
         if not step_up_active():
             return redirect("/tower/access-home")
+
+        if not operational_ob_access_active():
+            return redirect("/tower/launch/observatory")
 
         return None
 
