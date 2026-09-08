@@ -10,7 +10,7 @@ import json
 REGISTRY_SCHEMA_VERSION = "OB_CANONICAL_AUTHORITY_REGISTRY_V1"
 RECORD_SCHEMA_VERSION = "OB_AUTHORITY_RECORD_V1"
 COMPATIBILITY_SCHEMA_VERSION = "OB_AUTHORITY_COMPATIBILITY_PROJECTION_V1"
-SERVICE_VERSION = "OBAUTH001_010_CANONICAL_AUTHORITY_REGISTRY"
+SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_CANONICAL_AUTHORITY_REGISTRY"
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -423,7 +423,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "owner-confirmed growth or risk settings."
             ),
             deferred_integrations=(
-                "effective_policy",
                 "decision_context",
             ),
         ),
@@ -504,11 +503,12 @@ ACTIVE_AUTHORITY_RECORDS = {
             inputs=(
                 "OB_TRADE_INTENT_V1",
                 "OB_OWNER_OPERATING_PROFILE_V1",
+                "OB_EFFECTIVE_POLICY_V1",
                 "existing_canonical_engine_feed",
                 "OB_OPTIONS_RESEARCH_V1",
             ),
             policy_inputs=(
-                "OB_OWNER_OPERATING_PROFILE_V1",
+                "OB_EFFECTIVE_POLICY_V1",
             ),
             triggers=(
                 "explicit owner-fit evaluation",
@@ -558,7 +558,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "PENDING_OBRISK",
             ),
             deferred_integrations=(
-                "effective_policy",
                 "mode_authority",
                 "source_provenance",
                 "temporal_context",
@@ -717,7 +716,6 @@ ACTIVE_AUTHORITY_RECORDS[
     inputs=(
         "OB_OWNER_OPERATING_PROFILE_V1",
         "OB_ENGINE_ACCOUNT_AUTHORITY_V1",
-        "OB_PROOF_DEMO_ACCOUNT_V1",
     ),
 
     triggers=(
@@ -804,13 +802,125 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
-PENDING_AUTHORITY_SLOTS = {
+ACTIVE_AUTHORITY_RECORDS[
+    "effective_policy"
+] = _record(
+    concept_key=
+        "effective_policy",
 
-    "effective_policy": {
-        "authority_id": "PENDING_OBPOLICY",
-        "planned_pack": "OBPOLICY001-010",
-        "status": "PENDING",
-    },
+    authority_id=
+        "OB_EFFECTIVE_POLICY_V1",
+
+    authority_class=
+        "POLICY_REGISTRY_AND_RESOLVER",
+
+    implementation_ref=
+        "web/ob_effective_policy.py",
+
+    implementation_role=
+        "CANONICAL_MOST_RESTRICTIVE_EFFECTIVE_POLICY",
+
+    owns=(
+        "policy source registry",
+        "account-bound effective risk-limit resolution",
+        "per-limit winning-layer provenance",
+        "effective capability default-deny projection",
+    ),
+
+    inputs=(
+        "OB_OWNER_OPERATING_PROFILE_V1",
+        "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+    ),
+
+    policy_inputs=(
+        "OB_OWNER_OPERATING_PROFILE_V1",
+    ),
+
+    triggers=(
+        "explicit effective-policy resolution",
+        "owner-profile binding change",
+        "authorized restriction-layer change",
+    ),
+
+    effects=(
+        "resolve lower upper-bounds",
+        "resolve higher minimum requirements",
+        "resolve FALSE-wins permissions",
+        "emit deterministic effective-policy fingerprint",
+        "explain every winning policy layer",
+    ),
+
+    state_mutation_scope=
+        "NONE",
+
+    forbidden=(
+        "owner profile mutation",
+        "policy widening",
+        "silent policy adoption",
+        "silent policy persistence",
+        "market truth mutation",
+        "candidate score mutation",
+        "execution authorization",
+        "broker submission",
+        "capital movement",
+        "automatic contract selection",
+        "hybrid execution",
+        "automatic execution",
+    ),
+
+    failure_behavior=(
+        "Unknown accounts, missing owner-profile baselines, mixed-account "
+        "layers, invalid layer fingerprints, pending authorities, and attempted "
+        "policy widening fail closed."
+    ),
+
+    explanation=(
+        "Every effective limit names its restriction rule, owner-profile "
+        "baseline, contributors, winning layers, and whether the result "
+        "tightened the owner profile."
+    ),
+
+    evidence=(
+        "policy fingerprint",
+        "policy layer fingerprints",
+        "account identity fingerprint",
+        "per-limit resolution",
+        "effective capability resolution",
+        "tightened keys",
+    ),
+
+    review_visibility=(
+        "Review may reconstruct exactly which policy layers produced every "
+        "effective limit used by Owner Fit."
+    ),
+
+    temporal_validity=(
+        "RESOLUTION_BOUND; source changes require recomputation. Formal time "
+        "expiry remains deferred to OBTIME/OBCTX."
+    ),
+
+    deterministic=
+        True,
+
+    learning_boundary=(
+        "Learning may propose stricter policy changes but may not mutate, "
+        "adopt, widen, or persist policy without later owner/event authority."
+    ),
+
+    compatibility_adapters=(
+        "OB_OWNER_OPERATING_PROFILE_V1.most_restrictive_limits",
+        "PENDING_OBPOLICY",
+    ),
+
+    deferred_integrations=(
+        "event_authority",
+        "mode_authority",
+        "decision_context",
+    ),
+)
+
+
+PENDING_AUTHORITY_SLOTS = {
 
     "event_authority": {
         "authority_id": "PENDING_OBEVENT",
@@ -845,6 +955,9 @@ PENDING_AUTHORITY_SLOTS = {
 
 
 RETIRED_AUTHORITY_ALIASES = {
+    "PENDING_OBPOLICY":
+        "OB_EFFECTIVE_POLICY_V1",
+
     "PENDING_OBAUTH006_010":
         "OB_ACCOUNT_IDENTITY_TRUTH_V1",
 
@@ -860,6 +973,9 @@ RETIRED_AUTHORITY_ALIASES = {
 
 
 LEGACY_KEY_TO_CANONICAL_CONCEPT = {
+    "effective_policy":
+        "effective_policy",
+
     "account_identity_truth_taxonomy":
         "account_identity_truth_taxonomy",
 

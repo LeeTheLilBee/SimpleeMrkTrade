@@ -1017,7 +1017,21 @@ def evaluate_owner_fit(
             "Owner operating profile references are incomplete."
         )
 
-    limits = _object(risk_ref.get("effective_limits"))
+    from web.ob_effective_policy import (
+        resolve_effective_policy_for_intent,
+    )
+
+    effective_policy = (
+        resolve_effective_policy_for_intent(
+            intent
+        )
+    )
+
+    limits = _object(
+        effective_policy.get(
+            "effective_limits"
+        )
+    )
     required = (
         "max_loss_per_trade_pct",
         "max_position_allocation_pct",
@@ -1103,6 +1117,7 @@ def evaluate_owner_fit(
         "account_key": account_context.get("account_key"),
         "growth_key": growth.get("growth_key"),
         "risk_key": risk_ref.get("risk_key"),
+        "effective_policy_fingerprint": effective_policy.get("policy_fingerprint"),
         "market": market,
         "option_gate": option_gate,
         "candidate_checks": candidate_checks,
@@ -1137,6 +1152,9 @@ def evaluate_owner_fit(
         "growth_objective_ref": deepcopy(growth_ref),
         "risk_envelope_ref": deepcopy(risk_ref),
         "account_policy_ref": deepcopy(account_ref),
+        "effective_policy_ref": deepcopy(
+            effective_policy["reference"]
+        ),
         "growth_context": growth,
         "market_truth_check": market,
         "risk_checks": candidate_checks,
@@ -1180,6 +1198,9 @@ def owner_fit_eligibility_contract() -> Dict[str, Any]:
         "input_candidate_authority": "EXISTING_CANONICAL_ENGINE",
         "input_options_authority": "OB_OPTIONS_RESEARCH_V1",
         "input_profile_authority": "OB_OWNER_OPERATING_PROFILE_V1",
+        "effective_policy_authority": "OB_EFFECTIVE_POLICY_V1",
+        "direct_profile_policy_bypass": False,
+        "most_restrictive_policy": True,
         "buckets": list(BUCKETS),
         "market_truth_mutation": False,
         "market_score_recalculation": False,

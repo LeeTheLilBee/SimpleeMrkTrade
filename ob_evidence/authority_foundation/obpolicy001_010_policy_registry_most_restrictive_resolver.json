@@ -1,0 +1,96 @@
+{
+  "active_policy_sources": [
+    "PRODUCT_PHASE_LOCK",
+    "OWNER_OPERATING_PROFILE",
+    "EXPLICIT_OWNER_RESTRICTION"
+  ],
+  "authority": "OB_EFFECTIVE_POLICY_V1",
+  "dependency_graph_correction": {
+    "account_identity_runtime_imports_proof_demo": false,
+    "correction": "Removed OB_PROOF_DEMO_ACCOUNT_V1 from the account-identity authority inputs while retaining proof_demo_account -> OB_PROOF_DEMO_ACCOUNT_V1 SIMULATED taxonomy.",
+    "dependency_cycle_free_required": true,
+    "discovered_during_fresh_process_probe": true,
+    "invalid_cycle": [
+      "OB_OWNER_FIT_ELIGIBILITY_V1",
+      "OB_EFFECTIVE_POLICY_V1",
+      "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+      "OB_PROOF_DEMO_ACCOUNT_V1",
+      "OB_OWNER_FIT_ELIGIBILITY_V1"
+    ],
+    "proof_demo_owner_fit_dependency_retained": true,
+    "proof_demo_taxonomy_retained": true,
+    "root_cause": "OB_ACCOUNT_IDENTITY_TRUTH_V1 declared OB_PROOF_DEMO_ACCOUNT_V1 as a structural input even though the implementation uses Proof/Demo only as simulated source-role taxonomy/provenance.",
+    "second_account_registry_created": false
+  },
+  "existing_composition_primitive": {
+    "authority": "OB_OWNER_OPERATING_PROFILE_V1",
+    "function": "most_restrictive_limits",
+    "reused": true,
+    "rewritten": false
+  },
+  "future_policy_sources": {
+    "CAPITAL_POLICY": "PENDING_OBCAP",
+    "MODE_POLICY": "PENDING_OBMODE",
+    "PORTFOLIO_POLICY": "PENDING_OBPORT",
+    "SAFETY_KERNEL_POLICY": "PENDING_OBSAFE"
+  },
+  "hard_boundaries": {
+    "app_py_modified": false,
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_submission": false,
+    "candidate_score_mutation": false,
+    "capital_movement": false,
+    "execution_authority": false,
+    "hybrid_execution": false,
+    "live_auto_locked": true,
+    "market_truth_mutation": false,
+    "owner_profile_mutation": false,
+    "policy_persistence": false,
+    "policy_widening": false,
+    "silent_policy_mutation": false,
+    "tower_modified": false
+  },
+  "next_arrow": {
+    "pack": "OBEVENT001-010",
+    "title": "Canonical Commands + Events + Causal Invalidation"
+  },
+  "owner_fit_transition": {
+    "direct_profile_policy_bypass": false,
+    "new_policy_authority": "OB_EFFECTIVE_POLICY_V1",
+    "policy_fingerprint_bound_to_fit_evaluation": true,
+    "previous_policy_input": "raw risk_envelope_ref.effective_limits",
+    "raw_profile_ref_retained_as_evidence": true
+  },
+  "pack": "OBPOLICY001-010",
+  "policy_layer_schema": "OB_POLICY_LAYER_V1",
+  "registry_transition": {
+    "active": true,
+    "from": "PENDING_OBPOLICY",
+    "to": "OB_EFFECTIVE_POLICY_V1"
+  },
+  "restriction_rules": {
+    "minimum_requirements": "HIGHER_WINS",
+    "missing_capabilities": "DEFAULT_DENY",
+    "permissions": "FALSE_WINS",
+    "upper_bounds": "LOWER_WINS"
+  },
+  "schema_version": "OBPOLICY001_010_ACCEPTANCE_EVIDENCE_V1",
+  "sealed_parent": "7eb3eaab90c031f86ca187a8b9dab532d0009825",
+  "title": "Policy Registry + Most-Restrictive Resolver",
+  "validation_precedence_correction": {
+    "corrected_precedence": [
+      "validate layers",
+      "validate account boundary",
+      "require exactly one owner operating profile",
+      "require exactly one product phase lock",
+      "reject duplicate policy layer_id"
+    ],
+    "discovered_during_focused_acceptance": true,
+    "duplicate_layer_guard_removed": false,
+    "duplicate_layer_guard_retained": true,
+    "failing_test": "test_policy_requires_exactly_one_owner_profile_baseline",
+    "previous_behavior": "Duplicate policy layer_id was raised before the exactly-one-owner-profile structural invariant.",
+    "structural_policy_invariants_take_precedence": true
+  }
+}
