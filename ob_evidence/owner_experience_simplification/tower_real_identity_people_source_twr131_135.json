@@ -1,0 +1,52 @@
+{
+  "broker_submission_authorized": false,
+  "capital_movement_authorized": false,
+  "current_runtime_hosted_identity_configured": false,
+  "current_runtime_identity_state": "NOT_CONFIGURED",
+  "layers": {
+    "TWR131": "Secret-free hosted owner person/account identity projection from existing Tower hashed-credential configuration.",
+    "TWR132": "Verified owner-role policy plus optional explicit organization-membership truth.",
+    "TWR133": "Authentication configuration state without inventing account suspension or disablement state.",
+    "TWR134": "Current owner Observatory access-policy truth without claiming runtime availability.",
+    "TWR135": "Owner People and Owner Headquarters binding plus anti-fabrication acceptance wall."
+  },
+  "live_auto_authorized": false,
+  "manual_live_authorized": false,
+  "next_pack": "TWR136\u2013TWR140 \u2014 Real Invitations + Access Lifecycle",
+  "observatory_modified": false,
+  "pack_label": "TWR131\u2013TWR135 \u2014 Real Identity + People Source",
+  "preserved": {
+    "app_registry_modified": false,
+    "hosted_release_proof_backend_modified": false,
+    "prerequisite_certificate_preserved": true,
+    "release_review_preserved": true,
+    "tower_human_login_ob_launch_modified": false
+  },
+  "release_execution_authorized": false,
+  "schema_version": "tower.real-identity-people-source.twr131-135.v1",
+  "tower_branch": "tower-hosted-runtime-identity-twr081-085",
+  "tower_parent_commit": "1a64f1a523f86f1b9c26ea4d4900ad76fc23fddd",
+  "truth_contract": {
+    "access_mutation_lifecycle_configured": false,
+    "account_lifecycle_active_claimed": false,
+    "authentication_configuration_state_supported": true,
+    "credential_hash_value_exposed": false,
+    "existing_hosted_identity_env_contract_reused": true,
+    "first_wave_truth_debt_findings": 0,
+    "future_apps_granted_by_people_authority": false,
+    "hardcoded_person_name_in_product_authority": false,
+    "invitation_lifecycle_configured": false,
+    "local_mode_can_feed_product_people_truth": false,
+    "missing_access_count_defaults_to_zero": false,
+    "missing_invitation_count_defaults_to_zero": false,
+    "observatory_owner_access_policy_supported": true,
+    "observatory_runtime_availability_claimed": false,
+    "organization_membership_fabricated": false,
+    "organization_requires_explicit_configuration": true,
+    "owner_role_policy_projection_supported": true,
+    "plaintext_password_exposed": false,
+    "sample_identity_records": false,
+    "session_secret_exposed": false,
+    "suspension_lifecycle_implemented": false
+  }
+}

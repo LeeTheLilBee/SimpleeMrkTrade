@@ -1,0 +1,62 @@
+{
+  "approval_certifies_prerequisites_only": true,
+  "broker_submission_authorized": false,
+  "capital_movement_authorized": false,
+  "certificate_integrity_sealed": true,
+  "certificate_is_deterministic_projection": true,
+  "certificate_persistence_required": false,
+  "deployment_authorized": false,
+  "exact_approved_candidate_required": true,
+  "exact_verified_owner_receipt_required": true,
+  "fresh_owner_session_and_step_up_required": true,
+  "hold_or_rejection_certifies_prerequisites": false,
+  "layers": {
+    "TWR116": "Fresh verified owner context plus exact approved hosted candidate and durable receipt-chain verification",
+    "TWR117": "Deterministic integrity-sealed release-prerequisite certificate derived from the exact verified approval chain",
+    "TWR118": "Protected focused owner prerequisite-certificate room plus owner-only verification and certification JSON",
+    "TWR119": "Hosted walkthrough and Tower owner-dashboard handoff into the prerequisite certificate without execution authority",
+    "TWR120": "Full hosted publication-to-owner-approval-to-prerequisite-certificate acceptance with every execution boundary closed"
+  },
+  "live_auto_authorized": false,
+  "manual_live_authorized": false,
+  "observatory_modified": false,
+  "owner_password_hash_disclosed": false,
+  "owner_storage_paths_disclosed": false,
+  "pack_label": "TWR116\u2013TWR120 \u2014 Hosted Owner Verification + Release Prerequisite Certification",
+  "production_promotion_authorized": false,
+  "promotion_authorized": false,
+  "receipt_chain_integrity_required": true,
+  "release_execution_authorized": false,
+  "routes": {
+    "owner_prerequisite_certification": "/tower/owner/release-review/prerequisites/certification.json",
+    "owner_prerequisite_page": "/tower/owner/release-review/prerequisites",
+    "owner_prerequisite_verification": "/tower/owner/release-review/prerequisites/verification.json",
+    "owner_receipt": "/tower/owner/release-review/receipt/<receipt_id>",
+    "owner_review": "/tower/owner/release-review",
+    "owner_walkthrough": "/tower/owner/release-review/walkthrough"
+  },
+  "schema_version": "tower.hosted-owner-verification-release-prerequisite-certification.twr116-120.v1",
+  "separate_release_execution_gate_required": true,
+  "session_secrets_disclosed": false,
+  "staging_ready": false,
+  "staging_ready_changed": false,
+  "tower_branch": "tower-hosted-runtime-identity-twr081-085",
+  "tower_parent_commit": "86aa6dedfd9a5f187d48d140ba4d3c6db7b86ea5",
+  "verification_checks": [
+    "owner_context_verified",
+    "hosted_walkthrough_certified",
+    "candidate_owner_approved",
+    "candidate_receipt_integrity_verified",
+    "exact_revision_present",
+    "exact_packet_integrity_hash_present",
+    "exact_receipt_id_present",
+    "walkthrough_receipt_matches_candidate",
+    "execution_boundaries_closed",
+    "exact_approval_receipt_verified"
+  ],
+  "verification_states": [
+    "OWNER_VERIFICATION_REQUIRED",
+    "RELEASE_PREREQUISITES_NOT_CERTIFIED",
+    "RELEASE_PREREQUISITES_CERTIFIED_EXECUTION_LOCKED"
+  ]
+}

@@ -24,6 +24,14 @@ from collections.abc import Mapping
 
 from tower.tower_ob_gp046_native_contract import build_native_gp046_handoff
 
+from tower.owner_observatory_handoff import (
+    OwnerObservatoryHandoffError,
+    consume_owner_observatory_handoff,
+    issue_owner_observatory_handoff,
+    validate_owner_observatory_access_receipt,
+)
+from urllib.parse import urlencode
+
 import hashlib
 import hmac
 import os
@@ -106,6 +114,18 @@ SESSION_OB_LAUNCH_RECEIPT = (
 )
 
 SESSION_OB_NATIVE_LAUNCH_HANDOFF = 'tower_ob_native_launch_handoff'
+
+TOWER_OPERATIONAL_OB_RECEIVE_PATH = (
+    "/tower/observatory/receive"
+)
+
+OPERATIONAL_OB_ENTRY_PATH = (
+    "/ob/dashboard"
+)
+
+SESSION_OB_OPERATIONAL_ACCESS_RECEIPT = (
+    "tower_ob_operational_access_receipt"
+)
 
 OWNER_ROLE = "owner"
 
@@ -979,11 +999,248 @@ def _launch_observatory_legacy():
 # END TOWER UI V2 OBSERVATORY LAUNCH HELPER
 
 
+
+def _operational_ob_session_context():
+    """Return only the current session facts required by the real handoff."""
+
+    return {
+        "authenticated":
+            session.get(
+                SESSION_AUTHENTICATED
+            )
+            is True,
+
+        "role":
+            session.get(
+                SESSION_ROLE
+            ),
+
+        "owner_id":
+            session.get(
+                SESSION_OWNER_ID
+            ),
+
+        "username":
+            session.get(
+                SESSION_USERNAME
+            ),
+
+        "authenticated_at":
+            session.get(
+                SESSION_AUTH_TIME
+            ),
+
+        "step_up_until":
+            session.get(
+                SESSION_STEP_UP_UNTIL
+            ),
+    }
+
+
+def operational_ob_access_active() -> bool:
+    """True only after a real one-time Tower→OB handoff was consumed."""
+
+    if not owner_session_active():
+        return False
+
+    if not step_up_active():
+        return False
+
+    receipt = session.get(
+        SESSION_OB_OPERATIONAL_ACCESS_RECEIPT
+    )
+
+    if not receipt:
+        return False
+
+    valid = (
+        validate_owner_observatory_access_receipt(
+            receipt,
+            _operational_ob_session_context(),
+        )
+    )
+
+    if not valid:
+
+        session.pop(
+            SESSION_OB_OPERATIONAL_ACCESS_RECEIPT,
+            None,
+        )
+
+        return False
+
+    return True
+
+
+def _operational_ob_launch_blocked(
+    error_code: str,
+    *,
+    status_code: int = 503,
+):
+    safe_code = escape(
+        str(
+            error_code
+            or "owner_observatory_launch_blocked"
+        )
+    )
+
+    content = f"""
+    <section class="hero">
+        <h1>Observatory launch is blocked</h1>
+
+        <p>
+            Tower could not verify the complete real owner launch chain.
+            No walkthrough or rehearsal has been substituted.
+        </p>
+    </section>
+
+    <section class="card">
+        <div class="notice danger">
+            {safe_code}
+        </div>
+
+        <div class="actions">
+            <a class="button secondary" href="{ACCESS_HOME_PATH}">
+                Return to Tower
+            </a>
+        </div>
+    </section>
+    """
+
+    return (
+        page(
+            title="Observatory launch blocked",
+            content=content,
+        ),
+        status_code,
+    )
+
+
+def _launch_observatory_operational():
+    """Issue the real owner Observatory handoff or fail closed."""
+
+    if not step_up_active():
+
+        return redirect(
+            OBSERVATORY_STEP_UP_PATH
+            + "?"
+            + urlencode({
+                "next":
+                    OBSERVATORY_LAUNCH_PATH,
+            })
+        )
+
+    # Any stale rehearsal artifacts are explicitly excluded
+    # from the operational launch.
+    session.pop(
+        SESSION_OB_NATIVE_LAUNCH_HANDOFF,
+        None,
+    )
+
+    session.pop(
+        SESSION_OB_LAUNCH_RECEIPT,
+        None,
+    )
+
+    session.pop(
+        SESSION_OB_OPERATIONAL_ACCESS_RECEIPT,
+        None,
+    )
+
+    try:
+
+        issued = (
+            issue_owner_observatory_handoff(
+                _operational_ob_session_context()
+            )
+        )
+
+    except OwnerObservatoryHandoffError as exc:
+
+        return _operational_ob_launch_blocked(
+            exc.code
+        )
+
+    return redirect(
+        TOWER_OPERATIONAL_OB_RECEIVE_PATH
+        + "?"
+        + urlencode({
+            "code":
+                issued["code"],
+        })
+    )
+
+
 @tower_human_login_bp.get(
-    OBSERVATORY_LAUNCH_PATH
+    TOWER_OPERATIONAL_OB_RECEIVE_PATH
 )
 @require_human_owner
-def launch_observatory():
+def receive_operational_observatory_handoff():
+    """Consume the real one-time handoff at the Observatory receiving edge."""
+
+    if not step_up_active():
+
+        return redirect(
+            OBSERVATORY_STEP_UP_PATH
+            + "?"
+            + urlencode({
+                "next":
+                    OBSERVATORY_LAUNCH_PATH,
+            })
+        )
+
+    code = request.args.get(
+        "code",
+        "",
+    )
+
+    try:
+
+        receipt = (
+            consume_owner_observatory_handoff(
+                code,
+                _operational_ob_session_context(),
+            )
+        )
+
+    except OwnerObservatoryHandoffError as exc:
+
+        status_code = (
+            503
+            if exc.code in {
+                "owner_observatory_session_secret_not_configured",
+                "owner_observatory_session_secret_too_short",
+                "owner_observatory_handoff_ledger_not_configured",
+                "owner_observatory_handoff_ledger_must_be_absolute",
+                "owner_observatory_identity_not_verified",
+                "owner_observatory_app_not_launchable",
+            }
+            else 403
+        )
+
+        return _operational_ob_launch_blocked(
+            exc.code,
+            status_code=status_code,
+        )
+
+    session[
+        SESSION_OB_OPERATIONAL_ACCESS_RECEIPT
+    ] = receipt
+
+    # Never retain the one-time browser code in the Tower session.
+    session.pop(
+        SESSION_OB_NATIVE_LAUNCH_HANDOFF,
+        None,
+    )
+
+    return redirect(
+        OPERATIONAL_OB_ENTRY_PATH
+    )
+
+
+
+
+def launch_observatory_rehearsal_contract():
     legacy_result = _launch_observatory_legacy()
 
     if _tower_ob_native_is_walkthrough_redirect(
@@ -1019,6 +1276,22 @@ def launch_observatory():
         normalized,
         native_payload,
     )
+
+
+
+@tower_human_login_bp.get(
+    OBSERVATORY_LAUNCH_PATH
+)
+@require_human_owner
+def launch_observatory():
+    """
+    Real owner Observatory launch.
+
+    Historical rehearsal behavior remains available only through
+    launch_observatory_rehearsal_contract().
+    """
+
+    return _launch_observatory_operational()
 
 
 @tower_human_login_bp.route(

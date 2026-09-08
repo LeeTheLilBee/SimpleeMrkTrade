@@ -1,3 +1,4 @@
+
 from flask import Flask
 
 import tower.access_home_owner_launches as owner_launches
@@ -14,7 +15,7 @@ def build_app(monkeypatch, *, owner_session):
     )
 
     @app.route("/tower/access-home")
-    def fake_access_home():
+    def access_home():
         return """
         <!doctype html>
         <html>
@@ -39,12 +40,16 @@ def build_app(monkeypatch, *, owner_session):
         </html>
         """
 
-    owner_launches.register_tower_access_home_owner_launches(app)
+    owner_launches.register_tower_access_home_owner_launches(
+        app
+    )
 
     return app
 
 
-def test_access_home_injects_owner_dashboard_and_security_map_cards(monkeypatch):
+def test_access_home_injects_only_truthful_owner_headquarters(
+    monkeypatch,
+):
     app = build_app(
         monkeypatch,
         owner_session=True,
@@ -55,20 +60,27 @@ def test_access_home_injects_owner_dashboard_and_security_map_cards(monkeypatch)
         follow_redirects=False,
     )
 
-    body = response.get_data(as_text=True)
+    body = response.get_data(
+        as_text=True
+    )
 
     assert response.status_code == 200
     assert "Existing Access Home" in body
     assert "tower-owner-launch-dock" in body
-    assert "Owner Dashboard" in body
-    assert "People + Access Desk" in body
+
+    assert "Owner Headquarters" in body
     assert "/tower/owner-dashboard" in body
-    assert "Security Map" in body
-    assert "/tower/security-map" in body
-    assert "no real accounts, invites, or access grants" in body
+
+    assert "Security Map" not in body
+    assert "/tower/security-map" not in body
+
+    assert "Future Manager Seat" not in body
+    assert "Invite drafts" not in body
 
 
-def test_injector_does_not_touch_other_pages(monkeypatch):
+def test_injector_does_not_touch_other_pages(
+    monkeypatch,
+):
     app = build_app(
         monkeypatch,
         owner_session=True,
@@ -79,14 +91,18 @@ def test_injector_does_not_touch_other_pages(monkeypatch):
         follow_redirects=False,
     )
 
-    body = response.get_data(as_text=True)
+    body = response.get_data(
+        as_text=True
+    )
 
     assert response.status_code == 200
     assert "Different Page" in body
     assert "tower-owner-launch-dock" not in body
 
 
-def test_access_home_launches_json_redirects_without_owner_session(monkeypatch):
+def test_access_home_launches_json_redirects_without_owner_session(
+    monkeypatch,
+):
     app = build_app(
         monkeypatch,
         owner_session=False,
@@ -98,17 +114,19 @@ def test_access_home_launches_json_redirects_without_owner_session(monkeypatch):
     )
 
     assert response.status_code in {
-        301,
-        302,
-        303,
-        307,
-        308,
+        301, 302, 303, 307, 308,
     }
 
-    assert response.headers["Location"].endswith("/tower/login")
+    assert response.headers[
+        "Location"
+    ].endswith(
+        "/tower/login"
+    )
 
 
-def test_access_home_launches_json_renders_for_owner_session(monkeypatch):
+def test_access_home_launches_json_is_truthful_for_owner(
+    monkeypatch,
+):
     app = build_app(
         monkeypatch,
         owner_session=True,
@@ -122,27 +140,38 @@ def test_access_home_launches_json_renders_for_owner_session(monkeypatch):
     payload = response.get_json()
 
     assert response.status_code == 200
-    assert payload["summary"]["status"] == "tower_access_home_owner_launches_ready"
-    assert payload["summary"]["real_account_creation"] is False
-    assert payload["summary"]["real_invites_sent"] is False
-    assert payload["summary"]["real_access_granted"] is False
+
+    summary = payload["summary"]
+
+    assert (
+        summary["status"]
+        == "tower_access_home_owner_launches_truthful"
+    )
+
+    assert summary["people_authority_state"] == "NOT_CONFIGURED"
+    assert summary["launch_count"] == 1
 
     routes = {
         launch["href"]
         for launch in payload["launches"]
     }
 
-    assert "/tower/owner-dashboard" in routes
-    assert "/tower/security-map" in routes
+    assert routes == {
+        "/tower/owner-dashboard",
+    }
 
 
-def test_register_access_home_owner_launches_is_idempotent(monkeypatch):
+def test_register_access_home_owner_launches_is_idempotent(
+    monkeypatch,
+):
     app = build_app(
         monkeypatch,
         owner_session=True,
     )
 
-    owner_launches.register_tower_access_home_owner_launches(app)
+    owner_launches.register_tower_access_home_owner_launches(
+        app
+    )
 
     response = app.test_client().get(
         "/tower/access-home-launches.json",

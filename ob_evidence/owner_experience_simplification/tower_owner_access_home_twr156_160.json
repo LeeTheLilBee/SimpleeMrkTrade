@@ -1,0 +1,44 @@
+{
+  "missions": {
+    "TWR156": "Owner Access Home hierarchy",
+    "TWR157": "Observatory primary product door",
+    "TWR158": "Owner tools integration",
+    "TWR159": "Return and evidence backstage",
+    "TWR160": "Owner Access Home anti-regression wall"
+  },
+  "owner_experience": {
+    "access_home_is_front_door": true,
+    "duplicate_owner_launch_dock_suppressed": true,
+    "evidence_is_not_primary_navigation": true,
+    "evidence_progressively_disclosed": true,
+    "observatory_is_primary_product": true,
+    "only_published_product_is_observatory": true,
+    "owner_headquarters_integrated": true,
+    "proof_is_not_primary_navigation": true,
+    "return_state_compact": true,
+    "walkthrough_is_not_primary_navigation": true
+  },
+  "pack": "TWR156-TWR160",
+  "parent_commit": "89590cb50b2e8b3035291eb64f8e74e515912abc",
+  "safety": {
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "direct_vault_write_authorized": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "release_execution_authorized": false
+  },
+  "schema_version": "tower.owner-access-home.twr156-160.v1",
+  "sealed_boundaries": {
+    "app_registry_modified": false,
+    "evidence_basement_modified": false,
+    "identity_authority_modified": false,
+    "observatory_modified": false,
+    "owner_dashboard_modified": false,
+    "owner_launch_injector_modified": false,
+    "publication_authority_modified": false,
+    "tower_ob_handoff_modified": false,
+    "truth_contract_modified": false
+  },
+  "title": "Owner Access Home"
+}
