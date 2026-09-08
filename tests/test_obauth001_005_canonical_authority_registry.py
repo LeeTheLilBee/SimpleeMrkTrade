@@ -80,6 +80,9 @@ def test_exact_current_active_authorities_are_registered():
         "account_reconciliation":
             "OB_ENGINE_ACCOUNT_AUTHORITY_V1",
 
+        "account_identity_truth_taxonomy":
+            "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+
         "owner_operating_profile":
             "OB_OWNER_OPERATING_PROFILE_V1",
 
@@ -237,7 +240,6 @@ def test_historical_proof_scoreboard_alias_resolves():
 def test_future_foundation_slots_are_explicitly_pending():
 
     expected = {
-        "account_identity_truth_taxonomy",
         "effective_policy",
         "event_authority",
         "mode_authority",

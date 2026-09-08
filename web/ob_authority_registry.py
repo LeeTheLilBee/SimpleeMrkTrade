@@ -10,7 +10,7 @@ import json
 REGISTRY_SCHEMA_VERSION = "OB_CANONICAL_AUTHORITY_REGISTRY_V1"
 RECORD_SCHEMA_VERSION = "OB_AUTHORITY_RECORD_V1"
 COMPATIBILITY_SCHEMA_VERSION = "OB_AUTHORITY_COMPATIBILITY_PROJECTION_V1"
-SERVICE_VERSION = "OBAUTH001_005_CANONICAL_AUTHORITY_REGISTRY"
+SERVICE_VERSION = "OBAUTH001_010_CANONICAL_AUTHORITY_REGISTRY"
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -363,7 +363,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "legacy build_authority_bundle()",
             ),
             deferred_integrations=(
-                "account_identity_truth_taxonomy",
                 "source_provenance",
                 "decision_context",
             ),
@@ -690,13 +689,122 @@ ACTIVE_AUTHORITY_RECORDS = {
 }
 
 
-PENDING_AUTHORITY_SLOTS = {
+ACTIVE_AUTHORITY_RECORDS[
+    "account_identity_truth_taxonomy"
+] = _record(
+    concept_key=
+        "account_identity_truth_taxonomy",
 
-    "account_identity_truth_taxonomy": {
-        "authority_id": "PENDING_OBAUTH006_010",
-        "planned_pack": "OBAUTH006-010",
-        "status": "PENDING",
-    },
+    authority_id=
+        "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+
+    authority_class=
+        "ACCOUNT_IDENTITY_TRUTH_TAXONOMY",
+
+    implementation_ref=
+        "web/ob_account_identity_truth.py",
+
+    implementation_role=
+        "CANONICAL_ACCOUNT_NAMESPACE_AND_TRUTH_CLASSIFICATION",
+
+    owns=(
+        "explicit Observatory account identity classification",
+        "truth-state taxonomy",
+        "truth-origin taxonomy",
+        "source-role claim boundaries",
+    ),
+
+    inputs=(
+        "OB_OWNER_OPERATING_PROFILE_V1",
+        "OB_ENGINE_ACCOUNT_AUTHORITY_V1",
+        "OB_PROOF_DEMO_ACCOUNT_V1",
+    ),
+
+    triggers=(
+        "explicit account identity resolution",
+        "explicit truth-claim classification",
+        "explicit multi-source truth reconciliation",
+    ),
+
+    effects=(
+        "classify known versus unknown account identity",
+        "classify CURRENT/UNKNOWN/CONFLICT/STALE truth state",
+        "preserve REPOSITORY_STATE/PROJECTED/HISTORICAL/OWNER_ENTERED/SIMULATED origin",
+        "refuse silent cross-source truth synthesis",
+    ),
+
+    state_mutation_scope=
+        "NONE",
+
+    forbidden=(
+        "implicit default account",
+        "second account registry",
+        "unknown-to-known coercion",
+        "conflict auto-resolution",
+        "stale-to-current coercion",
+        "simulated-to-live coercion",
+        "owner-entered-to-source-backed coercion",
+        "projection overwrite of operational state",
+        "historical reporting overwrite of operational state",
+        "live broker truth fabrication",
+        "broker submission",
+        "capital movement",
+        "automatic execution",
+    ),
+
+    failure_behavior=(
+        "Unknown identities remain UNKNOWN; conflicting claims remain CONFLICT; "
+        "stale claims remain STALE; simulated and owner-entered origins retain "
+        "their provenance instead of being promoted to live/source truth."
+    ),
+
+    explanation=(
+        "Every classified claim names the explicit account, source role, truth "
+        "state, origin class, permitted claim scope, and reason."
+    ),
+
+    evidence=(
+        "account identity fingerprint",
+        "truth claim fingerprint",
+        "truth resolution fingerprint",
+        "source role",
+        "truth state",
+        "origin class",
+    ),
+
+    review_visibility=(
+        "Review may inspect the exact account identity and truth classification "
+        "used by later decisions."
+    ),
+
+    temporal_validity=(
+        "CLAIM_BOUND; formal source freshness and time expiry remain deferred "
+        "to OBDATA/OBTIME."
+    ),
+
+    deterministic=
+        True,
+
+    learning_boundary=(
+        "Learning may identify recurring account/source truth failures but may "
+        "not relabel truth classes, resolve conflicts, or promote simulated data."
+    ),
+
+    compatibility_adapters=(
+        "PENDING_OBAUTH006_010",
+        "OB_OWNER_OPERATING_PROFILE_V1.ACCOUNT_REGISTRY",
+        "OB_ENGINE_ACCOUNT_AUTHORITY_V1 source roles",
+    ),
+
+    deferred_integrations=(
+        "source_provenance",
+        "temporal_context",
+        "decision_context",
+    ),
+)
+
+
+PENDING_AUTHORITY_SLOTS = {
 
     "effective_policy": {
         "authority_id": "PENDING_OBPOLICY",
@@ -737,6 +845,9 @@ PENDING_AUTHORITY_SLOTS = {
 
 
 RETIRED_AUTHORITY_ALIASES = {
+    "PENDING_OBAUTH006_010":
+        "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+
     "PENDING_OBRISK006_010":
         "OB_OWNER_FIT_ELIGIBILITY_V1",
 
@@ -749,6 +860,9 @@ RETIRED_AUTHORITY_ALIASES = {
 
 
 LEGACY_KEY_TO_CANONICAL_CONCEPT = {
+    "account_identity_truth_taxonomy":
+        "account_identity_truth_taxonomy",
+
     "market_candidate_truth":
         "market_candidate_truth",
 

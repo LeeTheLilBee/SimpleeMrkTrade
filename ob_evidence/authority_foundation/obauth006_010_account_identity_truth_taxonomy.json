@@ -1,0 +1,58 @@
+{
+  "account_namespace_authority": "OB_OWNER_OPERATING_PROFILE_V1",
+  "accounts": [
+    "personal",
+    "trust",
+    "simplee_world_business",
+    "simplee_on_the_go_atm",
+    "the_grounds_apartment",
+    "proof_demo"
+  ],
+  "authority": "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+  "hard_rules": {
+    "automatic_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "conflict_stays_conflict": true,
+    "historical_reporting_overwrites_operational_state": false,
+    "implicit_default_account": false,
+    "owner_entered_stays_owner_entered": true,
+    "projection_overwrites_operational_state": false,
+    "repository_state_claims_live_broker_truth": false,
+    "second_account_registry": false,
+    "simulated_stays_simulated": true,
+    "simulation_claims_live_broker_truth": false,
+    "stale_stays_stale": true,
+    "unknown_stays_unknown": true
+  },
+  "next_arrow": {
+    "pack": "OBPOLICY001-010",
+    "title": "Policy Registry + Most-Restrictive Resolver"
+  },
+  "origin_classes": [
+    "REPOSITORY_STATE",
+    "PROJECTED",
+    "HISTORICAL",
+    "OWNER_ENTERED",
+    "SIMULATED",
+    "UNKNOWN"
+  ],
+  "pack": "OBAUTH006-010",
+  "schema_version": "OBAUTH006_010_ACCEPTANCE_EVIDENCE_V1",
+  "sealed_parent": "e444041d9a65e1411116cd199b7cbbde8db7cc56",
+  "title": "Account Identity + Truth Taxonomy",
+  "transition": {
+    "OBAUTH001_005_evidence_modified": false,
+    "OBAUTH001_005_handoff_modified": false,
+    "from": "PENDING_OBAUTH006_010",
+    "live_registry_updated": true,
+    "live_transition_test_updated": true,
+    "to": "OB_ACCOUNT_IDENTITY_TRUTH_V1"
+  },
+  "truth_states": [
+    "CURRENT",
+    "UNKNOWN",
+    "CONFLICT",
+    "STALE"
+  ]
+}
