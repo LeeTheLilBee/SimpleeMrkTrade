@@ -1,2 +1,0 @@
-# Retired build path; dependencies are owned by the hosted Tower bundle.
--r ../hosted_tower/requirements.txt

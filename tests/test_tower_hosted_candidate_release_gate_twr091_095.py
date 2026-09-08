@@ -28,7 +28,7 @@ def passing_parity():
         ),
 
         "entrypoint": (
-            "web.managed_staging:app"
+            "web.hosted_tower:app"
         ),
 
         "critical_route_count": 11,
@@ -55,7 +55,7 @@ def passing_parity():
 
         "live_auto_authorized": False,
 
-        "staging_ready_changed": False,
+        "hosted_ready_changed": False,
     }
 
 
@@ -229,7 +229,7 @@ def test_release_packet_never_authorizes_deploy():
 
     assert (
         packet[
-            "staging_ready_changed"
+            "hosted_ready_changed"
         ]
         is False
     )

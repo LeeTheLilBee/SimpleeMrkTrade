@@ -52,7 +52,7 @@ def parity(*, passing=True, revision=REVISION):
         "parity_pass": passing,
         "expected_revision": revision,
         "actual_revision": revision,
-        "entrypoint": "web.managed_staging:app",
+        "entrypoint": "web.hosted_tower:app",
         "critical_route_count": 11,
         "checks": {
             "expected_revision_valid": True,
@@ -68,7 +68,7 @@ def parity(*, passing=True, revision=REVISION):
         "capital_movement_authorized": False,
         "manual_live_authorized": False,
         "live_auto_authorized": False,
-        "staging_ready_changed": False,
+        "hosted_ready_changed": False,
     }
 
 

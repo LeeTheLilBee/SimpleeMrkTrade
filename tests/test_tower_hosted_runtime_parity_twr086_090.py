@@ -592,7 +592,7 @@ def test_result_never_authorizes_live_actions():
 
     assert (
         result[
-            "staging_ready_changed"
+            "hosted_ready_changed"
         ]
         is False
     )

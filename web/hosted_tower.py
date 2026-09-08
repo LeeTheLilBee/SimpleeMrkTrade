@@ -282,7 +282,7 @@ def hosted_tower_status() -> dict[str, object]:
     }
 
 
-# SIMPLEE_MANAGED_STAGING_HEALTH_ENDPOINT_V1
+# SIMPLEE_HOSTED_TOWER_HEALTH_ENDPOINT_V1
 # Minimal exact-path Render hosted liveness endpoint.
 def _simplee_hosted_tower_health_view():
     return {"ok": True}, 200

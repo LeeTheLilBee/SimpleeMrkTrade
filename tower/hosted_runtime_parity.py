@@ -16,7 +16,7 @@ Safety boundary:
 - no capital movement
 - no Manual Live authorization
 - no Live Auto authorization
-- no STAGING_READY mutation
+- no HOSTED_READY mutation
 """
 
 from __future__ import annotations
@@ -319,7 +319,7 @@ def evaluate_hosted_runtime_parity(
     - all critical routes present
     - every safety flag remains False
 
-    PASS does NOT authorize deployment or STAGING_READY.
+    PASS does NOT authorize deployment or HOSTED_READY.
     """
 
     checks: dict[
@@ -764,7 +764,7 @@ def evaluate_hosted_runtime_parity(
         "capital_movement_authorized": False,
         "manual_live_authorized": False,
         "live_auto_authorized": False,
-        "staging_ready_changed": False,
+        "hosted_ready_changed": False,
     }
 
 

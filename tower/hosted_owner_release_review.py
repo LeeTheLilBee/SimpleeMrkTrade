@@ -1,7 +1,7 @@
 """Owner-only hosted release review and append-only decision receipts.
 
 TWR096-TWR100 consume the integrity-sealed packet from TWR091-TWR095.
-An owner decision never deploys, promotes, changes STAGING_READY, opens
+An owner decision never deploys, promotes, changes HOSTED_READY, opens
 broker access, moves capital, or unlocks any Observatory live mode.
 """
 
@@ -48,7 +48,7 @@ SAFETY_FALSE_FIELDS = (
     "deployment_authorized",
     "promotion_authorized",
     "production_promotion_authorized",
-    "staging_ready_changed",
+    "hosted_ready_changed",
     "broker_submission_authorized",
     "capital_movement_authorized",
     "manual_live_authorized",

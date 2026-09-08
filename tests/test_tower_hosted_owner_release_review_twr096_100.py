@@ -55,7 +55,7 @@ def packet(
             else "wrong456"
         ),
         "entrypoint": (
-            "web.managed_staging:app"
+            "web.hosted_tower:app"
         ),
         "critical_route_count": 11,
         "checks": {
@@ -78,7 +78,7 @@ def packet(
         "capital_movement_authorized": False,
         "manual_live_authorized": False,
         "live_auto_authorized": False,
-        "staging_ready_changed": False,
+        "hosted_ready_changed": False,
     }
 
     return (

@@ -6,7 +6,7 @@ TWR086–TWR090 and converts it into one immutable-style owner-review packet.
 
 It does NOT deploy.
 It does NOT promote.
-It does NOT mutate STAGING_READY.
+It does NOT mutate HOSTED_READY.
 It does NOT authorize broker or capital actions.
 """
 
@@ -232,7 +232,7 @@ def validate_parity_result(
         "capital_movement_authorized",
         "manual_live_authorized",
         "live_auto_authorized",
-        "staging_ready_changed",
+        "hosted_ready_changed",
     ):
 
         if (
@@ -348,7 +348,7 @@ def release_recommendation(
 
         "production_promotion_authorized": False,
 
-        "staging_ready_changed": False,
+        "hosted_ready_changed": False,
 
         "broker_submission_authorized": False,
 
@@ -476,7 +476,7 @@ def build_hosted_candidate_release_packet(
 
         "production_promotion_authorized": False,
 
-        "staging_ready_changed": False,
+        "hosted_ready_changed": False,
 
         "broker_submission_authorized": False,
 
@@ -514,7 +514,7 @@ def build_hosted_candidate_release_packet(
 
         "promotion_authorized": False,
 
-        "staging_ready_changed": False,
+        "hosted_ready_changed": False,
     }
 
 
@@ -605,7 +605,7 @@ def verify_hosted_candidate_release_packet(
         "deployment_authorized",
         "promotion_authorized",
         "production_promotion_authorized",
-        "staging_ready_changed",
+        "hosted_ready_changed",
         "broker_submission_authorized",
         "capital_movement_authorized",
         "manual_live_authorized",

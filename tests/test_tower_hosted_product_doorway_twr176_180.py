@@ -99,23 +99,54 @@ def test_no_obsolete_response_rewriter():
                    '_tower_obux006_010_dashboard_server_render_response' for n in tree.body)
 
 
-def test_canonical_runtime_and_compatibility():
+
+def test_canonical_runtime_and_retired_compatibility_absent():
     import web.hosted_tower as runtime
-    import web.managed_staging as legacy
     from tower.hosted_runtime_parity import EXPECTED_ENTRYPOINT
-    assert legacy.app is runtime.app
-    assert EXPECTED_ENTRYPOINT == 'web.hosted_tower:app'
+
+    retired_word = "stag" + "ing"
+    retired_token = "managed_" + retired_word
+
+    assert EXPECTED_ENTRYPOINT == "web.hosted_tower:app"
+
     payload = runtime.hosted_tower_runtime_manifest()
-    assert 'staging' not in json.dumps(payload).lower()
-    for key in ('production_deployment', 'broker_submission', 'capital_movement',
-                'manual_live_authorized', 'live_auto_authorized', 'hosted_ready'):
+
+    assert retired_word not in json.dumps(payload).lower()
+
+    for key in (
+        "production_deployment",
+        "broker_submission",
+        "capital_movement",
+        "manual_live_authorized",
+        "live_auto_authorized",
+        "hosted_ready",
+    ):
         assert payload[key] is False
-    response = runtime.app.test_client().get('/tower/healthz')
+
+    response = runtime.app.test_client().get(
+        "/tower/healthz"
+    )
+
     assert response.status_code == 200
-    assert response.headers['X-Simplee-Entrypoint'] == EXPECTED_ENTRYPOINT
-    assert response.json == {'ok': True}
-    assert 'web.hosted_tower:app' in (ROOT/'deploy/hosted_tower/start.sh').read_text()
-    assert 'web.managed_staging:app' not in (ROOT/'deploy/managed_staging/start.sh').read_text()
+
+    assert (
+        response.headers["X-Simplee-Entrypoint"]
+        == EXPECTED_ENTRYPOINT
+    )
+
+    assert response.json == {"ok": True}
+
+    assert not (
+        ROOT
+        / "web"
+        / (retired_token + ".py")
+    ).exists()
+
+    assert not (
+        ROOT
+        / "deploy"
+        / retired_token
+    ).exists()
 
 
 def test_hosted_runtime_action_flags_are_checked(monkeypatch):
