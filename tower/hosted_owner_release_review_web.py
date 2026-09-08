@@ -934,6 +934,102 @@ details[open] summary:after {
             22px;
     }
 }
+
+/* TWR171-TWR175 — owner step-up verification product surface */
+
+.stepup-product-hero {
+    display: grid;
+    grid-template-columns: minmax(0,1.45fr) minmax(250px,.55fr);
+    gap: 20px;
+    align-items: end;
+}
+
+.stepup-product-hero p {
+    max-width: 760px;
+}
+
+.stepup-status {
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255,255,255,.045);
+}
+
+.stepup-status span,
+.stepup-card span {
+    display: block;
+    color: var(--dim);
+    font-size: .7rem;
+    font-weight: 900;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.stepup-status strong,
+.stepup-card strong {
+    display: block;
+    margin-top: 7px;
+    color: var(--gold);
+}
+
+.stepup-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.stepup-card {
+    padding: 17px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255,255,255,.035);
+}
+
+.stepup-card p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: .86rem;
+    line-height: 1.48;
+}
+
+.stepup-form-panel {
+    padding: 24px;
+    border: 1px solid var(--line-gold);
+    border-radius: 22px;
+    background:
+        radial-gradient(
+            circle at 92% 8%,
+            rgba(241,210,132,.08),
+            transparent 30%
+        ),
+        rgba(255,255,255,.035);
+}
+
+.stepup-form-panel form {
+    max-width: 620px;
+}
+
+.stepup-boundary {
+    margin-top: 17px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    color: var(--muted);
+    background: rgba(155,122,240,.07);
+}
+
+.stepup-boundary strong {
+    color: var(--gold);
+}
+
+@media (max-width: 820px) {
+
+    .stepup-product-hero,
+    .stepup-grid {
+        grid-template-columns: 1fr;
+    }
+}
 """
 
 
@@ -1969,24 +2065,198 @@ def register_tower_owner_release_review_routes(app):
     @app.get(RELEASE_STEP_UP_PATH)
     def tower_owner_release_step_up_page():
         denied = _owner_required()
+
         if denied is not None:
             return denied
-        token = escape(_csrf_token())
-        body = (
-            '<section class="hero"><span class="eyebrow">Tower owner verification</span>'
-            '<h1>Confirm it is you</h1><p class="quiet">Verify your Tower password '
-            'before reviewing a hosted release candidate. You will remain in Tower.'
-            '</p></section><section class="card">'
-            f'<form method="post" action="{RELEASE_STEP_UP_PATH}">'
-            f'<input type="hidden" name="csrf_token" value="{token}">'
-            '<label for="release-password">Tower owner password</label>'
-            '<input id="release-password" name="password" type="password" '
-            'autocomplete="current-password" required>'
-            '<div class="actions"><button type="submit">Verify and return to '
-            'release review</button></div></form></section>'
-        )
-        return _page("Tower · Release Review Verification", body)
 
+        token = escape(
+            _csrf_token()
+        )
+
+        body = f"""
+        <section
+          class="hero stepup-product-hero"
+          data-tower-step-up-product="twr171-175"
+          data-tower-step-up-purpose="release-review"
+          data-tower-step-up-return="{RELEASE_REVIEW_PATH}"
+        >
+
+          <div>
+
+            <span class="eyebrow">
+              Tower owner verification
+            </span>
+
+            <h1>
+              Verify your identity
+            </h1>
+
+            <p class="quiet">
+              Release Review is a protected owner action.
+              Confirm your Tower password to open the review room.
+              You will remain in Tower and return directly to
+              Release Review after successful verification.
+            </p>
+
+          </div>
+
+          <div class="stepup-status">
+
+            <span>
+              Protected destination
+            </span>
+
+            <strong>
+              Release Review
+            </strong>
+
+          </div>
+
+        </section>
+
+
+        <section
+          class="stepup-grid"
+          data-tower-step-up-explanation="true"
+        >
+
+          <article class="stepup-card">
+
+            <span>
+              Why Tower is asking
+            </span>
+
+            <strong>
+              Elevated owner verification
+            </strong>
+
+            <p>
+              Release Review can record an owner decision
+              about an exact hosted candidate, so Tower
+              requires a fresh verification checkpoint first.
+            </p>
+
+          </article>
+
+
+          <article class="stepup-card">
+
+            <span>
+              What verification does
+            </span>
+
+            <strong>
+              Confirms it is you
+            </strong>
+
+            <p>
+              A successful check opens a temporary elevated
+              Tower window for the protected review flow.
+            </p>
+
+          </article>
+
+
+          <article class="stepup-card">
+
+            <span>
+              What verification does not do
+            </span>
+
+            <strong>
+              Execution stays locked
+            </strong>
+
+            <p>
+              Verification does not approve a candidate,
+              execute a release, deploy, promote, submit to
+              a broker, move capital, authorize Manual Live,
+              or activate Live Auto.
+            </p>
+
+          </article>
+
+        </section>
+
+
+        <section
+          class="stepup-form-panel"
+          data-tower-step-up-form="owner-password"
+        >
+
+          <span class="eyebrow">
+            Identity checkpoint
+          </span>
+
+          <h2>
+            Confirm it is you
+          </h2>
+
+          <p class="quiet">
+            Enter your Tower owner password.
+            Tower does not display or retain the password
+            on this page.
+          </p>
+
+          <form
+            method="post"
+            action="{RELEASE_STEP_UP_PATH}"
+          >
+
+            <input
+              type="hidden"
+              name="csrf_token"
+              value="{token}"
+            >
+
+            <label for="release-password">
+              Tower owner password
+            </label>
+
+            <input
+              id="release-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            >
+
+            <div class="actions">
+
+              <button type="submit">
+                Verify and return to Release Review
+              </button>
+
+            </div>
+
+          </form>
+
+
+          <div
+            class="stepup-boundary"
+            data-tower-step-up-boundary="identity-only"
+          >
+
+            <strong>
+              Identity only.
+            </strong>
+
+            This checkpoint grants no release-execution,
+            deployment, promotion, broker, capital,
+            Manual Live, or Live Auto authority.
+
+            When the temporary verification window expires,
+            Tower will require verification again.
+
+          </div>
+
+        </section>
+        """
+
+        return _page(
+            "Tower · Release Review Verification",
+            body,
+        )
     @app.post(RELEASE_STEP_UP_PATH)
     def tower_owner_release_step_up_submit():
         denied = _owner_required()

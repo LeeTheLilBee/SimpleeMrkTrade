@@ -1,0 +1,51 @@
+{
+  "missions": {
+    "TWR171": "Owner verification hierarchy",
+    "TWR172": "Verification purpose and authority explanation",
+    "TWR173": "Verified return continuity to Release Review",
+    "TWR174": "Failure and expiry truth",
+    "TWR175": "Step-up anti-regression wall"
+  },
+  "owner_experience": {
+    "bad_origin_fails_closed": true,
+    "expired_verification_requires_step_up_again": true,
+    "historical_remain_in_tower_contract_preserved": true,
+    "missing_csrf_fails_closed": true,
+    "nonowner_fails_closed": true,
+    "password_not_rendered_back": true,
+    "protected_destination_is_clear": true,
+    "step_up_is_product_surface": true,
+    "successful_return_is_release_review": true,
+    "verification_authority_boundary_is_clear": true,
+    "verification_reason_is_clear": true,
+    "wrong_password_fails_closed": true
+  },
+  "pack": "TWR171-TWR175",
+  "parent_commit": "ccd222375fa61b3135ef7bdfbe266af108c7d733",
+  "safety": {
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "credential_disclosure_authorized": false,
+    "deployment_authorized": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "promotion_authorized": false,
+    "release_execution_authorized": false,
+    "session_secret_disclosure_authorized": false,
+    "step_up_bypass_authorized": false
+  },
+  "schema_version": "tower.owner-step-up-verification-product-surface.twr171-175.v1",
+  "sealed_boundaries": {
+    "access_home_modified": false,
+    "candidate_state_engine_modified": false,
+    "credential_verifier_modified": false,
+    "evidence_basement_modified": false,
+    "observatory_modified": false,
+    "owner_headquarters_modified": false,
+    "owner_session_engine_modified": false,
+    "release_decision_engine_modified": false,
+    "step_up_timer_engine_modified": false,
+    "tower_ob_handoff_modified": false
+  },
+  "title": "Owner Step-Up + Verification Product Surface"
+}
