@@ -233,7 +233,7 @@ def test_authority_registry_registers_new_sibling_and_preserves_obrisk():
 
 def test_scoreboard_and_real_mode_authority_stay_deferred():
     c = proof_demo_contract()
-    assert c["sanitized_scoreboard_authority"] == SANITIZED_SCOREBOARD_AUTHORITY == "PENDING_OBPROOF006_010"
+    assert c["sanitized_scoreboard_authority"] == SANITIZED_SCOREBOARD_AUTHORITY == "OB_PROOF_SANITIZED_SCOREBOARD_V1"
     assert c["sanitized_public_metrics_emitted_here"] is False
     assert c["mode_authority"] == MODE_AUTHORITY == "PENDING_OBMODE"
     assert c["hybrid_execution"] is False

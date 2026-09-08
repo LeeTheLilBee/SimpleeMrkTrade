@@ -1701,12 +1701,119 @@ def build_authority_registry(values: Dict[str, Any]):
         "paper_position_lifecycle": True,
         "durable_demo_state": True,
         "tracked_runtime_data_required": False,
-        "sanitized_scoreboard_authority": "PENDING_OBPROOF006_010",
+        "sanitized_scoreboard_authority": "OB_PROOF_SANITIZED_SCOREBOARD_V1",
         "sanitized_public_metrics_emitted_here": False,
         "mode_authority": "PENDING_OBMODE",
         "hybrid_execution": False,
         "automatic_execution": False,
         "live_auto_locked": True,
     }
+    scoreboard_path = Path(__file__).resolve().with_name("ob_proof_scoreboard.py")
+    scoreboard_present = False
+    try:
+        scoreboard_present = (
+            scoreboard_path.exists()
+            and
+            "OB_PROOF_SANITIZED_SCOREBOARD_V1"
+            in scoreboard_path.read_text(encoding="utf-8")
+        )
+    except Exception:
+        scoreboard_present = False
+
+    registry["proof_sanitized_scoreboard"] = {
+        "authority":
+            "OB_PROOF_SANITIZED_SCOREBOARD_V1",
+
+        "service":
+            "web/ob_proof_scoreboard.py",
+
+        "service_present":
+            scoreboard_present,
+
+        "authority_scope":
+            "sanitized_aggregate_projection_of_completed_proof_demo_samples",
+
+        "source_authority":
+            "OB_PROOF_DEMO_ACCOUNT_V1",
+
+        "account_key":
+            "proof_demo",
+
+        "capital_class":
+            "SIMULATED_ONLY",
+
+        "projection_only":
+            True,
+
+        "durable_write":
+            False,
+
+        "source_state_mutation":
+            False,
+
+        "aggregate_only":
+            True,
+
+        "closed_samples_only":
+            True,
+
+        "open_position_details_exposed":
+            False,
+
+        "symbols_exposed":
+            False,
+
+        "instrument_ids_exposed":
+            False,
+
+        "candidate_fingerprints_exposed":
+            False,
+
+        "owner_fit_fingerprints_exposed":
+            False,
+
+        "entry_exit_prices_exposed":
+            False,
+
+        "position_timestamps_exposed":
+            False,
+
+        "source_payload_exposed":
+            False,
+
+        "opening_demo_cash_exposed":
+            False,
+
+        "demo_cash_exposed":
+            False,
+
+        "demo_equity_exposed":
+            False,
+
+        "unrealized_pnl_exposed":
+            False,
+
+        "market_truth_mutation":
+            False,
+
+        "candidate_rank_recalculation":
+            False,
+
+        "broker_submission":
+            False,
+
+        "capital_movement":
+            False,
+
+        "hybrid_execution":
+            False,
+
+        "automatic_execution":
+            False,
+
+        "live_auto_locked":
+            True,
+    }
+
     return registry
 # === OBPROOF001_005_PROOF_DEMO_AUTHORITY_END ===

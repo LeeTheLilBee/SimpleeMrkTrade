@@ -1,0 +1,86 @@
+{
+  "authority": "OB_PROOF_SANITIZED_SCOREBOARD_V1",
+  "flow": [
+    "OB_PROOF_DEMO_ACCOUNT_V1",
+    "durable_closed_paper_positions",
+    "OB_PROOF_SANITIZED_SCOREBOARD_V1",
+    "aggregate_public_safe_metrics"
+  ],
+  "next_arrow": {
+    "pack": "OBAUTH001-005",
+    "title": "Canonical Authority Registry"
+  },
+  "pack": "OBPROOF006-010",
+  "preserved_boundaries": {
+    "app_py_modified": false,
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_submission": false,
+    "candidate_rank_recalculation": false,
+    "capital_movement": false,
+    "hybrid_execution": false,
+    "live_auto_locked": true,
+    "market_score_recalculation": false,
+    "market_truth_mutation": false,
+    "new_flask_route": false,
+    "owner_fit_recalculation": false,
+    "tower_modified": false
+  },
+  "projection_metrics": [
+    "completed_sample_count",
+    "sample_size_band",
+    "wins",
+    "losses",
+    "flat",
+    "win_rate_pct",
+    "net_realized_paper_pnl",
+    "average_realized_paper_pnl",
+    "gross_positive_paper_pnl",
+    "gross_negative_paper_pnl",
+    "profit_factor"
+  ],
+  "schema_version": "OBPROOF006_010_ACCEPTANCE_EVIDENCE_V1",
+  "sealed_parent": "b922d79d98387dc8a6bbb1bfad0e6731d3e63f4f",
+  "source_account": "proof_demo",
+  "source_authority": "OB_PROOF_DEMO_ACCOUNT_V1",
+  "suppressed": {
+    "candidate_fingerprints": true,
+    "demo_cash": true,
+    "demo_equity": true,
+    "entry_prices": true,
+    "exit_prices": true,
+    "instrument_ids": true,
+    "lifecycle_ids": true,
+    "multipliers": true,
+    "opening_demo_cash": true,
+    "owner_fit_fingerprints": true,
+    "position_fingerprints": true,
+    "position_timestamps": true,
+    "quantities": true,
+    "source_payload": true,
+    "symbols": true,
+    "unrealized_pnl": true
+  },
+  "title": "Sanitized Scoreboard Projection",
+  "transition": {
+    "from": "PENDING_OBPROOF006_010",
+    "historical_obproof001_005_evidence_modified": false,
+    "historical_obproof001_005_handoff_modified": false,
+    "live_acceptance_transition_assertion_updated": true,
+    "live_contract_updated": true,
+    "to": "OB_PROOF_SANITIZED_SCOREBOARD_V1"
+  },
+  "truth": {
+    "aggregate_only": true,
+    "closed_samples_only": true,
+    "deterministic_projection": true,
+    "durable_write": false,
+    "live_mark_to_market_claimed": false,
+    "open_samples_included": false,
+    "projection_fingerprint": true,
+    "public_safe": true,
+    "real_broker_performance_claimed": false,
+    "simulated_only": true,
+    "source_state_mutation": false
+  }
+}
