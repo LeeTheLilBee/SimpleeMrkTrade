@@ -1664,3 +1664,49 @@ def augment_engine_feed_response(
             ]
 
     return augmented
+
+# === OBPROOF001_005_PROOF_DEMO_AUTHORITY_START ===
+_obproof001_005_prior_build_authority_registry = build_authority_registry
+
+
+def build_authority_registry(values: Dict[str, Any]):
+    registry = _obproof001_005_prior_build_authority_registry(values)
+    service_path = Path(__file__).resolve().with_name("ob_proof_demo_account.py")
+    service_present = False
+    try:
+        service_present = service_path.exists() and "OB_PROOF_DEMO_ACCOUNT_V1" in service_path.read_text(encoding="utf-8")
+    except Exception:
+        service_present = False
+
+    registry["proof_demo_account"] = {
+        "authority": "OB_PROOF_DEMO_ACCOUNT_V1",
+        "service": "web/ob_proof_demo_account.py",
+        "service_present": service_present,
+        "authority_scope": "isolated_simulated_proof_demo_account_state",
+        "account_key": "proof_demo",
+        "account_registry_authority": "OB_OWNER_OPERATING_PROFILE_V1",
+        "owner_fit_authority": "OB_OWNER_FIT_ELIGIBILITY_V1",
+        "market_truth_authority": "existing_canonical_engine_feed",
+        "capital_class": "SIMULATED_ONLY",
+        "real_capital": False,
+        "broker_linked": False,
+        "broker_submission": False,
+        "capital_movement": False,
+        "market_truth_mutation": False,
+        "market_score_recalculation": False,
+        "candidate_rank_recalculation": False,
+        "automatic_contract_selection": False,
+        "owner_selection_required": True,
+        "owner_fit_now_required_for_paper_open": True,
+        "paper_position_lifecycle": True,
+        "durable_demo_state": True,
+        "tracked_runtime_data_required": False,
+        "sanitized_scoreboard_authority": "PENDING_OBPROOF006_010",
+        "sanitized_public_metrics_emitted_here": False,
+        "mode_authority": "PENDING_OBMODE",
+        "hybrid_execution": False,
+        "automatic_execution": False,
+        "live_auto_locked": True,
+    }
+    return registry
+# === OBPROOF001_005_PROOF_DEMO_AUTHORITY_END ===

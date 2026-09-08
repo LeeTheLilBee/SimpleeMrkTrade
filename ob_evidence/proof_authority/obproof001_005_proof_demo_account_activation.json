@@ -1,0 +1,56 @@
+{
+  "authority": "OB_PROOF_DEMO_ACCOUNT_V1",
+  "canonical_account_key": "proof_demo",
+  "flow": [
+    "existing_canonical_engine_feed",
+    "OB_OWNER_FIT_ELIGIBILITY_V1",
+    "NOW",
+    "explicit_owner_selection",
+    "proof_demo",
+    "paper_sample_position_lifecycle",
+    "durable_local_demo_state",
+    "PENDING_OBPROOF006_010"
+  ],
+  "next_arrow": {
+    "pack": "OBPROOF006-010",
+    "title": "Sanitized Scoreboard Projection"
+  },
+  "pack": "OBPROOF001-005",
+  "preserved_boundaries": {
+    "app_py_modified": false,
+    "broker_submission": false,
+    "candidate_rank_recalculation": false,
+    "capital_movement": false,
+    "market_score_recalculation": false,
+    "market_truth_mutation": false,
+    "new_flask_route": false,
+    "tower_modified": false
+  },
+  "schema_version": "OBPROOF001_005_ACCEPTANCE_EVIDENCE_V1",
+  "sealed_parent": "7e5981a2dede05a5240e6c3a7efec45f5c0c614e",
+  "title": "Proof / Demo Account Activation",
+  "truth": {
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_linked": false,
+    "durable_account_state": true,
+    "durable_event_history": true,
+    "durable_position_history": true,
+    "existing_owner_profile_registry_reused": true,
+    "explicit_activation_required": true,
+    "hybrid_execution": false,
+    "implicit_demo_balance": false,
+    "live_auto_locked": true,
+    "live_broker_value_claimed": false,
+    "mark_to_market_claimed": false,
+    "mode_authority": "PENDING_OBMODE",
+    "owner_fit_now_required": true,
+    "owner_selection_required": true,
+    "real_capital": false,
+    "sanitized_public_metrics_emitted_here": false,
+    "sanitized_scoreboard_authority": "PENDING_OBPROOF006_010",
+    "second_mission_account_registry_created": false,
+    "simulated_capital_only": true,
+    "tracked_runtime_data_required": false
+  }
+}
