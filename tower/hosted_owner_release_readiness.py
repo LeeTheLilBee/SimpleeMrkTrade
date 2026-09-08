@@ -106,7 +106,7 @@ def _critical_routes_ready() -> bool:
 
 
 def _managed_safety_closed() -> bool:
-    managed = sys.modules.get("web.managed_staging")
+    managed = sys.modules.get("web.hosted_tower")
     if managed is None:
         return True
     for name in (
@@ -115,7 +115,7 @@ def _managed_safety_closed() -> bool:
         "CAPITAL_MOVEMENT",
         "MANUAL_LIVE_AUTHORIZED",
         "LIVE_AUTO_AUTHORIZED",
-        "STAGING_READY",
+        "HOSTED_READY",
     ):
         if getattr(managed, name, False) is not False:
             return False

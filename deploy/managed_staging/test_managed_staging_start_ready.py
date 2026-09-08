@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 
-START_SCRIPT = Path("deploy/managed_staging/start.sh")
+START_SCRIPT = Path("deploy/hosted_tower/start.sh")
 
 
 def test_managed_staging_start_script_exists():
@@ -22,7 +22,7 @@ def test_managed_staging_start_script_uses_python_module_gunicorn_and_render_por
     assert "-m gunicorn" in text
     assert '${PORT:-10000}' in text
     assert "0.0.0.0" in text
-    assert "web.managed_staging:app" in text
+    assert "web.hosted_tower:app" in text
 
 
 def test_managed_staging_start_script_has_strict_shell_mode():

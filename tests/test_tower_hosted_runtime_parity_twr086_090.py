@@ -27,7 +27,7 @@ def _manifest(
 ):
     payload = {
         "status": (
-            "tower_managed_staging_"
+            "tower_hosted_tower_"
             "runtime_manifest_ready"
         ),
         "entrypoint": (
@@ -62,7 +62,7 @@ def _manifest(
         "capital_movement": False,
         "manual_live_authorized": False,
         "live_auto_authorized": False,
-        "staging_ready": False,
+        "hosted_ready": False,
     }
 
     payload.update(
@@ -376,7 +376,7 @@ def test_missing_critical_route_fails():
         "capital_movement",
         "manual_live_authorized",
         "live_auto_authorized",
-        "staging_ready",
+        "hosted_ready",
     ],
 )
 def test_every_safety_flag_fails_closed(

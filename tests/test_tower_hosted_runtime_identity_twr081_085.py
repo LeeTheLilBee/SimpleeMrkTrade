@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 
-import web.managed_staging as managed
+import web.hosted_tower as managed
 
 
 def test_runtime_manifest_route_registered():
@@ -38,21 +38,21 @@ def test_runtime_manifest_is_unique():
 def test_manifest_identifies_real_entrypoint():
 
     payload = (
-        managed.managed_staging_runtime_manifest()
+        managed.hosted_tower_runtime_manifest()
     )
 
     assert (
         payload[
             "entrypoint"
         ]
-        == "web.managed_staging:app"
+        == "web.hosted_tower:app"
     )
 
 
 def test_manifest_tracks_archive_vault_routes():
 
     payload = (
-        managed.managed_staging_runtime_manifest()
+        managed.hosted_tower_runtime_manifest()
     )
 
     critical = (
@@ -87,7 +87,7 @@ def test_manifest_tracks_core_tower_and_ob_routes():
 
     critical = (
         managed
-        .managed_staging_runtime_manifest()[
+        .hosted_tower_runtime_manifest()[
             "critical_routes"
         ]
     )
@@ -124,7 +124,7 @@ def test_manifest_tracks_core_tower_and_ob_routes():
 def test_manifest_has_no_secret_environment_dump():
 
     payload = (
-        managed.managed_staging_runtime_manifest()
+        managed.hosted_tower_runtime_manifest()
     )
 
     forbidden = {
@@ -195,7 +195,7 @@ def test_runtime_manifest_endpoint():
         data[
             "status"
         ]
-        == "tower_managed_staging_runtime_manifest_ready"
+        == "tower_hosted_tower_runtime_manifest_ready"
     )
 
     assert (
@@ -232,7 +232,7 @@ def test_runtime_identity_headers_present():
         response.headers.get(
             "X-Simplee-Entrypoint"
         )
-        == "web.managed_staging:app"
+        == "web.hosted_tower:app"
     )
 
     assert (
@@ -251,7 +251,7 @@ def test_runtime_identity_headers_present():
 def test_safety_flags_remain_closed():
 
     payload = (
-        managed.managed_staging_runtime_manifest()
+        managed.hosted_tower_runtime_manifest()
     )
 
     assert (
@@ -314,7 +314,7 @@ def test_runtime_identity_headers_on_manifest_and_login():
             response.headers.get(
                 "X-Simplee-Entrypoint"
             )
-            == "web.managed_staging:app"
+            == "web.hosted_tower:app"
         ), path
 
         assert (
@@ -347,5 +347,5 @@ def test_runtime_identity_middleware_is_outside_health_middleware():
 
     assert (
         inner.__class__.__name__
-        == "_SimpleeManagedStagingHealthMiddleware"
+        == "_SimpleeHostedTowerHealthMiddleware"
     )

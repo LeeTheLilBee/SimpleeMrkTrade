@@ -27,7 +27,7 @@ OWNER_BETA_CONTROL_ROOM_VERSION = "tower_owner_beta_control_room_v1"
 OWNER_BETA_ROUTE = "/tower/owner-beta"
 OWNER_BETA_JSON_ROUTE = "/tower/owner-beta.json"
 
-CURRENT_STAGING_READY_DECISION = "STAGING_READY_FOR_OWNER_BETA_WALKTHROUGH"
+CURRENT_STAGING_READY_DECISION = "HISTORICAL_OWNER_BETA_EVIDENCE_ONLY"
 FINAL_STAGING_DECISION_COMMIT = "a9c72637822f644f1e6dd2b69d12638a37ec117d"
 HOSTED_OWNER_WALKTHROUGH_COMMIT = "f97669c8b1dd9f2bfdb060c65eaa0a4f5f7d93cb"
 CURRENT_MAIN_COMMIT = "bbd998e41668113b2a7cf722158e24855fe84915"
@@ -41,7 +41,7 @@ DIRECT_VAULT_WRITE = False
 DESTRUCTIVE_ACTION_UNLOCKED = False
 PUBLIC_LAUNCH_AUTHORIZED = False
 
-STAGING_READY_FOR_OWNER_BETA_WALKTHROUGH = True
+STAGING_READY_FOR_OWNER_BETA_WALKTHROUGH = False
 OWNER_BETA_CONTROL_ROOM_READY = True
 
 
@@ -113,15 +113,15 @@ def dangerous_controls() -> Dict[str, bool]:
 def hosted_staging_readiness_card() -> BetaCard:
     return BetaCard(
         card_id="hosted_staging_readiness",
-        title="Hosted Staging Readiness",
-        status="ready_for_owner_beta_walkthrough",
+        title="Historical hosted verification",
+        status="historical_evidence_only",
         summary=(
-            "Tower–OB hosted staging has passed owner login, Access Home, "
+            "Historical Tower–OB verification covered owner login, Access Home, "
             "Owner Console, App Registry, OB handoff, six-room acceptance, "
             "Tower return, session continuity, clearance continuity, and "
             "anonymous/default-deny checks."
         ),
-        owner_action="Use hosted staging for owner beta walkthrough only.",
+        owner_action="Open Observatory through Tower; verify the current hosted revision separately.",
     )
 
 
@@ -178,7 +178,7 @@ def beta_blockers() -> List[BetaBlocker]:
             severity="critical_safety_hold",
             status="locked",
             owner_safe_summary=(
-                "Hosted staging is ready for owner beta; production remains closed."
+                "Historical owner beta checks are recorded; current release authorization remains separate."
             ),
             next_action="Do not deploy production from this lane.",
         ),
@@ -201,7 +201,7 @@ def app_readiness_matrix() -> List[ReadinessMatrixRow]:
             app_id="tower",
             app_name="The Tower",
             tower_status="owner_beta_control_room_ready",
-            beta_status="active_staging_owner_beta",
+            beta_status="historical_owner_beta",
             owner_surface="Owner Beta Control Room",
             dangerous_controls_locked=True,
         ),
@@ -287,8 +287,8 @@ def tester_access_statuses() -> List[TesterAccessStatus]:
         TesterAccessStatus(
             tester_group="owner",
             access_status="allowed",
-            mode_allowed="hosted_staging_owner_beta_walkthrough",
-            notes="Owner may use Tower-hosted staging walkthrough surfaces.",
+            mode_allowed="historical_owner_beta_walkthrough",
+            notes="Historical walkthrough records are evidence only; product access requires Tower.",
             owner_approval_required=False,
         ),
         TesterAccessStatus(
@@ -322,7 +322,7 @@ def owner_next_action_panel() -> List[BetaCard]:
             title="Review Hosted Owner Beta",
             status="next",
             summary="Walk through Tower Access Home, Owner Console, App Registry, and OB six-room acceptance.",
-            owner_action="Use staging as owner and record anything confusing.",
+            owner_action="Open Observatory through Tower and record anything confusing.",
         ),
         BetaCard(
             card_id="open_issue_intake",
@@ -414,7 +414,7 @@ def owner_beta_payload() -> Dict[str, Any]:
             "public_launch_authorized": PUBLIC_LAUNCH_AUTHORIZED,
         },
         "next_recommended_action": (
-            "Use Owner Beta Control Room to review hosted staging, record blockers, "
+            "Use Owner Beta Control Room to review historical evidence, record blockers, "
             "and decide whether to open a private tester lane or prepare OB Manual Live gates."
         ),
     }
@@ -606,7 +606,7 @@ def render_owner_beta_html() -> str:
           <div class="eyebrow">Tower Owner-Beta Control Room</div>
           <h1>Owner beta is ready for walkthrough.</h1>
           <p>
-            Hosted staging is cleared for owner beta/walkthrough use only.
+            These historical receipts do not certify the current hosted revision.
             Manual Live, Live Auto, broker submission, capital movement,
             production deployment, direct Vault write, public launch, and
             destructive actions remain locked.

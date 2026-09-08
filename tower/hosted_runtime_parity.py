@@ -4,7 +4,7 @@ Tower hosted candidate parity gate / TWR086–TWR090.
 This module consumes the safe runtime identity surface created by
 TWR081–TWR085 and answers one question:
 
-    Is the hosted staging runtime serving the exact candidate
+    Is the hosted Tower runtime serving the exact candidate
     revision we intended, with the expected Tower contract and all
     safety flags still closed?
 
@@ -29,7 +29,7 @@ from urllib.request import Request, urlopen
 
 
 EXPECTED_ENTRYPOINT = (
-    "web.managed_staging:app"
+    "web.hosted_tower:app"
 )
 
 PROBE_PATHS = (
@@ -44,7 +44,7 @@ SAFETY_FALSE_FIELDS = (
     "capital_movement",
     "manual_live_authorized",
     "live_auto_authorized",
-    "staging_ready",
+    "hosted_ready",
 )
 
 
@@ -314,7 +314,7 @@ def evaluate_hosted_runtime_parity(
 
     PASS means:
     - exact revision equality
-    - expected managed-staging entrypoint
+    - expected hosted Tower entrypoint
     - consistent runtime headers
     - all critical routes present
     - every safety flag remains False
@@ -457,7 +457,7 @@ def evaluate_hosted_runtime_parity(
         ),
         "Runtime manifest entrypoint "
         "does not match "
-        "web.managed_staging:app.",
+        "web.hosted_tower:app.",
     )
 
 
@@ -493,7 +493,7 @@ def evaluate_hosted_runtime_parity(
         ),
         "Hosted entrypoint headers "
         "do not all identify "
-        "web.managed_staging:app.",
+        "web.hosted_tower:app.",
     )
 
 

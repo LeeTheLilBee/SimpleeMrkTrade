@@ -2,7 +2,7 @@
 """
 TWR086–TWR090 hosted candidate parity verifier.
 
-Example AFTER an explicitly authorized staging deployment:
+Example AFTER an explicitly authorized hosted deployment:
 
     python scripts/verify_tower_hosted_runtime_parity.py \
         --base-url https://example.onrender.com \
@@ -37,7 +37,7 @@ def main() -> int:
         required=True,
         help=(
             "HTTPS root URL of the "
-            "Tower staging service."
+            "Tower hosted service."
         ),
     )
 

@@ -91,7 +91,7 @@ def hosted_owner_walkthrough_html(
         '<section class="card"><span class="eyebrow">Your next move</span>'
         f'<p>{next_action}</p><div class="actions">{_walkthrough_action(readiness)}</div>'
         f'<details><summary>Hosted readiness details</summary>{blocker_detail}</details>'
-        '<p class="notice">Deployment, staging promotion, broker execution, capital '
+        '<p class="notice">Deployment, promotion, broker execution, capital '
         'movement, Manual Live, and Live Auto remain locked.</p></section>'
     )
     return _page("Tower · Hosted Release Readiness", body, back=RELEASE_REVIEW_PATH)

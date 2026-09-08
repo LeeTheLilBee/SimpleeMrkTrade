@@ -191,7 +191,7 @@ def hosted_release_prerequisite_html(
 
         '<p class="notice">'
         'This certificate proves prerequisites only. '
-        'It does not set STAGING_READY, deploy code, promote a release, '
+        'It does not authorize deployment, deploy code, promote a release, '
         'submit broker orders, move capital, unlock Manual Live, '
         'or unlock Live Auto.'
         '</p>'
