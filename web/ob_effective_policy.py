@@ -28,6 +28,7 @@ SERVICE_VERSION = "OBPOLICY001_010_POLICY_REGISTRY_MOST_RESTRICTIVE"
 
 OWNER_PROFILE_AUTHORITY = "OB_OWNER_OPERATING_PROFILE_V1"
 ACCOUNT_IDENTITY_AUTHORITY = "OB_ACCOUNT_IDENTITY_TRUTH_V1"
+EVENT_AUTHORITY = "OB_COMMAND_EVENT_CAUSAL_V1"
 
 MOST_RESTRICTIVE_PRIMITIVE = (
     "OB_OWNER_OPERATING_PROFILE_V1.most_restrictive_limits"
@@ -1226,8 +1227,11 @@ def explicit_owner_restriction_layer(
             "adoption_persisted":
                 False,
 
+            "event_authority":
+                EVENT_AUTHORITY,
+
             "future_event_authority":
-                "PENDING_OBEVENT",
+                EVENT_AUTHORITY,
         },
 
         owner_confirmed=
@@ -2018,6 +2022,9 @@ def effective_policy_contract() -> Dict[str, Any]:
 
         "owner_profile_authority":
             OWNER_PROFILE_AUTHORITY,
+
+        "event_authority":
+            EVENT_AUTHORITY,
 
         "most_restrictive_primitive":
             MOST_RESTRICTIVE_PRIMITIVE,

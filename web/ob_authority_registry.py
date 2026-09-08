@@ -10,7 +10,7 @@ import json
 REGISTRY_SCHEMA_VERSION = "OB_CANONICAL_AUTHORITY_REGISTRY_V1"
 RECORD_SCHEMA_VERSION = "OB_AUTHORITY_RECORD_V1"
 COMPATIBILITY_SCHEMA_VERSION = "OB_AUTHORITY_COMPATIBILITY_PROJECTION_V1"
-SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_CANONICAL_AUTHORITY_REGISTRY"
+SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_CANONICAL_AUTHORITY_REGISTRY"
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -483,7 +483,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "Trade Intent state itself."
             ),
             deferred_integrations=(
-                "event_authority",
                 "mode_authority",
                 "decision_context",
             ),
@@ -624,7 +623,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "simulation into live authority."
             ),
             deferred_integrations=(
-                "event_authority",
                 "mode_authority",
                 "decision_context",
             ),
@@ -913,20 +911,129 @@ ACTIVE_AUTHORITY_RECORDS[
     ),
 
     deferred_integrations=(
-        "event_authority",
         "mode_authority",
         "decision_context",
     ),
 )
 
 
-PENDING_AUTHORITY_SLOTS = {
+ACTIVE_AUTHORITY_RECORDS[
+    "event_authority"
+] = _record(
+    concept_key=
+        "event_authority",
 
-    "event_authority": {
-        "authority_id": "PENDING_OBEVENT",
-        "planned_pack": "OBEVENT001-010",
-        "status": "PENDING",
-    },
+    authority_id=
+        "OB_COMMAND_EVENT_CAUSAL_V1",
+
+    authority_class=
+        "COMMAND_EVENT_CAUSALITY",
+
+    implementation_ref=
+        "web/ob_command_event_authority.py",
+
+    implementation_role=
+        "CANONICAL_COMMAND_EVENT_CAUSAL_INVALIDATION_LEDGER",
+
+    owns=(
+        "canonical command request envelope",
+        "command idempotence and outcome ledger",
+        "immutable accepted domain event envelope",
+        "correlation and causation chain",
+        "dependency-aware invalidation plan",
+        "audit replay projection",
+    ),
+
+    triggers=(
+        "explicit command request",
+        "explicit domain-authority rejection",
+        "explicit domain-authority accepted change",
+    ),
+
+    effects=(
+        "persist command request without treating it as truth",
+        "record accepted or rejected command outcome",
+        "record immutable accepted domain event",
+        "derive causal invalidation for structural dependents only",
+        "replay durable causal evidence without reapplying domain mutation",
+    ),
+
+    state_mutation_scope=
+        "COMMAND_EVENT_LEDGER_ONLY",
+
+    forbidden=(
+        "domain-state mutation",
+        "command request promoted directly to truth",
+        "event fabrication without accepted state change",
+        "whole-system invalidation",
+        "domain-history deletion",
+        "owner profile mutation",
+        "market truth mutation",
+        "candidate score mutation",
+        "broker submission",
+        "capital movement",
+        "automatic contract selection",
+        "hybrid execution",
+        "automatic execution",
+    ),
+
+    failure_behavior=(
+        "Unknown target authorities, invalid fingerprints, missing causal parents, "
+        "cross-authority acceptance, duplicate conflicting outcomes, and fabricated "
+        "accepted events fail closed."
+    ),
+
+    explanation=(
+        "Every accepted event binds the originating command, target/source authority, "
+        "aggregate, before/after state references, correlation ID, causation event, "
+        "event fingerprint, and dependency-aware invalidation plan."
+    ),
+
+    evidence=(
+        "command fingerprint",
+        "command outcome",
+        "event fingerprint",
+        "correlation ID",
+        "causation event ID",
+        "before and after state references",
+        "registry fingerprint",
+        "invalidation-plan fingerprint",
+        "replay fingerprint",
+    ),
+
+    review_visibility=(
+        "Review may reconstruct why a domain change occurred, which command caused it, "
+        "what downstream authorities became stale/recompute-required, and the complete "
+        "causal chain."
+    ),
+
+    temporal_validity=(
+        "EVENT_IMMUTABLE; invalidation plan is bound to the registry fingerprint "
+        "present when the accepted event was recorded."
+    ),
+
+    deterministic=
+        True,
+
+    learning_boundary=(
+        "Learning may analyze causal histories and invalidation quality but may not "
+        "invent events, accept commands, mutate domain state, or rewrite accepted history."
+    ),
+
+    compatibility_adapters=(
+        "OB_TRADE_INTENT_V1 domain-local event history",
+        "OB_PROOF_DEMO_ACCOUNT_V1 domain-local simulated event history",
+        "OB_OWNER_OPERATING_PROFILE_V1 revision history",
+        "PENDING_OBEVENT",
+    ),
+
+    deferred_integrations=(
+        "decision_context",
+    ),
+)
+
+
+PENDING_AUTHORITY_SLOTS = {
 
     "mode_authority": {
         "authority_id": "PENDING_OBMODE",
@@ -955,6 +1062,9 @@ PENDING_AUTHORITY_SLOTS = {
 
 
 RETIRED_AUTHORITY_ALIASES = {
+    "PENDING_OBEVENT":
+        "OB_COMMAND_EVENT_CAUSAL_V1",
+
     "PENDING_OBPOLICY":
         "OB_EFFECTIVE_POLICY_V1",
 
@@ -973,6 +1083,9 @@ RETIRED_AUTHORITY_ALIASES = {
 
 
 LEGACY_KEY_TO_CANONICAL_CONCEPT = {
+    "event_authority":
+        "event_authority",
+
     "effective_policy":
         "effective_policy",
 

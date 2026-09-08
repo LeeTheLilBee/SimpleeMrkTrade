@@ -89,6 +89,9 @@ def test_exact_current_active_authorities_are_registered():
         "effective_policy":
             "OB_EFFECTIVE_POLICY_V1",
 
+        "event_authority":
+            "OB_COMMAND_EVENT_CAUSAL_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
@@ -243,7 +246,6 @@ def test_historical_proof_scoreboard_alias_resolves():
 def test_future_foundation_slots_are_explicitly_pending():
 
     expected = {
-        "event_authority",
         "mode_authority",
         "source_provenance",
         "temporal_context",

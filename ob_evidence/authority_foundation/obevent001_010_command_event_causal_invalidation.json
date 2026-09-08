@@ -1,0 +1,51 @@
+{
+  "authority": "OB_COMMAND_EVENT_CAUSAL_V1",
+  "causality": {
+    "causation_event_id": true,
+    "correlation_id": true,
+    "dependency_aware_invalidation": true,
+    "registry_fingerprint_bound": true,
+    "whole_system_invalidation": false
+  },
+  "doctrine": {
+    "accepted_change_emits_event": true,
+    "command_requests_change": true,
+    "domain_authority_validates_and_mutates": true,
+    "rejected_command_emits_domain_event": false,
+    "request_equals_truth": false
+  },
+  "existing_domain_histories_preserved": {
+    "OB_OWNER_OPERATING_PROFILE_V1": true,
+    "OB_PROOF_DEMO_ACCOUNT_V1": true,
+    "OB_TRADE_INTENT_V1": true
+  },
+  "hard_locks": {
+    "app_py_modified": false,
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "domain_mutation_by_obevent": false,
+    "hybrid_execution": false,
+    "live_auto_locked": true,
+    "tower_modified": false
+  },
+  "pack": "OBEVENT001-010",
+  "recovery_note": {
+    "correction": "Each authority record was located independently and patched by semantic record boundary.",
+    "initial_failure": "Indentation-specific literal count incorrectly expected three identically formatted event_authority markers.",
+    "semantic_truth": "Trade Intent, Proof/Demo, and Effective Policy each contained one event_authority deferred integration."
+  },
+  "registry_transition": {
+    "active": "OB_COMMAND_EVENT_CAUSAL_V1",
+    "pending": "PENDING_OBEVENT",
+    "reverse_structural_dependency_added": false
+  },
+  "schema_version": "OBEVENT001_010_ACCEPTANCE_EVIDENCE_V1",
+  "schemas": {
+    "command": "OB_COMMAND_V1",
+    "event": "OB_DOMAIN_EVENT_V1",
+    "invalidation": "OB_CAUSAL_INVALIDATION_PLAN_V1"
+  },
+  "sealed_parent": "e5f6456f2c8dfad9276f7f5a2995b10601e3a40c"
+}

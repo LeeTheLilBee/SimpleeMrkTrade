@@ -582,7 +582,7 @@ def test_owner_restriction_is_nonpersistent():
             "future_event_authority"
         ]
         ==
-        "PENDING_OBEVENT"
+        "OB_COMMAND_EVENT_CAUSAL_V1"
     )
 
 
