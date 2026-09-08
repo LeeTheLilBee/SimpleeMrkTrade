@@ -1,0 +1,51 @@
+{
+  "active_authorities": {
+    "account_reconciliation": "OB_ENGINE_ACCOUNT_AUTHORITY_V1",
+    "market_candidate_truth": "existing_canonical_engine_feed",
+    "options_research": "OB_OPTIONS_RESEARCH_V1",
+    "owner_fit_eligibility": "OB_OWNER_FIT_ELIGIBILITY_V1",
+    "owner_operating_profile": "OB_OWNER_OPERATING_PROFILE_V1",
+    "proof_demo_account": "OB_PROOF_DEMO_ACCOUNT_V1",
+    "proof_sanitized_scoreboard": "OB_PROOF_SANITIZED_SCOREBOARD_V1",
+    "trade_intent": "OB_TRADE_INTENT_V1"
+  },
+  "canonical_authority": "OB_CANONICAL_AUTHORITY_REGISTRY_V1",
+  "hard_boundaries": {
+    "app_py_modified": false,
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "dependency_cycles": false,
+    "duplicate_active_authorities": false,
+    "one_active_authority_per_concept": true,
+    "silent_conflict_resolution": false,
+    "tower_modified": false,
+    "unknown_active_dependencies": false
+  },
+  "next": "OBAUTH006-010 Account Identity + Truth Taxonomy",
+  "pack": "OBAUTH001-005",
+  "pending_foundation": {
+    "account_identity_truth_taxonomy": "PENDING_OBAUTH006_010",
+    "decision_context": "PENDING_OBCTX",
+    "effective_policy": "PENDING_OBPOLICY",
+    "event_authority": "PENDING_OBEVENT",
+    "mode_authority": "PENDING_OBMODE",
+    "source_provenance": "PENDING_OBDATA011_015",
+    "temporal_context": "PENDING_OBTIME"
+  },
+  "record_schema": "OB_AUTHORITY_RECORD_V1",
+  "repo_fit": {
+    "future_authorities_register_in": "OB_CANONICAL_AUTHORITY_REGISTRY_V1",
+    "legacy_authority_file_modified": false,
+    "legacy_registry_frozen": true,
+    "legacy_registry_role": "COMPATIBILITY_PROJECTION"
+  },
+  "retired_aliases": {
+    "PENDING_OBPROOF006_010": "OB_PROOF_SANITIZED_SCOREBOARD_V1",
+    "PENDING_OBRISK": "OB_OWNER_FIT_ELIGIBILITY_V1",
+    "PENDING_OBRISK006_010": "OB_OWNER_FIT_ELIGIBILITY_V1"
+  },
+  "schema_version": "OBAUTH001_005_ACCEPTANCE_EVIDENCE_V1",
+  "sealed_parent": "94732965cd1bf980f3314a5b7eeb94d81ee58b8e"
+}
