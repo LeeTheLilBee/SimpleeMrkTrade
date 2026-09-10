@@ -388,6 +388,7 @@ def test_owner_profile_change_invalidates_structural_dependents_only():
         plan["direct_dependents"]
     ) == {
         "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+        "OB_DECISION_CONTEXT_V1",
         "OB_EFFECTIVE_POLICY_V1",
         "OB_OWNER_FIT_ELIGIBILITY_V1",
         "OB_PROOF_DEMO_ACCOUNT_V1",

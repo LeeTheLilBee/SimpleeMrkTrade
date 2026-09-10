@@ -10,7 +10,7 @@ import json
 REGISTRY_SCHEMA_VERSION = "OB_CANONICAL_AUTHORITY_REGISTRY_V1"
 RECORD_SCHEMA_VERSION = "OB_AUTHORITY_RECORD_V1"
 COMPATIBILITY_SCHEMA_VERSION = "OB_AUTHORITY_COMPATIBILITY_PROJECTION_V1"
-SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_CANONICAL_AUTHORITY_REGISTRY"
+SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_OBCTX001_005_CANONICAL_AUTHORITY_REGISTRY"
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -242,7 +242,6 @@ ACTIVE_AUTHORITY_RECORDS = {
             deferred_integrations=(
                 "source_provenance",
                 "temporal_context",
-                "decision_context",
             ),
         ),
 
@@ -300,7 +299,6 @@ ACTIVE_AUTHORITY_RECORDS = {
             deferred_integrations=(
                 "source_provenance",
                 "temporal_context",
-                "decision_context",
             ),
         ),
 
@@ -364,7 +362,6 @@ ACTIVE_AUTHORITY_RECORDS = {
             ),
             deferred_integrations=(
                 "source_provenance",
-                "decision_context",
             ),
         ),
 
@@ -423,7 +420,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "owner-confirmed growth or risk settings."
             ),
             deferred_integrations=(
-                "decision_context",
             ),
         ),
 
@@ -484,7 +480,6 @@ ACTIVE_AUTHORITY_RECORDS = {
             ),
             deferred_integrations=(
                 "mode_authority",
-                "decision_context",
             ),
         ),
 
@@ -560,7 +555,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "mode_authority",
                 "source_provenance",
                 "temporal_context",
-                "decision_context",
             ),
         ),
 
@@ -624,7 +618,6 @@ ACTIVE_AUTHORITY_RECORDS = {
             ),
             deferred_integrations=(
                 "mode_authority",
-                "decision_context",
             ),
         ),
 
@@ -795,7 +788,6 @@ ACTIVE_AUTHORITY_RECORDS[
     deferred_integrations=(
         "source_provenance",
         "temporal_context",
-        "decision_context",
     ),
 )
 
@@ -912,7 +904,6 @@ ACTIVE_AUTHORITY_RECORDS[
 
     deferred_integrations=(
         "mode_authority",
-        "decision_context",
     ),
 )
 
@@ -1028,7 +1019,136 @@ ACTIVE_AUTHORITY_RECORDS[
     ),
 
     deferred_integrations=(
+    ),
+)
+
+
+
+ACTIVE_AUTHORITY_RECORDS[
+    "decision_context"
+] = _record(
+    concept_key=
         "decision_context",
+
+    authority_id=
+        "OB_DECISION_CONTEXT_V1",
+
+    authority_class=
+        "IMMUTABLE_DECISION_CONTEXT",
+
+    implementation_ref=
+        "web/ob_decision_context.py",
+
+    implementation_role=
+        "CANONICAL_HASH_BOUND_DECISION_SNAPSHOT",
+
+    owns=(
+        "immutable hash-bound snapshot of the authorities and evidence bound to a decision",
+        "decision-context fingerprint and reference",
+        "explicit future-authority placeholders without fabricated future truth",
+        "optional causal event and invalidation lineage snapshot",
+    ),
+
+    inputs=(
+        "existing_canonical_engine_feed",
+        "OB_OPTIONS_RESEARCH_V1",
+        "OB_TRADE_INTENT_V1",
+        "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+        "OB_OWNER_OPERATING_PROFILE_V1",
+        "OB_EFFECTIVE_POLICY_V1",
+        "OB_OWNER_FIT_ELIGIBILITY_V1",
+        "OB_COMMAND_EVENT_CAUSAL_V1",
+    ),
+
+    policy_inputs=(
+        "OB_EFFECTIVE_POLICY_V1",
+    ),
+
+    triggers=(
+        "explicit decision-context construction",
+        "explicit creation of a new snapshot after relevant upstream invalidation",
+    ),
+
+    effects=(
+        "bind source authority snapshots without recalculation",
+        "emit deterministic Decision Context fingerprint",
+        "emit immutable reviewable decision-context reference",
+        "preserve future Mode/Provenance/Time authorities as pending",
+    ),
+
+    state_mutation_scope=
+        "NONE",
+
+    forbidden=(
+        "source-domain mutation",
+        "candidate recalculation",
+        "market score recalculation",
+        "candidate rank recalculation",
+        "options research recalculation",
+        "owner profile mutation",
+        "effective policy recalculation",
+        "owner fit recalculation",
+        "event-history mutation",
+        "future authority fabrication",
+        "automatic contract selection",
+        "broker submission",
+        "capital movement",
+        "hybrid execution",
+        "automatic execution",
+    ),
+
+    failure_behavior=(
+        "Missing or mismatched account identity, missing bound fingerprints, invalid Trade Intent "
+        "integrity, invalid registry state, cross-account evidence, or fabricated future authority "
+        "fails closed and produces no Decision Context."
+    ),
+
+    explanation=(
+        "Every Decision Context exposes the exact Trade Intent, candidate, research, account, "
+        "owner-profile, Effective Policy, Owner Fit, registry, optional causal lineage, and "
+        "explicit pending future-authority references that produced the snapshot."
+    ),
+
+    evidence=(
+        "Decision Context ID",
+        "Decision Context fingerprint",
+        "authority registry fingerprint",
+        "Trade Intent ID and hash",
+        "candidate fingerprint",
+        "options research fingerprint when available",
+        "account identity fingerprint",
+        "owner profile ID/revision/hash",
+        "Effective Policy fingerprint",
+        "Owner Fit evaluation fingerprint",
+        "event/invalidation lineage when supplied",
+    ),
+
+    review_visibility=(
+        "Review may reconstruct exactly what OB knew and which authority revisions were bound "
+        "when a decision context was created."
+    ),
+
+    temporal_validity=(
+        "IMMUTABLE_SNAPSHOT; source freshness and explicit expiry remain deferred to OBDATA/OBTIME. "
+        "Relevant upstream changes require a new Decision Context rather than mutation of history."
+    ),
+
+    deterministic=
+        True,
+
+    learning_boundary=(
+        "Learning may compare historical Decision Context snapshots and outcomes but may not "
+        "rewrite a sealed context, change source truth, or fabricate a different historical input."
+    ),
+
+    compatibility_adapters=(
+        "PENDING_OBCTX",
+    ),
+
+    deferred_integrations=(
+        "mode_authority",
+        "source_provenance",
+        "temporal_context",
     ),
 )
 
@@ -1053,15 +1173,13 @@ PENDING_AUTHORITY_SLOTS = {
         "status": "PENDING",
     },
 
-    "decision_context": {
-        "authority_id": "PENDING_OBCTX",
-        "planned_pack": "OBCTX001-005",
-        "status": "PENDING",
-    },
 }
 
 
 RETIRED_AUTHORITY_ALIASES = {
+    "PENDING_OBCTX":
+        "OB_DECISION_CONTEXT_V1",
+
     "PENDING_OBEVENT":
         "OB_COMMAND_EVENT_CAUSAL_V1",
 
@@ -1083,6 +1201,9 @@ RETIRED_AUTHORITY_ALIASES = {
 
 
 LEGACY_KEY_TO_CANONICAL_CONCEPT = {
+    "decision_context":
+        "decision_context",
+
     "event_authority":
         "event_authority",
 

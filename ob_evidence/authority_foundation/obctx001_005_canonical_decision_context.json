@@ -1,0 +1,82 @@
+{
+  "authority": "OB_DECISION_CONTEXT_V1",
+  "bound_decision_inputs": {
+    "candidate_snapshot_fingerprint": true,
+    "effective_policy_fingerprint": true,
+    "explicit_account_identity": true,
+    "optional_causal_event_lineage": true,
+    "optional_invalidation_lineage": true,
+    "options_research_snapshot_fingerprint": true,
+    "owner_fit_fingerprint": true,
+    "owner_profile_id_revision_hash": true,
+    "registry_fingerprint": true,
+    "trade_intent_id_hash_state": true
+  },
+  "doctrine": {
+    "future_authority_fabrication": false,
+    "immutable_hash_bound_snapshot": true,
+    "request_equals_truth": false,
+    "source_authority_mutation": false,
+    "source_authority_recalculation": false
+  },
+  "exact_pack_files": [
+    "ob_evidence/authority_foundation/obctx001_005_canonical_decision_context.json",
+    "ob_evidence/authority_foundation/obctx001_005_canonical_decision_context_handoff.md",
+    "tests/test_obauth001_005_canonical_authority_registry.py",
+    "tests/test_obctx001_005_canonical_decision_context.py",
+    "web/ob_authority_registry.py",
+    "web/ob_decision_context.py"
+  ],
+  "future_authorities": {
+    "mode_authority": "PENDING_OBMODE",
+    "source_provenance": "PENDING_OBDATA011_015",
+    "temporal_context": "PENDING_OBTIME"
+  },
+  "hard_locks": {
+    "app_py_modified": false,
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_submission": false,
+    "candidate_recalculation": false,
+    "capital_movement": false,
+    "hybrid_execution": false,
+    "live_auto_locked": true,
+    "market_score_recalculation": false,
+    "tower_modified": false
+  },
+  "next": "OBMODE001-010 — Canonical Operating Mode Authority",
+  "pack": "OBCTX001-005",
+  "reconstruction": {
+    "clean_reconstruction_from_sealed_parent": true,
+    "known_validation_bug_corrected": "validate_trade_intent() returns a validation summary; OBCTX validates the intent and then deep-copies the original intent.",
+    "prior_colab_checkout_survived": false
+  },
+  "registry_transition": {
+    "active": "OB_DECISION_CONTEXT_V1",
+    "exact_deferred_markers_removed_from": [
+      "market_candidate_truth",
+      "options_research",
+      "account_reconciliation",
+      "owner_operating_profile",
+      "trade_intent",
+      "owner_fit_eligibility",
+      "proof_demo_account",
+      "account_identity_truth_taxonomy",
+      "effective_policy",
+      "event_authority"
+    ],
+    "pending_retired": "PENDING_OBCTX",
+    "reverse_event_dependency_added": false
+  },
+  "regression_recovery": {
+    "canonical_change": "OB_DECISION_CONTEXT_V1 now intentionally depends on the owner operating profile because Decision Context binds the governing profile revision.",
+    "confirmed_failure": "Pre-OBCTX OBEVENT regression hardcoded the old owner-profile direct-dependent set.",
+    "correction": "Updated only the stale OBEVENT regression expectation to include OB_DECISION_CONTEXT_V1.",
+    "dependency_invalidation_weakened": false,
+    "obevent_production_authority_modified": false,
+    "previous_seal_occurred": false,
+    "status_parser_recovery": "Seal continuation replaced whitespace-stripping porcelain parsing with NUL-delimited parsing."
+  },
+  "schema_version": "OBCTX001_005_ACCEPTANCE_EVIDENCE_V1",
+  "sealed_parent": "7fdebbd02c2666c8db78132af0eba278dbdc4663"
+}

@@ -92,6 +92,9 @@ def test_exact_current_active_authorities_are_registered():
         "event_authority":
             "OB_COMMAND_EVENT_CAUSAL_V1",
 
+        "decision_context":
+            "OB_DECISION_CONTEXT_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
@@ -249,7 +252,6 @@ def test_future_foundation_slots_are_explicitly_pending():
         "mode_authority",
         "source_provenance",
         "temporal_context",
-        "decision_context",
     }
 
     assert set(PENDING_AUTHORITY_SLOTS) == expected
