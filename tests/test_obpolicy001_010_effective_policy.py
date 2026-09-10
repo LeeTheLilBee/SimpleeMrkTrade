@@ -19,6 +19,7 @@ from web.ob_effective_policy import (
     SCHEMA_VERSION,
     effective_policy_contract,
     explicit_owner_restriction_layer,
+    mode_policy_layer,
     owner_profile_policy_layer,
     policy_source_registry,
     product_phase_policy_layer,
@@ -26,6 +27,10 @@ from web.ob_effective_policy import (
     resolve_effective_policy_for_intent,
     resolve_effective_policy_for_profile,
     validate_policy_layer,
+)
+
+from web.ob_operating_mode import (
+    build_initial_mode_state,
 )
 
 from web.ob_owner_fit_eligibility import (
@@ -40,6 +45,7 @@ from web.ob_owner_operating_profile import (
 )
 
 from web.ob_trade_intent import (
+    bind_operating_mode,
     bind_owner_operating_profile,
     create_trade_intent,
 )
@@ -242,12 +248,40 @@ def _bound_intent(
         path=trade_db,
     )
 
+    # OBMODE001–010 canonical order:
+    #
+    # explicit account/profile
+    #     ↓
+    # explicit Operating Mode
+    #     ↓
+    # MODE_POLICY
+    #     ↓
+    # Effective Policy
+    #     ↓
+    # Owner Fit
+    #
+    # PAPER is used here because this is a policy/eligibility test helper;
+    # it grants no broker or capital authority.
+    mode_state = build_initial_mode_state(
+        account_key=account,
+        mode="PAPER",
+        owner_authorized=True,
+        reason="obpolicy_helper_paper_mode",
+        recorded_at="2026-09-10T13:00:00+00:00",
+    )
+
+    mode_bound = bind_operating_mode(
+        intent_id,
+        mode_state,
+        path=trade_db,
+    )
+
     return {
         "profile":
             profile,
 
         "intent":
-            bound[
+            mode_bound[
                 "intent"
             ],
 
@@ -256,6 +290,9 @@ def _bound_intent(
 
         "trade_db":
             trade_db,
+
+        "mode_state":
+            mode_state,
     }
 
 
@@ -406,7 +443,7 @@ def test_policy_source_registry_has_active_and_future_sources():
             "status"
         ]
         ==
-        "PENDING"
+        "ACTIVE"
     )
 
     assert (
@@ -1272,6 +1309,7 @@ def test_owner_fit_contract_names_effective_policy_authority():
     )
 
 
+
 def test_canonical_authority_registry_activates_effective_policy():
 
     registry = build_canonical_authority_registry()
@@ -1312,7 +1350,8 @@ def test_canonical_authority_registry_activates_effective_policy():
         ]
         ==
         [
-            "OB_EFFECTIVE_POLICY_V1"
+            "OB_EFFECTIVE_POLICY_V1",
+            "OB_OPERATING_MODE_V1",
         ]
     )
 
@@ -1321,7 +1360,6 @@ def test_canonical_authority_registry_activates_effective_policy():
         not in
         PENDING_AUTHORITY_SLOTS
     )
-
 
 def test_pending_obpolicy_becomes_retired_alias():
 
@@ -1388,10 +1426,39 @@ def test_effective_policy_authority_grants_no_execution():
     )
 
 
-def test_future_policy_layers_cannot_run_early():
+
+def test_mode_policy_is_active_while_later_policy_layers_remain_pending():
+
+    assert (
+        POLICY_SOURCE_REGISTRY[
+            "MODE_POLICY"
+        ][
+            "status"
+        ]
+        ==
+        "ACTIVE"
+    )
+
+    assert (
+        POLICY_SOURCE_REGISTRY[
+            "MODE_POLICY"
+        ][
+            "runtime_allowed"
+        ]
+        is True
+    )
+
+    assert (
+        POLICY_SOURCE_REGISTRY[
+            "MODE_POLICY"
+        ][
+            "source_authority"
+        ]
+        ==
+        "OB_OPERATING_MODE_V1"
+    )
 
     for key in (
-        "MODE_POLICY",
         "CAPITAL_POLICY",
         "PORTFOLIO_POLICY",
         "SAFETY_KERNEL_POLICY",
@@ -1415,7 +1482,6 @@ def test_future_policy_layers_cannot_run_early():
             ]
             is False
         )
-
 
 def test_policy_contract_does_not_claim_persistence_or_safety_kernel():
 

@@ -18,12 +18,17 @@ from web.ob_owner_operating_profile import (
 )
 from web.ob_trade_intent import (
     apply_owner_fit_eligibility,
+    bind_operating_mode,
     bind_owner_operating_profile,
     create_trade_intent,
     get_trade_intent,
     manual_live_handoff_payload,
     trade_intent_contract,
     transition_trade_intent,
+)
+
+from web.ob_operating_mode import (
+    build_initial_mode_state,
 )
 
 
@@ -146,17 +151,35 @@ def _intent(
         risk=risk,
     )
 
-    bound = bind_owner_operating_profile(
+    profile_bound = bind_owner_operating_profile(
         intent_id,
         profile,
+        path=trade_db,
+    )
+
+    mode_state = build_initial_mode_state(
+        account_key=profile[
+            "account"
+        ][
+            "account_key"
+        ],
+        mode="PAPER",
+        owner_authorized=True,
+        reason="obrisk_test_paper_mode",
+    )
+
+    mode_bound = bind_operating_mode(
+        intent_id,
+        mode_state,
         path=trade_db,
     )
 
     return {
         "path": trade_db,
         "intent_id": intent_id,
-        "intent": bound["intent"],
+        "intent": mode_bound["intent"],
         "profile": profile,
+        "mode_state": mode_state,
     }
 
 
@@ -205,6 +228,60 @@ def test_evaluation_requires_explicit_bound_account(tmp_path):
         )
 
 
+
+def test_owner_fit_requires_explicit_bound_operating_mode(tmp_path):
+    trade_db = tmp_path / "mode_unbound.sqlite3"
+
+    created = create_trade_intent(
+        {
+            "candidate": {
+                "candidate_id": "mode-unbound",
+                "symbol": "MU",
+                "source": "canonical_engine_feed",
+                "verified": True,
+                "current_eligible": True,
+                "display_eligible": True,
+                "projection_status": "fresh",
+                "actionable_state": "ready",
+                "instrument_type": "option",
+                "score": 88.0,
+            },
+            "options_research": {
+                "schema_version": "OB_OPTIONS_RESEARCH_V1",
+                "authority": "ENGINE_RESEARCH_PROJECTION",
+                "ranked_contracts": [_contract()],
+                "research_contracts": [],
+                "options_by_symbol": {},
+                "automatic_contract_selection": False,
+                "brokerage_execution": False,
+                "automatic_execution": False,
+            },
+        },
+        path=trade_db,
+    )
+
+    profile = _profile(
+        tmp_path,
+    )
+
+    profile_bound = bind_owner_operating_profile(
+        created["intent"]["intent_id"],
+        profile,
+        path=trade_db,
+    )["intent"]
+
+    assert profile_bound["mode_authority"]["status"] == "UNBOUND"
+    assert profile_bound["mode_authority"]["authority"] == "OB_OPERATING_MODE_V1"
+
+    with pytest.raises(
+        ValueError,
+        match="Operating Mode|operating mode|BOUND",
+    ):
+        evaluate_owner_fit(
+            profile_bound
+        )
+
+
 def test_aggressive_growth_moderate_risk_is_preserved(tmp_path):
     bundle = _intent(
         tmp_path,
@@ -242,7 +319,10 @@ def test_passing_candidate_becomes_now_and_advances_owner_review(tmp_path):
     assert intent["lifecycle_state"] == "OWNER_REVIEW_READY"
     assert intent["owner_fit"]["status"] == "NOW"
     assert intent["owner_fit"]["execution_authorized"] is False
-    assert intent["mode_authority"]["status"] == "PENDING_OBMODE"
+    assert intent["mode_authority"]["status"] == "BOUND"
+    assert intent["mode_authority"]["authority"] == "OB_OPERATING_MODE_V1"
+    assert intent["mode_authority"]["mode"] == "PAPER"
+    assert intent["mode_authority"]["mode_state_fingerprint"]
     assert intent["manual_live_bridge"]["ready"] is False
 
 
@@ -542,7 +622,7 @@ def test_trade_intent_contract_points_to_real_owner_fit_authority():
         contract["owner_fit_eligibility_authority"]
         == OWNER_FIT_SCHEMA_VERSION
     )
-    assert contract["mode_authority"] == "PENDING_OBMODE"
+    assert contract["mode_authority"] == "OB_OPERATING_MODE_V1"
     assert contract["hybrid_downstream"] == "LOCKED_PENDING_OBHYB"
     assert contract["automated_downstream"] == "LOCKED_PENDING_OBAUTO"
 

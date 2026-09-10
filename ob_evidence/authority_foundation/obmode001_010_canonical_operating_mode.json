@@ -1,0 +1,111 @@
+{
+  "authority": "OB_OPERATING_MODE_V1",
+  "currently_available": [
+    "SURVEY",
+    "PAPER",
+    "MANUAL_LIVE_1"
+  ],
+  "doctrine": {
+    "account_bound": true,
+    "explicit_owner_authorization": true,
+    "global_mode": false,
+    "implicit_default": false,
+    "mode_policy_uses_existing_effective_policy": true,
+    "most_restrictive_policy_preserved": true,
+    "operating_mode_is_capital_mode": false,
+    "second_risk_engine_created": false
+  },
+  "focused_regression_recovery": {
+    "automated_unlocked": false,
+    "broker_submission_added": false,
+    "capital_movement_added": false,
+    "execution_authority_added": false,
+    "hybrid_unlocked": false,
+    "initial_result": "86 passed, 3 stale expectations failed",
+    "product_logic_failure": false,
+    "repairs": [
+      "Owner Fit policy_inputs now includes OB_EFFECTIVE_POLICY_V1 and OB_OPERATING_MODE_V1.",
+      "MODE_POLICY is ACTIVE; CAPITAL_POLICY, PORTFOLIO_POLICY and SAFETY_KERNEL_POLICY remain PENDING.",
+      "Fresh Trade Intent mode state is active-but-UNBOUND under OB_OPERATING_MODE_V1 rather than PENDING_OBMODE."
+    ],
+    "seal_before_repair": false
+  },
+  "future_locked": [
+    "HYBRID",
+    "AUTOMATED"
+  ],
+  "hard_locks": {
+    "app_py_modified": false,
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "broker_submission": false,
+    "candidate_score_mutation": false,
+    "capital_movement": false,
+    "hybrid_execution": false,
+    "live_auto_locked": true,
+    "market_truth_mutation": false,
+    "tower_modified": false
+  },
+  "integration": {
+    "authority_registry": true,
+    "decision_context_binding": true,
+    "mode_policy": true,
+    "obevent_ready_state_references": true,
+    "owner_fit_consumes_bound_mode": true,
+    "proof_demo_names_active_authority": true,
+    "trade_intent_binding": true
+  },
+  "manual_live_level_1": {
+    "automatic_contract_selection": false,
+    "automatic_execution": false,
+    "hybrid_execution": false,
+    "ob_broker_submission": false,
+    "ob_capital_movement": false,
+    "owner_manual_broker_action_outside_ob": true
+  },
+  "mode_order": {
+    "active_mode_authority": "OB_OPERATING_MODE_V1",
+    "active_unbound_mode_status": "UNBOUND",
+    "canonical_sequence": [
+      "explicit account / owner profile",
+      "explicit operating mode",
+      "MODE_POLICY",
+      "OB_EFFECTIVE_POLICY_V1",
+      "OB_OWNER_FIT_ELIGIBILITY_V1"
+    ],
+    "owner_fit_requires_bound_mode": true,
+    "profile_binding_selects_mode": false
+  },
+  "mode_order_recovery": {
+    "canonical_order": "ACCOUNT_PROFILE -> OPERATING_MODE -> MODE_POLICY -> EFFECTIVE_POLICY -> OWNER_FIT",
+    "effective_policy_test_helper": {
+      "broker_submission": false,
+      "capital_movement": false,
+      "file": "tests/test_obpolicy001_010_effective_policy.py",
+      "helper": "_bound_intent",
+      "implicit_mode": false,
+      "new_behavior": "explicitly binds PAPER Operating Mode before Owner Fit",
+      "old_behavior": "returned profile-bound intent before Operating Mode binding"
+    }
+  },
+  "modes": [
+    "SURVEY",
+    "PAPER",
+    "MANUAL_LIVE_1",
+    "HYBRID",
+    "AUTOMATED"
+  ],
+  "next": "OBDATA011-015 — Canonical Source Provenance",
+  "pack": "OBMODE001-010",
+  "recovery": {
+    "commit_before_recovery": false,
+    "focused_initial_build_failure": "Pre-OBMODE regression expectations still treated mode and MODE_POLICY as pending.",
+    "full_wall_architecture_correction": "Owner Fit now requires explicit BOUND Operating Mode before evaluation so MODE_POLICY cannot be bypassed.",
+    "obrisk001_updated": true,
+    "obrisk006_010_updated": true,
+    "proof_demo_active_authority_expectation_updated": true,
+    "push_before_recovery": false
+  },
+  "schema_version": "OBMODE001_010_ACCEPTANCE_EVIDENCE_V1",
+  "sealed_parent": "6c166de83b14b90889d40f20c569c8f595e2b4c6"
+}

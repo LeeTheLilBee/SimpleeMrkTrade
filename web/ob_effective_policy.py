@@ -29,6 +29,7 @@ SERVICE_VERSION = "OBPOLICY001_010_POLICY_REGISTRY_MOST_RESTRICTIVE"
 OWNER_PROFILE_AUTHORITY = "OB_OWNER_OPERATING_PROFILE_V1"
 ACCOUNT_IDENTITY_AUTHORITY = "OB_ACCOUNT_IDENTITY_TRUTH_V1"
 EVENT_AUTHORITY = "OB_COMMAND_EVENT_CAUSAL_V1"
+MODE_AUTHORITY = "OB_OPERATING_MODE_V1"
 
 MOST_RESTRICTIVE_PRIMITIVE = (
     "OB_OWNER_OPERATING_PROFILE_V1.most_restrictive_limits"
@@ -120,13 +121,13 @@ POLICY_SOURCE_REGISTRY = {
 
     "MODE_POLICY": {
         "source_authority":
-            "PENDING_OBMODE",
+            MODE_AUTHORITY,
 
         "status":
-            "PENDING",
+            "ACTIVE",
 
         "runtime_allowed":
-            False,
+            True,
 
         "owner_confirmation_required":
             False,
@@ -135,7 +136,10 @@ POLICY_SOURCE_REGISTRY = {
             False,
 
         "description":
-            "Future mode-capability policy layer.",
+            (
+                "Active restriction-only policy projection from "
+                "OB_OPERATING_MODE_V1."
+            ),
     },
 
     "CAPITAL_POLICY": {
@@ -1163,6 +1167,95 @@ def bound_owner_profile_policy_layer(
     )
 
 
+
+def mode_policy_layer(
+    mode_state: Dict[str, Any],
+) -> Dict[str, Any]:
+
+    from web.ob_operating_mode import (
+        mode_policy_projection,
+        validate_mode_state,
+    )
+
+    state = validate_mode_state(
+        mode_state
+    )
+
+    projection = (
+        mode_policy_projection(
+            state
+        )
+    )
+
+    return _build_layer(
+        layer_id=(
+            "mode_policy:"
+            + state[
+                "state_id"
+            ]
+        ),
+
+        layer_class=
+            "MODE_POLICY",
+
+        account_key=
+            state[
+                "account_key"
+            ],
+
+        source_authority=
+            MODE_AUTHORITY,
+
+        limits=
+            projection[
+                "limits"
+            ],
+
+        capabilities=
+            projection[
+                "capabilities"
+            ],
+
+        source_ref={
+            "mode":
+                state[
+                    "mode"
+                ],
+
+            "mode_revision":
+                state[
+                    "revision"
+                ],
+
+            "mode_state_id":
+                state[
+                    "state_id"
+                ],
+
+            "mode_state_fingerprint":
+                state[
+                    "mode_state_fingerprint"
+                ],
+
+            "mode_behavior":
+                deepcopy(
+                    projection[
+                        "behavior"
+                    ]
+                ),
+
+            "event_authority":
+                EVENT_AUTHORITY,
+        },
+
+        owner_confirmed=
+            False,
+
+        restriction_only=
+            True,
+    )
+
+
 def explicit_owner_restriction_layer(
     *,
     account_key: str,
@@ -2083,10 +2176,12 @@ def effective_policy_contract() -> Dict[str, Any]:
         "live_auto_locked":
             True,
 
-        "future_policy_authorities": {
+        "active_policy_authorities": {
             "mode_policy":
-                "PENDING_OBMODE",
+                MODE_AUTHORITY,
+        },
 
+        "future_policy_authorities": {
             "capital_policy":
                 "PENDING_OBCAP",
 

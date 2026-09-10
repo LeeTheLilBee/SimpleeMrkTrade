@@ -290,7 +290,7 @@ def test_obeng006_trade_intent_is_mode_neutral_and_reuses_existing_authorities()
             "mode_authority"
         ]
         ==
-        "PENDING_OBMODE"
+        "OB_OPERATING_MODE_V1"
     )
 
 
@@ -435,6 +435,7 @@ def test_obeng007_selected_contract_authority_is_rejected():
         )
 
 
+
 def test_obeng007_owner_fit_account_and_mode_are_not_silently_assumed():
     from web.ob_trade_intent import (
         build_trade_intent,
@@ -496,16 +497,74 @@ def test_obeng007_owner_fit_account_and_mode_are_not_silently_assumed():
         is False
     )
 
+    mode = intent[
+        "mode_authority"
+    ]
+
     assert (
-        intent[
-            "mode_authority"
-        ][
+        mode[
             "status"
         ]
         ==
-        "PENDING_OBMODE"
+        "UNBOUND"
     )
 
+    assert (
+        mode[
+            "authority"
+        ]
+        ==
+        "OB_OPERATING_MODE_V1"
+    )
+
+    assert (
+        mode[
+            "mode"
+        ]
+        is None
+    )
+
+    assert (
+        mode[
+            "account_key"
+        ]
+        is None
+    )
+
+    assert (
+        mode[
+            "owner_authorized"
+        ]
+        is False
+    )
+
+    assert (
+        mode[
+            "implicit_default_allowed"
+        ]
+        is False
+    )
+
+    assert (
+        mode[
+            "execution_authority"
+        ]
+        is False
+    )
+
+    assert (
+        mode[
+            "broker_submission_authority"
+        ]
+        is False
+    )
+
+    assert (
+        mode[
+            "capital_movement_authority"
+        ]
+        is False
+    )
 
 def test_obeng008_account_authority_is_reference_not_synthetic_account():
     from web.ob_trade_intent import (

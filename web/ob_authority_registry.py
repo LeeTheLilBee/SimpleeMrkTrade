@@ -10,7 +10,7 @@ import json
 REGISTRY_SCHEMA_VERSION = "OB_CANONICAL_AUTHORITY_REGISTRY_V1"
 RECORD_SCHEMA_VERSION = "OB_AUTHORITY_RECORD_V1"
 COMPATIBILITY_SCHEMA_VERSION = "OB_AUTHORITY_COMPATIBILITY_PROJECTION_V1"
-SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_OBCTX001_005_CANONICAL_AUTHORITY_REGISTRY"
+SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_OBCTX001_005_OBMODE001_010_CANONICAL_AUTHORITY_REGISTRY"
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -438,6 +438,7 @@ ACTIVE_AUTHORITY_RECORDS = {
             inputs=(
                 "existing_canonical_engine_feed",
                 "OB_OPTIONS_RESEARCH_V1",
+                "OB_OPERATING_MODE_V1",
             ),
             triggers=(
                 "explicit intent creation",
@@ -479,7 +480,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "Trade Intent state itself."
             ),
             deferred_integrations=(
-                "mode_authority",
             ),
         ),
 
@@ -498,11 +498,13 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "OB_TRADE_INTENT_V1",
                 "OB_OWNER_OPERATING_PROFILE_V1",
                 "OB_EFFECTIVE_POLICY_V1",
+                "OB_OPERATING_MODE_V1",
                 "existing_canonical_engine_feed",
                 "OB_OPTIONS_RESEARCH_V1",
             ),
             policy_inputs=(
                 "OB_EFFECTIVE_POLICY_V1",
+                "OB_OPERATING_MODE_V1",
             ),
             triggers=(
                 "explicit owner-fit evaluation",
@@ -552,7 +554,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "PENDING_OBRISK",
             ),
             deferred_integrations=(
-                "mode_authority",
                 "source_provenance",
                 "temporal_context",
             ),
@@ -617,7 +618,6 @@ ACTIVE_AUTHORITY_RECORDS = {
                 "simulation into live authority."
             ),
             deferred_integrations=(
-                "mode_authority",
             ),
         ),
 
@@ -820,10 +820,12 @@ ACTIVE_AUTHORITY_RECORDS[
     inputs=(
         "OB_OWNER_OPERATING_PROFILE_V1",
         "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+        "OB_OPERATING_MODE_V1",
     ),
 
     policy_inputs=(
         "OB_OWNER_OPERATING_PROFILE_V1",
+        "OB_OPERATING_MODE_V1",
     ),
 
     triggers=(
@@ -903,7 +905,6 @@ ACTIVE_AUTHORITY_RECORDS[
     ),
 
     deferred_integrations=(
-        "mode_authority",
     ),
 )
 
@@ -1058,6 +1059,7 @@ ACTIVE_AUTHORITY_RECORDS[
         "OB_EFFECTIVE_POLICY_V1",
         "OB_OWNER_FIT_ELIGIBILITY_V1",
         "OB_COMMAND_EVENT_CAUSAL_V1",
+        "OB_OPERATING_MODE_V1",
     ),
 
     policy_inputs=(
@@ -1146,20 +1148,122 @@ ACTIVE_AUTHORITY_RECORDS[
     ),
 
     deferred_integrations=(
-        "mode_authority",
         "source_provenance",
         "temporal_context",
     ),
 )
 
 
-PENDING_AUTHORITY_SLOTS = {
+ACTIVE_AUTHORITY_RECORDS[
+    "mode_authority"
+] = _record(
+    concept_key=
+        "mode_authority",
 
-    "mode_authority": {
-        "authority_id": "PENDING_OBMODE",
-        "planned_pack": "OBMODE001-010",
-        "status": "PENDING",
-    },
+    authority_id=
+        "OB_OPERATING_MODE_V1",
+
+    authority_class=
+        "ACCOUNT_BOUND_OPERATING_MODE",
+
+    implementation_ref=
+        "web/ob_operating_mode.py",
+
+    implementation_role=
+        "CANONICAL_ACCOUNT_BOUND_OPERATING_MODE_AUTHORITY",
+
+    owns=(
+        "explicit account-bound Observatory operating mode",
+        "guarded mode transition state and revision",
+        "mode capability matrix",
+        "restriction-only MODE_POLICY projection",
+        "mode state fingerprint and minimal reference",
+    ),
+
+    inputs=(
+        "OB_ACCOUNT_IDENTITY_TRUTH_V1",
+    ),
+
+    triggers=(
+        "explicit owner-authorized initial mode activation",
+        "explicit owner-authorized legal mode transition",
+    ),
+
+    effects=(
+        "persist account-bound operating-mode revision",
+        "emit immutable mode-state reference",
+        "provide restriction-only mode-policy input",
+        "permit downstream Trade Intent and Decision Context mode binding",
+    ),
+
+    state_mutation_scope=
+        "OPERATING_MODE_STORE_ONLY",
+
+    forbidden=(
+        "implicit default mode",
+        "global mode leaking across accounts",
+        "unknown account activation",
+        "Hybrid activation in OBMODE001-010",
+        "Automated activation in OBMODE001-010",
+        "owner risk-envelope widening",
+        "market truth mutation",
+        "candidate score mutation",
+        "automatic contract selection",
+        "broker submission",
+        "capital movement",
+        "hybrid execution",
+        "automatic execution",
+    ),
+
+    failure_behavior=(
+        "Unknown accounts, missing owner authorization, illegal transitions, "
+        "future-locked modes, fingerprint mismatch, and cross-account bindings "
+        "fail closed."
+    ),
+
+    explanation=(
+        "Every Operating Mode state names the explicit account, mode, revision, "
+        "owner authorization, capability matrix, previous mode, and fingerprint."
+    ),
+
+    evidence=(
+        "mode state ID",
+        "mode state fingerprint",
+        "account identity fingerprint",
+        "mode revision",
+        "previous mode",
+        "owner authorization",
+        "restriction-only policy projection",
+    ),
+
+    review_visibility=(
+        "Review may reconstruct which operating mode governed a decision "
+        "without treating mode as execution authority."
+    ),
+
+    temporal_validity=(
+        "REVISION_BOUND until an explicit owner-authorized mode transition. "
+        "Formal market/session time remains deferred to OBTIME."
+    ),
+
+    deterministic=
+        False,
+
+    learning_boundary=(
+        "Learning may evaluate mode outcomes but may not switch mode, unlock "
+        "Hybrid/Automated operation, or widen owner policy."
+    ),
+
+    compatibility_adapters=(
+        "PENDING_OBMODE",
+    ),
+
+    deferred_integrations=(
+    ),
+)
+
+
+PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
         "authority_id": "PENDING_OBDATA011_015",
@@ -1177,6 +1281,9 @@ PENDING_AUTHORITY_SLOTS = {
 
 
 RETIRED_AUTHORITY_ALIASES = {
+    "PENDING_OBMODE":
+        "OB_OPERATING_MODE_V1",
+
     "PENDING_OBCTX":
         "OB_DECISION_CONTEXT_V1",
 
@@ -1201,6 +1308,9 @@ RETIRED_AUTHORITY_ALIASES = {
 
 
 LEGACY_KEY_TO_CANONICAL_CONCEPT = {
+    "mode_authority":
+        "mode_authority",
+
     "decision_context":
         "decision_context",
 

@@ -1007,6 +1007,7 @@ def test_obrisk004_active_profile_binds_account_and_risk_refs_to_trade_intent(tm
     )
 
     # OBMODE still owns mode authority.
+    # OBRISK profile binding does NOT select a mode.
     assert (
         bound[
             "mode_authority"
@@ -1014,7 +1015,35 @@ def test_obrisk004_active_profile_binds_account_and_risk_refs_to_trade_intent(tm
             "status"
         ]
         ==
-        "PENDING_OBMODE"
+        "UNBOUND"
+    )
+
+    assert (
+        bound[
+            "mode_authority"
+        ][
+            "authority"
+        ]
+        ==
+        "OB_OPERATING_MODE_V1"
+    )
+
+    assert (
+        bound[
+            "mode_authority"
+        ][
+            "mode"
+        ]
+        is None
+    )
+
+    assert (
+        bound[
+            "mode_authority"
+        ][
+            "implicit_default_allowed"
+        ]
+        is False
     )
 
 

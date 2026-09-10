@@ -1008,6 +1008,74 @@ def evaluate_owner_fit(
             "Owner-fit evaluation requires explicit owner account choice."
         )
 
+    mode_binding = _object(
+        intent.get(
+            "mode_authority"
+        )
+    )
+
+    if (
+        mode_binding.get(
+            "status"
+        )
+        !=
+        "BOUND"
+    ):
+        raise ValueError(
+            "Owner-fit evaluation requires a BOUND Operating Mode."
+        )
+
+    if (
+        mode_binding.get(
+            "authority"
+        )
+        !=
+        "OB_OPERATING_MODE_V1"
+    ):
+        raise ValueError(
+            "Owner-fit Operating Mode authority mismatch."
+        )
+
+    if (
+        mode_binding.get(
+            "account_key"
+        )
+        !=
+        account_context.get(
+            "account_key"
+        )
+    ):
+        raise ValueError(
+            "Owner-fit Operating Mode crosses account boundary."
+        )
+
+    from web.ob_operating_mode import (
+        validate_mode_state,
+    )
+
+    bound_mode_state = _object(
+        mode_binding.get(
+            "snapshot"
+        )
+    )
+
+    validate_mode_state(
+        bound_mode_state
+    )
+
+    if (
+        bound_mode_state.get(
+            "mode_state_fingerprint"
+        )
+        !=
+        mode_binding.get(
+            "mode_state_fingerprint"
+        )
+    ):
+        raise ValueError(
+            "Owner-fit Operating Mode fingerprint mismatch."
+        )
+
     risk_ref = _object(pending.get("risk_envelope_ref"))
     growth_ref = _object(pending.get("growth_objective_ref"))
     account_ref = _object(pending.get("account_policy_ref"))
@@ -1018,12 +1086,60 @@ def evaluate_owner_fit(
         )
 
     from web.ob_effective_policy import (
+        mode_policy_layer,
         resolve_effective_policy_for_intent,
     )
 
+    extra_layers = []
+
+    mode_policy_ref = None
+
+    mode_snapshot = _object(
+        mode_binding.get(
+            "snapshot"
+        )
+    )
+
+    mode_layer = (
+        mode_policy_layer(
+            mode_snapshot
+        )
+    )
+
+    extra_layers.append(
+        mode_layer
+    )
+
+    mode_policy_ref = {
+        "authority":
+            "OB_OPERATING_MODE_V1",
+
+        "mode":
+            mode_binding.get(
+                "mode"
+            ),
+
+        "mode_revision":
+            mode_binding.get(
+                "mode_revision"
+            ),
+
+        "mode_state_fingerprint":
+            mode_binding.get(
+                "mode_state_fingerprint"
+            ),
+
+        "policy_layer_fingerprint":
+            mode_layer[
+                "layer_fingerprint"
+            ],
+    }
+
     effective_policy = (
         resolve_effective_policy_for_intent(
-            intent
+            intent,
+            extra_layers=
+                extra_layers,
         )
     )
 
@@ -1118,6 +1234,7 @@ def evaluate_owner_fit(
         "growth_key": growth.get("growth_key"),
         "risk_key": risk_ref.get("risk_key"),
         "effective_policy_fingerprint": effective_policy.get("policy_fingerprint"),
+        "mode_policy_ref": deepcopy(mode_policy_ref),
         "market": market,
         "option_gate": option_gate,
         "candidate_checks": candidate_checks,
@@ -1154,6 +1271,9 @@ def evaluate_owner_fit(
         "account_policy_ref": deepcopy(account_ref),
         "effective_policy_ref": deepcopy(
             effective_policy["reference"]
+        ),
+        "mode_policy_ref": deepcopy(
+            mode_policy_ref
         ),
         "growth_context": growth,
         "market_truth_check": market,
@@ -1199,6 +1319,7 @@ def owner_fit_eligibility_contract() -> Dict[str, Any]:
         "input_options_authority": "OB_OPTIONS_RESEARCH_V1",
         "input_profile_authority": "OB_OWNER_OPERATING_PROFILE_V1",
         "effective_policy_authority": "OB_EFFECTIVE_POLICY_V1",
+        "mode_policy_authority": "OB_OPERATING_MODE_V1",
         "direct_profile_policy_bypass": False,
         "most_restrictive_policy": True,
         "buckets": list(BUCKETS),

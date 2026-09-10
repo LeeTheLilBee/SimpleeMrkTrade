@@ -24,9 +24,8 @@ from web.ob_decision_context import (
 )
 
 from web.ob_effective_policy import (
-    owner_profile_policy_layer,
-    product_phase_policy_layer,
-    resolve_effective_policy,
+    mode_policy_layer,
+    resolve_effective_policy_for_intent,
 )
 
 from web.ob_owner_operating_profile import (
@@ -35,8 +34,14 @@ from web.ob_owner_operating_profile import (
 )
 
 from web.ob_trade_intent import (
-    build_trade_intent,
+    bind_operating_mode,
+    bind_owner_operating_profile,
+    create_trade_intent,
     validate_trade_intent,
+)
+
+from web.ob_operating_mode import (
+    build_initial_mode_state,
 )
 
 
@@ -113,32 +118,35 @@ def _real_bound_inputs(tmp_path):
         },
     }
 
-    intent = build_trade_intent(
+    trade_db = (
+        tmp_path
+        / "obctx_trade_intents.sqlite3"
+    )
+
+    created = create_trade_intent(
         {
             "candidate":
                 candidate,
 
             "options_research":
                 research,
-        }
+        },
+        path=trade_db,
     )
 
-    validation = validate_trade_intent(
-        intent
-    )
-
-    assert validation["ok"] is True
-    assert (
-        validation["intent_id"]
-        ==
-        intent["intent_id"]
-    )
+    intent_id = created[
+        "intent"
+    ][
+        "intent_id"
+    ]
 
     identity = resolve_account_identity(
         "trust"
     )
 
-    assert identity["known"] is True
+    assert identity[
+        "known"
+    ] is True
 
     draft = draft_operating_profile(
         account_key="trust",
@@ -160,16 +168,49 @@ def _real_bound_inputs(tmp_path):
         "profile"
     ]
 
-    policy = resolve_effective_policy(
+    profile_bound = (
+        bind_owner_operating_profile(
+            intent_id,
+            profile,
+            path=trade_db,
+        )
+    )
+
+    mode_state = build_initial_mode_state(
         account_key="trust",
-        layers=[
-            owner_profile_policy_layer(
-                profile
-            ),
-            product_phase_policy_layer(
-                "trust"
-            ),
-        ],
+        mode="PAPER",
+        owner_authorized=True,
+        reason="obctx_test_paper_mode",
+        recorded_at="2026-09-10T13:31:00+00:00",
+    )
+
+    mode_bound = bind_operating_mode(
+        intent_id,
+        mode_state,
+        path=trade_db,
+    )
+
+    intent = mode_bound[
+        "intent"
+    ]
+
+    validation = validate_trade_intent(
+        intent
+    )
+
+    assert validation[
+        "ok"
+    ] is True
+
+    policy = (
+        resolve_effective_policy_for_intent(
+            intent,
+            extra_layers=[
+                mode_policy_layer(
+                    mode_state
+                )
+            ],
+        )
     )
 
     fit_material = {
@@ -246,6 +287,9 @@ def _real_bound_inputs(tmp_path):
 
         "owner_fit":
             owner_fit,
+
+        "mode_state":
+            mode_state,
     }
 
 
@@ -661,13 +705,23 @@ def test_future_authorities_remain_explicitly_pending(
     ]
 
     assert (
-        future[
-            "mode_authority"
+        context[
+            "operating_mode_snapshot"
         ][
-            "authority_id"
+            "authority"
         ]
         ==
-        "PENDING_OBMODE"
+        "OB_OPERATING_MODE_V1"
+    )
+
+    assert (
+        context[
+            "operating_mode_snapshot"
+        ][
+            "mode"
+        ]
+        ==
+        "PAPER"
     )
 
     assert (

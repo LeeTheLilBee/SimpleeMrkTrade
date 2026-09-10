@@ -18,7 +18,7 @@ EFFECTIVE_POLICY_AUTHORITY = "OB_EFFECTIVE_POLICY_V1"
 OWNER_FIT_AUTHORITY = "OB_OWNER_FIT_ELIGIBILITY_V1"
 EVENT_AUTHORITY = "OB_COMMAND_EVENT_CAUSAL_V1"
 
-PENDING_MODE_AUTHORITY = "PENDING_OBMODE"
+MODE_AUTHORITY = "OB_OPERATING_MODE_V1"
 PENDING_PROVENANCE_AUTHORITY = "PENDING_OBDATA011_015"
 PENDING_TIME_AUTHORITY = "PENDING_OBTIME"
 
@@ -163,6 +163,12 @@ def decision_context_contract() -> Dict[str, Any]:
         "explicit_account_required":
             True,
 
+        "mode_authority":
+            MODE_AUTHORITY,
+
+        "active_mode_required":
+            True,
+
         "source_authorities_mutated":
             False,
 
@@ -209,9 +215,6 @@ def decision_context_contract() -> Dict[str, Any]:
             True,
 
         "pending_future_authorities": {
-            "mode_authority":
-                PENDING_MODE_AUTHORITY,
-
             "source_provenance":
                 PENDING_PROVENANCE_AUTHORITY,
 
@@ -468,32 +471,110 @@ def build_decision_context(
     )
 
     if (
-        mode_snapshot.get("status")
+        mode_snapshot.get(
+            "status"
+        )
         !=
-        "PENDING_OBMODE"
+        "BOUND"
         or
-        mode_snapshot.get("authority")
+        mode_snapshot.get(
+            "authority"
+        )
         !=
-        PENDING_MODE_AUTHORITY
+        MODE_AUTHORITY
     ):
         raise ValueError(
-            "OBCTX001–005 may only bind the explicit pending OBMODE placeholder."
+            "Decision Context requires an explicitly BOUND Operating Mode."
         )
 
-    for forbidden_mode_key in (
-        "execution_authority",
-        "broker_submission_authority",
-        "capital_movement_authority",
+    if (
+        mode_snapshot.get(
+            "account_key"
+        )
+        !=
+        account_key
     ):
+        raise ValueError(
+            "Operating Mode crosses Decision Context account boundary."
+        )
+
+    from web.ob_operating_mode import (
+        validate_mode_state,
+    )
+
+    active_mode_state = _object(
+        mode_snapshot.get(
+            "snapshot"
+        ),
+        label="Operating Mode snapshot",
+    )
+
+    validate_mode_state(
+        active_mode_state
+    )
+
+    if (
+        active_mode_state.get(
+            "mode_state_fingerprint"
+        )
+        !=
+        mode_snapshot.get(
+            "mode_state_fingerprint"
+        )
+    ):
+        raise ValueError(
+            "Trade Intent Operating Mode fingerprint mismatch."
+        )
+
+    mode_layers = [
+        layer
+        for layer
+        in (
+            policy.get(
+                "source_layers"
+            )
+            or []
+        )
         if (
-            mode_snapshot.get(
-                forbidden_mode_key
+            isinstance(
+                layer,
+                dict,
             )
-            is not False
-        ):
-            raise ValueError(
-                "Pending mode placeholder contains forbidden authority."
+            and
+            layer.get(
+                "layer_class"
             )
+            ==
+            "MODE_POLICY"
+        )
+    ]
+
+    if len(
+        mode_layers
+    ) != 1:
+        raise ValueError(
+            "Decision Context requires exactly one MODE_POLICY layer."
+        )
+
+    mode_layer_ref = (
+        mode_layers[0].get(
+            "source_ref"
+        )
+        or {}
+    )
+
+    if (
+        mode_layer_ref.get(
+            "mode_state_fingerprint"
+        )
+        !=
+        active_mode_state.get(
+            "mode_state_fingerprint"
+        )
+    ):
+        raise ValueError(
+            "Effective Policy Operating Mode binding mismatch."
+        )
 
     registry = (
         deepcopy(
@@ -748,18 +829,38 @@ def build_decision_context(
                 ),
         },
 
+        "operating_mode_snapshot": {
+            "authority":
+                MODE_AUTHORITY,
+
+            "account_key":
+                account_key,
+
+            "mode":
+                active_mode_state[
+                    "mode"
+                ],
+
+            "mode_revision":
+                active_mode_state[
+                    "revision"
+                ],
+
+            "mode_state_id":
+                active_mode_state[
+                    "state_id"
+                ],
+
+            "mode_state_fingerprint":
+                active_mode_state[
+                    "mode_state_fingerprint"
+                ],
+
+            "snapshot":
+                active_mode_state,
+        },
+
         "future_authorities": {
-            "mode_authority": {
-                "status":
-                    "PENDING",
-
-                "authority_id":
-                    PENDING_MODE_AUTHORITY,
-
-                "trade_intent_placeholder":
-                    mode_snapshot,
-            },
-
             "source_provenance": {
                 "status":
                     "PENDING",
@@ -979,6 +1080,61 @@ def validate_decision_context(
         label="Owner Fit evaluation fingerprint",
     )
 
+    operating_mode = _object(
+        context.get(
+            "operating_mode_snapshot"
+        ),
+        label="operating_mode_snapshot",
+    )
+
+    if (
+        operating_mode.get(
+            "authority"
+        )
+        !=
+        MODE_AUTHORITY
+    ):
+        raise ValueError(
+            "Decision Context Operating Mode authority mismatch."
+        )
+
+    if (
+        operating_mode.get(
+            "account_key"
+        )
+        !=
+        account_key
+    ):
+        raise ValueError(
+            "Decision Context Operating Mode/account mismatch."
+        )
+
+    from web.ob_operating_mode import (
+        validate_mode_state,
+    )
+
+    validated_mode = validate_mode_state(
+        _object(
+            operating_mode.get(
+                "snapshot"
+            ),
+            label="Operating Mode snapshot",
+        )
+    )
+
+    if (
+        operating_mode.get(
+            "mode_state_fingerprint"
+        )
+        !=
+        validated_mode[
+            "mode_state_fingerprint"
+        ]
+    ):
+        raise ValueError(
+            "Decision Context Operating Mode fingerprint mismatch."
+        )
+
     future = _object(
         context.get(
             "future_authorities"
@@ -987,9 +1143,6 @@ def validate_decision_context(
     )
 
     expected_future = {
-        "mode_authority":
-            PENDING_MODE_AUTHORITY,
-
         "source_provenance":
             PENDING_PROVENANCE_AUTHORITY,
 

@@ -722,15 +722,42 @@ def pending_owner_fit() -> Dict[str, Any]:
 
 
 def pending_mode_authority() -> Dict[str, Any]:
+    """
+    Historical function name retained for sealed OBENG compatibility.
+
+    OBMODE is now ACTIVE. New Trade Intents begin with an explicit UNBOUND
+    reference to the active authority. No mode is implicitly selected.
+    """
     return {
         "status":
-            "PENDING_OBMODE",
+            "UNBOUND",
 
         "mode":
             None,
 
         "authority":
-            "PENDING_OBMODE",
+            "OB_OPERATING_MODE_V1",
+
+        "account_key":
+            None,
+
+        "mode_revision":
+            None,
+
+        "mode_state_id":
+            None,
+
+        "mode_state_fingerprint":
+            None,
+
+        "owner_authorized":
+            False,
+
+        "snapshot":
+            None,
+
+        "implicit_default_allowed":
+            False,
 
         "execution_authority":
             False,
@@ -1866,6 +1893,40 @@ def transition_trade_intent(
                 "OBMODE authority is required."
             )
 
+        from web.ob_operating_mode import (
+            mode_allows_trade_intent_state,
+            validate_mode_state,
+        )
+
+        mode_snapshot = (
+            mode.get(
+                "snapshot"
+            )
+            or {}
+        )
+
+        validate_mode_state(
+            mode_snapshot
+        )
+
+        if not mode_allows_trade_intent_state(
+            mode_snapshot,
+            next_state,
+        ):
+            raise ValueError(
+                (
+                    "Operating Mode "
+                    + str(
+                        mode.get(
+                            "mode"
+                        )
+                    )
+                    + " does not permit Trade Intent state "
+                    + next_state
+                    + "."
+                )
+            )
+
     now = (
         utc_now_iso()
     )
@@ -2163,7 +2224,7 @@ def trade_intent_contract() -> Dict[str, Any]:
             "OB_OWNER_FIT_ELIGIBILITY_V1",
 
         "mode_authority":
-            "PENDING_OBMODE",
+            "OB_OPERATING_MODE_V1",
 
         "account_authority":
             "OB_ENGINE_ACCOUNT_AUTHORITY_V1",
@@ -2601,6 +2662,349 @@ def bind_owner_operating_profile(
         "intent":
             intent,
     }
+
+# OBMODE001-010_OPERATING_MODE_BINDING
+#
+# Mode is bound explicitly AFTER account identity/profile is bound and BEFORE
+# Owner Fit is evaluated. This guarantees Owner Fit can consume MODE_POLICY.
+#
+def bind_operating_mode_snapshot(
+    intent: Dict[str, Any],
+    mode_state: Dict[str, Any],
+) -> Dict[str, Any]:
+
+    from web.ob_operating_mode import (
+        SCHEMA_VERSION
+        as MODE_SCHEMA_VERSION,
+        mode_state_reference,
+        validate_mode_state,
+    )
+
+    validate_trade_intent(
+        intent
+    )
+
+    result = deepcopy(
+        intent
+    )
+
+    account_context = (
+        result.get(
+            "account_context"
+        )
+        or {}
+    )
+
+    if (
+        account_context.get(
+            "status"
+        )
+        !=
+        "BOUND"
+    ):
+        raise ValueError(
+            "Operating Mode may only bind after explicit account context."
+        )
+
+    if (
+        account_context.get(
+            "explicit_owner_choice"
+        )
+        is not True
+    ):
+        raise ValueError(
+            "Operating Mode requires explicit owner account choice."
+        )
+
+    owner_fit = (
+        result.get(
+            "owner_fit"
+        )
+        or {}
+    )
+
+    if owner_fit.get(
+        "evaluated"
+    ) is True:
+        raise ValueError(
+            (
+                "Operating Mode must bind before Owner Fit evaluation. "
+                "A later mode change requires a new/re-evaluated decision path."
+            )
+        )
+
+    state = validate_mode_state(
+        mode_state
+    )
+
+    if (
+        state[
+            "account_key"
+        ]
+        !=
+        account_context.get(
+            "account_key"
+        )
+    ):
+        raise ValueError(
+            "Operating Mode crosses Trade Intent account boundary."
+        )
+
+    reference = mode_state_reference(
+        state
+    )
+
+    result[
+        "mode_authority"
+    ] = {
+        "status":
+            "BOUND",
+
+        "authority":
+            MODE_SCHEMA_VERSION,
+
+        "account_key":
+            state[
+                "account_key"
+            ],
+
+        "mode":
+            state[
+                "mode"
+            ],
+
+        "mode_revision":
+            state[
+                "revision"
+            ],
+
+        "mode_state_id":
+            state[
+                "state_id"
+            ],
+
+        "mode_state_fingerprint":
+            state[
+                "mode_state_fingerprint"
+            ],
+
+        "owner_authorized":
+            True,
+
+        "reference":
+            reference,
+
+        "snapshot":
+            deepcopy(
+                state
+            ),
+
+        "execution_authority":
+            False,
+
+        "broker_submission_authority":
+            False,
+
+        "capital_movement_authority":
+            False,
+    }
+
+    manual_bridge = (
+        result.get(
+            "manual_live_bridge"
+        )
+    )
+
+    if isinstance(
+        manual_bridge,
+        dict,
+    ):
+
+        manual_bridge[
+            "ready"
+        ] = False
+
+        if state[
+            "mode"
+        ] == "MANUAL_LIVE_1":
+
+            manual_bridge[
+                "blocked_until"
+            ] = [
+                "owner_fit status NOW",
+                "explicit owner security/contract choice",
+            ]
+
+        else:
+
+            manual_bridge[
+                "blocked_until"
+            ] = [
+                "MANUAL_LIVE_1 operating mode",
+            ]
+
+    now = utc_now_iso()
+
+    result[
+        "updated_at"
+    ] = now
+
+    result[
+        "lifecycle_history"
+    ].append(
+        {
+            "state":
+                result[
+                    "lifecycle_state"
+                ],
+
+            "timestamp":
+                now,
+
+            "reason":
+                "operating_mode_bound",
+
+            "evidence": {
+                "mode_authority":
+                    MODE_SCHEMA_VERSION,
+
+                "mode":
+                    state[
+                        "mode"
+                    ],
+
+                "mode_revision":
+                    state[
+                        "revision"
+                    ],
+
+                "mode_state_fingerprint":
+                    state[
+                        "mode_state_fingerprint"
+                    ],
+
+                "account_key":
+                    state[
+                        "account_key"
+                    ],
+
+                "execution_authority":
+                    False,
+
+                "broker_submission":
+                    False,
+
+                "capital_movement":
+                    False,
+            },
+        }
+    )
+
+    result[
+        "intent_hash"
+    ] = recompute_intent_hash(
+        result
+    )
+
+    validate_trade_intent(
+        result
+    )
+
+    return result
+
+
+def bind_operating_mode(
+    intent_id: str,
+    mode_state: Dict[str, Any],
+    path: Optional[
+        Path
+    ] = None,
+) -> Dict[str, Any]:
+
+    intent = get_trade_intent(
+        intent_id,
+        path=path,
+    )
+
+    if not intent:
+        raise KeyError(
+            f"Trade intent not found: {intent_id}"
+        )
+
+    bound = (
+        bind_operating_mode_snapshot(
+            intent,
+            mode_state,
+        )
+    )
+
+    _store_intent(
+        bound,
+        path=path,
+    )
+
+    _write_event(
+        intent_id=
+            bound[
+                "intent_id"
+            ],
+
+        state=
+            bound[
+                "lifecycle_state"
+            ],
+
+        event_type=
+            "OPERATING_MODE_BOUND",
+
+        reason=
+            "explicit_operating_mode_bound",
+
+        evidence={
+            "mode":
+                bound[
+                    "mode_authority"
+                ][
+                    "mode"
+                ],
+
+            "mode_revision":
+                bound[
+                    "mode_authority"
+                ][
+                    "mode_revision"
+                ],
+
+            "mode_state_fingerprint":
+                bound[
+                    "mode_authority"
+                ][
+                    "mode_state_fingerprint"
+                ],
+
+            "account_key":
+                bound[
+                    "mode_authority"
+                ][
+                    "account_key"
+                ],
+        },
+
+        path=path,
+    )
+
+    return {
+        "ok":
+            True,
+
+        "bound":
+            True,
+
+        "intent":
+            bound,
+    }
+
+
 # OBRISK006-010_OWNER_FIT_ELIGIBILITY_BINDING
 #
 # Evaluate the EXISTING canonical candidate + EXISTING options research against

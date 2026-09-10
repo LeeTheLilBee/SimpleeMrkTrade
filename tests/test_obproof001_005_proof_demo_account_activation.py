@@ -231,11 +231,11 @@ def test_authority_registry_registers_new_sibling_and_preserves_obrisk():
     assert registry["trade_intent"]["authority"] == "OB_TRADE_INTENT_V1"
 
 
-def test_scoreboard_and_real_mode_authority_stay_deferred():
+def test_scoreboard_stays_separate_and_mode_authority_is_active():
     c = proof_demo_contract()
     assert c["sanitized_scoreboard_authority"] == SANITIZED_SCOREBOARD_AUTHORITY == "OB_PROOF_SANITIZED_SCOREBOARD_V1"
     assert c["sanitized_public_metrics_emitted_here"] is False
-    assert c["mode_authority"] == MODE_AUTHORITY == "PENDING_OBMODE"
+    assert c["mode_authority"] == MODE_AUTHORITY == "OB_OPERATING_MODE_V1"
     assert c["hybrid_execution"] is False
     assert c["automatic_execution"] is False
 
