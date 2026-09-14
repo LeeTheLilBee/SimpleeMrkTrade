@@ -1,0 +1,90 @@
+{
+  "pack": "OBDATA056-060",
+  "title": "Observation Invalidation + Revocation Authority",
+  "status": "SEALED",
+  "parent": "eb3225d5091e5ce892b06a39283c809ddaa55558",
+  "authority_chain": "Source -> Provenance -> Freshness -> Corroboration -> Quality / Anomaly -> Effective Observation -> Conflict / Escalation -> Evidence Lineage -> Observation Version -> Supersession -> Lifecycle / Retention -> Invalidation -> Revocation Authority -> Revoked-History Boundary",
+  "packs": {
+    "OBDATA056": {
+      "name": "Invalidation identity",
+      "states": [
+        "VALID",
+        "REVOKED",
+        "REVIEW_REQUIRED",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA057": {
+      "name": "Revocation authority",
+      "reasons": [
+        "SOURCE_COMPROMISED",
+        "DATA_CORRUPTION",
+        "PROVENANCE_FAILURE",
+        "MATERIAL_ERROR",
+        "IMPOSSIBLE_OBSERVATION",
+        "OWNER_REVIEW",
+        "OTHER",
+        "UNKNOWN"
+      ],
+      "rule": "Explicit revocation requires a known reason and explanation."
+    },
+    "OBDATA058": {
+      "name": "Revocation reason + evidence preservation",
+      "rule": "Revocation retains observation identity, version, original effective state, lineage hash, reason, and notes."
+    },
+    "OBDATA059": {
+      "name": "Revoked-history reasoning boundary",
+      "rule": "Revoked observations remain historical evidence with visible warning but cannot be treated as current truth."
+    },
+    "OBDATA060": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false,
+    "conflict_resolution_override": false,
+    "lineage_override": false,
+    "version_history_rewrite": false,
+    "lifecycle_override": false
+  },
+  "revocation_rules": {
+    "delete_revoked_history": false,
+    "silent_revocation": false,
+    "revoked_as_current_truth": false,
+    "automatic_reinstatement": false,
+    "revocation_without_reason": false,
+    "revocation_without_note": false,
+    "historical_evidence_preserved": true,
+    "lineage_hash_preserved": true,
+    "original_effective_state_preserved": true,
+    "review_blocks_use_until_resolved": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata056_060_observation_invalidation_revocation_authority.json",
+    "ob_evidence/authority_foundation/obdata056_060_observation_invalidation_revocation_authority_handoff.md",
+    "tests/test_obdata056_060_observation_invalidation_revocation_authority.py",
+    "web/ob_observation_revocation.py"
+  ],
+  "validation": {
+    "focused_obdata056_060": "GREEN",
+    "complete_obdata001_060": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
