@@ -1,0 +1,79 @@
+{
+  "pack": "OBDATA016-020",
+  "title": "Observation Freshness + Staleness Authority",
+  "status": "SEALED",
+  "parent": "4a05b1e9bb4120adf0cd78f2efed7c796d8f349a",
+  "authority_chain": {
+    "mode": "Account/Profile -> Operating Mode -> MODE_POLICY -> Effective Policy -> Owner Fit",
+    "source": "Source -> Provenance -> Source Authority",
+    "freshness": "Source Provenance -> Freshness Evaluation -> Effective Observation State"
+  },
+  "packs": {
+    "OBDATA016": {
+      "name": "Freshness identity",
+      "statuses": [
+        "FRESH",
+        "AGING",
+        "STALE",
+        "EXPIRED",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA017": {
+      "name": "Context-specific freshness policy",
+      "observation_classes": [
+        "REALTIME_QUOTE",
+        "MARKET_SNAPSHOT",
+        "SESSION_DATA",
+        "REFERENCE_DATA",
+        "USER_INPUT",
+        "DERIVED"
+      ]
+    },
+    "OBDATA018": {
+      "name": "Staleness propagation",
+      "rule": "Derived observations cannot become fresher than their least-current input."
+    },
+    "OBDATA019": {
+      "name": "Decision-use boundary",
+      "rule": "Freshness may reduce analytical usability but never grants execution authority."
+    },
+    "OBDATA020": {
+      "name": "Regression wall + evidence",
+      "observatory_validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false
+  },
+  "freshness_rules": {
+    "authoritative_source_is_not_automatically_fresh": true,
+    "freshness_is_context_specific": true,
+    "future_timestamp_is_unknown": true,
+    "derived_data_cannot_launder_staleness": true,
+    "stale_data_becomes_less_actionable": true,
+    "missing_freshness_evidence_does_not_create_fake_truth": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata016_020_observation_freshness_authority.json",
+    "ob_evidence/authority_foundation/obdata016_020_observation_freshness_authority_handoff.md",
+    "tests/test_obdata016_020_observation_freshness_authority.py",
+    "web/ob_observation_freshness.py"
+  ],
+  "validation": {
+    "focused_obdata016_020": "GREEN",
+    "complete_obdata001_020": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
