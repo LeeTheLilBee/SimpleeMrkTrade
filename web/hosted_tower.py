@@ -348,3 +348,14 @@ if not getattr(
 # TWR178–TWR180: validate the real product receiving surface at startup.
 from tower.ob_product_landing import register_ob_product_landing
 register_ob_product_landing(app)
+
+# TWR189 — protected Tower -> Teller handoff exchange.
+# TWR190 will activate the actual /tower/launch/teller corridor.
+from tower.teller_handoff_web import register_teller_handoff_web
+
+register_teller_handoff_web(app)
+
+# TWR190 — active protected Tower -> Teller owner launch.
+from tower.teller_owner_launch import register_teller_owner_launch_web
+
+register_teller_owner_launch_web(app)

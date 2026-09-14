@@ -293,7 +293,7 @@ def test_twr141_registry_alone_does_not_publish_future_apps(monkeypatch):
 
     assert len(
         future
-    ) == 4
+    ) == 3
 
     for app in future:
 
@@ -888,7 +888,7 @@ def test_twr143_verified_owner_ob_policy_grants_ob_entitlement(
     ] == VERIFIED
 
 
-def test_twr143_future_runtime_state_does_not_manufacture_owner_entitlement(
+def test_twr143_activated_teller_owner_entitlement_is_independent_and_verified(
     tmp_path,
     monkeypatch,
 ):
@@ -932,11 +932,17 @@ def test_twr143_future_runtime_state_does_not_manufacture_owner_entitlement(
         "states"
     ][ENTITLED][
         "value"
-    ] is False
+    ] is True
+
+    assert teller[
+        "states"
+    ][ENTITLED][
+        "verification_state"
+    ] == VERIFIED
 
     assert teller[
         "launchable"
-    ] is False
+    ] is True
 
 
 def test_twr144_fully_verified_ob_is_product_launchable(
@@ -1077,7 +1083,7 @@ def test_twr144_launchable_does_not_equal_request_authorized(
     ] is False
 
 
-def test_twr144_teller_placeholder_route_prevents_launchability(
+def test_twr144_activated_teller_route_supports_verified_launchability(
     tmp_path,
     monkeypatch,
 ):
@@ -1107,11 +1113,19 @@ def test_twr144_teller_placeholder_route_prevents_launchability(
         "launch_route_configured"
     ][
         "value"
-    ] is False
+    ] is True
+
+    assert teller[
+        "dimensions"
+    ][
+        "user_entitled"
+    ][
+        "value"
+    ] is True
 
     assert teller[
         "launchable"
-    ] is False
+    ] is True
 
 
 def test_twr144_verified_launchable_helper_returns_only_ob(
@@ -1141,7 +1155,7 @@ def test_twr144_verified_launchable_helper_returns_only_ob(
 
     assert (
         verified_launchable_app_ids()
-        == ["observatory"]
+        == ["observatory", "teller"]
     )
 
 

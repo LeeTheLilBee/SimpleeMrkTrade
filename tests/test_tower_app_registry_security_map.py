@@ -89,10 +89,25 @@ def test_registered_future_apps_are_visible_but_not_opened():
     assert "clouds" in app_ids
     assert "grounds" in app_ids
 
+    teller = next(
+        app
+        for app in registered_apps()
+        if app["app_id"] == "teller"
+    )
+
+    assert teller["app_status"] == "protected_hosted"
+    assert teller["tower_launch_route"] == "/tower/launch/teller"
+    assert teller["requires_tower_handoff"] is True
+    assert teller["dangerous_actions_locked"] is True
+
     future_apps = [
         app
         for app in registered_apps()
-        if app["app_id"] != "observatory"
+        if app["app_id"]
+        not in {
+            "observatory",
+            "teller",
+        }
     ]
 
     assert future_apps

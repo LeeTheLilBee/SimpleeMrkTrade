@@ -62,8 +62,8 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_id="teller",
         app_name="The Teller",
         app_label="Teller",
-        app_status="registered_future_room",
-        tower_launch_route="/tower/app-registry",
+        app_status="protected_hosted",
+        tower_launch_route="/tower/launch/teller",
         primary_room_route="/teller",
         owner_only=False,
         requires_tower_handoff=True,
@@ -72,8 +72,9 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "The Teller is registered as a future Tower-controlled money/workflow app. "
-            "This layer does not grant Teller access yet."
+            "The Teller has an active protected Tower owner launch corridor. "
+            "The application remains multi-role, but employee and manager hosted "
+            "access are not activated by the owner launch."
         ),
     ),
     TowerAppRegistration(
@@ -250,6 +251,26 @@ TOWER_ROUTE_REGISTRY: Tuple[TowerRouteRegistration, ...] = (
         explanation=(
             "Owner Dashboard is the dedicated Observatory owner intelligence surface "
             "behind Tower owner-session protection. Owner Console remains separate."
+        ),
+    ),
+    TowerRouteRegistration(
+        route_id="teller_owner_launch",
+        route="/tower/launch/teller",
+        label="Open The Teller",
+        app_id="teller",
+        room_id="owner_launch",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="high",
+        lock_state="protected_owner_handoff",
+        explanation=(
+            "Active owner-only Tower launch corridor for The Teller. "
+            "A current owner session, step-up, effective entitlement, "
+            "verified publication truth, and one-time Tower handoff are required."
         ),
     ),
 )

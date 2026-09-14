@@ -357,6 +357,103 @@ def _observatory_access_policy(
     }
 
 
+def _teller_access_policy(
+) -> Dict[str, Any] | None:
+
+    teller = None
+
+    for app in registered_apps():
+
+        if (
+            app.get("app_id")
+            == "teller"
+        ):
+            teller = app
+            break
+
+    if teller is None:
+        return None
+
+    if (
+        teller.get("app_status")
+        != "protected_hosted"
+    ):
+        return None
+
+    if (
+        teller.get("requires_tower_handoff")
+        is not True
+    ):
+        return None
+
+    launch_route = str(
+        teller.get(
+            "tower_launch_route",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        launch_route
+        != "/tower/launch/teller"
+    ):
+        return None
+
+    return {
+        "app_id":
+            "teller",
+
+        "app_name":
+            str(
+                teller.get(
+                    "app_name",
+                    "The Teller",
+                )
+            ),
+
+        "access_policy":
+            "GRANTED",
+
+        "verification_state":
+            VERIFIED,
+
+        "source_class":
+            DERIVED,
+
+        "source_id":
+            OWNER_APP_ACCESS_SOURCE_ID,
+
+        "policy_basis":
+            "current_owner_role_policy_twr190",
+
+        "registry_status":
+            str(
+                teller.get(
+                    "app_status",
+                    "",
+                )
+            ),
+
+        "launch_route":
+            launch_route,
+
+        # Entitlement truth remains independent
+        # from external hosting availability.
+        "runtime_availability":
+            None,
+
+        "runtime_availability_state":
+            UNKNOWN,
+
+        "runtime_availability_reason":
+            (
+                "runtime_provider_not_evaluated_by_"
+                "identity_authority"
+            ),
+    }
+
+
 def hosted_owner_identity_authority() -> Dict[str, Any]:
     configuration = (
         hosted_owner_identity_config_status()
@@ -491,6 +588,15 @@ def hosted_owner_identity_authority() -> Dict[str, Any]:
     if observatory_access is not None:
         entitlements.append(
             observatory_access
+        )
+
+    teller_access = (
+        _teller_access_policy()
+    )
+
+    if teller_access is not None:
+        entitlements.append(
+            teller_access
         )
 
     record = {

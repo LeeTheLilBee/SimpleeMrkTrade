@@ -407,6 +407,7 @@ def test_twr134_owner_observatory_policy_is_granted_without_runtime_claim(
         for item in entitlements
     ] == [
         "observatory",
+        "teller",
     ]
 
     observatory = entitlements[0]
@@ -434,7 +435,7 @@ def test_twr134_owner_observatory_policy_is_granted_without_runtime_claim(
     )
 
 
-def test_twr134_future_apps_are_not_granted_by_people_authority(
+def test_twr134_only_still_future_apps_are_not_granted_after_teller_activation(
     monkeypatch,
 ):
     configure_hosted_owner(
@@ -454,7 +455,7 @@ def test_twr134_future_apps_are_not_granted_by_people_authority(
         ]
     }
 
-    assert "teller" not in app_ids
+    assert "teller" in app_ids
     assert "vault" not in app_ids
     assert "clouds" not in app_ids
     assert "grounds" not in app_ids

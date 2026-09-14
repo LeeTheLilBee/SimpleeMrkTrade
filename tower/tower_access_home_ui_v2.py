@@ -46,6 +46,20 @@ APP_CARDS = [
         ),
         "requires_step_up": True,
     },
+    {
+        "id": "teller",
+        "name": "The Teller",
+        "subtitle": "Payroll, payments, records, and money workflow",
+        "status": "Protected entry",
+        "tone": "protected",
+        "href": "/tower/launch/teller",
+        "primary_action": "Enter The Teller",
+        "description": (
+            "Tower verifies owner entitlement, step-up, publication truth, "
+            "and the secure one-time Teller handoff before launch."
+        ),
+        "requires_step_up": True,
+    },
 ]
 
 
@@ -167,6 +181,7 @@ def ui_v2_contract() -> Dict[str, Any]:
         "app_launch_cards": True,
         "owner_session_status": True,
         "clear_tower_to_ob_launch": True,
+        "clear_tower_to_teller_launch": True,
         "clear_ob_to_tower_return": True,
         "return_receipt_status_panel": True,
         "owner_actions_panel": False,
@@ -524,6 +539,12 @@ def render_access_home_v2(
                     </a>
 
                     <a
+                        href="/tower/launch/teller"
+                    >
+                        The Teller
+                    </a>
+
+                    <a
                         href="/tower/owner-dashboard"
                     >
                         Owner Headquarters
@@ -569,7 +590,7 @@ def render_access_home_v2(
                             </h1>
 
                             <p>
-                                One front door. One real product entry.
+                                One front door. Protected product entries.
                                 Owner controls stay close. Technical proof
                                 stays backstage.
                             </p>
@@ -612,7 +633,7 @@ def render_access_home_v2(
                             <small>
                                 Tower verifies the current owner
                                 boundary before protected
-                                Observatory handoff.
+                                product handoff.
                             </small>
 
                         </div>
@@ -627,11 +648,11 @@ def render_access_home_v2(
 
                         <section
                             class="tower-primary-door"
-                            data-tower-primary-owner-action="observatory"
+                            data-tower-primary-owner-action="protected-products"
                         >
 
                             <div class="tower-overline">
-                                Primary protected product
+                                Protected products
                             </div>
 
                             <div class="tower-app-grid">
