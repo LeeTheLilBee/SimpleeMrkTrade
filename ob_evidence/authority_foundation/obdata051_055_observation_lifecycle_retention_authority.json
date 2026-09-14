@@ -1,0 +1,95 @@
+{
+  "pack": "OBDATA051-055",
+  "title": "Observation Lifecycle + Retention Authority",
+  "status": "SEALED",
+  "parent": "fd3f2dce5695aad842aa6ee80c1fda351193b6e9",
+  "authority_chain": "Source -> Provenance -> Freshness -> Corroboration -> Quality -> Anomaly -> Effective Observation -> Conflict / Escalation -> Evidence Lineage -> Observation Version -> Supersession -> Observation Lifecycle -> Current-Reasoning Eligibility -> Retention / Archive State",
+  "packs": {
+    "OBDATA051": {
+      "name": "Observation lifecycle identity",
+      "states": [
+        "ACTIVE",
+        "SUPERSEDED",
+        "HISTORICAL",
+        "ARCHIVED",
+        "RETAINED_EVIDENCE",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA052": {
+      "name": "Current-reasoning eligibility",
+      "states": [
+        "ELIGIBLE",
+        "REVIEW_ONLY",
+        "INELIGIBLE",
+        "UNKNOWN"
+      ],
+      "rule": "Historical retention and current analytical eligibility are separate authorities."
+    },
+    "OBDATA053": {
+      "name": "Retention + archive authority",
+      "retention_states": [
+        "HOT",
+        "WARM",
+        "ARCHIVE",
+        "PERMANENT_EVIDENCE",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA054": {
+      "name": "Historical evidence boundary",
+      "rule": "Superseded, historical, and archived observations may remain retained without being eligible for current reasoning."
+    },
+    "OBDATA055": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false,
+    "conflict_resolution_override": false,
+    "lineage_override": false,
+    "version_history_rewrite": false
+  },
+  "lifecycle_rules": {
+    "delete_audit_history": false,
+    "archived_as_current_truth": false,
+    "implicit_superseded_reactivation": false,
+    "retention_implies_current_eligibility": false,
+    "historical_implies_current_eligibility": false,
+    "superseded_implies_current_eligibility": false,
+    "current_trusted_may_be_eligible": true,
+    "current_caution_requires_review": true,
+    "current_quarantined_is_ineligible": true,
+    "current_unusable_is_ineligible": true,
+    "superseded_history_is_retained": true,
+    "archived_history_is_retained": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata051_055_observation_lifecycle_retention_authority.json",
+    "ob_evidence/authority_foundation/obdata051_055_observation_lifecycle_retention_authority_handoff.md",
+    "tests/test_obdata051_055_observation_lifecycle_retention_authority.py",
+    "web/ob_observation_lifecycle.py"
+  ],
+  "validation": {
+    "focused_obdata051_055": "GREEN",
+    "complete_obdata001_055": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
