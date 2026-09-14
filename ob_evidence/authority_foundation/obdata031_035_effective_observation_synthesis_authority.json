@@ -1,0 +1,84 @@
+{
+  "pack": "OBDATA031-035",
+  "title": "Effective Observation Synthesis + Confidence Authority",
+  "status": "SEALED",
+  "parent": "91bb64b781298d36605f208db9d19bc634745fa8",
+  "authority_chain": "Source -> Provenance -> Source Authority -> Freshness Evaluation -> Cross-Source Corroboration -> Observation Quality -> Anomaly Evaluation -> Effective Observation Synthesis -> Confidence Authority -> Effective Observation State",
+  "packs": {
+    "OBDATA031": {
+      "name": "Effective observation identity",
+      "states": [
+        "TRUSTED",
+        "USABLE",
+        "CAUTION",
+        "QUARANTINED",
+        "UNUSABLE",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA032": {
+      "name": "Multi-layer synthesis authority",
+      "rule": "Upstream authority layers are combined without being overwritten or collapsed into one opaque signal."
+    },
+    "OBDATA033": {
+      "name": "Confidence authority",
+      "levels": [
+        "HIGH",
+        "MODERATE",
+        "LOW",
+        "NONE",
+        "UNKNOWN"
+      ],
+      "rule": "Confidence is categorical and explainable, not an opaque numeric certainty score."
+    },
+    "OBDATA034": {
+      "name": "Explainable effective-state boundary",
+      "rule": "Every synthesized state retains the upstream layer values, reasons, and limitations."
+    },
+    "OBDATA035": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false
+  },
+  "confidence_rules": {
+    "opaque_confidence_score": false,
+    "fake_certainty": false,
+    "unknown_layer_can_produce_high_confidence": false,
+    "stale_layer_can_become_trusted": false,
+    "conflicted_layer_can_become_trusted": false,
+    "quarantined_data_can_become_normal_truth": false,
+    "rejected_data_can_become_usable": false,
+    "upstream_layer_values_are_preserved": true,
+    "reasons_are_explainable": true,
+    "limitations_are_visible": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata031_035_effective_observation_synthesis_authority.json",
+    "ob_evidence/authority_foundation/obdata031_035_effective_observation_synthesis_authority_handoff.md",
+    "tests/test_obdata031_035_effective_observation_synthesis_authority.py",
+    "web/ob_effective_observation.py"
+  ],
+  "validation": {
+    "focused_obdata031_035": "GREEN",
+    "complete_obdata001_035": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
