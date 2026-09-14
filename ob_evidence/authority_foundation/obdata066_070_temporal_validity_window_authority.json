@@ -1,0 +1,82 @@
+{
+  "pack": "OBDATA066-070",
+  "title": "Observation Validity Window + Temporal Authority",
+  "status": "SEALED",
+  "parent": "8e1db5e2f938847af55ec9a91c29212ecd618717",
+  "authority_chain": "Source -> Provenance -> Freshness -> Corroboration -> Quality / Anomaly -> Effective Observation -> Conflict / Escalation -> Evidence Lineage -> Observation Version -> Supersession -> Lifecycle / Retention -> Invalidation / Revocation -> Rehabilitation -> Temporal Validity Window -> Context / Session Binding -> Current Temporal Eligibility",
+  "packs": {
+    "OBDATA066": {
+      "name": "Temporal validity identity",
+      "states": [
+        "VALID_NOW",
+        "NOT_YET_VALID",
+        "OUT_OF_WINDOW",
+        "SESSION_MISMATCH",
+        "TRADING_DATE_MISMATCH",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA067": {
+      "name": "Validity-window evaluation",
+      "rule": "Observation may be current only while evaluated inside its explicit timezone-aware validity interval."
+    },
+    "OBDATA068": {
+      "name": "Session/context binding authority",
+      "rule": "Observation is bound to its explicit trading date and market session unless session is explicitly ANY."
+    },
+    "OBDATA069": {
+      "name": "Out-of-window reasoning boundary",
+      "rule": "Out-of-window, wrong-session, and wrong-date observations remain historical evidence but cannot act as current truth."
+    },
+    "OBDATA070": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "freshness_override": false,
+    "provenance_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false,
+    "conflict_override": false,
+    "lineage_override": false,
+    "lifecycle_override": false,
+    "revocation_override": false,
+    "rehabilitation_override": false
+  },
+  "temporal_rules": {
+    "temporal_window_widening": false,
+    "cross_session_carry_without_authority": false,
+    "cross_date_carry_without_authority": false,
+    "out_of_window_as_current_truth": false,
+    "timezone_aware_windows_required": true,
+    "trading_date_binding_required": true,
+    "session_binding_required": true,
+    "window_boundaries_inclusive": true,
+    "unknown_session_fails_closed": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata066_070_temporal_validity_window_authority.json",
+    "ob_evidence/authority_foundation/obdata066_070_temporal_validity_window_authority_handoff.md",
+    "tests/test_obdata066_070_temporal_validity_window_authority.py",
+    "web/ob_observation_temporal_validity.py"
+  ],
+  "validation": {
+    "focused_obdata066_070": "GREEN",
+    "complete_obdata001_070": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
