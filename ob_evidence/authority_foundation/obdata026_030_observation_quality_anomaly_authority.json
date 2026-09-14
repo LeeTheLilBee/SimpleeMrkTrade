@@ -1,0 +1,83 @@
+{
+  "pack": "OBDATA026-030",
+  "title": "Observation Quality + Anomaly Detection Authority",
+  "status": "SEALED",
+  "parent": "5f3f0b4da3b5173d2d1dd0059d57c8978f9d18df",
+  "authority_chain": "Source -> Provenance -> Source Authority -> Freshness Evaluation -> Cross-Source Corroboration -> Observation Quality -> Anomaly Evaluation -> Effective Observation State",
+  "packs": {
+    "OBDATA026": {
+      "name": "Observation quality identity",
+      "quality_states": [
+        "VALID",
+        "DEGRADED",
+        "INVALID",
+        "UNKNOWN"
+      ],
+      "anomaly_states": [
+        "NORMAL",
+        "SUSPECT",
+        "OUTLIER",
+        "IMPOSSIBLE",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA027": {
+      "name": "Structural validity authority",
+      "rule": "Non-numeric, non-finite, policy-impossible, or structurally invalid observations cannot masquerade as normal market truth."
+    },
+    "OBDATA028": {
+      "name": "Anomaly detection authority",
+      "rule": "Deviation from a comparison anchor is surfaced as suspect or outlier without silently correcting the value."
+    },
+    "OBDATA029": {
+      "name": "Observation quarantine / usability boundary",
+      "dispositions": [
+        "ACCEPT",
+        "REVIEW",
+        "QUARANTINE",
+        "REJECT",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA030": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false
+  },
+  "quality_rules": {
+    "fabricated_correction": false,
+    "silent_anomaly_suppression": false,
+    "outlier_may_replace_source_value": false,
+    "invalid_data_may_be_treated_as_normal": false,
+    "quarantine_is_execution_authority": false,
+    "reference_anchor_is_corrected_market_price": false,
+    "valid_disagreement_is_automatically_invalid": false
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata026_030_observation_quality_anomaly_authority.json",
+    "ob_evidence/authority_foundation/obdata026_030_observation_quality_anomaly_authority_handoff.md",
+    "tests/test_obdata026_030_observation_quality_anomaly_authority.py",
+    "web/ob_observation_quality.py"
+  ],
+  "validation": {
+    "focused_obdata026_030": "GREEN",
+    "complete_obdata001_030": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
