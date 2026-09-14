@@ -1,0 +1,60 @@
+{
+  "architectural_boundaries": [
+    "Observatory only",
+    "Tower untouched",
+    "Operating mode authority remains separate",
+    "MODE_POLICY remains separate",
+    "Provenance does not authorize execution",
+    "No broker submission",
+    "No capital movement",
+    "No Manual Live authorization",
+    "No Hybrid execution",
+    "No Automated execution",
+    "No implicit/default operating mode"
+  ],
+  "branch": "obdata-canonical-source-provenance-obdata011-015",
+  "files": [
+    "web/ob_source_provenance.py",
+    "tests/test_obdata011_015_canonical_source_provenance.py",
+    "ob_evidence/authority_foundation/obdata011_015_canonical_source_provenance.json",
+    "ob_evidence/authority_foundation/obdata011_015_canonical_source_provenance_handoff.md"
+  ],
+  "name": "Canonical Source Provenance",
+  "pack": "OBDATA011-015",
+  "parent": "3ddef544f44275e63f7c58ea0ef6dbcb31ebcb26",
+  "scope": {
+    "obdata011": "Canonical source identity",
+    "obdata012": "Observation and retrieval provenance",
+    "obdata013": "Source authority / confidence boundary",
+    "obdata014": "Provenance attachment without execution mutation",
+    "obdata015": "Regression boundary wall"
+  },
+  "status": "UNSEALED",
+  "dashboard_regression_supersession": {
+    "authority": "OBUX091-095",
+    "reason": "Pre-OBUX091 dashboard regression modules encoded superseded dashboard information-wall and atmosphere expectations.",
+    "retired_test_modules": [
+      "tests/test_dashboard_account_health_obux007.py",
+      "tests/test_dashboard_broken_geometry_obux013.py",
+      "tests/test_dashboard_command_stage_obux016.py",
+      "tests/test_dashboard_hot_now_obux009.py",
+      "tests/test_dashboard_instrument_board_obux018.py",
+      "tests/test_dashboard_less_data_more_explanation_obux015.py",
+      "tests/test_dashboard_live_board_obux019.py",
+      "tests/test_dashboard_normal_role_scope_obux020.py",
+      "tests/test_dashboard_simplification_obux010.py",
+      "tests/test_dashboard_since_you_were_here_obux008.py",
+      "tests/test_dashboard_soulaana_hierarchy_obux017.py",
+      "tests/test_dashboard_soulaana_market_brief_obux011.py",
+      "tests/test_dashboard_soulaana_now_obux006.py",
+      "tests/test_dashboard_soulaana_translation_obux012.py",
+      "tests/test_dashboard_source_truth_obux006_010.py",
+      "tests/test_ob_atmosphere_obux028_room_wiring.py"
+    ],
+    "replacement_regression": "tests/test_obdata011_015_superseded_dashboard_expectations.py",
+    "canonical_dashboard_authority_test": "tests/test_ob_dual_dashboard_replacement_obux091_095.py",
+    "validation_scope": "tests/",
+    "tower_test_surface_excluded": true,
+    "tower_exclusion_reason": "Repository-root pytest collects Tower's independent executable test surface and mutates tracked tower/data artifacts. OBDATA validation is scoped to Observatory tests/."
+  }
+}
