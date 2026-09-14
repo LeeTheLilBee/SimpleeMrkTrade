@@ -1,0 +1,43 @@
+{
+  "authority_not_granted": [
+    "employee_hosted_access",
+    "manager_hosted_access",
+    "payroll_execution",
+    "bank_authority",
+    "capital_movement",
+    "broker_execution",
+    "manual_live",
+    "live_auto"
+  ],
+  "name": "Teller Runtime Publication and Fresh HTTPS Health Authority",
+  "next": "seal TWR191, configure verified Render receipt environment, deploy Tower",
+  "pack": "TWR191",
+  "parent": "079eec88f42de17f3d504d69b7035c07becc2b03",
+  "preserves": {
+    "observatory_launch_boundary": true,
+    "observatory_publication_truth": true,
+    "one_time_teller_handoff": true,
+    "owner_session_gate": true,
+    "step_up_gate": true
+  },
+  "provider": {
+    "fallback_when_unconfigured": "existing_shared_publication_authority",
+    "fresh_http_check": true,
+    "freshness_seconds_default": 60,
+    "requires_deploy_receipt": true,
+    "requires_deploy_sha": true,
+    "requires_http_200": true,
+    "requires_https": true,
+    "requires_teller_html_markers": true,
+    "scope": "teller_only",
+    "shared_publication_provider_modified": false
+  },
+  "render": {
+    "deploy_id": "dep-dak0nu3m8hqs73a15820",
+    "deploy_status": "live",
+    "service": "simplee-teller",
+    "service_id": "srv-dak0ntbm8hqs73a1564g",
+    "url": "https://simplee-teller.onrender.com"
+  },
+  "teller_source_sha": "1b24db502bbf170b11c081b20b49b5640417b2e8"
+}

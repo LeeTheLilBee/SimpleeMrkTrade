@@ -24,6 +24,9 @@ from tower.app_registry import registered_apps
 from tower.identity_authority import (
     hosted_owner_identity_authority,
 )
+from tower.teller_runtime_publication_authority import (
+    teller_runtime_publication_truth_bundle,
+)
 from tower.truth_contract import (
     AUTHORITATIVE,
     DERIVED,
@@ -251,39 +254,79 @@ def project_registered_app_truth(
         ),
     )
 
-    configured = (
-        publication_authority_configured_truth(
-            snapshot=authority
+    teller_runtime = (
+        teller_runtime_publication_truth_bundle()
+        if app_id == "teller"
+        else None
+    )
+
+    if teller_runtime is not None:
+
+        configured = (
+            teller_runtime[
+                "configured"
+            ]
         )
-    )
 
-    implemented = app_dimension_truth(
-        app_id,
-        IMPLEMENTED,
-        snapshot=authority,
-    )
+        implemented = (
+            teller_runtime[
+                "implemented"
+            ]
+        )
 
-    published = app_dimension_truth(
-        app_id,
-        PUBLICATION_DIMENSION,
-        snapshot=authority,
-    )
+        published = (
+            teller_runtime[
+                "published"
+            ]
+        )
 
-    environment_available = (
-        app_dimension_truth(
+        environment_available = (
+            teller_runtime[
+                "environment_available"
+            ]
+        )
+
+        health_verified = (
+            teller_runtime[
+                "health_verified"
+            ]
+        )
+
+    else:
+
+        configured = (
+            publication_authority_configured_truth(
+                snapshot=authority
+            )
+        )
+
+        implemented = app_dimension_truth(
             app_id,
-            ENVIRONMENT_AVAILABLE,
+            IMPLEMENTED,
             snapshot=authority,
         )
-    )
 
-    health_verified = (
-        app_dimension_truth(
+        published = app_dimension_truth(
             app_id,
-            HEALTH_VERIFIED,
+            PUBLICATION_DIMENSION,
             snapshot=authority,
         )
-    )
+
+        environment_available = (
+            app_dimension_truth(
+                app_id,
+                ENVIRONMENT_AVAILABLE,
+                snapshot=authority,
+            )
+        )
+
+        health_verified = (
+            app_dimension_truth(
+                app_id,
+                HEALTH_VERIFIED,
+                snapshot=authority,
+            )
+        )
 
     user_entitled = (
         _owner_entitlement_truth(
