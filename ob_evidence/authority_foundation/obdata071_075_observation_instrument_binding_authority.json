@@ -1,0 +1,87 @@
+{
+  "pack": "OBDATA071-075",
+  "title": "Observation Scope + Instrument Binding Authority",
+  "status": "SEALED",
+  "parent": "fdc422cc1ea30298b89c482b811d5ce6595347cf",
+  "authority_chain": "Source -> Provenance -> Freshness -> Corroboration -> Quality / Anomaly -> Effective Observation -> Conflict / Escalation -> Evidence Lineage -> Observation Version -> Supersession -> Lifecycle / Retention -> Invalidation / Revocation -> Rehabilitation -> Temporal Validity -> Instrument Identity -> Observation Scope Binding -> Current Instrument Eligibility",
+  "packs": {
+    "OBDATA071": {
+      "name": "Instrument identity authority",
+      "instrument_kinds": [
+        "EQUITY",
+        "ETF",
+        "OPTION",
+        "INDEX",
+        "FUTURE",
+        "FOREX",
+        "CRYPTO",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA072": {
+      "name": "Observation-scope binding",
+      "rule": "Current reasoning requires exact instrument kind, symbol, and underlying identity match."
+    },
+    "OBDATA073": {
+      "name": "Option-contract binding",
+      "rule": "Option reasoning additionally requires exact option right, strike, expiration, and contract identity."
+    },
+    "OBDATA074": {
+      "name": "Cross-instrument reasoning boundary",
+      "rule": "Observations may remain historical evidence while being ineligible for another symbol or contract."
+    },
+    "OBDATA075": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false,
+    "conflict_resolution_override": false,
+    "lineage_override": false,
+    "lifecycle_override": false,
+    "revocation_override": false,
+    "rehabilitation_override": false,
+    "temporal_override": false
+  },
+  "instrument_scope_rules": {
+    "symbol_substitution": false,
+    "underlying_substitution": false,
+    "stock_option_substitution": false,
+    "option_right_substitution": false,
+    "strike_substitution": false,
+    "expiration_substitution": false,
+    "cross_contract_promotion": false,
+    "exact_symbol_match_required": true,
+    "exact_instrument_kind_required": true,
+    "exact_underlying_match_required": true,
+    "option_contract_identity_required": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata071_075_observation_instrument_binding_authority.json",
+    "ob_evidence/authority_foundation/obdata071_075_observation_instrument_binding_authority_handoff.md",
+    "tests/test_obdata071_075_observation_instrument_binding_authority.py",
+    "web/ob_observation_instrument_binding.py"
+  ],
+  "validation": {
+    "focused_obdata071_075": "GREEN",
+    "complete_obdata001_075": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
