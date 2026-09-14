@@ -359,3 +359,106 @@ register_teller_handoff_web(app)
 from tower.teller_owner_launch import register_teller_owner_launch_web
 
 register_teller_owner_launch_web(app)
+
+# ==============================================================================================================
+# TWR192_CANONICAL_HOSTED_FRONT_DOOR
+#
+# Tower is the hosted front door.
+#
+# Legacy aliases:
+#   /       -> /tower/start
+#   /tower  -> /tower/start
+#   /tower/ -> /tower/start
+#
+# /tower/start keeps authentication authoritative:
+#   owner session -> /tower/access-home
+#   no session    -> /tower/login
+#
+# No authorization is granted here.
+# ==============================================================================================================
+
+from flask import (
+    redirect as _twr192_redirect,
+    request as _twr192_request,
+)
+
+
+_TWR192_LEGACY_FRONT_DOOR_PATHS = frozenset({
+    "/",
+    "/tower",
+    "/tower/",
+})
+
+
+def _twr192_canonical_front_door():
+
+    if (
+        _twr192_request.method
+        not in {
+            "GET",
+            "HEAD",
+        }
+    ):
+        return None
+
+    if (
+        _twr192_request.path
+        not in _TWR192_LEGACY_FRONT_DOOR_PATHS
+    ):
+        return None
+
+    return _twr192_redirect(
+        "/tower/start",
+        code=302,
+    )
+
+
+if not app.extensions.get(
+    "tower_canonical_hosted_front_door_twr192"
+):
+
+    callbacks = (
+        app.before_request_funcs
+        .setdefault(
+            None,
+            [],
+        )
+    )
+
+    callbacks.insert(
+        0,
+        _twr192_canonical_front_door,
+    )
+
+    app.extensions[
+        "tower_canonical_hosted_front_door_twr192"
+    ] = {
+        "legacy_paths":
+            sorted(
+                _TWR192_LEGACY_FRONT_DOOR_PATHS
+            ),
+
+        "canonical_destination":
+            "/tower/start",
+
+        "authentication_bypass":
+            False,
+
+        "step_up_bypass":
+            False,
+
+        "broker_authority":
+            False,
+
+        "capital_authority":
+            False,
+
+        "payroll_execution_authority":
+            False,
+
+        "manual_live_authorized":
+            False,
+
+        "live_auto_authorized":
+            False,
+    }
