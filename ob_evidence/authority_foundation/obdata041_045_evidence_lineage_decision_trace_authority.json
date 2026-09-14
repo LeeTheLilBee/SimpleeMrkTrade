@@ -1,0 +1,90 @@
+{
+  "pack": "OBDATA041-045",
+  "title": "Evidence Lineage + Decision Trace Authority",
+  "status": "SEALED",
+  "parent": "eed5998912f0a7e6fe25051f64700db365fea394",
+  "authority_chain": "Source -> Provenance -> Source Authority -> Freshness Evaluation -> Cross-Source Corroboration -> Observation Quality -> Anomaly Evaluation -> Effective Observation Synthesis -> Conflict Resolution -> Escalation Authority -> Evidence Lineage -> Decision Trace -> Effective Observation State",
+  "packs": {
+    "OBDATA041": {
+      "name": "Evidence lineage identity",
+      "stages": [
+        "SOURCE",
+        "PROVENANCE",
+        "SOURCE_AUTHORITY",
+        "FRESHNESS",
+        "CORROBORATION",
+        "QUALITY",
+        "ANOMALY",
+        "SYNTHESIS",
+        "CONFLICT",
+        "ESCALATION",
+        "FINAL"
+      ],
+      "trace_states": [
+        "COMPLETE",
+        "PARTIAL",
+        "BROKEN",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA042": {
+      "name": "Immutable transformation trace",
+      "rule": "Trace steps are immutable evidence of what each authority layer received and produced."
+    },
+    "OBDATA043": {
+      "name": "Decision trace authority",
+      "rule": "The final observation state retains an explicit ordered path showing how upstream states led to the result."
+    },
+    "OBDATA044": {
+      "name": "Explainability + audit boundary",
+      "rule": "Lineage is descriptive and auditable only. It does not grant execution or override analytical authority."
+    },
+    "OBDATA045": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false,
+    "conflict_resolution_override": false
+  },
+  "lineage_rules": {
+    "retroactive_lineage_mutation": false,
+    "fabricated_trace_steps": false,
+    "hidden_evidence_removal": false,
+    "missing_stage_may_be_fabricated": false,
+    "broken_sequence_may_be_marked_complete": false,
+    "trace_hash_is_execution_authority": false,
+    "source_ids_remain_visible": true,
+    "decision_path_is_explicit": true,
+    "trace_steps_are_immutable": true,
+    "lineage_hash_is_deterministic": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata041_045_evidence_lineage_decision_trace_authority.json",
+    "ob_evidence/authority_foundation/obdata041_045_evidence_lineage_decision_trace_authority_handoff.md",
+    "tests/test_obdata041_045_evidence_lineage_decision_trace_authority.py",
+    "web/ob_evidence_lineage.py"
+  ],
+  "validation": {
+    "focused_obdata041_045": "GREEN",
+    "complete_obdata001_045": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
