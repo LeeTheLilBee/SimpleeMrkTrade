@@ -1,0 +1,81 @@
+{
+  "pack": "OBDATA061-065",
+  "title": "Reinstatement + Rehabilitation Authority",
+  "status": "SEALED",
+  "parent": "d30731fcee5692e1e8481d154fe5ae3c7b66c304",
+  "authority_chain": "Source -> Provenance -> Freshness -> Corroboration -> Quality / Anomaly -> Effective Observation -> Conflict / Escalation -> Evidence Lineage -> Observation Version -> Supersession -> Lifecycle / Retention -> Invalidation / Revocation -> Rehabilitation Review -> New-Version Reinstatement",
+  "packs": {
+    "OBDATA061": {
+      "name": "Rehabilitation identity",
+      "states": [
+        "NOT_APPLICABLE",
+        "REVIEW_REQUIRED",
+        "APPROVED_FOR_NEW_VERSION",
+        "REJECTED",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA062": {
+      "name": "Explicit rehabilitation review",
+      "rule": "Rehabilitation must pass explicit review and may not silently clear or mutate the revoked predecessor."
+    },
+    "OBDATA063": {
+      "name": "New-version reinstatement authority",
+      "rule": "Approved rehabilitation creates a newer observation version with a distinct evidence-lineage hash."
+    },
+    "OBDATA064": {
+      "name": "Revoked-predecessor preservation boundary",
+      "rule": "The predecessor remains revoked forever as historical evidence; rehabilitation creates a distinct new analytical record."
+    },
+    "OBDATA065": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false,
+    "conflict_resolution_override": false,
+    "lineage_override": false,
+    "lifecycle_override": false
+  },
+  "rehabilitation_rules": {
+    "revocation_delete": false,
+    "in_place_reinstatement": false,
+    "silent_rehabilitation": false,
+    "rehabilitation_without_new_lineage": false,
+    "rehabilitation_without_revoked_predecessor": false,
+    "rehabilitation_without_approval": false,
+    "revoked_predecessor_remains_revoked": true,
+    "new_version_required": true,
+    "new_lineage_required": true,
+    "explicit_review_required": true,
+    "explicit_reason_required": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata061_065_reinstatement_rehabilitation_authority.json",
+    "ob_evidence/authority_foundation/obdata061_065_reinstatement_rehabilitation_authority_handoff.md",
+    "tests/test_obdata061_065_reinstatement_rehabilitation_authority.py",
+    "web/ob_observation_rehabilitation.py"
+  ],
+  "validation": {
+    "focused_obdata061_065": "GREEN",
+    "complete_obdata001_065": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
