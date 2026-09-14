@@ -1,0 +1,70 @@
+{
+  "pack": "OBDATA021-025",
+  "title": "Cross-Source Corroboration + Disagreement Authority",
+  "status": "SEALED",
+  "parent": "fe9f93ea33babfd6d10d956f0b92c8260ca244ae",
+  "authority_chain": "Source -> Provenance -> Source Authority -> Freshness Evaluation -> Cross-Source Corroboration -> Effective Observation State",
+  "packs": {
+    "OBDATA021": {
+      "name": "Corroboration identity",
+      "statuses": [
+        "SINGLE_SOURCE",
+        "CORROBORATED",
+        "MINOR_DISAGREEMENT",
+        "MATERIAL_DISAGREEMENT",
+        "CONFLICTED",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA022": {
+      "name": "Cross-source agreement measurement",
+      "rule": "Independent fresh-enough observations are compared using explicit relative spread."
+    },
+    "OBDATA023": {
+      "name": "Disagreement authority",
+      "rule": "Material disagreement must be surfaced and may not be silently resolved by choosing a convenient source."
+    },
+    "OBDATA024": {
+      "name": "Effective observation confidence boundary",
+      "rule": "Corroboration may strengthen analytical confidence; disagreement may reduce it; neither grants execution authority."
+    },
+    "OBDATA025": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false
+  },
+  "corroboration_rules": {
+    "duplicate_source_counts_as_independent": false,
+    "stale_source_counts_as_current_corroboration": false,
+    "fabricated_consensus": false,
+    "silent_source_preference": false,
+    "single_source_may_be_called_corroborated": false,
+    "material_disagreement_must_surface": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata021_025_cross_source_corroboration_authority.json",
+    "ob_evidence/authority_foundation/obdata021_025_cross_source_corroboration_authority_handoff.md",
+    "tests/test_obdata021_025_cross_source_corroboration_authority.py",
+    "web/ob_cross_source_corroboration.py"
+  ],
+  "validation": {
+    "focused_obdata021_025": "GREEN",
+    "complete_obdata001_025": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
