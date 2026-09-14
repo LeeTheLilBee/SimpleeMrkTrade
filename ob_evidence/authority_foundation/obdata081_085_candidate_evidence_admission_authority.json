@@ -1,0 +1,75 @@
+{
+  "pack": "OBDATA081-085",
+  "title": "Analytical Candidate Admission + Evidence-Set Authority",
+  "status": "SEALED",
+  "parent": "9b857104f6f89db33630feca6b3ccfaf32a41800",
+  "authority_chain": "Source -> Provenance -> Freshness -> Corroboration -> Quality / Anomaly -> Effective Observation -> Conflict / Escalation -> Evidence Lineage -> Observation Version -> Lifecycle / Retention -> Revocation / Rehabilitation -> Temporal Validity -> Instrument Binding -> Reasoning Context Composition -> Analytical Candidate -> Evidence Admission -> Candidate Evidence-Set Integrity",
+  "packs": {
+    "OBDATA081": {
+      "name": "Candidate evidence identity",
+      "rule": "Candidate and evidence identity are explicit and bound to reasoning target, symbol, instrument kind, observation version, and lineage."
+    },
+    "OBDATA082": {
+      "name": "Evidence admission authority",
+      "rule": "Only evidence whose upstream composition state is explicitly ELIGIBLE and whose candidate target identity matches may be admitted."
+    },
+    "OBDATA083": {
+      "name": "Duplicate / version / lineage contamination controls",
+      "rule": "Exact duplicates, multiple active versions of one observation, and duplicate lineage are blocked."
+    },
+    "OBDATA084": {
+      "name": "Candidate evidence-set integrity",
+      "rule": "The candidate set independently verifies upstream eligibility, target consistency, version consistency, exact uniqueness, and lineage uniqueness."
+    },
+    "OBDATA085": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "trade_ranking_authority": false,
+    "trade_recommendation_authority": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false
+  },
+  "override_authority": {
+    "mode_policy_override": false,
+    "composition_override": false,
+    "source_override": false,
+    "freshness_override": false,
+    "quality_override": false,
+    "revocation_override": false,
+    "temporal_override": false,
+    "instrument_override": false
+  },
+  "integrity_rules": {
+    "duplicate_as_independent_evidence": false,
+    "mixed_target_evidence": false,
+    "multiple_active_versions_same_observation": false,
+    "lineage_duplication_as_corroboration": false,
+    "explicit_upstream_eligibility_required": true,
+    "reasoning_target_match_required": true,
+    "symbol_match_required": true,
+    "instrument_kind_match_required": true,
+    "lineage_uniqueness_required": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata081_085_candidate_evidence_admission_authority.json",
+    "ob_evidence/authority_foundation/obdata081_085_candidate_evidence_admission_authority_handoff.md",
+    "tests/test_obdata081_085_candidate_evidence_admission_authority.py",
+    "web/ob_candidate_evidence_admission.py"
+  ],
+  "validation": {
+    "focused_obdata081_085": "GREEN",
+    "complete_obdata001_085": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
