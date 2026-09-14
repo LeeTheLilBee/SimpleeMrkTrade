@@ -1,0 +1,84 @@
+{
+  "pack": "OBDATA036-040",
+  "title": "Observation Conflict Resolution + Escalation Authority",
+  "status": "SEALED",
+  "parent": "19b63bc0d1bd437aebc8d7480af9b2d1448a5412",
+  "authority_chain": "Source -> Provenance -> Source Authority -> Freshness Evaluation -> Cross-Source Corroboration -> Observation Quality -> Anomaly Evaluation -> Effective Observation Synthesis -> Conflict Resolution -> Escalation Authority -> Effective Observation State",
+  "packs": {
+    "OBDATA036": {
+      "name": "Conflict identity",
+      "states": [
+        "NONE",
+        "RECONCILABLE",
+        "AMBIGUOUS",
+        "MATERIAL",
+        "UNRESOLVED",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA037": {
+      "name": "Safe reconciliation authority",
+      "rule": "Minor differences may be analytically reconciled only when observations remain usable, and no source winner is selected."
+    },
+    "OBDATA038": {
+      "name": "Ambiguity preservation authority",
+      "rule": "Material disagreement preserves multiple valid observations rather than manufacturing one answer."
+    },
+    "OBDATA039": {
+      "name": "Escalation authority",
+      "levels": [
+        "NONE",
+        "REVIEW",
+        "OWNER_REVIEW",
+        "HARD_BLOCK",
+        "UNKNOWN"
+      ],
+      "rule": "Unresolved or materially conflicted evidence can escalate for review but escalation grants no execution authority."
+    },
+    "OBDATA040": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false
+  },
+  "conflict_rules": {
+    "fabricated_consensus": false,
+    "silent_source_winner": false,
+    "owner_review_is_execution_authority": false,
+    "material_disagreement_may_be_erased": false,
+    "quarantined_observation_may_be_silently_replaced": false,
+    "unusable_observation_may_flow_as_truth": false,
+    "multiple_valid_observations_are_preserved": true,
+    "ambiguity_is_visible": true,
+    "selected_source_id_is_none_by_default": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata036_040_conflict_resolution_escalation_authority.json",
+    "ob_evidence/authority_foundation/obdata036_040_conflict_resolution_escalation_authority_handoff.md",
+    "tests/test_obdata036_040_conflict_resolution_escalation_authority.py",
+    "web/ob_observation_conflict.py"
+  ],
+  "validation": {
+    "focused_obdata036_040": "GREEN",
+    "complete_obdata001_040": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
