@@ -1,0 +1,711 @@
+{
+  "broker_submission_authorized": false,
+  "capability_dimensions": [
+    "REGISTERED",
+    "CONFIGURED",
+    "PUBLISHED",
+    "ENTITLED",
+    "AUTHORIZED",
+    "AVAILABLE",
+    "ENABLED",
+    "LOCKED"
+  ],
+  "capital_movement_authorized": false,
+  "current_truth_debt_audit": {
+    "category_counts": {
+      "CONTROL_LOOKS_REAL_BUT_IS_NOT": 3,
+      "DRAFT_STATE": 14,
+      "FUTURE_PRODUCT_REGISTRATION": 4,
+      "PLACEHOLDER_IDENTITY": 15,
+      "PLACEHOLDER_STATE": 2,
+      "PLAUSIBLE_STATUS": 3,
+      "PRACTICE_ROUTE": 3,
+      "PRACTICE_SURFACE": 22
+    },
+    "evidence_scanned_as_product": false,
+    "file_counts": {
+      "tower/access_home_owner_launches.py": 3,
+      "tower/app_registry.py": 4,
+      "tower/hosted_owner_release_walkthrough_web.py": 9,
+      "tower/owner_dashboard_service.py": 8,
+      "tower/owner_dashboard_web.py": 4,
+      "tower/owner_people_registry.py": 24,
+      "tower/tower_human_login_ob_launch.py": 14
+    },
+    "finding_count": 66,
+    "findings": [
+      {
+        "category": "FUTURE_PRODUCT_REGISTRATION",
+        "line_number": 65,
+        "matched_line": "app_status=\"registered_future_room\",",
+        "rationale": "Future app registration is legitimate configuration but must not imply product availability.",
+        "relative_path": "tower/app_registry.py",
+        "rule_id": "future_app_registry",
+        "severity": "KEEP_REGISTRY_HIDE_PRODUCT"
+      },
+      {
+        "category": "FUTURE_PRODUCT_REGISTRATION",
+        "line_number": 83,
+        "matched_line": "app_status=\"registered_future_room\",",
+        "rationale": "Future app registration is legitimate configuration but must not imply product availability.",
+        "relative_path": "tower/app_registry.py",
+        "rule_id": "future_app_registry",
+        "severity": "KEEP_REGISTRY_HIDE_PRODUCT"
+      },
+      {
+        "category": "FUTURE_PRODUCT_REGISTRATION",
+        "line_number": 101,
+        "matched_line": "app_status=\"registered_future_room\",",
+        "rationale": "Future app registration is legitimate configuration but must not imply product availability.",
+        "relative_path": "tower/app_registry.py",
+        "rule_id": "future_app_registry",
+        "severity": "KEEP_REGISTRY_HIDE_PRODUCT"
+      },
+      {
+        "category": "FUTURE_PRODUCT_REGISTRATION",
+        "line_number": 119,
+        "matched_line": "app_status=\"registered_future_room\",",
+        "rationale": "Future app registration is legitimate configuration but must not imply product availability.",
+        "relative_path": "tower/app_registry.py",
+        "rule_id": "future_app_registry",
+        "severity": "KEEP_REGISTRY_HIDE_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 65,
+        "matched_line": "person_id=\"future-manager-seat\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 66,
+        "matched_line": "display_name=\"Future Manager Seat\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 67,
+        "matched_line": "relationship=\"future_team\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 69,
+        "matched_line": "access_status=\"staged_only\",",
+        "rationale": "Staged-only identities are not real accounts.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "staged_only_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_STATE",
+        "line_number": 82,
+        "matched_line": "notes=\"Placeholder seat for future manager access. No real account is created by this layer.\",",
+        "rationale": "Placeholder state must not appear as real people/access/product state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "placeholder_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 82,
+        "matched_line": "notes=\"Placeholder seat for future manager access. No real account is created by this layer.\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 85,
+        "matched_line": "person_id=\"future-family-seat\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 86,
+        "matched_line": "display_name=\"Future Family / Friend Seat\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 87,
+        "matched_line": "relationship=\"future_invite\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 89,
+        "matched_line": "access_status=\"staged_only\",",
+        "rationale": "Staged-only identities are not real accounts.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "staged_only_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_STATE",
+        "line_number": 101,
+        "matched_line": "notes=\"Placeholder seat for future family/friend access with sliding-scale/payment rules later.\",",
+        "rationale": "Placeholder state must not appear as real people/access/product state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "placeholder_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 101,
+        "matched_line": "notes=\"Placeholder seat for future family/friend access with sliding-scale/payment rules later.\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 108,
+        "matched_line": "invite_id=\"draft-manager-teller\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 109,
+        "matched_line": "display_name=\"Manager Teller Access Draft\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 115,
+        "matched_line": "status=\"draft_not_sent\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 117,
+        "matched_line": "message=\"Draft for future manager access to Teller workflows. No invite is sent yet.\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 117,
+        "matched_line": "message=\"Draft for future manager access to Teller workflows. No invite is sent yet.\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 120,
+        "matched_line": "invite_id=\"draft-family-ob-limited\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 121,
+        "matched_line": "display_name=\"Family / Friend OB Limited Draft\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 127,
+        "matched_line": "status=\"draft_not_sent\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 129,
+        "matched_line": "message=\"Draft for future limited OB access. Billing/sliding scale belongs to a later layer.\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 137,
+        "matched_line": "person_id=\"future-manager-seat\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 150,
+        "matched_line": "person_id=\"future-family-seat\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 197,
+        "matched_line": "if person[\"access_status\"] == \"staged_only\"",
+        "rationale": "Staged-only identities are not real accounts.",
+        "relative_path": "tower/owner_people_registry.py",
+        "rule_id": "staged_only_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLAUSIBLE_STATUS",
+        "line_number": 46,
+        "matched_line": "status=\"tower_owner_dashboard_ready\",",
+        "rationale": "Ready must be backed by an explicit authoritative provider, not a convenient default label.",
+        "relative_path": "tower/owner_dashboard_service.py",
+        "rule_id": "ready_status_claim",
+        "severity": "REVIEW_AUTHORITY"
+      },
+      {
+        "category": "CONTROL_LOOKS_REAL_BUT_IS_NOT",
+        "line_number": 53,
+        "matched_line": "real_account_creation=False,",
+        "rationale": "A control surface must not look operational when account creation is explicitly non-operational.",
+        "relative_path": "tower/owner_dashboard_service.py",
+        "rule_id": "account_creation_false_gap",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "CONTROL_LOOKS_REAL_BUT_IS_NOT",
+        "line_number": 54,
+        "matched_line": "real_invites_sent=False,",
+        "rationale": "Invitation UX must connect to a real invitation lifecycle or state unavailable.",
+        "relative_path": "tower/owner_dashboard_service.py",
+        "rule_id": "invites_false_gap",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "CONTROL_LOOKS_REAL_BUT_IS_NOT",
+        "line_number": 55,
+        "matched_line": "real_access_granted=False,",
+        "rationale": "Access-management UX must modify real authority or explicitly remain unavailable.",
+        "relative_path": "tower/owner_dashboard_service.py",
+        "rule_id": "access_grants_false_gap",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLACEHOLDER_IDENTITY",
+        "line_number": 115,
+        "matched_line": "\"meaning\": \"People and future seats are visible to the owner.\",",
+        "rationale": "Future/example identities belong in test fixtures, not hosted owner people state.",
+        "relative_path": "tower/owner_dashboard_service.py",
+        "rule_id": "future_identity",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 126,
+        "matched_line": "\"title\": \"Invite drafts\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_dashboard_service.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 128,
+        "matched_line": "\"status\": \"draft\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_dashboard_service.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 129,
+        "matched_line": "\"meaning\": \"Invites are drafted but not sent.\",",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_dashboard_service.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 34,
+        "matched_line": "\"Open the Tower owner desk for people, staged seats, invite drafts, \"",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/access_home_owner_launches.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PLAUSIBLE_STATUS",
+        "line_number": 67,
+        "matched_line": "\"status\": \"tower_access_home_owner_launches_ready\",",
+        "rationale": "Ready must be backed by an explicit authoritative provider, not a convenient default label.",
+        "relative_path": "tower/access_home_owner_launches.py",
+        "rule_id": "ready_status_claim",
+        "severity": "REVIEW_AUTHORITY"
+      },
+      {
+        "category": "PLAUSIBLE_STATUS",
+        "line_number": 239,
+        "matched_line": "<h2>Your owner rooms are ready.</h2>",
+        "rationale": "Product readiness claims require authoritative runtime/access proof.",
+        "relative_path": "tower/access_home_owner_launches.py",
+        "rule_id": "rooms_ready_claim",
+        "severity": "REVIEW_AUTHORITY"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 374,
+        "matched_line": "href=\"/tower/owner/release-review/walkthrough\">",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/owner_dashboard_web.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_ROUTE",
+        "line_number": 374,
+        "matched_line": "href=\"/tower/owner/release-review/walkthrough\">",
+        "rationale": "Normal Tower navigation must not route humans into walkthrough/proof experiences.",
+        "relative_path": "tower/owner_dashboard_web.py",
+        "rule_id": "walkthrough_route",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 395,
+        "matched_line": "<h2>Invite drafts</h2>",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_dashboard_web.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "DRAFT_STATE",
+        "line_number": 406,
+        "matched_line": "This page can show people, invite drafts, and access requests, but it cannot create real accounts,",
+        "rationale": "Draft controls must not look like real completed Tower operations.",
+        "relative_path": "tower/owner_dashboard_web.py",
+        "rule_id": "draft_language",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 2,
+        "matched_line": "\"\"\"Protected owner-facing hosted release-readiness walkthrough / TWR112-TWR115.\"\"\"",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 29,
+        "matched_line": "HOSTED_WALKTHROUGH_PATH = \"/tower/owner/release-review/walkthrough\"",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_ROUTE",
+        "line_number": 29,
+        "matched_line": "HOSTED_WALKTHROUGH_PATH = \"/tower/owner/release-review/walkthrough\"",
+        "rationale": "Normal Tower navigation must not route humans into walkthrough/proof experiences.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "walkthrough_route",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 31,
+        "matched_line": "HOSTED_CERTIFICATION_JSON_PATH = \"/tower/owner/release-review/walkthrough/certification.json\"",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_ROUTE",
+        "line_number": 31,
+        "matched_line": "HOSTED_CERTIFICATION_JSON_PATH = \"/tower/owner/release-review/walkthrough/certification.json\"",
+        "rationale": "Normal Tower navigation must not route humans into walkthrough/proof experiences.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "walkthrough_route",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 32,
+        "matched_line": "HOSTED_WALKTHROUGH_MARKER = \"tower-hosted-owner-release-walkthrough-twr111-115\"",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 79,
+        "matched_line": "f'<section class=\"hero\" data-tower-hosted-owner-walkthrough=\"{HOSTED_WALKTHROUGH_MARKER}\">'",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 80,
+        "matched_line": "'<span class=\"eyebrow\">Tower hosted owner walkthrough</span>'",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 89,
+        "matched_line": "f'<article class=\"card\"><span class=\"label\">Owner walkthrough</span>'",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/hosted_owner_release_walkthrough_web.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 80,
+        "matched_line": "\"/tower/observatory-walkthrough\"",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 692,
+        "matched_line": "or enable explicit local walkthrough mode.",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 773,
+        "matched_line": "# BEGIN TOWER UI V2 WALKTHROUGH REDIRECT HELPER",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 780,
+        "matched_line": "prelaunch redirect instead of an Observatory walkthrough redirect.",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 821,
+        "matched_line": "Store a Tower-owned native walkthrough handoff marker.",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 835,
+        "matched_line": "\"destination\": \"/tower/observatory-walkthrough\",",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 879,
+        "matched_line": "expected protected walkthrough redirect.",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 882,
+        "matched_line": "Tower-owned OB walkthrough handoff destination. It does not",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 905,
+        "matched_line": "\"/tower/observatory-walkthrough\"",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 909,
+        "matched_line": "# END TOWER UI V2 WALKTHROUGH REDIRECT HELPER",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 918,
+        "matched_line": "and redirects to the protected Observatory walkthrough.",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 934,
+        "matched_line": "\"destination\": \"/tower/observatory-walkthrough\",",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 976,
+        "matched_line": "\"/tower/observatory-walkthrough\"",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      },
+      {
+        "category": "PRACTICE_SURFACE",
+        "line_number": 1499,
+        "matched_line": "# - real walkthrough redirect stores SESSION_OB_NATIVE_LAUNCH_HANDOFF",
+        "rationale": "Walkthrough/rehearsal language must not be a normal Tower operating destination.",
+        "relative_path": "tower/tower_human_login_ob_launch.py",
+        "rule_id": "practice_walkthrough",
+        "severity": "RETIRE_FROM_PRODUCT"
+      }
+    ],
+    "scanned_product_surfaces": [
+      "tower/app_registry.py",
+      "tower/owner_people_registry.py",
+      "tower/owner_dashboard_service.py",
+      "tower/access_home_owner_launches.py",
+      "tower/owner_dashboard_web.py",
+      "tower/hosted_owner_release_walkthrough_web.py",
+      "tower/tower_human_login_ob_launch.py"
+    ],
+    "scanned_surface_count": 7,
+    "severity_counts": {
+      "KEEP_REGISTRY_HIDE_PRODUCT": 4,
+      "RETIRE_FROM_PRODUCT": 59,
+      "REVIEW_AUTHORITY": 3
+    },
+    "status": "tower_truth_debt_audit_complete",
+    "tests_scanned_as_product": false
+  },
+  "execution_boundaries_changed": false,
+  "layers": {
+    "TWR121": "Canonical Tower truth-source classification and product visibility boundary",
+    "TWR122": "Provenance, verification state, observation time, freshness, and stale-state handling",
+    "TWR123": "No plausible fake defaults: absent state remains unknown/unavailable rather than zero/healthy/ready",
+    "TWR124": "Separate app capability dimensions for registration, configuration, publication, entitlement, authorization, availability, enablement, and locks",
+    "TWR125": "Machine-readable product-surface truth-debt audit and acceptance wall"
+  },
+  "live_auto_authorized": false,
+  "manual_live_authorized": false,
+  "next_cutover": {
+    "name": "Practice Surface Retirement",
+    "pack": "TWR126\u2013TWR130",
+    "required_targets": [
+      "practice/walkthrough product navigation",
+      "preview/simulate/rehearsal controls",
+      "hardcoded placeholder people",
+      "invite drafts masquerading as operations",
+      "ready/available claims without authoritative provider",
+      "future app availability theater"
+    ]
+  },
+  "observatory_modified": false,
+  "pack_label": "TWR121\u2013TWR125 \u2014 Authoritative Tower Truth Contract",
+  "release_execution_authorized": false,
+  "schema_version": "tower.authoritative-truth-contract.twr121-125.v1",
+  "source_classes": [
+    "AUTHORITATIVE",
+    "DERIVED",
+    "CACHED",
+    "HISTORICAL",
+    "EVIDENCE_ONLY",
+    "TEST_ONLY",
+    "UNAVAILABLE"
+  ],
+  "tower_branch": "tower-hosted-runtime-identity-twr081-085",
+  "tower_parent_commit": "2167d225236983f9cd7f9a1593d04b6e2512013d",
+  "truth_rules": {
+    "authorization_implies_runtime_availability": false,
+    "evidence_only_primary_product_truth_allowed": false,
+    "explicit_not_configured_allowed": true,
+    "explicit_unavailable_allowed": true,
+    "explicit_unknown_allowed": true,
+    "missing_count_defaults_to_zero": false,
+    "missing_status_defaults_to_clean": false,
+    "missing_status_defaults_to_healthy": false,
+    "missing_status_defaults_to_ready": false,
+    "publication_implies_entitlement": false,
+    "real_safety_lock_is_truth": true,
+    "registration_implies_availability": false,
+    "stale_state_counts_as_verified_current_truth": false,
+    "test_only_primary_product_truth_allowed": false
+  },
+  "verification_states": [
+    "VERIFIED",
+    "UNVERIFIED",
+    "UNKNOWN",
+    "UNAVAILABLE",
+    "NOT_CONFIGURED",
+    "STALE"
+  ]
+}

@@ -1,9 +1,9 @@
-# Managed staging requirements for Render.
+# Hosted Tower requirements for Render.
 # Render build command:
-#   pip install -r deploy/managed_staging/requirements.txt
+#   pip install -r deploy/hosted_tower/requirements.txt
 #
-# Keep this intentionally small. The staging app entrypoint is:
-#   web.managed_staging:app
+# Keep this intentionally small. The hosted app entrypoint is:
+#   web.hosted_tower:app
 
 Flask>=3.0,<4
 gunicorn>=22,<24

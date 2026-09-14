@@ -232,12 +232,12 @@ def integration_readiness_summary() -> Dict[str, Any]:
         "tower_app_registry_v2": "building_or_ready",
         "observatory_simplification": "pending",
         "tower_ob_integration_branch": "pending",
-        "render_staging_redeploy": "pending",
-        "staging_ready": False,
+        "render_hosted_redeploy": "pending",
+        "hosted_ready": False,
         "production_ready": False,
         "reason": (
             "Tower doors and owner-control surfaces are being made "
-            "integration-ready before hosted staging redeploy."
+            "integration-ready before hosted hosted redeploy."
         ),
     }
 
@@ -364,7 +364,7 @@ def render_app_registry(payload: Mapping[str, Any]) -> str:
                     <div class="registry-hero-card">
                         <span>Integration status</span>
                         <strong>
-                            {"Pending" if not readiness.get("staging_ready") else "Ready"}
+                            {"Pending" if not readiness.get("hosted_ready") else "Ready"}
                         </strong>
                         <small>
                             OB simplification:
@@ -387,8 +387,8 @@ def render_app_registry(payload: Mapping[str, Any]) -> str:
                         <strong>{escape(str(readiness.get("tower_ob_integration_branch", "pending")))}</strong>
                     </article>
                     <article class="registry-stat">
-                        <span>Staging Ready</span>
-                        <strong>{escape(str(readiness.get("staging_ready", False)))}</strong>
+                        <span>Hosted Ready</span>
+                        <strong>{escape(str(readiness.get("hosted_ready", False)))}</strong>
                     </article>
                 </section>
 
@@ -417,7 +417,7 @@ def render_app_registry(payload: Mapping[str, Any]) -> str:
                         <p>Owner Console v1: {escape(str(readiness.get("tower_owner_console_v1")))}</p>
                         <p>OB simplification: {escape(str(readiness.get("observatory_simplification")))}</p>
                         <p>Tower-OB integration: {escape(str(readiness.get("tower_ob_integration_branch")))}</p>
-                        <p>Render staging redeploy: {escape(str(readiness.get("render_staging_redeploy")))}</p>
+                        <p>Render hosted redeploy: {escape(str(readiness.get("render_hosted_redeploy")))}</p>
                     </div>
                 </section>
 

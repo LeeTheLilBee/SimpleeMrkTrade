@@ -1,0 +1,54 @@
+{
+  "depends_on": [
+    "TWR186",
+    "TWR187",
+    "TWR188",
+    "TWR189",
+    "Teller060A",
+    "Teller060B"
+  ],
+  "name": "Real Owner Teller Activation and Final Regression Wall",
+  "next": "coordinated Tower/Teller seal, then publish Teller and configure verified hosted truth",
+  "owner_entitlement": {
+    "access_policy": "GRANTED",
+    "effective": true,
+    "reservation_state": "ACTIVATED"
+  },
+  "owner_launch": {
+    "lock_state": "protected_owner_handoff",
+    "owner_only": true,
+    "requires_owner_session": true,
+    "requires_step_up": true,
+    "route": "/tower/launch/teller",
+    "step_up_route": "/tower/step-up/teller",
+    "temporary_placeholder": false
+  },
+  "pack": "TWR190",
+  "publication_boundary": {
+    "exact_origin_required": true,
+    "fresh_temporal_truth_required": true,
+    "https_teller_url_required": true,
+    "registry_alone_means_available": false,
+    "verified_environment_required": true,
+    "verified_health_required": true,
+    "verified_publication_required": true
+  },
+  "registry": {
+    "app_id": "teller",
+    "app_status": "protected_hosted",
+    "primary_room_route": "/teller",
+    "product_owner_only": false,
+    "tower_launch_route": "/tower/launch/teller"
+  },
+  "safety": {
+    "bank_authority": false,
+    "broker_execution": false,
+    "capital_authority": false,
+    "employee_hosted_access": false,
+    "live_auto_authorized": false,
+    "manager_hosted_access": false,
+    "manual_live_authorized": false,
+    "payroll_execution_authority": false
+  },
+  "sealed_parent": "9e39259943aa4e6e36708dba41f4e0d36fc56e0e"
+}

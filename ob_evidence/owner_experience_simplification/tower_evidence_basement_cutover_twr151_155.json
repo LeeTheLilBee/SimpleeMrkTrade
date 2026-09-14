@@ -1,0 +1,30 @@
+{
+  "boundaries": {
+    "certification_is_release_execution": false,
+    "evidence_basement_is_primary_owner_surface": false,
+    "evidence_basement_is_read_only": true,
+    "proof_is_product": false,
+    "walkthrough_is_operation": false
+  },
+  "next_mission": "Owner Access Home",
+  "next_pack": "TWR156-TWR160",
+  "owner_experience": {
+    "evidence_basement_step_up_required": true,
+    "historical_evidence_routes_preserved": true,
+    "operational_surfaces_remain_primary": true,
+    "proof_surfaces_removed_from_primary_navigation": true,
+    "single_evidence_basement_entry": true
+  },
+  "pack": "TWR151-TWR155",
+  "parent_commit": "52f600c7ef6ceb02019fcbc1d1b0dc10a3c2e57a",
+  "safety": {
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "observatory_modified": false,
+    "release_execution_authorized": false
+  },
+  "schema_version": "tower.evidence-basement-cutover.twr151-155.v1",
+  "title": "Evidence Basement Cutover"
+}

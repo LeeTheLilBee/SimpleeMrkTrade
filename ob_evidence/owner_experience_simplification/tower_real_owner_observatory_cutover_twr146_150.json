@@ -1,0 +1,52 @@
+{
+  "cutover_contract": {
+    "active_step_up_required": true,
+    "code_hash_only_persisted": true,
+    "durable_one_time_ledger_required": true,
+    "explicit_session_secret_required": true,
+    "handoff_hmac_authenticated": true,
+    "normal_ob_room_requires_consumed_handoff": true,
+    "opaque_one_time_code_required": true,
+    "real_destination": "/ob/dashboard",
+    "real_owner_session_required": true,
+    "receiver_reverifies_current_truth": true,
+    "replay_rejected": true,
+    "session_bound_access_receipt_required": true,
+    "verified_app_launchability_required": true,
+    "verified_observatory_entitlement_required": true,
+    "verified_owner_identity_required": true
+  },
+  "next_mission": "Evidence Basement Cutover",
+  "next_pack": "TWR151-TWR155",
+  "owner_first": true,
+  "pack": "TWR146-TWR150",
+  "parent_commit": "88f9b6103dad0543ba28ac69e19e6b6945cfeb5b",
+  "preserved_backstage": {
+    "gp046_native_contract_modified": false,
+    "historical_rehearsal_contract_available": true
+  },
+  "retired_operational_behavior": {
+    "dry_run_contract_is_operational_handoff": false,
+    "rehearsal_passed_is_operational_requirement": false,
+    "walkthrough_is_operational_fallback": false
+  },
+  "safety": {
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "observatory_modified": false,
+    "release_execution_authorized": false
+  },
+  "schema_version": "tower.real-owner-observatory-cutover.twr146-150.v1",
+  "sealed_infrastructure_modified": {
+    "app_publication_authority": false,
+    "app_registry": false,
+    "app_truth_projection": false,
+    "identity_authority": false,
+    "invitation_lifecycle": false,
+    "release_backend": false,
+    "truth_contract": false
+  },
+  "title": "Real Owner Tower-to-Observatory Cutover"
+}

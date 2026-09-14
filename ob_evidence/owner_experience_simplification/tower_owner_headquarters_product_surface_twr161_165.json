@@ -1,0 +1,49 @@
+{
+  "missions": {
+    "TWR161": "Owner Headquarters hierarchy",
+    "TWR162": "Owner state snapshot",
+    "TWR163": "Operational next moves",
+    "TWR164": "Backstage evidence boundary",
+    "TWR165": "Owner Headquarters anti-regression wall"
+  },
+  "owner_experience": {
+    "authority_truth_summarized": true,
+    "danger_locks_visible": true,
+    "evidence_not_primary_navigation": true,
+    "evidence_progressively_disclosed": true,
+    "headquarters_is_owner_workspace": true,
+    "historical_prerequisite_contract_preserved_inertly": true,
+    "missing_authority_not_reported_as_zero": true,
+    "prerequisite_proof_not_primary_navigation": true,
+    "release_review_is_primary_operation": true,
+    "walkthrough_not_primary_navigation": true
+  },
+  "pack": "TWR161-TWR165",
+  "parent_commit": "8fde0d70909757b81c46a8dede7cc27f2612e72e",
+  "safety": {
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "direct_vault_write_authorized": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "release_execution_authorized": false
+  },
+  "schema_version": "tower.owner-headquarters-product-surface.twr161-165.v1",
+  "sealed_boundaries": {
+    "access_home_modified": false,
+    "app_registry_modified": false,
+    "evidence_basement_modified": false,
+    "identity_authority_modified": false,
+    "observatory_modified": false,
+    "owner_dashboard_service_modified": false,
+    "owner_launch_injector_modified": false,
+    "owner_people_registry_modified": false,
+    "prerequisite_engine_modified": false,
+    "publication_authority_modified": false,
+    "release_readiness_engine_modified": false,
+    "release_review_engine_modified": false,
+    "tower_ob_handoff_modified": false,
+    "truth_contract_modified": false
+  },
+  "title": "Owner Headquarters Product Surface"
+}

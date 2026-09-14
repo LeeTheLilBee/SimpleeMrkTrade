@@ -1,0 +1,57 @@
+{
+  "pack": "TWR086-TWR090",
+  "name": "Tower Hosted Candidate Parity Gate",
+  "status": "IMPLEMENTED_NOT_DEPLOYED",
+  "source_branch": "tower-hosted-runtime-identity-twr081-085",
+  "source_parent": "91b5fa871cd7310957272250e317e50a5989d475",
+  "consumes": {
+    "runtime_manifest": "/tower/runtime-manifest.json",
+    "health": "/tower/healthz",
+    "login": "/tower/login",
+    "entrypoint": "web.managed_staging:app",
+    "headers": [
+      "X-Simplee-Entrypoint",
+      "X-Simplee-Revision",
+      "X-Simplee-Revision-Source"
+    ]
+  },
+  "twr086": {
+    "contract": "safe_unauthenticated_hosted_probe",
+    "credentials_sent": false,
+    "cookies_sent": false
+  },
+  "twr087": {
+    "contract": "exact_revision_parity",
+    "fail_closed_on_unknown_revision": true,
+    "fail_closed_on_revision_mismatch": true
+  },
+  "twr088": {
+    "contract": "runtime_contract_parity",
+    "exact_entrypoint_required": true,
+    "header_consistency_required": true,
+    "critical_routes_required": true
+  },
+  "twr089": {
+    "contract": "safety_parity",
+    "production_deployment_must_remain_false": true,
+    "broker_submission_must_remain_false": true,
+    "capital_movement_must_remain_false": true,
+    "manual_live_authorized_must_remain_false": true,
+    "live_auto_authorized_must_remain_false": true,
+    "staging_ready_must_remain_false": true
+  },
+  "twr090": {
+    "contract": "fail_closed_cli_verifier",
+    "pass_exit_code": 0,
+    "failure_exit_code": 2
+  },
+  "merged_to_tower_dev": false,
+  "promoted_to_main": false,
+  "render_deployed": false,
+  "production_deployment": false,
+  "broker_submission": false,
+  "capital_movement": false,
+  "manual_live": "LOCKED",
+  "live_auto": "LOCKED",
+  "staging_ready": false
+}

@@ -19,6 +19,12 @@ def build_app(monkeypatch, *, owner, step_up):
         lambda: step_up,
     )
 
+    monkeypatch.setattr(
+        enforcement,
+        "operational_ob_access_active",
+        lambda: True,
+    )
+
     @app.route("/ob/dashboard")
     def dashboard():
         return "DASHBOARD"
