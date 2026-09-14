@@ -1,0 +1,95 @@
+{
+  "pack": "OBDATA076-080",
+  "title": "Reasoning Target + Context Composition Authority",
+  "status": "SEALED",
+  "parent": "840a6c5b166d3ac3daee080875730513b10e2167",
+  "authority_chain": "Source -> Provenance -> Freshness -> Corroboration -> Quality / Anomaly -> Effective Observation -> Conflict / Escalation -> Evidence Lineage -> Observation Version -> Lifecycle / Retention -> Revocation / Rehabilitation -> Temporal Validity -> Instrument Binding -> Reasoning Target -> Context Composition -> Current Analytical Eligibility",
+  "packs": {
+    "OBDATA076": {
+      "name": "Reasoning-target identity",
+      "rule": "Every composition decision is bound to an explicit target ID, observation ID, observation version, symbol, instrument kind, and purpose."
+    },
+    "OBDATA077": {
+      "name": "Upstream authority composition",
+      "rule": "All required upstream authority gates must be explicitly represented before analytical eligibility can be considered."
+    },
+    "OBDATA078": {
+      "name": "Fail-closed eligibility verdict",
+      "rule": "BLOCK blocks, UNKNOWN fails closed, REVIEW requires review, and only unanimous ALLOW yields ELIGIBLE."
+    },
+    "OBDATA079": {
+      "name": "Blocker/explanation preservation",
+      "rule": "Composition preserves gate verdicts, reasons, blockers, review gates, unknown gates, and reasoning-target identity."
+    },
+    "OBDATA080": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "required_gates": [
+    "source_provenance",
+    "freshness",
+    "corroboration",
+    "quality",
+    "effective_observation",
+    "conflict",
+    "lineage",
+    "current_version",
+    "lifecycle",
+    "revocation",
+    "rehabilitation",
+    "temporal_validity",
+    "instrument_binding"
+  ],
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false
+  },
+  "override_authority": {
+    "mode_policy_override": false,
+    "source_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false,
+    "conflict_override": false,
+    "lineage_override": false,
+    "version_override": false,
+    "lifecycle_override": false,
+    "revocation_override": false,
+    "rehabilitation_override": false,
+    "temporal_override": false,
+    "instrument_override": false
+  },
+  "composition_rules": {
+    "unknown_as_eligible": false,
+    "review_as_eligible": false,
+    "missing_gate_as_eligible": false,
+    "composition_grants_denied_authority": false,
+    "all_required_gates_explicit": true,
+    "unanimous_allow_required": true,
+    "block_precedence": true,
+    "reason_preservation_required": true,
+    "target_identity_preserved": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata076_080_reasoning_context_composition_authority.json",
+    "ob_evidence/authority_foundation/obdata076_080_reasoning_context_composition_authority_handoff.md",
+    "tests/test_obdata076_080_reasoning_context_composition_authority.py",
+    "web/ob_reasoning_context_composition.py"
+  ],
+  "validation": {
+    "focused_obdata076_080": "GREEN",
+    "complete_obdata001_080": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
