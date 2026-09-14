@@ -1,0 +1,79 @@
+{
+  "pack": "OBDATA046-050",
+  "title": "Observation Versioning + Supersession Authority",
+  "status": "SEALED",
+  "parent": "7f0c4de4d56be585dfbf8730eca9521e3d3f1e85",
+  "authority_chain": "Source -> Provenance -> Source Authority -> Freshness Evaluation -> Cross-Source Corroboration -> Observation Quality -> Anomaly Evaluation -> Effective Observation Synthesis -> Conflict Resolution -> Escalation Authority -> Evidence Lineage -> Observation Version -> Supersession Authority -> Current Effective Observation",
+  "packs": {
+    "OBDATA046": {
+      "name": "Observation version identity",
+      "version_states": [
+        "CURRENT",
+        "SUPERSEDED",
+        "HISTORICAL",
+        "UNKNOWN"
+      ]
+    },
+    "OBDATA047": {
+      "name": "Immutable version history",
+      "rule": "Observation versions are immutable historical records. Later evidence creates a new version instead of mutating the old one."
+    },
+    "OBDATA048": {
+      "name": "Supersession authority",
+      "rule": "Every superseding version explicitly identifies the prior version and the reason for supersession."
+    },
+    "OBDATA049": {
+      "name": "Current-version resolution + history boundary",
+      "rule": "Exactly one current version resolves from a contiguous history, while all superseded versions remain available."
+    },
+    "OBDATA050": {
+      "name": "Regression wall + sealed evidence",
+      "validation_scope": "tests/"
+    }
+  },
+  "execution_authority": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "manual_live_unlock": false,
+    "hybrid_execution": false,
+    "automated_execution": false,
+    "mode_policy_override": false,
+    "source_authority_override": false,
+    "freshness_override": false,
+    "corroboration_override": false,
+    "quality_override": false,
+    "anomaly_override": false,
+    "synthesis_override": false,
+    "conflict_resolution_override": false,
+    "lineage_override": false
+  },
+  "versioning_rules": {
+    "retroactive_observation_mutation": false,
+    "delete_superseded_history": false,
+    "ambiguous_current_version": false,
+    "supersession_without_predecessor": false,
+    "supersession_without_reason": false,
+    "mixed_observation_history": false,
+    "duplicate_version_number": false,
+    "noncontiguous_history": false,
+    "prior_lineage_is_preserved": true,
+    "supersession_chain_is_explicit": true,
+    "one_current_version": true
+  },
+  "files": [
+    "ob_evidence/authority_foundation/obdata046_050_observation_versioning_supersession_authority.json",
+    "ob_evidence/authority_foundation/obdata046_050_observation_versioning_supersession_authority_handoff.md",
+    "tests/test_obdata046_050_observation_versioning_supersession_authority.py",
+    "web/ob_observation_versioning.py"
+  ],
+  "validation": {
+    "focused_obdata046_050": "GREEN",
+    "complete_obdata001_050": "GREEN",
+    "obmode001_010": "GREEN",
+    "obux091_095_dashboard_authority": "GREEN",
+    "full_observatory_tests_surface": "GREEN",
+    "tower_mutation_retained": false,
+    "known_generated_ob_data_restored": true
+  }
+}
