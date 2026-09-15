@@ -1,0 +1,19 @@
+{
+  "authority_boundary": {
+    "analytical_conclusion": false,
+    "automated_execution": false,
+    "broker_submission": false,
+    "candidate_evidence_admission_only": true,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "hybrid_execution": false,
+    "manual_live_unlock": false,
+    "trade_ranking": false,
+    "trade_recommendation": false
+  },
+  "next": "OBINT011-015 independence + sufficiency binding",
+  "pack": "OBINT006-010",
+  "parent": "352f7165c7a6bb3244c0b721d849acaec6eb8ddf",
+  "purpose": "Bind candidate admission to the verified canonical reasoning-context receipt.",
+  "status": "CANDIDATE"
+}
