@@ -1,0 +1,48 @@
+{
+  "authority": {
+    "OBDATA091": "Explicit candidate evidence requirement and evidence-category authority.",
+    "OBDATA092": "Category-level observation coverage and independent-family coverage.",
+    "OBDATA093": "Independent-support requirements prevent raw observation count from masquerading as sufficient support.",
+    "OBDATA094": "Candidate-level sufficiency with required-category, unresolved-gap and fail-closed integrity handling.",
+    "OBDATA095": "Regression wall, evidence and handoff."
+  },
+  "authority_boundary": {
+    "analytical_conclusion": false,
+    "analytical_reasoning_sufficiency_only": true,
+    "automated_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "hybrid_execution": false,
+    "manual_live_unlock": false,
+    "trade_ranking": false,
+    "trade_recommendation": false
+  },
+  "doctrine": [
+    "admitted evidence is not automatically sufficient evidence",
+    "independent evidence is not automatically sufficient evidence",
+    "raw evidence count is not candidate sufficiency",
+    "required evidence categories must be explicitly satisfied",
+    "required independent support must be explicitly satisfied",
+    "unknown dependency receives no independent-support credit",
+    "blocked independence integrity blocks candidate sufficiency",
+    "review-required independence cannot become SUFFICIENT",
+    "unknown integrity fails closed",
+    "empty requirements cannot establish sufficiency"
+  ],
+  "known_boundary": [
+    "OBDATA091-095 evaluates evidence sufficiency only; it does not determine an analytical conclusion.",
+    "Evidence category assignments and requirement policy are explicit inputs. Future integration must bind them to canonical observation types and mode/policy authority rather than arbitrary caller-supplied strings.",
+    "The independence_integrity_state input is currently an explicit normalized state. Future integration should consume the actual OBDATA086-090 assessment receipt.",
+    "SUFFICIENT means structurally sufficient for analytical reasoning only. It is not a trade recommendation, contract selection, or execution permission."
+  ],
+  "pack": "OBDATA091-095",
+  "parent": "3c00ba23ab8024112af832e740d1d8bbdba2d4c6",
+  "preserved_authority": [
+    "OBMODE001-010",
+    "OBDATA001-090",
+    "OBUX091-095 current dashboard authority"
+  ],
+  "status": "SEALED",
+  "title": "Candidate Evidence Sufficiency Authority"
+}
