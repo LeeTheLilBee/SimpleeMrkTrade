@@ -1,0 +1,26 @@
+{
+  "authority_boundary": {
+    "analytical_conclusion_integrity_only": true,
+    "automated_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "hybrid_execution": false,
+    "manual_live_unlock": false,
+    "trade_ranking": false,
+    "trade_recommendation": false
+  },
+  "next": "OBINT021-025 end-to-end integrity certification",
+  "pack": "OBINT016-020",
+  "parent": "d90a654ff12960f9f9dd597c51dc0e659eb29381",
+  "purpose": "Bind analytical conclusions to the verified candidate sufficiency receipt and derive compatibility support/uncertainty states on the canonical path.",
+  "remaining_boundary": "Claim statement truth and inference validity are not established merely by receipt binding. Final integration certification must not describe analytical eligibility as proof that natural-language reasoning is factually correct.",
+  "status": "CANDIDATE",
+  "support_conflict_semantics": {
+    "direct_admitted_support_remains_supported_when_conflict_exists": true,
+    "evidence_support_and_conflict_are_separate_dimensions": true,
+    "unresolved_conflict_derives_material_uncertainty": true,
+    "unresolved_conflict_is_preserved": true,
+    "unresolved_conflict_requires_review": true
+  }
+}
