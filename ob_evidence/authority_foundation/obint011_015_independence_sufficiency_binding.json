@@ -1,0 +1,20 @@
+{
+  "authority_boundary": {
+    "analytical_conclusion": false,
+    "automated_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "evidence_independence_and_sufficiency_only": true,
+    "hybrid_execution": false,
+    "manual_live_unlock": false,
+    "trade_ranking": false,
+    "trade_recommendation": false
+  },
+  "known_remaining_boundary": "Evidence origin metadata and evidence requirement content still require native upstream provenance/MODE_POLICY derivation in the final integration spine.",
+  "next": "OBINT016-020 analytical conclusion binding",
+  "pack": "OBINT011-015",
+  "parent": "0b6155d9c6dfb0ddc3b67d54e9962e110a566d2f",
+  "purpose": "Bind admitted candidate evidence to the actual OBDATA086-090 independence assessment and derive the OBDATA091-095 compatibility state from that verified assessment.",
+  "status": "CANDIDATE"
+}
