@@ -1,0 +1,45 @@
+{
+  "authority": {
+    "OBDATA086": "Canonical evidence origin, source-family, origin-family and independence-family identity.",
+    "OBDATA087": "Pairwise dependency / independence assessment.",
+    "OBDATA088": "Candidate evidence independence-family composition.",
+    "OBDATA089": "Corroboration weight counts independent families, not raw observation quantity.",
+    "OBDATA090": "Regression wall, evidence and handoff."
+  },
+  "authority_boundary": {
+    "automated_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "corroboration_counting_only": true,
+    "hybrid_execution": false,
+    "manual_live_unlock": false,
+    "trade_ranking": false,
+    "trade_recommendation": false
+  },
+  "doctrine": [
+    "admitted evidence is not automatically independent evidence",
+    "multiple observations are not automatically multiple confirmations",
+    "same source cannot inflate corroboration",
+    "same source family cannot inflate corroboration",
+    "same upstream origin family cannot inflate corroboration",
+    "explicit shared dependency cannot inflate corroboration",
+    "unknown dependency receives no independent-confirmation credit",
+    "cross-family dependency contradictions fail closed"
+  ],
+  "known_boundary": [
+    "OBDATA086-090 does not rewrite OBDATA081-085 candidate admission.",
+    "Independence metadata is an explicit authority layer; future adapters must bind it to canonical provenance receipts rather than allowing arbitrary callers to manufacture source-family claims.",
+    "A VALID corroboration-weight assessment means the count is structurally coherent as evaluated; it does not establish analytical sufficiency or a trading conclusion.",
+    "Currentness, lifecycle, revocation and upstream reasoning eligibility remain governed by prior authorities."
+  ],
+  "pack": "OBDATA086-090",
+  "parent": "188ba92a96310c25f3fac64a04c211789006bd9c",
+  "preserved_authority": [
+    "OBMODE001-010",
+    "OBDATA001-085",
+    "OBUX091-095 current dashboard authority"
+  ],
+  "status": "SEALED",
+  "title": "Evidence Independence + Corroboration-Weight Integrity"
+}
