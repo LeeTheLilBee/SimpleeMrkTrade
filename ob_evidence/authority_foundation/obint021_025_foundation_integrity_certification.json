@@ -1,0 +1,34 @@
+{
+  "certifies": [
+    "reasoning context receipt continuity",
+    "candidate evidence set continuity",
+    "independence receipt continuity",
+    "requirement set continuity",
+    "sufficiency receipt continuity",
+    "analytical conclusion receipt continuity",
+    "observation id/version/lineage continuity",
+    "reasoning target continuity",
+    "exact option contract continuity",
+    "effective policy identity continuity",
+    "tamper-evident aggregate certificate identity"
+  ],
+  "does_not_certify": [
+    "natural-language factual truth",
+    "logical validity of arbitrary inference text",
+    "native provenance adapter completion for every OBDATA011-075 authority",
+    "native MODE_POLICY generation of requirement contents",
+    "trade recommendation",
+    "trade ranking",
+    "automatic contract selection",
+    "broker submission",
+    "capital movement",
+    "Manual Live unlock",
+    "Hybrid execution",
+    "Automated execution"
+  ],
+  "next": "Read-only post-integration audit before candidate intelligence or Soulaana reasoning.",
+  "pack": "OBINT021-025",
+  "parent": "6d1346aeaf03b866a69a098d2d0820764e04d1f8",
+  "purpose": "Certify receipt and identity continuity across the canonical OB foundation integration chain.",
+  "status": "CANDIDATE"
+}
