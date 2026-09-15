@@ -1,0 +1,47 @@
+{
+  "authority": {
+    "OBDATA096": "Canonical analytical claim identity, claim kind, support state, uncertainty state and evidence-basis authority.",
+    "OBDATA097": "Direct establishment and analytical inference are explicitly separated.",
+    "OBDATA098": "Material uncertainty, partial support and unresolved conflict are preserved.",
+    "OBDATA099": "Candidate-level analytical conclusion integrity rejects unsupported claims and requires SUFFICIENT upstream evidence.",
+    "OBDATA100": "Regression wall, evidence and handoff."
+  },
+  "authority_boundary": {
+    "analytical_conclusion_integrity_only": true,
+    "automated_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "hybrid_execution": false,
+    "manual_live_unlock": false,
+    "trade_ranking": false,
+    "trade_recommendation": false
+  },
+  "doctrine": [
+    "sufficient evidence does not automatically create a valid analytical conclusion",
+    "direct claims must be directly supported by referenced evidence",
+    "inference claims must identify both evidence and inference basis",
+    "unsupported claims cannot enter an eligible analytical conclusion",
+    "partial support cannot masquerade as full support",
+    "material uncertainty cannot masquerade as resolved certainty",
+    "unresolved conflict must remain visible",
+    "unknown claim/support/uncertainty states fail closed",
+    "non-SUFFICIENT candidate evidence cannot produce an eligible conclusion"
+  ],
+  "known_boundary": [
+    "OBDATA096-100 governs analytical conclusion integrity only. It does not determine a trade action.",
+    "sufficiency_state is currently a normalized input. The foundation integration audit must bind this layer to the actual OBDATA091-095 sufficiency assessment/receipt.",
+    "evidence_refs and inference_basis are explicit references but are not yet cryptographically bound to canonical admitted evidence receipts.",
+    "claim support and uncertainty states are explicit analytical declarations. Later engine integration must derive them from canonical evidence and reasoning authorities rather than trusting arbitrary caller assertions.",
+    "ELIGIBLE means analytically eligible only. It does not mean buy, sell, hold, contract selection, capital permission, broker permission or execution permission."
+  ],
+  "pack": "OBDATA096-100",
+  "parent": "c76a79396cb1ba97ab7d519e80885c9e6cd640d1",
+  "preserved_authority": [
+    "OBMODE001-010",
+    "OBDATA001-095",
+    "OBUX091-095 current dashboard authority"
+  ],
+  "status": "SEALED",
+  "title": "Analytical Conclusion Integrity Authority"
+}
