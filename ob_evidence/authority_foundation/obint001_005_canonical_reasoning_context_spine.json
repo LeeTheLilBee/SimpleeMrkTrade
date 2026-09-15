@@ -1,0 +1,30 @@
+{
+  "authority_boundary": {
+    "analytical_context_integrity_only": true,
+    "automated_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "hybrid_execution": false,
+    "manual_live_unlock": false,
+    "trade_ranking": false,
+    "trade_recommendation": false
+  },
+  "next": "OBINT006-010 candidate admission receipt binding",
+  "pack": "OBINT001-005",
+  "parent": "02a61c701a829e00a2f3896c496349af393e6b19",
+  "preserves": {
+    "sealed_obdata_011_100": true,
+    "tower_untouched": true
+  },
+  "runtime": "web/ob_canonical_reasoning_context_spine.py",
+  "scope": {
+    "OBINT001": "canonical context and exact instrument identity",
+    "OBINT002": "canonical authority result registry surface",
+    "OBINT003": "deterministic tamper-evident reasoning context receipt",
+    "OBINT004": "fail-closed identity and authority continuity",
+    "OBINT005": "canonical-path regression and execution boundary wall"
+  },
+  "status": "CANDIDATE",
+  "title": "Canonical Reasoning Context Spine"
+}
