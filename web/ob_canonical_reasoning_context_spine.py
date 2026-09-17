@@ -81,6 +81,8 @@ class CanonicalReasoningContextReceipt:
     receipt_id: str
     context: CanonicalContextIdentity
     state: SpineState
+    certified_native_authority: bool
+    certified_authority_hash: str | None
     composition: ReasoningContextAssessment
     authority_results: tuple[CanonicalAuthorityResult, ...]
     blocking_gates: tuple[str, ...]
@@ -247,8 +249,14 @@ def _canonical_payload(
     state: SpineState,
     authority_results: tuple[CanonicalAuthorityResult, ...],
     reason: SpineReason,
+    certified_native_authority: bool = False,
+    certified_authority_hash: str | None = None,
 ) -> dict[str, object]:
     return {
+        "certified_native_authority": bool(
+            certified_native_authority
+        ),
+        "certified_authority_hash": certified_authority_hash,
         "context": {
             "context_id": context.context_id,
             "observation_id": context.observation_id,
@@ -332,6 +340,8 @@ def _unknown_receipt(
         state=SpineState.UNKNOWN,
         authority_results=results,
         reason=reason,
+        certified_native_authority=False,
+        certified_authority_hash=None,
     )
     digest = _integrity_hash(payload)
 
@@ -339,6 +349,8 @@ def _unknown_receipt(
         receipt_id=f"OBCTX-{digest[:24]}",
         context=context,
         state=SpineState.UNKNOWN,
+        certified_native_authority=False,
+        certified_authority_hash=None,
         composition=composition,
         authority_results=results,
         blocking_gates=composition.blocking_gates,
@@ -445,6 +457,8 @@ def build_canonical_reasoning_context_receipt(
         state=state,
         authority_results=ordered,
         reason=reason,
+        certified_native_authority=False,
+        certified_authority_hash=None,
     )
     digest = _integrity_hash(payload)
 
@@ -452,12 +466,61 @@ def build_canonical_reasoning_context_receipt(
         receipt_id=f"OBCTX-{digest[:24]}",
         context=context,
         state=state,
+        certified_native_authority=False,
+        certified_authority_hash=None,
         composition=composition,
         authority_results=ordered,
         blocking_gates=composition.blocking_gates,
         review_gates=composition.review_gates,
         unknown_gates=composition.unknown_gates,
         reason=reason,
+        integrity_hash=digest,
+    )
+
+
+
+def build_certified_canonical_reasoning_context_receipt(
+    *,
+    context: CanonicalContextIdentity,
+    authorities: Mapping[str, CanonicalAuthorityResult],
+    certified_authority_hash: str,
+) -> CanonicalReasoningContextReceipt:
+    receipt = build_canonical_reasoning_context_receipt(
+        context=context,
+        authorities=authorities,
+    )
+
+    if receipt.state is not SpineState.ELIGIBLE:
+        return receipt
+
+    certified_hash = _nonblank(
+        certified_authority_hash,
+        name="certified_authority_hash",
+    )
+
+    payload = _canonical_payload(
+        context=receipt.context,
+        state=receipt.state,
+        authority_results=receipt.authority_results,
+        reason=receipt.reason,
+        certified_native_authority=True,
+        certified_authority_hash=certified_hash,
+    )
+
+    digest = _integrity_hash(payload)
+
+    return CanonicalReasoningContextReceipt(
+        receipt_id=f"OBCTX-{digest[:24]}",
+        context=receipt.context,
+        state=receipt.state,
+        certified_native_authority=True,
+        certified_authority_hash=certified_hash,
+        composition=receipt.composition,
+        authority_results=receipt.authority_results,
+        blocking_gates=receipt.blocking_gates,
+        review_gates=receipt.review_gates,
+        unknown_gates=receipt.unknown_gates,
+        reason=receipt.reason,
         integrity_hash=digest,
     )
 
@@ -470,6 +533,8 @@ def verify_canonical_reasoning_context_receipt(
         state=receipt.state,
         authority_results=receipt.authority_results,
         reason=receipt.reason,
+        certified_native_authority=receipt.certified_native_authority,
+        certified_authority_hash=receipt.certified_authority_hash,
     )
 
     digest = _integrity_hash(payload)

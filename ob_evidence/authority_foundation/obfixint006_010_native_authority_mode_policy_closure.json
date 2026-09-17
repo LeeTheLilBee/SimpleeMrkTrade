@@ -1,0 +1,92 @@
+{
+  "architectural_closures": {
+    "arbitrary_mapping_native_authority": "closed",
+    "arbitrary_object_native_authority": "closed",
+    "caller_authored_policy_requirements": "closed at MODE_POLICY projection boundary",
+    "caller_controlled_certified_reason": "closed",
+    "caller_controlled_certified_verdict": "closed",
+    "certified_receipt_hash_binding": "closed",
+    "legacy_context_foundation_certification": "closed",
+    "mode_policy_authorship_connection": "closed"
+  },
+  "attack_wall": {
+    "ATTACK_001_arbitrary_mapping": "CLOSED",
+    "ATTACK_002_caller_verdict_reason": "CLOSED",
+    "ATTACK_003_legacy_context_certification": "CLOSED",
+    "ATTACK_004_policy_requirement_authorship": "CLOSED",
+    "ATTACK_005_mode_policy_authorship": "CLOSED"
+  },
+  "boundary_preservation": {
+    "automated_execution": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "contract_auto_selection": false,
+    "foundation_integrity_certification_only": true,
+    "hybrid_execution": false,
+    "logical_inference_proof": false,
+    "manual_live_unlock": false,
+    "natural_language_truth_proof": false,
+    "trade_ranking": false,
+    "trade_recommendation": false
+  },
+  "commit_message": "OBFIXINT006-010 close native authority and mode policy authorship",
+  "feature_branch": "obfixint-native-authority-mode-policy-obfixint006-010",
+  "files": {
+    "tests/test_obfixint001_005_foundation_integration_closure.py": {
+      "final_sha256": "a961aa7eba620dd16cc2e5076f82338f84cbe9357b63486b0a434ad2a2ad618d",
+      "parent_sha256": "baaef4338030a4d7fb4c88001ea8becedd59a59099a6379bc280eeb2cd2ef025"
+    },
+    "tests/test_obfixint006_010_native_authority_mode_policy_closure.py": {
+      "final_sha256": "edd7be2fa4bf3129cc1fa92e84f027434be02ef249dadd6bb7ba5dd7fe818f54",
+      "parent_sha256": null
+    },
+    "tests/test_obint021_025_foundation_integrity_certification.py": {
+      "final_sha256": "80eaf3eedfc4418486e34fd935f0e3b61e5aec042cd255c7384c15c453e211c5",
+      "parent_sha256": "d5760062a673c2259364d0e0ad2b36257da0eac5423753715e9991e8820d5045"
+    },
+    "web/ob_canonical_reasoning_context_spine.py": {
+      "final_sha256": "768f96d4cc87e0477a480e0440cb708d065e1cb74fc50526f6ffe83714dc4185",
+      "parent_sha256": "ff43ead1ce4e711c98b202156d67692cafa0951e330991d420bf209700ed93b5"
+    },
+    "web/ob_foundation_integration_closure.py": {
+      "final_sha256": "b30dc586c2c85ae9931ae68995b227eb89dfa152bd01a8630092cfdfe5e63869",
+      "parent_sha256": "aa47aa18f61ab5955af2387c9fa7ef34887562b7976ff62342d159606d278333"
+    },
+    "web/ob_foundation_integrity_certification.py": {
+      "final_sha256": "0681b9f4bfe3583adfff3194fbdbc2e7bd806137971f80c2de00b3e0681e31a8",
+      "parent_sha256": "fbb808392156e4d97b0e9ae65b428a68136c15efed001e761ea33b1dce4ded35"
+    },
+    "web/ob_operating_mode.py": {
+      "final_sha256": "1a3e1c40730e7c4c0bc04316a6e334a0e5ba7286eb6412aff6edbd12e51dec69",
+      "parent_sha256": "cd5ed60751a6d98ccac5e1d16a178a6ae8dc11220c7156a29354444c6f1c10ee"
+    }
+  },
+  "generated_at_utc": "2026-09-17T16:17:59.703846+00:00",
+  "notes": [
+    "Legacy caller-authored CanonicalAuthorityResult remains available for compatibility but produces uncertified context receipts.",
+    "Foundation certification rejects uncertified canonical reasoning-context receipts.",
+    "Certified authority builder no longer accepts caller verdict or reason.",
+    "Certified verdict and reason derive from approved native OBDATA authority objects.",
+    "MODE_POLICY now owns canonical evidence requirement projection.",
+    "No Tower changes are part of this pack.",
+    "No execution, brokerage, capital, or automatic-trading authority is introduced."
+  ],
+  "pack": "OBFIXINT006-010",
+  "parent_commit": "b28929f52d9581ffcfa94776e4b32747149235ea",
+  "repository": "LeeTheLilBee/SimpleeMrkTrade",
+  "schema": "OBFIXINT006_010_NATIVE_AUTHORITY_MODE_POLICY_CLOSURE_V1",
+  "scope": {
+    "OBFIXINT006": "Typed native OBDATA authority boundary",
+    "OBFIXINT007": "Native-derived certified gate verdict and reason",
+    "OBFIXINT008": "Certified canonical reasoning-context doorway required for foundation certification",
+    "OBFIXINT009": "MODE_POLICY-authored evidence requirement projection",
+    "OBFIXINT010": "Legacy bypass rejection and original five-attack adversarial closure"
+  },
+  "test_results": {
+    "complete_obint_obfixint_regression": "56 passed",
+    "focused_obfixint006_010": "5 passed",
+    "foundation_certification": "10 passed",
+    "full_observatory": "1151 passed",
+    "obfixint001_005_regression": "10 passed"
+  }
+}

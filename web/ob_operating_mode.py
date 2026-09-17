@@ -180,6 +180,31 @@ MODE_CAPABILITY_MATRIX = {
 }
 
 
+
+EVIDENCE_REQUIREMENT_POLICY_VERSION = "OB_EVIDENCE_REQUIREMENT_POLICY_V1"
+
+MODE_EVIDENCE_REQUIREMENTS = {
+    "SURVEY": (
+        {"category": "SOURCE_PROVENANCE", "minimum": 1},
+        {"category": "FRESHNESS", "minimum": 1},
+        {"category": "INSTRUMENT_BINDING", "minimum": 1},
+    ),
+    "PAPER": (
+        {"category": "SOURCE_PROVENANCE", "minimum": 1},
+        {"category": "FRESHNESS", "minimum": 1},
+        {"category": "CORROBORATION", "minimum": 1},
+        {"category": "INSTRUMENT_BINDING", "minimum": 1},
+    ),
+    "MANUAL_LIVE_1": (
+        {"category": "SOURCE_PROVENANCE", "minimum": 1},
+        {"category": "FRESHNESS", "minimum": 1},
+        {"category": "CORROBORATION", "minimum": 1},
+        {"category": "QUALITY", "minimum": 1},
+        {"category": "TEMPORAL_VALIDITY", "minimum": 1},
+        {"category": "INSTRUMENT_BINDING", "minimum": 1},
+    ),
+}
+
 DANGEROUS_CAPABILITIES = {
     "broker_submission_allowed":
         False,
@@ -898,6 +923,50 @@ def transition_mode_state(
         reason=reason,
         recorded_at=recorded_at,
     )
+
+
+
+def mode_policy_evidence_requirement_projection(
+    state: Dict[str, Any],
+) -> Dict[str, Any]:
+    validated = validate_mode_state(state)
+    mode = validated["mode"]
+
+    if mode not in MODE_EVIDENCE_REQUIREMENTS:
+        raise ValueError(
+            f"No active evidence requirement policy exists for mode: {mode}"
+        )
+
+    requirements = [
+        dict(item)
+        for item in MODE_EVIDENCE_REQUIREMENTS[mode]
+    ]
+
+    payload = {
+        "authority": EFFECTIVE_POLICY_AUTHORITY,
+        "policy_version": EVIDENCE_REQUIREMENT_POLICY_VERSION,
+        "account_key": validated["account_key"],
+        "mode": mode,
+        "mode_state_reference": mode_state_reference(validated),
+        "requirements": requirements,
+        "restriction_only": True,
+        "execution_authority": False,
+        "broker_submission": False,
+        "capital_movement": False,
+        "automatic_contract_selection": False,
+        "hybrid_execution": False,
+        "automatic_execution": False,
+    }
+
+    policy_hash = stable_hash(payload)
+
+    return {
+        **payload,
+        "effective_policy_id": (
+            f"OBPOL-{mode}-{policy_hash[:16]}"
+        ),
+        "effective_policy_hash": policy_hash,
+    }
 
 
 def mode_policy_projection(

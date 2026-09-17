@@ -5,6 +5,8 @@ import hashlib
 import json
 from typing import Iterable, Mapping
 
+from web.ob_reasoning_context_composition import GateVerdict
+
 from web.ob_candidate_evidence_admission import (
     AdmissionState,
     CandidateEvidenceItem,
@@ -54,6 +56,24 @@ def _nonblank(value: object, *, name: str) -> str:
     return text
 
 
+
+ALLOWED_NATIVE_AUTHORITY_MODULES = (
+    "web.ob_source_provenance",
+    "web.ob_observation_freshness",
+    "web.ob_cross_source_corroboration",
+    "web.ob_observation_quality",
+    "web.ob_effective_observation",
+    "web.ob_observation_conflict",
+    "web.ob_evidence_lineage",
+    "web.ob_observation_versioning",
+    "web.ob_observation_lifecycle",
+    "web.ob_observation_revocation",
+    "web.ob_observation_rehabilitation",
+    "web.ob_observation_temporal_validity",
+    "web.ob_observation_instrument_binding",
+)
+
+
 def _instrument_payload(instrument) -> dict[str, object]:
     return {
         "symbol": instrument.symbol,
@@ -87,6 +107,226 @@ class VerifiedAuthorityArtifact:
     integrity_hash: str
 
 
+
+def _native_enum_value(value: object) -> str:
+    raw = getattr(value, "value", value)
+    return str(raw).strip().upper()
+
+
+def _native_reason(native_authority: object) -> str:
+    for attr in ("reason", "reasons", "limitations"):
+        if not hasattr(native_authority, attr):
+            continue
+
+        value = getattr(native_authority, attr)
+
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+
+        if isinstance(value, (tuple, list)) and value:
+            joined = " ".join(
+                str(item).strip()
+                for item in value
+                if str(item).strip()
+            )
+
+            if joined:
+                return joined
+
+    return (
+        f"Native authority "
+        f"{native_authority.__class__.__qualname__} "
+        f"derived the certified gate state."
+    )
+
+
+def _derive_native_gate_verdict(
+    *,
+    gate: str,
+    native_authority: object,
+) -> tuple[GateVerdict, str]:
+
+    module = native_authority.__class__.__module__
+
+    if module not in ALLOWED_NATIVE_AUTHORITY_MODULES:
+        raise ValueError(
+            "native authority type is not an approved OBDATA authority"
+        )
+
+    reason = _native_reason(native_authority)
+
+    if gate == "source_provenance":
+        status = _native_enum_value(
+            getattr(native_authority, "status", "UNKNOWN")
+        )
+
+        if status == "COMPLETE":
+            return GateVerdict.ALLOW, reason
+
+        if status == "INCOMPLETE":
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "freshness":
+        status = _native_enum_value(
+            getattr(native_authority, "status", "UNKNOWN")
+        )
+
+        if status == "FRESH":
+            return GateVerdict.ALLOW, reason
+
+        if status == "AGING":
+            return GateVerdict.REVIEW, reason
+
+        if status in {"STALE", "EXPIRED"}:
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "corroboration":
+        status = _native_enum_value(
+            getattr(native_authority, "status", "UNKNOWN")
+        )
+
+        if status in {"SINGLE_SOURCE", "CORROBORATED"}:
+            return GateVerdict.ALLOW, reason
+
+        if status == "MINOR_DISAGREEMENT":
+            return GateVerdict.REVIEW, reason
+
+        if status in {
+            "MATERIAL_DISAGREEMENT",
+            "CONFLICTED",
+        }:
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "quality":
+        disposition = _native_enum_value(
+            getattr(native_authority, "disposition", "UNKNOWN")
+        )
+
+        if disposition == "ACCEPT":
+            return GateVerdict.ALLOW, reason
+
+        if disposition == "REVIEW":
+            return GateVerdict.REVIEW, reason
+
+        if disposition in {"QUARANTINE", "REJECT"}:
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "effective_observation":
+        state = _native_enum_value(
+            getattr(native_authority, "state", "UNKNOWN")
+        )
+
+        if state in {"TRUSTED", "USABLE"}:
+            return GateVerdict.ALLOW, reason
+
+        if state == "CAUTION":
+            return GateVerdict.REVIEW, reason
+
+        if state in {"QUARANTINED", "UNUSABLE"}:
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "conflict":
+        escalation = _native_enum_value(
+            getattr(native_authority, "escalation", "UNKNOWN")
+        )
+
+        if escalation == "NONE":
+            return GateVerdict.ALLOW, reason
+
+        if escalation in {"REVIEW", "OWNER_REVIEW"}:
+            return GateVerdict.REVIEW, reason
+
+        if escalation == "HARD_BLOCK":
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    for attr in (
+        "state",
+        "status",
+        "disposition",
+        "validity",
+        "lifecycle",
+        "binding",
+        "result",
+    ):
+        if hasattr(native_authority, attr):
+            native_state = _native_enum_value(
+                getattr(native_authority, attr)
+            )
+            break
+    else:
+        native_state = "UNKNOWN"
+
+    allow_states = {
+        "ALLOW",
+        "ALLOWED",
+        "VALID",
+        "CURRENT",
+        "ACTIVE",
+        "COMPLETE",
+        "VERIFIED",
+        "BOUND",
+        "MATCHED",
+        "MATCH",
+        "CONSISTENT",
+        "INTACT",
+        "AVAILABLE",
+        "ELIGIBLE",
+        "REHABILITATED",
+        "NOT_REVOKED",
+    }
+
+    review_states = {
+        "REVIEW",
+        "REVIEW_REQUIRED",
+        "CAUTION",
+        "AGING",
+        "DEGRADED",
+        "PARTIAL",
+        "RECONCILABLE",
+    }
+
+    block_states = {
+        "BLOCK",
+        "BLOCKED",
+        "INVALID",
+        "STALE",
+        "EXPIRED",
+        "REVOKED",
+        "SUPERSEDED",
+        "INACTIVE",
+        "QUARANTINED",
+        "UNUSABLE",
+        "REJECT",
+        "MISMATCH",
+        "CONFLICTED",
+        "HARD_BLOCK",
+        "INELIGIBLE",
+    }
+
+    if native_state in allow_states:
+        return GateVerdict.ALLOW, reason
+
+    if native_state in review_states:
+        return GateVerdict.REVIEW, reason
+
+    if native_state in block_states:
+        return GateVerdict.BLOCK, reason
+
+    return GateVerdict.UNKNOWN, reason
+
+
 def build_verified_authority_artifact(
     *,
     gate: str,
@@ -95,8 +335,6 @@ def build_verified_authority_artifact(
     reasoning_target_id: str,
     symbol: str,
     instrument_kind: str,
-    verdict: str,
-    reason: str,
     native_authority: object,
 ) -> VerifiedAuthorityArtifact:
     """
@@ -116,14 +354,19 @@ def build_verified_authority_artifact(
     if native_authority is None:
         raise ValueError("native authority object is required")
 
-    if hasattr(native_authority, "__dataclass_fields__"):
-        native_payload = asdict(native_authority)
-    elif isinstance(native_authority, Mapping):
-        native_payload = dict(native_authority)
-    elif hasattr(native_authority, "__dict__"):
-        native_payload = dict(vars(native_authority))
-    else:
-        raise ValueError("native authority must expose serializable state")
+    native_module = native_authority.__class__.__module__
+
+    if native_module not in ALLOWED_NATIVE_AUTHORITY_MODULES:
+        raise ValueError(
+            "native authority type is not an approved OBDATA authority"
+        )
+
+    if not hasattr(native_authority, "__dataclass_fields__"):
+        raise ValueError(
+            "approved native authority must be a dataclass authority object"
+        )
+
+    native_payload = asdict(native_authority)
 
     native_type = (
         f"{native_authority.__class__.__module__}."
@@ -131,6 +374,17 @@ def build_verified_authority_artifact(
     )
 
     native_payload_hash = _hash(native_payload)
+
+    flattened = json.dumps(
+        native_payload,
+        sort_keys=True,
+        default=str,
+    ).upper()
+
+    derived_verdict, derived_reason = _derive_native_gate_verdict(
+        gate=gate,
+        native_authority=native_authority,
+    )
 
     native_identity = (
         f"{native_type}:"
@@ -158,8 +412,8 @@ def build_verified_authority_artifact(
             instrument_kind,
             name="instrument_kind",
         ).upper(),
-        "verdict": _nonblank(verdict, name="verdict").upper(),
-        "reason": _nonblank(reason, name="reason"),
+        "verdict": derived_verdict.value,
+        "reason": derived_reason,
         "native_authority_type": native_type,
         "native_authority_identity": native_identity,
         "native_authority_hash": native_hash,

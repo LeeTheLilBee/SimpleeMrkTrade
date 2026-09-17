@@ -73,6 +73,16 @@ def certify_foundation_integrity(
     if not verify_canonical_reasoning_context_receipt(context_receipt):
         raise ValueError("context receipt integrity failure")
 
+    if context_receipt.certified_native_authority is not True:
+        raise ValueError(
+            "foundation certification requires certified native authority context"
+        )
+
+    if not context_receipt.certified_authority_hash:
+        raise ValueError(
+            "foundation certification requires certified authority hash"
+        )
+
     if not verify_receipt_bound_candidate_set(candidate_set):
         raise ValueError("candidate set integrity failure")
 

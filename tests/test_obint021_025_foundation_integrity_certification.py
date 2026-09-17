@@ -18,6 +18,7 @@ from web.ob_candidate_admission_receipt_binding import (
 )
 from web.ob_candidate_evidence_sufficiency import build_evidence_requirement
 from web.ob_canonical_reasoning_context_spine import (
+    build_certified_canonical_reasoning_context_receipt,
     authority_result,
     build_canonical_context_identity,
     build_canonical_instrument_identity,
@@ -78,9 +79,10 @@ def full_chain():
         for gate in REQUIRED_GATES
     }
 
-    context_receipt = build_canonical_reasoning_context_receipt(
+    context_receipt = build_certified_canonical_reasoning_context_receipt(
         context=context,
         authorities=authorities,
+        certified_authority_hash="CERTIFIED-NATIVE-AUTHORITY-TEST-HASH",
     )
 
     identity = bind_candidate_identity(

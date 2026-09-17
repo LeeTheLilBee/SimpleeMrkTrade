@@ -137,13 +137,11 @@ def test_obfixint001_bare_caller_strings_are_not_native_authority_proof():
             reasoning_target_id="TARGET-001",
             symbol="AAPL",
             instrument_kind="OPTION",
-            verdict="ALLOW",
-            reason="caller says allow",
             native_authority=None,
         )
 
 
-def test_obfixint001_native_object_is_serialized_and_tamper_evident():
+def test_obfixint001_plain_mapping_is_not_certified_native_authority():
     native = {
         "state": "CURRENT",
         "observation_id": "OBS-001",
@@ -151,26 +149,19 @@ def test_obfixint001_native_object_is_serialized_and_tamper_evident():
         "source": "TEST-NATIVE-AUTHORITY",
     }
 
-    artifact = build_verified_authority_artifact(
-        gate="freshness",
-        observation_id="OBS-001",
-        observation_version=1,
-        reasoning_target_id="TARGET-001",
-        symbol="AAPL",
-        instrument_kind="OPTION",
-        verdict="ALLOW",
-        reason="native authority permits",
-        native_authority=native,
-    )
-
-    assert verify_verified_authority_artifact(artifact)
-
-    forged = replace(
-        artifact,
-        verdict="BLOCK",
-    )
-
-    assert not verify_verified_authority_artifact(forged)
+    with pytest.raises(
+        ValueError,
+        match="approved OBDATA authority",
+    ):
+        build_verified_authority_artifact(
+            gate="freshness",
+            observation_id="OBS-001",
+            observation_version=1,
+            reasoning_target_id="TARGET-001",
+            symbol="AAPL",
+            instrument_kind="OPTION",
+            native_authority=native,
+        )
 
 
 def test_obfixint002_multiple_compatible_contexts_enter_one_candidate():
