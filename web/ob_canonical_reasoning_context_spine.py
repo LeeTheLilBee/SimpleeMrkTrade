@@ -74,6 +74,8 @@ class CanonicalAuthorityResult:
     reason: str
     authority_identity: str
     authority_hash: str
+    effective_policy_id: str | None = None
+    effective_policy_hash: str | None = None
 
 
 @dataclass(frozen=True)
@@ -207,6 +209,8 @@ def authority_result(
     reason: str,
     authority_identity: str,
     authority_hash: str,
+    effective_policy_id: str | None = None,
+    effective_policy_hash: str | None = None,
 ) -> CanonicalAuthorityResult:
     if gate not in REQUIRED_GATES:
         raise ValueError(f"unknown authority gate: {gate}")
@@ -239,6 +243,22 @@ def authority_result(
         authority_hash=_nonblank(
             authority_hash,
             name="authority_hash",
+        ),
+        effective_policy_id=(
+            None
+            if effective_policy_id is None
+            else _nonblank(
+                effective_policy_id,
+                name="effective_policy_id",
+            )
+        ),
+        effective_policy_hash=(
+            None
+            if effective_policy_hash is None
+            else _nonblank(
+                effective_policy_hash,
+                name="effective_policy_hash",
+            )
         ),
     )
 
@@ -292,6 +312,8 @@ def _canonical_payload(
                 "reason": item.reason,
                 "authority_identity": item.authority_identity,
                 "authority_hash": item.authority_hash,
+                "effective_policy_id": item.effective_policy_id,
+                "effective_policy_hash": item.effective_policy_hash,
             }
             for item in authority_results
         ],
@@ -410,6 +432,26 @@ def build_canonical_reasoning_context_receipt(
                 results=ordered,
                 reason=SpineReason.IDENTITY_MISMATCH,
             )
+
+        policy_supplied = (
+            result.effective_policy_id is not None
+            or result.effective_policy_hash is not None
+        )
+
+        if policy_supplied:
+            policy_matches = (
+                result.effective_policy_id
+                == context.effective_policy_id
+                and result.effective_policy_hash
+                == context.effective_policy_hash
+            )
+
+            if not policy_matches:
+                return _unknown_receipt(
+                    context=context,
+                    results=ordered,
+                    reason=SpineReason.POLICY_MISMATCH,
+                )
 
     target = ReasoningTarget(
         target_id=context.reasoning_target_id,

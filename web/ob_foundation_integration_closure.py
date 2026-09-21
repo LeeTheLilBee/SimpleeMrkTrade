@@ -251,80 +251,189 @@ def _derive_native_gate_verdict(
 
         return GateVerdict.UNKNOWN, reason
 
-    for attr in (
-        "state",
-        "status",
-        "disposition",
-        "validity",
-        "lifecycle",
-        "binding",
-        "result",
-    ):
-        if hasattr(native_authority, attr):
-            native_state = _native_enum_value(
-                getattr(native_authority, attr)
-            )
-            break
-    else:
-        native_state = "UNKNOWN"
+    if gate == "lineage":
+        trace_status = _native_enum_value(
+            getattr(native_authority, "trace_status", "UNKNOWN")
+        )
 
-    allow_states = {
-        "ALLOW",
-        "ALLOWED",
-        "VALID",
-        "CURRENT",
-        "ACTIVE",
-        "COMPLETE",
-        "VERIFIED",
-        "BOUND",
-        "MATCHED",
-        "MATCH",
-        "CONSISTENT",
-        "INTACT",
-        "AVAILABLE",
-        "ELIGIBLE",
-        "REHABILITATED",
-        "NOT_REVOKED",
-    }
+        if trace_status == "COMPLETE":
+            return GateVerdict.ALLOW, reason
 
-    review_states = {
-        "REVIEW",
-        "REVIEW_REQUIRED",
-        "CAUTION",
-        "AGING",
-        "DEGRADED",
-        "PARTIAL",
-        "RECONCILABLE",
-    }
+        if trace_status == "PARTIAL":
+            return GateVerdict.REVIEW, reason
 
-    block_states = {
-        "BLOCK",
-        "BLOCKED",
-        "INVALID",
-        "STALE",
-        "EXPIRED",
-        "REVOKED",
-        "SUPERSEDED",
-        "INACTIVE",
-        "QUARANTINED",
-        "UNUSABLE",
-        "REJECT",
-        "MISMATCH",
-        "CONFLICTED",
-        "HARD_BLOCK",
-        "INELIGIBLE",
-    }
+        if trace_status == "BROKEN":
+            return GateVerdict.BLOCK, reason
 
-    if native_state in allow_states:
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "current_version":
+        # Current-version authority is relational. A bare ObservationVersion
+        # cannot establish that it is current; the native authority must be
+        # VersionedObservationHistory.
+        if (
+            native_authority.__class__.__module__
+            != "web.ob_observation_versioning"
+            or native_authority.__class__.__qualname__
+            != "VersionedObservationHistory"
+        ):
+            return GateVerdict.UNKNOWN, reason
+
+        versions = tuple(
+            getattr(native_authority, "versions", ())
+        )
+        current_version = getattr(
+            native_authority,
+            "current_version",
+            None,
+        )
+
+        if not versions or current_version is None:
+            return GateVerdict.UNKNOWN, reason
+
+        known_versions = {
+            int(item.version)
+            for item in versions
+        }
+
+        if int(current_version) not in known_versions:
+            return GateVerdict.UNKNOWN, reason
+
+        # The history object itself identifies the one current native version.
         return GateVerdict.ALLOW, reason
 
-    if native_state in review_states:
-        return GateVerdict.REVIEW, reason
+    if gate == "lifecycle":
+        eligibility = _native_enum_value(
+            getattr(
+                native_authority,
+                "reasoning_eligibility",
+                "UNKNOWN",
+            )
+        )
 
-    if native_state in block_states:
-        return GateVerdict.BLOCK, reason
+        if eligibility == "ELIGIBLE":
+            return GateVerdict.ALLOW, reason
 
-    return GateVerdict.UNKNOWN, reason
+        if eligibility == "REVIEW_ONLY":
+            return GateVerdict.REVIEW, reason
+
+        if eligibility == "INELIGIBLE":
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "revocation":
+        invalidation = _native_enum_value(
+            getattr(native_authority, "invalidation", "UNKNOWN")
+        )
+        reasoning_use = _native_enum_value(
+            getattr(native_authority, "reasoning_use", "UNKNOWN")
+        )
+
+        if (
+            invalidation == "VALID"
+            and reasoning_use == "CURRENT_TRUTH_ALLOWED"
+        ):
+            return GateVerdict.ALLOW, reason
+
+        if invalidation == "REVIEW_REQUIRED":
+            return GateVerdict.REVIEW, reason
+
+        if invalidation == "REVOKED":
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "rehabilitation":
+        state = _native_enum_value(
+            getattr(native_authority, "state", "UNKNOWN")
+        )
+
+        if state in {
+            "NOT_APPLICABLE",
+            "APPROVED_FOR_NEW_VERSION",
+        }:
+            return GateVerdict.ALLOW, reason
+
+        if state == "REVIEW_REQUIRED":
+            return GateVerdict.REVIEW, reason
+
+        if state == "REJECTED":
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "temporal_validity":
+        state = _native_enum_value(
+            getattr(native_authority, "state", "UNKNOWN")
+        )
+        eligibility = _native_enum_value(
+            getattr(
+                native_authority,
+                "reasoning_eligibility",
+                "UNKNOWN",
+            )
+        )
+
+        if (
+            state == "VALID_NOW"
+            and eligibility == "ELIGIBLE"
+        ):
+            return GateVerdict.ALLOW, reason
+
+        if eligibility == "REVIEW_REQUIRED":
+            return GateVerdict.REVIEW, reason
+
+        if (
+            state in {
+                "NOT_YET_VALID",
+                "OUT_OF_WINDOW",
+                "SESSION_MISMATCH",
+                "TRADING_DATE_MISMATCH",
+            }
+            or eligibility == "INELIGIBLE"
+        ):
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    if gate == "instrument_binding":
+        state = _native_enum_value(
+            getattr(native_authority, "state", "UNKNOWN")
+        )
+        eligibility = _native_enum_value(
+            getattr(
+                native_authority,
+                "reasoning_eligibility",
+                "UNKNOWN",
+            )
+        )
+
+        if (
+            state == "MATCH"
+            and eligibility == "ELIGIBLE"
+        ):
+            return GateVerdict.ALLOW, reason
+
+        if (
+            state in {
+                "SYMBOL_MISMATCH",
+                "UNDERLYING_MISMATCH",
+                "INSTRUMENT_KIND_MISMATCH",
+                "OPTION_RIGHT_MISMATCH",
+                "STRIKE_MISMATCH",
+                "EXPIRATION_MISMATCH",
+                "CONTRACT_MISMATCH",
+            }
+            or eligibility == "INELIGIBLE"
+        ):
+            return GateVerdict.BLOCK, reason
+
+        return GateVerdict.UNKNOWN, reason
+
+    raise ValueError(
+        f"no explicit native gate semantics for gate: {gate}"
+    )
 
 
 def build_verified_authority_artifact(
