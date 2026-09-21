@@ -1,0 +1,59 @@
+{
+  "authority_boundary": {
+    "automated_unlock": false,
+    "automatic_contract_selection": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "execution_authority": false,
+    "hybrid_unlock": false,
+    "manual_live_unlock": false,
+    "tower_changed": false
+  },
+  "calendar_boundary": {
+    "calendar_authority_explicit": true,
+    "calendar_payload_hash_bound": true,
+    "calendar_reference_explicit": true,
+    "hardcoded_holiday_table": false,
+    "hardcoded_weekday_calendar": false,
+    "provider_neutral": true
+  },
+  "integration": {
+    "existing_temporal_validity_reused": true,
+    "next": "Bind canonical time references into the EXPERIMENTAL simulation lane and operating-mode projections without changing execution authority.",
+    "obsim_parent_preserved": true,
+    "second_temporal_engine_created": false
+  },
+  "pack": "OBTIME001-005",
+  "packs": {
+    "OBTIME001": {
+      "name": "Canonical market schedule identity",
+      "rule": "A market schedule is explicit, timezone-aware, calendar-source bound, and tamper evident."
+    },
+    "OBTIME002": {
+      "name": "Canonical time receipt",
+      "rule": "One aware observation instant is normalized to UTC and exchange-local time."
+    },
+    "OBTIME003": {
+      "name": "Market-session classification",
+      "rule": "PREMARKET, REGULAR, AFTER_HOURS, and CLOSED are derived from the bound schedule rather than caller claims."
+    },
+    "OBTIME004": {
+      "name": "Temporal validity binding",
+      "rule": "Existing temporal-validity authority consumes the verified market-time receipt for current date and session."
+    },
+    "OBTIME005": {
+      "name": "Integrity and safety boundary",
+      "rule": "Time receipts are tamper evident and cannot create execution, broker, capital, or mode-unlock authority."
+    }
+  },
+  "parent": "8dcd720ee33f270fe5e5e2f634fe1901edb60d61",
+  "purpose": "Replace caller-authored current session and trading-date inputs with a schedule-bound, timezone-aware canonical market-time receipt.",
+  "temporal_boundary": {
+    "caller_supplied_current_session": false,
+    "caller_supplied_current_trading_date": false,
+    "closed_day_fails_closed": true,
+    "schedule_date_mismatch_fails_closed": true,
+    "timezone_aware_required": true
+  },
+  "title": "Canonical Market Time + Session Authority"
+}
