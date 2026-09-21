@@ -1,0 +1,45 @@
+{
+  "architecture": {
+    "execution_handoff_called": false,
+    "legacy_shared_mutable_portfolio_used": false,
+    "paper_broker_called": false,
+    "second_decision_engine_created": false,
+    "tower_changed": false
+  },
+  "authority_boundary": {
+    "automated_unlock": false,
+    "automatic_contract_selection": false,
+    "broker_submission": false,
+    "canonical_market_time_authority": false,
+    "capital_movement": false,
+    "execution_authority": false,
+    "future_time_authority": "PENDING_OBTIME",
+    "hybrid_unlock": false,
+    "manual_live_unlock": false
+  },
+  "doctrine": {
+    "independent_capital": true,
+    "independent_decisions": true,
+    "independent_drawdown": true,
+    "independent_pnl": true,
+    "independent_positions": true,
+    "independent_receipt_chain": true,
+    "independent_review_history": true,
+    "independent_trades": true,
+    "lane_state_isolated": true,
+    "options_multiplier": 100,
+    "same_market_frame_supported": true,
+    "simulation_only": true,
+    "simulation_performance_can_unlock_live": false,
+    "stock_multiplier": 1
+  },
+  "lanes": [
+    "CONTROL",
+    "INTEGRATED",
+    "EXPERIMENTAL"
+  ],
+  "next": "OBTIME can enter the EXPERIMENTAL simulation lane while CONTROL remains frozen and INTEGRATED represents accepted behavior.",
+  "pack": "OBSIM001-005",
+  "parent": "a280f88a5d2348f09487e8321e5e9bfda1df1bea",
+  "title": "Multi-Simulation Harness Foundation"
+}
