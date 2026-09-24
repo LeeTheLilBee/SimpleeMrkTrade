@@ -1,0 +1,66 @@
+{
+  "authority_boundary": {
+    "automated_unlock": false,
+    "automatic_contract_selection": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "execution_authority": false,
+    "hybrid_unlock": false,
+    "manual_live_unlock": false,
+    "tower_changed": false
+  },
+  "decision_context_boundary": {
+    "binding_changes_context_fingerprint": true,
+    "binding_mutates_original_context": false,
+    "current_reasoning_requires_bound_time": true,
+    "historical_pending_contexts_remain_valid": true,
+    "new_contexts_emit_active_unbound_time": true,
+    "new_contexts_emit_pending_obtime": false,
+    "verified_time_binding_available": true
+  },
+  "family_status_after_seal": "OBTIME COMPLETE",
+  "freshness_boundary": {
+    "caller_supplied_now_on_canonical_path": false,
+    "canonical_evaluation_clock_owner": "OB_MARKET_TIME_V1",
+    "freshness_classification_owner": "OBDATA_FRESHNESS",
+    "tampered_market_time_fails_closed": true
+  },
+  "next_family": "CAPSIM",
+  "pack": "OBTIME011-015",
+  "packs": {
+    "OBTIME011": {
+      "name": "Canonical freshness clock adapter",
+      "rule": "Canonical freshness evaluation consumes the verified OB_MARKET_TIME_V1 observation instant rather than a caller-authored evaluation clock."
+    },
+    "OBTIME012": {
+      "name": "Active-unbound Decision Context time",
+      "rule": "New Decision Context snapshots no longer describe OBTIME as pending. They explicitly represent active but unbound canonical temporal context."
+    },
+    "OBTIME013": {
+      "name": "Verified Decision Context time binding",
+      "rule": "A verified market-time receipt may be immutably bound into Decision Context, producing a new context ID and fingerprint."
+    },
+    "OBTIME014": {
+      "name": "Historical pending-time compatibility",
+      "rule": "Historical hash-bound Decision Context snapshots containing PENDING_OBTIME remain valid historical artifacts and may be upgraded only by producing a new immutable snapshot."
+    },
+    "OBTIME015": {
+      "name": "Decision Context temporal integration closure",
+      "rule": "decision_context no longer lists temporal_context as deferred; source provenance remains deferred."
+    }
+  },
+  "parent": "00a9df447bdb714377372d2cf9a813db52ac6581",
+  "regression_transition": {
+    "graduated_consumer": "decision_context",
+    "graduation_reason": "OBTIME011-015 introduces an explicit verified OB_MARKET_TIME_V1 binding path for Decision Context.",
+    "prior_obtime010_rule": "Active canonical authority may remain deferred for consumers that have not integrated it.",
+    "registry_valid_after_graduation": true,
+    "still_deferred_consumers": [
+      "market_candidate_truth",
+      "options_research",
+      "account_identity_truth_taxonomy",
+      "owner_fit_eligibility"
+    ]
+  },
+  "title": "Canonical Evaluation Clock + Decision Context Time Binding"
+}

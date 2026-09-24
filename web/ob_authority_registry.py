@@ -1131,7 +1131,8 @@ ACTIVE_AUTHORITY_RECORDS[
     ),
 
     temporal_validity=(
-        "IMMUTABLE_SNAPSHOT; source freshness and explicit expiry remain deferred to OBDATA/OBTIME. "
+        "IMMUTABLE_SNAPSHOT; source freshness remains deferred to OBDATA. "
+        "Verified OB_MARKET_TIME_V1 may be bound as immutable temporal context. "
         "Relevant upstream changes require a new Decision Context rather than mutation of history."
     ),
 
@@ -1149,7 +1150,6 @@ ACTIVE_AUTHORITY_RECORDS[
 
     deferred_integrations=(
         "source_provenance",
-        "temporal_context",
     ),
 )
 

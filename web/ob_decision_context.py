@@ -20,7 +20,8 @@ EVENT_AUTHORITY = "OB_COMMAND_EVENT_CAUSAL_V1"
 
 MODE_AUTHORITY = "OB_OPERATING_MODE_V1"
 PENDING_PROVENANCE_AUTHORITY = "PENDING_OBDATA011_015"
-PENDING_TIME_AUTHORITY = "PENDING_OBTIME"
+TIME_AUTHORITY = "OB_MARKET_TIME_V1"
+LEGACY_PENDING_TIME_AUTHORITY = "PENDING_OBTIME"
 
 
 def canonical_json(value: Any) -> str:
@@ -214,12 +215,21 @@ def decision_context_contract() -> Dict[str, Any]:
         "live_auto_locked":
             True,
 
+        "temporal_context_authority":
+            TIME_AUTHORITY,
+
+        "new_context_temporal_state":
+            "UNBOUND_ACTIVE",
+
+        "time_bound_context_required_for_current_reasoning":
+            True,
+
+        "legacy_pending_temporal_context_accepted_for_historical_validation":
+            True,
+
         "pending_future_authorities": {
             "source_provenance":
                 PENDING_PROVENANCE_AUTHORITY,
-
-            "temporal_context":
-                PENDING_TIME_AUTHORITY,
         },
     }
 
@@ -871,17 +881,23 @@ def build_decision_context(
                 "snapshot":
                     None,
             },
+        },
 
-            "temporal_context": {
-                "status":
-                    "PENDING",
+        "temporal_context_snapshot": {
+            "status":
+                "UNBOUND_ACTIVE",
 
-                "authority_id":
-                    PENDING_TIME_AUTHORITY,
+            "authority_id":
+                TIME_AUTHORITY,
 
-                "snapshot":
-                    None,
-            },
+            "receipt_id":
+                None,
+
+            "integrity_hash":
+                None,
+
+            "snapshot":
+                None,
         },
 
         "boundaries":
@@ -1145,9 +1161,6 @@ def validate_decision_context(
     expected_future = {
         "source_provenance":
             PENDING_PROVENANCE_AUTHORITY,
-
-        "temporal_context":
-            PENDING_TIME_AUTHORITY,
     }
 
     for key, authority_id in (
@@ -1172,6 +1185,162 @@ def validate_decision_context(
         ):
             raise ValueError(
                 f"Future authority placeholder invalid: {key}"
+            )
+
+    temporal = context.get(
+        "temporal_context_snapshot"
+    )
+
+    if temporal is None:
+        legacy_temporal = _object(
+            future.get(
+                "temporal_context"
+            ),
+            label="legacy future authority temporal_context",
+        )
+
+        if (
+            legacy_temporal.get(
+                "status"
+            )
+            !=
+            "PENDING"
+            or
+            legacy_temporal.get(
+                "authority_id"
+            )
+            !=
+            LEGACY_PENDING_TIME_AUTHORITY
+            or
+            legacy_temporal.get(
+                "snapshot"
+            )
+            is not None
+        ):
+            raise ValueError(
+                "Legacy temporal context placeholder invalid."
+            )
+
+    else:
+        temporal = _object(
+            temporal,
+            label="temporal_context_snapshot",
+        )
+
+        if (
+            "temporal_context"
+            in future
+        ):
+            raise ValueError(
+                "Decision Context cannot contain both active and legacy temporal context."
+            )
+
+        if (
+            temporal.get(
+                "authority_id"
+            )
+            !=
+            TIME_AUTHORITY
+        ):
+            raise ValueError(
+                "Decision Context temporal authority mismatch."
+            )
+
+        temporal_status = _text(
+            temporal.get(
+                "status"
+            ),
+            label="temporal context status",
+        )
+
+        if (
+            temporal_status
+            ==
+            "UNBOUND_ACTIVE"
+        ):
+            if any(
+                temporal.get(
+                    key
+                )
+                is not None
+                for key in (
+                    "receipt_id",
+                    "integrity_hash",
+                    "snapshot",
+                )
+            ):
+                raise ValueError(
+                    "Unbound temporal context cannot contain a receipt snapshot."
+                )
+
+        elif (
+            temporal_status
+            ==
+            "BOUND"
+        ):
+            receipt_id = _text(
+                temporal.get(
+                    "receipt_id"
+                ),
+                label="market-time receipt ID",
+            )
+
+            integrity_hash = _text(
+                temporal.get(
+                    "integrity_hash"
+                ),
+                label="market-time integrity hash",
+            )
+
+            temporal_snapshot = _object(
+                temporal.get(
+                    "snapshot"
+                ),
+                label="market-time snapshot",
+            )
+
+            if (
+                temporal_snapshot.get(
+                    "authority"
+                )
+                !=
+                TIME_AUTHORITY
+            ):
+                raise ValueError(
+                    "Bound temporal snapshot authority mismatch."
+                )
+
+            if (
+                temporal_snapshot.get(
+                    "receipt_id"
+                )
+                !=
+                receipt_id
+                or
+                temporal_snapshot.get(
+                    "integrity_hash"
+                )
+                !=
+                integrity_hash
+            ):
+                raise ValueError(
+                    "Bound temporal snapshot identity mismatch."
+                )
+
+            if (
+                temporal_snapshot.get(
+                    "state"
+                )
+                ==
+                "SCHEDULE_DATE_MISMATCH"
+            ):
+                raise ValueError(
+                    "Schedule-date-mismatched time cannot be bound to Decision Context."
+                )
+
+        else:
+            raise ValueError(
+                "Unknown Decision Context temporal status."
             )
 
     boundaries = _object(
@@ -1285,6 +1454,194 @@ def validate_decision_context(
         "immutable_hash_bound_snapshot":
             True,
     }
+
+
+def bind_market_time_to_decision_context(
+    context: Dict[str, Any],
+    market_time,
+) -> Dict[str, Any]:
+    from web.ob_market_time_authority import (
+        MarketTimeState,
+        market_time_snapshot,
+        verify_canonical_market_time_receipt,
+    )
+
+    validate_decision_context(
+        context
+    )
+
+    if not verify_canonical_market_time_receipt(
+        market_time
+    ):
+        raise ValueError(
+            "Decision Context time binding requires verified canonical market time."
+        )
+
+    if (
+        market_time.state
+        is MarketTimeState.SCHEDULE_DATE_MISMATCH
+    ):
+        raise ValueError(
+            "Decision Context cannot bind schedule-date-mismatched market time."
+        )
+
+    result = deepcopy(
+        context
+    )
+
+    current = result.get(
+        "temporal_context_snapshot"
+    )
+
+    if current is not None:
+        current = _object(
+            current,
+            label="temporal_context_snapshot",
+        )
+
+        if (
+            current.get(
+                "status"
+            )
+            ==
+            "BOUND"
+        ):
+            raise ValueError(
+                "Decision Context temporal context is already bound."
+            )
+
+        if (
+            current.get(
+                "status"
+            )
+            !=
+            "UNBOUND_ACTIVE"
+        ):
+            raise ValueError(
+                "Decision Context temporal context cannot be upgraded from this state."
+            )
+
+    else:
+        future = _object(
+            result.get(
+                "future_authorities"
+            ),
+            label="future_authorities",
+        )
+
+        legacy = _object(
+            future.get(
+                "temporal_context"
+            ),
+            label="legacy temporal context",
+        )
+
+        if (
+            legacy.get(
+                "status"
+            )
+            !=
+            "PENDING"
+            or
+            legacy.get(
+                "authority_id"
+            )
+            !=
+            LEGACY_PENDING_TIME_AUTHORITY
+        ):
+            raise ValueError(
+                "Legacy Decision Context temporal placeholder is invalid."
+            )
+
+        future.pop(
+            "temporal_context",
+            None,
+        )
+
+        result[
+            "future_authorities"
+        ] = future
+
+    snapshot = market_time_snapshot(
+        market_time
+    )
+
+    result[
+        "temporal_context_snapshot"
+    ] = {
+        "status":
+            "BOUND",
+
+        "authority_id":
+            TIME_AUTHORITY,
+
+        "receipt_id":
+            market_time.receipt_id,
+
+        "integrity_hash":
+            market_time.integrity_hash,
+
+        "snapshot":
+            snapshot,
+    }
+
+    result[
+        "boundaries"
+    ] = decision_context_contract()
+
+    fingerprint = (
+        recompute_context_fingerprint(
+            result
+        )
+    )
+
+    result[
+        "context_id"
+    ] = (
+        "obctx_"
+        + fingerprint[:28]
+    )
+
+    result[
+        "context_fingerprint"
+    ] = fingerprint
+
+    validate_decision_context(
+        result
+    )
+
+    return result
+
+
+def decision_context_time_bound(
+    context: Dict[str, Any],
+) -> bool:
+    validate_decision_context(
+        context
+    )
+
+    temporal = context.get(
+        "temporal_context_snapshot"
+    )
+
+    return (
+        isinstance(
+            temporal,
+            dict,
+        )
+        and
+        temporal.get(
+            "status"
+        )
+        ==
+        "BOUND"
+        and
+        temporal.get(
+            "authority_id"
+        )
+        ==
+        TIME_AUTHORITY
+    )
 
 
 def decision_context_reference(

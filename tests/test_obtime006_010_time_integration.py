@@ -547,15 +547,14 @@ def test_obtime010_active_authority_may_remain_deferred_for_consumer():
         ]
     )
 
-    consumers = (
+    still_deferred_consumers = (
         "market_candidate_truth",
         "options_research",
         "account_identity_truth_taxonomy",
         "owner_fit_eligibility",
-        "decision_context",
     )
 
-    for concept in consumers:
+    for concept in still_deferred_consumers:
         assert (
             "temporal_context"
             in registry[
@@ -566,6 +565,17 @@ def test_obtime010_active_authority_may_remain_deferred_for_consumer():
                 "deferred_integrations"
             ]
         )
+
+    assert (
+        "temporal_context"
+        not in registry[
+            "authority_records"
+        ][
+            "decision_context"
+        ][
+            "deferred_integrations"
+        ]
+    )
 
     validation = (
         validate_canonical_authority_registry(

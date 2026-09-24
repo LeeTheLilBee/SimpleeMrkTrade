@@ -17,7 +17,7 @@ from web.ob_observation_temporal_validity import (
 
 
 SCHEMA_VERSION = "OB_MARKET_TIME_V1"
-SERVICE_VERSION = "OBTIME001_005_CANONICAL_MARKET_TIME"
+SERVICE_VERSION = "OBTIME001_015_CANONICAL_MARKET_TIME"
 
 DEFAULT_EXCHANGE_TIMEZONE = "America/New_York"
 
@@ -756,6 +756,40 @@ def assess_temporal_validity_from_market_time(
     )
 
 
+def evaluate_freshness_from_market_time(
+    *,
+    provenance: Any,
+    observation_class: Any,
+    market_time: CanonicalMarketTimeReceipt,
+    policy: Any = None,
+):
+    from web.ob_observation_freshness import (
+        evaluate_freshness,
+    )
+
+    if not verify_canonical_market_time_receipt(
+        market_time
+    ):
+        raise ValueError(
+            "freshness evaluation requires verified canonical market time"
+        )
+
+    if (
+        market_time.state
+        is MarketTimeState.SCHEDULE_DATE_MISMATCH
+    ):
+        raise ValueError(
+            "freshness evaluation cannot use schedule-date-mismatched market time"
+        )
+
+    return evaluate_freshness(
+        provenance,
+        observation_class,
+        now=market_time.observed_at_utc,
+        policy=policy,
+    )
+
+
 def market_time_contract() -> dict[str, object]:
     return {
         "schema_version":
@@ -793,6 +827,12 @@ def market_time_contract() -> dict[str, object]:
 
         "temporal_validity_adapter":
             True,
+
+        "freshness_clock_adapter":
+            True,
+
+        "caller_supplied_freshness_now":
+            False,
 
         "execution_authority":
             False,

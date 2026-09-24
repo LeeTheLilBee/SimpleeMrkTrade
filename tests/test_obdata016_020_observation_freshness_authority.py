@@ -419,3 +419,179 @@ def test_obdata020_evidence_preserves_authority_boundaries():
     assert '"automated_execution": false' in evidence
     assert '"mode_policy_override": false' in evidence
     assert '"source_authority_override": false' in evidence
+
+
+def _obtime011_market_time(
+    *,
+    hour=11,
+    minute=0,
+):
+    from datetime import date
+    from zoneinfo import ZoneInfo
+
+    from web.ob_market_time_authority import (
+        build_canonical_market_time,
+        build_market_schedule,
+    )
+
+    ny = ZoneInfo(
+        "America/New_York"
+    )
+
+    day = date(
+        2026,
+        9,
+        21,
+    )
+
+    schedule = build_market_schedule(
+        market="US_EQUITIES",
+        exchange_timezone="America/New_York",
+        trading_date=day,
+        day_status="OPEN",
+        calendar_authority="OBTIME011_TEST_CALENDAR",
+        calendar_reference="2026-09-21",
+        calendar_payload={
+            "date": "2026-09-21",
+            "status": "OPEN",
+        },
+        premarket_open=datetime(
+            2026,
+            9,
+            21,
+            4,
+            0,
+            tzinfo=ny,
+        ),
+        regular_open=datetime(
+            2026,
+            9,
+            21,
+            9,
+            30,
+            tzinfo=ny,
+        ),
+        regular_close=datetime(
+            2026,
+            9,
+            21,
+            16,
+            0,
+            tzinfo=ny,
+        ),
+        after_hours_close=datetime(
+            2026,
+            9,
+            21,
+            20,
+            0,
+            tzinfo=ny,
+        ),
+    )
+
+    return build_canonical_market_time(
+        schedule=schedule,
+        observed_at=datetime(
+            2026,
+            9,
+            21,
+            hour,
+            minute,
+            tzinfo=ny,
+        ),
+    )
+
+
+def test_obtime011_freshness_uses_verified_market_time_clock():
+
+    from web.ob_market_time_authority import (
+        evaluate_freshness_from_market_time,
+    )
+
+    market_time = (
+        _obtime011_market_time()
+    )
+
+    observation = provenance_at(
+        market_time.observed_at_utc
+        - timedelta(
+            seconds=2
+        )
+    )
+
+    assessment = (
+        evaluate_freshness_from_market_time(
+            provenance=observation,
+            observation_class=ObservationClass.REALTIME_QUOTE,
+            market_time=market_time,
+        )
+    )
+
+    assert (
+        assessment.status
+        is FreshnessStatus.FRESH
+    )
+
+    assert (
+        assessment.age_seconds
+        == 2.0
+    )
+
+
+def test_obtime011_freshness_rejects_tampered_market_time():
+
+    from dataclasses import replace
+
+    from web.ob_market_time_authority import (
+        evaluate_freshness_from_market_time,
+    )
+
+    market_time = (
+        _obtime011_market_time()
+    )
+
+    forged = replace(
+        market_time,
+        integrity_hash="0" * 64,
+    )
+
+    observation = provenance_at(
+        market_time.observed_at_utc
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="verified canonical market time",
+    ):
+        evaluate_freshness_from_market_time(
+            provenance=observation,
+            observation_class=ObservationClass.REALTIME_QUOTE,
+            market_time=forged,
+        )
+
+
+def test_obtime011_freshness_adapter_has_no_execution_authority():
+
+    source = (
+        ROOT
+        / "web/ob_market_time_authority.py"
+    ).read_text(
+        encoding="utf-8"
+    )
+
+    assert (
+        "def evaluate_freshness_from_market_time("
+        in source
+    )
+
+    for token in (
+        "submitOrder(",
+        "executeTrade(",
+        "broker.submit(",
+        "moveCapital(",
+        "unlockManualLive(",
+        "unlockHybrid(",
+        "unlockAutomated(",
+    ):
+        assert token not in source
+

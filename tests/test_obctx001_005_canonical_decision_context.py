@@ -16,9 +16,12 @@ from web.ob_authority_registry import (
 )
 
 from web.ob_decision_context import (
+    bind_market_time_to_decision_context,
     build_decision_context,
     decision_context_contract,
     decision_context_reference,
+    decision_context_time_bound,
+    recompute_context_fingerprint,
     stable_hash,
     validate_decision_context,
 )
@@ -675,7 +678,7 @@ def test_cross_account_binding_fails_closed(
         )
 
 
-def test_future_authorities_remain_explicitly_pending(
+def test_new_context_keeps_only_source_provenance_pending(
     tmp_path,
 ):
 
@@ -724,6 +727,12 @@ def test_future_authorities_remain_explicitly_pending(
         "PAPER"
     )
 
+    assert set(
+        future
+    ) == {
+        "source_provenance",
+    }
+
     assert (
         future[
             "source_provenance"
@@ -736,16 +745,6 @@ def test_future_authorities_remain_explicitly_pending(
 
     assert (
         future[
-            "temporal_context"
-        ][
-            "authority_id"
-        ]
-        ==
-        "PENDING_OBTIME"
-    )
-
-    assert (
-        future[
             "source_provenance"
         ][
             "snapshot"
@@ -753,13 +752,35 @@ def test_future_authorities_remain_explicitly_pending(
         is None
     )
 
+    temporal = context[
+        "temporal_context_snapshot"
+    ]
+
     assert (
-        future[
-            "temporal_context"
-        ][
+        temporal[
+            "status"
+        ]
+        ==
+        "UNBOUND_ACTIVE"
+    )
+
+    assert (
+        temporal[
+            "authority_id"
+        ]
+        ==
+        "OB_MARKET_TIME_V1"
+    )
+
+    assert (
+        temporal[
             "snapshot"
         ]
         is None
+    )
+
+    assert not decision_context_time_bound(
+        context
     )
 
 
@@ -891,3 +912,469 @@ def test_context_reference_is_minimal_and_integrity_verified(
         "integrity_verified":
             True,
     }
+
+
+def _obtime013_receipt():
+    from datetime import date, datetime
+    from zoneinfo import ZoneInfo
+
+    from web.ob_market_time_authority import (
+        build_canonical_market_time,
+        build_market_schedule,
+    )
+
+    ny = ZoneInfo(
+        "America/New_York"
+    )
+
+    schedule = build_market_schedule(
+        market="US_EQUITIES",
+        exchange_timezone="America/New_York",
+        trading_date=date(
+            2026,
+            9,
+            21,
+        ),
+        day_status="OPEN",
+        calendar_authority="OBCTX_TIME_TEST",
+        calendar_reference="2026-09-21",
+        calendar_payload={
+            "date": "2026-09-21",
+            "status": "OPEN",
+        },
+        premarket_open=datetime(
+            2026,
+            9,
+            21,
+            4,
+            0,
+            tzinfo=ny,
+        ),
+        regular_open=datetime(
+            2026,
+            9,
+            21,
+            9,
+            30,
+            tzinfo=ny,
+        ),
+        regular_close=datetime(
+            2026,
+            9,
+            21,
+            16,
+            0,
+            tzinfo=ny,
+        ),
+        after_hours_close=datetime(
+            2026,
+            9,
+            21,
+            20,
+            0,
+            tzinfo=ny,
+        ),
+    )
+
+    return build_canonical_market_time(
+        schedule=schedule,
+        observed_at=datetime(
+            2026,
+            9,
+            21,
+            10,
+            0,
+            tzinfo=ny,
+        ),
+    )
+
+
+def test_obtime013_verified_market_time_binds_into_decision_context(
+    tmp_path,
+):
+
+    inputs = _real_bound_inputs(
+        tmp_path
+    )
+
+    context = build_decision_context(
+        trade_intent=inputs["intent"],
+        account_identity=inputs["identity"],
+        owner_profile=inputs["profile"],
+        effective_policy=inputs["policy"],
+        owner_fit=inputs["owner_fit"],
+    )
+
+    original = deepcopy(
+        context
+    )
+
+    bound = (
+        bind_market_time_to_decision_context(
+            context,
+            _obtime013_receipt(),
+        )
+    )
+
+    assert context == original
+
+    assert (
+        bound[
+            "context_id"
+        ]
+        !=
+        context[
+            "context_id"
+        ]
+    )
+
+    assert (
+        bound[
+            "context_fingerprint"
+        ]
+        !=
+        context[
+            "context_fingerprint"
+        ]
+    )
+
+    temporal = bound[
+        "temporal_context_snapshot"
+    ]
+
+    assert (
+        temporal[
+            "status"
+        ]
+        ==
+        "BOUND"
+    )
+
+    assert (
+        temporal[
+            "authority_id"
+        ]
+        ==
+        "OB_MARKET_TIME_V1"
+    )
+
+    assert (
+        temporal[
+            "snapshot"
+        ][
+            "market_session"
+        ]
+        ==
+        "REGULAR"
+    )
+
+    assert decision_context_time_bound(
+        bound
+    )
+
+    assert (
+        validate_decision_context(
+            bound
+        )[
+            "integrity_verified"
+        ]
+        is True
+    )
+
+
+def test_obtime013_tampered_market_time_cannot_bind(
+    tmp_path,
+):
+
+    from dataclasses import replace
+
+    inputs = _real_bound_inputs(
+        tmp_path
+    )
+
+    context = build_decision_context(
+        trade_intent=inputs["intent"],
+        account_identity=inputs["identity"],
+        owner_profile=inputs["profile"],
+        effective_policy=inputs["policy"],
+        owner_fit=inputs["owner_fit"],
+    )
+
+    forged = replace(
+        _obtime013_receipt(),
+        integrity_hash="0" * 64,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="verified canonical market time",
+    ):
+        bind_market_time_to_decision_context(
+            context,
+            forged,
+        )
+
+
+def test_obtime013_bound_temporal_snapshot_is_hash_bound(
+    tmp_path,
+):
+
+    inputs = _real_bound_inputs(
+        tmp_path
+    )
+
+    context = build_decision_context(
+        trade_intent=inputs["intent"],
+        account_identity=inputs["identity"],
+        owner_profile=inputs["profile"],
+        effective_policy=inputs["policy"],
+        owner_fit=inputs["owner_fit"],
+    )
+
+    bound = (
+        bind_market_time_to_decision_context(
+            context,
+            _obtime013_receipt(),
+        )
+    )
+
+    tampered = deepcopy(
+        bound
+    )
+
+    tampered[
+        "temporal_context_snapshot"
+    ][
+        "snapshot"
+    ][
+        "market_session"
+    ] = "AFTER_HOURS"
+
+    with pytest.raises(
+        ValueError,
+        match="fingerprint mismatch",
+    ):
+        validate_decision_context(
+            tampered
+        )
+
+
+def test_obtime014_legacy_pending_time_context_remains_historically_valid(
+    tmp_path,
+):
+
+    inputs = _real_bound_inputs(
+        tmp_path
+    )
+
+    legacy = build_decision_context(
+        trade_intent=inputs["intent"],
+        account_identity=inputs["identity"],
+        owner_profile=inputs["profile"],
+        effective_policy=inputs["policy"],
+        owner_fit=inputs["owner_fit"],
+    )
+
+    legacy.pop(
+        "temporal_context_snapshot"
+    )
+
+    legacy[
+        "future_authorities"
+    ][
+        "temporal_context"
+    ] = {
+        "status":
+            "PENDING",
+
+        "authority_id":
+            "PENDING_OBTIME",
+
+        "snapshot":
+            None,
+    }
+
+    fingerprint = (
+        recompute_context_fingerprint(
+            legacy
+        )
+    )
+
+    legacy[
+        "context_id"
+    ] = (
+        "obctx_"
+        + fingerprint[:28]
+    )
+
+    legacy[
+        "context_fingerprint"
+    ] = fingerprint
+
+    validation = (
+        validate_decision_context(
+            legacy
+        )
+    )
+
+    assert (
+        validation[
+            "integrity_verified"
+        ]
+        is True
+    )
+
+    assert not decision_context_time_bound(
+        legacy
+    )
+
+
+def test_obtime014_legacy_context_can_be_upgraded_without_mutating_history(
+    tmp_path,
+):
+
+    inputs = _real_bound_inputs(
+        tmp_path
+    )
+
+    legacy = build_decision_context(
+        trade_intent=inputs["intent"],
+        account_identity=inputs["identity"],
+        owner_profile=inputs["profile"],
+        effective_policy=inputs["policy"],
+        owner_fit=inputs["owner_fit"],
+    )
+
+    legacy.pop(
+        "temporal_context_snapshot"
+    )
+
+    legacy[
+        "future_authorities"
+    ][
+        "temporal_context"
+    ] = {
+        "status":
+            "PENDING",
+
+        "authority_id":
+            "PENDING_OBTIME",
+
+        "snapshot":
+            None,
+    }
+
+    fingerprint = (
+        recompute_context_fingerprint(
+            legacy
+        )
+    )
+
+    legacy[
+        "context_id"
+    ] = (
+        "obctx_"
+        + fingerprint[:28]
+    )
+
+    legacy[
+        "context_fingerprint"
+    ] = fingerprint
+
+    historical = deepcopy(
+        legacy
+    )
+
+    upgraded = (
+        bind_market_time_to_decision_context(
+            legacy,
+            _obtime013_receipt(),
+        )
+    )
+
+    assert legacy == historical
+    assert decision_context_time_bound(
+        upgraded
+    )
+
+    assert (
+        "temporal_context"
+        not in
+        upgraded[
+            "future_authorities"
+        ]
+    )
+
+
+def test_obtime015_decision_context_no_longer_defers_active_time():
+
+    assert (
+        "temporal_context"
+        not in
+        ACTIVE_AUTHORITY_RECORDS[
+            "decision_context"
+        ][
+            "deferred_integrations"
+        ]
+    )
+
+    assert (
+        "source_provenance"
+        in
+        ACTIVE_AUTHORITY_RECORDS[
+            "decision_context"
+        ][
+            "deferred_integrations"
+        ]
+    )
+
+
+def test_obtime015_decision_context_time_binding_grants_no_execution_authority():
+
+    contract = (
+        decision_context_contract()
+    )
+
+    assert (
+        contract[
+            "temporal_context_authority"
+        ]
+        ==
+        "OB_MARKET_TIME_V1"
+    )
+
+    assert (
+        contract[
+            "time_bound_context_required_for_current_reasoning"
+        ]
+        is True
+    )
+
+    assert (
+        contract[
+            "execution_authority"
+        ]
+        is False
+    )
+
+    assert (
+        contract[
+            "broker_submission"
+        ]
+        is False
+    )
+
+    assert (
+        contract[
+            "capital_movement"
+        ]
+        is False
+    )
+
+    assert (
+        contract[
+            "automatic_execution"
+        ]
+        is False
+    )
+
