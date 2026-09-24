@@ -1,0 +1,64 @@
+{
+  "authority_boundary": {
+    "automated_unlock": false,
+    "automatic_contract_selection": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "execution_authority": false,
+    "hybrid_unlock": false,
+    "manual_live_unlock": false,
+    "tower_changed": false
+  },
+  "mode_boundary": {
+    "canonical_time_claimed_only_in_projection": true,
+    "mode_state_mutated_by_time_projection": false,
+    "policy_identity_mutated_by_time_projection": false,
+    "verified_receipt_required": true
+  },
+  "next": "OBTIME011-015 may propagate verified time into additional reasoning and continuity surfaces without widening execution authority.",
+  "pack": "OBTIME006-010",
+  "packs": {
+    "OBTIME006": {
+      "name": "Experimental simulation time binding",
+      "rule": "Only EXPERIMENTAL receives a verified canonical market-time binding in this pack."
+    },
+    "OBTIME007": {
+      "name": "Frame/time alignment",
+      "rule": "Frame observed_at must exactly equal the verified OBTIME UTC instant. Tamper, duplicate binding, and schedule-date mismatch fail closed."
+    },
+    "OBTIME008": {
+      "name": "Operating Mode time-context projection",
+      "rule": "Verified OBTIME may accompany immutable Operating Mode state without rewriting mode state or policy identity."
+    },
+    "OBTIME009": {
+      "name": "Canonical registry activation",
+      "rule": "temporal_context becomes OB_MARKET_TIME_V1 and PENDING_OBTIME becomes a retired compatibility alias."
+    },
+    "OBTIME010": {
+      "name": "Deferred-integration semantics + regression",
+      "rule": "A consumer may explicitly defer an already-active canonical authority. Unknown deferred references fail closed."
+    }
+  },
+  "parent": "b5e7711113c5f0cb7d7f6ba2078bb2c93a661cf0",
+  "registry": {
+    "authority_id": "OB_MARKET_TIME_V1",
+    "pending_obtime_retired_alias": true,
+    "source_provenance_pending_preserved": true,
+    "temporal_context_active": true
+  },
+  "registry_deferred_integration_semantics": {
+    "active_concept_reference_allowed": true,
+    "existing_consumers_may_remain_deferred": true,
+    "pending_slot_reference_allowed": true,
+    "reason": "Deferred integration describes the consumer relationship, not whether the canonical authority itself is pending.",
+    "temporal_context_active": true,
+    "unknown_reference_allowed": false
+  },
+  "simulation_boundary": {
+    "control_receives_canonical_time_binding": false,
+    "experimental_receives_canonical_time_binding": true,
+    "integrated_receives_canonical_time_binding": false,
+    "simulation_only": true
+  },
+  "title": "Canonical Time Integration + Experimental Binding"
+}

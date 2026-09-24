@@ -1263,6 +1263,117 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "temporal_context"
+] = _record(
+    concept_key=
+        "temporal_context",
+
+    authority_id=
+        "OB_MARKET_TIME_V1",
+
+    authority_class=
+        "MARKET_TIME_AND_SESSION_AUTHORITY",
+
+    implementation_ref=
+        "web/ob_market_time_authority.py",
+
+    implementation_role=
+        "CANONICAL_SCHEDULE_BOUND_MARKET_TIME_AUTHORITY",
+
+    owns=(
+        "timezone-aware canonical observation time",
+        "exchange-local market time",
+        "current trading-date derivation",
+        "current market-session derivation",
+        "calendar-source-bound schedule identity",
+        "tamper-evident market-time receipt",
+    ),
+
+    triggers=(
+        "explicit verified market schedule input",
+        "explicit timezone-aware observation instant",
+    ),
+
+    effects=(
+        "emit canonical market-time receipt",
+        "derive market session from schedule",
+        "supply canonical time to temporal-validity authority",
+        "supply verified time reference to Experimental simulation",
+        "supply verified time-context projection to Operating Mode",
+    ),
+
+    state_mutation_scope=
+        "NONE",
+
+    forbidden=(
+        "invent market-open status without schedule authority",
+        "hardcode weekday as exchange calendar truth",
+        "hardcode holiday calendar as canonical truth",
+        "override temporal validity result",
+        "override provenance",
+        "override freshness",
+        "override quality",
+        "override lineage",
+        "override revocation",
+        "trade decision creation",
+        "automatic contract selection",
+        "broker submission",
+        "capital movement",
+        "Manual Live unlock",
+        "Hybrid unlock",
+        "Automated unlock",
+    ),
+
+    failure_behavior=(
+        "Invalid schedules, naive timestamps, schedule-date mismatch, "
+        "receipt tampering, and frame/time disagreement fail closed."
+    ),
+
+    explanation=(
+        "Canonical market time names UTC time, exchange-local time, trading date, "
+        "market session, schedule identity, and calendar-source provenance."
+    ),
+
+    evidence=(
+        "market-time receipt ID",
+        "market-time integrity hash",
+        "schedule ID",
+        "schedule hash",
+        "calendar authority",
+        "calendar reference",
+        "calendar payload hash",
+        "derived trading date",
+        "derived market session",
+    ),
+
+    review_visibility=(
+        "Review may reconstruct the exact schedule-bound time and session "
+        "used by temporal reasoning and Experimental simulation."
+    ),
+
+    temporal_validity=(
+        "RECEIPT_BOUND; each canonical market-time receipt is bound to one "
+        "observation instant and one explicit market schedule."
+    ),
+
+    deterministic=
+        True,
+
+    learning_boundary=(
+        "Learning may evaluate historical time/session outcomes but may not "
+        "rewrite calendar truth, widen time windows, or create execution authority."
+    ),
+
+    compatibility_adapters=(
+        "PENDING_OBTIME",
+    ),
+
+    deferred_integrations=(
+    ),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
@@ -1271,16 +1382,13 @@ PENDING_AUTHORITY_SLOTS = {
         "status": "PENDING",
     },
 
-    "temporal_context": {
-        "authority_id": "PENDING_OBTIME",
-        "planned_pack": "OBTIME001-010",
-        "status": "PENDING",
-    },
-
 }
 
 
 RETIRED_AUTHORITY_ALIASES = {
+    "PENDING_OBTIME":
+        "OB_MARKET_TIME_V1",
+
     "PENDING_OBMODE":
         "OB_OPERATING_MODE_V1",
 
@@ -1382,6 +1490,15 @@ def authority_registry_contract() -> Dict[str, Any]:
             False,
 
         "pending_slot_may_claim_active":
+            False,
+
+        "deferred_integration_may_reference_pending_slot":
+            True,
+
+        "deferred_integration_may_reference_active_concept":
+            True,
+
+        "unknown_deferred_integration_allowed":
             False,
 
         "retired_alias_may_be_canonical":
@@ -1592,13 +1709,16 @@ def validate_canonical_authority_registry(
                     f"unknown_policy_input:{concept_key}:{policy_input}"
                 )
 
-        for pending_key in record.get(
+        for integration_key in record.get(
             "deferred_integrations",
             [],
         ):
-            if pending_key not in pending:
+            if (
+                integration_key not in pending
+                and integration_key not in records
+            ):
                 errors.append(
-                    f"unknown_pending_integration:{concept_key}:{pending_key}"
+                    f"unknown_deferred_integration:{concept_key}:{integration_key}"
                 )
 
     pending_ids = {}

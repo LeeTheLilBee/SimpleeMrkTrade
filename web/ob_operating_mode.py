@@ -16,6 +16,7 @@ ACCOUNT_IDENTITY_AUTHORITY = "OB_ACCOUNT_IDENTITY_TRUTH_V1"
 EFFECTIVE_POLICY_AUTHORITY = "OB_EFFECTIVE_POLICY_V1"
 EVENT_AUTHORITY = "OB_COMMAND_EVENT_CAUSAL_V1"
 PENDING_TIME_AUTHORITY = "PENDING_OBTIME"
+CANONICAL_MARKET_TIME_AUTHORITY = "OB_MARKET_TIME_V1"
 
 
 MODES = (
@@ -418,6 +419,12 @@ def operating_mode_contract() -> Dict[str, Any]:
 
         "canonical_time_authority":
             False,
+
+        "canonical_time_authority_available":
+            CANONICAL_MARKET_TIME_AUTHORITY,
+
+        "time_context_projection_requires_verified_receipt":
+            True,
 
         "future_time_authority":
             PENDING_TIME_AUTHORITY,
@@ -856,6 +863,93 @@ def mode_state_reference(
             False,
 
         "capital_movement":
+            False,
+
+        "automatic_execution":
+            False,
+    }
+
+
+def operating_mode_time_context_projection(
+    state: Dict[str, Any],
+    market_time,
+) -> Dict[str, Any]:
+    from web.ob_market_time_authority import (
+        MarketTimeState,
+        market_time_reference,
+        verify_canonical_market_time_receipt,
+    )
+
+    validated = validate_mode_state(
+        state
+    )
+
+    if not verify_canonical_market_time_receipt(
+        market_time
+    ):
+        raise ValueError(
+            "Operating Mode time context requires verified canonical market time."
+        )
+
+    if (
+        market_time.state
+        is MarketTimeState.SCHEDULE_DATE_MISMATCH
+    ):
+        raise ValueError(
+            "Operating Mode cannot bind schedule-date-mismatched market time."
+        )
+
+    reference = market_time_reference(
+        market_time
+    )
+
+    return {
+        "authority":
+            SCHEMA_VERSION,
+
+        "account_key":
+            validated[
+                "account_key"
+            ],
+
+        "mode":
+            validated[
+                "mode"
+            ],
+
+        "mode_state_reference":
+            mode_state_reference(
+                validated
+            ),
+
+        "time_authority":
+            CANONICAL_MARKET_TIME_AUTHORITY,
+
+        "canonical_time_claimed":
+            True,
+
+        "market_time_reference":
+            reference,
+
+        "mode_state_mutated":
+            False,
+
+        "restriction_only":
+            True,
+
+        "execution_authority":
+            False,
+
+        "broker_submission":
+            False,
+
+        "capital_movement":
+            False,
+
+        "automatic_contract_selection":
+            False,
+
+        "hybrid_execution":
             False,
 
         "automatic_execution":

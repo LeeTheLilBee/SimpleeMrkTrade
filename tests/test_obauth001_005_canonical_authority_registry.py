@@ -98,6 +98,9 @@ def test_exact_current_active_authorities_are_registered():
         "mode_authority":
             "OB_OPERATING_MODE_V1",
 
+        "temporal_context":
+            "OB_MARKET_TIME_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
@@ -253,7 +256,6 @@ def test_future_foundation_slots_are_explicitly_pending():
 
     expected = {
         "source_provenance",
-        "temporal_context",
     }
 
     assert set(PENDING_AUTHORITY_SLOTS) == expected
@@ -446,6 +448,82 @@ def test_validation_rejects_unknown_dependency():
         )
         for error in validation["errors"]
     )
+
+
+def test_deferred_integration_may_reference_active_concept():
+
+    registry = declarative_registry()
+
+    assert (
+        "temporal_context"
+        in registry[
+            "authority_records"
+        ]
+    )
+
+    assert (
+        "temporal_context"
+        in registry[
+            "authority_records"
+        ][
+            "market_candidate_truth"
+        ][
+            "deferred_integrations"
+        ]
+    )
+
+    validation = (
+        validate_canonical_authority_registry(
+            registry
+        )
+    )
+
+    assert (
+        validation["valid"]
+        is True
+    )
+
+    assert (
+        validation["errors"]
+        == []
+    )
+
+
+def test_validation_rejects_unknown_deferred_integration():
+
+    broken = declarative_registry()
+
+    broken[
+        "authority_records"
+    ][
+        "market_candidate_truth"
+    ][
+        "deferred_integrations"
+    ].append(
+        "not_a_real_authority_concept"
+    )
+
+    validation = (
+        validate_canonical_authority_registry(
+            broken
+        )
+    )
+
+    assert (
+        validation["valid"]
+        is False
+    )
+
+    assert (
+        "unknown_deferred_integration:"
+        "market_candidate_truth:"
+        "not_a_real_authority_concept"
+        in validation[
+            "errors"
+        ]
+    )
+
+
 
 
 def test_validation_rejects_execution_grant():

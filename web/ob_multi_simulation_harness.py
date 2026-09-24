@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from datetime import datetime, timezone
 from enum import Enum
 from hashlib import sha256
 import json
@@ -124,6 +125,18 @@ class SimulationReceipt:
 
 
 @dataclass(frozen=True)
+class SimulationTimeBinding:
+    binding_id: str
+    frame_id: str
+    market_time_receipt_id: str
+    market_time_integrity_hash: str
+    authority: str
+    trading_date: str
+    market_session: str
+    state: str
+
+
+@dataclass(frozen=True)
 class SimulationLaneState:
     lane: SimulationLane
     build_ref: str
@@ -139,6 +152,7 @@ class SimulationLaneState:
     trades: tuple[SimulationTrade, ...]
     review_history: tuple[SimulationReviewRecord, ...]
     receipts: tuple[SimulationReceipt, ...]
+    time_bindings: tuple[SimulationTimeBinding, ...]
 
 
 @dataclass(frozen=True)
@@ -254,7 +268,13 @@ def simulation_contract() -> dict[str, object]:
         "canonical_market_time_authority":
             False,
 
-        "future_time_authority":
+        "canonical_market_time_authority_available":
+            "OB_MARKET_TIME_V1",
+
+        "canonical_market_time_binding_scope":
+            "EXPERIMENTAL_ONLY",
+
+        "unbound_frame_time_authority":
             PENDING_TIME_AUTHORITY,
 
         "simulation_performance_grants_live_authority":
@@ -433,6 +453,7 @@ def _new_lane(
         trades=(),
         review_history=(),
         receipts=(),
+        time_bindings=(),
     )
 
 
@@ -847,6 +868,207 @@ def broadcast_market_frame(
                 frame,
             )
         ),
+    )
+
+
+def _parse_frame_observed_at(
+    value: str,
+) -> datetime:
+    text = _nonblank(
+        value,
+        name="frame observed_at",
+    )
+
+    if text.endswith(
+        "Z"
+    ):
+        text = (
+            text[:-1]
+            + "+00:00"
+        )
+
+    try:
+        parsed = datetime.fromisoformat(
+            text
+        )
+
+    except ValueError as exc:
+        raise ValueError(
+            "frame observed_at must be ISO-8601"
+        ) from exc
+
+    if (
+        parsed.tzinfo is None
+        or parsed.utcoffset() is None
+    ):
+        raise ValueError(
+            "frame observed_at must be timezone-aware"
+        )
+
+    return parsed.astimezone(
+        timezone.utc
+    )
+
+
+def bind_canonical_market_time_to_experimental(
+    harness: MultiSimulationHarness,
+    *,
+    frame: SimulationMarketFrame,
+    market_time,
+) -> MultiSimulationHarness:
+    from web.ob_market_time_authority import (
+        MarketTimeState,
+        market_time_reference,
+        verify_canonical_market_time_receipt,
+    )
+
+    if not isinstance(
+        frame,
+        SimulationMarketFrame,
+    ):
+        raise ValueError(
+            "frame must be SimulationMarketFrame"
+        )
+
+    if not _frame_is_broadcast(
+        harness,
+        frame,
+    ):
+        raise ValueError(
+            "market frame must be broadcast before canonical time binding"
+        )
+
+    if not verify_canonical_market_time_receipt(
+        market_time
+    ):
+        raise ValueError(
+            "Experimental time binding requires verified canonical market time"
+        )
+
+    if (
+        market_time.state
+        is MarketTimeState.SCHEDULE_DATE_MISMATCH
+    ):
+        raise ValueError(
+            "schedule-date mismatch cannot bind as Experimental canonical time"
+        )
+
+    frame_time = _parse_frame_observed_at(
+        frame.observed_at
+    )
+
+    if (
+        frame_time
+        != market_time.observed_at_utc
+    ):
+        raise ValueError(
+            "market frame observed_at does not match canonical market time"
+        )
+
+    state = lane_state(
+        harness,
+        SimulationLane.EXPERIMENTAL,
+    )
+
+    if any(
+        item.frame_id
+        == frame.frame_id
+        for item
+        in state.time_bindings
+    ):
+        raise ValueError(
+            "Experimental frame already has canonical time binding"
+        )
+
+    reference = market_time_reference(
+        market_time
+    )
+
+    material = {
+        "lane":
+            SimulationLane.EXPERIMENTAL.value,
+
+        "frame_id":
+            frame.frame_id,
+
+        "market_time_reference":
+            reference,
+    }
+
+    binding_hash = stable_hash(
+        material
+    )
+
+    binding = SimulationTimeBinding(
+        binding_id=(
+            "OBSIMTIME-"
+            + binding_hash[:24]
+        ),
+        frame_id=frame.frame_id,
+        market_time_receipt_id=market_time.receipt_id,
+        market_time_integrity_hash=market_time.integrity_hash,
+        authority=market_time.authority,
+        trading_date=market_time.trading_date.isoformat(),
+        market_session=market_time.market_session.value,
+        state=market_time.state.value,
+    )
+
+    updated = replace(
+        state,
+        time_bindings=(
+            state.time_bindings
+            + (
+                binding,
+            )
+        ),
+    )
+
+    updated = _append_receipt(
+        updated,
+        event_type="CANONICAL_MARKET_TIME",
+        event_id=binding.binding_id,
+        payload={
+            "binding_id":
+                binding.binding_id,
+
+            "frame_id":
+                frame.frame_id,
+
+            "canonical_time_claimed":
+                True,
+
+            "time_authority":
+                market_time.authority,
+
+            "market_time_reference":
+                reference,
+
+            "simulation_only":
+                True,
+
+            "execution_authority":
+                False,
+
+            "broker_submission":
+                False,
+
+            "capital_movement":
+                False,
+
+            "manual_live_unlock":
+                False,
+
+            "hybrid_unlock":
+                False,
+
+            "automated_unlock":
+                False,
+        },
+    )
+
+    return _replace_lane(
+        harness,
+        updated,
     )
 
 
@@ -1633,6 +1855,11 @@ def lane_metrics(
         "receipts":
             len(
                 state.receipts
+            ),
+
+        "canonical_time_bindings":
+            len(
+                state.time_bindings
             ),
 
         "receipt_chain_valid":
