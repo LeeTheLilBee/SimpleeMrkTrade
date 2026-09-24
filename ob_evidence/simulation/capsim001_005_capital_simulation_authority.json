@@ -1,0 +1,71 @@
+{
+  "authority_boundary": {
+    "automated_unlock": false,
+    "automatic_contract_selection": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "effective_policy_mutation": false,
+    "execution_authority": false,
+    "hybrid_unlock": false,
+    "manual_live_unlock": false,
+    "policy_widening": false,
+    "portfolio_policy_authority": false,
+    "position_selection_authority": false,
+    "simulation_lane_mutation": false,
+    "simulation_only": true,
+    "strategy_selection_authority": false,
+    "tower_changed": false
+  },
+  "capital_limits_consumed": [
+    "max_loss_per_trade_pct",
+    "max_position_allocation_pct",
+    "daily_loss_cap_pct"
+  ],
+  "daily_loss_boundary": {
+    "canonical_session_loss_available": false,
+    "fabricated_daily_loss_allowed": false,
+    "future_pack": "CAPSIM006-010",
+    "missing_behavior": "REVIEW_REQUIRED"
+  },
+  "next": "CAPSIM006-010 should derive canonical session/day realized loss from lane trade history plus verified OBTIME, then bind capital defense to EXPERIMENTAL without replacing OBSIM execution math.",
+  "pack": "CAPSIM001-005",
+  "packs": {
+    "CAPSIM001": {
+      "name": "Canonical capital policy snapshot",
+      "rule": "Bind existing OB_EFFECTIVE_POLICY_V1 capital limits without replacing or widening Effective Policy."
+    },
+    "CAPSIM002": {
+      "name": "Simulation capital state snapshot",
+      "rule": "Bind lane-local starting capital, cash, PnL, equity, peak equity, and drawdown into a tamper-evident snapshot."
+    },
+    "CAPSIM003": {
+      "name": "Proposed capital-use assessment",
+      "rule": "Known cash, position-allocation, and per-trade-loss violations block. Missing daily/session loss truth does not silently pass."
+    },
+    "CAPSIM004": {
+      "name": "Fail-closed capital defense receipt",
+      "rule": "Assessment identity is account-bound, lane-bound, policy-bound, state-bound, proposal-bound, and tamper-evident."
+    },
+    "CAPSIM005": {
+      "name": "Strict simulation authority boundary",
+      "rule": "CAPSIM cannot move real capital, submit broker orders, select contracts, widen policy, mutate lanes, or unlock modes."
+    }
+  },
+  "parent": "9b6f5ffebd83cd4fa501458d9470b3742d99937a",
+  "policy_source": {
+    "activated_in_this_pack": false,
+    "capital_policy": "PENDING_OBCAP",
+    "capital_policy_status": "PENDING",
+    "effective_policy": "OB_EFFECTIVE_POLICY_V1"
+  },
+  "simulation_state_consumed": [
+    "starting_capital",
+    "cash",
+    "realized_pnl",
+    "unrealized_pnl",
+    "equity",
+    "peak_equity",
+    "max_drawdown_pct"
+  ],
+  "title": "Canonical Capital Simulation Foundation"
+}
