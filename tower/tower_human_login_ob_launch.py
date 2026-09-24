@@ -109,6 +109,7 @@ SESSION_AUTH_TIME = "tower_authenticated_at"
 SESSION_STEP_UP_UNTIL = (
     "tower_step_up_until"
 )
+SESSION_ID = "tower_session_id"
 SESSION_OB_LAUNCH_RECEIPT = (
     "tower_ob_launch_receipt"
 )
@@ -505,6 +506,15 @@ def establish_owner_session(
         SESSION_AUTH_TIME
     ] = now.isoformat()
 
+    session[
+        SESSION_ID
+    ] = (
+        "tower_session_"
+        + secrets.token_urlsafe(
+            24
+        )
+    )
+
     session.permanent = False
 
     return {
@@ -517,6 +527,10 @@ def establish_owner_session(
         "authenticated_at": (
             now.isoformat()
         ),
+        "tower_session_id":
+            session.get(
+                SESSION_ID
+            ),
     }
 
 
@@ -536,6 +550,47 @@ def owner_session_active() -> bool:
             )
         ),
     ])
+
+
+def ensure_tower_session_id() -> str:
+    """
+    Return the Tower-generated identifier for the current authenticated
+    session.
+
+    This value is NOT a credential and does not replace the Flask session
+    signature. A new normal login generates a new identifier.
+
+    The fallback creation path exists only so a still-valid owner session
+    created immediately before this source upgrade can enter the new
+    Teller v2 crossing without manufacturing browser authority.
+    """
+
+    if not owner_session_active():
+        return ""
+
+    existing = str(
+        session.get(
+            SESSION_ID,
+            "",
+        )
+        or ""
+    ).strip()
+
+    if existing:
+        return existing
+
+    value = (
+        "tower_session_"
+        + secrets.token_urlsafe(
+            24
+        )
+    )
+
+    session[
+        SESSION_ID
+    ] = value
+
+    return value
 
 
 def step_up_active() -> bool:
