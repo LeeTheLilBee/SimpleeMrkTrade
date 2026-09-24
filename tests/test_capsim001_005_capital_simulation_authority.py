@@ -691,15 +691,37 @@ def test_capsim005_contract_refuses_execution_and_live_authority():
         contract[
             "daily_loss_canonical_authority"
         ]
-        is False
+        is True
+    )
+
+    assert (
+        contract[
+            "daily_loss_authority"
+        ]
+        ==
+        "OB_CAPITAL_SIMULATION_V1"
     )
 
     assert (
         contract[
             "future_daily_loss_authority"
         ]
+        is None
+    )
+
+    assert (
+        contract[
+            "experimental_open_admission"
+        ]
+        is True
+    )
+
+    assert (
+        contract[
+            "experimental_open_admission_scope"
+        ]
         ==
-        "PENDING_CAPSIM006_010"
+        "EXPERIMENTAL_ONLY"
     )
 
     for key in (

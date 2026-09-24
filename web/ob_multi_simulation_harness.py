@@ -1168,6 +1168,96 @@ def _frame_is_broadcast(
     )
 
 
+def preview_simulation_open_cost(
+    frame: SimulationMarketFrame,
+    *,
+    quantity: int,
+    fill_policy: SimulationFillPolicy = SimulationFillPolicy(),
+) -> dict[str, object]:
+    if not isinstance(
+        frame,
+        SimulationMarketFrame,
+    ):
+        raise ValueError(
+            "frame must be SimulationMarketFrame"
+        )
+
+    if (
+        not isinstance(
+            quantity,
+            int,
+        )
+        or quantity < 1
+    ):
+        raise ValueError(
+            "OPEN preview requires positive integer quantity"
+        )
+
+    fill = _fill_price(
+        requested_price=frame.mark_price,
+        side="BUY",
+        policy=fill_policy,
+    )
+
+    commission = _commission(
+        quantity=quantity,
+        policy=fill_policy,
+    )
+
+    gross = round(
+        (
+            fill
+            * quantity
+            * frame.instrument.multiplier
+        ),
+        4,
+    )
+
+    total_cost = round(
+        gross
+        + commission,
+        4,
+    )
+
+    return {
+        "frame_id":
+            frame.frame_id,
+
+        "quantity":
+            quantity,
+
+        "multiplier":
+            frame.instrument.multiplier,
+
+        "requested_price":
+            frame.mark_price,
+
+        "fill_price":
+            fill,
+
+        "commission":
+            commission,
+
+        "gross_value":
+            gross,
+
+        "total_cost":
+            total_cost,
+
+        "simulation_only":
+            True,
+
+        "execution_authority":
+            False,
+
+        "broker_submission":
+            False,
+
+        "capital_movement":
+            False,
+    }
+
+
 def apply_simulation_decision(
     harness: MultiSimulationHarness,
     *,
@@ -1336,30 +1426,34 @@ def apply_simulation_decision(
                 "simulation lane already has an open position for instrument"
             )
 
-        fill = _fill_price(
-            requested_price=frame.mark_price,
-            side="BUY",
-            policy=fill_policy,
-        )
-
-        commission = _commission(
+        preview = preview_simulation_open_cost(
+            frame,
             quantity=quantity,
-            policy=fill_policy,
+            fill_policy=fill_policy,
         )
 
-        gross = round(
-            (
-                fill
-                * quantity
-                * frame.instrument.multiplier
-            ),
-            4,
+        fill = float(
+            preview[
+                "fill_price"
+            ]
         )
 
-        total_cost = round(
-            gross
-            + commission,
-            4,
+        commission = float(
+            preview[
+                "commission"
+            ]
+        )
+
+        gross = float(
+            preview[
+                "gross_value"
+            ]
+        )
+
+        total_cost = float(
+            preview[
+                "total_cost"
+            ]
         )
 
         if total_cost > state.cash:

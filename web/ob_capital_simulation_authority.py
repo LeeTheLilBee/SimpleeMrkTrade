@@ -1,26 +1,33 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from enum import Enum
 from hashlib import sha256
 import json
-from typing import Any
+from typing import Any, Iterable
 
 from web.ob_multi_simulation_harness import (
     MultiSimulationHarness,
+    SimulationAction,
+    SimulationFillPolicy,
     SimulationLane,
+    SimulationMarketFrame,
+    apply_simulation_decision,
     lane_state,
+    preview_simulation_open_cost,
     verify_lane_receipt_chain,
 )
 
 
 SCHEMA_VERSION = "OB_CAPITAL_SIMULATION_V1"
-SERVICE_VERSION = "CAPSIM001_005_CAPITAL_SIMULATION_FOUNDATION"
+SERVICE_VERSION = "CAPSIM001_010_CAPITAL_SIMULATION"
 
 EFFECTIVE_POLICY_AUTHORITY = "OB_EFFECTIVE_POLICY_V1"
+MARKET_TIME_AUTHORITY = "OB_MARKET_TIME_V1"
 
 PENDING_CAPITAL_POLICY_AUTHORITY = "PENDING_OBCAP"
-PENDING_SESSION_LOSS_AUTHORITY = "PENDING_CAPSIM006_010"
+SESSION_LOSS_AUTHORITY = SCHEMA_VERSION
 
 
 class CapitalCheckState(str, Enum):
@@ -107,6 +114,54 @@ class CapitalSimulationAssessment:
     blocking_checks: tuple[str, ...]
     review_checks: tuple[str, ...]
     unknown_checks: tuple[str, ...]
+    session_loss_ledger_id: str | None
+    session_loss_integrity_hash: str | None
+    integrity_hash: str
+
+
+@dataclass(frozen=True)
+class CapitalSessionLossEntry:
+    trade_id: str
+    frame_id: str
+    market_time_receipt_id: str
+    market_time_integrity_hash: str
+    trading_date: str
+    market_session: str
+    realized_pnl: float
+
+
+@dataclass(frozen=True)
+class CapitalSessionLossLedger:
+    ledger_id: str
+    authority: str
+    account_key: str
+    lane: SimulationLane
+    trading_date: str
+    current_market_time_receipt_id: str
+    current_market_time_integrity_hash: str
+    entries: tuple[CapitalSessionLossEntry, ...]
+    net_realized_pnl: float
+    gross_realized_loss: float
+    gross_realized_gain: float
+    daily_loss_amount: float
+    coverage_complete: bool
+    unresolved_close_trade_ids: tuple[str, ...]
+    integrity_hash: str
+
+
+@dataclass(frozen=True)
+class ExperimentalCapitalAdmission:
+    admission_id: str
+    authority: str
+    account_key: str
+    lane: SimulationLane
+    frame_id: str
+    decision_id: str
+    assessment_id: str
+    assessment_integrity_hash: str
+    assessment_state: CapitalAssessmentState
+    admitted: bool
+    harness_mutated: bool
     integrity_hash: str
 
 
@@ -745,6 +800,572 @@ def build_capital_proposal(
     return result
 
 
+def _parse_frame_time(
+    value: str,
+) -> datetime:
+    text = _nonblank(
+        value,
+        name="frame observed_at",
+    )
+
+    if text.endswith(
+        "Z"
+    ):
+        text = (
+            text[:-1]
+            + "+00:00"
+        )
+
+    try:
+        parsed = datetime.fromisoformat(
+            text
+        )
+
+    except ValueError as exc:
+        raise ValueError(
+            "frame observed_at must be ISO-8601"
+        ) from exc
+
+    if (
+        parsed.tzinfo is None
+        or parsed.utcoffset() is None
+    ):
+        raise ValueError(
+            "frame observed_at must be timezone-aware"
+        )
+
+    return parsed.astimezone(
+        timezone.utc
+    )
+
+
+def _session_loss_entry_payload(
+    entry: CapitalSessionLossEntry,
+) -> dict[str, object]:
+    return {
+        "trade_id":
+            entry.trade_id,
+
+        "frame_id":
+            entry.frame_id,
+
+        "market_time_receipt_id":
+            entry.market_time_receipt_id,
+
+        "market_time_integrity_hash":
+            entry.market_time_integrity_hash,
+
+        "trading_date":
+            entry.trading_date,
+
+        "market_session":
+            entry.market_session,
+
+        "realized_pnl":
+            entry.realized_pnl,
+    }
+
+
+def _session_loss_material(
+    ledger: CapitalSessionLossLedger,
+) -> dict[str, object]:
+    return {
+        "authority":
+            ledger.authority,
+
+        "account_key":
+            ledger.account_key,
+
+        "lane":
+            ledger.lane.value,
+
+        "trading_date":
+            ledger.trading_date,
+
+        "current_market_time_receipt_id":
+            ledger.current_market_time_receipt_id,
+
+        "current_market_time_integrity_hash":
+            ledger.current_market_time_integrity_hash,
+
+        "entries": [
+            _session_loss_entry_payload(
+                item
+            )
+            for item
+            in ledger.entries
+        ],
+
+        "net_realized_pnl":
+            ledger.net_realized_pnl,
+
+        "gross_realized_loss":
+            ledger.gross_realized_loss,
+
+        "gross_realized_gain":
+            ledger.gross_realized_gain,
+
+        "daily_loss_amount":
+            ledger.daily_loss_amount,
+
+        "coverage_complete":
+            ledger.coverage_complete,
+
+        "unresolved_close_trade_ids":
+            list(
+                ledger.unresolved_close_trade_ids
+            ),
+    }
+
+
+def verify_capital_session_loss_ledger(
+    ledger: CapitalSessionLossLedger,
+) -> bool:
+    if not isinstance(
+        ledger,
+        CapitalSessionLossLedger,
+    ):
+        return False
+
+    if (
+        ledger.authority
+        !=
+        SESSION_LOSS_AUTHORITY
+    ):
+        return False
+
+    if (
+        ledger.lane
+        is not
+        SimulationLane.EXPERIMENTAL
+    ):
+        return False
+
+    if (
+        ledger.coverage_complete
+        !=
+        (
+            len(
+                ledger.unresolved_close_trade_ids
+            )
+            == 0
+        )
+    ):
+        return False
+
+    expected_net = round(
+        sum(
+            item.realized_pnl
+            for item
+            in ledger.entries
+        ),
+        4,
+    )
+
+    expected_loss = round(
+        sum(
+            -item.realized_pnl
+            for item
+            in ledger.entries
+            if item.realized_pnl < 0
+        ),
+        4,
+    )
+
+    expected_gain = round(
+        sum(
+            item.realized_pnl
+            for item
+            in ledger.entries
+            if item.realized_pnl > 0
+        ),
+        4,
+    )
+
+    expected_daily_loss = round(
+        max(
+            0.0,
+            -expected_net,
+        ),
+        4,
+    )
+
+    if (
+        ledger.net_realized_pnl
+        != expected_net
+        or
+        ledger.gross_realized_loss
+        != expected_loss
+        or
+        ledger.gross_realized_gain
+        != expected_gain
+        or
+        ledger.daily_loss_amount
+        != expected_daily_loss
+    ):
+        return False
+
+    digest = stable_hash(
+        _session_loss_material(
+            ledger
+        )
+    )
+
+    return (
+        ledger.integrity_hash
+        == digest
+        and
+        ledger.ledger_id
+        ==
+        "OBCAPLOSS-"
+        + digest[:24]
+    )
+
+
+def build_capital_session_loss_ledger(
+    harness: MultiSimulationHarness,
+    *,
+    market_time,
+    market_time_receipts: Iterable[Any] = (),
+) -> CapitalSessionLossLedger:
+    from web.ob_market_time_authority import (
+        MarketTimeState,
+        verify_canonical_market_time_receipt,
+    )
+
+    if not isinstance(
+        harness,
+        MultiSimulationHarness,
+    ):
+        raise ValueError(
+            "session loss ledger requires MultiSimulationHarness"
+        )
+
+    if not verify_canonical_market_time_receipt(
+        market_time
+    ):
+        raise ValueError(
+            "session loss ledger requires verified canonical market time"
+        )
+
+    if (
+        market_time.state
+        is MarketTimeState.SCHEDULE_DATE_MISMATCH
+    ):
+        raise ValueError(
+            "session loss ledger cannot use schedule-date-mismatched market time"
+        )
+
+    state = lane_state(
+        harness,
+        SimulationLane.EXPERIMENTAL,
+    )
+
+    if not verify_lane_receipt_chain(
+        state
+    ):
+        raise ValueError(
+            "Experimental lane receipt chain failed verification"
+        )
+
+    receipt_map = {}
+
+    supplied = (
+        (
+            market_time,
+        )
+        +
+        tuple(
+            market_time_receipts
+        )
+    )
+
+    for receipt in supplied:
+        if not verify_canonical_market_time_receipt(
+            receipt
+        ):
+            raise ValueError(
+                "session loss history contains unverified canonical market time"
+            )
+
+        if (
+            receipt.state
+            is MarketTimeState.SCHEDULE_DATE_MISMATCH
+        ):
+            raise ValueError(
+                "session loss history contains schedule-date mismatch"
+            )
+
+        existing = receipt_map.get(
+            receipt.receipt_id
+        )
+
+        if (
+            existing is not None
+            and
+            existing.integrity_hash
+            !=
+            receipt.integrity_hash
+        ):
+            raise ValueError(
+                "duplicate market-time receipt ID has conflicting integrity hash"
+            )
+
+        receipt_map[
+            receipt.receipt_id
+        ] = receipt
+
+    bindings = {}
+
+    for binding in state.time_bindings:
+        if (
+            binding.frame_id
+            in bindings
+        ):
+            raise ValueError(
+                "duplicate Experimental time binding for frame"
+            )
+
+        bindings[
+            binding.frame_id
+        ] = binding
+
+    frames = {}
+
+    for frame in harness.market_frames:
+        if (
+            frame.frame_id
+            in frames
+        ):
+            raise ValueError(
+                "duplicate market frame ID in harness"
+            )
+
+        frames[
+            frame.frame_id
+        ] = frame
+
+    target_date = (
+        market_time.trading_date.isoformat()
+    )
+
+    entries = []
+    unresolved = []
+
+    for trade in state.trades:
+        if (
+            trade.action
+            is not
+            SimulationAction.CLOSE
+        ):
+            continue
+
+        binding = bindings.get(
+            trade.frame_id
+        )
+
+        if binding is None:
+            unresolved.append(
+                trade.trade_id
+            )
+            continue
+
+        receipt = receipt_map.get(
+            binding.market_time_receipt_id
+        )
+
+        if receipt is None:
+            unresolved.append(
+                trade.trade_id
+            )
+            continue
+
+        if (
+            receipt.integrity_hash
+            !=
+            binding.market_time_integrity_hash
+        ):
+            raise ValueError(
+                "Experimental time binding integrity does not match verified receipt"
+            )
+
+        if (
+            receipt.authority
+            !=
+            binding.authority
+            or
+            receipt.trading_date.isoformat()
+            !=
+            binding.trading_date
+            or
+            receipt.market_session.value
+            !=
+            binding.market_session
+            or
+            receipt.state.value
+            !=
+            binding.state
+        ):
+            raise ValueError(
+                "Experimental time binding disagrees with verified receipt"
+            )
+
+        frame = frames.get(
+            trade.frame_id
+        )
+
+        if frame is None:
+            raise ValueError(
+                "simulation trade references missing market frame"
+            )
+
+        if (
+            _parse_frame_time(
+                frame.observed_at
+            )
+            !=
+            receipt.observed_at_utc
+        ):
+            raise ValueError(
+                "simulation frame timestamp disagrees with verified market time"
+            )
+
+        if (
+            binding.trading_date
+            !=
+            target_date
+        ):
+            continue
+
+        entries.append(
+            CapitalSessionLossEntry(
+                trade_id=trade.trade_id,
+                frame_id=trade.frame_id,
+                market_time_receipt_id=receipt.receipt_id,
+                market_time_integrity_hash=receipt.integrity_hash,
+                trading_date=binding.trading_date,
+                market_session=binding.market_session,
+                realized_pnl=round(
+                    float(
+                        trade.realized_pnl
+                    ),
+                    4,
+                ),
+            )
+        )
+
+    entries_tuple = tuple(
+        entries
+    )
+
+    unresolved_tuple = tuple(
+        sorted(
+            set(
+                unresolved
+            )
+        )
+    )
+
+    net = round(
+        sum(
+            item.realized_pnl
+            for item
+            in entries_tuple
+        ),
+        4,
+    )
+
+    gross_loss = round(
+        sum(
+            -item.realized_pnl
+            for item
+            in entries_tuple
+            if item.realized_pnl < 0
+        ),
+        4,
+    )
+
+    gross_gain = round(
+        sum(
+            item.realized_pnl
+            for item
+            in entries_tuple
+            if item.realized_pnl > 0
+        ),
+        4,
+    )
+
+    daily_loss = round(
+        max(
+            0.0,
+            -net,
+        ),
+        4,
+    )
+
+    provisional = CapitalSessionLossLedger(
+        ledger_id="PENDING",
+        authority=SESSION_LOSS_AUTHORITY,
+        account_key=_nonblank(
+            harness.account_key,
+            name="harness account_key",
+        ),
+        lane=SimulationLane.EXPERIMENTAL,
+        trading_date=target_date,
+        current_market_time_receipt_id=market_time.receipt_id,
+        current_market_time_integrity_hash=market_time.integrity_hash,
+        entries=entries_tuple,
+        net_realized_pnl=net,
+        gross_realized_loss=gross_loss,
+        gross_realized_gain=gross_gain,
+        daily_loss_amount=daily_loss,
+        coverage_complete=(
+            len(
+                unresolved_tuple
+            )
+            == 0
+        ),
+        unresolved_close_trade_ids=unresolved_tuple,
+        integrity_hash="PENDING",
+    )
+
+    digest = stable_hash(
+        _session_loss_material(
+            provisional
+        )
+    )
+
+    result = CapitalSessionLossLedger(
+        ledger_id=(
+            "OBCAPLOSS-"
+            + digest[:24]
+        ),
+        authority=provisional.authority,
+        account_key=provisional.account_key,
+        lane=provisional.lane,
+        trading_date=provisional.trading_date,
+        current_market_time_receipt_id=provisional.current_market_time_receipt_id,
+        current_market_time_integrity_hash=provisional.current_market_time_integrity_hash,
+        entries=provisional.entries,
+        net_realized_pnl=provisional.net_realized_pnl,
+        gross_realized_loss=provisional.gross_realized_loss,
+        gross_realized_gain=provisional.gross_realized_gain,
+        daily_loss_amount=provisional.daily_loss_amount,
+        coverage_complete=provisional.coverage_complete,
+        unresolved_close_trade_ids=provisional.unresolved_close_trade_ids,
+        integrity_hash=digest,
+    )
+
+    if not verify_capital_session_loss_ledger(
+        result
+    ):
+        raise ValueError(
+            "constructed capital session loss ledger failed verification"
+        )
+
+    return result
+
+
 def _check_payload(
     check: CapitalCheck,
 ) -> dict[str, object]:
@@ -832,6 +1453,12 @@ def _assessment_material(
 
         "proposal_integrity_hash":
             assessment.proposal_integrity_hash,
+
+        "session_loss_ledger_id":
+            assessment.session_loss_ledger_id,
+
+        "session_loss_integrity_hash":
+            assessment.session_loss_integrity_hash,
 
         "checks": [
             _check_payload(
@@ -928,6 +1555,19 @@ def verify_capital_simulation_assessment(
     ):
         return False
 
+    if (
+        (
+            assessment.session_loss_ledger_id
+            is None
+        )
+        !=
+        (
+            assessment.session_loss_integrity_hash
+            is None
+        )
+    ):
+        return False
+
     digest = stable_hash(
         _assessment_material(
             assessment
@@ -950,6 +1590,7 @@ def assess_capital_proposal(
     policy: CapitalPolicySnapshot,
     capital_state: SimulationCapitalState,
     proposal: CapitalProposal,
+    session_loss: CapitalSessionLossLedger | None = None,
 ) -> CapitalSimulationAssessment:
     if not verify_capital_policy_snapshot(
         policy
@@ -990,6 +1631,43 @@ def assess_capital_proposal(
     ):
         raise ValueError(
             "capital proposal crosses simulation lane boundary"
+        )
+
+    session_loss_ledger_id = None
+    session_loss_integrity_hash = None
+
+    if session_loss is not None:
+        if not verify_capital_session_loss_ledger(
+            session_loss
+        ):
+            raise ValueError(
+                "capital session loss ledger failed verification"
+            )
+
+        if (
+            session_loss.account_key
+            !=
+            policy.account_key
+        ):
+            raise ValueError(
+                "session loss ledger crosses account boundary"
+            )
+
+        if (
+            session_loss.lane
+            is not
+            capital_state.lane
+        ):
+            raise ValueError(
+                "session loss ledger crosses simulation lane boundary"
+            )
+
+        session_loss_ledger_id = (
+            session_loss.ledger_id
+        )
+
+        session_loss_integrity_hash = (
+            session_loss.integrity_hash
         )
 
     checks = []
@@ -1161,17 +1839,136 @@ def assess_capital_proposal(
         )
     )
 
+    if session_loss is None:
+        daily_loss_pct = None
+
+        daily_state = (
+            CapitalCheckState.REVIEW
+        )
+
+        daily_reason = (
+            "Canonical session-loss ledger was not supplied."
+        )
+
+    elif not session_loss.coverage_complete:
+        daily_loss_pct = None
+
+        daily_state = (
+            CapitalCheckState.UNKNOWN
+        )
+
+        daily_reason = (
+            "Historical CLOSE trade time coverage is incomplete."
+        )
+
+    elif (
+        capital_state.equity
+        <= 0
+    ):
+        daily_loss_pct = None
+
+        daily_state = (
+            CapitalCheckState.BLOCK
+        )
+
+        daily_reason = (
+            "Lane equity is not positive, so daily-loss admission is blocked."
+        )
+
+    else:
+        current_daily_loss_pct = round(
+            (
+                session_loss.daily_loss_amount
+                /
+                capital_state.equity
+            )
+            * 100.0,
+            6,
+        )
+
+        if (
+            current_daily_loss_pct
+            >
+            policy.daily_loss_cap_pct
+        ):
+            daily_loss_pct = (
+                current_daily_loss_pct
+            )
+
+            daily_state = (
+                CapitalCheckState.BLOCK
+            )
+
+            daily_reason = (
+                "Verified realized daily loss already exceeds Effective Policy cap."
+            )
+
+        elif (
+            proposal.declared_max_loss_amount
+            is None
+        ):
+            daily_loss_pct = (
+                current_daily_loss_pct
+            )
+
+            daily_state = (
+                CapitalCheckState.REVIEW
+            )
+
+            daily_reason = (
+                "Current daily loss is known, but proposed maximum loss is not proven."
+            )
+
+        else:
+            projected_daily_loss_amount = round(
+                session_loss.daily_loss_amount
+                + proposal.declared_max_loss_amount,
+                4,
+            )
+
+            projected_daily_loss_pct = round(
+                (
+                    projected_daily_loss_amount
+                    /
+                    capital_state.equity
+                )
+                * 100.0,
+                6,
+            )
+
+            daily_loss_pct = (
+                projected_daily_loss_pct
+            )
+
+            daily_state = (
+                CapitalCheckState.BLOCK
+                if (
+                    projected_daily_loss_pct
+                    >
+                    policy.daily_loss_cap_pct
+                )
+                else
+                CapitalCheckState.PASS
+            )
+
+            daily_reason = (
+                "Projected daily loss exceeds Effective Policy cap."
+                if (
+                    daily_state
+                    is CapitalCheckState.BLOCK
+                )
+                else
+                "Projected daily loss remains within Effective Policy cap."
+            )
+
     checks.append(
         CapitalCheck(
             name="daily_loss_cap",
-            state=CapitalCheckState.REVIEW,
-            observed_value=None,
+            state=daily_state,
+            observed_value=daily_loss_pct,
             limit_value=policy.daily_loss_cap_pct,
             unit="percentage_points",
-            reason=(
-                "Canonical session/day realized-loss derivation is deferred "
-                "to CAPSIM006-010. CAPSIM001-005 will not fabricate it."
-            ),
+            reason=daily_reason,
         )
     )
 
@@ -1229,6 +2026,8 @@ def assess_capital_proposal(
         blocking_checks=blocking,
         review_checks=review,
         unknown_checks=unknown,
+        session_loss_ledger_id=session_loss_ledger_id,
+        session_loss_integrity_hash=session_loss_integrity_hash,
         integrity_hash="PENDING",
     )
 
@@ -1257,6 +2056,8 @@ def assess_capital_proposal(
         blocking_checks=provisional.blocking_checks,
         review_checks=provisional.review_checks,
         unknown_checks=provisional.unknown_checks,
+        session_loss_ledger_id=provisional.session_loss_ledger_id,
+        session_loss_integrity_hash=provisional.session_loss_integrity_hash,
         integrity_hash=digest,
     )
 
@@ -1268,6 +2069,519 @@ def assess_capital_proposal(
         )
 
     return result
+
+
+def _current_frame_time_binding(
+    harness: MultiSimulationHarness,
+    *,
+    frame: SimulationMarketFrame,
+    market_time,
+):
+    from web.ob_market_time_authority import (
+        MarketTimeState,
+        verify_canonical_market_time_receipt,
+    )
+
+    if not verify_canonical_market_time_receipt(
+        market_time
+    ):
+        raise ValueError(
+            "Experimental capital admission requires verified canonical market time"
+        )
+
+    if (
+        market_time.state
+        is MarketTimeState.SCHEDULE_DATE_MISMATCH
+    ):
+        raise ValueError(
+            "Experimental capital admission rejects schedule-date mismatch"
+        )
+
+    state = lane_state(
+        harness,
+        SimulationLane.EXPERIMENTAL,
+    )
+
+    matches = [
+        item
+        for item
+        in state.time_bindings
+        if (
+            item.frame_id
+            ==
+            frame.frame_id
+        )
+    ]
+
+    if len(
+        matches
+    ) != 1:
+        raise ValueError(
+            "Experimental OPEN requires exactly one canonical time binding for frame"
+        )
+
+    binding = matches[0]
+
+    if (
+        binding.market_time_receipt_id
+        !=
+        market_time.receipt_id
+        or
+        binding.market_time_integrity_hash
+        !=
+        market_time.integrity_hash
+        or
+        binding.authority
+        !=
+        market_time.authority
+        or
+        binding.trading_date
+        !=
+        market_time.trading_date.isoformat()
+        or
+        binding.market_session
+        !=
+        market_time.market_session.value
+        or
+        binding.state
+        !=
+        market_time.state.value
+    ):
+        raise ValueError(
+            "Experimental frame time binding disagrees with verified market time"
+        )
+
+    if (
+        _parse_frame_time(
+            frame.observed_at
+        )
+        !=
+        market_time.observed_at_utc
+    ):
+        raise ValueError(
+            "Experimental frame timestamp disagrees with verified market time"
+        )
+
+    return binding
+
+
+def _admission_material(
+    admission: ExperimentalCapitalAdmission,
+) -> dict[str, object]:
+    return {
+        "authority":
+            admission.authority,
+
+        "account_key":
+            admission.account_key,
+
+        "lane":
+            admission.lane.value,
+
+        "frame_id":
+            admission.frame_id,
+
+        "decision_id":
+            admission.decision_id,
+
+        "assessment_id":
+            admission.assessment_id,
+
+        "assessment_integrity_hash":
+            admission.assessment_integrity_hash,
+
+        "assessment_state":
+            admission.assessment_state.value,
+
+        "admitted":
+            admission.admitted,
+
+        "harness_mutated":
+            admission.harness_mutated,
+    }
+
+
+def verify_experimental_capital_admission(
+    admission: ExperimentalCapitalAdmission,
+) -> bool:
+    if not isinstance(
+        admission,
+        ExperimentalCapitalAdmission,
+    ):
+        return False
+
+    if (
+        admission.authority
+        !=
+        SCHEMA_VERSION
+        or
+        admission.lane
+        is not
+        SimulationLane.EXPERIMENTAL
+    ):
+        return False
+
+    expected_admitted = (
+        admission.assessment_state
+        is CapitalAssessmentState.ALLOW
+    )
+
+    if (
+        admission.admitted
+        != expected_admitted
+    ):
+        return False
+
+    if (
+        admission.harness_mutated
+        != admission.admitted
+    ):
+        return False
+
+    digest = stable_hash(
+        _admission_material(
+            admission
+        )
+    )
+
+    return (
+        admission.integrity_hash
+        == digest
+        and
+        admission.admission_id
+        ==
+        "OBCAPADMIT-"
+        + digest[:24]
+    )
+
+
+def _build_experimental_capital_admission(
+    *,
+    account_key: str,
+    frame_id: str,
+    decision_id: str,
+    assessment: CapitalSimulationAssessment,
+) -> ExperimentalCapitalAdmission:
+    admitted = (
+        assessment.state
+        is CapitalAssessmentState.ALLOW
+    )
+
+    provisional = ExperimentalCapitalAdmission(
+        admission_id="PENDING",
+        authority=SCHEMA_VERSION,
+        account_key=_nonblank(
+            account_key,
+            name="account_key",
+        ),
+        lane=SimulationLane.EXPERIMENTAL,
+        frame_id=_nonblank(
+            frame_id,
+            name="frame_id",
+        ),
+        decision_id=_nonblank(
+            decision_id,
+            name="decision_id",
+        ),
+        assessment_id=assessment.assessment_id,
+        assessment_integrity_hash=assessment.integrity_hash,
+        assessment_state=assessment.state,
+        admitted=admitted,
+        harness_mutated=admitted,
+        integrity_hash="PENDING",
+    )
+
+    digest = stable_hash(
+        _admission_material(
+            provisional
+        )
+    )
+
+    result = ExperimentalCapitalAdmission(
+        admission_id=(
+            "OBCAPADMIT-"
+            + digest[:24]
+        ),
+        authority=provisional.authority,
+        account_key=provisional.account_key,
+        lane=provisional.lane,
+        frame_id=provisional.frame_id,
+        decision_id=provisional.decision_id,
+        assessment_id=provisional.assessment_id,
+        assessment_integrity_hash=provisional.assessment_integrity_hash,
+        assessment_state=provisional.assessment_state,
+        admitted=provisional.admitted,
+        harness_mutated=provisional.harness_mutated,
+        integrity_hash=digest,
+    )
+
+    if not verify_experimental_capital_admission(
+        result
+    ):
+        raise ValueError(
+            "constructed Experimental capital admission failed verification"
+        )
+
+    return result
+
+
+def apply_experimental_open_with_capital_admission(
+    harness: MultiSimulationHarness,
+    *,
+    effective_policy: dict[str, Any],
+    frame: SimulationMarketFrame,
+    market_time,
+    market_time_receipts: Iterable[Any] = (),
+    decision_id: str,
+    strategy: str,
+    reason: str,
+    quantity: int,
+    declared_max_loss_amount: float | None,
+    risk_reference: str | None,
+    evidence_refs: Iterable[str] = (),
+    fill_policy: SimulationFillPolicy = SimulationFillPolicy(),
+) -> tuple[
+    MultiSimulationHarness,
+    ExperimentalCapitalAdmission,
+    CapitalSimulationAssessment,
+]:
+    if not isinstance(
+        harness,
+        MultiSimulationHarness,
+    ):
+        raise ValueError(
+            "Experimental capital admission requires MultiSimulationHarness"
+        )
+
+    if (
+        harness.account_key
+        !=
+        effective_policy.get(
+            "account_key"
+        )
+    ):
+        raise ValueError(
+            "Experimental capital admission crosses account boundary"
+        )
+
+    _current_frame_time_binding(
+        harness,
+        frame=frame,
+        market_time=market_time,
+    )
+
+    control_before = lane_state(
+        harness,
+        SimulationLane.CONTROL,
+    )
+
+    integrated_before = lane_state(
+        harness,
+        SimulationLane.INTEGRATED,
+    )
+
+    experimental_before = lane_state(
+        harness,
+        SimulationLane.EXPERIMENTAL,
+    )
+
+    policy = (
+        build_capital_policy_snapshot(
+            effective_policy
+        )
+    )
+
+    capital_state = (
+        build_simulation_capital_state(
+            harness,
+            lane=SimulationLane.EXPERIMENTAL,
+        )
+    )
+
+    ledger = (
+        build_capital_session_loss_ledger(
+            harness,
+            market_time=market_time,
+            market_time_receipts=market_time_receipts,
+        )
+    )
+
+    preview = (
+        preview_simulation_open_cost(
+            frame,
+            quantity=quantity,
+            fill_policy=fill_policy,
+        )
+    )
+
+    proposal = (
+        build_capital_proposal(
+            account_key=harness.account_key,
+            lane=SimulationLane.EXPERIMENTAL,
+            capital_required=float(
+                preview[
+                    "total_cost"
+                ]
+            ),
+            declared_max_loss_amount=declared_max_loss_amount,
+            risk_reference=risk_reference,
+        )
+    )
+
+    assessment = (
+        assess_capital_proposal(
+            policy=policy,
+            capital_state=capital_state,
+            proposal=proposal,
+            session_loss=ledger,
+        )
+    )
+
+    admission = (
+        _build_experimental_capital_admission(
+            account_key=harness.account_key,
+            frame_id=frame.frame_id,
+            decision_id=decision_id,
+            assessment=assessment,
+        )
+    )
+
+    if not admission.admitted:
+        if (
+            lane_state(
+                harness,
+                SimulationLane.CONTROL,
+            )
+            !=
+            control_before
+            or
+            lane_state(
+                harness,
+                SimulationLane.INTEGRATED,
+            )
+            !=
+            integrated_before
+            or
+            lane_state(
+                harness,
+                SimulationLane.EXPERIMENTAL,
+            )
+            !=
+            experimental_before
+        ):
+            raise RuntimeError(
+                "blocked capital admission unexpectedly mutated simulation harness"
+            )
+
+        return (
+            harness,
+            admission,
+            assessment,
+        )
+
+    refs = tuple(
+        _nonblank(
+            item,
+            name="evidence_ref",
+        )
+        for item
+        in evidence_refs
+    )
+
+    refs = (
+        refs
+        +
+        (
+            assessment.assessment_id,
+            ledger.ledger_id,
+            policy.snapshot_id,
+        )
+    )
+
+    updated = (
+        apply_simulation_decision(
+            harness,
+            lane=SimulationLane.EXPERIMENTAL,
+            frame=frame,
+            decision_id=decision_id,
+            action=SimulationAction.OPEN,
+            strategy=strategy,
+            reason=reason,
+            quantity=quantity,
+            evidence_refs=refs,
+            fill_policy=fill_policy,
+        )
+    )
+
+    if (
+        lane_state(
+            updated,
+            SimulationLane.CONTROL,
+        )
+        !=
+        control_before
+    ):
+        raise RuntimeError(
+            "Experimental capital admission mutated CONTROL"
+        )
+
+    if (
+        lane_state(
+            updated,
+            SimulationLane.INTEGRATED,
+        )
+        !=
+        integrated_before
+    ):
+        raise RuntimeError(
+            "Experimental capital admission mutated INTEGRATED"
+        )
+
+    experimental_after = lane_state(
+        updated,
+        SimulationLane.EXPERIMENTAL,
+    )
+
+    matches = [
+        item
+        for item
+        in experimental_after.decisions
+        if (
+            item.decision_id
+            ==
+            decision_id
+        )
+    ]
+
+    if len(
+        matches
+    ) != 1:
+        raise RuntimeError(
+            "admitted Experimental decision did not resolve exactly once"
+        )
+
+    if (
+        assessment.assessment_id
+        not in
+        matches[0].evidence_refs
+        or
+        ledger.ledger_id
+        not in
+        matches[0].evidence_refs
+        or
+        policy.snapshot_id
+        not in
+        matches[0].evidence_refs
+    ):
+        raise RuntimeError(
+            "admitted Experimental decision is missing CAPSIM evidence"
+        )
+
+    return (
+        updated,
+        admission,
+        assessment,
+    )
 
 
 def capital_simulation_contract() -> dict[str, object]:
@@ -1310,13 +2624,40 @@ def capital_simulation_contract() -> dict[str, object]:
         ],
 
         "daily_loss_canonical_authority":
-            False,
+            True,
+
+        "daily_loss_authority":
+            SESSION_LOSS_AUTHORITY,
 
         "future_daily_loss_authority":
-            PENDING_SESSION_LOSS_AUTHORITY,
+            None,
+
+        "session_loss_basis":
+            "NET_REALIZED_PNL_BY_OBTIME_TRADING_DATE",
+
+        "session_loss_receipt_coverage_required":
+            True,
+
+        "projected_daily_loss_includes_declared_trade_loss":
+            True,
 
         "daily_loss_missing_behavior":
             "REVIEW_REQUIRED",
+
+        "daily_loss_incomplete_coverage_behavior":
+            "UNKNOWN",
+
+        "experimental_open_admission":
+            True,
+
+        "experimental_open_admission_scope":
+            "EXPERIMENTAL_ONLY",
+
+        "experimental_open_requires_allow":
+            True,
+
+        "delegates_existing_obsim_open_path":
+            True,
 
         "known_policy_violation_behavior":
             "BLOCK",
@@ -1399,6 +2740,12 @@ def capital_simulation_snapshot(
 
         "proposal_id":
             assessment.proposal_id,
+
+        "session_loss_ledger_id":
+            assessment.session_loss_ledger_id,
+
+        "session_loss_integrity_hash":
+            assessment.session_loss_integrity_hash,
 
         "blocking_checks":
             list(

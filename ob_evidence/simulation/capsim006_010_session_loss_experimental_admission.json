@@ -1,0 +1,71 @@
+{
+  "authority_boundary": {
+    "automated_unlock": false,
+    "automatic_contract_selection": false,
+    "broker_submission": false,
+    "capital_movement": false,
+    "execution_authority": false,
+    "hybrid_unlock": false,
+    "manual_live_unlock": false,
+    "simulation_only": true,
+    "tower_changed": false
+  },
+  "capital_policy": {
+    "activated_in_this_pack": false,
+    "authority": "PENDING_OBCAP",
+    "reason": "Runtime simulation capital admission is proven first. A later pack may promote OBCAP as a restriction-only Effective Policy layer without creating circular policy resolution.",
+    "status": "PENDING"
+  },
+  "coverage": {
+    "every_close_binding_requires_verified_receipt": true,
+    "every_close_requires_time_binding": true,
+    "incomplete_history_can_allow": false,
+    "incomplete_history_state": "UNKNOWN"
+  },
+  "daily_loss_semantics": {
+    "daily_loss_amount": "max(0, -net_realized_pnl)",
+    "denominator": "current Experimental simulated equity",
+    "gross_gain_retained": true,
+    "gross_loss_retained": true,
+    "grouping": "OBTIME trading_date",
+    "net_realized_pnl": "sum verified CLOSE realized_pnl for trading_date",
+    "projected_admission_loss": "daily_loss_amount + declared_max_loss_amount",
+    "source": "verified Experimental CLOSE trades",
+    "time_authority": "OB_MARKET_TIME_V1"
+  },
+  "next": "CAPSIM011-015 should evaluate promotion of PENDING_OBCAP into a restriction-only capital policy layer and close remaining capital-defense continuity without creating circular Effective Policy dependencies.",
+  "pack": "CAPSIM006-010",
+  "packs": {
+    "CAPSIM006": {
+      "name": "Canonical session-loss ledger",
+      "rule": "Experimental CLOSE trades are assigned to trading date only through verified OBTIME receipts matching lane time bindings."
+    },
+    "CAPSIM007": {
+      "name": "Canonical daily-loss check",
+      "rule": "Current verified daily realized loss plus declared maximum loss of the proposed trade is compared to Effective Policy daily_loss_cap_pct."
+    },
+    "CAPSIM008": {
+      "name": "Exact OBSIM open-cost preview",
+      "rule": "CAPSIM uses the existing OBSIM slippage, commission, multiplier, and fill math rather than duplicating it."
+    },
+    "CAPSIM009": {
+      "name": "Experimental capital admission",
+      "rule": "Only an ALLOW capital assessment may delegate an OPEN to the existing Experimental OBSIM decision path."
+    },
+    "CAPSIM010": {
+      "name": "Authority and lane isolation wall",
+      "rule": "CONTROL and INTEGRATED remain unchanged; CAPSIM grants no broker, real-capital, contract-selection, or mode-unlock authority."
+    }
+  },
+  "parent": "95fdb4ada22181645b08bbec9cd1fe491061e85a",
+  "simulation_admission": {
+    "allowed_path": "existing apply_simulation_decision OPEN",
+    "assessment_evidence_attached_to_decision": true,
+    "control_mutated": false,
+    "cost_preview_owner": "OB_MULTI_SIMULATION_V1",
+    "integrated_mutated": false,
+    "scope": "EXPERIMENTAL_ONLY",
+    "second_fill_engine_created": false
+  },
+  "title": "Canonical Session Loss + Experimental Capital Admission"
+}
