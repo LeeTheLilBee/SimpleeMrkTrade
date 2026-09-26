@@ -1,0 +1,47 @@
+name: BuyBox local Tower action outbox BBX022-026
+
+on:
+  push:
+    branches:
+      - buybox-action-draft-outbox-bbx022-026
+  pull_request:
+    paths:
+      - 'buybox/**'
+      - 'docs/BUYBOX_LOCAL_TOWER_ACTION_OUTBOX_BBX022_026.md'
+      - '.github/workflows/buybox-action-outbox-bbx022-026.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-only-outbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install BuyBox test/runtime dependencies
+        run: python -m pip install -r buybox/requirements.txt
+      - name: Checkout exact Tower source validator
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: e7a309001ba0ababe25abfdf52c458924fe78fe9
+          path: tower-contract
+          persist-credentials: false
+      - name: Checkout reviewed Vault evidence metadata contract
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 1b9a3e191cf8f8b61adb59b790033983f767f42f
+          path: upstream-proof
+          persist-credentials: false
+      - name: Full BuyBox regression with exact Tower/Vault contracts
+        env:
+          BUYBOX_TOWER_ACTION_CONTRACT_PATH: tower-contract/tower/buybox_action_contract.py
+          BUYBOX_CANONICAL_CONTRACT_PATH: upstream-proof/vault/buybox_evidence_handoff_contract.py
+        run: python -m unittest discover -s buybox/tests -v
