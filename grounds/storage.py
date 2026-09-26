@@ -1,0 +1,129 @@
+"""GRD007 — local transactional property/work-order persistence primitives.
+
+SQLite is an inexpensive local development backend, not the hosted PostgreSQL
+architecture or real tenant-data authorization. Runtime access is mediated
+through GroundsOperations and a Tower-verified scope, not raw SQL/HTTP.
+Do not place live personal records into a disposable preview database.
+"""
+from __future__ import annotations
+
+import sqlite3
+from contextlib import contextmanager
+from pathlib import Path
+
+
+SCHEMA = """
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS properties (
+  property_ref TEXT PRIMARY KEY,
+  name TEXT NOT NULL CHECK (length(trim(name)) > 0),
+  owned_on TEXT NOT NULL,
+  close_proof_ref TEXT NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS buildings (
+  building_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  label TEXT NOT NULL,
+  UNIQUE (property_ref, label),
+  UNIQUE (building_ref, property_ref)
+);
+CREATE TABLE IF NOT EXISTS units (
+  unit_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL,
+  building_ref TEXT NOT NULL,
+  label TEXT NOT NULL,
+  lifecycle TEXT NOT NULL DEFAULT 'ready'
+    CHECK (lifecycle IN ('ready','occupied','make_ready','unavailable')),
+  FOREIGN KEY(building_ref,property_ref) REFERENCES buildings(building_ref,property_ref),
+  UNIQUE(building_ref,label),
+  UNIQUE(unit_ref,property_ref)
+);
+CREATE TABLE IF NOT EXISTS leases (
+  lease_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL,
+  unit_ref TEXT NOT NULL,
+  resident_ref TEXT NOT NULL,
+  start_on TEXT NOT NULL,
+  end_on TEXT NOT NULL,
+  status TEXT NOT NULL CHECK(status IN ('active','ended')),
+  vault_proof_ref TEXT,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0),
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS one_active_lease_per_unit
+  ON leases(unit_ref) WHERE status = 'active';
+CREATE INDEX IF NOT EXISTS leases_resident ON leases(resident_ref,property_ref,unit_ref);
+CREATE TABLE IF NOT EXISTS work_orders (
+  work_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL,
+  unit_ref TEXT NOT NULL,
+  lease_ref TEXT,
+  created_by TEXT NOT NULL,
+  assigned_to TEXT,
+  category TEXT NOT NULL,
+  description TEXT NOT NULL,
+  emergency_flag INTEGER NOT NULL CHECK (emergency_flag IN (0,1)),
+  entry_permission TEXT NOT NULL CHECK (entry_permission IN ('yes','no','contact_first')),
+  state TEXT NOT NULL DEFAULT 'submitted',
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0),
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref),
+  FOREIGN KEY(lease_ref) REFERENCES leases(lease_ref)
+);
+CREATE INDEX IF NOT EXISTS work_property ON work_orders(property_ref,state);
+CREATE INDEX IF NOT EXISTS work_assignee ON work_orders(assigned_to,state);
+CREATE TABLE IF NOT EXISTS work_events (
+  event_ref TEXT PRIMARY KEY,
+  work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
+  actor_ref TEXT NOT NULL,
+  action TEXT NOT NULL,
+  from_state TEXT,
+  to_state TEXT NOT NULL,
+  revision INTEGER NOT NULL,
+  occurred_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS work_events_order ON work_events(work_ref,revision);
+CREATE TABLE IF NOT EXISTS property_notices (
+  notice_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  unit_ref TEXT,
+  headline TEXT NOT NULL,
+  body TEXT NOT NULL,
+  published_at TEXT NOT NULL,
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS notices_property ON property_notices(property_ref,unit_ref);
+"""
+
+
+class GroundsStore:
+    """Owned by the future certified application composition root only."""
+
+    def __init__(self, path: str | Path):
+        if not isinstance(path, (str, Path)) or not str(path).strip() or str(path) == ":memory:":
+            raise ValueError("durable local test DB path required")
+        self.path = Path(path)
+
+    @contextmanager
+    def transaction(self, *, write: bool = False):
+        connection = sqlite3.connect(str(self.path), timeout=5)
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA foreign_keys = ON")
+        try:
+            if write:
+                connection.execute("BEGIN IMMEDIATE")
+            yield connection
+            if write:
+                connection.commit()
+        except Exception:
+            if write:
+                connection.rollback()
+            raise
+        finally:
+            connection.close()
+
+    def initialize(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with self.transaction() as db:
+            db.executescript(SCHEMA)
