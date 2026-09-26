@@ -4,7 +4,7 @@ BuyBox is developed in a dedicated feature branch inside the currently connected
 SimpleeMrkTrade repository. The product target remains the **complete universal
 acquisition system**, not an ATM-only application.
 
-## Real owner workspace — BBX001–BBX006
+## Real owner workspace — BBX001–BBX009
 
 The old synthetic UI preview was removed. The real, persistent workspace opens
 with **no sample listings, invented earnings, or fabricated approval signals**.
@@ -23,6 +23,16 @@ It currently supports:
   Soulaana briefing (not yet a live AI service).
 - A persistent Deal Room for real tasks, deadlines, sourced seller/negotiation
   events, changes in asking price and non-authorizing owner analytical records.
+- Soulaana's read-only contextual room: actual documentary support and source
+  references, fact versus calculation labels, material changes, Red Team data
+  limitations, and sourced next actions. A live AI service is NOT connected yet.
+- Individual ATM machine intake that distinguishes a seller ownership claim
+  from source-linked owner-reviewed documentation; title/lien clearance remains
+  explicitly unverified.
+- Focus Desk that reads actual task due dates and material activity events only,
+  without generating sample alerts.
+- Per-request SQLite connections are closed and uncommitted encrypted upload
+  blobs are discarded on rejected/stale opportunity revisions.
 - Material-change invalidation: old assessments/readiness are not preserved as
   a fresh greenlight after material deal inputs change.
 
@@ -90,7 +100,7 @@ Engineering tests use isolated temporary databases and artificial test values
 to prove correctness; these fixtures never populate the actual product.
 GitHub CI installs dependencies and executes the suite.
 
-## Still required for the complete V1
+See [OWNER_NEXT_STEPS.md](OWNER_NEXT_STEPS.md) for the owner handoff decisions and\nproduction readiness sequence.\n\n## Still required for the complete V1
 
 Authenticated Tower/Teller/Grounds/Vault integration, document malware scanning
 and formal retention controls, full per-vertical underwriting/policy registries,
