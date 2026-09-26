@@ -60,14 +60,14 @@ def mode_policy(p, *, modes=None, thresholds=None, revision="r1"):
     )
 
 
-def snaps(*, as_of=NOW, amounts=None):
+def snaps(*, as_of=NOW, amounts=None, revision="r1"):
     amount_map = AMOUNTS if amounts is None else amounts
     return tuple(build_capital_snapshot(
         account_key=ATM_ACCOUNT, capital_scope_ref=scope, as_of=as_of,
         observations=tuple(build_capital_observation(
             account_key=ATM_ACCOUNT, capital_scope_ref=scope,
             metric=metric, value=value, source_role="owner_operating_profile",
-            source_ref=scope + ":" + metric, source_revision="r1",
+            source_ref=scope + ":" + metric, source_revision=revision,
             source_payload_hash=SRC,
             observed_at=NOW - timedelta(minutes=30),
             received_at=NOW - timedelta(minutes=29),
@@ -123,15 +123,22 @@ def test_obcap012_four_independent_modes_preserve_funding_before_harvest():
     assert review.acquisition_readiness == "NOT_ASSESSED_BY_OB"
 
 
-def test_obcap013_hysteresis_requires_distinct_strictly_later_receipts():
+def test_obcap013_hysteresis_requires_new_evidence_and_strictly_later_receipts():
     p, policy, snapshots, waterfall, first = build()
     later = snaps(as_of=NOW + timedelta(minutes=5))
-    p, policy, later, waterfall2, second = build(
+    p, policy, later, waterfall2, repeated = build(
         p=p, policy=policy, snapshots=later, previous=first)
+    assert repeated.sleeves[0].consistent_observation_streak == 1
+    assert repeated.sleeves[0].review_state == "AWAITING_FRESH_SOURCE_EVIDENCE"
+    assert repeated.sleeves[0].source_evidence_fingerprint == first.sleeves[0].source_evidence_fingerprint
+    fresh = snaps(as_of=NOW + timedelta(minutes=10), revision="r2")
+    p, policy, fresh, waterfall3, second = build(
+        p=p, policy=policy, snapshots=fresh, previous=repeated)
     assert second.sleeves[0].consistent_observation_streak == 2
     assert second.sleeves[0].review_state == "CONSECUTIVE_REVIEW_CRITERION_MET"
+    assert second.sleeves[0].source_evidence_fingerprint != repeated.sleeves[0].source_evidence_fingerprint
     assert all(not s.activation_authorized for s in second.sleeves)
-    assert second.prior_review_id == first.review_id
+    assert second.prior_review_id == repeated.review_id
     with pytest.raises(ValueError, match="duplicate waterfall"):
         build_capital_mode_review(policy=policy, plan=p, waterfall=waterfall,
                                   snapshots=snapshots, previous=first)
