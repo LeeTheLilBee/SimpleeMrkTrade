@@ -173,6 +173,33 @@ class GroundsStewardshipTests(unittest.TestCase):
                 self.inspector,property_ref="p1",inspection_ref="i1",
                 finding_ref="f-bad",severity="minor",narrative="No assignment protocol",
             )
+        proof={"status":"verified_sealed","kind":"inspection_resolution","property_ref":"p1",
+               "inspection_ref":"i1","finding_ref":"f1","unit_ref":"u1","proof_ref":"proof-clear-1"}
+        with self.assertRaises(AccessDenied):
+            self.st.resolve_inspection_finding(
+                self.manager,property_ref="p1",inspection_ref="i1",finding_ref="f1",
+                signed_proof=proof,proof_verifier=None,
+            )
+        with self.assertRaises(AccessDenied):
+            self.st.resolve_inspection_finding(
+                self.manager,property_ref="p1",inspection_ref="i1",finding_ref="f1",
+                signed_proof={**proof,"property_ref":"p2"},proof_verifier=lambda doc:doc,
+            )
+        resolved=self.st.resolve_inspection_finding(
+            self.manager,property_ref="p1",inspection_ref="i1",finding_ref="f1",
+            signed_proof=proof,proof_verifier=lambda doc:doc, # TEST ONLY
+        )
+        self.assertEqual(resolved["proof_ref"],"proof-clear-1")
+        with self.assertRaises(GroundsConflict):
+            self.st.resolve_inspection_finding(
+                self.manager,property_ref="p1",inspection_ref="i1",finding_ref="f1",
+                signed_proof=proof,proof_verifier=lambda doc:doc,
+            )
+        reviewed=self.st.advance_inspection(
+            self.manager,property_ref="p1",inspection_ref="i1",
+            next_state="closed",expected_revision=3,
+        )
+        self.assertEqual(reviewed["state"],"closed")
 
     def _begin_turnover(self):
         self.ops.end_lease(self.manager,property_ref="p1",lease_ref="l1",expected_revision=1)
