@@ -185,6 +185,41 @@ class OwnerAppTests(unittest.TestCase):
         self.assertIn(b"Unavailable",page.data)
         self.assertEqual(self.client.get("/opportunities/"+oid+"/scenario?revenue_factor=-1").status_code,400)
 
+    def test_actual_deal_room_tasks_and_price_event(self):
+        oid=self.create()
+        page=self.client.get("/opportunities/"+oid+"/deal-room")
+        self.assertEqual(page.status_code,200)
+        self.assertIn(b"No tasks recorded yet",page.data)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        result=self.post("/opportunities/"+oid+"/tasks",{
+            "revision":str(op["version"]),"title":"Request serial-numbered inventory",
+            "due_date":"2026-10-15","notes":"Waiting for seller"})
+        self.assertEqual(result.status_code,302)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertEqual(len(op["tasks"]),1)
+        original_task=op["tasks"][0]["id"]
+        result=self.post("/opportunities/"+oid+"/tasks/"+original_task+"/status",{
+            "revision":str(op["version"]),"status":"COMPLETE","notes":"Received"})
+        self.assertEqual(result.status_code,302)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertEqual(len(op["tasks"]),2)
+        self.assertEqual(op["tasks"][-1]["status"],"COMPLETE")
+        result=self.post("/opportunities/"+oid+"/negotiations",{
+            "revision":str(op["version"]),"kind":"ASKING_PRICE_CHANGED",
+            "description":"Seller provided revised price in email",
+            "source_reference":"owner-email-reference","amount":"90000",
+            "occurred_on":"2026-09-26"})
+        self.assertEqual(result.status_code,302)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertEqual(op["asking_price"],"90000.00")
+        self.assertEqual(op["analysis_state"],"STALE")
+        self.assertFalse(op["negotiations"][-1]["transmitted_by_buybox"])
+        result=self.post("/opportunities/"+oid+"/decision-note",{
+            "revision":str(op["version"]),"reason":"Ownership verification remains pending."})
+        self.assertEqual(result.status_code,302)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertFalse(op["decisions"][-1]["authorizes_purchase"])
+
     def test_protected_deal_stage_not_available(self):
         oid=self.create()
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
