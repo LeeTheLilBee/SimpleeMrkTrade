@@ -11,13 +11,19 @@ starts empty. Tower/OB main has not been merged or deployed from this branch.
 
 ## Owner decisions needed (do not send any secrets over chat)
 
-1. **Choose deployment location and isolation.** Confirm which Render workspace
-   should hold BuyBox, whether it should initially be a private/staging service,
-   and approve durable persistent storage or a separate database plus encrypted
-   object storage. The current app uses private SQLite and private encrypted
-   files; do not run it on an ephemeral filesystem. A public deployment also
-   needs Tower login integration, proper production serving, TLS, and a reviewed
-   access model. Do not select a Render workspace on the owner's behalf.
+1. **Workspace confirmed (2026-09-26).** Owner selected Render `Simplee World`,
+   workspace ID `tea-dag3rfu1egvs73a6s72g`. Existing service in it:
+   `simplee-tower-ob` (`srv-dag3sv2jnfac73bjqj8g`), which must remain
+   unchanged. BuyBox is a separate service in the SAME workspace, NOT an
+   alteration to Tower. Read-only workspace inspection found no Postgres
+   instance. **Still needed:** owner approval of a durable, protected storage
+   arrangement (persistent disk/volume for private SQLite and encrypted
+   originals, or an explicit database/object-storage migration), along with
+   a private/owner-only exposure plan. Do not run the current storage on an
+   ephemeral web-service filesystem. Do not create a public service merely
+   because the workspace selection is complete. Actual deployment still
+   requires Tower identity integration, a production server, TLS, secrets,
+   protected original-document handling and a reviewed access model.
 2. **Confirm the actual source repositories and authorized integration endpoints.**
    Tower owns identity, permission, step-up and Vault mediation. Teller owns
    money and management-capacity readiness. Grounds owns real-property context.
