@@ -166,6 +166,25 @@ class OwnerAppTests(unittest.TestCase):
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
         self.assertFalse(op.get("artifacts"))
 
+    def test_compare_requires_real_saved_records(self):
+        first=self.create()
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        second=self.post("/opportunities",{
+            "vertical":"multifamily","name":"Another owner-entered opportunity",
+            "asking_price":"","city":"","region":"","source_url":""}).location.rsplit("/",1)[-1]
+        response=self.post("/compare",{"opportunity_id":[first,second]})
+        self.assertEqual(response.status_code,200)
+        self.assertIn(b"Owner-entered route",response.data)
+        self.assertIn(b"Another owner-entered opportunity",response.data)
+        self.assertEqual(self.post("/compare",{"opportunity_id":[first]}).status_code,400)
+
+    def test_scenario_uses_recorded_figures_only(self):
+        oid=self.create()
+        page=self.client.get("/opportunities/"+oid+"/scenario?revenue_factor=0.75&expense_factor=2")
+        self.assertEqual(page.status_code,200)
+        self.assertIn(b"Unavailable",page.data)
+        self.assertEqual(self.client.get("/opportunities/"+oid+"/scenario?revenue_factor=-1").status_code,400)
+
     def test_protected_deal_stage_not_available(self):
         oid=self.create()
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
