@@ -138,6 +138,28 @@ function owner(){
  workSection("Sample property work");
 }
 const pages={resident,maintenance_technician:technician,property_manager:manager,leasing_agent:leasing,owner};
+function soulaanaCard(){
+ const latest=demo.orders[0];
+ const messages={
+ submitted:"The sample request is submitted. Management review is next.",
+ received:"The property desk has received this request. Human triage is next.",
+ under_review:"The property desk is reviewing the scope before scheduling.",
+ scheduled:"The next step is to assign a technician.",
+ assigned:"The demo technician may start this assigned job.",
+ in_progress:"The assigned technician has marked the job in progress.",
+ waiting:"Work is paused pending a follow-up or reschedule.",
+ completed:"The technician marked work complete. Management review is next.",
+ confirmation:"Management can close the request, or the resident can reopen it if unresolved.",
+ closed:"The example record is closed. Its local history remains until refresh.",
+ reopened:"The resident reopened the example. Management should review it again."
+ };
+ const message=demo.role==="leasing_agent"?
+ "I can explain unit availability and the next leasing action once real scoped records are connected.":
+ demo.role==="owner"?
+ "I show property operating context. Real collections and protected capital readiness must come from verified Teller records, never guessed from Observatory accounts.":
+ messages[latest.state]+(latest.urgent?" An urgency flag does not confirm emergency dispatch.":"");
+ return '<details class="card wide"><summary style="cursor:pointer;color:var(--gold);font-weight:800">✦ Soulaana · Explain what is happening</summary><p class="muted">'+esc(message)+'</p><div class="quiet">Read-only explanation · fictional local data · never an authorization or payment action</div></details>';
+}
 function render(){
  const [heading,description]=headings[demo.role];
  document.getElementById("heading").textContent=heading;
@@ -147,7 +169,7 @@ function render(){
   btn.classList.toggle("active",btn.dataset.role===demo.role);
   btn.setAttribute("aria-current",btn.dataset.role===demo.role?"page":"false");
  }
- document.getElementById("content").innerHTML=pages[demo.role]();
+ document.getElementById("content").innerHTML=pages[demo.role]()+soulaanaCard();
 }
 const permitted={
 resident:{confirmation:["reopened"],closed:["reopened"]},
