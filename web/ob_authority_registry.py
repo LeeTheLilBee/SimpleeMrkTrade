@@ -1904,6 +1904,42 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "review_learning"
+] = _record(
+    concept_key="review_learning",
+    authority_id="OB_REVIEW_LEARNING_V1",
+    authority_class="BOUNDED_NONEXECUTING_REVIEW_FEEDBACK",
+    implementation_ref="web/ob_review_learning.py",
+    implementation_role="SOURCE_BOUND_REVIEW_TASKS_NOT_AUTONOMOUS_TRAINING",
+    owns=(
+        "deterministic review tasks from verified owner dispositions and adverse issues",
+        "explicit absence of authenticated actual trade outcome and numeric reward labels",
+    ),
+    inputs=("OB_OWNER_REVIEW_EVIDENCE_V1",),
+    triggers=("verified owner review and optional source-labelled adverse note",),
+    effects=(
+        "surface source-gap, negative-dive, overtime and overreach review tasks",
+        "emit immutable non-acting feedback receipt with missing-outcome status",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "learn from an unverified owner note as realized profit",
+        "autonomous risk-limit or policy changes and safety relaxation",
+        "score/expected-return generation from absent actual outcome evidence",
+        "broker, capital or mode operation or Direct BuyBox access",
+    ),
+    failure_behavior="Tampered or mismatched review lineage fails closed, with no training or outcome claim.",
+    explanation="Tasks map to source issues and owner review posture; actual broker outcome remains unavailable.",
+    evidence=("verified OBREV source hash", "inherited OBREC reference", "explicit issue IDs", "learning receipt/hash"),
+    review_visibility="Owner can review potential lessons without silent policy adaptation.",
+    temporal_validity="OBREV_SOURCE_RECEIPT_BOUND; ACTUAL_OUTCOME_NOT_PROVEN",
+    deterministic=True,
+    learning_boundary="No training feedback, widened risk, relaxed guardrails, mode change or live promotion.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
