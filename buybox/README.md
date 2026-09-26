@@ -1,7 +1,11 @@
 # BuyBox — Simplee Universal Acquisition Intelligence
 
 BuyBox is developed in a dedicated feature branch inside the currently connected
-SimpleeMrkTrade repository. The product target remains the **complete universal
+SimpleeMrkTrade repository. In the finished ecosystem, it is a **Tower-launched,
+Tower-governed application**, not an independently accessed owner login. The local
+password screen is temporary development-only access. Hosting placement within
+Tower's runtime versus an isolated backend behind Tower remains a coordinated
+implementation decision. The product target remains the **complete universal
 acquisition system**, not an ATM-only application.
 
 ## Real owner workspace — BBX001–BBX009
