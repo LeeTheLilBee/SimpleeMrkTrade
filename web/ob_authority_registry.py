@@ -1862,6 +1862,48 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_review_evidence"
+] = _record(
+    concept_key="owner_review_evidence",
+    authority_id="OB_OWNER_REVIEW_EVIDENCE_V1",
+    authority_class="SOURCE_BOUND_NONEXECUTING_OWNER_REVIEW_RECORD",
+    implementation_ref="web/ob_owner_review_evidence.py",
+    implementation_role="CANONICAL_OWNER_DISPOSITION_AND_ADVERSE_REVIEW_PROOF",
+    owns=(
+        "explicit owner-asserted review disposition, not authenticated owner session",
+        "source-labelled negative dive, overtime, overreach and evidence gap review notes",
+    ),
+    inputs=("OB_RECOMMENDATION_REVIEW_V1",),
+    triggers=(
+        "verified recommendation with optional explicit owner assertion",
+        "explicit source-labelled adverse review notes",
+    ),
+    effects=(
+        "emit immutable owner review state while preserving canonical safety denials",
+        "expose adverse-review-pending without inventing broker fills or actual P&L",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "reinterpret review interest as an executable order or broker authentication",
+        "manufacture actual cash/fill/P&L from source review notes",
+        "ignore source-bound BLOCK/HOLD to promote an owner review",
+        "alter Trading Mode, protected floors, capital or Direct BuyBox access",
+    ),
+    failure_behavior=(
+        "Invalid source lineage, duplicate issues, missing owner acknowledgement, "
+        "pre-observation decision, or conflicting review disposition fails closed."
+    ),
+    explanation="Owner sees explicit review intent and inherited safety reasons separately from source-asserted adverse notes.",
+    evidence=("verified OBREC/OBSAFE lineage", "owner assertion hash", "issue source refs and hashes", "immutable review receipt"),
+    review_visibility="Owner-review-only claim. Tower authentication and broker reconciliation remain separate.",
+    temporal_validity="BOUND_TO_VERIFIED_MARKET_OBSERVATION_AND_DECLARED_REVIEW_TIMESTAMP",
+    deterministic=True,
+    learning_boundary="No recommendation/outcome rewrite, automated trading permission or unverified profit inference.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
