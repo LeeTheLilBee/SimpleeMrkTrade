@@ -41,13 +41,14 @@ def grounds_reference(response):
             "snapshot_at": response.get("snapshot_at"), "summary": response.get("summary", {})}
 
 def prepare_handoff(opportunity, evaluation, tower_receipt):
-    if opportunity["lifecycle"] != "ACQUIRED" or not tower_receipt:
+    """Not activatable until an authenticated Tower adapter exists.
+
+    Accepting an arbitrary receipt-looking string would manufacture authority.
+    The eventual adapter must verify issuer, subject, action, snapshot and time.
+    """
+    if opportunity.get("lifecycle") != "ACQUIRED" or not tower_receipt:
         raise ValueError("HANDOFF_NOT_AUTHORIZED")
-    return {"opportunity_id": opportunity["id"], "vertical": opportunity["vertical"],
-            "destination": get_vertical(opportunity["vertical"])["handoff"],
-            "asset_data": opportunity.get("vertical_data", {}),
-            "closing_evaluation": evaluation, "tower_receipt": tower_receipt,
-            "transfer_state": "PENDING_DESTINATION_ACCEPTANCE"}
+    raise ValueError("AUTHENTICATED_TOWER_ADAPTER_UNAVAILABLE")
 
 # In production, verifying an authority_reference also requires authenticated
 # transport, issuer identity, request/snapshot binding and receipt verification.
