@@ -6,6 +6,13 @@
 <section class="soulaana"><p class="eyebrow">✧ SOULAANA · GROUNDED BRIEF</p><h2>{{ brief.summary }}</h2><p>{{ brief.next_action }}</p><small>Based on current BuyBox records. Soulaana cannot approve an acquisition, verify a document by herself, or change policy.</small></section>
 <section class="workspace"><div class="main-column"><div class="panel"><p class="eyebrow">EVIDENCE DOSSIER</p><h2>What has been received?</h2>
 {% for row in analysis.evidence.rows %}<div class="evidence-row"><div><strong>{{ row.kind|replace('_',' ')|title }}</strong><small>{{ row.state|replace('_',' ')|title }}{% if row.critical %} · Critical{% endif %}</small></div><span>{{ '✓' if row.state in ('DOCUMENT_SUPPORTED','THIRD_PARTY_VERIFIED') else '○' }}</span></div>{% endfor %}
+<form method="post" action="{{ url_for('upload_document',oid=op.id) }}" enctype="multipart/form-data" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<h3>Upload original source document</h3><p class="muted">The original file is encrypted at rest in BuyBox's private intake storage. A received document is not yet verified. Accepted formats: PDF, PNG, JPEG, TXT or UTF-8 CSV; maximum 25 MB.</p>
+<label>Evidence category<select name="kind" required>{% for kind in manifest.evidence %}<option value="{{ kind.kind }}">{{ kind.kind|replace('_',' ')|title }}</option>{% endfor %}</select></label>
+<label>Original document<input type="file" name="document" accept=".pdf,.png,.jpg,.jpeg,.txt,.csv" required></label>
+<label>Document source party<input name="source_party" required maxlength="160" placeholder="Seller, processor, advisor…"></label>
+<button type="submit" class="primary">Save original document</button></form>
+{% if op.get("artifacts") %}<h3>Preserved originals</h3>{% for artifact in op.artifacts %}<p class="source"><a href="{{ url_for('download_document',oid=op.id,artifact_id=artifact.id) }}">{{ artifact.name }}</a> <small>· SHA-256: {{ artifact.sha256[:16] }}…</small></p>{% endfor %}{% endif %}
 <form method="post" action="{{ url_for('evidence',oid=op.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
 <h3>Record received evidence</h3><p class="muted">This logs a source reference. Receipt alone does not mark its contents verified.</p>
 <label>Evidence category<select name="kind" required>{% for kind in manifest.evidence %}<option value="{{ kind.kind }}">{{ kind.kind|replace('_',' ')|title }}</option>{% endfor %}</select></label>
