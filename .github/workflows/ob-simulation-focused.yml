@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install focused test dependencies
+      - name: Install test dependencies
         run: python -m pip install pytest tzdata
       - name: Syntax wall
         run: python -m py_compile web/ob_multi_simulation_replay.py tests/test_obsim006_010_deterministic_replay.py
@@ -36,3 +36,5 @@ jobs:
             tests/test_capsim001_005_capital_simulation_authority.py \
             tests/test_capsim006_010_session_loss_experimental_admission.py \
             tests/test_obsim006_010_deterministic_replay.py
+      - name: Full OB regression wall
+        run: python -m pytest -q tests
