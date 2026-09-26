@@ -159,6 +159,57 @@ def test_missing_lane_cannot_silently_participate():
         replay_three_lanes(harness(), [a])
 
 
+
+def test_duplicate_decision_id_in_same_lane_rejected_before_replay():
+    initial = harness()
+    first = step("F1", 10, 0, 5.0, holds("SAME"))
+    second = step("F2", 10, 30, 5.5, holds("SAME"))
+    with pytest.raises(ValueError, match="unique within lane"):
+        replay_three_lanes(initial, [first, second])
+    assert initial.market_frames == ()
+    assert all(not lane.trades for lane in initial.lanes)
+
+
+def test_bad_later_market_time_cannot_partially_mutate_caller():
+    initial = harness()
+    first_decisions = list(holds("FIRST"))
+    first_decisions[0] = decision(Lane.CONTROL, Action.OPEN, "CONTROL-FIRST-OPEN", 1)
+    first = step("F1", 10, 0, 5.0, first_decisions)
+    second = step("F2", 10, 30, 6.0, holds("SECOND"))
+    second = replace(
+        second, market_time=replace(second.market_time, integrity_hash="0" * 64)
+    )
+    with pytest.raises(ValueError, match="verified OBTIME"):
+        replay_three_lanes(initial, [first, second])
+    assert initial.market_frames == ()
+    assert all(not lane.trades and not lane.positions for lane in initial.lanes)
+
+
+def test_experimental_open_without_proven_maximum_loss_remains_closed(tmp_path):
+    orders = list(holds("UNKNOWN-RISK"))
+    orders[2] = decision(Lane.EXPERIMENTAL, Action.OPEN, "EXP-UNKNOWN-RISK", 1)
+    result = replay_three_lanes(
+        harness(), [step("F1", 10, 0, 5.0, orders)],
+        effective_policy=policy(tmp_path),
+    )
+    assert result.events[2].status.startswith("REJECTED_")
+    assert result.events[2].capital_assessment_id
+    assert not lane_state(result.harness, Lane.EXPERIMENTAL).trades
+    assert not lane_state(result.harness, Lane.EXPERIMENTAL).positions
+
+
+def test_cross_account_policy_rejected_before_replay(tmp_path):
+    initial = harness()
+    wrong_policy = {**policy(tmp_path), "account_key": "personal"}
+    with pytest.raises(ValueError, match="crosses account boundary"):
+        replay_three_lanes(
+            initial, [step("F1", 10, 0, 5.0, holds("CROSS-ACCOUNT"))],
+            effective_policy=wrong_policy,
+        )
+    assert initial.market_frames == ()
+    assert all(not lane.trades for lane in initial.lanes)
+
+
 def test_simulation_authority_only():
     c = replay_contract()
     assert c["experimental_open_requires_existing_capsim_admission"]
