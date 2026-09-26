@@ -18,7 +18,7 @@ Inputs:
 - The owner's declared PROTECT/RECOVERY mode is treated conservatively: proposal moves through RECOVERY, never quietly auto-exits owner policy.
 - Before surplus growth or hypothetical harvest, preserve the independently defined sleeve acquisition/operations target; shortfall recommends ACCUMULATE for **review**.
 - Hypothetical harvest remains hypothetical. Positive profit observations do not establish settled funds.
-- Non-PROTECT candidates must recur in distinct later review receipts for owner-set hysteresis count before the candidate is marked ready **for owner review**. This is not authorization or a system state switch.
+- Non-PROTECT candidates must recur in distinct later review receipts **with a changed, per-sleeve underlying source-observation fingerprint** for the owner-set hysteresis count. Merely rebuilding a snapshot against unchanged source evidence at a later as-of does not advance the streak; it is marked `AWAITING_FRESH_SOURCE_EVIDENCE`. This is owner-review evidence only, not an authorization or system-state switch.
 
 ## Preserved architecture
 The four ATM sleeves remain distinct; Set 2's targets remain higher and no protected floor, high-water history or commitment is rewritten. There is no cross-sleeve aggregation, real-money release, transfer, broker submission, acquisition affordability claim, trade-mode unlock, or alteration of the existing CAPSIM source.
