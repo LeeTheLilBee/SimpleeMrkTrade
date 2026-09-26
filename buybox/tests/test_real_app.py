@@ -220,6 +220,26 @@ class OwnerAppTests(unittest.TestCase):
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
         self.assertFalse(op["decisions"][-1]["authorizes_purchase"])
 
+    def test_soulaana_uses_actual_record_and_blocks_fake_approval_context(self):
+        oid=self.create()
+        page=self.client.get("/opportunities/"+oid+"/soulaana?intent=evidence")
+        self.assertEqual(page.status_code,200)
+        self.assertIn(b"Owner-entered route",page.data)
+        self.assertIn(b"not connected yet",page.data)
+        self.assertEqual(self.client.get("/opportunities/"+oid+"/soulaana?intent=approve").status_code,400)
+
+    def test_stale_upload_does_not_leave_orphan_encrypted_file(self):
+        oid=self.create()
+        response=self.client.post("/opportunities/"+oid+"/upload",data={
+            "revision":"0","csrf_token":self.csrf,"kind":"processor_statements",
+            "source_party":"Seller",
+            "document":(BytesIO(b"%PDF-1.7\\nOwner document\\n%%EOF"),"original.pdf","application/pdf"),
+        },content_type="multipart/form-data")
+        self.assertEqual(response.status_code,409)
+        self.assertEqual(list(Path(self.docs).iterdir()),[])
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertFalse(op.get("artifacts"))
+
     def test_protected_deal_stage_not_available(self):
         oid=self.create()
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
