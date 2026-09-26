@@ -27,6 +27,7 @@ To inspect the visual prototype, open `grounds/ui/preview.html` locally in a bro
 - `evidence.py` — only verified opaque Vault/Tower proof references.
 - `capital.py` — five-lane apartment reserve/readiness snapshot sourced through Teller, no money movement.
 - `soulaana.py` — read-only, source- and revision-bound explanations for work orders and readiness.
+- `stewardship.py` — property assets, certified preventive-plan completion, inspection findings/remediation and unit turnovers. No real dispatch, inspector self-service or automatic notifications.
 
 A fake verifier appears only in unit-test fixtures. No real public route may trust a caller-supplied role, identity, proof verifier or payment projection.
 
