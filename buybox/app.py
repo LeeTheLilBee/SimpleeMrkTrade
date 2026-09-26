@@ -350,17 +350,21 @@ def create_app(config=None):
                         mime=file.mimetype,source_party=source_party)
             except ValueError as exc:
                 abort(400,str(exc))
-            op.setdefault("artifacts",[]).append(descriptor)
-            item=add_evidence(op,kind,status="RECEIVED",
-                    reference=descriptor["id"],source=source_party,
-                    notes="Original encrypted document received; not yet reviewed")
-            item["artifact_id"]=descriptor["id"]
-            op=invalidate_on_change(op,changed_fields=["evidence",kind],
-                    reason="Original seller document received",
-                    source_reference=descriptor["id"])
-            save(conn,op,"OriginalDocumentReceived",
-                    {"kind":kind,"artifact_id":descriptor["id"],"sha256":descriptor["sha256"]},
-                    expected_revision=int(request.form["revision"]))
+            try:
+                op.setdefault("artifacts",[]).append(descriptor)
+                item=add_evidence(op,kind,status="RECEIVED",
+                        reference=descriptor["id"],source=source_party,
+                        notes="Original encrypted document received; not yet reviewed")
+                item["artifact_id"]=descriptor["id"]
+                op=invalidate_on_change(op,changed_fields=["evidence",kind],
+                        reason="Original seller document received",
+                        source_reference=descriptor["id"])
+                save(conn,op,"OriginalDocumentReceived",
+                        {"kind":kind,"artifact_id":descriptor["id"],"sha256":descriptor["sha256"]},
+                        expected_revision=int(request.form["revision"]))
+            except BaseException:
+                docstore.discard_uncommitted(descriptor)
+                raise
         return redirect(url_for("opportunity",oid=oid))
 
     @app.get("/opportunities/<oid>/documents/<artifact_id>")
