@@ -13,6 +13,7 @@ import stat
 from decimal import Decimal, InvalidOperation
 from datetime import date
 from functools import wraps
+from contextlib import contextmanager
 from pathlib import Path
 
 from flask import (Flask, abort, flash, redirect, render_template, request,
@@ -79,8 +80,16 @@ def create_app(config=None):
             "frame-ancestors 'none'; form-action 'self'")
         return response
 
+    @contextmanager
     def db():
-        return connect(app.config["BUYBOX_DB_PATH"])
+        # sqlite3.Connection.__exit__ commits/rolls back but does NOT close a
+        # connection. Close it explicitly on every route, including exceptions.
+        connection = connect(app.config["BUYBOX_DB_PATH"])
+        try:
+            with connection:
+                yield connection
+        finally:
+            connection.close()
 
     def login_required(fn):
         @wraps(fn)
