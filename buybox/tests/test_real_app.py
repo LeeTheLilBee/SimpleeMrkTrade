@@ -267,7 +267,7 @@ class OwnerAppTests(unittest.TestCase):
         self.assertIn(b"Ask Soulaana about this deal",dossier.data)
         context_page=self.client.get("/opportunities/"+oid+"/soulaana?intent=next_action")
         self.assertEqual(context_page.status_code,200)
-        self.assertIn(b"RULE_DERIVED_ACTION",context_page.data)
+        self.assertIn(b"RULE DERIVED ACTION",context_page.data)
 
     def test_protected_deal_stage_not_available(self):
         oid=self.create()
