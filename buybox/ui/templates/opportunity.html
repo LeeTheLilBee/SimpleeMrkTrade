@@ -4,6 +4,7 @@
 <div class="tile"><small>Evidence coverage</small><strong>{{ analysis.evidence.confidence_percent }}%</strong></div><div class="tile"><small>Money and management</small><strong>{{ analysis.teller_readiness }}</strong></div>
 <div class="tile"><small>Calculated annual net</small><strong>{{ '$' ~ analysis.financials.net if analysis.financials.net is not none else 'Unavailable' }}</strong></div></section>
 <section class="soulaana"><p class="eyebrow">✧ SOULAANA · GROUNDED BRIEF</p><h2>{{ brief.summary }}</h2><p>{{ brief.next_action }}</p><small>Based on current BuyBox records. Soulaana cannot approve an acquisition, verify a document by herself, or change policy.</small></section>
+<p><a class="button primary" href="{{ url_for('scenario',oid=op.id) }}">Open Scenario Lab →</a></p>
 <section class="workspace"><div class="main-column"><div class="panel"><p class="eyebrow">EVIDENCE DOSSIER</p><h2>What has been received?</h2>
 {% for row in analysis.evidence.rows %}<div class="evidence-row"><div><strong>{{ row.kind|replace('_',' ')|title }}</strong><small>{{ row.state|replace('_',' ')|title }}{% if row.critical %} · Critical{% endif %}</small></div><span>{{ '✓' if row.state in ('DOCUMENT_SUPPORTED','THIRD_PARTY_VERIFIED') else '○' }}</span></div>{% endfor %}
 <form method="post" action="{{ url_for('upload_document',oid=op.id) }}" enctype="multipart/form-data" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
