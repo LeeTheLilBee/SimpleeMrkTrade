@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Soulaana · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero"><p class="eyebrow">✧ SOULAANA / ACQUISITION INTELLIGENCE</p>
+<h1>{{ op.name }}</h1><p>Grounded explanation of your actual opportunity records and rules—not a fabricated conversation, external verification, or purchase approval.</p></section>
+<nav class="chips" aria-label="Soulaana context">
+{% for key,label in intents %}<a class="{{ 'active' if context.intent==key else '' }}" href="{{ url_for('soulaana_room',oid=op.id,intent=key) }}">{{ label }}</a>{% endfor %}</nav>
+<section class="soulaana"><p class="eyebrow">CURRENT CONTEXT · REVISION {{ context.opportunity_revision }}</p>
+<h2>{{ context.summary }}</h2><p>Judgment: {{ context.judgment|replace('_',' ')|title }} · Teller readiness: {{ context.readiness }}</p>
+<small>Soulaana's live AI service is not connected yet. This view explains recorded evidence, calculations, policy results, and owner actions. It cannot modify source data or authorize a transaction.</small></section>
+<section class="context-grid">{% for entry in context.entries %}
+<article class="panel"><p class="eyebrow">{{ entry.classification|replace('_',' ') }}{% if entry.label %} · {{ entry.label }}{% endif %}</p><p>{{ entry.text }}</p>
+{% if entry.references %}<div class="reference-row"><small>Record references</small>{% for ref in entry.references %}<code>{{ ref }}</code>{% endfor %}</div>{% endif %}</article>
+{% else %}<article class="panel"><p>No documented findings for this view. Unknown information is not presumed to be favorable.</p></article>{% endfor %}</section>
+<p class="muted">No action on this page changes policy, source evidence, a seller relationship, Teller capital or Tower permissions.</p>
+{% endblock %}
