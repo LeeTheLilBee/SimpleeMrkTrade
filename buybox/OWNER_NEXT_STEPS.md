@@ -18,8 +18,8 @@ starts empty. Tower/OB main has not been merged or deployed from this branch.
    identity/permission model, not via a permanent standalone BuyBox login.
    Its deployment topology (same service versus an isolated backend behind
    Tower) remains for coordinated Tower/hosting review. Do not change the
-   existing Tower runtime or independently expose BuyBox without that review. Read-only workspace inspection found no Postgres
-   instance. **Still needed:** owner approval of a durable, protected storage
+   existing Tower runtime or independently expose BuyBox without that review.
+   Read-only workspace inspection found no Postgres instance. **Still needed:** owner approval of a durable, protected storage
    arrangement (persistent disk/volume for private SQLite and encrypted
    originals, or an explicit database/object-storage migration), along with
    a Tower-governed owner-only exposure plan. Do not run the current storage
