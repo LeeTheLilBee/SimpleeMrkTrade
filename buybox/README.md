@@ -4,7 +4,7 @@ BuyBox is developed in a dedicated feature branch inside the currently connected
 SimpleeMrkTrade repository. The product target remains the **complete universal
 acquisition system**, not an ATM-only application.
 
-## Real owner workspace — BBX001–BBX005
+## Real owner workspace — BBX001–BBX006
 
 The old synthetic UI preview was removed. The real, persistent workspace opens
 with **no sample listings, invented earnings, or fabricated approval signals**.
@@ -21,6 +21,8 @@ It currently supports:
   comparison, and assumption-labeled mathematical scenario analysis.
 - Local acquisition stage guards, event/revision history, and grounded textual
   Soulaana briefing (not yet a live AI service).
+- A persistent Deal Room for real tasks, deadlines, sourced seller/negotiation
+  events, changes in asking price and non-authorizing owner analytical records.
 - Material-change invalidation: old assessments/readiness are not preserved as
   a fresh greenlight after material deal inputs change.
 
