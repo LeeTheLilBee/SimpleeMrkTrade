@@ -25,3 +25,8 @@ One authorized test original → scanned digest → encrypted provider object �
 
 ## Parallel BuyBox integration
 PR #35 is separate and draft. Merge only after shared Tower/Vault contracts and tests reconcile. No direct BuyBox-to-Vault transport is authorized. Recovery GP821–GP830 is independent.
+
+## VRO-02 managed adapter follow-on
+- `vault/real_operations_managed_object_store.py`: injectable private S3-compatible client, create-only conditional writes (`IfNoneMatch='*'`), ciphertext-only bodies, server-side AES256 defense in depth, bounded reads and SHA-256 metadata validation. No provider credentials, public ACL, presigned URLs, deletion or direct app route. This is real adapter code but not a connected/deployed provider.
+- `vault/test_real_operations_managed_object_store.py`: fake-client tests for create-only semantics, tamper and invalid inputs. Tests are committed, not reported as executed.
+- Deployment must verify chosen provider supports atomic conditional PUT and enforce versioning/object lock, IAM/KMS policies, bucket public-access block, logging, recovery and retention independently. Never pass raw object keys to BuyBox/Teller.
