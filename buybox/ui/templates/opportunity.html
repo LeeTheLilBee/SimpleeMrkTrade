@@ -20,6 +20,23 @@
 <label>Document/reference ID or private description<input name="reference" required maxlength="500" placeholder="Internal document reference"></label>
 <label>Source party<input name="source_party" required maxlength="160" placeholder="Seller, processor, professional…"></label>
 <label>Notes<textarea name="notes" maxlength="1000" rows="3"></textarea></label><button type="submit" class="primary">Record evidence receipt</button></form></div>
+{% if op.vertical=='atm' %}
+<div class="panel"><p class="eyebrow">ATM MACHINE PORTFOLIO</p><h2>Individual assets in the proposed purchase</h2><p class="muted">Ownership statements are source-attributed claims. Documentary support is a separate status; professional title, transfer and lien diligence remains necessary.</p>
+{% for machine in op.vertical_data.get('machine_inventory',[]) %}
+<div class="evidence-row"><div><strong>{{ machine.serial_number }}</strong><small>{{ machine.model or 'Model unknown' }} · {{ machine.location_name or 'Location unknown' }} · {{ machine.ownership|replace('_',' ')|title }}</small></div><span>{{ 'Document linked' if machine.ownership_evidence_id else 'Proof pending' }}</span></div>
+{% else %}<p class="muted">No machine identities have been entered.</p>{% endfor %}
+<form method="post" action="{{ url_for('add_atm_machine',oid=op.id) }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<h3>Register an actual included machine</h3>
+<label>Machine serial number<input name="serial_number" required maxlength="120"></label>
+<label>Manufacturer/model, if known<input name="model" maxlength="160"></label>
+<label>Current location, if known<input name="location_name" maxlength="160"></label>
+<label>Ownership information<select name="ownership"><option value="UNKNOWN">Unknown</option><option value="CLAIMED_SELLER_OWNED">Seller claims ownership</option><option value="THIRD_PARTY">Known third-party ownership</option></select></label>
+{% set owner_proof=op.evidence|selectattr('kind','equalto','ownership_documents')|selectattr('status','equalto','DOCUMENT_SUPPORTED')|list %}
+<label>Reviewed ownership document, if applicable<select name="ownership_evidence_id"><option value="">Not established</option>{% for doc in owner_proof %}<option value="{{ doc.id }}">{{ doc.reference }} · {{ doc.source }}</option>{% endfor %}</select></label>
+<label>Machine information source/reference<input name="source_reference" required maxlength="500" placeholder="Asset schedule or seller document reference"></label>
+<button type="submit" class="primary">Preserve machine record</button></form>
+</div>{% endif %}
 <div class="panel"><p class="eyebrow">SOURCE REVIEW</p><h2>Review received evidence</h2>
 <p class="muted">Recording a source does not verify it. After examining the source yourself, record its documentary support and a reason. This is not independent third-party verification.</p>
 {% for e in op.evidence if e.status in ('RECEIVED','CLAIMED','STALE') %}
