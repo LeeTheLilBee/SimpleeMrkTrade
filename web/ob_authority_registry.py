@@ -1570,6 +1570,64 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "capital_modes"
+] = _record(
+    concept_key="capital_modes",
+    authority_id="OB_CAPITAL_MODE_REVIEW_V1",
+    authority_class="NON_EXECUTING_CAPITAL_MODE_REVIEW",
+    implementation_ref="web/ob_capital_modes.py",
+    implementation_role="CANONICAL_ADVISORY_SIX_MODE_EVIDENCE_PROJECTION",
+    owns=(
+        "six advisory capital mode signals without operating-mode mutation",
+        "owner-declared threshold and prior-source-bound review receipts",
+        "per-sleeve deterministic hysteresis and urgent risk review precedence",
+    ),
+    inputs=("OB_CAPITAL_WATERFALL_PROJECTION_V1",),
+    triggers=(
+        "explicit owner-confirmed mode thresholds and sleeve current-mode declaration",
+        "verified current four-sleeve waterfall and optional prior advisory receipt",
+    ),
+    effects=(
+        "emit an immutable amount-free-referenceable advisory mode review",
+        "preserve insufficient evidence and require consecutive distinct chronological reviews",
+        "surface immediate protect-priority candidate without activating a mode",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "set Observatory Survey/Paper/Manual/Hybrid/Automated mode",
+        "automatically change owner capital mode or capital policy",
+        "authenticate source values or treat indicative cash as real",
+        "move profit harvest, trade, purchase ATM routes or approve financing",
+        "direct OB to BuyBox integration or acquisition readiness verdict",
+    ),
+    failure_behavior=(
+        "Missing and conflicting capital evidence yields insufficient-evidence review. "
+        "Duplicate, older, cross-policy or tampered review receipts cannot advance hysteresis."
+    ),
+    explanation=(
+        "Each sleeve reports proposed mode, reason, indicative drawdown band, "
+        "streak and owner-review state; no permission or readiness follows."
+    ),
+    evidence=(
+        "mode intent receipt/hash, waterfall and source hashes",
+        "chronological prior review link and immutable review fingerprint",
+        "amount-free reference for future Tower authorization only",
+    ),
+    review_visibility=(
+        "Owner sees advisory candidate; Teller alone evaluates money-side deployment "
+        "and BuyBox sees only Tower-authorized Teller readiness."
+    ),
+    temporal_validity="WATERFALL_AND_CHRONOLOGICAL_REVIEW_BOUND; not a live-mode actuator.",
+    deterministic=True,
+    learning_boundary=(
+        "Learning cannot adopt a mode, widen a protected floor or turn a planning "
+        "recommendation into spendable acquisition money."
+    ),
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
