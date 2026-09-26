@@ -84,6 +84,15 @@ CREATE TABLE IF NOT EXISTS work_events (
   occurred_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS work_events_order ON work_events(work_ref,revision);
+CREATE TABLE IF NOT EXISTS work_evidence_refs (
+  evidence_ref TEXT PRIMARY KEY,
+  work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
+  kind TEXT NOT NULL CHECK(kind IN ('intake','before','after','completion','inspection')),
+  vault_proof_ref TEXT NOT NULL UNIQUE,
+  actor_ref TEXT NOT NULL,
+  recorded_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS evidence_per_work ON work_evidence_refs(work_ref);
 CREATE TABLE IF NOT EXISTS property_notices (
   notice_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),
@@ -94,6 +103,31 @@ CREATE TABLE IF NOT EXISTS property_notices (
   FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
 );
 CREATE INDEX IF NOT EXISTS notices_property ON property_notices(property_ref,unit_ref);
+CREATE TABLE IF NOT EXISTS leasing_prospects (
+  prospect_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  contact_vault_ref TEXT NOT NULL,
+  desired_unit_ref TEXT,
+  stage TEXT NOT NULL DEFAULT 'new'
+    CHECK(stage IN ('new','contacted','tour_scheduled','application_received','manual_review','closed')),
+  revision INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(desired_unit_ref,property_ref) REFERENCES units(unit_ref,property_ref),
+  UNIQUE(prospect_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS prospects_by_property ON leasing_prospects(property_ref,stage);
+CREATE TABLE IF NOT EXISTS leasing_tours (
+  tour_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL,
+  prospect_ref TEXT NOT NULL,
+  unit_ref TEXT NOT NULL,
+  starts_at TEXT NOT NULL,
+  created_by TEXT NOT NULL,
+  FOREIGN KEY(prospect_ref,property_ref) REFERENCES leasing_prospects(prospect_ref,property_ref),
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS tours_by_property ON leasing_tours(property_ref,starts_at);
 """
 
 
