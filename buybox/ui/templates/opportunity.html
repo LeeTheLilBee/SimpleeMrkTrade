@@ -12,6 +12,25 @@
 <label>Document/reference ID or private description<input name="reference" required maxlength="500" placeholder="Internal document reference"></label>
 <label>Source party<input name="source_party" required maxlength="160" placeholder="Seller, processor, professional…"></label>
 <label>Notes<textarea name="notes" maxlength="1000" rows="3"></textarea></label><button type="submit" class="primary">Record evidence receipt</button></form></div>
+<div class="panel"><p class="eyebrow">SOURCE REVIEW</p><h2>Review received evidence</h2>
+<p class="muted">Recording a source does not verify it. After examining the source yourself, record its documentary support and a reason. This is not independent third-party verification.</p>
+{% for e in op.evidence if e.status in ('RECEIVED','CLAIMED','STALE') %}
+<div class="evidence-row"><div><strong>{{ e.kind|replace('_',' ')|title }}</strong><small>{{ e.reference }} · {{ e.source }}</small></div></div>
+<form method="post" action="{{ url_for('review_evidence',oid=op.id,evidence_id=e.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<label>Document review rationale<input name="rationale" required maxlength="1000" placeholder="What specific information did you examine?"></label>
+<button type="submit">Record owner document review</button></form>
+{% else %}<p class="muted">No newly received evidence awaiting review.</p>{% endfor %}</div>
+<div class="panel"><p class="eyebrow">FINANCIAL TRUTH</p><h2>Source-linked financial inputs</h2>
+<p class="muted">Only enter values shown by a reviewed source. Annual revenue and annual expense figures must describe the exact same reporting period for a comparable calculation. A documentary review does not establish third-party verification.</p>
+{% if op.metrics %}{% for key,value in op.metrics.items() %}<div class="evidence-row"><div><strong>{{ key|replace('_',' ')|title }}</strong><small>{{ value.period }} · {{ value.state|replace('_',' ')|title }}</small></div><strong>{{ value.value }}</strong></div>{% endfor %}{% endif %}
+{% set reviewed=op.evidence|selectattr('status','equalto','DOCUMENT_SUPPORTED')|list %}
+{% if reviewed %}
+<form method="post" action="{{ url_for('record_metric',oid=op.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<label>Metric<select name="metric_name" required><option value="annual_revenue">Annual revenue</option><option value="annual_expenses">Annual expenses</option>{% if op.vertical=='atm' %}<option value="largest_location_share">Largest location revenue share (0–1)</option>{% endif %}</select></label>
+<label>Value<input type="number" inputmode="decimal" name="value" step="any" required></label>
+<label>Exact reporting period<input name="period" required maxlength="100" placeholder="YYYY-MM-DD / YYYY-MM-DD"></label>
+<label>Supporting reviewed evidence<select name="evidence_id" required>{% for e in reviewed %}<option value="{{ e.id }}">{{ e.kind|replace('_',' ')|title }} — {{ e.reference }}</option>{% endfor %}</select></label><button type="submit">Record document-linked metric</button></form>
+{% else %}<p class="muted">Review a received source before recording a supported financial figure.</p>{% endif %}</div>
 <div class="panel"><p class="eyebrow">SOURCE HISTORY</p><h2>Listing and correspondence sources</h2>{% if op.sources %}{% for source in op.sources %}<p class="source">{{ source.url }}</p>{% endfor %}{% else %}<p class="muted">No source link recorded.</p>{% endif %}
 <form method="post" action="{{ url_for('source',oid=op.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}"><label>Add source URL<input type="url" name="url" maxlength="500" required placeholder="https://…"></label><button type="submit">Attach source</button></form></div>
 </div><aside class="side-column"><div class="panel"><p class="eyebrow">ACQUISITION STAGE</p><h2>Progress intentionally</h2><p class="muted">Current: {{ op.lifecycle|replace('_',' ')|title }}</p>
