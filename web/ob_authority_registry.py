@@ -1765,6 +1765,60 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "safety_review"
+] = _record(
+    concept_key="safety_review",
+    authority_id="OB_SAFETY_REVIEW_V1",
+    authority_class="RESTRICTIVE_READ_ONLY_SOURCE_SAFETY_REVIEW",
+    implementation_ref="web/ob_safety_review.py",
+    implementation_role="CANONICAL_STRATEGY_OWNER_FIT_MODE_AND_TIME_EVIDENCE_JOIN",
+    owns=(
+        "source-reconciled danger/overreach/negative-dive/overtime review state",
+        "fail-closed independent canonical owner-fit and Effective Policy recomputation",
+        "separation of review eligibility from all execution authority",
+    ),
+    inputs=(
+        "OB_STRATEGY_REVIEW_V1", "OB_OWNER_FIT_ELIGIBILITY_V1",
+        "OB_OPERATING_MODE_V1", "OB_MARKET_TIME_V1",
+    ),
+    triggers=(
+        "explicit selected strategy review and canonical mode/time evidence",
+        "optional full canonical owner-fit source and source-labelled danger evidence",
+    ),
+    effects=(
+        "emit deterministic BLOCK, HOLD or REVIEW_ONLY safety receipt",
+        "escalate source-reported danger without allowing it to grant permission",
+        "produce independently lineage-verified amount-free proof reference",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "new risk-limit, market, fill or Effective Policy resolver",
+        "treat client-entered danger flags or source hash as external proof of safety",
+        "assume owner-fit NOW is an execution grant",
+        "automatically select option contract or permit Manual Live/Hybrid/Automated",
+        "broker submission, capital movement, direct OB–BuyBox access",
+    ),
+    failure_behavior=(
+        "Tampered strategy, mode, market time or owner-fit inputs fail closed. "
+        "Missing or unknown safety source remains HOLD, explicit danger is BLOCK."
+    ),
+    explanation=(
+        "Owner sees source-bound reason codes, canonical fit and policy fingerprints, "
+        "mode/time references and a review-only decision distinct from execution."
+    ),
+    evidence=(
+        "OBSTRAT receipt/hash", "canonical OBTIME and OBMODE fingerprints",
+        "recomputed owner-fit and effective-policy fingerprints", "source-signal hash",
+    ),
+    review_visibility="Review-only proof; Tower/Teller/BuyBox and broker execution remain separate.",
+    temporal_validity="EXPLICIT_CANONICAL_SOURCE_FRAME_AND_TIME_RECEIPT_BOUND",
+    deterministic=True,
+    learning_boundary="No safety, mode or policy widening from review/learning outcomes.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
