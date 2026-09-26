@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Scenario Lab · {{ op.name }}{% endblock %}
+{% block content %}<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← {{ op.name }}</a>
+<section class="hero"><p class="eyebrow">SCENARIO LAB · DOCUMENTED INPUTS</p><h1>What survives a change?</h1><p>Change the revenue and expense multipliers against your recorded annual figures. These are modeled scenarios, not fabricated historical performance or a financing approval.</p></section>
+<form method="get" class="panel scenario-form">
+<div class="form-grid"><label>Revenue multiplier (0–3)<input type="number" name="revenue_factor" min="0" max="3" step="0.01" value="{{ revenue_factor }}" required></label>
+<label>Expense multiplier (0–3)<input type="number" name="expense_factor" min="0" max="3" step="0.01" value="{{ expense_factor }}" required></label></div>
+<button class="primary" type="submit">Recalculate from records</button></form>
+<section class="comparison-grid">
+<div class="panel"><p class="eyebrow">RECORDED BASE CASE</p><h2>{{ '$' ~ baseline.net if baseline.net is not none else 'Unavailable' }}</h2><p class="muted">Annual net calculated from documented revenue and expense inputs for a matching reporting period.</p>
+{% if baseline.status != 'CALCULATED' %}<p class="notice">Calculation unavailable: {{ baseline.status|replace('_',' ')|title }}. Attach and review consistent revenue/expense evidence first.</p>{% endif %}</div>
+<div class="panel"><p class="eyebrow">MODELED OUTCOME</p><h2>{{ '$' ~ stressed.net if stressed.net is not none else 'Unavailable' }}</h2><p class="muted">Revenue multiplied by {{ revenue_factor }}; expenses multiplied by {{ expense_factor }}. Base records are preserved.</p>
+{% if stressed.status != 'CALCULATED' %}<p class="notice">Calculation unavailable: {{ stressed.status|replace('_',' ')|title }}.</p>{% endif %}</div></section>
+<p class="muted">This preliminary mathematical model does not replace full vertical-specific stress packs, cash-flow normalization, lender-specific debt coverage, vault timing or Seller/BuyBox evidence reconciliation.</p>
+{% endblock %}
