@@ -207,6 +207,8 @@ def create_app(config=None):
         """
         if auth_mode!="tower":
             abort(404)
+        if request.content_length is None or not 0<request.content_length<=8192:
+            abort(413,"Tower exchange payload size invalid")
         if (not exact_receiver_origin(request,app.config["BUYBOX_PUBLIC_ORIGIN"])
                 or request.mimetype!="application/x-www-form-urlencoded"
                 or set(request.form)!={"handoff"}
