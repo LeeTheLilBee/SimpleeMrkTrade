@@ -101,6 +101,9 @@ def test_exact_current_active_authorities_are_registered():
         "temporal_context":
             "OB_MARKET_TIME_V1",
 
+        "capital_policy":
+            "OB_CAPITAL_POLICY_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
