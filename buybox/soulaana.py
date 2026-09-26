@@ -46,6 +46,16 @@ def context(op, intent="overview"):
                 note("MISSING_OR_UNVERIFIED",
                      kind+" is not established at the required documentary standard.",
                      [row["reference"]] if row["reference"] else [],row["state"])
+    if "evidence" in relevant or "changes" in relevant:
+        for snapshot in op.get("snapshots", []):
+            if snapshot.get("archive_state") == "NOT_REQUESTED":
+                refs=[snapshot.get("snapshot_id")]
+                refs.extend(x.get("evidence_id") for x in snapshot.get("evidence_versions",[]))
+                note("LOCAL_PROOF_SNAPSHOT",
+                     "An original-document version was frozen locally at acquisition revision "+
+                     str(snapshot.get("opportunity_revision"))+
+                     ". Its source hash is preserved. Tower/Vault archival has NOT been requested or verified.",
+                     [x for x in refs if x], "NOT_ARCHIVED")
     if "economics" in relevant:
         result=analysis["financials"]
         if result["status"]=="CALCULATED":
