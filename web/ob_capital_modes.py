@@ -234,14 +234,14 @@ def _review_one(waterfall_sleeve, owner_intent: SleeveModeIntent,
     elif owner_intent.owner_declared_current_mode == "PROTECT":
         candidate = "RECOVERY"
         reasons.append("OWNER_PROTECT_MODE_REQUIRES_REVIEWED_RECOVERY")
+    elif waterfall_sleeve.indicative_target_gap_minor > 0:
+        candidate = "ACCUMULATE"
+        reasons.append("INDICATIVE_TARGET_SHORTFALL")
     elif waterfall_sleeve.hypothetical_harvest_minor is not None and (
         waterfall_sleeve.hypothetical_harvest_minor >= t.minimum_hypothetical_harvest_minor
     ):
         candidate = "HARVEST"
         reasons.append("HYPOTHETICAL_HARVEST_ONLY")
-    elif waterfall_sleeve.indicative_target_gap_minor > 0:
-        candidate = "ACCUMULATE"
-        reasons.append("INDICATIVE_TARGET_SHORTFALL")
     elif waterfall_sleeve.indicative_unallocated_minor >= t.minimum_indicative_surplus_growth_minor:
         candidate = "SURPLUS_GROWTH"
         reasons.append("INDICATIVE_SURPLUS_NOT_DEPLOYABLE")
