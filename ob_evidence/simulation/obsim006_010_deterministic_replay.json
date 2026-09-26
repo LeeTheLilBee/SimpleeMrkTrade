@@ -1,0 +1,30 @@
+{
+  "pack": "OBSIM006-010",
+  "title": "Deterministic, capital-gated three-lane historical replay",
+  "parent": "7aba2fe5bbbfb64e64ed38d0450777ba60fb477a",
+  "scope": [
+    "OBSIM replay orchestrator",
+    "OBTIME receipt verification per shared frame",
+    "CAPSIM-only Experimental OPEN admission",
+    "strict monotonic chronology",
+    "three explicit independent decisions per frame",
+    "read-only comparison/report"
+  ],
+  "execution_boundary": {
+    "simulation_only": true,
+    "broker_submission": false,
+    "capital_movement": false,
+    "manual_live_unlock": false,
+    "hybrid_unlock": false,
+    "automated_unlock": false,
+    "tower_changed": false
+  },
+  "not_claimed": [
+    "live feed",
+    "scheduler",
+    "strategy engine",
+    "whole OB completion",
+    "test pass before execution"
+  ],
+  "tests_file": "tests/test_obsim006_010_deterministic_replay.py"
+}
