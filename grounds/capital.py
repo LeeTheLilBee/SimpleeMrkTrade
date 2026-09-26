@@ -63,8 +63,9 @@ def verified_apartment_readiness(
         current=value["current_cents"];bottom=value["hard_bottom_cents"]
         protected=value["protected_cents"];committed=value["committed_cents"]
         available=value["available_cents"]
-        if (protected < bottom or protected > current
-            or available > max(0,current-protected-committed)):
+        if (protected > current
+            or available > max(0,current-max(bottom,protected)-committed)
+            or (current < bottom and value["status"] == "ready")):
             raise AccessDenied("inconsistent protected capital")
         use=value.get("allowed_use")
         next_action=value.get("next_action")
