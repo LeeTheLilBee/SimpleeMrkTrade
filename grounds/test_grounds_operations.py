@@ -61,7 +61,7 @@ class GroundsOperationsTests(unittest.TestCase):
         self.ops.add_unit(self.manager, property_ref="p1", building_ref="b1", unit_ref="u1", label="101")
         self.ops.activate_lease(self.manager, property_ref="p1", unit_ref="u1", lease_ref="l1",
                                 resident_ref="resident1", start_on="2026-09-26", end_on="2027-09-25",
-                                vault_proof_ref="lease-vault-proof-test")
+                                vault_proof_ref=None)
 
     def tearDown(self):
         self.temp.cleanup()
@@ -101,6 +101,12 @@ class GroundsOperationsTests(unittest.TestCase):
         with self.assertRaises(AccessDenied):
             self.ops.add_building(fixture_scope("mgr2","property_manager",("p2",)),
                                   property_ref="p1", building_ref="bad", label="No")
+
+    def test_lease_proof_cannot_claim_sealed_without_certified_vault(self):
+        with self.assertRaises(GroundsConflict):
+            self.ops.activate_lease(self.manager,property_ref="p1",unit_ref="u1",lease_ref="unverified",
+                                    resident_ref="resident2",start_on="2026-09-26",end_on="2027-09-25",
+                                    vault_proof_ref="unverified-ref")
 
     def test_active_lease_uniqueness_dates_and_turnover(self):
         with self.assertRaises(GroundsConflict):
