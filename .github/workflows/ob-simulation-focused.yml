@@ -1,0 +1,38 @@
+name: OB simulation focused tests
+on:
+  push:
+    branches:
+      - 'obsim-*'
+    paths:
+      - 'web/ob_multi_simulation_replay.py'
+      - 'tests/test_obsim006_010_deterministic_replay.py'
+      - '.github/workflows/ob-simulation-focused.yml'
+  pull_request:
+    paths:
+      - 'web/ob_multi_simulation_replay.py'
+      - 'tests/test_obsim006_010_deterministic_replay.py'
+      - '.github/workflows/ob-simulation-focused.yml'
+permissions:
+  contents: read
+jobs:
+  ob-simulation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install focused test dependencies
+        run: python -m pip install pytest tzdata
+      - name: Syntax wall
+        run: python -m py_compile web/ob_multi_simulation_replay.py tests/test_obsim006_010_deterministic_replay.py
+      - name: Simulation integration wall
+        run: |
+          python -m pytest -q \
+            tests/test_obsim001_005_multi_simulation_harness.py \
+            tests/test_obtime001_005_canonical_market_time_authority.py \
+            tests/test_obtime006_010_time_integration.py \
+            tests/test_capsim001_005_capital_simulation_authority.py \
+            tests/test_capsim006_010_session_loss_experimental_admission.py \
+            tests/test_obsim006_010_deterministic_replay.py
