@@ -674,6 +674,8 @@ def validate_policy_layer(
                        "capital_state_snapshot_id", "capital_state_hash",
                        "session_loss_ledger_id", "session_loss_hash",
                    ))
+            or not isinstance(layer.get("limits"), dict)
+            or not isinstance(layer.get("capabilities"), dict)
             or set(layer.get("limits") or {}) != {
                 "max_loss_per_trade_pct",
                 "max_position_allocation_pct",
