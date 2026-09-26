@@ -39,7 +39,13 @@ class PrivateManagedCiphertextStore:
         if not isinstance(object_key,str) or not _KEY.fullmatch(object_key):
             raise StorageError("invalid opaque object key")
         response=self._client.get_object(Bucket=self._bucket,Key=object_key)
-        body=response["Body"].read()
+        declared=response.get("ContentLength")
+        max_envelope_bytes=25*1024*1024+64
+        if type(declared) is not int or declared<33 or declared>max_envelope_bytes:
+            raise StorageError("invalid managed ciphertext length")
+        body=response["Body"].read(max_envelope_bytes+1)
+        if len(body)!=declared:
+            raise StorageError("managed ciphertext length mismatch")
         if not isinstance(body,bytes) or not body.startswith(b"VLT1"):
             raise StorageError("managed object is not an encrypted envelope")
         metadata=response.get("Metadata") or {}
