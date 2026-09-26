@@ -4,6 +4,7 @@ import unittest
 
 from grounds.access import AccessDenied
 from grounds.capital import LANES, verified_apartment_readiness
+from grounds.soulaana import explain_apartment_readiness
 from grounds.test_grounds_operations import fixture_scope
 
 
@@ -40,6 +41,13 @@ class CapitalReadinessTests(unittest.TestCase):
             property_ref="p1", mission_ref="apartment-mission", terms_digest=terms,
             teller_verifier=self.verifier if verifier is None else verifier,
         )
+
+    def test_soulaana_no_capital_action(self):
+        view=self.view()
+        explanation=explain_apartment_readiness(self.actor,view)
+        self.assertEqual(explanation["source"],"teller")
+        self.assertFalse(explanation["money_moved"])
+        self.assertFalse(explanation["ob_queried"])
 
     def test_exact_five_lanes_not_one_generic_account(self):
         view=self.view()
