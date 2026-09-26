@@ -67,7 +67,7 @@ class LocalTowerActionOutboxTests(unittest.TestCase):
         self.assertEqual(packet["input_snapshot_digest"], result["input_snapshot_digest"])
         self.assertEqual(packet["opportunity_revision"], 1)
         self.assertEqual(packet["request_id"], result["request_id"])
-        self.assertEqual(packet["idempotency_key"] != KEY, True)  # server-produced draft key
+        self.assertNotEqual(packet["idempotency_key"], KEY)  # independent server-produced wire key
         self.assertNotIn("asking_price", stored["packet_json"])
         self.assertNotIn("broker_balance", stored["packet_json"])
         self.assertNotIn("document_bytes", stored["packet_json"])
@@ -135,8 +135,11 @@ class LocalTowerActionOutboxTests(unittest.TestCase):
 
     def test_status_survives_reopen_and_is_not_process_local(self):
         first = self.prepare()
-        with connect(str(self.path)) as second:
+        second = connect(str(self.path))
+        try:
             status = read_local_tower_action_draft(second, KEY, now_utc=NOW)
+        finally:
+            second.close()
         self.assertEqual(status["request_id"], first["request_id"])
         self.assertEqual(status["state"], PENDING)
 

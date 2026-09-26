@@ -4,26 +4,27 @@
 
 This pack follows the actual BuyBox BBX017–021 protected Tower receiver source,
 while leaving Tower's live launch disabled. It uses the already-merged BuyBox
-BBX016 \`prepare_untrusted_tower_action_draft\` and the exact Tower
-\`tower.buybox.action.v1\` validator at Tower commit
-\`e7a309001ba0ababe25abfdf52c458924fe78fe9\`.
+BBX016 `prepare_untrusted_tower_action_draft` and the exact Tower
+`tower.buybox.action.v1` validator at Tower commit
+`e7a309001ba0ababe25abfdf52c458924fe78fe9`.
 
 ## New module and exact state machine
 
-\`buybox/tower_action_outbox.py\` adds a private SQLite table
-\`buybox_tower_action_drafts\` with a unique local idempotency key and request
-ID. Each row contains the exact server-read stored opportunity revision,
+`buybox/tower_action_outbox.py` adds a private SQLite table
+`buybox_tower_action_drafts` with a unique local idempotency key and request
+ID. The local retry key is distinct from the randomly generated idempotency key in the immutable future Tower wire packet; neither is authentication.
+Each row contains the exact server-read stored opportunity revision,
 verified local snapshot digest, canonical draft payload, immutable SHA-256
 payload fingerprint, and preparation/expiry times. This is NOT a Tower signature
 or source-of-funds verification; the caller-claimed actor and entity remain
 untrusted until Tower independently derives authority.
 
-The **only** possible states are \`PREPARED_UNSENT\`,
-\`STALE_LOCAL\` and \`EXPIRED_LOCAL\`, enforced by a database CHECK
+The **only** possible states are `PREPARED_UNSENT`,
+`STALE_LOCAL` and `EXPIRED_LOCAL`, enforced by a database CHECK
 constraint. No API can set SENT, APPROVED, ARCHIVED, FINANCED or READY.
-Each returned summary explicitly has \`authorizes_action=False\`,
-\`submitted_to_tower=False\`, \`tower_receipt_present=False\` and
-\`teller_readiness=UNKNOWN\`.
+Each returned summary explicitly has `authorizes_action=False`,
+`submitted_to_tower=False`, `tower_receipt_present=False` and
+`teller_readiness=UNKNOWN`.
 
 - Local preparation requires a fresh SQLite transaction and obtains a
   BEGIN IMMEDIATE writer lock before validating actual persisted source,
