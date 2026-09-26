@@ -1,0 +1,24 @@
+name: BuyBox foundation
+on:
+  pull_request:
+    paths:
+      - 'buybox/**'
+      - '.github/workflows/buybox-foundation.yml'
+  push:
+    branches:
+      - 'buybox-universal-acquisition-foundation-bbx001'
+    paths:
+      - 'buybox/**'
+      - '.github/workflows/buybox-foundation.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify standalone BuyBox foundation
+        run: python -m unittest discover -s buybox/tests -v
