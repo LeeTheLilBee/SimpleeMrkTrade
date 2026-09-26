@@ -102,8 +102,11 @@ def validate_tower_safe_response(response: Mapping[str, Any]) -> dict[str, Any]:
         if k in {"schema_version", "status", "reason_code"}:
             if not isinstance(v, str):
                 raise ContractError("invalid response value")
+        elif k == "verified_sha256":
+            if not isinstance(v, str) or not SHA256.fullmatch(v):
+                raise ContractError("invalid verified hash")
         elif v is not None:
-            _id(v, k) if k != "verified_sha256" else (SHA256.fullmatch(v) or (_ for _ in ()).throw(ContractError("invalid verified hash")))
+            _id(v, k)
     if r.get("status") not in {"PENDING", "DENIED", "QUARANTINED", "ARCHIVED", "FAILED", "SUPERSEDED", "AUTHORIZED"}:
         raise ContractError("invalid status")
     if r["status"] == "ARCHIVED" and not all(r.get(k) for k in ("archival_receipt_id", "vault_document_ref", "vault_version_ref", "verified_sha256")):
