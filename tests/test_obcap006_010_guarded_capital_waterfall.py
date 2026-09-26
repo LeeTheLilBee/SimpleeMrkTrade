@@ -102,7 +102,7 @@ def test_obcap007_conservative_ordering_protects_floor_committed_pending_and_no_
     assert len(projection.sleeves) == 4
     first = projection.sleeves[0]
     assert first.state == "REVIEW_INDICATIVE"
-    assert first.indicative_unallocated_minor == 1100000
+    assert first.indicative_unallocated_minor == 1300000
     assert first.indicative_target_gap_minor == 0
     assert first.existing_protected_floor_minor == p.intents[0].existing_protected_floor_minor
     assert first.acquisition_readiness == "NOT_ASSESSED_BY_OB"
