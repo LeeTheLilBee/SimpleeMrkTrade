@@ -106,11 +106,17 @@ def _readiness(op, name):
     return response.get("status") if response.get("status") in ("READY","PARTIAL","BLOCKED") else "UNKNOWN"
 
 def scenario_calculation(op, revenue_factor="1", expense_factor="1"):
+    revenue_record = op.get("metrics", {}).get("annual_revenue", {})
+    expense_record = op.get("metrics", {}).get("annual_expenses", {})
     revenue = _metric(op, "annual_revenue")
     expenses = _metric(op, "annual_expenses")
     rf, ef = money(revenue_factor), money(expense_factor)
     if revenue is None or expenses is None or rf is None or ef is None or rf < 0 or ef < 0:
         return {"status":"INSUFFICIENT_DATA", "net":None, "purchase_multiple":None}
+    revenue_period = revenue_record.get("period") if isinstance(revenue_record, dict) else None
+    expense_period = expense_record.get("period") if isinstance(expense_record, dict) else None
+    if not revenue_period or not expense_period or revenue_period != expense_period:
+        return {"status":"PERIOD_MISMATCH", "net":None, "purchase_multiple":None}
     net = revenue*rf - expenses*ef
     asking = money(op.get("asking_price"))
     multiple = asking/net if asking is not None and net > 0 else None
@@ -164,7 +170,7 @@ def evaluate(op):
         judgment="REJECTED" if any(f["rule_id"]=="ATM-R001" and "third-party" in f["reason"] for f in findings) else "REVIEW"
     elif ev["missing_critical"]:
         judgment="MISSING_EVIDENCE"
-    elif base["status"]=="INSUFFICIENT_DATA":
+    elif base["status"]!="CALCULATED":
         judgment="MISSING_EVIDENCE"
     elif teller!="READY" or findings:
         judgment="REVIEW"
