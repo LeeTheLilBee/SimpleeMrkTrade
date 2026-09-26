@@ -14,6 +14,18 @@
 <label>Document source party<input name="source_party" required maxlength="160" placeholder="Seller, processor, advisor…"></label>
 <button type="submit" class="primary">Save original document</button></form>
 {% if op.get("artifacts") %}<h3>Preserved originals</h3>{% for artifact in op.artifacts %}<p class="source"><a href="{{ url_for('download_document',oid=op.id,artifact_id=artifact.id) }}">{{ artifact.name }}</a> <small>· SHA-256: {{ artifact.sha256[:16] }}…</small></p>{% endfor %}{% endif %}
+{% if op.get("artifacts") %}
+<div class="panel-form"><h3>Local proof snapshots</h3>
+<p class="muted">Freeze the exact version of an uploaded original for a future Tower-mediated archival request. This preserves a local evidence version and digest only; it does not send the file, verify its contents or create a Vault archival receipt.</p>
+{% for e in op.evidence if e.get('artifact_id') and e.status != 'SUPERSEDED' %}
+<form method="post" action="{{ url_for('freeze_local_proof',oid=op.id,evidence_id=e.id) }}">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<p class="muted">{{ e.kind|replace('_',' ')|title }} · {{ e.reference }} · {{ e.status|replace('_',' ')|title }}</p>
+<button type="submit">Freeze source-bound local snapshot</button></form>{% endfor %}
+{% for snap in op.snapshots|reverse %}
+<div class="evidence-row"><div><strong>Local snapshot {{ snap.snapshot_id[:8] }}…</strong>
+<small>Revision {{ snap.opportunity_revision }} · {{ snap.archive_state|replace('_',' ')|title }} · digest {{ snap.snapshot_sha256[:16] }}…</small></div><span>Not in Vault</span></div>
+{% endfor %}</div>{% endif %}
 <form method="post" action="{{ url_for('evidence',oid=op.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
 <h3>Record received evidence</h3><p class="muted">This logs a source reference. Receipt alone does not mark its contents verified.</p>
 <label>Evidence category<select name="kind" required>{% for kind in manifest.evidence %}<option value="{{ kind.kind }}">{{ kind.kind|replace('_',' ')|title }}</option>{% endfor %}</select></label>
