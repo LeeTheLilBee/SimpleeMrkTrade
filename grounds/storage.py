@@ -128,6 +128,17 @@ CREATE TABLE IF NOT EXISTS preventive_plans (
   FOREIGN KEY(asset_ref,property_ref) REFERENCES physical_assets(asset_ref,property_ref)
 );
 CREATE INDEX IF NOT EXISTS preventive_due ON preventive_plans(property_ref,enabled,next_due_on);
+CREATE TABLE IF NOT EXISTS preventive_completion_events (
+  completion_ref TEXT PRIMARY KEY,
+  plan_ref TEXT NOT NULL REFERENCES preventive_plans(plan_ref),
+  work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
+  proof_ref TEXT NOT NULL UNIQUE,
+  completed_on TEXT NOT NULL,
+  actor_ref TEXT NOT NULL,
+  plan_revision INTEGER NOT NULL,
+  recorded_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS plan_completion_history ON preventive_completion_events(plan_ref,plan_revision);
 CREATE TABLE IF NOT EXISTS inspections (
   inspection_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),
