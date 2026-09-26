@@ -240,6 +240,35 @@ class OwnerAppTests(unittest.TestCase):
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
         self.assertFalse(op.get("artifacts"))
 
+    def test_atm_inventory_keeps_claims_separate_from_ownership_proof(self):
+        oid=self.create()
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        result=self.post("/opportunities/"+oid+"/atm/machines",{
+            "revision":str(op["version"]),"serial_number":"SERIAL-123",
+            "model":"Documented model","location_name":"Owner entered site",
+            "ownership":"CLAIMED_SELLER_OWNED","source_reference":"seller schedule"})
+        self.assertEqual(result.status_code,302)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        machine=op["vertical_data"]["machine_inventory"][0]
+        self.assertEqual(machine["ownership"],"CLAIMED_SELLER_OWNED")
+        self.assertIsNone(machine["ownership_evidence_id"])
+        page=self.client.get("/opportunities/"+oid)
+        self.assertIn(b"SERIAL-123",page.data)
+        from buybox.core import evaluate
+        self.assertTrue(any(f["rule_id"]=="ATM-R001" for f in evaluate(op)["findings"]))
+        duplicate=self.post("/opportunities/"+oid+"/atm/machines",{
+            "revision":str(op["version"]),"serial_number":"serial-123",
+            "ownership":"UNKNOWN","source_reference":"seller schedule"})
+        self.assertEqual(duplicate.status_code,409)
+
+    def test_source_labeled_soulaana_is_reachable_from_actual_dossier(self):
+        oid=self.create()
+        dossier=self.client.get("/opportunities/"+oid)
+        self.assertIn(b"Ask Soulaana about this deal",dossier.data)
+        context_page=self.client.get("/opportunities/"+oid+"/soulaana?intent=next_action")
+        self.assertEqual(context_page.status_code,200)
+        self.assertIn(b"RULE_DERIVED_ACTION",context_page.data)
+
     def test_protected_deal_stage_not_available(self):
         oid=self.create()
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
