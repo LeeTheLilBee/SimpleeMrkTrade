@@ -195,6 +195,10 @@ def _valid_receipt(previous: CapitalModeReview) -> bool:
         return False
     if tuple(s.scope for s in previous.sleeves) != ATM_SCOPES:
         return False
+    if any(not isinstance(s.source_evidence_fingerprint, str)
+           or not HASH.fullmatch(s.source_evidence_fingerprint)
+           for s in previous.sleeves):
+        return False
     if any(s.activation_authorized or s.acquisition_readiness != "NOT_ASSESSED_BY_OB" for s in previous.sleeves):
         return False
     if previous.external_capital_verified or previous.owner_mode_changed or previous.trading_mode_changed or previous.capital_movement:
