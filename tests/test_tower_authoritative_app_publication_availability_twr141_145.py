@@ -293,7 +293,7 @@ def test_twr141_registry_alone_does_not_publish_future_apps(monkeypatch):
 
     assert len(
         future
-    ) == 3
+    ) == 4
 
     for app in future:
 
@@ -1266,7 +1266,7 @@ def test_twr145_access_home_reports_zero_verified_launchable_without_provider(
 
     assert summary[
         "registered_app_count"
-    ] == 5
+    ] == 6
 
     assert summary[
         "verified_launchable_app_count"
@@ -1307,7 +1307,7 @@ def test_twr145_access_home_reports_verified_ob_launchability(
 
     assert summary[
         "registered_app_count"
-    ] == 5
+    ] == 6
 
     assert summary[
         "verified_launchable_app_count"

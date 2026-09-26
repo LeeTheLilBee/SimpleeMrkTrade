@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import pytest
 
@@ -321,7 +322,7 @@ def test_twr124_all_registered_apps_receive_truth_projection():
 
     projections = registered_app_truth_projection()
 
-    assert len(projections) == 5
+    assert len(projections) == 6
 
     assert {
         projection["app_id"]
@@ -332,6 +333,7 @@ def test_twr124_all_registered_apps_receive_truth_projection():
         "vault",
         "clouds",
         "grounds",
+        "buybox",
     }
 
 
@@ -434,7 +436,7 @@ def test_twr125_default_audit_scope_excludes_tests_and_evidence():
 def test_twr125_retired_people_surface_no_longer_reports_identity_theater():
 
     report = audit_product_surfaces(
-        "/content/SimpleeMrkTrade"
+        Path(__file__).resolve().parents[1]
     )
 
     findings = findings_for_file(
@@ -448,7 +450,7 @@ def test_twr125_retired_people_surface_no_longer_reports_identity_theater():
 def test_twr125_retired_owner_dashboard_service_no_longer_reports_control_theater():
 
     report = audit_product_surfaces(
-        "/content/SimpleeMrkTrade"
+        Path(__file__).resolve().parents[1]
     )
 
     findings = findings_for_file(
@@ -462,7 +464,7 @@ def test_twr125_retired_owner_dashboard_service_no_longer_reports_control_theate
 def test_twr125_retired_access_home_shortcuts_no_longer_report_ready_or_draft_debt():
 
     report = audit_product_surfaces(
-        "/content/SimpleeMrkTrade"
+        Path(__file__).resolve().parents[1]
     )
 
     findings = findings_for_file(
@@ -476,7 +478,7 @@ def test_twr125_retired_access_home_shortcuts_no_longer_report_ready_or_draft_de
 def test_twr125_future_apps_are_flagged_as_registry_not_product_availability():
 
     report = audit_product_surfaces(
-        "/content/SimpleeMrkTrade"
+        Path(__file__).resolve().parents[1]
     )
 
     findings = findings_for_rule(
@@ -496,7 +498,7 @@ def test_twr125_future_apps_are_flagged_as_registry_not_product_availability():
 def test_twr125_walkthrough_routes_are_inventory_debt_for_next_cutover():
 
     report = audit_product_surfaces(
-        "/content/SimpleeMrkTrade"
+        Path(__file__).resolve().parents[1]
     )
 
     findings = findings_for_rule(
@@ -510,7 +512,7 @@ def test_twr125_walkthrough_routes_are_inventory_debt_for_next_cutover():
 def test_twr125_audit_is_inventory_not_fake_success():
 
     report = audit_product_surfaces(
-        "/content/SimpleeMrkTrade"
+        Path(__file__).resolve().parents[1]
     )
 
     assert (
