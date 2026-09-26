@@ -10,7 +10,7 @@ import json
 REGISTRY_SCHEMA_VERSION = "OB_CANONICAL_AUTHORITY_REGISTRY_V1"
 RECORD_SCHEMA_VERSION = "OB_AUTHORITY_RECORD_V1"
 COMPATIBILITY_SCHEMA_VERSION = "OB_AUTHORITY_COMPATIBILITY_PROJECTION_V1"
-SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_OBCTX001_005_OBMODE001_010_CANONICAL_AUTHORITY_REGISTRY"
+SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_OBCTX001_005_OBMODE001_010_CAPSIM011_015_CANONICAL_AUTHORITY_REGISTRY"
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -821,11 +821,13 @@ ACTIVE_AUTHORITY_RECORDS[
         "OB_OWNER_OPERATING_PROFILE_V1",
         "OB_ACCOUNT_IDENTITY_TRUTH_V1",
         "OB_OPERATING_MODE_V1",
+        "OB_CAPITAL_POLICY_V1",
     ),
 
     policy_inputs=(
         "OB_OWNER_OPERATING_PROFILE_V1",
         "OB_OPERATING_MODE_V1",
+        "OB_CAPITAL_POLICY_V1",
     ),
 
     triggers=(
@@ -1374,6 +1376,76 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+
+ACTIVE_AUTHORITY_RECORDS[
+    "capital_policy"
+] = _record(
+    concept_key="capital_policy",
+    authority_id="OB_CAPITAL_POLICY_V1",
+    authority_class="PRE_POLICY_CAPITAL_RESTRICTION",
+    implementation_ref="web/ob_capital_policy_authority.py",
+    implementation_role="VERIFIED_SIMULATION_ONLY_PRE_POLICY_PROJECTION",
+    owns=(
+        "hash-bound pre-policy Experimental capital restriction snapshot",
+        "verified source-bound simulated capital capacity",
+        "restriction-only capital policy layer input",
+    ),
+    inputs=(
+        "OB_OWNER_OPERATING_PROFILE_V1",
+        "OB_MARKET_TIME_V1",
+    ),
+    triggers=(
+        "explicit verified owner profile and simulation capital assessment context",
+        "explicit verified canonical session-loss evidence",
+    ),
+    effects=(
+        "derive non-widening owner risk limit projection",
+        "emit immutable simulation-only capital projection receipt",
+        "feed explicit restriction-only CAPITAL_POLICY layer",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "Effective Policy import or recursive resolution",
+        "real capital state claim",
+        "unverified ledger promotion",
+        "owner limit widening",
+        "broker submission",
+        "capital movement",
+        "Manual Live unlock",
+        "Hybrid unlock",
+        "Automated unlock",
+    ),
+    failure_behavior=(
+        "Tampered/cross-account evidence, incomplete canonical session loss, "
+        "exhausted daily risk, or absent positive capacity fail closed."
+    ),
+    explanation=(
+        "Each pre-policy projection identifies the owner baseline, verified "
+        "Experimental capital and session-loss receipts, canonical limits, "
+        "capacity factor, state, and hard-block reasons."
+    ),
+    evidence=(
+        "pre-policy projection ID/integrity hash",
+        "active owner profile ID/hash",
+        "verified simulation capital state ID/hash",
+        "verified session-loss ledger ID/hash",
+        "canonical six-decimal restriction values",
+    ),
+    review_visibility=(
+        "Review can reconstruct the projection and the restriction-only "
+        "Effective Policy layer without treating simulation as real capital."
+    ),
+    temporal_validity="EVIDENCE_BOUND; new capital/time evidence requires a new projection.",
+    deterministic=True,
+    learning_boundary=(
+        "Learning may inspect simulated capital-defense behavior but may not "
+        "relax owner limits, alter account truth, or automatically adopt policy."
+    ),
+    compatibility_adapters=("PENDING_OBCAP",),
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
@@ -1386,6 +1458,9 @@ PENDING_AUTHORITY_SLOTS = {
 
 
 RETIRED_AUTHORITY_ALIASES = {
+    "PENDING_OBCAP":
+        "OB_CAPITAL_POLICY_V1",
+
     "PENDING_OBTIME":
         "OB_MARKET_TIME_V1",
 
@@ -1416,6 +1491,9 @@ RETIRED_AUTHORITY_ALIASES = {
 
 
 LEGACY_KEY_TO_CANONICAL_CONCEPT = {
+    "capital_policy":
+        "capital_policy",
+
     "mode_authority":
         "mode_authority",
 
