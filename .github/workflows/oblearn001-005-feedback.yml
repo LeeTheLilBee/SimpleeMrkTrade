@@ -1,0 +1,31 @@
+name: OBLEARN001-005 bounded review feedback
+on:
+  push:
+    branches:
+      - 'oblearn001-005-*'
+  pull_request:
+    paths:
+      - 'web/ob_review_learning.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_oblearn001_005_bounded_review_feedback.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - '.github/workflows/oblearn001-005-feedback.yml'
+permissions:
+  contents: read
+jobs:
+  bounded-review-feedback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax and focused review feedback
+        run: |
+          python -m py_compile web/ob_review_learning.py tests/test_oblearn001_005_bounded_review_feedback.py
+          python -m pytest -q tests/test_oblearn001_005_bounded_review_feedback.py tests/test_obrev001_005_owner_decision_evidence.py tests/test_obrec001_005_owner_recommendation_review.py tests/test_obsafe001_005_bound_source_review.py tests/test_obauth001_005_canonical_authority_registry.py
+      - name: Full repository regression
+        run: python -m pytest -q tests
