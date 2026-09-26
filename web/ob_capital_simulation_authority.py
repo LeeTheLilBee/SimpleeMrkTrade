@@ -21,12 +21,13 @@ from web.ob_multi_simulation_harness import (
 
 
 SCHEMA_VERSION = "OB_CAPITAL_SIMULATION_V1"
-SERVICE_VERSION = "CAPSIM001_010_CAPITAL_SIMULATION"
+SERVICE_VERSION = "CAPSIM001_015_CAPITAL_SIMULATION"
 
 EFFECTIVE_POLICY_AUTHORITY = "OB_EFFECTIVE_POLICY_V1"
 MARKET_TIME_AUTHORITY = "OB_MARKET_TIME_V1"
 
-PENDING_CAPITAL_POLICY_AUTHORITY = "PENDING_OBCAP"
+PENDING_CAPITAL_POLICY_AUTHORITY = "PENDING_OBCAP"  # retired compatibility label
+CAPITAL_POLICY_AUTHORITY = "OB_CAPITAL_POLICY_V1"
 SESSION_LOSS_AUTHORITY = SCHEMA_VERSION
 
 
@@ -2602,10 +2603,19 @@ def capital_simulation_contract() -> dict[str, object]:
             EFFECTIVE_POLICY_AUTHORITY,
 
         "capital_policy_source_status":
-            "PENDING",
+            "ACTIVE",
+
+        "capital_policy_authority":
+            CAPITAL_POLICY_AUTHORITY,
 
         "pending_capital_policy_authority":
-            PENDING_CAPITAL_POLICY_AUTHORITY,
+            None,
+
+        "prepolicy_authority_is_separate":
+            True,
+
+        "simulation_admission_remains_post_policy":
+            True,
 
         "policy_limits_consumed": [
             "max_loss_per_trade_pct",
