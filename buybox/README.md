@@ -1,85 +1,100 @@
 # BuyBox — Simplee Universal Acquisition Intelligence
 
-BuyBox is a dedicated package on its own feature branch in the accessible
-SimpleeMrkTrade monorepo. Its full target is the comprehensive multi-asset
-acquisition product, not an ATM-only release.
+BuyBox is developed in a dedicated feature branch inside the currently connected
+SimpleeMrkTrade repository. The product target remains the **complete universal
+acquisition system**, not an ATM-only application.
 
-## Real owner workspace (BBX004)
+## Real owner workspace — BBX001–BBX005
 
-The previous synthetic browser demonstration was deleted. The owner workspace
-now uses authenticated, persistent server routes and begins **empty**. It accepts
-real owner-entered opportunities across all seven categories, source URLs,
-evidence references, owner-led stage-change requests, and retains immutable
-historical revision copies and activity records. No sample seller, revenue,
-bank balance, or fabricated opportunity is installed as live app content.
+The old synthetic UI preview was removed. The real, persistent workspace opens
+with **no sample listings, invented earnings, or fabricated approval signals**.
+It currently supports:
+- Owner sign-in with a securely hashed password; CSRF and no-cache controls.
+- Persistent owner-created opportunities in all seven registered acquisition classes.
+- Source intake, cautious duplicate suggestions, responsive browse and search.
+- Original PDF/image/text/CSV intake encrypted at rest with SHA-256 integrity
+  checking and authenticated attachment-only retrieval.
+- Received-versus-reviewed documentary evidence, preservation of original
+  revisions and review rationale.
+- Source-linked annual revenue/expense records with matching 12-month periods.
+- Deterministic preliminary financial calculation, authenticated real-record
+  comparison, and assumption-labeled mathematical scenario analysis.
+- Local acquisition stage guards, event/revision history, and grounded textual
+  Soulaana briefing (not yet a live AI service).
+- Material-change invalidation: old assessments/readiness are not preserved as
+  a fresh greenlight after material deal inputs change.
 
-Run from the repository root with Python 3.12+:
+### Local private runbook
 
+Install Python 3.12+ dependencies:
 ```sh
 python -m pip install -r buybox/requirements.txt
-python -c "from werkzeug.security import generate_password_hash; import getpass; print(generate_password_hash(getpass.getpass('Set BuyBox owner password: ')))"
-# Export the printed hash as BUYBOX_PASSWORD_HASH, a cryptographically random
-# BUYBOX_SECRET_KEY, and BUYBOX_DB_PATH in a PRIVATE persistent directory.
+```
+
+Create **two private local directories**, excluding group/other access:
+```sh
+mkdir -p "$HOME/.local/share/simplee-buybox/documents"
+chmod 700 "$HOME/.local/share/simplee-buybox" "$HOME/.local/share/simplee-buybox/documents"
+```
+
+Generate a hashed owner password and a document encryption key:
+```sh
+python -c "from werkzeug.security import generate_password_hash; import getpass; print(generate_password_hash(getpass.getpass('Owner password: ')))"
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Provide the resulting values securely as BUYBOX_PASSWORD_HASH,
+BUYBOX_DOCUMENT_KEY and BUYBOX_SECRET_KEY. Also configure:
+```sh
+export BUYBOX_DB_PATH="$HOME/.local/share/simplee-buybox/buybox.sqlite3"
+export BUYBOX_DOCS_DIR="$HOME/.local/share/simplee-buybox/documents"
 python -m buybox.app
 ```
 
-Default bind address is localhost (127.0.0.1), port 8787. Do not expose the
-development server to the public internet. Protect the owner password, key and
-database path; do not commit them. Set the secure-cookie option under an actual
-TLS deployment with a production WSGI server.
+Default host: `127.0.0.1`, port `8787`. Do not expose the Flask development
+server to the public internet. Protect all secrets and maintain secure backup
+and key recovery procedures: losing BUYBOX_DOCUMENT_KEY prevents decryption of
+previously uploaded evidence. Never commit sensitive values or financial files.
 
-## Authority and boundaries
+The local intake store is **not** the Archive Vault. Permanent proof transfer
+must use Tower's authorized Vault corridor when the real integration exists.
+Owner documentary review is not a claim of independent professional verification.
 
-- BuyBox owns opportunities, discovery, evidence registers, preliminary
-  calculations, scenarios, stage logic, revision history and acquisition
-  intelligence; it does not execute purchases or transfer money.
-- Teller is the only BuyBox-facing source for capital deployment and
-  people/management readiness. BuyBox does not read OB balances directly.
-- Grounds is the existing real-property operations system and property handoff
-  destination, not a second portfolio ledger in BuyBox.
-- Tower authenticates and authorizes protected actions when integrated; there
-  is NO live Tower adapter yet and the local app blocks protected transitions.
-- Vault access is Tower-mediated; there is no direct BuyBox-Vault call.
-- Soulaana's present deterministic briefing is grounded in stored findings,
-  not a claim that live AI services or cross-app context are connected.
+## Authority and integration limits
 
-## Implemented foundation
+- BuyBox owns acquisition discovery, intelligence and records, not trades,
+  payment execution or independent closing authorization.
+- Teller is the BuyBox-facing source for money deployment, protected floors
+  and management/expansion capacity. Until an authenticated connector exists,
+  readiness is shown as UNKNOWN and cannot be forged with a serialized dict.
+- Grounds supplies property-portfolio context and is the owned-property link
+  and handoff destination. No live Grounds adapter is connected yet.
+- Tower handles protected access and approvals. Contract-shaped receipts are
+  not sufficient; protected transitions and handoff remain blocked until the
+  authenticated adapter verifies the actual issuer, action, subject and snapshot.
+- Soulaana's current deterministic explanation is grounded in stored evidence;
+  the live Soulaana service and associated permissions are not wired yet.
+- No external marketplace feeds, bank/broker data, or manufactured account
+  balances are presented in the workspace.
 
-Seven versioned vertical manifests: ATM, multifamily, commercial, laundromat,
-land/farm, business and equipment. The universal opportunity core includes
-distinct judgment and lifecycle states; evidence manifest and coverage;
-decimal-safe preliminary scenario calculations; ATM machine ownership
-screening; source normalization and conservative duplicate suggestions;
-versioned SQLite persistence; conflict-safe local writes; owner login, CSRF,
-limited upload body size, and responsive dark screens.
-
-BBX003 adds source-located claim records, exact-byte digests for original-file
-descriptors, conflict detection, stage-gate reports, and material-change
-invalidation. The local app **does not accept document bytes for uploads yet**:
-encrypted storage and access control must be integrated before exposing
-sensitive acquisition files. It does record real evidence references.
-
-## Tests
+## Tests and CI
 
 ```sh
 python -m unittest discover -s buybox/tests -v
 ```
 
-Automated CI installs BuyBox dependencies and runs the isolated test suite.
-Test fixture data in unit tests is deliberately artificial, solely to verify
-behavior; no test fixtures populate the owner database or production product.
-There are no fabricated live listings, performance, Teller readiness or
-Tower approvals.
+Engineering tests use isolated temporary databases and artificial test values
+to prove correctness; these fixtures never populate the actual product.
+GitHub CI installs dependencies and executes the suite.
 
-## Pending for full V1
+## Still required for the complete V1
 
-Authenticated Tower/Teller/Grounds adapters; protected original-document
-storage and extraction/review workflow; full metric/formula/policy registry and
-vertical-specific calculations; actual licensed external listing connectors;
-financing/portfolio and negotiation/diligence/closing room implementations;
-live backend-connected Compare/Scenario interfaces; real Soulaana service
-integration; operational handoff/outcome feeds; production infrastructure,
-security review, accessibility and end-to-end deployment certification.
-
-This branch and draft PR are **not** a finished or deployed production release.
-No legacy Tower/OB runtime is modified or merged by this branch.
+Authenticated Tower/Teller/Grounds/Vault integration, document malware scanning
+and formal retention controls, full per-vertical underwriting/policy registries,
+licensed external feeds, advanced negotiation and diligence rooms, lender
+comparison and true portfolio allocation, a fully integrated Soulaana service,
+post-closing destination acknowledgments/feedback, operational deployment and
+security/accessibility certification. The present branch is functional but NOT
+the completed, publicly deployed V1. Do not merge into active Tower/OB without
+integration review.
