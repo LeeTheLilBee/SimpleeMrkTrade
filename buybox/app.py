@@ -156,7 +156,10 @@ def create_app(config=None):
     def csrf_context():
         if "csrf" not in session:
             session["csrf"]=secrets.token_hex(32)
-        return {"csrf_token": session["csrf"], "verticals": VERTICALS}
+        return {"csrf_token": session["csrf"], "verticals": VERTICALS,
+                "tower_governed": auth_mode=="tower",
+                "tower_return_url": (app.config["TOWER_PUBLIC_ORIGIN"]+
+                    "/tower/access-home" if auth_mode=="tower" else None)}
 
     @app.before_request
     def guard():
