@@ -8,7 +8,7 @@ Tower's runtime versus an isolated backend behind Tower remains a coordinated
 implementation decision. The product target remains the **complete universal
 acquisition system**, not an ATM-only application.
 
-## Real owner workspace — BBX001–BBX016
+## Real owner workspace — BBX001–BBX021
 
 The old synthetic UI preview was removed. The real, persistent workspace opens
 with **no sample listings, invented earnings, or fabricated approval signals**.
@@ -103,6 +103,32 @@ invalidate older drafts. The formatter makes **no** cross-app call or
 authorization and cannot certify the claimed actor/entity/classification.
 See `INTEGRATION_HANDOFFS.md` and Tower issue #42 for the actual owner
 receiver/launch path required before hosting.
+
+### Protected Tower owner receiver source checkpoint (BBX017–021)
+
+BuyBox now includes a **disabled-by-default hosted owner exchange** in
+`buybox/app.py`, backed by `buybox/hosted_auth.py` and
+`buybox/tower_session_store.py`. It accepts the exact signed short-lived
+`tower.buybox.owner.handoff.v1` form token through an HTTPS exact-origin POST,
+checks a separately injected trusted Tower session/entitlement/step-up
+introspection adapter, consumes the token only once in durable SQLite, and
+creates a revocable server-side session. The browser cookie holds only an
+opaque local handle and CSRF—not readable Tower session/principal/entity IDs.
+Every protected request revalidates actual Tower session status, denying stale
+or revoked context; signout returns to Tower Access Home. Standalone owner
+password login is disabled in Tower mode.
+
+**Not a production launch:** the repository intentionally supplies neither
+the authenticated live Tower introspection adapter nor independent actual
+provider/storage/backup attestation. Setting `BUYBOX_AUTH_MODE=tower` in the
+environment alone fails startup, and source-only tests use mock adapters, not
+real Tower sessions or Render backup proof. Durable private storage, vetted
+origins/TLS/secrets, Tower-issued tokens, exact owner acceptance and monitored
+deployment are still required. See
+[`docs/BUYBOX_TOWER_OWNER_CROSSING_BBX017_021.md`](../docs/BUYBOX_TOWER_OWNER_CROSSING_BBX017_021.md)
+and [Tower issue #42](https://github.com/LeeTheLilBee/SimpleeMrkTrade/issues/42).
+Soulaana's contextual room and all BuyBox financial/decision boundaries remain
+unchanged.
 
 ## Authority and integration limits
 
