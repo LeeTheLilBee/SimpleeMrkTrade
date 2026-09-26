@@ -12,6 +12,8 @@ on:
       - 'tests/test_capsim001_005_capital_simulation_authority.py'
       - 'tests/test_capsim006_010_session_loss_experimental_admission.py'
       - 'tests/test_obpolicy001_010_effective_policy.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - 'tests/test_obevent001_010_command_event_causal.py'
       - '.github/workflows/ob-capital-policy-focused.yml'
   pull_request:
     paths:
@@ -23,6 +25,8 @@ on:
       - 'tests/test_capsim001_005_capital_simulation_authority.py'
       - 'tests/test_capsim006_010_session_loss_experimental_admission.py'
       - 'tests/test_obpolicy001_010_effective_policy.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - 'tests/test_obevent001_010_command_event_causal.py'
       - '.github/workflows/ob-capital-policy-focused.yml'
 permissions:
   contents: read
