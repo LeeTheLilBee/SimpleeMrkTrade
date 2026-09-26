@@ -25,6 +25,8 @@ To inspect the visual prototype, open `grounds/ui/preview.html` locally in a bro
 - `leasing.py` — availability, opaque prospect stages and tour plans.
 - `teller.py` — exact-unit, exact-lease verified Teller rent display, no checkout.
 - `evidence.py` — only verified opaque Vault/Tower proof references.
+- `capital.py` — five-lane apartment reserve/readiness snapshot sourced through Teller, no money movement.
+- `soulaana.py` — read-only, source- and revision-bound explanations for work orders and readiness.
 
 A fake verifier appears only in unit-test fixtures. No real public route may trust a caller-supplied role, identity, proof verifier or payment projection.
 
