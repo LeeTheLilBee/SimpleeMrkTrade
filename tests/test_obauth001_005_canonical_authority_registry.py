@@ -131,6 +131,9 @@ def test_exact_current_active_authorities_are_registered():
         "owner_review_evidence":
             "OB_OWNER_REVIEW_EVIDENCE_V1",
 
+        "review_learning":
+            "OB_REVIEW_LEARNING_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
