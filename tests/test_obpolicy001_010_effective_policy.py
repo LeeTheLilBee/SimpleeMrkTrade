@@ -453,7 +453,7 @@ def test_policy_source_registry_has_active_and_future_sources():
             "status"
         ]
         ==
-        "PENDING"
+        "ACTIVE"
     )
 
     assert (
@@ -1427,7 +1427,7 @@ def test_effective_policy_authority_grants_no_execution():
 
 
 
-def test_mode_policy_is_active_while_later_policy_layers_remain_pending():
+def test_mode_capital_policy_are_active_while_other_layers_pending():
 
     assert (
         POLICY_SOURCE_REGISTRY[
@@ -1458,8 +1458,11 @@ def test_mode_policy_is_active_while_later_policy_layers_remain_pending():
         "OB_OPERATING_MODE_V1"
     )
 
+    assert POLICY_SOURCE_REGISTRY["CAPITAL_POLICY"]["status"] == "ACTIVE"
+    assert POLICY_SOURCE_REGISTRY["CAPITAL_POLICY"]["runtime_allowed"] is True
+    assert POLICY_SOURCE_REGISTRY["CAPITAL_POLICY"]["source_authority"] == "OB_CAPITAL_POLICY_V1"
+
     for key in (
-        "CAPITAL_POLICY",
         "PORTFOLIO_POLICY",
         "SAFETY_KERNEL_POLICY",
     ):
