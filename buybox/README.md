@@ -8,7 +8,7 @@ Tower's runtime versus an isolated backend behind Tower remains a coordinated
 implementation decision. The product target remains the **complete universal
 acquisition system**, not an ATM-only application.
 
-## Real owner workspace — BBX001–BBX010
+## Real owner workspace — BBX001–BBX016
 
 The old synthetic UI preview was removed. The real, persistent workspace opens
 with **no sample listings, invented earnings, or fabricated approval signals**.
@@ -83,6 +83,26 @@ previously uploaded evidence. Never commit sensitive values or financial files.
 The local intake store is **not** the Archive Vault. Permanent proof transfer
 must use Tower's authorized Vault corridor when the real integration exists.
 Owner documentary review is not a claim of independent professional verification.
+
+### Tower owner doorway and source-bound action preparation
+
+The separate [BBX011–015 hosted boundary PR #45](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/45)
+has been merged into this BuyBox branch: a source-only
+`tower.buybox.owner.handoff.v1` strict signed-envelope verifier and durable
+single-use receipt primitive plus private hosting configuration inspection.
+It has **no live HTTP receiver, owner session, Tower token issuer, certified
+disk/backup or authenticated deployment**. The local Flask password remains
+development-only. Tower's registered BuyBox app remains nonlaunchable.
+
+BBX016 `buybox/tower_action_draft.py` produces an
+`tower.buybox.action.v1` **UNTRUSTED_DRAFT** from the exact persisted
+opportunity revision and SHA-256 snapshot digest. The action/purpose/vertical
+contract is checked in CI against merged Tower TWR202–206
+(`db57752b9fd7402265dceb7a35cf93ea16015218`), and changed revisions
+invalidate older drafts. The formatter makes **no** cross-app call or
+authorization and cannot certify the claimed actor/entity/classification.
+See `INTEGRATION_HANDOFFS.md` and Tower issue #42 for the actual owner
+receiver/launch path required before hosting.
 
 ## Authority and integration limits
 
