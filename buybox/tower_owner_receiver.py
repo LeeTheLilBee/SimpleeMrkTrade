@@ -13,7 +13,9 @@ import hmac
 import json
 import re
 import sqlite3
+import time
 from dataclasses import dataclass
+from types import MappingProxyType
 from typing import Any, Mapping
 
 SCHEMA_VERSION = "tower.buybox.owner.handoff.v1"
@@ -123,7 +125,7 @@ def verify_tower_buybox_owner_handoff(
         or expires - issued > MAX_LIFETIME_SECONDS
     ):
         raise TowerBuyBoxHandoffError("INVALID_HANDOFF_TIME")
-    return VerifiedOwnerHandoff(claims=claims)
+    return VerifiedOwnerHandoff(claims=MappingProxyType(claims))
 
 
 def consume_verified_handoff(db: sqlite3.Connection, verified: VerifiedOwnerHandoff) -> bool:
@@ -146,7 +148,7 @@ def consume_verified_handoff(db: sqlite3.Connection, verified: VerifiedOwnerHand
         try:
             db.execute(
                 "INSERT INTO buybox_tower_consumed_handoffs VALUES (?,?,?)",
-                (digest, verified.claims["issued_at_epoch"], verified.claims["expires_at_epoch"]),
+                (digest, int(time.time()), verified.claims["expires_at_epoch"]),
             )
         except sqlite3.IntegrityError:
             return False
