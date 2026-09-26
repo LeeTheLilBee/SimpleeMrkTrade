@@ -6,11 +6,23 @@ on:
     paths:
       - 'web/ob_capital_policy_authority.py'
       - 'tests/test_capsim011_012_prepolicy_capital_projection.py'
+      - 'web/ob_capital_simulation_authority.py'
+      - 'web/ob_effective_policy.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_capsim001_005_capital_simulation_authority.py'
+      - 'tests/test_capsim006_010_session_loss_experimental_admission.py'
+      - 'tests/test_obpolicy001_010_effective_policy.py'
       - '.github/workflows/ob-capital-policy-focused.yml'
   pull_request:
     paths:
       - 'web/ob_capital_policy_authority.py'
       - 'tests/test_capsim011_012_prepolicy_capital_projection.py'
+      - 'web/ob_capital_simulation_authority.py'
+      - 'web/ob_effective_policy.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_capsim001_005_capital_simulation_authority.py'
+      - 'tests/test_capsim006_010_session_loss_experimental_admission.py'
+      - 'tests/test_obpolicy001_010_effective_policy.py'
       - '.github/workflows/ob-capital-policy-focused.yml'
 permissions:
   contents: read
