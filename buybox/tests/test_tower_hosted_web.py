@@ -182,7 +182,7 @@ class HostedWebTests(unittest.TestCase):
 
     def test_signout_revokes_private_session_and_returns_to_tower(self):
         self.assertEqual(self.exchange().status_code,303)
-        with self.client.session_transaction() as sess:
+        with self.client.session_transaction(base_url=ORIGIN) as sess:
             csrf=sess["csrf"]
         out=self.client.post("/logout",base_url=ORIGIN,
                              data={"csrf_token":csrf})
