@@ -1,0 +1,107 @@
+name: Tower Teller v2 source regression
+
+on:
+  push:
+    branches:
+      - tower-teller-hosted-worker-guard-twr198
+      - tower-teller-persistence-v2-twr193-197
+  pull_request:
+    branches:
+      - tower-teller-persistence-v2-twr193-197
+      - tower-hosted-runtime-identity-twr081-085
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tower-teller-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact Tower candidate
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout sealed Teller verifier
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/The-Teller
+          ref: fd430134295167c6ee10e8c2d27a59592fa5d353
+          path: teller-contract
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install hosted runtime and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r deploy/hosted_tower/requirements.txt pytest
+
+      - name: Check hosted startup script syntax
+        run: bash -n deploy/hosted_tower/start.sh
+
+      - name: Run TWR188–TWR198 security regression wall
+        run: |
+          python -m pytest -q \
+            tests/test_tower_owner_teller_handoff_twr188.py \
+            tests/test_tower_teller_handoff_exchange_twr189.py \
+            tests/test_tower_teller_activation_twr190.py \
+            tests/test_teller_runtime_publication_authority_twr191.py \
+            tests/test_tower_canonical_front_door_twr192.py \
+            tests/test_tower_teller_persistence_exchange_twr193_197.py \
+            tests/test_tower_teller_hosted_single_worker_twr198.py
+
+      - name: Tower token accepted by exact sealed Teller verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          export TELLER_TOWER_TOKEN_SECRET="synthetic-ci-twr198-secret-not-for-production-0123456789abcdef"
+          python - <<'PY' > "$RUNNER_TEMP/tower_teller_synthetic_crossing.json"
+          import json
+          from tower.teller_persistence_token import issue_teller_persistence_access_token
+          issued = issue_teller_persistence_access_token(
+              tower_session_id="tower_session_ci",
+              tower_receipt_id="tower_receipt_ci",
+              actor_id="owner_ci",
+              actor_role="owner",
+              business_key="business_ci",
+              now_epoch=2_000_000_000,
+              lifetime_seconds=300,
+          )
+          import os
+          print(json.dumps({
+              "token": issued["token"],
+              "secret": os.environ["TELLER_TOWER_TOKEN_SECRET"],
+              "now": 2_000_000_000,
+          }))
+          PY
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import assert from 'node:assert/strict';
+          import { verifyTellerPersistenceAccessToken } from './teller-contract/server/teller/transport/tellerPersistenceAccessToken.js';
+          const file = path.join(process.env.RUNNER_TEMP, 'tower_teller_synthetic_crossing.json');
+          const { token, secret, now } = JSON.parse(fs.readFileSync(file, 'utf8'));
+          const claims = verifyTellerPersistenceAccessToken({
+            token, secret, issuer: 'tower',
+            audience: 'teller-persistence',
+            nowSeconds: now, maxLifetimeSeconds: 600,
+          });
+          assert.equal(claims.actor_role, 'owner');
+          assert.equal(claims.business_key, 'business_ci');
+          assert.equal(claims.tower_session_id, 'tower_session_ci');
+          assert.equal(claims.tower_receipt_id, 'tower_receipt_ci');
+          assert.equal(claims.exp - claims.iat, 300);
+          console.log('Tower → sealed Teller token contract passed (synthetic; no token printed).');
+          JS
+          rm -f "$RUNNER_TEMP/tower_teller_synthetic_crossing.json"

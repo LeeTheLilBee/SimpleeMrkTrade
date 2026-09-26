@@ -508,6 +508,32 @@ def _validate_session_context(
         context.get("step_up_until")
     )
 
+    tower_session_id = _clean(
+        context.get(
+            "tower_session_id"
+        )
+    )
+
+    if (
+        tower_session_id
+        and (
+            len(
+                tower_session_id
+            )
+            > 128
+            or any(
+                ch
+                not in
+                _ALLOWED_CONTEXT_CHARS
+                for ch
+                in tower_session_id
+            )
+        )
+    ):
+        raise OwnerTellerHandoffError(
+            "owner_teller_session_id_invalid"
+        )
+
     if not all(
         (
             owner_id,
@@ -565,6 +591,9 @@ def _validate_session_context(
 
         "step_up_until":
             step_up_until,
+
+        "tower_session_id":
+            tower_session_id,
     }
 
     session_binding = _sign(
@@ -852,6 +881,12 @@ def issue_owner_teller_handoff(
                 "username"
             ],
 
+        "tower_session_id":
+            session_truth.get(
+                "tower_session_id",
+                "",
+            ),
+
         "session_binding":
             session_truth[
                 "session_binding"
@@ -1120,6 +1155,12 @@ def consume_owner_teller_handoff(
             payload[
                 "owner_id"
             ],
+
+        "tower_session_id":
+            payload.get(
+                "tower_session_id",
+                "",
+            ),
 
         "target_path":
             TELLER_OWNER_ENTRY_PATH,

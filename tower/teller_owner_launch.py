@@ -57,11 +57,13 @@ from tower.tower_human_login_ob_launch import (
     ACCESS_HOME_PATH,
     SESSION_AUTHENTICATED,
     SESSION_AUTH_TIME,
+    SESSION_ID,
     SESSION_OWNER_ID,
     SESSION_ROLE,
     SESSION_STEP_UP_UNTIL,
     SESSION_USERNAME,
     configured_step_up_minutes,
+    ensure_tower_session_id,
     page,
     require_human_owner,
     safe_next_path,
@@ -153,6 +155,9 @@ def _session_context():
             session.get(
                 SESSION_STEP_UP_UNTIL
             ),
+
+        "tower_session_id":
+            ensure_tower_session_id(),
     }
 
 
