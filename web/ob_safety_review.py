@@ -172,7 +172,12 @@ def _build(
             source = intent.get("candidate")
             if not isinstance(source, dict) or source.get("symbol") != selected.symbol:
                 raise ValueError("strategy/owner-fit candidate symbol mismatch")
-            kind = source.get("instrument_type")
+            # Canonical OBTradeIntent stores the original candidate inside
+            # source_payload; never treat the wrapper as another source engine.
+            payload = source.get("source_payload")
+            if payload is not None and not isinstance(payload, dict):
+                raise ValueError("owner-fit candidate source payload must be a source object")
+            kind = (payload or {}).get("instrument_type", source.get("instrument_type"))
             if not isinstance(kind, str) or kind.upper() != selected.instrument_kind:
                 raise ValueError("strategy/owner-fit instrument mismatch")
             if selected.instrument_kind == "OPTION" and not _matching_research_contract(intent, selected):
