@@ -15,6 +15,12 @@ Status: **source-only, local-testable developer build on draft PR #51**. This wo
 | `grounds/ui/preview.html` | Accessible/responsive, dark-glass local preview: Resident Home (lease, notices, rent unavailable, demo maintenance form/tracker), maintenance assigned queue, manager triage, leasing inventory and owner pulse. In-memory fictional work orders support role switching and review → assignment → technician completion → resident reopen. Browser refresh resets all data. |
 | `grounds/test_*.py` / workflow | Pure data/authorization/state/financial-boundary regressions plus HTML preview and JavaScript syntax check. No real identities, payment network calls or provider secrets. |
 
+## Additional GRD020–022 source
+
+- `grounds/capital.py`: validates the five separate apartment mission lanes (down payment, closing, repair/CapEx, operating/emergency, manager/ops remodel) from an exact-property and exact-deal-terms, fresh, verified Teller snapshot. It enforces floor/availability arithmetic and shows underfunded lanes without treating policy floors as available cash. No OB query, transfer or acquisition authority.
+- `grounds/soulaana.py`: read-only, access-checked work-order status and Teller readiness explanations with revision/terms provenance. The local HTML preview includes a contextual Soulaana drawer. Neither artificial-intelligence inference nor external source calls are claimed.
+- Additional tests cover protected floors, changed acquisition terms, stale Teller data, wrong source, cross-property information denial, and explanation non-execution.
+
 ## Boundaries required for live implementation
 
 1. Tower must certify a real Grounds audience/issuer, separate resident and staff identity flows, property/unit and job-specific grants, revocation, CSRF, session/replay protection and auditable handoff/return. The test fixtures use identity verifier lambdas solely in `test_*.py`; **never expose them in an app server**.
