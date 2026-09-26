@@ -4,6 +4,7 @@ on:
     paths:
       - 'grounds/**'
       - 'docs/THE_GROUNDS_RECOVERED_PLAN_GRD001_005.md'
+      - 'docs/THE_GROUNDS_IMPLEMENTATION_GRD006_019.md'
       - '.github/workflows/grounds-source-contract.yml'
   push:
     branches:
