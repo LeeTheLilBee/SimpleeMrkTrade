@@ -35,6 +35,19 @@ class SoulaanaContextTests(unittest.TestCase):
         result=context(op,"red_team")
         self.assertTrue(any(e["classification"]=="MODELING_LIMITATION" for e in result["entries"]))
 
+    def test_local_snapshot_is_not_misrepresented_as_vault_archived(self):
+        op=new_opportunity("atm","Original file")
+        op["snapshots"]=[{"snapshot_id":"local-snapshot-1","opportunity_revision":2,
+                          "archive_state":"NOT_REQUESTED",
+                          "evidence_versions":[{"evidence_id":"original-evidence-1"}]}]
+        report=context(op,"evidence")
+        proof=[x for x in report["entries"] if x["classification"]=="LOCAL_PROOF_SNAPSHOT"]
+        self.assertEqual(len(proof),1)
+        self.assertEqual(proof[0]["label"],"NOT_ARCHIVED")
+        self.assertIn("local-snapshot-1",proof[0]["references"])
+        self.assertIn("NOT been requested",proof[0]["text"])
+        self.assertFalse(report["can_authorize"])
+
     def test_reject_unsupported_context(self):
         with self.assertRaises(ValueError):
             context(new_opportunity("atm","Route"),"approve_purchase")
