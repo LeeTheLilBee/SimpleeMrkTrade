@@ -11,6 +11,13 @@ starts empty. Tower/OB main has not been merged or deployed from this branch.
 
 ## Owner decisions needed (do not send any secrets over chat)
 
+**BBX017–021 update:** The exact Tower-signed pre-render exchange, private
+revocable session and disabled standalone login are implemented in BuyBox
+source. Actual Tower issuer/introspection and approved provider/storage
+attestation are not connected. Environment flags or synthetic CI do not
+turn this into an authorized public login. See
+`docs/BUYBOX_TOWER_OWNER_CROSSING_BBX017_021.md`.
+
 1. **Workspace confirmed (2026-09-26).** Owner selected Render `Simplee World`,
    workspace ID `tea-dag3rfu1egvs73a6s72g`. Existing service in it:
    `simplee-tower-ob` (`srv-dag3sv2jnfac73bjqj8g`). Owner correction:
@@ -44,10 +51,15 @@ starts empty. Tower/OB main has not been merged or deployed from this branch.
 
 ## Security and launch gate
 
-- Use a private owner password with a one-way hash, random Flask signing key
-  and a separately saved document encryption key. Put these ONLY in a secret
-  manager or protected environment, never in the repository, commit, or chat.
+- The local owner password hash is **development only**. Hosted BuyBox must use
+  the Tower-issued, single-use owner crossing with no standalone password
+  login; real Tower session/entitlement/step-up introspection is required on
+  every protected request. Use distinct random Flask signing, Tower handoff
+  signing and document encryption secrets, kept ONLY in an approved secret
+  manager—never in the repository, commits, URLs or chat.
 - The current locally bound Flask dev server is NOT a production service.
+  Do not expose BuyBox publicly or enable `/tower/launch/buybox` from a green
+  source unit test. Obtain actual provider/backup and owner-login evidence.
 - Back up both the database and encrypted files consistently, along with the
   separately protected encryption key. Test recovery before accepting sensitive
   originals.
