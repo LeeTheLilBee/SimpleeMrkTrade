@@ -274,12 +274,19 @@ def build_safety_review(
     return value
 
 
-def safety_review_reference(value: SafetyReview) -> dict[str, object]:
-    if not isinstance(value, SafetyReview):
-        raise ValueError("safety reference requires canonical receipt")
-    digest = _digest(_material(value))
-    if value.integrity_hash != digest or value.review_id != "OBSAFE-" + digest[:24]:
-        raise ValueError("safety receipt integrity mismatch")
+def safety_review_reference(
+    value: SafetyReview, strategy: StrategyReview, *, portfolio: PortfolioComparison,
+    harness: MultiSimulationHarness, sources: tuple[PositionSnapshot, ...],
+    candidates: tuple[StrategyCandidate, ...], market_time: CanonicalMarketTimeReceipt,
+    mode_state: dict[str, object], signals: SafetySignals | None = None,
+    intent: dict[str, object] | None = None, context: dict[str, object] | None = None,
+) -> dict[str, object]:
+    if not verify_safety_review(
+        value, strategy, portfolio=portfolio, harness=harness, sources=sources,
+        candidates=candidates, market_time=market_time, mode_state=mode_state,
+        signals=signals, intent=intent, context=context,
+    ):
+        raise ValueError("safety reference requires verified full source lineage")
     return {
         "authority": SCHEMA_VERSION, "review_id": value.review_id,
         "integrity_hash": value.integrity_hash,
