@@ -24,6 +24,33 @@ BuyBox BBX016 implements `buybox/tower_action_draft.py`: from the **current save
 
 The separately developed [BuyBox PR #45](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/45), BBX011–015, has also now merged into the BuyBox base branch. Its `tower.buybox.owner.handoff.v1` HMAC verifier and atomic SQLite single-use receipt ledger are **protocol primitives only**, with no HTTP route or authenticated session yet. Its hosted configuration inspection remains explicitly not provider/disk/backup proof. Do not duplicate the receiver, issue a Tower token on the BuyBox side, or expose the local Flask password publicly. The next joint Tower/BuyBox work is **issue #42**: real owner-issued handoff + protected pre-render receiver, secure persistent hosting/backup, actual session and step-up, consented entitlement, issuer-bound protected actions and a real owner walkthrough.
 
+### BBX017–021 implementation update — protected owner receiver source
+
+The BuyBox branch now contains `buybox/hosted_auth.py`,
+`buybox/tower_session_store.py`, and a Tower-mode
+`POST /tower/owner-exchange` route in `buybox/app.py`. This is the BuyBox
+half of the signed `tower.buybox.owner.handoff.v1` pre-render exchange:
+POST-body token only, exact HTTPS BuyBox Origin/Host, short expiry, canonical
+signed claims and atomic replay denial; a separate live Tower adapter must
+recheck authenticated owner session, entity, entitlement, step-up and
+revocation at the exchange and every protected request. The client-visible
+signed Flask cookie contains only an opaque handle, not raw Tower identity
+references, and logout revokes its private SQLite binding. In Tower auth mode
+the development password entrance is disabled and a fixed Return to Tower
+link is displayed.
+
+**This is source work only.** The repository has no live Tower issuer, no
+trusted session-introspection implementation, no Render/provider storage
+attestor and no approved paid durable disk/database/backups. `create_app`
+rejects hosted mode without separately injected, actually certified
+adapters and inspected private mounted storage; a passing mocked test is
+not production authorization. For the Tower chat: pair this exact wire
+contract with real Tower owner/session/step-up/entitlement truth, independent
+provider/restore evidence, publication health, exact-origin issuer,
+revocation and an owner walkthrough. Do not open `/tower/launch/buybox`
+until the combined live crossing is verified. See
+`docs/BUYBOX_TOWER_OWNER_CROSSING_BBX017_021.md` and Tower issue #42.
+
 ## Handoff for THE TELLER chat
 
 BuyBox MUST ask Teller (never OB directly) for money-side deployment/readiness and management/expansion capacity. Define an authenticated request for an opportunity + version/digest + chosen business/mission account set (for ATM: Acquisition/Operations-Vault Set 1 or Set 2, reusable) + proposed price/capital stack + closing/fees + physical vault and replenishment liquidity + protected operating/replacement reserves + funding date + expected manager/staff/vendor load. Teller owns policy translation and financial-admin readiness; any underlying OB/Tower truth is mediated by Teller according to existing boundaries. Response must independently report money and management `READY/PARTIAL/BLOCKED/UNKNOWN`, aggregate readiness, spendable/deployable amount only as permitted, protected/committed amounts, shortfall, staffing gap, source/as-of/revision, expiry and issuer receipt, with explicit reasons. No new fabricated protected floors or guaranteed capital; pre-closing refresh required. Document how a changed proposal or source-state change invalidates earlier readiness and how to test fail-closed unavailable/expired answers. Teller must not gain direct OB execution authority via BuyBox. Return exact DTO/interface, tests and current blockers.
