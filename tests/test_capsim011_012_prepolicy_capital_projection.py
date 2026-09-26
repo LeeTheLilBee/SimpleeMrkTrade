@@ -260,3 +260,25 @@ def test_capsim015_canonical_policy_source_is_explicit_simulation_only():
         "hybrid_unlock", "automated_unlock",
     ):
         assert simulation[key] is False
+
+
+def test_capsim013_rejects_forged_capital_layer_even_with_rehashed_fingerprint(tmp_path):
+    from web.ob_effective_policy import (
+        capital_policy_layer, recompute_layer_fingerprint, validate_policy_layer,
+    )
+    owner = profile(tmp_path)
+    state, ledger = evidence()
+    projection = build_prepolicy_capital_projection(
+        owner, capital_state=state, session_loss=ledger,
+    )
+    valid = capital_policy_layer(projection)
+    assert validate_policy_layer(valid)["layer_class"] == "CAPITAL_POLICY"
+    for field, changed in (
+        ("restriction_only", False),
+        ("source_ref", {**valid["source_ref"], "simulation_only": False}),
+        ("limits", {"max_loss_per_trade_pct": 0.25}),
+    ):
+        forged = {**valid, field: changed}
+        forged["layer_fingerprint"] = recompute_layer_fingerprint(forged)
+        with pytest.raises(ValueError, match="CAPITAL_POLICY"):
+            validate_policy_layer(forged)
