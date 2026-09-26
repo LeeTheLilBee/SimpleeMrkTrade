@@ -64,6 +64,8 @@ class TowerReceiverTests(unittest.TestCase):
         )
         self.assertIsInstance(verified, VerifiedOwnerHandoff)
         self.assertEqual(verified.claims["actor_ref"], claims()["actor_ref"])
+        with self.assertRaises(TypeError):
+            verified.claims["actor_ref"] = "forged-actor"
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / "private.sqlite3"
             with sqlite3.connect(path) as db:
@@ -246,6 +248,11 @@ class HostedReadinessTests(unittest.TestCase):
         self.assertIn("BUYBOX_PUBLIC_ORIGIN_INVALID", report["reason_codes"])
         self.assertIn("TOWER_PUBLIC_ORIGIN_INVALID", report["reason_codes"])
         self.assertIn("SECURITY_KEYS_MUST_BE_DISTINCT", report["reason_codes"])
+
+    def test_invalid_document_key_returns_safe_blocker(self):
+        report = self.inspect({"BUYBOX_DOCUMENT_KEY": "not-a-Fernet-key"})
+        self.assertIn("DOCUMENT_KEY_INVALID", report["reason_codes"])
+        self.assertFalse(report["may_serve_private_records"])
 
     def test_documents_outside_actual_mount_denied(self):
         other = Path(self.temp.name) / "other"
