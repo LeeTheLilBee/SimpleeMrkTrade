@@ -125,10 +125,24 @@ def _atm_rules(op, ev):
     inventory = op.get("vertical_data", {}).get("machine_inventory", [])
     if inventory:
         for machine in inventory:
-            if machine.get("included",True) and machine.get("ownership") == "THIRD_PARTY":
-                finding("ATM-R001","BLOCK","Included machine has third-party ownership: "+str(machine.get("id","unknown")))
-            if machine.get("included",True) and machine.get("ownership") not in ("SELLER_OWNED","THIRD_PARTY"):
-                finding("ATM-R001","BLOCK","Included machine ownership not verified: "+str(machine.get("id","unknown")))
+            if not machine.get("included",True):
+                continue
+            identity=str(machine.get("id") or "unidentified")
+            ownership=machine.get("ownership")
+            if ownership=="THIRD_PARTY":
+                finding("ATM-R001","BLOCK","Included machine has third-party ownership: "+identity)
+            elif ownership=="SELLER_OWNED":
+                # A seller-owned label is an owner-recorded claim until backed
+                # by an actual reviewed, category-correct ownership artifact.
+                evidence_id=machine.get("ownership_evidence_id")
+                supporting=next((e for e in op.get("evidence",[])
+                    if e.get("id")==evidence_id and
+                    e.get("kind")=="ownership_documents" and
+                    e.get("status") in ("DOCUMENT_SUPPORTED","THIRD_PARTY_VERIFIED")),None)
+                if not supporting:
+                    finding("ATM-R001","BLOCK","Seller-ownership claim lacks reviewed ownership evidence: "+identity)
+            else:
+                finding("ATM-R001","BLOCK","Included machine ownership not established: "+identity)
         included = [m for m in inventory if m.get("included",True)]
         ids=[m.get("id") for m in included]
         if any(not x for x in ids) or len(set(ids)) != len(ids):
