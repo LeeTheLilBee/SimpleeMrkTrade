@@ -44,4 +44,4 @@ Reply with (1) verified current branch/repo/commit and what already exists, (2) 
 
 ## Hosting selection note
 
-Owner selected the **newest** Render workspace named `Simplee World`, not `Simplee World Staging`. Render currently exposes two identically named `Simplee World` IDs ending `d08pm0` and `a6s72g`, but the workspace listing has no creation timestamp. Verify newest via actual dashboard creation metadata/owner confirmation before creating or changing any Render resource; do not guess based on listing order or ID.
+**Confirmed by owner on 2026-09-26:** BuyBox's designated Render workspace is `Simplee World`, ID `tea-dag3rfu1egvs73a6s72g` (ending `a6s72g`). Existing `simplee-tower-ob` service in the same workspace must remain untouched. BuyBox requires a separate service and durable protected storage. Read-only inspection found no Postgres in this workspace; **do not create a public or ephemeral-storage deployment solely from workspace confirmation**. Confirm storage and access plan before creation.
