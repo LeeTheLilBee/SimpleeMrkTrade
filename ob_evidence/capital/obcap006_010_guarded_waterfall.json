@@ -1,0 +1,29 @@
+{
+  "pack": "OBCAP006-010",
+  "parent": "6c6b5ce2143775dc5a97f8672b66548e1ac938e0",
+  "authority": "OB_CAPITAL_WATERFALL_PROJECTION_V1",
+  "source": "OB_CAPITAL_TRUTH_V1",
+  "account": "simplee_on_the_go_atm",
+  "scopes": [
+    "ATM_SET_1_ACQUISITION",
+    "ATM_SET_1_OPERATIONS_VAULT",
+    "ATM_SET_2_ACQUISITION",
+    "ATM_SET_2_OPERATIONS_VAULT"
+  ],
+  "set_2_higher_target": true,
+  "protected_floor_non_decrease": true,
+  "owner_policy_mutated": false,
+  "high_water_proposal_only": true,
+  "harvest_hypothetical_only": true,
+  "capital_externally_verified": false,
+  "readiness": "NOT_ASSESSED_BY_OB",
+  "buybox_direct_access": false,
+  "teller_readiness_required": true,
+  "tower_mediation_required": true,
+  "broker_submission": false,
+  "capital_movement": false,
+  "mode_unlock": false,
+  "focused_tests_passed": 62,
+  "full_repository_tests_passed": 1298,
+  "implementation_ci": "https://github.com/LeeTheLilBee/SimpleeMrkTrade/actions/runs/36270996968"
+}
