@@ -28,7 +28,7 @@ land/farm, operating businesses and equipment. The same core serves all vertical
 - SQLite current state, preserved historical revisions, per-revision digests, activity events, optimistic-concurrency checks.
 - Source-grounded deterministic Soulaana brief placeholder, synthetic tests.
 
-Run tests from repository root:
+Open `buybox/preview.html` locally to inspect the presentation concept (all data is labeled synthetic).\n\nRun tests from repository root:
 
 ```sh
 python -m unittest discover -s buybox/tests -v
