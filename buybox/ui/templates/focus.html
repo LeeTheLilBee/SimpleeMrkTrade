@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Focus · BuyBox{% endblock %}
+{% block content %}
+<section class="hero"><p class="eyebrow">OWNER FOCUS DESK · {{ snapshot.as_of }}</p><h1>Here's what needs your attention.</h1><p>Only your recorded acquisition tasks and actual BuyBox changes appear here. No invented alerts, listings, or deadline estimates.</p></section>
+<section class="stats"><div class="tile"><small>Saved opportunities</small><strong>{{ snapshot.total_opportunities }}</strong></div><div class="tile"><small>Due today / overdue</small><strong>{{ snapshot.needs_attention }}</strong></div><div class="tile"><small>Open or waiting tasks</small><strong>{{ snapshot.tasks|length }}</strong></div><div class="tile"><small>Recent material activity</small><strong>{{ snapshot.changes|length }}</strong></div></section>
+<section class="workspace"><div class="main-column"><div class="panel"><p class="eyebrow">PRIORITY QUEUE</p><h2>What's next?</h2>
+{% for task in snapshot.tasks %}<article class="task-card"><p class="eyebrow">{{ task.priority|replace('_',' ') }} · {{ task.due_date }}</p><h3>{{ task.title }}</h3><p class="muted">{{ task.opportunity_name }} · {{ task.status|title }}</p><a href="{{ url_for('deal_room',oid=task.opportunity_id) }}">Open Deal Room →</a></article>{% else %}<p class="muted">No open tasks. Add work inside an actual opportunity's Deal Room.</p>{% endfor %}</div></div>
+<aside class="side-column"><div class="panel"><p class="eyebrow">WHAT CHANGED</p><h2>Recent recorded activity</h2>
+{% for event in snapshot.changes %}<div class="event"><strong>{{ event.event_type|replace('_',' ') }}</strong><small>{{ event.occurred_at }}</small><p><a href="{{ url_for('opportunity',oid=event.opportunity_id) }}">{{ event.opportunity_name }}</a></p></div>{% else %}<p class="muted">No recent material events in your saved opportunities.</p>{% endfor %}</div>
+<div class="panel"><p class="eyebrow">SOULAANA</p><h2>Context, not noise.</h2><p class="muted">Open any opportunity for Soulaana's source-grounded review of evidence, economics, blockers, changes and the next actual owner action.</p></div></aside></section>
+{% endblock %}
