@@ -205,13 +205,15 @@ class GroundsStewardship:
                     "SELECT COUNT(*) FROM inspection_findings WHERE inspection_ref=?",
                     (inspection_ref,),
                 ).fetchone()[0]
-                severe=db.execute(
-                    """SELECT COUNT(*) FROM inspection_findings
-                       WHERE inspection_ref=? AND severity IN ('major','urgent')""",
+                unresolved=db.execute(
+                    """SELECT COUNT(*) FROM inspection_findings f
+                       LEFT JOIN inspection_resolutions r ON r.finding_ref=f.finding_ref
+                       WHERE f.inspection_ref=? AND f.severity IN ('major','urgent')
+                       AND r.finding_ref IS NULL""",
                     (inspection_ref,),
                 ).fetchone()[0]
-                if count==0 or severe:
-                    raise GroundsConflict("explicit findings and severe-item review required before closure")
+                if count==0 or unresolved:
+                    raise GroundsConflict("explicit findings and verified severe-item resolutions required before closure")
             revision=expected_revision+1
             db.execute(
                 "UPDATE inspections SET state=?,revision=?,updated_at=? WHERE inspection_ref=?",
@@ -246,6 +248,43 @@ class GroundsStewardship:
             except sqlite3.IntegrityError as exc:
                 raise GroundsConflict("finding duplicated or invalid") from exc
             return {"finding_ref":finding_ref,"severity":severity,"notification_sent":False}
+
+    def resolve_inspection_finding(
+        self, actor: TowerScope, *, property_ref: str, inspection_ref: str,
+        finding_ref: str, signed_proof: object,
+        proof_verifier: Callable[[object], Mapping],
+    ) -> dict:
+        actor=self._access(actor,property_ref,"owner","property_manager","maintenance_supervisor")
+        with self.store.transaction(write=True) as db:
+            item=db.execute(
+                """SELECT i.unit_ref,i.state,f.severity FROM inspection_findings f
+                   JOIN inspections i ON i.inspection_ref=f.inspection_ref
+                   WHERE i.property_ref=? AND i.inspection_ref=? AND f.finding_ref=?""",
+                (property_ref,inspection_ref,finding_ref),
+            ).fetchone()
+            if item is None:
+                raise AccessDenied("inspection finding unavailable")
+            if item["state"] not in ("in_progress","review"):
+                raise GroundsConflict("inspection is not open for remediation")
+            if item["severity"] not in ("major","urgent"):
+                raise GroundsConflict("minor observation needs no severe-item clearance")
+            proof_ref=_verified_proof(
+                proof_verifier,signed_proof,kind="inspection_resolution",
+                expected={"property_ref":property_ref,"inspection_ref":inspection_ref,
+                          "finding_ref":finding_ref,"unit_ref":item["unit_ref"]},
+            )
+            resolution_ref=uuid4().hex
+            try:
+                db.execute(
+                    """INSERT INTO inspection_resolutions
+                       (resolution_ref,finding_ref,proof_ref,verified_by,recorded_at)
+                       VALUES(?,?,?,?,?)""",
+                    (resolution_ref,finding_ref,proof_ref,actor.subject_ref,_now()),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise GroundsConflict("finding already resolved or proof reference reused") from exc
+            return {"resolution_ref":resolution_ref,"finding_ref":finding_ref,
+                    "proof_ref":proof_ref,"external_notification_sent":False}
 
     def begin_turnover(self, actor: TowerScope, *, property_ref: str,
                        unit_ref: str, lease_ref: str, turnover_ref: str) -> dict:
