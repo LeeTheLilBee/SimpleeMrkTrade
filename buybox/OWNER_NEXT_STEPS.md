@@ -13,17 +13,19 @@ starts empty. Tower/OB main has not been merged or deployed from this branch.
 
 1. **Workspace confirmed (2026-09-26).** Owner selected Render `Simplee World`,
    workspace ID `tea-dag3rfu1egvs73a6s72g`. Existing service in it:
-   `simplee-tower-ob` (`srv-dag3sv2jnfac73bjqj8g`), which must remain
-   unchanged. BuyBox is a separate service in the SAME workspace, NOT an
-   alteration to Tower. Read-only workspace inspection found no Postgres
+   `simplee-tower-ob` (`srv-dag3sv2jnfac73bjqj8g`). Owner correction:
+   BuyBox belongs behind Tower's front door and launches with Tower's
+   identity/permission model, not via a permanent standalone BuyBox login.
+   Its deployment topology (same service versus an isolated backend behind
+   Tower) remains for coordinated Tower/hosting review. Do not change the
+   existing Tower runtime or independently expose BuyBox without that review. Read-only workspace inspection found no Postgres
    instance. **Still needed:** owner approval of a durable, protected storage
    arrangement (persistent disk/volume for private SQLite and encrypted
    originals, or an explicit database/object-storage migration), along with
-   a private/owner-only exposure plan. Do not run the current storage on an
-   ephemeral web-service filesystem. Do not create a public service merely
-   because the workspace selection is complete. Actual deployment still
-   requires Tower identity integration, a production server, TLS, secrets,
-   protected original-document handling and a reviewed access model.
+   a Tower-governed owner-only exposure plan. Do not run the current storage
+   on an ephemeral filesystem or create a standalone public BuyBox entrance.
+   Deployment requires Tower identity/launch integration, production serving,
+   TLS, secrets, protected original-document handling and review.
 2. **Confirm the actual source repositories and authorized integration endpoints.**
    Tower owns identity, permission, step-up and Vault mediation. Teller owns
    money and management-capacity readiness. Grounds owns real-property context.
