@@ -30,6 +30,7 @@ from .workflow import transition, gate_report, invalidate_on_change
 from .documents import PrivateDocumentStore
 from .dealroom import new_task, update_task, record_negotiation, current_tasks
 from .workflow import add_decision_snapshot
+from .soulaana import context as soulaana_context, INTENTS as SOULAANA_INTENTS
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -187,6 +188,21 @@ def create_app(config=None):
                                revisions=list(reversed(revisions)),
                                manifest=get_vertical(op["vertical"]),
                                gate_options=LIFECYCLE,gate_report=gate_report)
+
+    @app.get("/opportunities/<oid>/soulaana")
+    @login_required
+    def soulaana_room(oid):
+        intent=request.args.get("intent","overview")
+        if intent not in SOULAANA_INTENTS:
+            abort(400,"Unsupported Soulaana context")
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        return render_template("soulaana.html",op=op,
+            context=soulaana_context(op,intent),intents=(
+            ("overview","Overview"),("evidence","Evidence"),
+            ("economics","Economics"),("changes","What changed"),
+            ("red_team","Red Team"),("next_action","Next action")))
 
     @app.post("/compare")
     @login_required
