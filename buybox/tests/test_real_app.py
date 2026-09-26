@@ -4,6 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 from werkzeug.security import generate_password_hash
+from cryptography.fernet import Fernet
+from io import BytesIO
 from buybox.app import create_app
 from buybox.store import connect, list_opportunities
 
@@ -11,10 +13,14 @@ class OwnerAppTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
         self.db=str(Path(self.tmp.name)/"opportunities.sqlite3")
+        self.docs=str(Path(self.tmp.name)/"documents")
+        Path(self.docs).mkdir(mode=0o700)
         self.app=create_app({
             "TESTING":True, "SECRET_KEY":"test-secret-not-for-production",
             "BUYBOX_PASSWORD_HASH":generate_password_hash("test-local-only-password"),
-            "BUYBOX_DB_PATH":self.db,"SESSION_COOKIE_SECURE":False,
+            "BUYBOX_DB_PATH":self.db,"BUYBOX_DOCS_DIR":self.docs,
+            "BUYBOX_DOCUMENT_KEY":Fernet.generate_key().decode(),
+            "SESSION_COOKIE_SECURE":False,
         })
         self.client=self.app.test_client()
         with self.client.session_transaction() as sess:
@@ -124,6 +130,41 @@ class OwnerAppTests(unittest.TestCase):
             "revision":str(op["version"]),"metric_name":"annual_expenses",
             "value":"100","period":"2025","evidence_id":eid})
         self.assertEqual(result.status_code,400)
+
+    def test_upload_encrypts_real_original_and_authenticated_downloads(self):
+        oid=self.create()
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        contents=b"%PDF-1.7\\nDocument supplied to owner\\n%%EOF"
+        response=self.client.post("/opportunities/"+oid+"/upload",data={
+            "revision":str(op["version"]),"csrf_token":self.csrf,
+            "kind":"processor_statements","source_party":"Seller",
+            "document":(BytesIO(contents),"seller_statement.pdf","application/pdf"),
+        },content_type="multipart/form-data")
+        self.assertEqual(response.status_code,302)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertEqual(op["evidence"][-1]["status"],"RECEIVED")
+        artifact=op["artifacts"][-1]
+        encrypted=(Path(self.docs)/artifact["storage_reference"]).read_bytes()
+        self.assertNotEqual(encrypted,contents)
+        self.assertNotIn(b"Document supplied to owner",encrypted)
+        download=self.client.get("/opportunities/"+oid+"/documents/"+artifact["id"])
+        self.assertEqual(download.status_code,200)
+        self.assertEqual(download.data,contents)
+        self.assertIn("attachment",download.headers["Content-Disposition"])
+        self.post("/logout",{})
+        self.assertEqual(self.client.get("/opportunities/"+oid+"/documents/"+artifact["id"]).status_code,302)
+
+    def test_invalid_upload_rejected_without_product_evidence(self):
+        oid=self.create()
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        response=self.client.post("/opportunities/"+oid+"/upload",data={
+            "revision":str(op["version"]),"csrf_token":self.csrf,
+            "kind":"processor_statements","source_party":"Seller",
+            "document":(BytesIO(b"not a real pdf"),"fake.pdf","application/pdf"),
+        },content_type="multipart/form-data")
+        self.assertEqual(response.status_code,400)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertFalse(op.get("artifacts"))
 
     def test_protected_deal_stage_not_available(self):
         oid=self.create()
