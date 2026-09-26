@@ -80,6 +80,7 @@ class ModeReviewPolicy:
 @dataclass(frozen=True)
 class SleeveModeReview:
     scope: str
+    source_evidence_fingerprint: str
     candidate_mode: str | None
     review_state: str
     consistent_observation_streak: int
@@ -207,11 +208,15 @@ def _valid_receipt(previous: CapitalModeReview) -> bool:
 
 
 def _review_one(waterfall_sleeve, owner_intent: SleeveModeIntent,
-                policy: ModeReviewPolicy, prior: SleeveModeReview | None) -> SleeveModeReview:
+                policy: ModeReviewPolicy, prior: SleeveModeReview | None,
+                snapshot: CapitalSnapshot) -> SleeveModeReview:
+    # Distinct as_of projections over unchanged source observations are not
+    # independent confirmations of a policy signal.
+    source_fingerprint = _digest([o.integrity_hash for o in snapshot.observations])
     if waterfall_sleeve.state != "REVIEW_INDICATIVE":
         return SleeveModeReview(
-            scope=owner_intent.scope, candidate_mode=None,
-            review_state="INSUFFICIENT_EVIDENCE", consistent_observation_streak=0,
+            scope=owner_intent.scope, source_evidence_fingerprint=source_fingerprint,
+            candidate_mode=None, review_state="INSUFFICIENT_EVIDENCE", consistent_observation_streak=0,
             drawdown_bps=None, reasons=("MISSING_STALE_OR_CONFLICTING_CAPITAL_SOURCE",),
             activation_authorized=False, acquisition_readiness="NOT_ASSESSED_BY_OB",
         )
@@ -248,18 +253,25 @@ def _review_one(waterfall_sleeve, owner_intent: SleeveModeIntent,
     else:
         candidate = "BALANCED_GROWTH"
         reasons.append("NO_OTHER_ADVISORY_THRESHOLD_MET")
-    streak = (prior.consistent_observation_streak + 1) if (
+    consistent_prior = (
         prior is not None and prior.candidate_mode == candidate
         and prior.review_state != "INSUFFICIENT_EVIDENCE"
-    ) else 1
+    )
+    source_changed = prior is None or prior.source_evidence_fingerprint != source_fingerprint
+    streak = (
+        prior.consistent_observation_streak + (1 if source_changed else 0)
+        if consistent_prior else 1
+    )
     # Risk escalation cannot be delayed by a planning hysteresis counter.
     state = (
         "PROTECT_PRIORITY_OWNER_REVIEW" if candidate == "PROTECT" else
+        "AWAITING_FRESH_SOURCE_EVIDENCE" if not source_changed else
         "CONSECUTIVE_REVIEW_CRITERION_MET" if streak >= t.consecutive_reviews_required else
         "OBSERVING_HYSTERESIS"
     )
     return SleeveModeReview(
-        scope=owner_intent.scope, candidate_mode=candidate,
+        scope=owner_intent.scope, source_evidence_fingerprint=source_fingerprint,
+        candidate_mode=candidate,
         review_state=state, consistent_observation_streak=streak,
         drawdown_bps=drawdown, reasons=tuple(reasons),
         activation_authorized=False, acquisition_readiness="NOT_ASSESSED_BY_OB",
@@ -282,8 +294,10 @@ def _build_review(
             raise ValueError("duplicate waterfall cannot increase hysteresis")
         if datetime.fromisoformat(previous.as_of_utc) >= datetime.fromisoformat(waterfall.as_of_utc):
             raise ValueError("mode review chronology must strictly advance")
-    signals = tuple(_review_one(w, i, policy, previous.sleeves[index] if previous else None)
-                    for index, (w, i) in enumerate(zip(waterfall.sleeves, policy.sleeve_intents)))
+    signals = tuple(
+        _review_one(w, i, policy, previous.sleeves[index] if previous else None, snapshots[index])
+        for index, (w, i) in enumerate(zip(waterfall.sleeves, policy.sleeve_intents))
+    )
     provisional = CapitalModeReview(
         review_id="PENDING", authority=SCHEMA_VERSION, account_key=ATM_ACCOUNT,
         policy_id=policy.policy_id, policy_hash=policy.integrity_hash,
@@ -352,7 +366,7 @@ def capital_mode_review_contract() -> dict[str, object]:
         "authority": SCHEMA_VERSION,
         "waterfall_authority": "OB_CAPITAL_WATERFALL_PROJECTION_V1",
         "six_advisory_modes": list(MODES), "explicit_owner_thresholds_required": True,
-        "hysteresis": "CONSECUTIVE_DISTINCT_CHRONOLOGICAL_REVIEW_RECEIPTS",
+        "hysteresis": "CHRONOLOGICAL_REVIEWS_WITH_NEW_PER_SLEEVE_SOURCE_EVIDENCE",
         "risk_escalation_not_delayed": True, "previous_receipts_not_external_authenticity": True,
         "policy_changes_reset_hysteresis": True,
         "owner_mode_changed": False, "trading_mode_changed": False,
