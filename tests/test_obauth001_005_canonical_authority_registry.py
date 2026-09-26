@@ -119,6 +119,9 @@ def test_exact_current_active_authorities_are_registered():
         "portfolio_view":
             "OB_PORTFOLIO_VIEW_V1",
 
+        "strategy_review":
+            "OB_STRATEGY_REVIEW_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
