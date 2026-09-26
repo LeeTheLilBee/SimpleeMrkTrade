@@ -116,6 +116,9 @@ def test_exact_current_active_authorities_are_registered():
         "position_truth":
             "OB_POSITION_TRUTH_V1",
 
+        "portfolio_view":
+            "OB_PORTFOLIO_VIEW_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
