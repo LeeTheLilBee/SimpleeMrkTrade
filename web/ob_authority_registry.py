@@ -1819,6 +1819,49 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "recommendation_review"
+] = _record(
+    concept_key="recommendation_review",
+    authority_id="OB_RECOMMENDATION_REVIEW_V1",
+    authority_class="NONEXECUTING_SAFETY_BOUND_OWNER_RECOMMENDATION",
+    implementation_ref="web/ob_recommendation_review.py",
+    implementation_role="CANONICAL_OWNER_FACING_STRATEGY_AND_SAFETY_RECEIPT",
+    owns=(
+        "owner-facing BLOCKED, EVIDENCE_PENDING or OWNER_REVIEW_READY recommendation proof",
+        "source-bound option/stock cards and canonical safety reason codes",
+    ),
+    inputs=("OB_SAFETY_REVIEW_V1", "OB_STRATEGY_REVIEW_V1"),
+    triggers=("explicit verified safety review and source-backed strategy candidate packet",),
+    effects=(
+        "present candidate provenance and review-only state without ranking",
+        "emit lineage-verified, non-money-bearing proof reference",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "select candidate automatically or override canonical safety denial",
+        "create trade execution intent or grant capital admission",
+        "profit forecast or fake authenticated broker source",
+        "broker order, capital movement, trading-mode unlock",
+        "direct BuyBox integration or financial-readiness assertion",
+    ),
+    failure_behavior=(
+        "Tampered or unmatched safety and strategy source cannot emit recommendation. "
+        "BLOCK/HOLD states remain visibly restrictive, never concealed."
+    ),
+    explanation=(
+        "Source evidence, exact contract/fallback and canonical safety reasons "
+        "remain explainable while execution permission stays false."
+    ),
+    evidence=("full verified OBSAFE/OBSTRAT lineage", "review receipt/hash", "candidate source references"),
+    review_visibility="Owner may inspect and decide later; no order or mode action in this family.",
+    temporal_validity="VERIFIED_SOURCE_FRAME_TIME_AND_SAFETY_RECEIPT_BOUND",
+    deterministic=True,
+    learning_boundary="No recommendation ranking, permission promotion or trade outcome claims.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
