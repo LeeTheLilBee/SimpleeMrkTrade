@@ -345,10 +345,10 @@ def test_twr124_future_registration_does_not_mean_published_or_available():
         projection["app_id"]
         for projection in future
     } == {
-        "teller",
         "vault",
         "clouds",
         "grounds",
+        "buybox",
     }
 
     for projection in future:
