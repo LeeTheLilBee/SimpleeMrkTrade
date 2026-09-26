@@ -158,7 +158,7 @@ def test_capsim001_contract_is_simulation_only():
     )
 
 
-def test_capsim001_capital_policy_source_remains_pending():
+def test_capsim001_capital_policy_source_is_active_after_capsim015():
     source = (
         policy_source_registry()[
             "CAPITAL_POLICY"
@@ -170,7 +170,7 @@ def test_capsim001_capital_policy_source_remains_pending():
             "source_authority"
         ]
         ==
-        "PENDING_OBCAP"
+        "OB_CAPITAL_POLICY_V1"
     )
 
     assert (
@@ -178,14 +178,14 @@ def test_capsim001_capital_policy_source_remains_pending():
             "status"
         ]
         ==
-        "PENDING"
+        "ACTIVE"
     )
 
     assert (
         source[
             "runtime_allowed"
         ]
-        is False
+        is True
     )
 
 
@@ -676,15 +676,15 @@ def test_capsim005_contract_refuses_execution_and_live_authority():
             "capital_policy_source_status"
         ]
         ==
-        "PENDING"
+        "ACTIVE"
     )
 
     assert (
         contract[
-            "pending_capital_policy_authority"
+            "capital_policy_authority"
         ]
         ==
-        "PENDING_OBCAP"
+        "OB_CAPITAL_POLICY_V1"
     )
 
     assert (
