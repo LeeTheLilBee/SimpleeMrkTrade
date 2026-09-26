@@ -165,13 +165,18 @@ def build_prepolicy_capital_projection(
         # fail-closed exhaustion check; CAPSIM retains the total-day loss test.
         factor = min(1.0, cash / equity, equity / peak)
         factor = max(0.0, factor)
-        limits = tuple(
-            (key, validate_limit_value(key, _floor_percentage(owner_limits[key] * factor)))
+        raw_limits = tuple(
+            (key, _floor_percentage(owner_limits[key] * factor))
             for key in LIMIT_KEYS
         ) if factor > 0 else ()
-        if not limits or any(value <= 0 for _, value in limits):
+        if not raw_limits or any(value <= 0 for _, value in raw_limits):
             reasons.append("NO_REPRESENTABLE_POSITIVE_RESTRICTION")
             factor, limits = 0.0, ()
+        else:
+            limits = tuple(
+                (key, validate_limit_value(key, value))
+                for key, value in raw_limits
+            )
     provisional = PrePolicyCapitalProjection(
         projection_id="PENDING",
         authority=SCHEMA_VERSION,
