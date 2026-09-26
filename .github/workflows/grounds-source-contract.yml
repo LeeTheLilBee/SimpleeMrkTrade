@@ -1,0 +1,28 @@
+name: Grounds source-only contract
+on:
+  pull_request:
+    paths:
+      - 'grounds/**'
+      - 'docs/THE_GROUNDS_RECOVERED_PLAN_GRD001_005.md'
+      - '.github/workflows/grounds-source-contract.yml'
+  push:
+    branches:
+      - 'grounds-resident-operations-grd001-005'
+    paths:
+      - 'grounds/**'
+      - 'docs/THE_GROUNDS_RECOVERED_PLAN_GRD001_005.md'
+      - '.github/workflows/grounds-source-contract.yml'
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile source-only Grounds
+        run: python -m compileall -q grounds
+      - name: Run Grounds source contract tests
+        run: python -m unittest discover -s grounds -p 'test_grounds_foundation.py' -v
