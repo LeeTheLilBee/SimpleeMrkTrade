@@ -63,6 +63,21 @@ class PrivateDocumentStore:
             raise
         return desc
 
+    def discard_uncommitted(self, descriptor):
+        """Remove only a newly written, uncommitted opaque document reference.
+
+        The caller must invoke this exclusively after its database transaction
+        failed. Never use it for historically committed evidence.
+        """
+        ref = descriptor["storage_reference"]
+        if not isinstance(ref, str) or len(ref) != 48 or any(
+                char not in "0123456789abcdef" for char in ref):
+            raise ValueError("INVALID_DOCUMENT_REFERENCE")
+        target = self.root / ref
+        if target.is_symlink():
+            raise ValueError("INVALID_DOCUMENT_TARGET")
+        target.unlink(missing_ok=True)
+
     def read(self, descriptor):
         ref = descriptor["storage_reference"]
         if not isinstance(ref,str) or len(ref)!=48 or any(c not in "0123456789abcdef" for c in ref):
