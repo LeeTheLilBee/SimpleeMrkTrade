@@ -134,6 +134,9 @@ def test_exact_current_active_authorities_are_registered():
         "review_learning":
             "OB_REVIEW_LEARNING_V1",
 
+        "adverse_guard_review":
+            "OB_ADVERSE_GUARD_REVIEW_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 

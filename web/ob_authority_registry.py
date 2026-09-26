@@ -1940,6 +1940,45 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "adverse_guard_review"
+] = _record(
+    concept_key="adverse_guard_review",
+    authority_id="OB_ADVERSE_GUARD_REVIEW_V1",
+    authority_class="SOURCE_DISTINCT_READ_ONLY_GUARD_REVIEW",
+    implementation_ref="web/ob_adverse_guard_review.py",
+    implementation_role="CANONICAL_REPEATED_ADVERSE_EVIDENCE_REVIEW_NO_AUTOMATED_ACTUATOR",
+    owns=(
+        "source-fingerprint-distinct repeated adverse review claim visibility",
+        "source-bound owner attention tasks without provider-authenticated market assertions",
+    ),
+    inputs=("OB_REVIEW_LEARNING_V1",),
+    triggers=("explicit chronology of individually verified OBLEARN review receipts",),
+    effects=(
+        "derive deterministic source-assertion patterns and owner review prompts",
+        "deduplicate replayed source payloads rather than counting as new incidents",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "manufacture independent incidents by replaying identical payloads",
+        "call source assertions authenticated market signals or actual outcomes",
+        "automatically flip a kill switch or relax/widen risk/capital policy",
+        "broker order, live mode unlock or direct BuyBox connection",
+    ),
+    failure_behavior=(
+        "Tampered lineage, duplicate review or nonchronological owner assertions fail closed; "
+        "absence of adverse source is never affirmative proof of safety."
+    ),
+    explanation="Show distinct source-count and inherited owner review tasks without policy/return inference.",
+    evidence=("verified OBLEARN hashes", "distinct source issue IDs/hashes", "chronological owner review receipts", "guard hash"),
+    review_visibility="Owner sees source-asserted guard alerts; actual authenticated provider evidence remains separate.",
+    temporal_validity="CHRONOLOGICAL_OWNER_REVIEW_AND_DISTINCT_SOURCE_PAYLOAD_BOUND",
+    deterministic=True,
+    learning_boundary="No autonomous threshold, mode or policy adaptation.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
