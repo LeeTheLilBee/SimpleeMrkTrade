@@ -10,7 +10,7 @@ import json
 REGISTRY_SCHEMA_VERSION = "OB_CANONICAL_AUTHORITY_REGISTRY_V1"
 RECORD_SCHEMA_VERSION = "OB_AUTHORITY_RECORD_V1"
 COMPATIBILITY_SCHEMA_VERSION = "OB_AUTHORITY_COMPATIBILITY_PROJECTION_V1"
-SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_OBCTX001_005_OBMODE001_010_CAPSIM011_015_CANONICAL_AUTHORITY_REGISTRY"
+SERVICE_VERSION = "OBAUTH001_010_OBPOLICY001_010_OBEVENT001_010_OBCTX001_005_OBMODE001_010_CAPSIM011_015_OBCAP001_005_CANONICAL_AUTHORITY_REGISTRY"
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -1443,6 +1443,71 @@ ACTIVE_AUTHORITY_RECORDS[
     ),
     compatibility_adapters=("PENDING_OBCAP",),
     deferred_integrations=(),
+)
+
+
+ACTIVE_AUTHORITY_RECORDS[
+    "capital_truth"
+] = _record(
+    concept_key="capital_truth",
+    authority_id="OB_CAPITAL_TRUTH_V1",
+    authority_class="SOURCE_BOUND_CAPITAL_EVIDENCE",
+    implementation_ref="web/ob_capital_truth.py",
+    implementation_role="CANONICAL_READ_ONLY_CAPITAL_OBSERVATION_AUTHORITY",
+    owns=(
+        "immutable per-account and per-mission-scope source-labelled capital observations",
+        "canonical monetary field truth states with missing distinct from zero",
+        "source and source-revision fingerprints and evidence-bound capital snapshot",
+    ),
+    inputs=("OB_ACCOUNT_IDENTITY_TRUTH_V1",),
+    triggers=(
+        "explicit account/scope-bound monetary source observation",
+        "explicit source freshness or conflict re-evaluation",
+    ),
+    effects=(
+        "emit hash-bound capital observation and snapshot",
+        "preserve unknown stale and conflict states without synthetic spendable balances",
+        "emit non-money-bearing reference for authorized downstream mediation",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "second account namespace",
+        "synthetic broker verification",
+        "owner-entered or projected claim promoted to broker verified",
+        "simulation promoted to real capital",
+        "inferred settled cash or acquisition spendability",
+        "cross-account or cross-scope aggregation",
+        "ATM Set 1/Set 2 or protected floor policy rewrite",
+        "direct BuyBox integration",
+        "broker submission",
+        "capital movement",
+        "operating mode unlock",
+    ),
+    failure_behavior=(
+        "Missing, unknown, stale, conflicting, unverified or mixed-scope "
+        "monetary evidence cannot be treated as externally authenticated or deployable."
+    ),
+    explanation=(
+        "Each monetary field retains source role, source references, value-state "
+        "resolution, timestamps, account and capital-scope identity, and origin classes."
+    ),
+    evidence=(
+        "observation IDs and SHA-256 integrity hashes",
+        "account identity fingerprint and explicit capital scope",
+        "source refs/revisions/payload hashes and observation/receipt/expiry times",
+        "canonical integer-cent field states and snapshot fingerprint",
+    ),
+    review_visibility=(
+        "Review and Tower-authorized consumers can inspect provenance and "
+        "capital truth states; Teller independently assesses financial readiness."
+    ),
+    temporal_validity="EXPLICIT_AS_OF_AND_SOURCE_EXPIRY; no live balance implied.",
+    deterministic=True,
+    learning_boundary=(
+        "Learning may compare historical source errors but never relabel evidence, "
+        "spend restricted balances, alter floors or grant financial authority."
+    ),
+    deferred_integrations=("source_provenance",),
 )
 
 
