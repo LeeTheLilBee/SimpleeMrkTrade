@@ -154,6 +154,34 @@ class OwnerAppTests(unittest.TestCase):
         self.post("/logout",{})
         self.assertEqual(self.client.get("/opportunities/"+oid+"/documents/"+artifact["id"]).status_code,302)
 
+    def test_real_uploaded_original_can_be_frozen_locally_but_not_archived(self):
+        oid=self.create()
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        original=b"%PDF-1.7\\nOwner source record\\n%%EOF"
+        uploaded=self.client.post("/opportunities/"+oid+"/upload",data={
+            "revision":str(op["version"]),"csrf_token":self.csrf,
+            "kind":"ownership_documents","source_party":"Owner received from seller",
+            "document":(BytesIO(original),"original.pdf","application/pdf"),
+        },content_type="multipart/form-data")
+        self.assertEqual(uploaded.status_code,302)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        evidence_id=op["evidence"][-1]["id"]
+        recorded_artifact=op["artifacts"][0]
+        response=self.post("/opportunities/"+oid+"/evidence/"+evidence_id+"/freeze-proof",{
+            "revision":str(op["version"])})
+        self.assertEqual(response.status_code,302)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertEqual(len(op["snapshots"]),1)
+        snap=op["snapshots"][0]
+        self.assertEqual(snap["evidence_versions"][0]["sha256"],recorded_artifact["sha256"])
+        self.assertEqual(snap["archive_state"],"NOT_REQUESTED")
+        self.assertFalse(snap["authorizes_action"])
+        self.assertIn(b"Not in Vault",self.client.get("/opportunities/"+oid).data)
+        self.assertEqual(self.post("/opportunities/"+oid+"/evidence/"+evidence_id+"/freeze-proof",{
+            "revision":"1"}).status_code,409)
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertEqual(len(op["snapshots"]),1)
+
     def test_invalid_upload_rejected_without_product_evidence(self):
         oid=self.create()
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
