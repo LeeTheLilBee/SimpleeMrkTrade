@@ -202,6 +202,82 @@ def create_app(config=None):
                  expected_revision=int(request.form["revision"]))
         return redirect(url_for("opportunity",oid=oid))
 
+    @app.post("/opportunities/<oid>/evidence/<evidence_id>/review")
+    @login_required
+    def review_evidence(oid,evidence_id):
+        # Human review of a real source reference; no AI or third-party
+        # verification is claimed. Preserve the earlier evidence revision.
+        rationale=request.form.get("rationale","").strip()[:1000]
+        if not rationale: abort(400,"A review rationale is required")
+        with db() as conn:
+            op=load(conn,oid)
+            if not op: abort(404)
+            item=next((e for e in op["evidence"] if e["id"]==evidence_id),None)
+            if not item: abort(404)
+            if item["status"] not in ("RECEIVED","CLAIMED","STALE"):
+                abort(400,"This evidence revision cannot be reviewed from its current state")
+            if not item.get("reference") or not item.get("source"):
+                abort(400,"Source evidence required")
+            item["status"]="SUPERSEDED"
+            from .core import now
+            from uuid import uuid4
+            reviewed=dict(item,id=str(uuid4()),status="DOCUMENT_SUPPORTED",
+                          supersedes=evidence_id,observed_at=now(),
+                          review={"actor":"local_owner","rationale":rationale,"reviewed_at":now(),
+                                  "verification_scope":"DOCUMENT_SUPPORT_ONLY"})
+            op["evidence"].append(reviewed)
+            op=invalidate_on_change(op,changed_fields=["evidence",reviewed["kind"]],
+                    reason="Owner reviewed documented source",source_reference=reviewed["id"])
+            save(conn,op,"EvidenceReviewed",{"kind":reviewed["kind"],
+                "original_id":evidence_id,"reviewed_id":reviewed["id"]},
+                expected_revision=int(request.form["revision"]))
+        return redirect(url_for("opportunity",oid=oid))
+
+    @app.post("/opportunities/<oid>/metric")
+    @login_required
+    def record_metric(oid):
+        # Owner can record a figure only against an already-reviewed document.
+        # It is not promoted to third-party verification.
+        metric_name=request.form.get("metric_name","")
+        value=money(request.form.get("value",""))
+        evidence_id=request.form.get("evidence_id","")
+        period=request.form.get("period","").strip()[:100]
+        if metric_name not in ("annual_revenue","annual_expenses","largest_location_share"):
+            abort(400,"Unregistered financial input")
+        if value is None or not period:
+            abort(400,"Valid value and reporting period required")
+        if metric_name=="largest_location_share" and not Decimal("0")<=value<=Decimal("1"):
+            abort(400,"Location revenue share must be a fraction from 0 to 1")
+        if metric_name!="largest_location_share" and value<0:
+            abort(400,"Revenue and expenses cannot be negative in these gross fields")
+        with db() as conn:
+            op=load(conn,oid)
+            if not op: abort(404)
+            supporting=next((e for e in op["evidence"] if e["id"]==evidence_id and
+                             e["status"]=="DOCUMENT_SUPPORTED"),None)
+            if supporting is None: abort(400,"Select a documented, owner-reviewed evidence reference")
+            if op["vertical"]=="atm":
+                relevant={
+                    "annual_revenue":{"processor_statements","settlement_records"},
+                    "annual_expenses":{"expense_records"},
+                    "largest_location_share":{"processor_statements"},
+                }
+                if supporting["kind"] not in relevant[metric_name]:
+                    abort(400,"Evidence category does not support this financial input")
+            from .core import now
+            old=op["metrics"].get(metric_name)
+            op["metrics"][metric_name]={
+                "value":str(value),"state":"DOCUMENT_SUPPORTED",
+                "source":supporting["reference"],"evidence_id":supporting["id"],
+                "period":period,"recorded_at":now(),"recorded_by":"local_owner",
+                "supersedes":old,
+            }
+            op=invalidate_on_change(op,changed_fields=["metrics",metric_name],
+                reason="Document-linked financial figure revised",source_reference=supporting["id"])
+            save(conn,op,"MetricRecorded",{"metric":metric_name,"evidence_id":supporting["id"]},
+                expected_revision=int(request.form["revision"]))
+        return redirect(url_for("opportunity",oid=oid))
+
     @app.post("/opportunities/<oid>/stage")
     @login_required
     def stage(oid):
