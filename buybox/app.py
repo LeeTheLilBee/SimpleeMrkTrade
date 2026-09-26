@@ -14,7 +14,7 @@ from functools import wraps
 from pathlib import Path
 
 from flask import (Flask, abort, flash, redirect, render_template, request,
-                   session, url_for)
+                   session, url_for, send_file)
 from werkzeug.security import check_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -24,6 +24,7 @@ from .discovery import filter_opportunities, duplicate_candidates
 from .registry import VERTICALS, get_vertical
 from .store import connect, save, load, list_opportunities, activity, history
 from .workflow import transition, gate_report, invalidate_on_change
+from .documents import PrivateDocumentStore
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -32,10 +33,12 @@ def create_app(config=None):
         SECRET_KEY=os.environ.get("BUYBOX_SECRET_KEY"),
         BUYBOX_PASSWORD_HASH=os.environ.get("BUYBOX_PASSWORD_HASH"),
         BUYBOX_DB_PATH=os.environ.get("BUYBOX_DB_PATH"),
+        BUYBOX_DOCS_DIR=os.environ.get("BUYBOX_DOCS_DIR"),
+        BUYBOX_DOCUMENT_KEY=os.environ.get("BUYBOX_DOCUMENT_KEY"),
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Strict",
         SESSION_COOKIE_SECURE=os.environ.get("BUYBOX_SECURE_COOKIE","0")=="1",
-        MAX_CONTENT_LENGTH=1024*1024,
+        MAX_CONTENT_LENGTH=26*1024*1024,
     )
     if config:
         app.config.update(config)
@@ -49,6 +52,10 @@ def create_app(config=None):
     if db_path.exists() and db_path.is_symlink():
         raise RuntimeError("Refusing symlink database path.")
     app.config["BUYBOX_DB_PATH"]=str(db_path)
+    if not app.config.get("BUYBOX_DOCS_DIR") or not app.config.get("BUYBOX_DOCUMENT_KEY"):
+        raise RuntimeError("Set BUYBOX_DOCS_DIR and BUYBOX_DOCUMENT_KEY for protected document intake.")
+    docstore=PrivateDocumentStore(app.config["BUYBOX_DOCS_DIR"],
+                                  app.config["BUYBOX_DOCUMENT_KEY"])
     db=connect(str(db_path));db.close()
 
     @app.after_request
@@ -201,6 +208,56 @@ def create_app(config=None):
             save(conn,op,"EvidenceReceived",{"kind":kind,"id":item["id"]},
                  expected_revision=int(request.form["revision"]))
         return redirect(url_for("opportunity",oid=oid))
+
+    @app.post("/opportunities/<oid>/upload")
+    @login_required
+    def upload_document(oid):
+        file=request.files.get("document")
+        kind=request.form.get("kind","")
+        source_party=request.form.get("source_party","").strip()[:160]
+        if not file or not file.filename or not source_party:
+            abort(400,"Document and source party required")
+        with db() as conn:
+            op=load(conn,oid)
+            if not op: abort(404)
+            if kind not in {e["kind"] for e in get_vertical(op["vertical"])["evidence"]}:
+                abort(400,"Unregistered evidence category")
+            from werkzeug.utils import secure_filename
+            filename=secure_filename(file.filename)
+            if not filename: abort(400,"Invalid document name")
+            try:
+                descriptor=docstore.ingest(contents=file.read(),filename=filename,
+                        mime=file.mimetype,source_party=source_party)
+            except ValueError as exc:
+                abort(400,str(exc))
+            op.setdefault("artifacts",[]).append(descriptor)
+            item=add_evidence(op,kind,status="RECEIVED",
+                    reference=descriptor["id"],source=source_party,
+                    notes="Original encrypted document received; not yet reviewed")
+            item["artifact_id"]=descriptor["id"]
+            op=invalidate_on_change(op,changed_fields=["evidence",kind],
+                    reason="Original seller document received",
+                    source_reference=descriptor["id"])
+            save(conn,op,"OriginalDocumentReceived",
+                    {"kind":kind,"artifact_id":descriptor["id"],"sha256":descriptor["sha256"]},
+                    expected_revision=int(request.form["revision"]))
+        return redirect(url_for("opportunity",oid=oid))
+
+    @app.get("/opportunities/<oid>/documents/<artifact_id>")
+    @login_required
+    def download_document(oid,artifact_id):
+        with db() as conn:
+            op=load(conn,oid)
+            if not op: abort(404)
+        descriptor=next((d for d in op.get("artifacts",[])
+                         if d["id"]==artifact_id),None)
+        if descriptor is None: abort(404)
+        try: data=docstore.read(descriptor)
+        except ValueError: abort(404,"Document unavailable or integrity check failed")
+        from io import BytesIO
+        return send_file(BytesIO(data),as_attachment=True,
+             download_name=descriptor["name"],mimetype="application/octet-stream",
+             max_age=0)
 
     @app.post("/opportunities/<oid>/evidence/<evidence_id>/review")
     @login_required
