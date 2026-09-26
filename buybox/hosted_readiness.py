@@ -6,6 +6,7 @@ Render persistent disk, backup/recovery or security review actually exists.
 """
 from __future__ import annotations
 
+import binascii
 import os
 import stat
 from pathlib import Path
@@ -92,7 +93,7 @@ def inspect_private_hosted_config(
         reasons.append("SECURITY_KEYS_MUST_BE_DISTINCT")
     try:
         Fernet(config["BUYBOX_DOCUMENT_KEY"].encode("ascii"))
-    except (ValueError, TypeError, UnicodeError):
+    except (ValueError, TypeError, UnicodeError, binascii.Error):
         reasons.append("DOCUMENT_KEY_INVALID")
 
     raw_mount = Path(config["BUYBOX_DURABLE_MOUNT"]).expanduser()
