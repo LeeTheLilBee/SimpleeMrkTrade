@@ -75,11 +75,16 @@ def record_negotiation(op, *, kind, description, source_reference,
     revised.setdefault("negotiations",[]).append(event)
     if kind=="ASKING_PRICE_CHANGED":
         previous=revised.get("asking_price")
-        revised["asking_price"]=str(value.quantize(Decimal("0.01")))
-        revised=invalidate_on_change(revised,changed_fields=["asking_price","negotiations"],
-            reason="Documented seller asking-price revision",
-            source_reference=source_reference)
         event["previous_asking_price"]=previous
+        revised["asking_price"]=str(value.quantize(Decimal("0.01")))
+    if kind in ("ASKING_PRICE_CHANGED","OFFER_DOCUMENTED","COUNTER_DOCUMENTED",
+                "CONCESSION_DOCUMENTED","TERM_DOCUMENTED"):
+        changed=["negotiations"]
+        if kind=="ASKING_PRICE_CHANGED":
+            changed.append("asking_price")
+        revised=invalidate_on_change(revised,changed_fields=changed,
+            reason="Material acquisition terms were recorded from an identified source",
+            source_reference=source_reference)
     return revised,event
 
 def current_tasks(op):
