@@ -102,12 +102,12 @@ def _validate_plan(harness: MultiSimulationHarness, steps: tuple[ReplayStep, ...
         instant = _instant(step.frame.observed_at)
         if instant != step.market_time.observed_at_utc:
             raise ValueError("replay frame and canonical market time differ")
+        if not isinstance(step.frame.frame_id, str) or not step.frame.frame_id.strip() or step.frame.frame_id in seen_frames:
+            raise ValueError("replay frame IDs must be nonblank and unique")
+        seen_frames.add(step.frame.frame_id)
         if previous is not None and instant <= previous:
             raise ValueError("replay frames must advance strictly in time")
         previous = instant
-        if not step.frame.frame_id.strip() or step.frame.frame_id in seen_frames:
-            raise ValueError("replay frame IDs must be nonblank and unique")
-        seen_frames.add(step.frame.frame_id)
         if len(step.decisions) != 3 or {item.lane for item in step.decisions} != set(LANES):
             raise ValueError("replay requires exactly one explicit decision per lane and frame")
         for decision in step.decisions:
