@@ -8,7 +8,7 @@ Tower's runtime versus an isolated backend behind Tower remains a coordinated
 implementation decision. The product target remains the **complete universal
 acquisition system**, not an ATM-only application.
 
-## Real owner workspace — BBX001–BBX009
+## Real owner workspace — BBX001–BBX010
 
 The old synthetic UI preview was removed. The real, persistent workspace opens
 with **no sample listings, invented earnings, or fabricated approval signals**.
@@ -37,6 +37,13 @@ It currently supports:
   without generating sample alerts.
 - Per-request SQLite connections are closed and uncommitted encrypted upload
   blobs are discarded on rejected/stale opportunity revisions.
+- PR #35 compatibility: an actual encrypted uploaded original may be frozen to
+  a local proof snapshot containing its linked evidence version and source hash.
+  The separate metadata-only `buybox/tower_evidence.py` packet builder conforms
+  to the pinned canonical `buybox.vault.evidence.v1` schema, with no raw file,
+  private storage reference, direct Vault import/call or synthetic archival claim.
+  Owner-facing screens and Soulaana explicitly say NOT ARCHIVED. This is
+  preparation, not a live Tower/Vault handoff.
 - Material-change invalidation: old assessments/readiness are not preserved as
   a fresh greenlight after material deal inputs change.
 
