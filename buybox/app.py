@@ -31,6 +31,7 @@ from .documents import PrivateDocumentStore
 from .dealroom import new_task, update_task, record_negotiation, current_tasks
 from .workflow import add_decision_snapshot
 from .soulaana import context as soulaana_context, INTENTS as SOULAANA_INTENTS
+from .atm import register_machine
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -305,6 +306,27 @@ def create_app(config=None):
                 {"kind":"ANALYTICAL_OWNER_NOTE","authorized_purchase":False},
                 expected_revision=int(request.form["revision"]))
         return redirect(url_for("deal_room",oid=oid))
+
+    @app.post("/opportunities/<oid>/atm/machines")
+    @login_required
+    def add_atm_machine(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            if op["vertical"]!="atm": abort(400,"ATM opportunity required")
+            revised,machine=register_machine(op,
+                serial_number=request.form.get("serial_number",""),
+                model=request.form.get("model",""),
+                location_name=request.form.get("location_name",""),
+                ownership=request.form.get("ownership","UNKNOWN"),
+                evidence_id=request.form.get("ownership_evidence_id") or None,
+                source_reference=request.form.get("source_reference",""))
+            save(conn,revised,"ATMMachineRecorded",{
+                "machine_id":machine["record_id"],
+                "serial_number":machine["serial_number"],
+                "source_reference":machine["source_reference"]},
+                expected_revision=int(request.form["revision"]))
+        return redirect(url_for("opportunity",oid=oid))
 
     @app.post("/opportunities/<oid>/source")
     @login_required
