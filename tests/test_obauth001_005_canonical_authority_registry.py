@@ -113,6 +113,9 @@ def test_exact_current_active_authorities_are_registered():
         "capital_modes":
             "OB_CAPITAL_MODE_REVIEW_V1",
 
+        "position_truth":
+            "OB_POSITION_TRUTH_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
