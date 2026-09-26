@@ -135,9 +135,11 @@ def test_obcap013_hysteresis_requires_distinct_strictly_later_receipts():
     with pytest.raises(ValueError, match="duplicate waterfall"):
         build_capital_mode_review(policy=policy, plan=p, waterfall=waterfall,
                                   snapshots=snapshots, previous=first)
+    earlier = snaps(as_of=NOW + timedelta(minutes=3))
+    earlier_waterfall = build_atm_waterfall_projection(plan=p, snapshots=earlier)
     with pytest.raises(ValueError, match="chronology"):
-        build_capital_mode_review(policy=policy, plan=p, waterfall=waterfall2,
-                                  snapshots=later, previous=second)
+        build_capital_mode_review(policy=policy, plan=p, waterfall=earlier_waterfall,
+                                  snapshots=earlier, previous=second)
 
 
 def test_obcap013_previous_receipt_and_policy_tampering_cannot_reuse_hysteresis():
