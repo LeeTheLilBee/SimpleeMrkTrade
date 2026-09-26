@@ -11,6 +11,7 @@ import os
 import secrets
 import stat
 from decimal import Decimal, InvalidOperation
+from datetime import date
 from functools import wraps
 from pathlib import Path
 
@@ -342,6 +343,15 @@ def create_app(config=None):
             abort(400,"Unregistered financial input")
         if value is None or not period:
             abort(400,"Valid value and reporting period required")
+        if metric_name in ("annual_revenue","annual_expenses"):
+            try:
+                start_raw,end_raw=period.split(" / ")
+                start=date.fromisoformat(start_raw)
+                end=date.fromisoformat(end_raw)
+                if not 365 <= (end-start).days + 1 <= 366:
+                    raise ValueError
+            except (ValueError,TypeError):
+                abort(400,"Annual metrics require a full 12-month YYYY-MM-DD / YYYY-MM-DD period")
         if metric_name=="largest_location_share" and not Decimal("0")<=value<=Decimal("1"):
             abort(400,"Location revenue share must be a fraction from 0 to 1")
         if metric_name!="largest_location_share" and value<0:
