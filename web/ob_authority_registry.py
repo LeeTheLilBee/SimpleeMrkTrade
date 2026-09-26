@@ -1628,6 +1628,66 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "position_truth"
+] = _record(
+    concept_key="position_truth",
+    authority_id="OB_POSITION_TRUTH_V1",
+    authority_class="SOURCE_BOUND_READ_ONLY_POSITION_VIEW",
+    implementation_ref="web/ob_position_truth.py",
+    implementation_role="CANONICAL_OBSIM_POSITION_RECONCILIATION_AND_OBENG_SOURCE_SUMMARY",
+    owns=(
+        "per-lane immutable source-backed simulated open-position view",
+        "reconciliation to existing OBSIM fill and receipt history",
+        "existing OBENG explicit open/closed store count and unresolved source status",
+    ),
+    inputs=("OB_ENGINE_ACCOUNT_AUTHORITY_V1", "OB_ACCOUNT_IDENTITY_TRUTH_V1"),
+    triggers=(
+        "explicit source-bound OBSIM lane position projection",
+        "explicit repository position-source status inspection",
+    ),
+    effects=(
+        "emit hash-bound per-lane position source view without a new fill engine",
+        "refuse synthetic position rows from repository counts or reporting history",
+        "preserve simulation and repository provenance without live broker claims",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "second position or fill ledger",
+        "broker authenticated position assertion",
+        "treat reporting history as current open positions",
+        "promote an unknown/empty repository source into zero positions",
+        "cross-lane or cross-account position pooling",
+        "direct BuyBox connection or acquisition affordability inference",
+        "live order, capital movement or trading-mode unlock",
+    ),
+    failure_behavior=(
+        "Contradictory OBSIM fills/marks/receipts, missing source status, account "
+        "mismatch and tampered references fail closed instead of inventing positions."
+    ),
+    explanation=(
+        "Projects exact existing simulation position IDs and OPEN fills and "
+        "identifies whether repository open/closed stores are explicit or unresolved."
+    ),
+    evidence=(
+        "account fingerprint, harness and lane references",
+        "existing OBSIM trade IDs, receipt chain root and latest frame",
+        "canonical immutable position snapshot hash and repository source status",
+    ),
+    review_visibility=(
+        "Owner can distinguish simulated, repository and broker-unverified sources; "
+        "Teller alone owns acquisition finance readiness."
+    ),
+    temporal_validity="EXPLICIT_SOURCE_FRAME_OR_REPOSITORY_REVISION_BOUND",
+    deterministic=True,
+    learning_boundary=(
+        "Learning cannot rewrite source fills, mark missing positions as zero, "
+        "or convert simulated positions into live execution authority."
+    ),
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
