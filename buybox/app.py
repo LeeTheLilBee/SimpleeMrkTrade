@@ -33,6 +33,7 @@ from .workflow import add_decision_snapshot
 from .soulaana import context as soulaana_context, INTENTS as SOULAANA_INTENTS
 from .atm import register_machine
 from .focus import build_focus
+from .tower_evidence import freeze_local_evidence_snapshot, HandoffPreparationError
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -429,6 +430,32 @@ def create_app(config=None):
         return send_file(BytesIO(data),as_attachment=True,
              download_name=descriptor["name"],mimetype="application/octet-stream",
              max_age=0)
+
+    @app.post("/opportunities/<oid>/evidence/<evidence_id>/freeze-proof")
+    @login_required
+    def freeze_local_proof(oid,evidence_id):
+        # Local source-bound proof only. Does NOT invoke Tower or Vault.
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            e=next((item for item in op["evidence"]
+                    if item["id"]==evidence_id),None)
+            if not e or not e.get("artifact_id"):
+                abort(400,"Uploaded original and matching evidence record required")
+            try:
+                revised,snapshot=freeze_local_evidence_snapshot(op,
+                    evidence_id=e["id"],artifact_id=e["artifact_id"],
+                    actor_reference="local_owner")
+            except HandoffPreparationError as err:
+                abort(400,str(err))
+            save(conn,revised,"LocalEvidenceSnapshotFrozen",
+                {"snapshot_id":snapshot["snapshot_id"],
+                 "evidence_id":e["id"],
+                 "source_document_id":e["artifact_id"],
+                 "snapshot_sha256":snapshot["snapshot_sha256"],
+                 "archive_state":"NOT_REQUESTED"},
+                 expected_revision=int(request.form["revision"]))
+        return redirect(url_for("opportunity",oid=oid))
 
     @app.post("/opportunities/<oid>/evidence/<evidence_id>/review")
     @login_required
