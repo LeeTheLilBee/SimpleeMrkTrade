@@ -11,7 +11,7 @@ import os
 import secrets
 import stat
 from decimal import Decimal, InvalidOperation
-from datetime import date
+from datetime import date, datetime, timezone, timedelta
 from functools import wraps
 from contextlib import contextmanager
 from pathlib import Path
@@ -33,6 +33,10 @@ from .workflow import add_decision_snapshot
 from .soulaana import context as soulaana_context, INTENTS as SOULAANA_INTENTS
 from .atm import register_machine
 from .focus import build_focus
+from .hosted_auth import (prepare_hosted_runtime, exact_receiver_origin,
+    require_verified_session, owner_session_claims, HostedAuthError)
+from .tower_owner_receiver import (verify_tower_buybox_owner_handoff,
+    consume_verified_handoff, TowerBuyBoxHandoffError)
 from .tower_evidence import freeze_local_evidence_snapshot, HandoffPreparationError
 
 def create_app(config=None):
@@ -40,6 +44,13 @@ def create_app(config=None):
               static_url_path="/buybox/static")
     app.config.update(
         SECRET_KEY=os.environ.get("BUYBOX_SECRET_KEY"),
+        BUYBOX_SECRET_KEY=os.environ.get("BUYBOX_SECRET_KEY"),
+        BUYBOX_AUTH_MODE=os.environ.get("BUYBOX_AUTH_MODE","local"),
+        BUYBOX_PUBLIC_ORIGIN=os.environ.get("BUYBOX_PUBLIC_ORIGIN"),
+        TOWER_PUBLIC_ORIGIN=os.environ.get("TOWER_PUBLIC_ORIGIN"),
+        TOWER_BUYBOX_HANDOFF_SECRET=os.environ.get("TOWER_BUYBOX_HANDOFF_SECRET"),
+        BUYBOX_DURABLE_MOUNT=os.environ.get("BUYBOX_DURABLE_MOUNT"),
+        BUYBOX_SECURE_COOKIE=os.environ.get("BUYBOX_SECURE_COOKIE","0"),
         BUYBOX_PASSWORD_HASH=os.environ.get("BUYBOX_PASSWORD_HASH"),
         BUYBOX_DB_PATH=os.environ.get("BUYBOX_DB_PATH"),
         BUYBOX_DOCS_DIR=os.environ.get("BUYBOX_DOCS_DIR"),
@@ -51,8 +62,21 @@ def create_app(config=None):
     )
     if config:
         app.config.update(config)
-    if not app.config.get("SECRET_KEY") or not app.config.get("BUYBOX_PASSWORD_HASH"):
-        raise RuntimeError("Set BUYBOX_SECRET_KEY and BUYBOX_PASSWORD_HASH before starting BuyBox.")
+    auth_mode=app.config.get("BUYBOX_AUTH_MODE")
+    if auth_mode not in ("local","tower"):
+        raise RuntimeError("Unsupported BuyBox authentication mode.")
+    if not app.config.get("SECRET_KEY"):
+        raise RuntimeError("Set BUYBOX_SECRET_KEY before starting BuyBox.")
+    if auth_mode=="local" and not app.config.get("BUYBOX_PASSWORD_HASH"):
+        raise RuntimeError("Set BUYBOX_PASSWORD_HASH for private development mode.")
+    if auth_mode=="tower":
+        # This cannot be satisfied by environment variables alone: real trusted
+        # storage/restore and live Tower session verifier adapters are required.
+        try:
+            prepare_hosted_runtime(app.config)
+        except HostedAuthError as exc:
+            raise RuntimeError(str(exc)) from exc
+        app.permanent_session_lifetime=timedelta(minutes=15)
     if not app.config.get("BUYBOX_DB_PATH"):
         raise RuntimeError("Set BUYBOX_DB_PATH to a protected persistent storage path.")
     db_path=Path(app.config["BUYBOX_DB_PATH"]).expanduser()
@@ -75,6 +99,8 @@ def create_app(config=None):
     @app.after_request
     def no_cache(response):
         response.headers["Cache-Control"]="no-store"
+        if auth_mode=="tower":
+            response.headers["Strict-Transport-Security"]="max-age=31536000"
         response.headers["X-Content-Type-Options"]="nosniff"
         response.headers["X-Frame-Options"]="DENY"
         response.headers["Referrer-Policy"]="no-referrer"
@@ -99,7 +125,19 @@ def create_app(config=None):
         @wraps(fn)
         def wrapped(*args,**kwargs):
             if session.get("buybox_owner") is not True:
+                if auth_mode=="tower":
+                    abort(403,"Tower owner session required")
                 return redirect(url_for("login"))
+            if auth_mode=="tower":
+                now_epoch=int(datetime.now(timezone.utc).timestamp())
+                try:
+                    require_verified_session(
+                        app.config["TOWER_SESSION_VERIFIER"],
+                        session.get("tower_context"),
+                        now_epoch=now_epoch)
+                except HostedAuthError:
+                    session.clear()
+                    abort(403,"Tower owner session is unavailable or revoked")
             return fn(*args,**kwargs)
         return wrapped
 
@@ -111,6 +149,8 @@ def create_app(config=None):
 
     @app.before_request
     def guard():
+        if request.endpoint=="tower_owner_exchange":
+            return
         if request.method not in ("GET","HEAD","OPTIONS"):
             value=request.form.get("csrf_token","")
             expected=session.get("csrf","")
@@ -119,6 +159,8 @@ def create_app(config=None):
 
     @app.route("/login", methods=["GET","POST"])
     def login():
+        if auth_mode=="tower":
+            abort(404,"Standalone BuyBox login is disabled")
         if request.method=="POST":
             password=request.form.get("password","")
             if check_password_hash(app.config["BUYBOX_PASSWORD_HASH"],password):
@@ -133,7 +175,46 @@ def create_app(config=None):
     @login_required
     def logout():
         session.clear()
+        if auth_mode=="tower":
+            return redirect(app.config["TOWER_PUBLIC_ORIGIN"]+"/tower/access-home",code=303)
         return redirect(url_for("login"))
+
+    @app.post("/tower/owner-exchange")
+    def tower_owner_exchange():
+        """A narrowly scoped pre-render exchange, not an independent login.
+
+        This code is unreachable in production until certified, injected
+        Tower session introspection and protected hosting are configured.
+        The signed one-time token arrives only in an exact-origin POST body.
+        """
+        if auth_mode!="tower":
+            abort(404)
+        if (not exact_receiver_origin(request,app.config["BUYBOX_PUBLIC_ORIGIN"])
+                or request.mimetype!="application/x-www-form-urlencoded"
+                or set(request.form)!={"handoff"}
+                or len(request.form.getlist("handoff"))!=1):
+            abort(403,"Invalid Tower exchange transport")
+        token=request.form.get("handoff","")
+        now_epoch=int(datetime.now(timezone.utc).timestamp())
+        try:
+            verified=verify_tower_buybox_owner_handoff(token,
+                shared_secret=app.config["TOWER_BUYBOX_HANDOFF_SECRET"],
+                now_epoch=now_epoch)
+            claims=owner_session_claims(verified)
+            require_verified_session(app.config["TOWER_SESSION_VERIFIER"],
+                claims,now_epoch=now_epoch)
+        except (TowerBuyBoxHandoffError,HostedAuthError):
+            abort(403,"Tower exchange not verified")
+        with db() as conn:
+            if not consume_verified_handoff(conn,verified):
+                abort(403,"Tower exchange already consumed")
+        # The durable consume is committed before issuing a browser session.
+        session.clear()
+        session.permanent=True
+        session["buybox_owner"]=True
+        session["tower_context"]=claims
+        session["csrf"]=secrets.token_hex(32)
+        return redirect(url_for("index"),code=303)
 
     @app.get("/")
     @login_required
