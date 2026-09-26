@@ -122,6 +122,9 @@ def test_exact_current_active_authorities_are_registered():
         "strategy_review":
             "OB_STRATEGY_REVIEW_V1",
 
+        "safety_review":
+            "OB_SAFETY_REVIEW_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
