@@ -21,6 +21,10 @@ Status: **source-only, local-testable developer build on draft PR #51**. This wo
 - `grounds/soulaana.py`: read-only, access-checked work-order status and Teller readiness explanations with revision/terms provenance. The local HTML preview includes a contextual Soulaana drawer. Neither artificial-intelligence inference nor external source calls are claimed.
 - Additional tests cover protected floors, changed acquisition terms, stale Teller data, wrong source, cross-property information denial, and explanation non-execution.
 
+## GRD023 correction
+
+`grounds/operations.py` rejects an offered lease proof reference until the Tower/Vault sealed-proof adapter is certified. A string supplied by the caller is not evidence of a sealed lease. The operational database currently permits no direct lease document attachment; the future release needs a separately verified evidence-hand-off contract.
+
 ## Boundaries required for live implementation
 
 1. Tower must certify a real Grounds audience/issuer, separate resident and staff identity flows, property/unit and job-specific grants, revocation, CSRF, session/replay protection and auditable handoff/return. The test fixtures use identity verifier lambdas solely in `test_*.py`; **never expose them in an app server**.
