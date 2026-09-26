@@ -1728,6 +1728,43 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "strategy_review"
+] = _record(
+    concept_key="strategy_review",
+    authority_id="OB_STRATEGY_REVIEW_V1",
+    authority_class="SOURCE_BOUND_OWNER_REVIEW_EVIDENCE",
+    implementation_ref="web/ob_strategy_review.py",
+    implementation_role="EXPLICIT_OPTION_FIRST_REVIEW_WITH_OWNER_DECLARED_STOCK_FALLBACK",
+    owns=(
+        "source-market-frame-bound explicit strategy candidate review packets",
+        "owner-selected-for-review status distinct from executable trade intent",
+    ),
+    inputs=("OB_PORTFOLIO_VIEW_V1",),
+    triggers=("explicit candidate set and optional owner-confirmed review selection",),
+    effects=(
+        "emit immutable evidence packet with exact option contract or explicit stock fallback",
+        "retain no automatic winner, capital admission or trade execution",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "automatic option-contract selection or candidate ranking",
+        "create executable trade intent from a review preference",
+        "turn source evidence refs into authenticated broker proof",
+        "bypass Effective Policy, risk controls, safety or owner decision",
+        "capital movement, mode unlock or direct BuyBox connection",
+    ),
+    failure_behavior="Unbound frame/instrument, missing option contract, unexplained stock fallback and tampered portfolio fail closed.",
+    explanation="Candidate records reveal source frame, exact instrument, explicit strategy and owner-declared review state.",
+    evidence=("OBPORT ID/hash", "existing source frame IDs", "candidate source refs", "review receipt/hash"),
+    review_visibility="Owner can inspect option-first choices and rationale without triggering execution.",
+    temporal_validity="PORTFOLIO_FRAME_AND_EXPLICIT_SELECTION_BOUND",
+    deterministic=True,
+    learning_boundary="No auto-selection, no mode or capital policy promotion.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
