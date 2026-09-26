@@ -104,6 +104,9 @@ def test_exact_current_active_authorities_are_registered():
         "capital_policy":
             "OB_CAPITAL_POLICY_V1",
 
+        "capital_truth":
+            "OB_CAPITAL_TRUTH_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
