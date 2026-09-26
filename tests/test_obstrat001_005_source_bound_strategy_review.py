@@ -113,7 +113,7 @@ def test_obstrat003_option_contract_and_stock_fallback_source_required():
             portfolio, harness=h, sources=sources,
             candidates=(stock(owner_declared_stock_fallback_reason=None),),
         )
-    with pytest.raises(ValueError, match="source"):
+    with pytest.raises(ValueError, match="evidence references"):
         build_strategy_review(
             portfolio, harness=h, sources=sources,
             candidates=(option(source_evidence_refs=()),),
