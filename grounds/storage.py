@@ -103,6 +103,80 @@ CREATE TABLE IF NOT EXISTS property_notices (
   FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
 );
 CREATE INDEX IF NOT EXISTS notices_property ON property_notices(property_ref,unit_ref);
+CREATE UNIQUE INDEX IF NOT EXISTS lease_scope_identity ON leases(lease_ref,unit_ref,property_ref);
+CREATE TABLE IF NOT EXISTS physical_assets (
+  asset_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  unit_ref TEXT,
+  label TEXT NOT NULL,
+  category TEXT NOT NULL,
+  lifecycle TEXT NOT NULL DEFAULT 'active' CHECK(lifecycle IN ('active','retired')),
+  recorded_at TEXT NOT NULL,
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref),
+  UNIQUE(asset_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS assets_per_property ON physical_assets(property_ref,unit_ref);
+CREATE TABLE IF NOT EXISTS preventive_plans (
+  plan_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL,
+  asset_ref TEXT NOT NULL,
+  cadence_days INTEGER NOT NULL CHECK(cadence_days BETWEEN 1 AND 3650),
+  next_due_on TEXT NOT NULL,
+  last_completed_on TEXT,
+  revision INTEGER NOT NULL DEFAULT 1,
+  enabled INTEGER NOT NULL DEFAULT 1 CHECK(enabled IN (0,1)),
+  FOREIGN KEY(asset_ref,property_ref) REFERENCES physical_assets(asset_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS preventive_due ON preventive_plans(property_ref,enabled,next_due_on);
+CREATE TABLE IF NOT EXISTS inspections (
+  inspection_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  unit_ref TEXT,
+  category TEXT NOT NULL,
+  state TEXT NOT NULL CHECK(state IN ('planned','in_progress','review','closed')),
+  planned_on TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1,
+  created_by TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref),
+  UNIQUE(inspection_ref,unit_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS inspections_per_property ON inspections(property_ref,unit_ref,state);
+CREATE TABLE IF NOT EXISTS inspection_findings (
+  finding_ref TEXT PRIMARY KEY,
+  inspection_ref TEXT NOT NULL REFERENCES inspections(inspection_ref),
+  severity TEXT NOT NULL CHECK(severity IN ('observation','minor','major','urgent')),
+  narrative TEXT NOT NULL,
+  recorded_by TEXT NOT NULL,
+  recorded_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS turnovers (
+  turnover_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL,
+  unit_ref TEXT NOT NULL,
+  lease_ref TEXT NOT NULL,
+  state TEXT NOT NULL CHECK(state IN ('planned','inspection','work','final_review','complete')),
+  revision INTEGER NOT NULL DEFAULT 1,
+  final_vault_proof_ref TEXT UNIQUE,
+  created_by TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref),
+  FOREIGN KEY(lease_ref,unit_ref,property_ref) REFERENCES leases(lease_ref,unit_ref,property_ref)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS one_unfinished_turnover_per_unit
+ ON turnovers(unit_ref) WHERE state!='complete';
+CREATE INDEX IF NOT EXISTS turnovers_property ON turnovers(property_ref,state);
+CREATE TABLE IF NOT EXISTS turnover_events (
+  event_ref TEXT PRIMARY KEY,
+  turnover_ref TEXT NOT NULL REFERENCES turnovers(turnover_ref),
+  actor_ref TEXT NOT NULL,
+  from_state TEXT,
+  to_state TEXT NOT NULL,
+  revision INTEGER NOT NULL,
+  occurred_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS turnover_history ON turnover_events(turnover_ref,revision);
 CREATE TABLE IF NOT EXISTS leasing_prospects (
   prospect_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),
