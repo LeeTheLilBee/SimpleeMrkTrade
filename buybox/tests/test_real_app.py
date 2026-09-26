@@ -79,6 +79,52 @@ class OwnerAppTests(unittest.TestCase):
         self.assertIsNone(op["readiness"]["teller"])
         self.assertEqual(op["attention"],"ACTION_NEEDED")
 
+    def test_owner_review_then_source_linked_financials(self):
+        oid=self.create()
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        for kind,ref in (("processor_statements","processor-private-01"),("expense_records","expense-private-01")):
+            result=self.post("/opportunities/"+oid+"/evidence",{
+                "revision":str(op["version"]),"kind":kind,
+                "reference":ref,"source_party":"Document source"})
+            self.assertEqual(result.status_code,302)
+            with connect(self.db) as conn: op=list_opportunities(conn)[0]
+            eid=next(e["id"] for e in op["evidence"] if e["kind"]==kind and e["status"]=="RECEIVED")
+            result=self.post("/opportunities/"+oid+"/evidence/"+eid+"/review",{
+                "revision":str(op["version"]),"rationale":"Manually reviewed supporting document"})
+            self.assertEqual(result.status_code,302)
+            with connect(self.db) as conn: op=list_opportunities(conn)[0]
+            reviewed=next(e for e in op["evidence"] if e["kind"]==kind and e["status"]=="DOCUMENT_SUPPORTED")
+            self.assertEqual(reviewed["verification"]["verification_scope"],"DOCUMENT_SUPPORT_ONLY")
+        for metric,value,kind in (("annual_revenue","80000","processor_statements"),
+                                  ("annual_expenses","30000","expense_records")):
+            evidence_id=next(e["id"] for e in op["evidence"] if e["kind"]==kind and e["status"]=="DOCUMENT_SUPPORTED")
+            result=self.post("/opportunities/"+oid+"/metric",{
+                "revision":str(op["version"]),"metric_name":metric,"value":value,
+                "period":"2025-01-01 / 2025-12-31","evidence_id":evidence_id})
+            self.assertEqual(result.status_code,302)
+            with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.assertEqual(op["metrics"]["annual_revenue"]["value"],"80000")
+        self.assertEqual(op["metrics"]["annual_expenses"]["value"],"30000")
+        self.assertIsNone(op["readiness"]["teller"])
+        self.assertIn(b"50000.00",self.client.get("/opportunities/"+oid).data)
+
+    def test_wrong_evidence_category_cannot_support_expenses(self):
+        oid=self.create()
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        self.post("/opportunities/"+oid+"/evidence",{
+            "revision":str(op["version"]),"kind":"processor_statements",
+            "reference":"processor-source","source_party":"Seller"})
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        eid=op["evidence"][-1]["id"]
+        self.post("/opportunities/"+oid+"/evidence/"+eid+"/review",{
+            "revision":str(op["version"]),"rationale":"Reviewed processor document"})
+        with connect(self.db) as conn: op=list_opportunities(conn)[0]
+        eid=next(e["id"] for e in op["evidence"] if e["status"]=="DOCUMENT_SUPPORTED")
+        result=self.post("/opportunities/"+oid+"/metric",{
+            "revision":str(op["version"]),"metric_name":"annual_expenses",
+            "value":"100","period":"2025","evidence_id":eid})
+        self.assertEqual(result.status_code,400)
+
     def test_protected_deal_stage_not_available(self):
         oid=self.create()
         with connect(self.db) as conn: op=list_opportunities(conn)[0]
