@@ -197,7 +197,7 @@ def test_obsafe004_tampered_mode_time_strategy_and_wrong_contract_fail_closed(tm
     inputs = fixture()
     intent = canonical_intent(tmp_path, inputs["mode_state"])
     bad_mode = {**inputs, "mode_state": {**inputs["mode_state"], "mode": "MANUAL_LIVE"}}
-    with pytest.raises(ValueError, match="Operating Mode|fingerprint|locked"):
+    with pytest.raises(ValueError, match="Operating Mode|operating mode|fingerprint|locked"):
         build_safety_review(**bad_mode, signals=signals(), intent=intent)
     bad_time = {**inputs, "market_time": replace(inputs["market_time"], integrity_hash="0"*64)}
     with pytest.raises(ValueError, match="verified OBTIME"):
