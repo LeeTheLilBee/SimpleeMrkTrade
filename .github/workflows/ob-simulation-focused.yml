@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install test dependencies
-        run: python -m pip install pytest tzdata
+        run: python -m pip install pytest tzdata flask
       - name: Syntax wall
         run: python -m py_compile web/ob_multi_simulation_replay.py tests/test_obsim006_010_deterministic_replay.py
       - name: Simulation integration wall
