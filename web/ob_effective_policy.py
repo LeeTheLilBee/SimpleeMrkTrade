@@ -657,6 +657,32 @@ def validate_policy_layer(
             "Policy layer lacks required owner confirmation."
         )
 
+    if layer_class == "CAPITAL_POLICY":
+        # Do not let a forged/malformed layer bypass the explicit,
+        # Experimental simulation-only restriction boundary.
+        ref = layer.get("source_ref")
+        if (
+            layer.get("restriction_only") is not True
+            or not isinstance(ref, dict)
+            or any(ref.get(key) is not True for key in (
+                "simulation_only", "pre_policy", "experimental_only", "non_circular",
+            ))
+            or any(not isinstance(ref.get(key), str) or not ref[key].strip()
+                   for key in (
+                       "projection_id", "projection_integrity_hash",
+                       "owner_profile_id", "owner_profile_hash",
+                       "capital_state_snapshot_id", "capital_state_hash",
+                       "session_loss_ledger_id", "session_loss_hash",
+                   ))
+            or set(layer.get("limits") or {}) != {
+                "max_loss_per_trade_pct",
+                "max_position_allocation_pct",
+                "daily_loss_cap_pct",
+            }
+            or any(value is not False for value in (layer.get("capabilities") or {}).values())
+        ):
+            raise ValueError("CAPITAL_POLICY must be verified Experimental restriction-only")
+
     _normalize_limits(
         layer.get(
             "limits"
