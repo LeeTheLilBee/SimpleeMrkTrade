@@ -191,6 +191,8 @@ class GroundsOperations:
         if not isinstance(intake, MaintenanceIntake):
             raise GroundsConflict("valid intake required")
         actor.require_property(intake.property_ref)
+        if intake.photo_refs:
+            raise GroundsConflict("direct photo intake is not connected; submit verified Vault proof separately")
         if actor.role == "resident":
             actor.require_unit(intake.property_ref, intake.unit_ref)
         _required(work_ref, "work_ref", max_length=128)
