@@ -19,7 +19,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .core import (new_opportunity, add_evidence, evaluate, soulaana_brief,
-                   money, LIFECYCLE)
+                   scenario_calculation, money, LIFECYCLE)
 from .discovery import filter_opportunities, duplicate_candidates
 from .registry import VERTICALS, get_vertical
 from .store import connect, save, load, list_opportunities, activity, history
@@ -169,6 +169,39 @@ def create_app(config=None):
                                revisions=list(reversed(revisions)),
                                manifest=get_vertical(op["vertical"]),
                                gate_options=LIFECYCLE,gate_report=gate_report)
+
+    @app.post("/compare")
+    @login_required
+    def compare():
+        ids=request.form.getlist("opportunity_id")
+        if not 2<=len(ids)<=4 or len(set(ids))!=len(ids):
+            abort(400,"Choose two to four distinct opportunities")
+        with db() as conn:
+            opportunities=[load(conn,oid) for oid in ids]
+        if any(op is None for op in opportunities):
+            abort(404)
+        panels=[{"record":op,"analysis":evaluate(op)} for op in opportunities]
+        return render_template("compare.html",records=panels)
+
+    @app.get("/opportunities/<oid>/scenario")
+    @login_required
+    def scenario(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        rev_raw=request.args.get("revenue_factor","1")
+        exp_raw=request.args.get("expense_factor","1")
+        revenue_factor=money(rev_raw)
+        expense_factor=money(exp_raw)
+        if (revenue_factor is None or expense_factor is None or
+            not Decimal("0")<=revenue_factor<=Decimal("3") or
+            not Decimal("0")<=expense_factor<=Decimal("3")):
+            abort(400,"Scenario multipliers must be between 0 and 3")
+        baseline=scenario_calculation(op)
+        stressed=scenario_calculation(op,str(revenue_factor),str(expense_factor))
+        return render_template("scenario.html",op=op,baseline=baseline,
+            stressed=stressed,revenue_factor=revenue_factor,
+            expense_factor=expense_factor)
 
     @app.post("/opportunities/<oid>/source")
     @login_required
