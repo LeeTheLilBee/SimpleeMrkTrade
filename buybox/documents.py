@@ -7,6 +7,7 @@ Never render uploaded HTML or PDF inline from BuyBox.
 from __future__ import annotations
 import os
 import secrets
+import stat
 from io import BytesIO
 from pathlib import Path
 from cryptography.fernet import Fernet, InvalidToken
@@ -37,6 +38,8 @@ class PrivateDocumentStore:
         path = Path(root).expanduser()
         if not path.is_dir() or path.is_symlink():
             raise RuntimeError("Document storage must be an existing private, non-symlink directory.")
+        if stat.S_IMODE(path.stat().st_mode) & 0o077:
+            raise RuntimeError("Document directory must exclude group/other access (chmod 700).")
         self.root = path
         self.cipher = Fernet(encryption_key.encode() if isinstance(encryption_key,str) else encryption_key)
 
