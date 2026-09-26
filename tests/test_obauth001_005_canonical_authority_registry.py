@@ -110,6 +110,9 @@ def test_exact_current_active_authorities_are_registered():
         "capital_waterfall":
             "OB_CAPITAL_WATERFALL_PROJECTION_V1",
 
+        "capital_modes":
+            "OB_CAPITAL_MODE_REVIEW_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 

@@ -1,0 +1,43 @@
+name: OBCAP011-015 advisory capital modes
+on:
+  push:
+    branches:
+      - 'obcap011-015-*'
+    paths:
+      - 'web/ob_capital_modes.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_obcap011_015_advisory_capital_modes.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - '.github/workflows/obcap011-015-capital-modes.yml'
+  pull_request:
+    paths:
+      - 'web/ob_capital_modes.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_obcap011_015_advisory_capital_modes.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - '.github/workflows/obcap011-015-capital-modes.yml'
+permissions:
+  contents: read
+jobs:
+  advisory-mode-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax boundary
+        run: python -m py_compile web/ob_capital_modes.py tests/test_obcap011_015_advisory_capital_modes.py
+      - name: Focused capital and authority tests
+        run: |
+          python -m pytest -q \
+            tests/test_obcap001_005_source_bound_capital_truth.py \
+            tests/test_obcap006_010_guarded_capital_waterfall.py \
+            tests/test_obcap011_015_advisory_capital_modes.py \
+            tests/test_obauth001_005_canonical_authority_registry.py \
+            tests/test_obevent001_010_command_event_causal.py
+      - name: Full repository regression
+        run: python -m pytest -q tests
