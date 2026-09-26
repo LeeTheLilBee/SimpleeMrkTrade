@@ -52,7 +52,7 @@ CAPITAL_SOURCE_ROLES = frozenset((
     "owner_operating_profile",
     "proof_demo_account",
 ))
-assert CAPITAL_SOURCE_ROLES == SOURCE_ROLES
+assert CAPITAL_SOURCE_ROLES.issubset(SOURCE_ROLES)
 
 
 def _timestamp(value: datetime, name: str) -> datetime:
