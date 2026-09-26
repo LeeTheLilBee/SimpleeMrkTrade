@@ -137,7 +137,10 @@ class HostedWebTests(unittest.TestCase):
         self.assertIn("HttpOnly",cookie)
         for key in ("tower_session_","actor_","entity_","entitlement_",token(self.data)):
             self.assertNotIn(key,cookie)
-        self.assertEqual(self.client.get("/",base_url=ORIGIN).status_code,200)
+        page=self.client.get("/",base_url=ORIGIN)
+        self.assertEqual(page.status_code,200)
+        self.assertIn(b"Return to Tower",page.data)
+        self.assertIn((TOWER_ORIGIN+"/tower/access-home").encode(),page.data)
         other=self.app.test_client()
         self.assertEqual(self.exchange(other).status_code,403)
         self.assertEqual(other.get("/",base_url=ORIGIN).status_code,403)
