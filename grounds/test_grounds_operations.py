@@ -28,7 +28,7 @@ def fixture_scope(subject, role, properties=("p1",), units=(), assignments=(), *
 def intake(property_ref="p1", unit_ref="u1", *, emergency=False):
     return MaintenanceIntake(
         property_ref, unit_ref, "plumbing", "Faucet is leaking",
-        emergency, "contact_first", ("vault-opaque-fixture",),
+        emergency, "contact_first", (),
     )
 
 
@@ -131,6 +131,14 @@ class GroundsOperationsTests(unittest.TestCase):
         with self.assertRaises(GroundsConflict):
             self.ops.publish_notice(self.manager,property_ref="p1",notice_ref="no",
                                     headline="Wrong",body="Wrong property",unit_ref="u-from-p2")
+
+    def test_unconnected_photo_intake_fails_instead_of_silently_dropping_proof(self):
+        with self.assertRaises(GroundsConflict):
+            self.ops.submit_maintenance(
+                self.resident, work_ref="with-photo",
+                intake=MaintenanceIntake("p1","u1","plumbing","Example",
+                                         False,"contact_first",("opaque-unverified-ref",)),
+            )
 
     def test_resident_submission_visibility_and_staff_controls(self):
         self.ops.submit_maintenance(self.resident,work_ref="w1",intake=intake(emergency=True))
