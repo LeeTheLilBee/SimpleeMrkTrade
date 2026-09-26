@@ -24,7 +24,8 @@ DECISION_REQUIRED = (
     "attested_ground_audience_and_issuer", "host_and_receiver_proof",
     "audience_bound_nonreplayable_handoff", "revocation_and_logout",
     "property_and_unit_membership_verification", "staff_property_assignment",
-    "technician_and_vendor_job_assignment", "purpose_bound_permissions",
+    "technician_and_vendor_job_assignment", "inspector_specific_assignment_and_revocation",
+    "purpose_bound_permissions",
     "tenant_data_privacy_review", "audit_and_incident_response",
     "return_route_and_expiry_tests", "storage_and_backup_restore_proof",
 )
