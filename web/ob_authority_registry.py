@@ -1511,6 +1511,65 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "capital_waterfall"
+] = _record(
+    concept_key="capital_waterfall",
+    authority_id="OB_CAPITAL_WATERFALL_PROJECTION_V1",
+    authority_class="READ_ONLY_MISSION_CAPITAL_WATERFALL_REHEARSAL",
+    implementation_ref="web/ob_capital_waterfall.py",
+    implementation_role="CANONICAL_FOUR_SLEEVE_INDICATIVE_PROJECTION",
+    owns=(
+        "four isolated ATM Set 1/Set 2 acquisition and operations planning projections",
+        "source-bound non-regressive floor and high-water candidates",
+        "conditional hypothetical harvest and missing-evidence status",
+    ),
+    inputs=("OB_CAPITAL_TRUTH_V1",),
+    triggers=(
+        "explicit owner-confirmed existing plan intent and floor references",
+        "four verified account-and-scope-matched capital truth snapshots",
+    ),
+    effects=(
+        "emit tamper-evident indicative waterfall projection",
+        "preserve protected floors, commitments, pending distributions and targets",
+        "emit non-money-bearing lineage and review statuses",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "adopt new policy or ratchet without owner approval and external evidence",
+        "treat indicative capital as settled spendable acquisition funds",
+        "pool ATM Set 1/Set 2 or acquisition/operations",
+        "perform harvest or capital movement",
+        "issue deployment or financing readiness",
+        "direct OB to BuyBox access",
+        "broker order or operating mode unlock",
+    ),
+    failure_behavior=(
+        "Missing, stale, conflicting and tampered capital evidence blocks numerical "
+        "waterfall claims. No floor widening or readiness fabrication."
+    ),
+    explanation=(
+        "Source snapshot IDs/hashes, owner plan reference, per-sleeve status, "
+        "indicative allocation waterfall, and proposed nondecreasing floors/high-water."
+    ),
+    evidence=(
+        "plan receipt/hash and declared owner policy source reference",
+        "four canonical capital snapshot IDs/hashes and states",
+        "read-only projection ID/hash",
+    ),
+    review_visibility=(
+        "Only non-money-bearing proof reference is eligible for later Tower mediation; "
+        "Teller remains the acquisition financing and deployment readiness authority."
+    ),
+    temporal_validity="FOUR_SNAPSHOT_AS_OF_BOUND; no source freshness inference.",
+    deterministic=True,
+    learning_boundary=(
+        "Learning cannot relax floor, adopt harvest, move capital, or authorize modes."
+    ),
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
