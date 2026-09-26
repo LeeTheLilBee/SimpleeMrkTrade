@@ -161,3 +161,102 @@ def test_projection_tamper_fails_integrity(tmp_path):
     assert not verify_prepolicy_capital_projection(
         replace(projection, capacity_factor=0.5)
     )
+
+
+def test_capsim013_effective_policy_consumes_canonical_six_decimal_restrictions(tmp_path):
+    from web.ob_effective_policy import (
+        capital_policy_layer, owner_profile_policy_layer,
+        product_phase_policy_layer, resolve_effective_policy,
+    )
+    owner = profile(tmp_path)
+    state, ledger = evidence()
+    restrained = resign_state(
+        state, cash=7000.0, equity=9000.0, peak_equity=10000.0,
+        max_drawdown_pct=10.0,
+    )
+    projection = build_prepolicy_capital_projection(
+        owner, capital_state=restrained, session_loss=ledger,
+    )
+    capital_layer = capital_policy_layer(projection)
+    policy = resolve_effective_policy(account_key="trust", layers=[
+        owner_profile_policy_layer(owner), product_phase_policy_layer("trust"),
+        capital_layer,
+    ])
+    projected_limits = dict(projection.limits)
+    baseline_limits = dict(projection.baseline_limits)
+    assert policy["status"] == "RESOLVED"
+    assert capital_layer["restriction_only"] is True
+    assert capital_layer["source_authority"] == SCHEMA_VERSION
+    assert capital_layer["source_ref"]["simulation_only"] is True
+    assert "CAPITAL_POLICY" in [x["layer_class"] for x in policy["source_layers"]]
+    for key in LIMIT_KEYS:
+        # Canonical six-decimal value, NOT the raw floating-point pre-rounded result.
+        assert policy["effective_limits"][key] == projected_limits[key]
+        assert policy["effective_limits"][key] <= baseline_limits[key]
+    assert policy["owner_profile_widened"] is False
+    assert not any(policy["effective_capabilities"].values())
+
+
+def test_capsim013_rejects_block_tamper_and_cross_account_policy(tmp_path):
+    from web.ob_effective_policy import (
+        capital_policy_layer, owner_profile_policy_layer,
+        product_phase_policy_layer, resolve_effective_policy,
+    )
+    owner = profile(tmp_path)
+    state, ledger = evidence()
+    blocked = build_prepolicy_capital_projection(
+        owner, capital_state=resign_state(state, cash=0.0), session_loss=ledger,
+    )
+    with pytest.raises(ValueError, match="READY"):
+        capital_policy_layer(blocked)
+    ready = build_prepolicy_capital_projection(
+        owner, capital_state=state, session_loss=ledger,
+    )
+    with pytest.raises(ValueError, match="verification"):
+        capital_policy_layer(replace(ready, integrity_hash="0" * 64))
+    other = profile(tmp_path, account="personal")
+    with pytest.raises(ValueError, match="cross account"):
+        resolve_effective_policy(account_key="personal", layers=[
+            owner_profile_policy_layer(other),
+            product_phase_policy_layer("personal"),
+            capital_policy_layer(ready),
+        ])
+
+
+def test_capsim014_canonical_registry_resolves_retired_alias_without_cycle():
+    from web.ob_authority_registry import (
+        build_canonical_authority_registry, resolve_authority_reference,
+    )
+    registry = build_canonical_authority_registry()
+    assert registry["validation"]["valid"]
+    assert registry["validation"]["dependency_cycle_free"]
+    record = registry["authority_records"]["capital_policy"]
+    assert record["authority_id"] == SCHEMA_VERSION
+    assert "OB_EFFECTIVE_POLICY_V1" not in record["inputs"]
+    assert registry["authority_records"]["effective_policy"]["policy_inputs"][-1] == SCHEMA_VERSION
+    resolved = resolve_authority_reference("PENDING_OBCAP")
+    assert resolved["resolution"] == "RETIRED_ALIAS"
+    assert resolved["resolved_authority_id"] == SCHEMA_VERSION
+
+
+def test_capsim015_canonical_policy_source_is_explicit_simulation_only():
+    from web.ob_effective_policy import (
+        effective_policy_contract, policy_source_registry,
+    )
+    from web.ob_capital_simulation_authority import capital_simulation_contract
+    source = policy_source_registry()["CAPITAL_POLICY"]
+    assert source["status"] == "ACTIVE"
+    assert source["runtime_allowed"] is True
+    assert source["source_authority"] == SCHEMA_VERSION
+    contract = effective_policy_contract()
+    assert contract["active_policy_authorities"]["capital_policy"] == SCHEMA_VERSION
+    assert "capital_policy" not in contract["future_policy_authorities"]
+    simulation = capital_simulation_contract()
+    assert simulation["capital_policy_authority"] == SCHEMA_VERSION
+    assert simulation["pending_capital_policy_authority"] is None
+    assert simulation["simulation_admission_remains_post_policy"] is True
+    for key in (
+        "broker_submission", "capital_movement", "manual_live_unlock",
+        "hybrid_unlock", "automated_unlock",
+    ):
+        assert simulation[key] is False
