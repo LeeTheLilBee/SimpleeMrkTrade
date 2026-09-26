@@ -131,6 +131,32 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
             "This layer does not open property workflows."
         ),
     ),
+
+    # TWR201 — BuyBox is a known ecosystem application, not a live doorway.
+    # The draft BuyBox workspace currently uses development-only local login.
+    # Do not represent that as Tower identity or hosted availability.
+    TowerAppRegistration(
+        app_id="buybox",
+        app_name="BuyBox",
+        app_label="BuyBox",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/buybox",
+        owner_only=True,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation=(
+            "BuyBox is a Tower-governed universal acquisition workspace under "
+            "separate development. No hosted owner launch, production BuyBox "
+            "session, external acquisition readiness, Vault archival, "
+            "closing, funding, or handoff authority is activated here. "
+            "Teller owns financial and capacity readiness; Grounds owns "
+            "owned-property operations; Vault proof is mediated by Tower."
+        ),
+    ),
 )
 
 
