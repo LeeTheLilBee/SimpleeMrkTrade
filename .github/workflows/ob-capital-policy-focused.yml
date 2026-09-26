@@ -1,0 +1,37 @@
+name: OB capital-policy pre-policy validation
+on:
+  push:
+    branches:
+      - 'capsim-*'
+    paths:
+      - 'web/ob_capital_policy_authority.py'
+      - 'tests/test_capsim011_012_prepolicy_capital_projection.py'
+      - '.github/workflows/ob-capital-policy-focused.yml'
+  pull_request:
+    paths:
+      - 'web/ob_capital_policy_authority.py'
+      - 'tests/test_capsim011_012_prepolicy_capital_projection.py'
+      - '.github/workflows/ob-capital-policy-focused.yml'
+permissions:
+  contents: read
+jobs:
+  capital-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax wall
+        run: python -m py_compile web/ob_capital_policy_authority.py tests/test_capsim011_012_prepolicy_capital_projection.py
+      - name: Focused capital boundary wall
+        run: |
+          python -m pytest -q \
+            tests/test_capsim001_005_capital_simulation_authority.py \
+            tests/test_capsim006_010_session_loss_experimental_admission.py \
+            tests/test_capsim011_012_prepolicy_capital_projection.py
+      - name: Full repository regression wall
+        run: python -m pytest -q tests
