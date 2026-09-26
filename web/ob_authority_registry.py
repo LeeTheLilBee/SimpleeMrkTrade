@@ -1688,6 +1688,46 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "portfolio_view"
+] = _record(
+    concept_key="portfolio_view",
+    authority_id="OB_PORTFOLIO_VIEW_V1",
+    authority_class="SOURCE_BOUND_NON_EXECUTING_PORTFOLIO_PROJECTION",
+    implementation_ref="web/ob_portfolio_view.py",
+    implementation_role="CANONICAL_ISOLATED_THREE_LANE_PORTFOLIO_COMPARISON",
+    owns=(
+        "one read-only stock/option exposure view per verified OBPOS lane",
+        "immutable three-lane comparison without winner selection or pooling",
+    ),
+    inputs=("OB_POSITION_TRUTH_V1",),
+    triggers=("explicit three-lane source-backed portfolio review",),
+    effects=(
+        "project existing canonical cash/equity and position exposure without new fill math",
+        "emit integrity-bound non-money-bearing source reference",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "create a second position ledger",
+        "rank/pick or automatically promote a strategy",
+        "combine development-lane cash into account spendability",
+        "claim broker authentication or Teller acquisition readiness",
+        "broker order, capital transfer or live-mode unlock",
+    ),
+    failure_behavior=(
+        "Tampered or cross-account OBPOS source, inconsistent equity/mark, missing lane "
+        "or altered build reference fails closed."
+    ),
+    explanation="Each lane retains its own source position ID and current market-frame exposure.",
+    evidence=("verified OBPOS hashes", "build refs", "comparison ID and integrity hash"),
+    review_visibility="Owner sees separate simulation results; no direct BuyBox or real broker claim.",
+    temporal_validity="SOURCE_FRAME_AND_OBPOS_RECEIPT_BOUND",
+    deterministic=True,
+    learning_boundary="No auto-winner, live authority or source-truth reclassification.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
