@@ -197,7 +197,6 @@ def test_obcap010_deterministic_hash_and_no_amount_leak_in_reference():
     assert not verify_atm_waterfall_projection(
         replace(first, acquisition_readiness="READY"), plan=p, snapshots=inputs)
     assert not verify_atm_waterfall_projection(
-        replace(first.sleeves[0], spend_authorized=True) if False else
         replace(first, sleeves=(replace(first.sleeves[0], spend_authorized=True), *first.sleeves[1:])),
         plan=p, snapshots=inputs)
     receipt = waterfall_reference(first, plan=p, snapshots=inputs)
