@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Owner sign in · BuyBox{% endblock %}{% block content %}
+<section class="login-panel"><p class="eyebrow">PRIVATE OWNER WORKSPACE</p><h1>Enter BuyBox.</h1>
+<p>Use your configured owner password. The local workspace is not a substitute for Tower authentication when deployed.</p>
+<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<label for="password">Password</label><input id="password" name="password" type="password" required autocomplete="current-password">
+<button class="primary" type="submit">Sign in</button></form></section>{% endblock %}
