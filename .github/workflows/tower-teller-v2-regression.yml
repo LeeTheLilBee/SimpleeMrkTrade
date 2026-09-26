@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - tower-teller-hosted-worker-guard-twr198
+      - tower-teller-persistence-v2-twr193-197
   pull_request:
     branches:
       - tower-teller-persistence-v2-twr193-197
+      - tower-hosted-runtime-identity-twr081-085
   workflow_dispatch:
 
 permissions:
