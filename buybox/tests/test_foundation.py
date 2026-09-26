@@ -69,7 +69,8 @@ class BuyBoxFoundationTests(unittest.TestCase):
         op["vertical_data"]["machine_inventory"] = [
             {"id": str(n), "ownership": "SELLER_OWNED"} for n in range(8)]
         result = evaluate(op)
-        self.assertEqual(result["judgment"], "QUALIFIED")
+        self.assertEqual(result["judgment"], "REVIEW")
+        self.assertEqual(result["teller_readiness"], "UNKNOWN")
         self.assertFalse(result["closing_authorized"])
         self.assertFalse(result["purchase_authorized"])
 
@@ -134,7 +135,8 @@ class BuyBoxFoundationTests(unittest.TestCase):
         op["lifecycle"] = "ACQUIRED"
         with self.assertRaises(ValueError):
             prepare_handoff(op, {}, None)
-        self.assertEqual(prepare_handoff(op, {}, "synthetic-receipt")["destination"], "grounds")
+        with self.assertRaisesRegex(ValueError, "AUTHENTICATED_TOWER_ADAPTER_UNAVAILABLE"):
+            prepare_handoff(op, {}, "receipt-shaped-string-is-not-authority")
 
 if __name__ == "__main__":
     unittest.main()
