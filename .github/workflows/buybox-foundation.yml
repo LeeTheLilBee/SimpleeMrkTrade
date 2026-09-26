@@ -28,7 +28,14 @@ jobs:
           ref: 1b9a3e191cf8f8b61adb59b790033983f767f42f
           path: upstream-proof
           persist-credentials: false
-      - name: Verify BuyBox and exact PR35 metadata-schema compatibility
+      - name: Checkout exact merged Tower TWR202-206 action contract
+        uses: actions/checkout@v4
+        with:
+          ref: db57752b9fd7402265dceb7a35cf93ea16015218
+          path: upstream-tower
+          persist-credentials: false
+      - name: Verify BuyBox against exact Tower and Vault source contracts
         env:
           BUYBOX_CANONICAL_CONTRACT_PATH: upstream-proof/vault/buybox_evidence_handoff_contract.py
+          BUYBOX_TOWER_ACTION_CONTRACT_PATH: upstream-tower/tower/buybox_action_contract.py
         run: python -m unittest discover -s buybox/tests -v
