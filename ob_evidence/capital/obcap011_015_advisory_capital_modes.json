@@ -1,0 +1,30 @@
+{
+  "pack": "OBCAP011-015",
+  "parent": "24a961e4b529fbf36655fbfdd381eb7791edc7d6",
+  "authority": "OB_CAPITAL_MODE_REVIEW_V1",
+  "implementation_head": "d5a33ee2689ed0000dc0119b2c07d5bcc6d904f7",
+  "modes": [
+    "ACCUMULATE",
+    "BALANCED_GROWTH",
+    "PROTECT",
+    "SURPLUS_GROWTH",
+    "HARVEST",
+    "RECOVERY"
+  ],
+  "owner_defined_thresholds": true,
+  "distinct_per_sleeve_source_evidence_required_for_hysteresis": true,
+  "risk_escalation_immediate_review": true,
+  "automatic_mode_switch": false,
+  "existing_floor_or_policy_mutation": false,
+  "external_capital_verified": false,
+  "acquisition_readiness": "NOT_ASSESSED_BY_OB",
+  "teller_readiness_owner": true,
+  "direct_buybox": false,
+  "tower_mediation_required": true,
+  "broker_submission": false,
+  "capital_movement": false,
+  "hybrid_auto_unlock": false,
+  "focused_tests_passed": 71,
+  "full_repository_tests_passed": 1307,
+  "implementation_ci": "https://github.com/LeeTheLilBee/SimpleeMrkTrade/actions/runs/36271407600"
+}
