@@ -280,7 +280,7 @@ def create_app(config=None):
             from uuid import uuid4
             reviewed=dict(item,id=str(uuid4()),status="DOCUMENT_SUPPORTED",
                           supersedes=evidence_id,observed_at=now(),
-                          review={"actor":"local_owner","rationale":rationale,"reviewed_at":now(),
+                          verification={"actor":"local_owner","rationale":rationale,"reviewed_at":now(),
                                   "verification_scope":"DOCUMENT_SUPPORT_ONLY"})
             op["evidence"].append(reviewed)
             op=invalidate_on_change(op,changed_fields=["evidence",reviewed["kind"]],
