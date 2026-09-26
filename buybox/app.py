@@ -27,6 +27,8 @@ from .registry import VERTICALS, get_vertical
 from .store import connect, save, load, list_opportunities, activity, history
 from .workflow import transition, gate_report, invalidate_on_change
 from .documents import PrivateDocumentStore
+from .dealroom import new_task, update_task, record_negotiation, current_tasks
+from .workflow import add_decision_snapshot
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -209,6 +211,75 @@ def create_app(config=None):
         return render_template("scenario.html",op=op,baseline=baseline,
             stressed=stressed,revenue_factor=revenue_factor,
             expense_factor=expense_factor)
+
+    @app.get("/opportunities/<oid>/deal-room")
+    @login_required
+    def deal_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        return render_template("dealroom.html",op=op,tasks=current_tasks(op),
+                               analysis=evaluate(op))
+
+    @app.post("/opportunities/<oid>/tasks")
+    @login_required
+    def record_task(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,item=new_task(op,title=request.form.get("title",""),
+                due_date=request.form.get("due_date",""),
+                notes=request.form.get("notes",""))
+            save(conn,revised,"DealTaskCreated",{"task_id":item["id"]},
+                 expected_revision=int(request.form["revision"]))
+        return redirect(url_for("deal_room",oid=oid))
+
+    @app.post("/opportunities/<oid>/tasks/<task_id>/status")
+    @login_required
+    def task_status(oid,task_id):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,item=update_task(op,task_id=task_id,
+                status=request.form.get("status",""),
+                notes=request.form.get("notes",""))
+            save(conn,revised,"DealTaskStatusChanged",
+                {"task_id":item["id"],"status":item["status"],"supersedes":task_id},
+                expected_revision=int(request.form["revision"]))
+        return redirect(url_for("deal_room",oid=oid))
+
+    @app.post("/opportunities/<oid>/negotiations")
+    @login_required
+    def negotiation(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,event=record_negotiation(op,
+                kind=request.form.get("kind",""),
+                description=request.form.get("description",""),
+                source_reference=request.form.get("source_reference",""),
+                amount=request.form.get("amount",""),
+                occurred_on=request.form.get("occurred_on") or None)
+            save(conn,revised,"NegotiationHistoryRecorded",
+                {"event_id":event["id"],"kind":event["kind"],
+                 "source_reference":event["source_reference"]},
+                 expected_revision=int(request.form["revision"]))
+        return redirect(url_for("deal_room",oid=oid))
+
+    @app.post("/opportunities/<oid>/decision-note")
+    @login_required
+    def decision_note(oid):
+        reason=request.form.get("reason","").strip()[:2000]
+        if not reason: abort(400,"Owner decision note required")
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised=add_decision_snapshot(op,evaluate(op),
+                      actor_reference="local_owner",reason=reason)
+            save(conn,revised,"AnalyticalOwnerDecisionRecorded",
+                {"kind":"ANALYTICAL_OWNER_NOTE","authorized_purchase":False},
+                expected_revision=int(request.form["revision"]))
+        return redirect(url_for("deal_room",oid=oid))
 
     @app.post("/opportunities/<oid>/source")
     @login_required
