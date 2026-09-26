@@ -146,7 +146,7 @@ class GroundsOperations:
         if end_on < start_on:
             raise GroundsConflict("lease end precedes start")
         if vault_proof_ref is not None:
-            _required(vault_proof_ref, "vault_proof_ref", max_length=128)
+            raise GroundsConflict("lease proof attachment requires a certified Tower/Vault handoff")
         try:
             with self.store.transaction(write=True) as db:
                 db.execute(
