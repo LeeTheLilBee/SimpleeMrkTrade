@@ -30,6 +30,7 @@ OWNER_PROFILE_AUTHORITY = "OB_OWNER_OPERATING_PROFILE_V1"
 ACCOUNT_IDENTITY_AUTHORITY = "OB_ACCOUNT_IDENTITY_TRUTH_V1"
 EVENT_AUTHORITY = "OB_COMMAND_EVENT_CAUSAL_V1"
 MODE_AUTHORITY = "OB_OPERATING_MODE_V1"
+CAPITAL_POLICY_AUTHORITY = "OB_CAPITAL_POLICY_V1"
 
 MOST_RESTRICTIVE_PRIMITIVE = (
     "OB_OWNER_OPERATING_PROFILE_V1.most_restrictive_limits"
@@ -144,13 +145,13 @@ POLICY_SOURCE_REGISTRY = {
 
     "CAPITAL_POLICY": {
         "source_authority":
-            "PENDING_OBCAP",
+            CAPITAL_POLICY_AUTHORITY,
 
         "status":
-            "PENDING",
+            "ACTIVE",
 
         "runtime_allowed":
-            False,
+            True,
 
         "owner_confirmation_required":
             False,
@@ -159,7 +160,10 @@ POLICY_SOURCE_REGISTRY = {
             False,
 
         "description":
-            "Future capital-authority restriction layer.",
+            (
+                "Explicit, verified, simulation-only pre-policy capital "
+                "restriction. Never an implicit live capital source."
+            ),
     },
 
     "PORTFOLIO_POLICY": {
@@ -1256,6 +1260,61 @@ def mode_policy_layer(
     )
 
 
+
+def capital_policy_layer(
+    projection,
+) -> Dict[str, Any]:
+    """Promote a verified READY pre-policy projection; never resolve policy here.
+
+    This function is the explicit, simulation-only CAPITAL_POLICY adapter.
+    Pre-policy projection never imports Effective Policy. Existing CAPSIM
+    post-policy admission remains a separate consumer of Effective Policy.
+    """
+    from web.ob_capital_policy_authority import (
+        SCHEMA_VERSION as PREPOLICY_AUTHORITY,
+        verify_prepolicy_capital_projection,
+    )
+
+    if not verify_prepolicy_capital_projection(projection):
+        raise ValueError("capital-policy projection failed verification")
+
+    if projection.state != "READY" or projection.simulation_only is not True:
+        raise ValueError("capital-policy layer requires READY Experimental projection")
+
+    limits = dict(projection.limits)
+    baseline = dict(projection.baseline_limits)
+    if not limits or any(limits[key] > baseline[key] for key in limits):
+        raise ValueError("capital policy may not widen the owner baseline")
+
+    if PREPOLICY_AUTHORITY != CAPITAL_POLICY_AUTHORITY:
+        raise RuntimeError("capital policy source authority mismatch")
+
+    return _build_layer(
+        layer_id="capital_policy:" + projection.projection_id,
+        layer_class="CAPITAL_POLICY",
+        account_key=projection.account_key,
+        source_authority=CAPITAL_POLICY_AUTHORITY,
+        limits=limits,
+        capabilities={key: False for key in CAPABILITY_KEYS},
+        source_ref={
+            "projection_id": projection.projection_id,
+            "projection_integrity_hash": projection.integrity_hash,
+            "owner_profile_id": projection.owner_profile_id,
+            "owner_profile_hash": projection.owner_profile_hash,
+            "capital_state_snapshot_id": projection.capital_state_snapshot_id,
+            "capital_state_hash": projection.capital_state_hash,
+            "session_loss_ledger_id": projection.session_loss_ledger_id,
+            "session_loss_hash": projection.session_loss_hash,
+            "simulation_only": True,
+            "pre_policy": True,
+            "experimental_only": True,
+            "non_circular": True,
+        },
+        owner_confirmed=False,
+        restriction_only=True,
+    )
+
+
 def explicit_owner_restriction_layer(
     *,
     account_key: str,
@@ -2179,12 +2238,12 @@ def effective_policy_contract() -> Dict[str, Any]:
         "active_policy_authorities": {
             "mode_policy":
                 MODE_AUTHORITY,
+
+            "capital_policy":
+                CAPITAL_POLICY_AUTHORITY,
         },
 
         "future_policy_authorities": {
-            "capital_policy":
-                "PENDING_OBCAP",
-
             "portfolio_policy":
                 "PENDING_OBPORT",
 
