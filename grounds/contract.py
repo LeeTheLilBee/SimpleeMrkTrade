@@ -63,6 +63,8 @@ def foundation_status() -> dict:
         "resident_rent_checkout_enabled": False,
         "teller_connected": False,
         "work_order_persistence_enabled": False,
+        "local_development_sqlite_available": True,
+        "local_preview_available": True,
         "vault_connected": False,
         "clouds_operational_publisher_enabled": False,
         "paid_infrastructure_provisioned": False,
