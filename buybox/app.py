@@ -32,6 +32,7 @@ from .dealroom import new_task, update_task, record_negotiation, current_tasks
 from .workflow import add_decision_snapshot
 from .soulaana import context as soulaana_context, INTENTS as SOULAANA_INTENTS
 from .atm import register_machine
+from .focus import build_focus
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -146,6 +147,14 @@ def create_app(config=None):
         panels=[{"record":op,"analysis":evaluate(op)} for op in selected]
         return render_template("index.html",records=panels,total=len(ops),
                                current_vertical=current_vertical,q=q)
+
+    @app.get("/focus")
+    @login_required
+    def focus():
+        with db() as conn:
+            opportunities=list_opportunities(conn)
+            snapshot=build_focus(opportunities,lambda oid:activity(conn,oid))
+        return render_template("focus.html",snapshot=snapshot)
 
     @app.post("/opportunities")
     @login_required
