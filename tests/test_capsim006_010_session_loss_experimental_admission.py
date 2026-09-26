@@ -1012,7 +1012,7 @@ def test_capsim009_capital_admission_never_changes_control_or_integrated(
     )
 
 
-def test_capsim010_pending_obcap_remains_pending():
+def test_capsim010_historical_pending_obcap_graduates_after_capsim015():
     source = (
         policy_source_registry()[
             "CAPITAL_POLICY"
@@ -1024,7 +1024,7 @@ def test_capsim010_pending_obcap_remains_pending():
             "source_authority"
         ]
         ==
-        "PENDING_OBCAP"
+        "OB_CAPITAL_POLICY_V1"
     )
 
     assert (
@@ -1032,14 +1032,14 @@ def test_capsim010_pending_obcap_remains_pending():
             "status"
         ]
         ==
-        "PENDING"
+        "ACTIVE"
     )
 
     assert (
         source[
             "runtime_allowed"
         ]
-        is False
+        is True
     )
 
 
