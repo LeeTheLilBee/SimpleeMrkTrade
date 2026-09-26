@@ -37,6 +37,8 @@ from .hosted_auth import (prepare_hosted_runtime, exact_receiver_origin,
     require_verified_session, owner_session_claims, HostedAuthError)
 from .tower_owner_receiver import (verify_tower_buybox_owner_handoff,
     consume_verified_handoff, TowerBuyBoxHandoffError)
+from .tower_session_store import (create_owner_session,read_owner_session,
+    revoke_owner_session)
 from .tower_evidence import freeze_local_evidence_snapshot, HandoffPreparationError
 
 def create_app(config=None):
@@ -70,6 +72,8 @@ def create_app(config=None):
     if auth_mode=="local" and not app.config.get("BUYBOX_PASSWORD_HASH"):
         raise RuntimeError("Set BUYBOX_PASSWORD_HASH for private development mode.")
     if auth_mode=="tower":
+        if app.config.get("SESSION_COOKIE_SECURE") is not True:
+            raise RuntimeError("Hosted session must use Secure cookies.")
         # This cannot be satisfied by environment variables alone: real trusted
         # storage/restore and live Tower session verifier adapters are required.
         try:
@@ -130,12 +134,19 @@ def create_app(config=None):
                 return redirect(url_for("login"))
             if auth_mode=="tower":
                 now_epoch=int(datetime.now(timezone.utc).timestamp())
+                with db() as conn:
+                    claims=read_owner_session(conn,session.get("tower_session_handle"),
+                                              now_epoch=now_epoch)
+                if claims is None:
+                    session.clear()
+                    abort(403,"Tower owner session is unavailable or expired")
                 try:
-                    require_verified_session(
-                        app.config["TOWER_SESSION_VERIFIER"],
-                        session.get("tower_context"),
-                        now_epoch=now_epoch)
+                    require_verified_session(app.config["TOWER_SESSION_VERIFIER"],
+                                             claims,now_epoch=now_epoch)
                 except HostedAuthError:
+                    with db() as conn:
+                        revoke_owner_session(conn,session.get("tower_session_handle"),
+                                             now_epoch=now_epoch)
                     session.clear()
                     abort(403,"Tower owner session is unavailable or revoked")
             return fn(*args,**kwargs)
@@ -174,6 +185,10 @@ def create_app(config=None):
     @app.post("/logout")
     @login_required
     def logout():
+        if auth_mode=="tower":
+            with db() as conn:
+                revoke_owner_session(conn,session.get("tower_session_handle"),
+                    now_epoch=int(datetime.now(timezone.utc).timestamp()))
         session.clear()
         if auth_mode=="tower":
             return redirect(app.config["TOWER_PUBLIC_ORIGIN"]+"/tower/access-home",code=303)
@@ -201,18 +216,21 @@ def create_app(config=None):
                 shared_secret=app.config["TOWER_BUYBOX_HANDOFF_SECRET"],
                 now_epoch=now_epoch)
             claims=owner_session_claims(verified)
-            require_verified_session(app.config["TOWER_SESSION_VERIFIER"],
+            active=require_verified_session(app.config["TOWER_SESSION_VERIFIER"],
                 claims,now_epoch=now_epoch)
         except (TowerBuyBoxHandoffError,HostedAuthError):
             abort(403,"Tower exchange not verified")
         with db() as conn:
             if not consume_verified_handoff(conn,verified):
                 abort(403,"Tower exchange already consumed")
-        # The durable consume is committed before issuing a browser session.
+            handle=create_owner_session(conn,claims,now_epoch=now_epoch,
+                                        expires_at_epoch=active["expires_at_epoch"])
+        # Consumption and server-side owner session are persisted before a
+        # browser cookie is issued. Never serialize Tower IDs into the cookie.
         session.clear()
         session.permanent=True
         session["buybox_owner"]=True
-        session["tower_context"]=claims
+        session["tower_session_handle"]=handle
         session["csrf"]=secrets.token_hex(32)
         return redirect(url_for("index"),code=303)
 
