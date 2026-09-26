@@ -9,6 +9,7 @@ TLS, encrypted protected file storage and deployment hardening.
 from __future__ import annotations
 import os
 import secrets
+import stat
 from decimal import Decimal, InvalidOperation
 from functools import wraps
 from pathlib import Path
@@ -51,6 +52,11 @@ def create_app(config=None):
         raise RuntimeError("BUYBOX_DB_PATH parent must already exist and be access-controlled.")
     if db_path.exists() and db_path.is_symlink():
         raise RuntimeError("Refusing symlink database path.")
+    if stat.S_IMODE(db_path.parent.stat().st_mode) & 0o077:
+        raise RuntimeError("Database parent directory must be private (chmod 700).")
+    if db_path.exists() and stat.S_IMODE(db_path.stat().st_mode) & 0o077:
+        raise RuntimeError("Existing database must exclude group/other access (chmod 600).")
+    os.umask(0o077)
     app.config["BUYBOX_DB_PATH"]=str(db_path)
     if not app.config.get("BUYBOX_DOCS_DIR") or not app.config.get("BUYBOX_DOCUMENT_KEY"):
         raise RuntimeError("Set BUYBOX_DOCS_DIR and BUYBOX_DOCUMENT_KEY for protected document intake.")
