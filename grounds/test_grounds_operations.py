@@ -10,6 +10,7 @@ from grounds.maintenance import MaintenanceIntake
 from grounds.operations import GroundsConflict, GroundsOperations
 from grounds.storage import GroundsStore
 from grounds.teller import resident_rent_projection
+from grounds.soulaana import explain_work_order
 
 
 def fixture_scope(subject, role, properties=("p1",), units=(), assignments=(), *, expires=None):
@@ -201,6 +202,16 @@ class GroundsOperationsTests(unittest.TestCase):
         self.assertIsNone(pulse["rent_collections"])
         with self.assertRaises(AccessDenied):
             self.ops.property_pulse(self.outsider,property_ref="p1")
+
+    def test_soulaana_explanation_keeps_source_revision_and_no_actions(self):
+        self.ops.submit_maintenance(self.resident,work_ref="w1",intake=intake(emergency=True))
+        explanation=explain_work_order(self.resident,self.ops,work_ref="w1")
+        self.assertEqual(explanation["source"],"grounds")
+        self.assertEqual(explanation["source_revision"],1)
+        self.assertIn("urgency flag",explanation["message"])
+        self.assertFalse(explanation["action_executed"])
+        with self.assertRaises(AccessDenied):
+            explain_work_order(self.outsider,self.ops,work_ref="w1")
 
     def test_teller_rent_snapshot_binds_exact_lease_and_freshness(self):
         home = self.ops.resident_home(self.resident,property_ref="p1",unit_ref="u1")
