@@ -91,19 +91,13 @@ def _metric(op, key):
     return money(record.get("value"))
 
 def _readiness(op, name):
-    response = op.get("readiness", {}).get(name)
-    if not isinstance(response, dict):
-        return "UNKNOWN"
-    # An external integration must provide a trusted authority marker and non-expired result.
-    if response.get("source") != name or not response.get("authority_reference"):
-        return "UNKNOWN"
-    try:
-        deadline = datetime.fromisoformat(response["valid_until"].replace("Z","+00:00"))
-        if deadline.tzinfo is None or deadline <= datetime.now(timezone.utc):
-            return "UNKNOWN"
-    except (KeyError, ValueError, TypeError):
-        return "UNKNOWN"
-    return response.get("status") if response.get("status") in ("READY","PARTIAL","BLOCKED") else "UNKNOWN"
+    """An arbitrary serialized dictionary is NOT evidence of live readiness.
+
+    An authenticated cross-app verification adapter has not been connected.
+    Return unknown regardless of user-stored or shaped integration fields until
+    we have a trusted, non-user-supplied connector result bound to the request.
+    """
+    return "UNKNOWN"
 
 def scenario_calculation(op, revenue_factor="1", expense_factor="1"):
     revenue_record = op.get("metrics", {}).get("annual_revenue", {})
