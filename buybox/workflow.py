@@ -52,7 +52,7 @@ def gate_report(op, target):
         assessment=evaluate(op)
         if assessment["evidence"]["conflicts"]:
             return {"ready":False,"reasons":["EVIDENCE_CONFLICT"]}
-        if target=="OWNER_REVIEW" and assessment["financials"]["status"]=="INSUFFICIENT_DATA":
+        if target=="OWNER_REVIEW" and assessment["financials"]["status"]!="CALCULATED":
             return {"ready":False,"reasons":["UNDERWRITING_INPUTS_INCOMPLETE"]}
     return {"ready":True,"reasons":[]}
 
