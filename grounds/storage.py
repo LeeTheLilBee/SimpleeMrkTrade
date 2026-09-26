@@ -161,6 +161,13 @@ CREATE TABLE IF NOT EXISTS inspection_findings (
   recorded_by TEXT NOT NULL,
   recorded_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS inspection_resolutions (
+  resolution_ref TEXT PRIMARY KEY,
+  finding_ref TEXT NOT NULL UNIQUE REFERENCES inspection_findings(finding_ref),
+  proof_ref TEXT NOT NULL UNIQUE,
+  verified_by TEXT NOT NULL,
+  recorded_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS turnovers (
   turnover_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL,
