@@ -150,6 +150,28 @@ class HouseholdTests(unittest.TestCase):
                 ),proof_verifier=lambda x:x,
             )
 
+    def test_resident_list_requires_tower_unit_and_current_lease_membership(self):
+        # Same subject is on two separate active leases, but Tower granted only u1.
+        self.ops.add_unit(self.manager,property_ref="p1",building_ref="b1",
+                          unit_ref="u2",label="102")
+        self.ops.activate_lease(
+            self.manager,property_ref="p1",unit_ref="u2",lease_ref="l2",
+            resident_ref="person1",start_on="2026-09-26",end_on="2027-09-25",
+        )
+        broader=fixture_scope("person1","resident",("p1",),("u1","u2"))
+        self.ops.submit_maintenance(
+            broader,work_ref="unit1-request",
+            intake=MaintenanceIntake("p1","u1","plumbing","Unit 101 tap",False,"contact_first"),
+        )
+        self.ops.submit_maintenance(
+            broader,work_ref="unit2-request",
+            intake=MaintenanceIntake("p1","u2","plumbing","Unit 102 tap",False,"contact_first"),
+        )
+        scoped=self.ops.list_work_orders(self.primary,property_ref="p1")
+        self.assertEqual([x["work_ref"] for x in scoped],["unit1-request"])
+        with self.assertRaises(AccessDenied):
+            self.ops.get_work_order(self.primary,work_ref="unit2-request")
+
     def test_ending_lease_invalidates_every_member(self):
         self._add()
         self.ops.end_lease(self.manager,property_ref="p1",lease_ref="l1",expected_revision=1)
