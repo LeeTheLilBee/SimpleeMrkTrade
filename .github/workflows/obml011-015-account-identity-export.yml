@@ -1,0 +1,42 @@
+name: OBML011-015 amount-free mission-account identity export
+
+on:
+  push:
+    branches:
+      - obml011-015-signed-account-identity-source
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'web/ob_tower_account_identity_export.py'
+      - 'tests/test_obml011_015_account_identity_export.py'
+      - 'ob_evidence/manual_live/obml011_015_account_identity_export_handoff.md'
+      - '.github/workflows/obml011-015-account-identity-export.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  ob-account-export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Compile identity source and test
+        run: |
+          python -m py_compile web/ob_tower_account_identity_export.py \
+            tests/test_obml011_015_account_identity_export.py
+      - name: Source namespace and OBML regression wall
+        run: |
+          python -m pytest -q \
+            tests/test_obml011_015_account_identity_export.py \
+            tests/test_obauth006_010_account_identity_truth_taxonomy.py \
+            tests/test_obml001_005_owner_manual_source_preflight.py \
+            tests/test_obml006_010_tower_contract_inspection.py
