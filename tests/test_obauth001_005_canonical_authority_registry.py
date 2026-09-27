@@ -146,6 +146,9 @@ def test_exact_current_active_authorities_are_registered():
         "recovery_review":
             "OB_RECOVERY_REVIEW_V1",
 
+        "owner_manual_live_source_preflight":
+            "OB_OWNER_MANUAL_LIVE_SOURCE_PREFLIGHT_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
