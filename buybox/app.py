@@ -535,6 +535,17 @@ def create_app(config=None):
         with db() as conn:
             op=load(conn,oid)
             if op is None: abort(404)
+            # Verify the real encrypted original still exists and matches its
+            # stored digest before allowing its financing terms into the dossier.
+            linked=next((e for e in op.get("evidence",[])
+                         if e.get("id")==request.form.get("evidence_id")),None)
+            original=next((a for a in op.get("artifacts",[])
+                           if linked and a.get("id")==linked.get("artifact_id")),None)
+            if original is not None:
+                try:
+                    docstore.read(original)
+                except ValueError:
+                    abort(409,"Original financing document is unavailable or fails integrity checks")
             keys=("evidence_id","lender_name","program_name","source_locator",
                   "source_date","expiration_date","purchase_price","principal",
                   "apr_percent","term_months","origination_fee","lender_fee",
