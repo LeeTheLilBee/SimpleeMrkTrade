@@ -1,0 +1,63 @@
+{
+  "schema_version": "OBSIM_EXPLICIT_OWNER_REHEARSAL_INPUT_V1",
+  "source_kind": "SYNTHETIC",
+  "account_key": "PROOF-DEMO",
+  "frame": {
+    "frame_id": "OWNER-SAMPLE-F001",
+    "observed_at": "2026-09-24T10:00:00-04:00",
+    "symbol": "AAPL",
+    "instrument_kind": "OPTION",
+    "contract_id": "AAPL-20261218-C-250",
+    "mark_price": 2,
+    "underlying_price": 250,
+    "source_reference": "SYNTHETIC-OWNER-SAMPLE-NOT-A-MARKET-FEED"
+  },
+  "calendar": {
+    "market": "US_EQUITIES",
+    "exchange_timezone": "America/New_York",
+    "trading_date": "2026-09-24",
+    "day_status": "OPEN",
+    "calendar_authority": "OWNER_DECLARED_SYNTHETIC_EXAMPLE",
+    "calendar_reference": "SYNTHETIC-EXAMPLE-CALENDAR-2026-09-24",
+    "calendar_payload": {
+      "synthetic_example": true,
+      "external_calendar_verified": false
+    },
+    "premarket_open": "2026-09-24T04:00:00-04:00",
+    "regular_open": "2026-09-24T09:30:00-04:00",
+    "regular_close": "2026-09-24T16:00:00-04:00",
+    "after_hours_close": "2026-09-24T20:00:00-04:00"
+  },
+  "decisions": {
+    "CONTROL": {
+      "decision_id": "OWNER-SAMPLE-F001-CONTROL",
+      "action": "HOLD",
+      "strategy": "EXPLICIT_SAMPLE_PRACTICE_ONLY",
+      "reason": "Human-authored sample HOLD, not a recommendation",
+      "quantity": 0,
+      "evidence_refs": [
+        "SYNTHETIC-SAMPLE-ONLY"
+      ]
+    },
+    "INTEGRATED": {
+      "decision_id": "OWNER-SAMPLE-F001-INTEGRATED",
+      "action": "HOLD",
+      "strategy": "EXPLICIT_SAMPLE_PRACTICE_ONLY",
+      "reason": "Human-authored sample HOLD, not a recommendation",
+      "quantity": 0,
+      "evidence_refs": [
+        "SYNTHETIC-SAMPLE-ONLY"
+      ]
+    },
+    "EXPERIMENTAL": {
+      "decision_id": "OWNER-SAMPLE-F001-EXPERIMENTAL",
+      "action": "HOLD",
+      "strategy": "EXPLICIT_SAMPLE_PRACTICE_ONLY",
+      "reason": "Human-authored sample HOLD, not a recommendation",
+      "quantity": 0,
+      "evidence_refs": [
+        "SYNTHETIC-SAMPLE-ONLY"
+      ]
+    }
+  }
+}
