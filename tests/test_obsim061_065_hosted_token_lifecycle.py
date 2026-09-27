@@ -74,7 +74,8 @@ def test_063_original_browser_acknowledges_rotation_before_refresh():
 def test_064_server_rechecks_workspace_and_token_under_same_mutation_lock():
     source = (ROOT / "tower/ob_hosted_owner_rehearsal.py").read_text()
     assert source.count("workspaces.get(key) is not item") == 2
-    assert source.count('"REHEARSAL_SESSION_ROTATED_REENTER_TOWER"') == 2
+    # Two mutation/reset denials plus the new locked read-after-reset denial.
+    assert source.count('"REHEARSAL_SESSION_ROTATED_REENTER_TOWER"') == 3
     assert "new_item.csrf = item.csrf" not in source
     assert 'payload["new_rehearsal_token"] = new_item.csrf' in source
     assert 'payload["previous_token_revoked"] = True' in source
