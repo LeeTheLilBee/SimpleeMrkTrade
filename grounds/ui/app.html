@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090d19">
+  <meta name="grounds-csrf" content="__GROUNDS_CSRF__">
+  <title>The Grounds · Simplee World</title>
+  <link rel="stylesheet" href="/grounds/app.css">
+  <script defer src="/grounds/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="shell">
+    <header class="topbar">
+      <div class="wordmark" aria-label="The Grounds, Simplee World">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <div><span class="micro">SIMPLEE WORLD / PROPERTY LIFE</span><strong>THE GROUNDS</strong></div>
+      </div>
+      <div class="session" aria-live="polite"><span class="indicator"></span><span id="session-label">Checking access…</span></div>
+    </header>
+    <main id="main">
+      <section class="welcome" aria-labelledby="page-title">
+        <p class="micro gold">A PLACE TO BELONG / A PLACE TO OPERATE</p>
+        <div class="welcome-line"><div><h1 id="page-title">Your property workspace</h1>
+          <p id="page-description">Your authorized lease and property context, in one place.</p>
+        </div><span id="role-badge" class="pill">Access check</span></div>
+      </section>
+      <div id="alert" role="status" aria-live="polite" class="alert hidden"></div>
+      <section class="context glass" aria-label="Current property and unit">
+        <div><label for="property-choice">PROPERTY</label><select id="property-choice" aria-label="Authorized property" disabled><option>Checking…</option></select></div>
+        <div id="unit-container"><label for="unit-choice">YOUR UNIT</label><select id="unit-choice" aria-label="Authorized unit" disabled><option>Checking…</option></select></div>
+        <button id="refresh" type="button" class="secondary">Refresh status</button>
+      </section>
+      <div id="content" class="content hidden">
+        <section id="summary" aria-label="Property summary" class="stat-grid"></section>
+        <div class="columns">
+          <div class="main-column">
+            <section id="rent-panel" class="glass panel hidden" aria-labelledby="rent-heading">
+              <div class="section-line"><h2 id="rent-heading">Rent &amp; your lease</h2><span class="pill muted">Teller source</span></div>
+              <p id="rent-message">Verified rent information is not yet connected. Nothing is due based on this screen.</p>
+              <div class="lease-fields" id="lease-details"></div>
+              <p class="footnote">A checkout button will appear only after Tower and Teller certify the invoice and payment handoff.</p>
+            </section>
+            <section id="request-panel" class="glass panel hidden" aria-labelledby="request-heading">
+              <div class="section-line"><h2 id="request-heading">Report a maintenance issue</h2><span class="pill muted">Private to your request</span></div>
+              <form id="request-form">
+                <label for="category">What needs attention?</label>
+                <select name="category" id="category" required>
+                  <option value="plumbing">Plumbing</option><option value="electrical">Electrical</option>
+                  <option value="heating_cooling">Heating / Cooling</option><option value="appliance">Appliance</option>
+                  <option value="structure">Building / Structure</option><option value="safety">Safety</option>
+                  <option value="other">Something else</option>
+                </select>
+                <label for="description">Tell the team what is happening</label>
+                <textarea name="description" id="description" maxlength="2000" rows="4" required placeholder="Describe the issue and where you noticed it. Do not include sensitive personal information."></textarea>
+                <label class="check-line"><input id="urgent" type="checkbox"> <span>This needs urgent human review</span></label>
+                <label for="entry">How should staff approach entry?</label>
+                <select id="entry" required><option value="contact_first">Contact me first</option><option value="no">Do not enter</option><option value="yes">I can discuss access with staff</option></select>
+                <p class="footnote">An urgent report enters a human triage queue; it does not contact emergency services. Your preference is not a legal entry authorization.</p>
+                <button type="submit" class="primary">Submit maintenance request</button>
+              </form>
+            </section>
+            <section class="glass panel" aria-labelledby="work-heading">
+              <div class="section-line"><h2 id="work-heading">Maintenance</h2><span id="work-count" class="pill muted">—</span></div>
+              <div id="work-list" class="stack"><p class="footnote">Loading authorized work…</p></div>
+            </section>
+            <section id="notices-panel" class="glass panel hidden" aria-labelledby="notices-heading">
+              <div class="section-line"><h2 id="notices-heading">Notices</h2><span class="pill muted">In-app visibility</span></div>
+              <div id="notice-list" class="stack"></div>
+              <p class="footnote">Marking a notice read records only an action inside Grounds; it is not proof of delivered or legally served notice.</p>
+            </section>
+          </div>
+          <aside class="side-column" aria-label="Assistant and service status">
+            <section class="glass panel soulaana" aria-labelledby="soulaana-heading">
+              <div class="section-line"><h2 id="soulaana-heading"><span aria-hidden="true">✧</span> Soulaana</h2><span class="pill muted">Source-bound</span></div>
+              <p id="soulaana-message">Once your verified context loads, I can explain what Grounds actually knows.</p>
+              <p id="soulaana-next" class="footnote"></p>
+            </section>
+            <section class="glass panel" aria-labelledby="status-heading">
+              <h2 id="status-heading">Connected services</h2>
+              <div class="service"><span>Property records</span><span id="property-state" class="pill muted">Checking</span></div>
+              <div class="service"><span>Rent &amp; payments</span><span class="pill muted">Awaiting Teller</span></div>
+              <div class="service"><span>File uploads</span><span class="pill muted">Awaiting Vault</span></div>
+              <div class="service"><span>Messages and dispatch</span><span class="pill muted">Not connected</span></div>
+              <p class="footnote">Grounds will never represent a draft action as a delivered message, payment or emergency response.</p>
+            </section>
+          </aside>
+        </div>
+      </div>
+      <section id="locked" class="glass panel hidden" aria-labelledby="locked-heading">
+        <h2 id="locked-heading">This workspace is not available yet</h2>
+        <p id="locked-reason">The current role needs a specific Tower-certified assignment. No records have been exposed.</p>
+      </section>
+    </main>
+    <footer><span>THE GROUNDS · SIMPLEE WORLD</span><span>Private property operations · Tower-governed access</span></footer>
+  </div>
+</body>
+</html>
