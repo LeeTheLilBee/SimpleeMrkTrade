@@ -15,6 +15,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 from urllib.parse import urlsplit
+from uuid import uuid4
 
 from grounds.access import AccessDenied
 from grounds.maintenance import MaintenanceIntake
@@ -61,7 +62,7 @@ class GroundsWebTests(unittest.TestCase):
         self.tmp.cleanup()
 
     def invoke(self,path="/grounds",*,actor=None,method="GET",data=None,
-               json_raw=None,csrf=None,content_type="application/json"):
+               json_raw=None,csrf=None,content_type="application/json",idempotency="auto"):
         url=urlsplit(path)
         if json_raw is not None:
             raw=json_raw
@@ -78,6 +79,12 @@ class GroundsWebTests(unittest.TestCase):
             environ["test.fixture.actor"]=actor
         if csrf is not None:
             environ["HTTP_X_GROUNDS_CSRF"]=csrf
+        if method=="POST" and url.path in (
+            "/grounds/api/work","/grounds/api/appointment/request",
+        ):
+            key=str(uuid4()) if idempotency=="auto" else idempotency
+            if key is not None:
+                environ["HTTP_X_GROUNDS_IDEMPOTENCY_KEY"]=key
         result={}
         def start(status,headers):
             result["status"]=status
@@ -88,9 +95,10 @@ class GroundsWebTests(unittest.TestCase):
             result["json"]=json.loads(response)
         return result
 
-    def post(self,path,actor,data,*,csrf=None):
+    def post(self,path,actor,data,*,csrf=None,idempotency="auto"):
         return self.invoke(path,actor=actor,method="POST",data=data,
-                           csrf=csrf if csrf is not None else self.app.csrf.token(actor))
+                           csrf=csrf if csrf is not None else self.app.csrf.token(actor),
+                           idempotency=idempotency)
 
     def test_cannot_configure_public_app_or_weak_csrf(self):
         with self.assertRaises(GroundsWebConfigurationError):
@@ -178,6 +186,68 @@ class GroundsWebTests(unittest.TestCase):
         too_large=self.invoke("/grounds/api/work",actor=self.resident,method="POST",
                               json_raw=b"x"*8193,csrf=self.app.csrf.token(self.resident))
         self.assertEqual(too_large["status"],"400 Bad Request")
+
+    def test_create_commands_require_valid_idempotency_key_and_retry_exactly_once(self):
+        payload={"property_ref":"p1","unit_ref":"u1","category":"plumbing",
+                 "description":"Same network request","emergency_flag":False,
+                 "entry_permission":"contact_first"}
+        for bad in ("",None,"not-a-uuid","00000000-0000-0000-0000-000000000000"):
+            with self.subTest(key=bad):
+                denied=self.post("/grounds/api/work",self.resident,payload,idempotency=bad)
+                self.assertEqual(denied["status"],"400 Bad Request")
+        key=str(uuid4())
+        first=self.post("/grounds/api/work",self.resident,payload,idempotency=key)
+        self.assertEqual(first["status"],"201 Created")
+        retry=self.post("/grounds/api/work",self.resident,payload,idempotency=key)
+        self.assertEqual(retry["status"],"201 Created")
+        self.assertTrue(retry["json"]["replayed"])
+        self.assertEqual(first["json"]["work_ref"],retry["json"]["work_ref"])
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM work_orders").fetchone()[0],1)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM work_events").fetchone()[0],1)
+        altered=self.post("/grounds/api/work",self.resident,
+                          {**payload,"description":"different issue"},idempotency=key)
+        self.assertEqual(altered["status"],"409 Conflict")
+        other=self.post("/grounds/api/work",self.other,payload,idempotency=key)
+        self.assertEqual(other["status"],"404 Not Found")
+        new_key=self.post("/grounds/api/work",self.resident,payload,idempotency=str(uuid4()))
+        self.assertNotEqual(new_key["json"]["work_ref"],first["json"]["work_ref"])
+
+    def test_idempotent_appointment_retry_preserves_single_event(self):
+        import datetime
+        created=self.post("/grounds/api/work",self.resident,{
+            "property_ref":"p1","unit_ref":"u1","category":"plumbing",
+            "description":"Appointment retry job","emergency_flag":False,
+            "entry_permission":"contact_first",
+        })["json"]
+        now=datetime.datetime.now(datetime.timezone.utc)
+        start=(now+datetime.timedelta(days=2)).isoformat()
+        end=(now+datetime.timedelta(days=2,hours=1)).isoformat()
+        body={"work_ref":created["work_ref"],"start_at":start,"end_at":end}
+        key=str(uuid4())
+        first=self.post("/grounds/api/appointment/request",self.resident,
+                        body,idempotency=key)
+        second=self.post("/grounds/api/appointment/request",self.resident,
+                         body,idempotency=key)
+        self.assertEqual(first["json"]["appointment_ref"],second["json"]["appointment_ref"])
+        self.assertTrue(second["json"]["replayed"])
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM work_appointments").fetchone()[0],1)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM appointment_events").fetchone()[0],1)
+        different=self.post("/grounds/api/appointment/request",self.resident,
+                            {**body,"end_at":(now+datetime.timedelta(days=2,hours=2)).isoformat()},
+                            idempotency=key)
+        self.assertEqual(different["status"],"409 Conflict")
+
+    def test_csrf_survives_short_ticket_refresh_for_same_tower_session(self):
+        from time import time
+        first=fixture_scope("resident","resident",("p1",),("u1",),expires=int(time())+180)
+        second=fixture_scope("resident","resident",("p1",),("u1",),expires=int(time())+240)
+        self.assertEqual(first.session_ref,second.session_ref)
+        token=self.app.csrf.token(first)
+        self.assertTrue(self.app.csrf.verify(second,token))
+        other=fixture_scope("someone_else","resident",("p1",),("u1",))
+        self.assertFalse(self.app.csrf.verify(other,token))
 
     def test_real_domain_resident_submission_notice_and_staff_triage(self):
         payload={"property_ref":"p1","unit_ref":"u1","category":"plumbing",
