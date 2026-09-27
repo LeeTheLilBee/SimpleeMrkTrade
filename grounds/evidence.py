@@ -45,12 +45,17 @@ class GroundsWorkProof:
         except Exception as exc:
             raise AccessDenied("work evidence rejected") from exc
         if (not isinstance(proof, Mapping) or proof.get("status") != "verified_sealed"
-            or proof.get("work_ref") != work_ref):
+            or proof.get("source") != "vault" or proof.get("audience") != "grounds"
+            or proof.get("work_ref") != work_ref or proof.get("kind") != kind
+            or proof.get("actor_ref") != actor.subject_ref):
             raise AccessDenied("work evidence rejected")
         proof_ref = _required(proof.get("proof_ref"), "proof_ref", max_length=128)
         evidence_ref = uuid4().hex
         with self.store.transaction(write=True) as db:
-            self.operations._visible_order(db,actor,work_ref)
+            work=self.operations._visible_order(db,actor,work_ref)
+            if (proof.get("property_ref") != work["property_ref"]
+                or proof.get("unit_ref") != work["unit_ref"]):
+                raise AccessDenied("work evidence/property-unit mismatch")
             try:
                 db.execute(
                     """INSERT INTO work_evidence_refs
