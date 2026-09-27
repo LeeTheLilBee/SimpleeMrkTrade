@@ -111,6 +111,42 @@ CREATE TABLE IF NOT EXISTS work_events (
   occurred_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS work_events_order ON work_events(work_ref,revision);
+CREATE TABLE IF NOT EXISTS emergency_reviews (
+  work_ref TEXT PRIMARY KEY REFERENCES work_orders(work_ref),
+  urgency TEXT NOT NULL CHECK(urgency IN ('routine','priority','emergency')),
+  reviewed_by TEXT NOT NULL,
+  reviewed_at TEXT NOT NULL,
+  external_dispatch_confirmed INTEGER NOT NULL DEFAULT 0 CHECK(external_dispatch_confirmed=0)
+);
+CREATE TABLE IF NOT EXISTS work_entry_preferences (
+  work_ref TEXT PRIMARY KEY REFERENCES work_orders(work_ref),
+  subject_ref TEXT NOT NULL,
+  preference TEXT NOT NULL CHECK(preference IN ('yes','no','contact_first')),
+  revision INTEGER NOT NULL CHECK(revision>0),
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS work_entry_events (
+  event_ref TEXT PRIMARY KEY,
+  work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
+  subject_ref TEXT NOT NULL,
+  preference TEXT NOT NULL,
+  revision INTEGER NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS entry_events_by_work ON work_entry_events(work_ref,revision);
+CREATE TABLE IF NOT EXISTS event_outbox (
+  event_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  event_kind TEXT NOT NULL CHECK(event_kind IN (
+    'work_changed','urgent_intake_requires_human_review','notice_visible_in_app'
+  )),
+  resource_ref TEXT NOT NULL,
+  source_revision INTEGER NOT NULL CHECK(source_revision>0),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK(status='pending'),
+  created_at TEXT NOT NULL,
+  UNIQUE(event_kind,resource_ref,source_revision)
+);
+CREATE INDEX IF NOT EXISTS outbox_property_pending ON event_outbox(property_ref,status,created_at);
 CREATE TABLE IF NOT EXISTS work_evidence_refs (
   evidence_ref TEXT PRIMARY KEY,
   work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
