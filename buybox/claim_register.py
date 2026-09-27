@@ -170,6 +170,34 @@ def record_source_claim(op, *, evidence_id, subject_id, field, value,
     return revised, deepcopy(record)
 
 
+
+def owner_reviewed_source(op, claim):
+    """Find the current owner-reviewed revision of the claim's SAME original.
+
+    Uploaded original evidence often changes RECEIVED -> SUPERSEDED when its
+    documentary review appends a new evidence ID. That historical reference
+    must remain traceable rather than stranding claims made before review.
+    """
+    originals=[e for e in op.get("evidence",[]) if
+               e.get("id")==claim.get("evidence_id") and
+               e.get("artifact_id")==claim.get("artifact_id")]
+    artifacts=[a for a in op.get("artifacts",[]) if
+               a.get("id")==claim.get("artifact_id") and
+               a.get("sha256")==claim.get("artifact_sha256")]
+    if len(originals)!=1 or len(artifacts)!=1:
+        return None
+    original=originals[0]
+    if original.get("status")=="DOCUMENT_SUPPORTED":
+        return deepcopy(original)
+    if original.get("status")!="SUPERSEDED":
+        return None
+    successor=[e for e in op.get("evidence",[]) if
+               e.get("supersedes")==original["id"] and
+               e.get("kind")==original.get("kind") and
+               e.get("artifact_id")==claim["artifact_id"] and
+               e.get("status")=="DOCUMENT_SUPPORTED"]
+    return deepcopy(successor[0]) if len(successor)==1 else None
+
 def record_owner_document_review(op, *, claim_id, rationale):
     """Append a review revision only after actual linked evidence was reviewed.
 
@@ -180,15 +208,15 @@ def record_owner_document_review(op, *, claim_id, rationale):
     original = next((c for c in _active(op) if c.get("id") == claim_id), None)
     if original is None or original.get("state") != "SOURCE_RECORDED":
         raise ClaimRegisterError("ACTIVE_UNREVIEWED_CLAIM_REQUIRED")
-    e, a = _source(op, original["evidence_id"])
-    if (e.get("status") != "DOCUMENT_SUPPORTED"
-            or a["id"] != original["artifact_id"]
-            or a["sha256"] != original["artifact_sha256"]):
+    supporting = owner_reviewed_source(op, original)
+    if supporting is None:
         raise ClaimRegisterError("MATCHING_OWNER_REVIEWED_ORIGINAL_REQUIRED")
     revised = deepcopy(op)
     reviewed = {
         **deepcopy(original), "id": str(uuid4()),
         "state": "OWNER_DOCUMENT_REVIEWED", "supersedes": original["id"],
+        "evidence_id": supporting["id"],
+        "source_evidence_id": original["evidence_id"],
         "recorded_at": _instant(),
         "review": {"actor": "local_owner", "reason": reason, "at": _instant(),
                    "scope": "DOCUMENT_SUPPORT_ONLY"},
