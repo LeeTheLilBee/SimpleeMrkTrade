@@ -17,6 +17,15 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
         "/ob/review-center",
         "/ob/owner-console",
         "/ob/owner-dashboard",
+        # OBSIM hosted synthetic owner rehearsal: exact enumerated paths only.
+        "/ob/owner-rehearsal",
+        "/ob/owner-rehearsal/status.json",
+        "/ob/owner-rehearsal/sample.json",
+        "/ob/owner-rehearsal/tick.json",
+        "/ob/owner-rehearsal/pause.json",
+        "/ob/owner-rehearsal/resume.json",
+        "/ob/owner-rehearsal/stop.json",
+        "/ob/owner-rehearsal/new.json",
     }
 )
 
