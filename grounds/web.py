@@ -48,6 +48,8 @@ _ROUTES={
     ("GET","/grounds/api/workspace"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
+    ("GET","/grounds/api/appointments"),
+    ("GET","/grounds/api/entry-preference"),
     ("POST","/grounds/api/work"),
     ("POST","/grounds/api/notice-read"),
     ("POST","/grounds/api/appointment/request"),
@@ -117,8 +119,11 @@ def _body(environ):
     return value
 
 def _query(environ,required:set,optional:set=frozenset()):
-    values=parse_qs(environ.get("QUERY_STRING",""),keep_blank_values=True,strict_parsing=True,
-                    max_num_fields=8)
+    try:
+        values=parse_qs(environ.get("QUERY_STRING",""),keep_blank_values=True,strict_parsing=True,
+                        max_num_fields=8)
+    except ValueError as exc:
+        raise GroundsBadRequest("Invalid query") from exc
     if not required.issubset(values) or set(values)-(required|optional) or any(len(v)!=1 for v in values.values()):
         raise GroundsBadRequest("Invalid query")
     return {key:value[0] for key,value in values.items()}
@@ -233,6 +238,14 @@ class GroundsWebApp:
             if path=="/grounds/api/appointment":
                 q=_query(environ,{"appointment_ref"})
                 return self.communications.appointment(actor,appointment_ref=_ref(q["appointment_ref"],"appointment_ref"))
+            if path=="/grounds/api/appointments":
+                q=_query(environ,{"work_ref"})
+                work_ref=_ref(q["work_ref"],"work_ref")
+                return {"work_ref":work_ref,"appointments":self.communications.appointments_for_work(actor,work_ref=work_ref),
+                        "entry_consent_granted":False,"external_dispatch_confirmed":False}
+            if path=="/grounds/api/entry-preference":
+                q=_query(environ,{"work_ref"})
+                return self.safety.entry_preference(actor,work_ref=_ref(q["work_ref"],"work_ref"))
         if path=="/grounds/api/work":
             _exact(body,{"property_ref","unit_ref","category","description","emergency_flag","entry_permission"})
             if type(body["emergency_flag"]) is not bool:
