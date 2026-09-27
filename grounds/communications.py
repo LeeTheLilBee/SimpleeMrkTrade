@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from .access import AccessDenied, TowerScope
 from .operations import GroundsOperations, GroundsConflict, _now, _required
-from .storage import GroundsStore
+from .storage import GroundsStoreBase
 
 
 def _slot(start_at: str, end_at: str) -> tuple[str,str]:
@@ -36,9 +36,9 @@ def _slot(start_at: str, end_at: str) -> tuple[str,str]:
 
 
 class GroundsCommunications:
-    def __init__(self,store:GroundsStore):
-        if not isinstance(store,GroundsStore):
-            raise TypeError("GroundsStore required")
+    def __init__(self,store:GroundsStoreBase):
+        if not isinstance(store,GroundsStoreBase):
+            raise TypeError("transaction-backed Grounds store required")
         self.store=store
         self.ops=GroundsOperations(store)
 
