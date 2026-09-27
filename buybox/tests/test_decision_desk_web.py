@@ -94,7 +94,6 @@ class OwnerDecisionWebTests(unittest.TestCase):
         self.assertEqual(source["lifecycle"],before["lifecycle"])
         page=self.client.get("/opportunities/"+self.oid+"/decision-desk")
         self.assertEqual(page.status_code,200)
-        self.assertIn(decision["id"].encode()[:1],page.data) if False else None
         self.assertIn(b"Waiting for a documented rent roll",page.data)
         soulaana=self.client.get("/opportunities/"+self.oid+"/soulaana?intent=decision")
         self.assertEqual(soulaana.status_code,200)
