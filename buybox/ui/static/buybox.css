@@ -36,3 +36,8 @@
 
 /* BBX064: source-located market research stays readable without relying on color alone. */
 .claim-card .evidence-row,.financing-option .evidence-row{gap:12px}.comparison-grid .financing-option{min-width:0}.financing-option .notice{overflow-wrap:anywhere}
+
+/* BBX069: traceable owner evidence citations without oversized checkbox controls. */
+.source-references{border:1px solid #58617a;border-radius:12px;padding:12px;max-height:220px;overflow-y:auto}
+.source-references legend{color:#c5d0e0}.source-references label{display:flex;gap:10px;align-items:flex-start;font-size:12px;font-weight:500}
+.source-references input[type=checkbox]{width:auto;margin-top:2px;accent-color:#b49aea;flex:none}
