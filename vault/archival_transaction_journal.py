@@ -120,14 +120,19 @@ class ArchivalJournal:
         valid_id(request_id)
         with self.db() as db:
             rows=db.execute("SELECT step,from_state,to_state,receipt_digest,previous_hash,event_hash FROM workflow_events WHERE request_id=? ORDER BY step",(request_id,)).fetchall()
-            state=db.execute("SELECT state,step FROM workflows WHERE request_id=?",(request_id,)).fetchone()
+            state=db.execute("SELECT state,step,cloud_digest,registry_digest FROM workflows WHERE request_id=?",(request_id,)).fetchone()
         if not rows or not state:return False
         prior=None
         for index,(step,old,new,receipt,prev,digest) in enumerate(rows):
             if step!=index or prev!=prior or (index and old!=rows[index-1][2]):return False
             if self.digest(request_id,step,old,new,receipt,prev)!=digest:return False
             prior=digest
-        if (rows[-1][2],rows[-1][0])!=state:return False
+        if (rows[-1][2],rows[-1][0])!=state[:2]:return False
+        cloud_events=[r[3] for r in rows if r[2]=="CLOUD_COMMITTED"]
+        archive_events=[r[3] for r in rows if r[2]=="ARCHIVED"]
+        if state[2]!=(cloud_events[-1] if cloud_events else None):return False
+        if state[3]!=(archive_events[-1] if archive_events else None):return False
+        if state[0]=="ARCHIVED" and (not state[2] or not state[3] or state[2]==state[3]):return False
         if rows[0][1] is not None or rows[0][2]!="RECEIVED":return False
         for i in range(1,len(rows)):
             old,new=rows[i][1],rows[i][2]
