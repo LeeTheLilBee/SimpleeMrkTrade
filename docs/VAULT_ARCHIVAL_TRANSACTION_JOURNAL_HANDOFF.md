@@ -23,3 +23,6 @@ No paid resources, real file intake, credential setup or deployment performed.
 Tests committed, execution pending CI/local runner. Owner-facing console
 should show entity-scoped counts and actionable failures only after Tower
 authorizes the owner context.
+
+## Reconciliation hardening
+A workflow in RECONCILE_REQUIRED must return through CLOUD_COMMITTED with a newly verified Cloud receipt before ARCHIVED. The event-chain verifier now checks initial state, permitted transitions and receipt presence as well as hash links. This is still local integrity detection, not independent administrator-proof anchoring.
