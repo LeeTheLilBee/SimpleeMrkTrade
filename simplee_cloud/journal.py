@@ -19,14 +19,19 @@ from contextlib import closing, contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .contracts import CloudError, IntegrityError, valid_object_ref, valid_sha256
+from .contracts import CloudError, IntegrityError, MAX_ENVELOPE_BYTES, valid_backup_ref, valid_object_ref, valid_sha256
 
 _NAMESPACE = re.compile(r"[0-9a-f]{64}\Z")
 _CODE = {"WRITE_UNCERTAIN", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
-         "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "BACKUP_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE"}
+         "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "BACKUP_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE",
+         "BACKUP_UNCERTAIN", "BACKUP_RECONCILE_MISSING", "BACKUP_RECONCILE_CORRUPT",
+         "BACKUP_REPLAY_INTEGRITY_FAILURE"}
 _STATES = {"WRITE_RESERVED", "WRITE_UNCERTAIN", "WRITE_ACKNOWLEDGED",
            "RECONCILE_PRESENT", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
            "REPLAY_INTEGRITY_FAILURE"}
+_BACKUP_STATES = {"BACKUP_RESERVED", "BACKUP_UNCERTAIN", "BACKUP_ACKNOWLEDGED",
+                  "BACKUP_RECONCILE_PRESENT", "BACKUP_RECONCILE_MISSING",
+                  "BACKUP_RECONCILE_CORRUPT", "BACKUP_REPLAY_INTEGRITY_FAILURE"}
 _SAFE_EVENTS = {"read_intent", "read_verified", "backup_intent",
                 "backup_acknowledged", "restore_verification_intent",
                 "restore_copy_verified"}
@@ -41,6 +46,12 @@ def _request_tag(namespace: str, request_id: str) -> str:
     if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", request_id):
         raise CloudError("invalid internal request identity")
     return hashlib.sha256(("write:v1:" + namespace + ":" + request_id).encode()).hexdigest()
+
+
+def _backup_tag(namespace: str, request_id: str) -> str:
+    if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", request_id):
+        raise CloudError("invalid backup request identity")
+    return hashlib.sha256(("backup:v1:" + namespace + ":" + request_id).encode()).hexdigest()
 
 
 def _hash_event(seq: int, kind: str, tag: str, scope: str, code: str, at: str, previous: str) -> str:
@@ -120,7 +131,14 @@ class SQLiteOperationalJournal:
                 incident_code TEXT NOT NULL, severity TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )""")
-            for table in ("intents", "events", "incidents"):
+            conn.execute("""CREATE TABLE IF NOT EXISTS backup_intents (
+                request_tag TEXT PRIMARY KEY, namespace_digest TEXT NOT NULL,
+                source_object_ref TEXT NOT NULL, source_ciphertext_sha256 TEXT NOT NULL,
+                backup_ref TEXT NOT NULL, backup_sha256 TEXT NOT NULL,
+                backup_size INTEGER NOT NULL, key_reference TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )""")
+            for table in ("intents", "events", "incidents", "backup_intents"):
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_update
                     BEFORE UPDATE ON {table} BEGIN SELECT RAISE(ABORT, 'append-only record'); END""")
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_delete
@@ -151,6 +169,16 @@ class SQLiteOperationalJournal:
         """).fetchone()[0]
         if orphan:
             raise IntegrityError("orphan write intent without audit reservation")
+        orphan_backup = conn.execute("""
+            SELECT COUNT(*) FROM backup_intents b WHERE NOT EXISTS (
+                SELECT 1 FROM events e
+                WHERE e.request_tag=b.request_tag AND
+                      e.namespace_digest=b.namespace_digest AND
+                      e.event_type='BACKUP_RESERVED'
+            )
+        """).fetchone()[0]
+        if orphan_backup:
+            raise IntegrityError("orphan backup intent without journal reservation")
         return expected_seq, previous
 
     def verify_chain(self) -> dict:
@@ -193,6 +221,15 @@ class SQLiteOperationalJournal:
     def _state(conn: sqlite3.Connection, tag: str) -> str | None:
         for row in conn.execute("SELECT event_type FROM events WHERE request_tag=? ORDER BY seq DESC", (tag,)):
             if row["event_type"] in _STATES:
+                return row["event_type"]
+        return None
+
+    @staticmethod
+    def _backup_state(conn: sqlite3.Connection, tag: str) -> str | None:
+        for row in conn.execute(
+            "SELECT event_type FROM events WHERE request_tag=? ORDER BY seq DESC", (tag,)
+        ):
+            if row["event_type"] in _BACKUP_STATES:
                 return row["event_type"]
         return None
 
