@@ -1,6 +1,6 @@
 # Tower ↔ Grounds handoff — review request / TWR-GRD001–005
 
-Status: **source-only draft for Tower chat review**, not an implementation, integration acceptance or runtime entitlement. Grounds implementation lives on [Grounds PR #51](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/51) (`grounds-resident-operations-grd001-005`, GRD001–023 at creation of this request). This PR is deliberately based on `tower-dev` to avoid changing the concurrent Grounds PR and active Tower/Teller work. If Tower's authoritative branch moved since this checkpoint, reconcile/cherry-pick deliberately rather than overwriting it.
+Status: **source-only draft for Tower chat review**, not an implementation, integration acceptance or runtime entitlement. Grounds implementation lives on [Grounds PR #51](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/51) (`grounds-resident-operations-grd001-005`, now advanced beyond GRD036 with a tested source-only household, communications, Soulaana and safety batch). This PR is deliberately based on `tower-dev` to avoid changing the concurrent Grounds PR and active Tower/Teller work. If Tower's authoritative branch moved since this checkpoint, reconcile/cherry-pick deliberately rather than overwriting it.
 
 ## Critical correction to historical Tower metadata
 
@@ -15,6 +15,13 @@ An older Tower registry describes Grounds as owner-only with a future `/grounds`
 5. Tower-mediated Vault sealed lease, notice and maintenance proof reference. Never grant a resident direct Vault access. Grounds currently rejects unverified lease proof and unsupported photo intake; add a real proof receiver before activating uploads/documents.
 6. Verified BuyBox closing handoff. A listing or proposed deal must not become owned property until closing evidence is checked. Grounds may request Teller readiness; BuyBox consumes Teller readiness, never direct OB balances.
 7. Clouds takes safe, redacted operational snapshots only after a real Grounds publisher and operating source are validated. Soulaana is explanatory/read-only and must respect the same scope.
+
+## New Grounds requirements from GRD037 onward
+
+- Grounds now maintains local lease household records for the primary lessee, externally evidenced co-tenants and authorized occupants. The same Tower unit grant is **not** enough: every resident read/write rechecks active lease membership. If membership is revoked or a lease ends, Grounds denies access immediately even when an old Tower scope still lists that unit. Tower must independently invalidate the related session/grant and certify a signed subject/lease/unit/relationship proof for addition or removal. An occupant is not automatically a lease signer or financial payer.
+- Grounds stores local in-app notice-read records, **not** mail/SMS/push delivery confirmation or proof of legal notice. In-app maintenance appointment proposals/acceptance **do not** confer physical-entry permission, emergency response or legal service. Tower must distinguish entry consent, any legally required advance notices, appointment status, staff assignment and identity.
+- Urgent intake is explicitly held for a human acknowledgment before progressing in the local work-order state machine. Its metadata-only outbox remains `pending`; no recipient delivery or emergency dispatch occurs. Tower should certify property-specific staff on-call escalation, idempotent worker/receipt flow and incident handling before anyone relies on it for safety.
+- Soulaana now has source-scoped, read-only explanations for resident lease/rent, maintenance, appointments, inspections, turnover, leasing and owner status. The rent and capital entrypoints must verify real Teller responses; a user-supplied `source='teller'` field is never authority.
 
 ## Acceptance prerequisites / handoff for the other Tower chat
 
