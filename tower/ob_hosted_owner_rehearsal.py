@@ -319,11 +319,15 @@ def register_ob_hosted_owner_rehearsal(
                 return jsonify({"status": "STOP_EXISTING_SESSION_FIRST"}), 409
             key = scope()
             new_item = _Workspace(clock())
-            # Same currently checked Tower session keeps its unguessable local
-            # CSRF token; do not strand the already-open browser after reset.
-            new_item.csrf = item.csrf
+            # A new rehearsal is a new capability boundary. Rotate the
+            # process-local anti-CSRF token and return it ONLY in this exact
+            # authenticated, old-token-authorized mutation response. The old
+            # token cannot access the new workspace after replacement.
             workspaces[key] = new_item
-            return jsonify(view(new_item, clock()))
+            payload = view(new_item, clock())
+            payload["new_rehearsal_token"] = new_item.csrf
+            payload["previous_token_revoked"] = True
+            return jsonify(payload)
 
     app.add_url_rule(ENTRY, endpoint="ob_owner_rehearsal_hosted_page", view_func=page, methods=["GET"])
     for name, fn, method in (
