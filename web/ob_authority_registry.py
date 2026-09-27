@@ -1979,6 +1979,372 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "soulaana_explanation"
+] = _record(
+    concept_key="soulaana_explanation",
+    authority_id="OB_SOULAANA_EXPLANATION_V1",
+    authority_class="READ_ONLY_CANONICAL_RECEIPT_EXPLANATION",
+    implementation_ref="web/ob_soulaana_explanations.py",
+    implementation_role="SOURCE_BOUND_RECOMMENDATION_SAFETY_AND_GUARD_TRANSLATION",
+    owns=(
+        "deterministic owner-facing explanation cards bound to canonical source receipts",
+        "exact known or unknown reason code translation without invented market facts",
+        "optional source-asserted adverse guard explanation, never an actuator",
+    ),
+    inputs=("OB_RECOMMENDATION_REVIEW_V1", "OB_ADVERSE_GUARD_REVIEW_V1"),
+    triggers=(
+        "explicit verified recommendation/safety and source lineage",
+        "optional fully verified same-recommendation guard evidence",
+    ),
+    effects=(
+        "emit immutable source-labelled explanation cards and amount-free proof reference",
+        "preserve canonical BLOCKED/EVIDENCE_PENDING/OWNER_REVIEW_READY status",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "invent market, broker, return or financial source truth",
+        "relabel canonical safety denial as a recommendation",
+        "select winning strategy, contract, trading mode or risk limit",
+        "broker order, capital movement, direct OB–BuyBox connection",
+    ),
+    failure_behavior=(
+        "Tampered/missing recommendation or guard source lineage fails closed; "
+        "unknown reason code remains exact source code without fabricated explanation."
+    ),
+    explanation="Owner sees why a source was held or blocked and exact receipt provenance.",
+    evidence=(
+        "canonical recommendation and safety receipt IDs and fingerprints",
+        "optional guard receipt and verified source fingerprints",
+        "deterministic card contents and immutable explanation hash",
+    ),
+    review_visibility="Contextual Soulaana explanation only, not a trading, money or readiness authority.",
+    temporal_validity="INHERITS_VERIFIED_CANONICAL_SOURCE_TIME_AND_STATUS",
+    deterministic=True,
+    learning_boundary="May explain source evidence but cannot mutate source state or learning policy.",
+    deferred_integrations=(),
+)
+
+
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_attention"
+] = _record(
+    concept_key="owner_attention",
+    authority_id="OB_OWNER_ATTENTION_V1",
+    authority_class="READ_ONLY_CANONICAL_OWNER_ATTENTION_QUEUE",
+    implementation_ref="web/ob_owner_attention.py",
+    implementation_role="SOURCE_BOUND_SAFETY_PRIORITY_AND_OWNER_REVIEW_QUEUE",
+    owns=(
+        "read-only owner attention ordering over verified canonical recommendation and Soulaana receipts",
+        "distinct-source guard pattern review prioritized without a live alert actuator",
+        "immutable non-money-bearing proof reference requiring later Tower authorization",
+    ),
+    inputs=("OB_SOULAANA_EXPLANATION_V1",),
+    triggers=(
+        "explicit verified recommendation and full Soulaana explanation lineage",
+        "optional verified same-account guard receipt with matching underlying recommendation",
+    ),
+    effects=(
+        "emit deterministic owner inspection priority without rewriting source BLOCK/HOLD/REVIEW_ONLY",
+        "preserve canonical safety block above advisory guard and owner-review context",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "turn owner queue into automated broker order or trade strategy rank",
+        "treat source-asserted incidents as authenticated market events",
+        "automatic notification, kill switch, safety dismissal or policy override",
+        "infer money spendability or create direct OB–BuyBox integration",
+        "change mode, move capital or widen safety limits",
+    ),
+    failure_behavior=(
+        "Missing or tampered source evidence prevents owner attention proof; "
+        "a canonical blocked candidate can never become ready by queue priority."
+    ),
+    explanation=(
+        "Each owner task cites exact source receipt ID/hash and code; "
+        "only the owner may inspect source context through authorized surfaces."
+    ),
+    evidence=(
+        "canonical recommendation and Soulaana hashes",
+        "optional guard receipt/hash and distinct source codes",
+        "immutable owner attention queue fingerprint",
+    ),
+    review_visibility=(
+        "Owner review queue only; no live alert dispatch, broker submission or "
+        "Teller acquisition readiness output."
+    ),
+    temporal_validity="INHERITS_FULL_VERIFIED_CANONICAL_SOURCE_LINEAGE",
+    deterministic=True,
+    learning_boundary=(
+        "Priority cannot mutate source truth, source safety, mode, "
+        "capital policy or owner decisions."
+    ),
+    deferred_integrations=(),
+)
+
+
+ACTIVE_AUTHORITY_RECORDS[
+    "recovery_review"
+] = _record(
+    concept_key="recovery_review",
+    authority_id="OB_RECOVERY_REVIEW_V1",
+    authority_class="FAIL_CLOSED_SOURCE_RECOVERY_INSPECTION",
+    implementation_ref="web/ob_recovery_review.py",
+    implementation_role="CANONICAL_ATTENTION_BOUND_OUTAGE_CONFLICT_STALE_RECONCILIATION_REVIEW",
+    owns=(
+        "immutable account/component-bound outage, stale, unknown, conflict and restoration source observations",
+        "distinct chronological source-revision and payload-hash restoration evidence",
+        "non-actuating owner review of required NEW canonical source reconciliation",
+    ),
+    inputs=("OB_OWNER_ATTENTION_V1",),
+    triggers=(
+        "explicit verified owner attention and complete upstream receipt lineage",
+        "bounded owner/source-labelled recovery observations at an explicit timezone-aware as-of",
+    ),
+    effects=(
+        "emit canonical safety BLOCK retention or restrictive source recovery HOLD states",
+        "require fresh independent market, identity, financial, runtime and owner permission verification",
+        "emit deterministic non-money-bearing recovery proof reference",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "automatic provider switch, restart, replay, safety/kill-switch clear or broker submission",
+        "treat repeated self-asserted hashes as bank/broker authentication",
+        "automatically release protected reserves or overwrite canonical Effective Policy",
+        "promote simulated evidence into actual broker position, balance or performance",
+        "direct BuyBox access or bypass Tower/Teller readiness controls",
+    ),
+    failure_behavior=(
+        "Tampered OBATTN or recovery observation, duplicate source, future or stale receipt, "
+        "cross-account/component mismatch and out-of-order observations fail closed. "
+        "Restored source claims require a newly verified upstream canonical review."
+    ),
+    explanation=(
+        "Owner sees source-labelled component state, blocked recovery reasons and specific "
+        "revalidation gates without any automatic runtime action."
+    ),
+    evidence=(
+        "verified OBATTN upstream IDs and hashes",
+        "per-component source revision, payload integrity and observation chronology",
+        "recovery review ID/hash with non-money-bearing Tower-required reference",
+    ),
+    review_visibility=(
+        "Owner-only recovery inspection; no institution authenticity, live readiness or real balance claim."
+    ),
+    temporal_validity="EXPLICIT_AS_OF_AND_SOURCE_OBSERVATION_EXPIRY_BOUND",
+    deterministic=True,
+    learning_boundary=(
+        "Recovery source claims cannot widen risk, dismiss safety, change modes, grant execution, "
+        "or train on owner-asserted outcomes as actual broker truth."
+    ),
+    deferred_integrations=(),
+)
+
+
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_manual_live_source_preflight"
+] = _record(
+    concept_key="owner_manual_live_source_preflight",
+    authority_id="OB_OWNER_MANUAL_LIVE_SOURCE_PREFLIGHT_V1",
+    authority_class="READ_ONLY_OWNER_MANUAL_BROKER_SOURCE_PREFLIGHT",
+    implementation_ref="web/ob_manual_live_owner_preflight.py",
+    implementation_role="FULL_RECOVERY_LINEAGE_AND_EXPLICIT_OWNER_REVIEW_HOLD",
+    owns=(
+        "source-bound owner-only manual Level 1 preflight and human-review checklist",
+        "explicit missing Tower and broker external authenticity requirements",
+        "immutable redacted hold proof without creating trading authority",
+    ),
+    inputs=("OB_RECOVERY_REVIEW_V1", "OB_OPERATING_MODE_V1"),
+    triggers=(
+        "fully verified OBRES and upstream account-scoped source receipts",
+        "optional owner-asserted plan bound to exact review-only candidate",
+    ),
+    effects=(
+        "surface canonical safety blocks and missing source reconciliation",
+        "retain Tower server-side authorization and broker authentication as unmet gates",
+        "show separate human broker placement and independent provider reconciliation steps",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "treat dry-run/owner assertion/source hash as Tower identity or broker confirmation",
+        "turn PAPER or reviewer interest into Manual Live activation",
+        "broker API order, human order fabrication, simulated fill promoted to actual fill",
+        "risk/safety override, protected capital release, Hybrid or Automated unlock",
+        "direct OB–BuyBox financial-readiness path",
+    ),
+    failure_behavior=(
+        "Tampered OBRES source, missing account identity or unsafe owner plan fails closed; "
+        "even complete source-only rehearsal remains on Tower and broker evidence hold."
+    ),
+    explanation=(
+        "Owner sees immutable reason codes, current source mode, manual checklist and "
+        "what the real Tower and external broker must separately establish."
+    ),
+    evidence=(
+        "OBRES and OBATTN exact source IDs/hashes",
+        "canonical account/mode reference",
+        "optional explicit owner plan and source preflight fingerprint",
+    ),
+    review_visibility="Source-only rehearsal and hold receipt, never production Manual Live permission.",
+    temporal_validity="REQUIRES_FRESH_CANONICAL_UPSTREAM_AND_INDEPENDENT_EXTERNAL_VERIFICATION",
+    deterministic=True,
+    learning_boundary="No simulated outcomes, owner claims or rehearsals may widen trading policy.",
+    deferred_integrations=(),
+)
+
+
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_manual_live_tower_contract_inspection"
+] = _record(
+    concept_key="owner_manual_live_tower_contract_inspection",
+    authority_id="OB_OWNER_MANUAL_LIVE_TOWER_CONTRACT_INSPECTION_V1",
+    authority_class="READ_ONLY_UNTRUSTED_TOWER_HANDOFF_CONFORMANCE_INSPECTION",
+    implementation_ref="web/ob_manual_live_tower_contract_inspection.py",
+    implementation_role="SOURCE_BOUND_TOWER_REQUEST_SHAPE_GAP_AND_DENIAL_REPORT",
+    owns=(
+        "OB-side non-sensitive schema/shape inspection of untrusted Tower handoff claims",
+        "explicit proof that plausible claim or claimed verified bit never grants owner authority",
+        "required field mismatch, account/purpose/route/TTL and forbidden capability reporting",
+    ),
+    inputs=("OB_OWNER_MANUAL_LIVE_SOURCE_PREFLIGHT_V1", "OB_ACCOUNT_IDENTITY_TRUTH_V1"),
+    triggers=(
+        "fully reverified canonical OBML preflight, recovery and full source bundle",
+        "optional untrusted candidate Tower response with explicit inspection timestamp",
+    ),
+    effects=(
+        "emit immutable redacted structure-only Tower request compatibility/denial receipt",
+        "retain missing trusted issuer/session, nonce, step-up, revocation and broker gates",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "use client-provided verified attestation flag or source hash as issuer authentication",
+        "implement a second Tower identity/role/step-up/replay/revocation engine in OB",
+        "accept forged owner, cross-account, expired, wrong route/purpose or execution claim",
+        "place an order, move capital, clear safety, unlock Manual Live/Hybrid/Automated",
+        "expose raw identity/session secrets or create OB–BuyBox capital path",
+    ),
+    failure_behavior=(
+        "Malformed/mismatched claims and upstream source tampering remain hold or hard block; "
+        "even syntactically matching presented claims stay untrusted until Tower implements server verification."
+    ),
+    explanation="Owner and Tower implementers see redacted exact mismatch and unmet server-authentication gate.",
+    evidence=(
+        "canonical OBML preflight source ID/hash",
+        "Tower request v1 required field conformance and redacted structural digest",
+        "immutable non-executing hold/denial proof with no token material",
+    ),
+    review_visibility="Tower contract gap review only; not an OAuth verifier or owner live authorization.",
+    temporal_validity="UNTRUSTED_TIME_SHAPE_ONLY_PENDING_SERVER_CLOCK_AND_NONCE_VERIFICATION",
+    deterministic=True,
+    learning_boundary="No source claim, beta claim or rehearsal may promote live permission or trading policy.",
+    deferred_integrations=(),
+)
+
+
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_beta_gate_report"
+] = _record(
+    concept_key="owner_beta_gate_report",
+    authority_id="OB_OWNER_BETA_GATE_REPORT_V1",
+    authority_class="SOURCE_BOUND_OWNER_BETA_DEPENDENCY_REPORT",
+    implementation_ref="web/ob_manual_live_beta_gate_report.py",
+    implementation_role="REAL_TOWER_AND_PROVIDER_GATE_GAP_REPORT_NO_LIVE_GRANT",
+    owns=(
+        "independently revalidated OBML source and untrusted Tower contract inspection receipts",
+        "redacted eight-gate external proof checklist with permanent source-only hold",
+        "canonical safety block precedence and exact account-bound lineage fingerprints",
+    ),
+    inputs=(
+        "OB_OWNER_MANUAL_LIVE_SOURCE_PREFLIGHT_V1",
+        "OB_OWNER_MANUAL_LIVE_TOWER_CONTRACT_INSPECTION_V1",
+    ),
+    triggers=(
+        "explicit canonical Manual Live source preflight",
+        "Tower request shape inspection and exact source evidence at supplied canonical time",
+    ),
+    effects=(
+        "emit immutable source-only beta external-gate gap report",
+        "preserve source BLOCK/HOLD and require independent Tower, provider and owner approvals",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "promote a claim hash, static Tower request shape, or rehearsal to production permission",
+        "accept external-authentication truth booleans from an untrusted caller",
+        "authenticate provider account, invent actual order/fill or release protected funds",
+        "execute a broker order, unlock Manual Live, Hybrid or Automated or bypass safety",
+        "send balances or readiness directly to BuyBox",
+    ),
+    failure_behavior=(
+        "Tampered upstream inspection or source lineage fails closed; "
+        "all actual external proof gates remain pending until separate trusted integrations."
+    ),
+    explanation=(
+        "Owner can see the exact source/permission/provider gaps before Monday beta "
+        "without viewing raw tokens or being shown a false live-ready badge."
+    ),
+    evidence=(
+        "OBRES, OBML preflight and Tower inspection IDs and integrity hashes",
+        "explicit never-self-certified external proof gate IDs",
+        "immutable redacted owner beta report hash",
+    ),
+    review_visibility="Amount-free owner readiness gap report, never an execution or hosted access grant.",
+    temporal_validity="REQUIRES_FULL_CURRENT_UPSTREAM_REVALIDATION_AND_EXTERNAL_GATE_CHECKS",
+    deterministic=True,
+    learning_boundary="Cannot train on rehearsal as actual broker performance or grant an operating mode.",
+    deferred_integrations=(),
+)
+
+
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_manual_namespace_cross_check"
+] = _record(
+    concept_key="owner_manual_namespace_cross_check",
+    authority_id="OB_OWNER_MANUAL_LIVE_NAMESPACE_CROSS_CHECK_V1",
+    authority_class="REDACTED_SOURCE_ONLY_TOWER_NAMESPACE_CORRELATION",
+    implementation_ref="web/ob_manual_live_namespace_cross_check.py",
+    implementation_role="CORRELATE_SOURCE_NAMESPACE_WITH_CANONICAL_BETA_HOLD_WITHOUT_AUTHENTICATION",
+    owns=(
+        "redacted source-only Tower namespace observation correlation against canonical OB beta report",
+        "preserve exactly all externally pending Tower/provider/broker Manual Live gates",
+        "explicitly distinguish in-memory source claim shape from trusted Tower owner authorization",
+    ),
+    inputs=("OB_OWNER_BETA_GATE_REPORT_V1",),
+    triggers=(
+        "full canonical source beta report revalidation",
+        "optional source-only Tower namespace observation with same-account and time shape",
+    ),
+    effects=(
+        "emit immutable MISSING/REJECTED/CONSISTENT_SOURCE_CLAIM_ONLY inspection",
+        "preserve canonical BLOCK/HOLD and never authorize a real owner review or trade",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "treat an in-memory receipt or account signature as trusted Tower owner grant",
+        "configure source verification key, replay store, signed issuer or hosted permission",
+        "skip account-specific session/step-up/revocation or real provider gates",
+        "broker submission, capital movement, live mode unlock or direct BuyBox money access",
+    ),
+    failure_behavior=(
+        "Tampered beta source lineage fails closed; invalid/expired/cross-account source observation "
+        "is rejected and source match cannot reduce external pending proof gates."
+    ),
+    explanation=(
+        "Owner sees namespace source observation separately from unresolved Tower owner permission, "
+        "broker proof and actual hosted crossing, with no tokens, identities or balances exposed."
+    ),
+    evidence=(
+        "exact OB beta report ID and integrity hash",
+        "source namespace claim correlation fingerprint, never raw token or nonce",
+        "immutable pending external gate IDs and checkpoint integrity hash",
+    ),
+    review_visibility="Amount-free owner source-only checklist; no production clearance.",
+    temporal_validity="CANONICAL_BETA_SOURCE_AS_OF_AND_SOURCE_OBSERVATION_EXPIRY_BOUND",
+    deterministic=True,
+    learning_boundary="Cannot promote rehearsal or source namespace signature to actual provider outcome.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {

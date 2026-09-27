@@ -1,0 +1,31 @@
+name: OBML006-010 untrusted Tower contract inspection
+on:
+  push:
+    branches:
+      - 'obml006-010-*'
+  pull_request:
+    paths:
+      - 'web/ob_manual_live_tower_contract_inspection.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_obml006_010_tower_contract_inspection.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - '.github/workflows/obml006-010-tower-contract.yml'
+permissions:
+  contents: read
+jobs:
+  tower-source-inspection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax and source-only Tower denial matrix
+        run: |
+          python -m py_compile web/ob_manual_live_tower_contract_inspection.py tests/test_obml006_010_tower_contract_inspection.py
+          python -m pytest -q tests/test_obml006_010_tower_contract_inspection.py tests/test_obml001_005_owner_manual_source_preflight.py tests/test_obauth001_005_canonical_authority_registry.py tests/test_obres001_005_fail_closed_source_recovery.py
+      - name: Complete repository regression
+        run: python -m pytest -q tests

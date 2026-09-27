@@ -1264,12 +1264,25 @@
         source.verified === true,
 
       label:
-        source.verified === true
-          ? safeText(
-              scorecard.readiness_label,
-              "Readiness evidence available"
-            )
-          : "Guarded · readiness not verified",
+        "Owner rehearsal evidence · Real Manual Live HOLD",
+
+      evidence_class:
+        "operator_practice_only_not_tower_or_provider",
+
+      operator_practice_source_observed:
+        source.verified === true,
+
+      score_is_practice_only:
+        true,
+
+      tower_owner_clearance_verified:
+        false,
+
+      authenticated_broker_source_verified:
+        false,
+
+      production_manual_live_permission:
+        false,
 
       score:
         source.verified === true
@@ -1371,13 +1384,13 @@
           "medium",
 
         title:
-          "Manual Live readiness needs review",
+          "Owner rehearsal checklist needs review",
 
         detail:
           readiness.label,
 
         source:
-          "Manual Live readiness"
+          "operator practice checkpoint, not live authorization"
       });
     }
 

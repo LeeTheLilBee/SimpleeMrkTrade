@@ -1,0 +1,11 @@
+# OBML / Tower source namespace producer–receiver interoperability
+
+Parents:
+- OB source exporter PR #80 merged `196a7632f9687f49181f757f62632595858dfbcf` (source-only)
+- Tower source consumer PR #82 merged `75aec56f5d12ed655c50edc39911a3f047bad7c0` (source-only)
+
+This test-only acceptance pack generates **actual** signed account namespace tokens using `web/ob_tower_account_identity_export.py` and passes them to independent `tower/obml_account_namespace_source.py` with a synthetic test key and a simulated shared atomic nonce-consumption callback. It verifies all five recognized non-demo mission account identities against canonical OBAUTH, one-time replay refusal, distinct fresh tokens, expiry, future issuance denial, wrong-key refusal before nonce consumption, and Proof/Demo/unknown refusal. It also verifies both contracts agree on issuer, audience, schema and 60-second TTL. Every receipt remains false for owner authentication, Tower owner session/permission/step-up/revocation, broker account, capital, Manual Live, order API and transfers. No secrets/nonce/token/amounts in returned receipt.
+
+**Critical scope:** The test nonce callback models the atomic contract but is neither a durable production store nor a cross-worker/disaster-recovery exercise. Production Tower must independently configure protected key ownership and rotation, persistent atomic replay handling, real server-owned owner session and account entitlement, fresh account/purpose-bound step-up, revocation and short-lived one-time handoff, denial audit, verified Tower→OB route, and a real owner walkthrough. The source receipt cannot become a Tower grant. PR #68 remains the Tower owner-clearance handoff request and #72 is a HOLD-only source preflight.
+
+For Monday September 28 owner beta, this test supports **source-only Survey/Paper preparation**, not real manual trading. Separate authenticated broker/options/settlement, protected-reserve/Teller truth, market freshness, Review Center owner decision, human broker placement, provider-backed fill reconciliation, and operational/compliance approval remain external gates. No paid services, broker order API, production secrets, default account or cash movement added.
