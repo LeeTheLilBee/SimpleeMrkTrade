@@ -145,23 +145,124 @@ class LocalSimulationReportStore:
     def save_final(self, final: dict[str, object]) -> None:
         self._write(self._folder(str(final["session_id"])) / "_final.json", final)
 
-    def load_ticks(self, session_id: str) -> tuple[dict[str, object], ...]:
+    def _private_read_folder(self, session_id: str) -> Path:
+        """Reject unsafe archive paths before opening a stored report.
+
+        Local single-host best-effort inspection; not a multi-tenant or remote
+        storage authorization primitive. The file itself is also opened with
+        O_NOFOLLOW, when supported, to reject a swapped final-file symlink.
+        """
         folder = self._folder(session_id)
-        reports = []
-        for expected, path in enumerate(sorted(folder.glob("[0-9][0-9][0-9][0-9].json")), 1):
-            with path.open(encoding="utf-8") as file:
-                report = json.load(file)
+        for candidate in (self.root, folder):
+            if candidate.is_symlink():
+                raise ValueError("symlinked simulation archive forbidden")
+            try:
+                mode = candidate.lstat().st_mode
+            except FileNotFoundError as exc:
+                raise ValueError("simulation archive missing") from exc
+            if not stat.S_ISDIR(mode) or stat.S_IMODE(mode) & 0o077:
+                raise ValueError("simulation archive must be private")
+        return folder
+
+    @staticmethod
+    def _load_private_json(path: Path) -> dict[str, object]:
+        def unique_pairs(pairs: list[tuple[str, object]]) -> dict[str, object]:
+            result: dict[str, object] = {}
+            for key, value in pairs:
+                if key in result:
+                    raise ValueError("duplicate JSON key in simulation archive")
+                result[key] = value
+            return result
+
+        def bad_constant(value: str) -> object:
+            raise ValueError("invalid nonfinite simulation archive number")
+
+        flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+        try:
+            fd = os.open(path, flags)
+        except OSError as exc:
+            if path.is_symlink():
+                raise ValueError("symlinked simulation report forbidden") from exc
+            raise
+        with os.fdopen(fd, "r", encoding="utf-8") as file:
+            mode = os.fstat(file.fileno()).st_mode
+            if not stat.S_ISREG(mode) or stat.S_IMODE(mode) & 0o077:
+                raise ValueError("simulation report must be a private regular file")
+            payload = json.load(
+                file, object_pairs_hook=unique_pairs, parse_constant=bad_constant,
+            )
+        if not isinstance(payload, dict):
+            raise ValueError("simulation report must be a JSON object")
+        return payload
+
+    def load_ticks(self, session_id: str) -> tuple[dict[str, object], ...]:
+        folder = self._private_read_folder(session_id)
+        reports: list[dict[str, object]] = []
+        for expected, path in enumerate(
+            sorted(folder.glob("[0-9][0-9][0-9][0-9].json")), 1,
+        ):
+            report = self._load_private_json(path)
             provided_hash = report.pop("report_hash", None)
             if (
                 report.get("session_id") != session_id
+                or type(report.get("sequence")) is not int
                 or report.get("sequence") != expected
                 or provided_hash != stable_hash(report)
                 or report.get("simulation_only") is not True
                 or report.get("broker_submission") is not False
+                or report.get("capital_movement", False) is not False
+                or any(report.get(flag, False) is not False for flag in (
+                    "manual_live_unlock", "hybrid_unlock", "automated_unlock",
+                    "winner_selected",
+                ))
             ):
                 raise ValueError("local simulation report integrity/sequence failure")
             reports.append({**report, "report_hash": provided_hash})
         return tuple(reports)
+
+    def load_final(self, session_id: str) -> dict[str, object]:
+        """Validate the terminal receipt against the complete local tick chain."""
+        reports = self.load_ticks(session_id)
+        path = self._private_read_folder(session_id) / "_final.json"
+        final = self._load_private_json(path)
+        provided_hash = final.pop("report_hash", None)
+        if (
+            final.get("session_id") != session_id
+            or provided_hash != stable_hash(final)
+            or type(final.get("total_ticks")) is not int
+            or final.get("total_ticks") != len(reports)
+            or final.get("last_report_hash") != (
+                reports[-1]["report_hash"] if reports else None
+            )
+            or final.get("simulation_only") is not True
+            or final.get("broker_submission") is not False
+            or final.get("capital_movement") is not False
+            or (reports and final.get("lanes") != reports[-1].get("lanes"))
+        ):
+            raise ValueError("local simulation final report integrity/chain failure")
+        return {**final, "report_hash": provided_hash}
+
+    def inspect_archive(self, session_id: str) -> dict[str, object]:
+        """Read-only proof/status. Never resumes a harness or grants owner access."""
+        reports = self.load_ticks(session_id)
+        try:
+            final = self.load_final(session_id)
+        except FileNotFoundError:
+            final = None
+        return {
+            "schema_version": "OBSIM_LOCAL_ARCHIVE_INSPECTION_V1",
+            "session_id": session_id,
+            "status": "FINALIZED_REPORT_ONLY" if final else "INCOMPLETE_REPORT_ONLY",
+            "tick_count": len(reports),
+            "reports": reports,
+            "final_report": final,
+            "in_memory_session_restored": False,
+            "market_source_authenticated": False,
+            "tower_owner_authenticated": False,
+            "broker_submission": False,
+            "manual_live_unlock": False,
+            "capital_movement": False,
+        }
 
 
 def start_session(
