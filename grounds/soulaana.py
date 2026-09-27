@@ -246,9 +246,19 @@ def explain_property_pulse(actor:TowerScope,operations:GroundsOperations,*,
         "open_work_orders":pulse["open_work_orders"],
         "message":str(pulse["occupied_units"])+" of "+str(pulse["units"])+
                   " units have occupied lifecycle status, with "+
-                  str(pulse["open_work_orders"])+" not-closed work records. "
+                  str(pulse["open_work_orders"])+" not-closed work records. "+
+                  str(pulse["untriaged_urgent_work"])+" flagged work requests lack a recorded "+
+                  "human urgency review; "+str(pulse["open_turnovers"])+" turnovers are open; "+
+                  str(pulse["unresolved_serious_inspection_findings"])+
+                  " major/urgent inspection findings are unresolved. "+
+                  "These counts are not proof of dispatch, legal compliance, receipt or completion. "+
                   "Actual rent collections and deployable capital are Teller-owned.",
-        "next_useful_action":"Review assigned property work and verify Teller financial status",
+        "next_useful_action":"Review human triage and physical blockers, then verified Teller financial status",
+        "source_observed_at":pulse["source_observed_at"],
+        "untriaged_urgent_work":pulse["untriaged_urgent_work"],
+        "open_turnovers":pulse["open_turnovers"],
+        "unresolved_serious_inspection_findings":pulse["unresolved_serious_inspection_findings"],
+        "emergency_dispatch_confirmed":False,"notification_sent":False,
         "rent_collections":None,"ob_queried":False,"capital_approved":False,
     }
 
