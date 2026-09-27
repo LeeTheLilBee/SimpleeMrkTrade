@@ -32,7 +32,7 @@ class ProductionEntryTests(unittest.TestCase):
             "GROUNDS_PRIVATE_POSTGRES_URL":"postgresql://example/private",
             "GROUNDS_CSRF_SECRET_HEX":bytes(range(32)).hex(),
         },clear=True):
-            with patch("grounds.production_entry.importlib.import_module",
+            with patch("grounds.production_entry.import_module",
                        side_effect=ModuleNotFoundError("no certified Tower Grounds receiver")):
                 with self.assertRaisesRegex(
                     GroundsProductionUnavailable,"real Tower Grounds receiver",
@@ -46,7 +46,7 @@ class ProductionEntryTests(unittest.TestCase):
         },clear=True):
             class UnsafeModule:
                 create_certified_grounds_receiver="not a trusted callable"
-            with patch("grounds.production_entry.importlib.import_module",
+            with patch("grounds.production_entry.import_module",
                        return_value=UnsafeModule()):
                 with self.assertRaises(GroundsProductionUnavailable):
                     create_wsgi_application()
@@ -61,7 +61,7 @@ class ProductionEntryTests(unittest.TestCase):
                 @staticmethod
                 def create_certified_grounds_receiver():
                     return lambda environ:None
-            with patch("grounds.production_entry.importlib.import_module",
+            with patch("grounds.production_entry.import_module",
                        return_value=FutureTower()):
                 with patch("grounds.production_entry.GroundsWebApp",
                            side_effect=ValueError("provider internal details")):
