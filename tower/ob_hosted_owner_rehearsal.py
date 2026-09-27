@@ -297,7 +297,8 @@ def register_ob_hosted_owner_rehearsal(
         """
         item = get_workspace()
         key = scope()
-        if (workspaces.get(key) is not item
+        current = workspaces.get(key)
+        if (current is not item
                 or not secrets.compare_digest(
                     item.csrf, request.headers.get("X-OB-Rehearsal-Token", "")
                 )):
