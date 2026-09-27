@@ -4,6 +4,7 @@ import subprocess
 import tempfile
 import time
 import unittest
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -57,6 +58,7 @@ class LeasingAndProofTests(unittest.TestCase):
             self.leasing.availability(self.resident,property_ref="p1")
 
     def test_prospect_tour_and_version_boundaries(self):
+        window=(datetime.now(timezone.utc)+timedelta(days=7)).isoformat()
         prospect = self.leasing.register_prospect(
             self.leaser,property_ref="p1",prospect_ref="pr1",
             contact_vault_ref="opaque-private-contact",desired_unit_ref="u1",
@@ -67,13 +69,25 @@ class LeasingAndProofTests(unittest.TestCase):
         with self.assertRaises(GroundsConflict):
             self.leasing.plan_tour(self.leaser,property_ref="p1",prospect_ref="pr1",
                                    tour_ref="tour1",unit_ref="u1",
-                                   starts_at="2026-10-04T13:00:00-04:00",expected_revision=1)
+                                   starts_at=window,expected_revision=1)
         moved = self.leasing.move_stage(self.leaser,property_ref="p1",prospect_ref="pr1",
                                         next_stage="contacted",expected_revision=1)
         self.assertEqual(moved["revision"],2)
+        for index,invalid in enumerate((
+            "2030-01-01T13:00:00",  # missing timezone
+            (datetime.now(timezone.utc)-timedelta(days=1)).isoformat(),
+            (datetime.now(timezone.utc)+timedelta(days=367)).isoformat(),
+        )):
+            with self.subTest(window=index):
+                with self.assertRaises(GroundsConflict):
+                    self.leasing.plan_tour(
+                        self.leaser,property_ref="p1",prospect_ref="pr1",
+                        tour_ref="invalid-"+str(index),unit_ref="u1",
+                        starts_at=invalid,expected_revision=2,
+                    )
         planned = self.leasing.plan_tour(self.leaser,property_ref="p1",prospect_ref="pr1",
                                          tour_ref="tour1",unit_ref="u1",
-                                         starts_at="2026-10-04T13:00:00-04:00",expected_revision=2)
+                                         starts_at=window,expected_revision=2)
         self.assertFalse(planned["notification_sent"])
         self.assertEqual(self.leasing.list_tours(self.manager,property_ref="p1")[0]["unit_ref"],"u1")
         with self.assertRaises(GroundsConflict):
