@@ -1,0 +1,40 @@
+name: OBSIM081-085 combined hosted owner/export release regression
+on:
+  push:
+    branches:
+      - 'obsim081-085-*'
+  pull_request:
+    branches:
+      - 'tower-hosted-runtime-identity-twr081-085'
+    paths:
+      - 'tower/ob_hosted_owner_rehearsal.py'
+      - 'tower/ob_hosted_owner_evidence.py'
+      - 'tests/test_obsim076_080_hosted_read_token_race.py'
+      - 'tests/test_obsim076_080_owner_final_evidence_export.py'
+      - '.github/workflows/obsim081-085-combined-export-read-race.yml'
+permissions:
+  contents: read
+jobs:
+  combined-owner-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Existing Tower test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Combined syntax, browser and fake evidence fixture
+        run: |
+          python -m py_compile tower/ob_hosted_owner_rehearsal.py tower/ob_hosted_owner_evidence.py scripts/ob_verify_owner_evidence.py tests/test_obsim076_080_hosted_read_token_race.py tests/test_obsim076_080_owner_final_evidence_export.py
+          node --check web/static/ob/ob_hosted_owner_rehearsal.js
+          python -m json.tool examples/obsim_owner_synthetic_hold_example.json >/dev/null
+      - name: Combined exact HTTP, old-token and final export behavior
+        run: |
+          python -m pytest -q tests/test_obsim076_080_hosted_read_token_race.py tests/test_obsim076_080_owner_final_evidence_export.py tests/test_obsim061_065_hosted_token_lifecycle.py tests/test_obsim056_060_hosted_owner_rehearsal.py tests/test_tower_ob_web_route_enforcement.py tests/test_obsim066_070_anonymous_release_probe.py tests/test_obsim071_075_two_host_anonymous_inventory.py
+      - name: Canonical input/report archive and Tower/Teller compatibility
+        run: |
+          python -m pytest -q tests/test_obsim016_020_on_demand_session.py tests/test_obsim021_025_local_report_no_clobber.py tests/test_obsim026_030_source_freshness_and_owner_due.py tests/test_obsim031_035_private_archive_read_verification.py tests/test_obsim036_040_explicit_owner_rehearsal_input.py tests/test_obsim041_045_local_terminal_owner_rehearsal.py tests/test_obsim046_050_loopback_owner_rehearsal_ui.py tests/test_obsim051_055_source_release_isolation.py tests/test_tower_obml_monday_readiness_obml026_030.py
