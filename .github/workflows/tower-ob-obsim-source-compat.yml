@@ -1,0 +1,43 @@
+name: Tower OB accepted simulation source compatibility
+on:
+  push:
+    branches:
+      - tower-ob-obsim-source-unification-0927
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - 'web/ob_multi_simulation_*.py'
+      - 'web/ob_market_time_authority.py'
+      - 'web/ob_observation_temporal_validity.py'
+      - 'web/ob_capital_simulation_authority.py'
+      - 'web/ob_on_demand_simulation_session.py'
+      - 'web/ob_explicit_owner_rehearsal_input.py'
+      - 'web/ob_local_owner_rehearsal_ui.py'
+      - 'tests/test_obsim*.py'
+      - '.github/workflows/tower-ob-obsim-source-compat.yml'
+permissions:
+  contents: read
+jobs:
+  source-parity-and-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test and existing runtime dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax of local source / no hosted alias
+        run: |
+          python -m py_compile web/ob_observation_temporal_validity.py web/ob_market_time_authority.py web/ob_multi_simulation_harness.py web/ob_capital_simulation_authority.py web/ob_multi_simulation_replay.py web/ob_on_demand_simulation_session.py web/ob_explicit_owner_rehearsal_input.py web/ob_local_owner_rehearsal_ui.py scripts/ob_local_owner_rehearsal.py scripts/ob_local_owner_rehearsal_web.py
+          node --check web/static/ob/ob_local_owner_rehearsal.js
+          python -m json.tool examples/obsim_owner_synthetic_hold_example.json >/dev/null
+      - name: Canonical original local rehearsal and Tower guarded source regressions
+        run: |
+          python -m pytest -q tests/test_obsim016_020_on_demand_session.py tests/test_obsim021_025_local_report_no_clobber.py tests/test_obsim026_030_source_freshness_and_owner_due.py tests/test_obsim031_035_private_archive_read_verification.py tests/test_obsim036_040_explicit_owner_rehearsal_input.py tests/test_obsim041_045_local_terminal_owner_rehearsal.py tests/test_obsim046_050_loopback_owner_rehearsal_ui.py tests/test_obsim051_055_source_release_isolation.py tests/test_tower_ob_web_route_enforcement.py
+      - name: Complete Tower baseline and imported source suite
+        run: python -m pytest -q tests
