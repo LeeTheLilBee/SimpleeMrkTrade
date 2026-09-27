@@ -218,7 +218,17 @@ def test_059_real_three_lane_tick_pause_resume_final_and_new_with_token(monkeypa
     assert renewed.status_code == 200
     assert renewed.json["accepted_ticks"] == 0
     assert renewed.json["state"] == "RUNNING"
-    assert get(client, hosted.API + "status.json", token).status_code == 200
+    assert renewed.json["previous_token_revoked"] is True
+    successor = renewed.json["new_rehearsal_token"]
+    assert successor != token and len(successor) >= 32
+    assert get(client, hosted.API + "status.json", token).status_code == 403
+    assert get(client, hosted.API + "status.json", successor).status_code == 200
+    assert "new_rehearsal_token" not in get(
+        client, hosted.API + "status.json", successor
+    ).json
+    assert "new_rehearsal_token" not in get(
+        client, hosted.API + "sample.json", successor
+    ).json
 
 
 def test_060_logout_session_rotation_memory_restart_and_headers(monkeypatch):

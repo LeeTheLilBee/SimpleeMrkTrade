@@ -3,7 +3,10 @@
   "use strict";
   const root = document.getElementById("localRehearsalMount");
   if (!root || root.dataset.obCsrf === undefined) return;
-  const token = root.dataset.obCsrf;
+  // A new hosted rehearsal is a new authorization boundary. The server
+  // rotates this per-workspace token and returns the successor ONLY on the
+  // explicitly authorized /new mutation; never store it persistently.
+  let token = root.dataset.obCsrf;
   const $ = (id) => document.getElementById(id);
   const controls = ["refresh", "sample", "tick", "pause", "resume", "stop", "new"];
   let busy = false;
@@ -98,6 +101,21 @@
     updateControls();
     try {
       const result = await api(path, "POST", payload);
+      if (path === "/ob/owner-rehearsal/new.json") {
+        if (
+          !result
+          || result.previous_token_revoked !== true
+          || typeof result.new_rehearsal_token !== "string"
+          || result.new_rehearsal_token.length < 32
+          || result.new_rehearsal_token === token
+        ) {
+          // Do not keep using an old token against a potentially new workspace.
+          connected = false;
+          throw new Error("Session token rotation not confirmed; re-enter from Tower");
+        }
+        token = result.new_rehearsal_token;
+        root.dataset.obCsrf = token;
+      }
       render(result);
       say(success(result));
     } catch (error) {
