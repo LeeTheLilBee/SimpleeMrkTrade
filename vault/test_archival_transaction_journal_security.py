@@ -30,7 +30,7 @@ def test_ambiguous_cloud_write_remains_reconcile_required_not_archived(tmp_path)
     j.advance(request_id="request-A", expected_state="VERIFIED", to_state="ENCRYPTED", receipt_digest=HASH("b"))
     j.advance(request_id="request-A", expected_state="ENCRYPTED", to_state="RECONCILE_REQUIRED")
     assert j.status("request-A") == "RECONCILE_REQUIRED"
-    with pytest.raises(JournalError, match="cloud commit missing"):
+    with pytest.raises(JournalError, match="invalid state transition"):
         j.advance(request_id="request-A", expected_state="RECONCILE_REQUIRED", to_state="ARCHIVED", receipt_digest=HASH("d"))
     assert j.status("request-A") == "RECONCILE_REQUIRED"
     assert j.verify_chain("request-A")
