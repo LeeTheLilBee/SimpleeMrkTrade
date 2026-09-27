@@ -77,7 +77,8 @@ class ArchivalJournal:
             db.execute("BEGIN IMMEDIATE")
             existing=db.execute("SELECT entity_id,evidence_id,version_id FROM workflows WHERE request_id=?",(request_id,)).fetchone()
             if existing:
-                if existing==(entity_id,evidence_id,version_id):return self.status(request_id)
+                if existing==(entity_id,evidence_id,version_id):
+                    return db.execute("SELECT state FROM workflows WHERE request_id=?",(request_id,)).fetchone()[0]
                 raise JournalError("conflicting request replay")
             event=self.digest(request_id,0,None,"RECEIVED",None,None)
             db.execute("INSERT INTO workflows VALUES (?,?,?,?,?,?,NULL,NULL)",
