@@ -63,7 +63,12 @@ def _instant():
 def _schema(db):
     if not isinstance(db,sqlite3.Connection):
         raise SavedSearchError("PERSISTENT_BUYBOX_STORE_REQUIRED")
-    db.executescript(SCHEMA)
+    # executescript() would COMMIT an in-flight BEGIN IMMEDIATE, defeating
+    # concurrent check serialization. Execute each idempotent DDL statement
+    # separately so read/compare/insert stays within one SQLite transaction.
+    for statement in SCHEMA.split(";"):
+        if statement.strip():
+            db.execute(statement)
 
 
 def normalize_filters(*, vertical=None, query="", max_price=None):
