@@ -80,7 +80,8 @@
     $("resume").disabled = !active || state !== "PAUSED";
     $("stop").disabled = !active || state === "STOPPED";
     $("refresh").disabled = busy;
-    $("sample").disabled = busy;\n    $("new").disabled = !active || state !== "STOPPED";
+    $("sample").disabled = busy;
+    $("new").disabled = !active || state !== "STOPPED";
   }
   async function refresh() {
     if (busy) return;
