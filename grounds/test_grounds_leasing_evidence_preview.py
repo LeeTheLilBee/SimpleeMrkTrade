@@ -84,7 +84,9 @@ class LeasingAndProofTests(unittest.TestCase):
                                            contact_vault_ref="duplicate")
 
     def test_sealed_proof_identity_role_uniqueness_and_visibility(self):
-        untrusted={"status":"verified_sealed","work_ref":"w1","proof_ref":"vault-proof-1"}
+        untrusted={"status":"verified_sealed","source":"vault","audience":"grounds",
+                   "work_ref":"w1","property_ref":"p1","unit_ref":"u1",
+                   "kind":"intake","actor_ref":"resident1","proof_ref":"vault-proof-1"}
         with self.assertRaises(AccessDenied):
             self.proof.record(self.resident,work_ref="w1",kind="intake",
                               signed_proof=untrusted,proof_verifier=None)
@@ -94,6 +96,15 @@ class LeasingAndProofTests(unittest.TestCase):
         with self.assertRaises(AccessDenied):
             self.proof.record(self.resident,work_ref="w1",kind="intake",
                               signed_proof={**untrusted,"work_ref":"other"},proof_verifier=lambda x:x)
+        for changed in (
+            {"source":"observatory"},{"audience":"buybox"},
+            {"kind":"before"},{"actor_ref":"another-resident"},
+            {"property_ref":"p2"},{"unit_ref":"u2"},
+        ):
+            with self.assertRaises(AccessDenied):
+                self.proof.record(self.resident,work_ref="w1",kind="intake",
+                                  signed_proof={**untrusted,**changed},
+                                  proof_verifier=lambda x:x) # TEST FIXTURE ONLY
         result=self.proof.record(self.resident,work_ref="w1",kind="intake",
                                  signed_proof=untrusted,proof_verifier=lambda x:x)  # TEST ONLY
         self.assertIsNone(result["content_url"])
@@ -105,8 +116,9 @@ class LeasingAndProofTests(unittest.TestCase):
             self.proof.list_refs(self.outside,work_ref="w1")
         with self.assertRaises(AccessDenied):
             self.proof.record(self.tech,work_ref="w1",kind="before",
-                              signed_proof={**untrusted,"proof_ref":"vault-proof-2"},
-                              proof_verifier=lambda x:x)  # not assigned yet
+                              signed_proof={**untrusted,"kind":"before","actor_ref":"tech1",
+                                              "proof_ref":"vault-proof-2"},
+                              proof_verifier=lambda x:x)  # exact proof, but not assigned yet
 
     def test_no_real_applicant_data_fields(self):
         keys=self.leasing.register_prospect(
