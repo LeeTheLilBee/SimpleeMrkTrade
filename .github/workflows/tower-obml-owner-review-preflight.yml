@@ -1,0 +1,44 @@
+name: Tower OB Manual Live review preflight TWR-OBML006-010
+
+on:
+  push:
+    branches:
+      - tower-obml-owner-review-preflight-twr-obml006-010
+  pull_request:
+    paths:
+      - 'tower/obml_owner_review_preflight.py'
+      - 'tests/test_tower_obml_owner_review_preflight_twr_obml006_010.py'
+      - 'docs/TOWER_OBML_OWNER_PREFLIGHT_TWR_OBML006_010.md'
+      - '.github/workflows/tower-obml-owner-review-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  obml-no-live-grant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Independently pin Observatory request PR68
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: badef7fab30f93be6878d89b28f4863cfa6fc202
+          path: obml-request-source
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing hosted Tower and test requirements
+        run: |
+          python -m pip install -r deploy/hosted_tower/requirements.txt pytest
+      - name: Check request parity and default-deny owner session
+        run: |
+          python -m pytest -q \
+            tests/test_tower_obml_owner_review_preflight_twr_obml006_010.py \
+            tests/test_tower_app_registry_security_map.py \
+            tests/test_tower_authoritative_truth_contract_twr121_125.py \
+            tests/test_tower_teller_persistence_exchange_twr193_197.py
