@@ -288,13 +288,32 @@ def register_ob_hosted_owner_rehearsal(
             csrf=item.csrf, source_kind="SYNTHETIC",
         )
 
-    def status():
+    def _current_read_item():
+        # The before_request check may have accepted an old token just before
+        # an overlapping owner /new rotates the workspace. Revalidate the
+        # current workspace AND token while holding the same rotation lock,
+        # including GET status and the sample read. Old-token reads must not
+        # report the new session even briefly.
         item = get_workspace()
+        key = scope()
+        if not (
+            workspaces.get(key) is item
+            and secrets.compare_digest(
+                item.csrf, request.headers.get("X-OB-Rehearsal-Token", "")
+            )
+        ):
+            abort(409)
+        return item
+
+    def status():
         with lock:
+            item = _current_read_item()
             return jsonify(view(item, clock()))
 
     def sample():
-        return jsonify(_strict_object(SAMPLE.read_bytes()))
+        with lock:
+            _current_read_item()
+            return jsonify(_strict_object(SAMPLE.read_bytes()))
 
     def evidence():
         item = get_workspace()
