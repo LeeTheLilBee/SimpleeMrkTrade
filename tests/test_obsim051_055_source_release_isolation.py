@@ -28,8 +28,13 @@ def test_obsim052_canonical_tower_route_registry_still_denies_unapproved_rehears
 
 
 def test_obsim053_no_existing_hosted_entrypoint_auto_imports_loopback_app():
-    for path in ("web/app.py", "web/managed_staging.py"):
-        body = (ROOT / path).read_text(encoding="utf-8")
+    # Main has a managed-staging entrypoint; dedicated hosted Tower has
+    # web.hosted_tower instead. Require isolation for whichever app exists.
+    for path in ("web/app.py", "web/managed_staging.py", "web/hosted_tower.py"):
+        candidate = ROOT / path
+        if not candidate.exists():
+            continue
+        body = candidate.read_text(encoding="utf-8")
         assert "ob_local_owner_rehearsal_ui" not in body
         assert "ob_local_owner_rehearsal_web" not in body
     assert "ob_local_owner_rehearsal" not in (
