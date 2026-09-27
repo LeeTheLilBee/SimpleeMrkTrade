@@ -6,6 +6,7 @@ on:
       - 'docs/THE_GROUNDS_RECOVERED_PLAN_GRD001_005.md'
       - 'docs/THE_GROUNDS_IMPLEMENTATION_GRD006_019.md'
       - 'docs/THE_GROUNDS_STEWARDSHIP_GRD024_033.md'
+      - 'docs/THE_GROUNDS_SOULAANA_AND_GAPS_GRD034_036.md'
       - '.github/workflows/grounds-source-contract.yml'
   push:
     branches:
