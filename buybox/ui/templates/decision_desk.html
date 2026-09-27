@@ -1,0 +1,66 @@
+{% extends "base.html" %}{% block title %}Decision Desk · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero"><p class="eyebrow">OWNER DECISION DESK · ANALYTICAL NOTES</p>
+<h1>Preserve what you reviewed.</h1>
+<p>Your research disposition is saved against the exact current opportunity revision and source digest. It does not change the deal's lifecycle or authorize offers, financing, LOIs, closing, or acquisition.</p></section>
+<section class="stats">
+<div class="tile"><small>Current analytical state</small><strong>{{ report.judgment|replace('_',' ')|title }}</strong></div>
+<div class="tile"><small>Critical diligence remaining</small><strong>{{ report.critical_diligence_outstanding }}</strong></div>
+<div class="tile"><small>Unresolved document disputes</small><strong>{{ report.unresolved_source_discrepancies }}</strong></div>
+<div class="tile"><small>Teller money / management</small><strong>Unknown / Unknown</strong></div>
+</section>
+<section class="workspace"><div class="main-column">
+<div class="panel"><p class="eyebrow">CURRENT REVIEW · REVISION {{ report.opportunity_revision }}</p>
+<h2>Evidence and analytical conditions</h2>
+<p class="muted">Owner-recorded status from the current BuyBox source. This is not a Tower approval or an independently certified valuation.</p>
+<div class="evidence-row"><span>Annual financial calculation</span><strong>{{ report.financial_status|replace('_',' ')|title }}</strong></div>
+<div class="evidence-row"><span>Original-backed financing alternatives</span><strong>{{ report.actual_recorded_financing_options }}</strong></div>
+<div class="evidence-row"><span>Recorded comparable observations</span><strong>{{ report.actual_recorded_comparables }}</strong></div>
+<div class="evidence-row"><span>Open owner tasks</span><strong>{{ report.actual_open_tasks }}</strong></div>
+{% if report.missing_critical_kinds %}<h3>Critical proof outstanding</h3>
+{% for kind in report.missing_critical_kinds %}<p class="muted">{{ kind|replace('_',' ')|title }}</p>{% endfor %}{% endif %}
+<h3>Current rule findings</h3>
+{% for finding in report.rule_findings %}<article class="event">
+<strong>{{ finding.rule_id }} · {{ finding.level }}</strong>
+<p>{{ finding.reason }}</p></article>
+{% else %}<p class="muted">No current rule findings. This is not a purchase authorization.</p>{% endfor %}
+</div>
+<div class="panel"><p class="eyebrow">IMMUTABLE OWNER HISTORY</p><h2>Recorded research dispositions</h2>
+{% for d in report.historical_notes %}<article class="claim-card">
+<p class="eyebrow">{{ d.choice|replace('_',' ')|title }} · {{ d.display_state|replace('_',' ') }}</p>
+<h3>{{ d.rationale }}</h3>
+<p class="muted">Actor reference {{ d.actor }} · At {{ d.recorded_at }}</p>
+<div class="evidence-row"><span>Original source revision</span><strong>{{ d.source_opportunity_revision }}</strong></div>
+<div class="evidence-row"><span>Recorded analytical judgment</span><strong>{{ d.captured_analytical_judgment|replace('_',' ')|title }}</strong></div>
+<p class="muted">Original opportunity digest {{ d.source_snapshot_digest[:20] }}… · Note digest {{ d.local_snapshot_sha256[:20] }}…</p>
+{% if d.cited_evidence_ids %}<p class="muted">Cited evidence IDs: {{ d.cited_evidence_ids|join(', ') }}</p>{% endif %}
+<p class="muted">Saved owner research. Purchase and closing authorized: No. History is retained even when later source records change.</p>
+</article>{% else %}<p class="muted">No source-bound research dispositions recorded yet. Existing Deal Room analytical notes remain separate and non-authorizing.</p>{% endfor %}
+</div>
+</div><aside class="side-column">
+<div class="panel"><p class="eyebrow">PERSONAL RESEARCH DISPOSITION</p><h2>Record what you decided to do next</h2>
+<form method="post" action="{{ url_for('research_disposition',oid=op.id) }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<label>Owner research action
+<select name="choice" required>
+<option value="WATCH">Keep watching</option>
+<option value="DEFER">Defer further review</option>
+<option value="REQUEST_EVIDENCE">Request more evidence (note only)</option>
+<option value="DECLINE">Decline further review (note only)</option></select></label>
+<label>Your rationale<textarea name="rationale" maxlength="2000" rows="5" required placeholder="What did you review? What remains unknown? Why this action?"></textarea></label>
+{% if evidence_refs %}
+<fieldset class="source-references"><legend>Cite actual evidence records (optional; maximum 20)</legend>
+{% for e in evidence_refs %}
+<label><input type="checkbox" name="evidence_id" value="{{ e.id }}"> {{ e.kind|replace('_',' ')|title }} · {{ e.status|replace('_',' ')|title }} · {{ e.id[:10] }}…</label>
+{% endfor %}</fieldset>
+{% endif %}
+<button type="submit" class="primary">Preserve owner research note</button>
+<small>Does not send a seller request, authorize an exception, unlock a deal stage, or act in Tower/Teller.</small>
+</form></div>
+<div class="panel"><p class="eyebrow">CONTROL BOUNDARY</p><h2>External authority remains separate</h2>
+<p class="muted">Tower must independently authorize protected steps. Teller must independently verify money and management capacity. This room deliberately offers no Approve Acquisition control.</p>
+<a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='decision') }}">Soulaana: explain my decision context →</a>
+<p><a href="{{ url_for('deal_integrity',oid=op.id) }}">Review contradictory documents →</a></p>
+<p><a href="{{ url_for('diligence_room',oid=op.id) }}">Review remaining diligence →</a></p>
+</div></aside></section>{% endblock %}

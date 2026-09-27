@@ -10,7 +10,7 @@ from .registry import get_vertical
 from .dealroom import current_tasks
 
 INTENTS = frozenset({
-    "overview", "evidence", "diligence", "financing", "valuation", "economics", "changes", "red_team", "next_action"
+    "overview", "evidence", "diligence", "financing", "valuation", "decision", "economics", "changes", "red_team", "next_action"
 })
 
 def context(op, intent="overview"):
@@ -29,6 +29,7 @@ def context(op, intent="overview"):
         "diligence":{"diligence"},
         "financing":{"financing"},
         "valuation":{"valuation"},
+        "decision":{"decision"},
         "economics":{"economics"},
         "changes":{"changes"},
         "red_team":{"economics","evidence"},
@@ -139,6 +140,26 @@ def context(op, intent="overview"):
             note("MARKET_SOURCE_MISSING",
                  "No original-backed comparable evidence has been recorded for this opportunity.",
                  label="NO_DOCUMENTED_COMPARABLES")
+    if "decision" in relevant:
+        from .decision_desk import decision_dossier
+        desk=decision_dossier(op)
+        note("CURRENT_ANALYTICAL_CONTEXT",
+             "Current BuyBox judgment "+desk["judgment"].replace("_"," ").lower()+
+             "; "+str(desk["critical_diligence_outstanding"])+" critical diligence categories outstanding; "+
+             str(desk["unresolved_source_discrepancies"])+" unresolved source discrepancies. Teller money/management readiness is UNKNOWN and Tower has not approved a protected action.",
+             label="NOT_A_TRANSACTION_AUTHORIZATION")
+        for decision in desk["historical_notes"][:10]:
+            note("OWNER_RESEARCH_DISPOSITION",
+                 "The owner recorded '"+decision["choice"].replace("_"," ").lower()+
+                 "' against saved opportunity revision "+
+                 str(decision["source_opportunity_revision"])+
+                 ". This is a "+decision["display_state"].replace("_"," ").lower()+
+                 "; it does not change lifecycle, contact a seller or authorize purchase.",
+                 [decision["id"]]+decision["cited_evidence_ids"],"NON_AUTHORIZING_OWNER_NOTE")
+        if not desk["historical_notes"]:
+            note("OWNER_NOTE_NOT_YET_RECORDED",
+                 "No source-bound owner research disposition has been preserved yet. Notes do not replace Tower permissions or Teller readiness.",
+                 label="NO_OWNER_DISPOSITION")
     if "economics" in relevant:
         result=analysis["financials"]
         if result["status"]=="CALCULATED":

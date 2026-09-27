@@ -2,7 +2,7 @@
 {% block content %}
 <a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
 <section class="dossier-hero"><div><p class="eyebrow">ACQUISITION DEAL ROOM</p><h1>{{ op.name }}</h1><p class="muted">Actual owner-recorded work, correspondence and decisions. No external action is performed.</p></div></section>
-<p class="workspace-links"><a class="button primary" href="{{ url_for('soulaana_room',oid=op.id,intent='next_action') }}">Soulaana: next action →</a> <a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='changes') }}">What changed? →</a></p>
+<p class="workspace-links"><a class="button" href="{{ url_for('decision_desk_room',oid=op.id) }}">Open full Decision Desk →</a> <a class="button primary" href="{{ url_for('soulaana_room',oid=op.id,intent='next_action') }}">Soulaana: next action →</a> <a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='changes') }}">What changed? →</a></p>
 <section class="workspace"><div class="main-column">
 <div class="panel"><p class="eyebrow">PRIORITY QUEUE</p><h2>Tasks and deadlines</h2>
 {% for task in tasks %}<article class="task-card"><small>{{ task.due_date }} · {{ task.status }}</small><h3>{{ task.title }}</h3><p>{{ task.notes }}</p>
