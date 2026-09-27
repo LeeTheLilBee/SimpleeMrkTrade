@@ -51,6 +51,22 @@ class ProductionEntryTests(unittest.TestCase):
                 with self.assertRaises(GroundsProductionUnavailable):
                     create_wsgi_application()
 
+    def test_receiver_without_certified_staff_authority_stays_closed(self):
+        with patch.dict(os.environ,{
+            "GROUNDS_PRIVATE_POSTGRES_URL":"postgresql://example/private",
+            "GROUNDS_CSRF_SECRET_HEX":bytes(range(32)).hex(),
+        },clear=True):
+            class IncompleteTower:
+                @staticmethod
+                def create_certified_grounds_receiver():
+                    return lambda environ:None
+            with patch("grounds.production_entry.import_module",
+                       return_value=IncompleteTower()):
+                with self.assertRaisesRegex(
+                    GroundsProductionUnavailable,"staff authority",
+                ):
+                    create_wsgi_application()
+
     def test_preflight_database_failure_never_leaks_connection_string(self):
         dsn="postgresql://not-real-secret:private@example.invalid/test"
         with patch.dict(os.environ,{
@@ -61,6 +77,12 @@ class ProductionEntryTests(unittest.TestCase):
                 @staticmethod
                 def create_certified_grounds_receiver():
                     return lambda environ:None
+                @staticmethod
+                def create_certified_grounds_staff_directory():
+                    return lambda actor,property_ref:[]
+                @staticmethod
+                def create_certified_grounds_staff_resolver():
+                    return lambda actor,property_ref,work_ref,technician_ref:None
             with patch("grounds.production_entry.import_module",
                        return_value=FutureTower()):
                 with patch("grounds.production_entry.GroundsWebApp",
