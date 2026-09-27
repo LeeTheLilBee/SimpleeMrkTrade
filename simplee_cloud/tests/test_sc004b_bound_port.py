@@ -14,6 +14,7 @@ from simplee_cloud.contracts import (
     AccessDenied, CloudError, ObjectMissing,
 )
 from simplee_cloud.journal import SQLiteOperationalJournal
+from simplee_cloud.journaled_backup import JournaledBackupOperations
 from simplee_cloud.local_backend import LocalPrivateCiphertextBackend
 from simplee_cloud.operations import JournaledCiphertextOperations
 from simplee_cloud.service import CiphertextStorageService
@@ -95,12 +96,15 @@ class Harness:
             source=self.source, backup_backend=self.backup_backend,
             backup_key=os.urandom(32), key_reference="synthetic-backup-key",
         )
+        self.journaled_backup = JournaledBackupOperations(
+            operations=self.operations, backup=self.backup, mode="source_test",
+        )
         self.port = SourceOnlyBoundCloudPort(
             operations=self.operations, tower_verifier=self.verifier,
             canonical_scope_resolver=lambda request, operation: self.canonical[
                 (request, operation)
             ],
-            backup=self.backup,
+            backup=self.backup, journaled_backup=self.journaled_backup,
             canonical_backup_resolver=lambda request: self.receipts[request],
             mode="source_test",
         )
