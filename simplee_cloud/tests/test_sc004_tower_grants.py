@@ -150,6 +150,18 @@ def test_auth_peer_revocation_and_unavailable_authority_denied(tmp_path):
         check(unavailable, sign(c, unavailable_private), c)
 
 
+def test_signed_but_stale_approval_or_stepup_is_rechecked(tmp_path):
+    private, replay, verifier = setup(tmp_path)
+    canonical = claims()
+    for altered in (
+        claims(approval_ref="approval-revoked"),
+        claims(step_up_ref="stepup-expired"),
+    ):
+        with pytest.raises(AccessDenied, match="revoked"):
+            check(verifier, sign(altered, private), canonical)
+    assert replay.count() == 0
+
+
 def test_signature_tamper_unknown_key_and_duplicate_field_denied(tmp_path):
     private, replay, verifier = setup(tmp_path)
     c = claims()
