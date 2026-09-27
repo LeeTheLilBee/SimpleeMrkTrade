@@ -8,6 +8,7 @@ on:
       - 'web/static/ob/ob_owner_dashboard_contract.js'
       - 'web/static/ob/ob_owner_dashboard.js'
       - 'tests/test_obbeta006_010_owner_readiness_truth.py'
+      - 'tests/test_owner_dashboard_obux024_owner_intelligence.py'
       - 'ob_evidence/manual_live/obbeta006_010_owner_dashboard_readiness_truth_handoff.md'
       - '.github/workflows/obbeta006-010-owner-readiness-truth.yml'
 permissions:
@@ -31,6 +32,6 @@ jobs:
       - name: Owner readiness and Tower source regressions
         run: |
           python -m py_compile tests/test_obbeta006_010_owner_readiness_truth.py
-          python -m pytest -q tests/test_obbeta006_010_owner_readiness_truth.py tests/test_obbeta001_005_owner_tester_truth.py tests/test_ob_dual_dashboard_replacement_obux091_095.py tests/test_obml016_020_tower_namespace_cross_check.py tests/test_obml011_015_owner_beta_gate_report.py
+          python -m pytest -q tests/test_obbeta006_010_owner_readiness_truth.py tests/test_owner_dashboard_obux024_owner_intelligence.py tests/test_obbeta001_005_owner_tester_truth.py tests/test_ob_dual_dashboard_replacement_obux091_095.py tests/test_obml016_020_tower_namespace_cross_check.py tests/test_obml011_015_owner_beta_gate_report.py
       - name: Complete repository regression
         run: python -m pytest -q tests
