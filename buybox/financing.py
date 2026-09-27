@@ -109,6 +109,9 @@ def record_financing_option(op, *, evidence_id, lender_name, program_name,
     if supersedes:
         prior=next((q for q in current_options(op) if q["id"]==supersedes),None)
         if prior is None: raise FinancingError("CURRENT_OPTION_CORRECTION_TARGET_REQUIRED")
+        if (prior["lender_label"].casefold()!=lender.casefold()
+                or prior["program_label"].casefold()!=program.casefold()):
+            raise FinancingError("CORRECTION_PROVIDER_AND_PROGRAM_SCOPE_MISMATCH")
         _text(correction_reason,"CORRECTION_REASON_REQUIRED",1000)
     elif correction_reason not in (None,""):
         raise FinancingError("CORRECTION_TARGET_REQUIRED")
