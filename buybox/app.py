@@ -44,6 +44,7 @@ from .saved_search import (normalize_filters, create_saved_search, saved_searche
     get_saved_search, latest_check, run_saved_search, archive_saved_search)
 from .claim_register import (record_source_claim, record_owner_document_review,
     integrity_report, active_claims, owner_reviewed_source)
+from .diligence import diligence_snapshot, create_diligence_task
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -511,6 +512,37 @@ def create_app(config=None):
                 "source_reference":machine["source_reference"]},
                 expected_revision=int(request.form["revision"]))
         return redirect(url_for("opportunity",oid=oid))
+
+    @app.get("/opportunities/<oid>/diligence")
+    @login_required
+    def diligence_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        return render_template("diligence.html",op=op,
+            checklist=diligence_snapshot(op))
+
+    @app.post("/opportunities/<oid>/diligence/tasks")
+    @login_required
+    def create_evidence_task(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,task=create_diligence_task(
+                op,evidence_kind=request.form.get("evidence_kind",""),
+                due_date=request.form.get("due_date",""),
+                owner_actor=owner_actor(conn),
+                notes=request.form.get("notes",""),
+            )
+            save(conn,revised,"DiligenceEvidenceTaskCreated",{
+                "task_id":task["id"],"kind":task["evidence_kind"],
+                "due_date":task["due_date"],
+                "registry_version":task["requirement_registry_version"],
+                "source_revision":task["created_against_opportunity_revision"],
+                "seller_contact_sent":False,
+                "evidence_verified":False},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("diligence_room",oid=oid),code=303)
 
     @app.get("/opportunities/<oid>/integrity")
     @login_required
