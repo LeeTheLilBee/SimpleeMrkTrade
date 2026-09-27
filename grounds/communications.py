@@ -58,9 +58,10 @@ class GroundsCommunications:
             if notice is None:
                 raise AccessDenied("notice unavailable")
             db.execute(
-                """INSERT OR IGNORE INTO notice_reads
+                """INSERT INTO notice_reads
                    (notice_ref,subject_ref,lease_ref,property_ref,unit_ref,read_at)
-                   VALUES(?,?,?,?,?,?)""",
+                   VALUES(?,?,?,?,?,?)
+                   ON CONFLICT(notice_ref,lease_ref,subject_ref) DO NOTHING""",
                 (notice_ref,actor.subject_ref,lease["lease_ref"],property_ref,unit_ref,_now()),
             )
             return {"notice_ref":notice_ref,"read_in_app":True,
