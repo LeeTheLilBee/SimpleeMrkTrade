@@ -1,0 +1,32 @@
+name: OBSIM076-080 hosted owner read-after-reset atomicity
+on:
+  push:
+    branches:
+      - 'obsim076-080-*'
+  pull_request:
+    branches:
+      - 'tower-hosted-runtime-identity-twr081-085'
+    paths:
+      - 'tower/ob_hosted_owner_rehearsal.py'
+      - 'tests/test_obsim076_080_hosted_reset_read_atomicity.py'
+      - '.github/workflows/obsim076-080-hosted-read-reset.yml'
+permissions:
+  contents: read
+jobs:
+  owner-atomic-read-and-tower-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install current source test dependencies
+        run: python -m pip install pytest flask tzdata requests yfinance
+      - name: Source syntax and regression
+        run: |
+          python -m py_compile tower/ob_hosted_owner_rehearsal.py tests/test_obsim076_080_hosted_reset_read_atomicity.py
+          node --check web/static/ob/ob_hosted_owner_rehearsal.js
+          python -m pytest -q tests/test_obsim076_080_hosted_reset_read_atomicity.py tests/test_obsim061_065_hosted_token_lifecycle.py tests/test_obsim056_060_hosted_owner_rehearsal.py tests/test_obsim066_070_anonymous_release_probe.py tests/test_obsim071_075_two_host_anonymous_inventory.py tests/test_tower_ob_web_route_enforcement.py
