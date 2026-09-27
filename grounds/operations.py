@@ -14,7 +14,7 @@ from uuid import uuid4
 
 from .access import AccessDenied, TowerScope
 from .maintenance import MaintenanceIntake, WorkOrder, transition_work_order
-from .storage import GroundsStore
+from .storage import GroundsStoreBase
 
 
 class GroundsConflict(ValueError):
@@ -67,9 +67,9 @@ def _outbox(db, *, property_ref: str, event_kind: str,
 
 
 class GroundsOperations:
-    def __init__(self, store: GroundsStore):
-        if not isinstance(store, GroundsStore):
-            raise TypeError("GroundsStore required")
+    def __init__(self, store: GroundsStoreBase):
+        if not isinstance(store, GroundsStoreBase):
+            raise TypeError("transaction-backed Grounds store required")
         self.store = store
 
     @staticmethod
