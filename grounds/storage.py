@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS lease_members (
   FOREIGN KEY(lease_ref,unit_ref,property_ref) REFERENCES leases(lease_ref,unit_ref,property_ref)
 );
 CREATE INDEX IF NOT EXISTS active_lease_members ON lease_members(subject_ref,property_ref,unit_ref,status);
+CREATE UNIQUE INDEX IF NOT EXISTS unique_member_grant_proof ON lease_members(grant_proof_ref) WHERE grant_proof_ref IS NOT NULL;
 CREATE TABLE IF NOT EXISTS lease_member_events (
   event_ref TEXT PRIMARY KEY,
   lease_ref TEXT NOT NULL,
@@ -78,6 +79,7 @@ CREATE TABLE IF NOT EXISTS lease_member_events (
   FOREIGN KEY(lease_ref,subject_ref) REFERENCES lease_members(lease_ref,subject_ref)
 );
 CREATE INDEX IF NOT EXISTS lease_member_history ON lease_member_events(lease_ref,subject_ref,occurred_at);
+CREATE UNIQUE INDEX IF NOT EXISTS unique_member_event_proof ON lease_member_events(proof_ref) WHERE proof_ref IS NOT NULL;
 CREATE TABLE IF NOT EXISTS work_orders (
   work_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL,
