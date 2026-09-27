@@ -130,6 +130,38 @@ CREATE TABLE IF NOT EXISTS property_notices (
   FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
 );
 CREATE INDEX IF NOT EXISTS notices_property ON property_notices(property_ref,unit_ref);
+CREATE TABLE IF NOT EXISTS notice_reads (
+  notice_ref TEXT NOT NULL REFERENCES property_notices(notice_ref),
+  subject_ref TEXT NOT NULL,
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  unit_ref TEXT NOT NULL,
+  read_at TEXT NOT NULL,
+  PRIMARY KEY(notice_ref,subject_ref)
+);
+CREATE TABLE IF NOT EXISTS work_appointments (
+  appointment_ref TEXT PRIMARY KEY,
+  work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  unit_ref TEXT NOT NULL,
+  requested_by TEXT NOT NULL,
+  start_at TEXT NOT NULL,
+  end_at TEXT NOT NULL,
+  state TEXT NOT NULL DEFAULT 'requested'
+    CHECK(state IN ('requested','proposed','accepted','cancelled')),
+  revision INTEGER NOT NULL DEFAULT 1 CHECK(revision>0),
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS appointments_per_work ON work_appointments(work_ref,state);
+CREATE TABLE IF NOT EXISTS appointment_events (
+  event_ref TEXT PRIMARY KEY,
+  appointment_ref TEXT NOT NULL REFERENCES work_appointments(appointment_ref),
+  actor_ref TEXT NOT NULL,
+  action TEXT NOT NULL CHECK(action IN ('requested','proposed','accepted','cancelled')),
+  revision INTEGER NOT NULL,
+  recorded_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS appointment_event_history ON appointment_events(appointment_ref,revision);
 CREATE UNIQUE INDEX IF NOT EXISTS lease_scope_identity ON leases(lease_ref,unit_ref,property_ref);
 CREATE TABLE IF NOT EXISTS physical_assets (
   asset_ref TEXT PRIMARY KEY,
