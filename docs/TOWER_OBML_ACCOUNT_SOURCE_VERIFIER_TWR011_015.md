@@ -25,7 +25,7 @@ current OB source; reusing user/browser-token fields as the expected values
 would not provide current-source provenance.
 
 Successful verification produces immutable namespace claims ONLY.
-consume_verified_ob_account_nonce uses a separate SQLite unique hash to
+consume_signed_ob_account_source independently re-verifies the raw signed bytes before using a separate SQLite unique hash to
 deny replay across distinct connections. It rejects dirty caller
 transactions and expired claims. A production adapter would need an approved
 durable ledger; the module does not configure one, set a signing secret,
