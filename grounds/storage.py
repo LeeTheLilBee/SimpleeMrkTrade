@@ -53,6 +53,31 @@ CREATE TABLE IF NOT EXISTS leases (
 CREATE UNIQUE INDEX IF NOT EXISTS one_active_lease_per_unit
   ON leases(unit_ref) WHERE status = 'active';
 CREATE INDEX IF NOT EXISTS leases_resident ON leases(resident_ref,property_ref,unit_ref);
+CREATE TABLE IF NOT EXISTS lease_members (
+  lease_ref TEXT NOT NULL,
+  property_ref TEXT NOT NULL,
+  unit_ref TEXT NOT NULL,
+  subject_ref TEXT NOT NULL,
+  relationship TEXT NOT NULL CHECK(relationship IN ('primary','co_tenant','authorized_occupant')),
+  status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active','revoked','ended')),
+  grant_proof_ref TEXT,
+  joined_at TEXT NOT NULL,
+  revoked_at TEXT,
+  PRIMARY KEY(lease_ref,subject_ref),
+  FOREIGN KEY(lease_ref,unit_ref,property_ref) REFERENCES leases(lease_ref,unit_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS active_lease_members ON lease_members(subject_ref,property_ref,unit_ref,status);
+CREATE TABLE IF NOT EXISTS lease_member_events (
+  event_ref TEXT PRIMARY KEY,
+  lease_ref TEXT NOT NULL,
+  subject_ref TEXT NOT NULL,
+  actor_ref TEXT NOT NULL,
+  action TEXT NOT NULL CHECK(action IN ('primary_registered','verified_grant','revoked','lease_ended')),
+  proof_ref TEXT,
+  occurred_at TEXT NOT NULL,
+  FOREIGN KEY(lease_ref,subject_ref) REFERENCES lease_members(lease_ref,subject_ref)
+);
+CREATE INDEX IF NOT EXISTS lease_member_history ON lease_member_events(lease_ref,subject_ref,occurred_at);
 CREATE TABLE IF NOT EXISTS work_orders (
   work_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL,
