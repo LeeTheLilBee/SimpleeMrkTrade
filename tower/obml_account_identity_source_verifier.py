@@ -206,10 +206,28 @@ def consume_signed_ob_account_source(
         raise
 
 
-def describe_verified_source(verified: VerifiedOBAccountSource) -> dict[str, Any]:
-    """Redacted source status only; account labels/balances are not returned."""
-    if not isinstance(verified, VerifiedOBAccountSource):
-        raise OBAccountSourceVerificationError("SIGNED_SOURCE_REQUIRED")
+def describe_verified_source(
+    token: str, *,
+    shared_secret: str | bytes,
+    expected_account_key: str,
+    expected_current_fingerprint: str,
+    now_epoch: int,
+) -> dict[str, Any]:
+    """Redacted status ONLY after independently revalidating original HMAC bytes.
+
+    A public descriptor that trusts a caller-created VerifiedOBAccountSource
+    wrapper could claim signature verification without checking any signature.
+    This entrypoint requires raw signed bytes and rechecks expiry/current
+    account binding every time. No replay ledger is consumed here; this
+    remains an amount-free source summary, not a Tower/Manual Live grant.
+    """
+    verify_signed_ob_account_source(
+        token,
+        shared_secret=shared_secret,
+        expected_account_key=expected_account_key,
+        expected_current_fingerprint=expected_current_fingerprint,
+        now_epoch=now_epoch,
+    )
     return {
         "contract": EXPORT_SCHEMA,
         "state": "OB_ACCOUNT_NAMESPACE_SOURCE_ONLY",
