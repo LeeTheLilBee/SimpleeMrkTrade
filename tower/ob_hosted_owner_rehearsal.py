@@ -289,26 +289,39 @@ def register_ob_hosted_owner_rehearsal(
             return jsonify({"status": "EXPLICIT_STRICT_JSON_REQUIRED"}), 400
         return mutation(lambda item, instant: item.desk.submit_explicit_input(payload, now=instant))
 
+    def empty_command_valid():
+        try:
+            return _strict_object(request.get_data()) == {}
+        except (ValueError, UnicodeDecodeError):
+            return False
+
     def pause():
-        _strict_object(request.get_data())
+        if not empty_command_valid():
+            return jsonify({"status": "EXACT_EMPTY_JSON_COMMAND_REQUIRED"}), 400
         return mutation(lambda item, instant: item.desk.pause())
 
     def resume():
-        _strict_object(request.get_data())
+        if not empty_command_valid():
+            return jsonify({"status": "EXACT_EMPTY_JSON_COMMAND_REQUIRED"}), 400
         return mutation(lambda item, instant: item.desk.resume(now=instant))
 
     def stop():
-        _strict_object(request.get_data())
+        if not empty_command_valid():
+            return jsonify({"status": "EXACT_EMPTY_JSON_COMMAND_REQUIRED"}), 400
         return mutation(lambda item, instant: item.desk.stop(now=instant))
 
     def fresh():
-        _strict_object(request.get_data())
+        if not empty_command_valid():
+            return jsonify({"status": "EXACT_EMPTY_JSON_COMMAND_REQUIRED"}), 400
         item = get_workspace()
         with lock:
             if item.desk.session.status.value != "STOPPED":
                 return jsonify({"status": "STOP_EXISTING_SESSION_FIRST"}), 409
             key = scope()
             new_item = _Workspace(clock())
+            # Same currently checked Tower session keeps its unguessable local
+            # CSRF token; do not strand the already-open browser after reset.
+            new_item.csrf = item.csrf
             workspaces[key] = new_item
             return jsonify(view(new_item, clock()))
 
