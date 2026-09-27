@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from .access import AccessDenied, TowerScope
 from .operations import GroundsConflict, _required, _now
-from .storage import GroundsStore
+from .storage import GroundsStoreBase
 
 LEASING_ROLES = ("owner", "property_manager", "leasing_agent")
 STAGE_EDGES = {
@@ -26,9 +26,9 @@ STAGE_EDGES = {
 
 
 class GroundsLeasing:
-    def __init__(self, store: GroundsStore):
-        if not isinstance(store, GroundsStore):
-            raise TypeError("GroundsStore required")
+    def __init__(self, store: GroundsStoreBase):
+        if not isinstance(store, GroundsStoreBase):
+            raise TypeError("transaction-backed Grounds store required")
         self.store = store
 
     @staticmethod
