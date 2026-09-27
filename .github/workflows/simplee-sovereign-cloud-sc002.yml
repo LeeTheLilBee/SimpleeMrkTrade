@@ -1,0 +1,37 @@
+name: Simplee Sovereign Cloud SC002 durable operations checks
+
+on:
+  push:
+    branches:
+      - simplee-cloud-sc002-durable-operations
+  pull_request:
+    paths:
+      - 'simplee_cloud/**'
+      - '.github/workflows/simplee-sovereign-cloud-sc002.yml'
+      - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC002_OPERATIONS.md'
+
+permissions:
+  contents: read
+
+jobs:
+  source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test-only dependencies
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Compile exact Cloud operational scope
+        run: |
+          python -m py_compile simplee_cloud/__init__.py simplee_cloud/contracts.py simplee_cloud/service.py simplee_cloud/local_backend.py simplee_cloud/backup.py simplee_cloud/journal.py simplee_cloud/operations.py simplee_cloud/tests/test_sc001_storage.py simplee_cloud/tests/test_sc001_backup.py simplee_cloud/tests/test_sc002_operations.py
+      - name: Run both SC001 and SC002 synthetic regression tests
+        run: |
+          python -m pytest -q simplee_cloud/tests/test_sc001_storage.py simplee_cloud/tests/test_sc001_backup.py simplee_cloud/tests/test_sc002_operations.py

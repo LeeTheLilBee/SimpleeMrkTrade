@@ -1,0 +1,36 @@
+name: Simplee Sovereign Cloud SC004B signed operation source checks
+
+on:
+  push:
+    branches:
+      - simplee-cloud-sc004b-bound-invocation-source
+  pull_request:
+    paths:
+      - 'simplee_cloud/**'
+      - '.github/workflows/simplee-sovereign-cloud-sc004b.yml'
+      - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC004B_BOUND_PORT.md'
+
+permissions:
+  contents: read
+
+jobs:
+  bound-source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install synthetic test dependencies only
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Compile Cloud and source regression contracts
+        run: |
+          python -m compileall -q simplee_cloud
+      - name: Run SC001-SC005 and SC004B synthetic regression tests
+        run: python -m pytest -q simplee_cloud/tests/
