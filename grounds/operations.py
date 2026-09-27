@@ -55,6 +55,17 @@ def _record(row):
     return dict(row) if row is not None else None
 
 
+def _outbox(db, *, property_ref: str, event_kind: str,
+            resource_ref: str, revision: int):
+    """Transactional local event intent; NEVER an externally delivered notification."""
+    db.execute(
+        """INSERT INTO event_outbox
+           (event_ref,property_ref,event_kind,resource_ref,source_revision,created_at)
+           VALUES(?,?,?,?,?,?)""",
+        (uuid4().hex,property_ref,event_kind,resource_ref,revision,_now()),
+    )
+
+
 class GroundsOperations:
     def __init__(self, store: GroundsStore):
         if not isinstance(store, GroundsStore):
@@ -274,6 +285,12 @@ class GroundsOperations:
                      intake.entry_permission,timestamp,timestamp),
                 )
                 _event(db, work_ref, actor, "created", None, "submitted", 1)
+                _outbox(db,property_ref=intake.property_ref,event_kind="work_changed",
+                        resource_ref=work_ref,revision=1)
+                if intake.emergency_flag:
+                    _outbox(db,property_ref=intake.property_ref,
+                            event_kind="urgent_intake_requires_human_review",
+                            resource_ref=work_ref,revision=1)
         except sqlite3.IntegrityError as exc:
             raise GroundsConflict("duplicate or invalid request") from exc
         return {"work_ref": work_ref, "state": "submitted", "emergency_flag": intake.emergency_flag}
@@ -344,6 +361,12 @@ class GroundsOperations:
             row = self._visible_order(db, actor, work_ref)
             if row["revision"] != expected_revision:
                 raise GroundsConflict("stale work order revision")
+            if row["emergency_flag"] and row["state"]=="submitted" and next_state=="received":
+                triage=db.execute(
+                    "SELECT 1 FROM emergency_reviews WHERE work_ref=?",(work_ref,),
+                ).fetchone()
+                if triage is None:
+                    raise GroundsConflict("urgency flag requires human triage acknowledgment")
             if actor.role == "vendor":
                 raise AccessDenied("vendor transition not yet authorized")
             after = transition_work_order(
@@ -360,6 +383,8 @@ class GroundsOperations:
                 (after.state,revision,_now(),work_ref,expected_revision),
             )
             _event(db, work_ref, actor, "transition", row["state"], after.state, revision)
+            _outbox(db,property_ref=row["property_ref"],event_kind="work_changed",
+                    resource_ref=work_ref,revision=revision)
             return {"work_ref": work_ref, "state": after.state, "revision": revision}
 
     def assign_work_order(self, actor: TowerScope, *, work_ref: str,
@@ -380,6 +405,8 @@ class GroundsOperations:
                 (technician.subject_ref, revision, _now(), work_ref, expected_revision),
             )
             _event(db, work_ref, actor, "assigned", "scheduled", "assigned", revision)
+            _outbox(db,property_ref=row["property_ref"],event_kind="work_changed",
+                    resource_ref=work_ref,revision=revision)
             return {"work_ref": work_ref, "state": "assigned", "revision": revision,
                     "assigned_to": technician.subject_ref}
 
@@ -408,6 +435,8 @@ class GroundsOperations:
                        VALUES(?,?,?,?,?,?)""",
                     (notice_ref, property_ref, unit_ref, headline, body, _now()),
                 )
+                _outbox(db,property_ref=property_ref,event_kind="notice_visible_in_app",
+                        resource_ref=notice_ref,revision=1)
         except sqlite3.IntegrityError as exc:
             raise GroundsConflict("notice invalid or already recorded") from exc
 
