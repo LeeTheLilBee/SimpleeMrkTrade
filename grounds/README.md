@@ -28,7 +28,11 @@ To inspect the visual prototype, open `grounds/ui/preview.html` locally in a bro
 - `capital.py` — five-lane apartment reserve/readiness snapshot sourced through Teller, no money movement.
 - `soulaana.py` — read-only, source- and revision-bound explanations for work orders and readiness.
 - `stewardship.py` — property assets, certified preventive-plan completion, inspection findings/remediation and unit turnovers. No real dispatch, inspector self-service or automatic notifications.
+- `residency.py` — externally certified lease-member grant/revocation, co-tenant/occupant records and history, separately from Tower sessions.
+- `communications.py` — scoped in-app notice-read and appointment proposal/acceptance; not legal delivery or permission to enter.
+- `safety.py` — human-only urgent triage, resident entry preferences and metadata-only pending notification intents; no provider/dispatch.
+- `soulaana.py` — also explains exact-scope resident rent/lease, appointments, inspections, turnovers, leasing, and owner pulse, in read-only form.
 
 A fake verifier appears only in unit-test fixtures. No real public route may trust a caller-supplied role, identity, proof verifier or payment projection.
 
-See `docs/THE_GROUNDS_RECOVERED_PLAN_GRD001_005.md` and `docs/THE_GROUNDS_IMPLEMENTATION_GRD006_019.md` for requirements, boundaries, delivered vs remaining work.
+See `docs/THE_GROUNDS_RECOVERED_PLAN_GRD001_005.md`, `docs/THE_GROUNDS_IMPLEMENTATION_GRD006_019.md`, `docs/THE_GROUNDS_STEWARDSHIP_GRD024_033.md`, and `docs/THE_GROUNDS_RESIDENT_SERVICES_GRD037_055.md` for scope, delivered code, explicit non-effects and launch gates.
