@@ -24,7 +24,7 @@ def build_focus(opportunities, activity_reader, *, as_of=None):
                 "SourceAttached","ATMMachineRecorded","DealTaskCreated",
                 "DealTaskStatusChanged",
                 "SourceClaimRecorded", "SourceClaimDocumentReviewed",
-                "DiligenceEvidenceTaskCreated",
+                "DiligenceEvidenceTaskCreated","FinancingOptionRecorded",
             ):
                 continue
             changes.append({"opportunity_id":op["id"],"opportunity_name":op["name"],

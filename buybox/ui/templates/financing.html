@@ -1,0 +1,95 @@
+{% extends "base.html" %}{% block title %}Financing Desk · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero">
+<p class="eyebrow">FINANCING DESK · REAL ORIGINALS</p>
+<h1>Compare documented terms, not promises.</h1>
+<p>Enter actual terms from an uploaded lender letter or term sheet. BuyBox models only fixed-rate, fully amortizing USD financing. Nothing here establishes approval, available funds, a signed commitment, or Teller money/management readiness.</p>
+</section>
+<section class="stats">
+<div class="tile"><small>Current recorded options</small><strong>{{ report.active_option_count }}</strong></div>
+<div class="tile"><small>Bank commitment verified</small><strong>No</strong></div>
+<div class="tile"><small>Teller readiness</small><strong>Unknown</strong></div>
+<div class="tile"><small>Owner decision authorization</small><strong>Not granted</strong></div>
+</section>
+{% if report.options %}
+<section class="panel"><p class="eyebrow">FINANCING COMPARISON</p><h2>Document-linked financing scenarios</h2>
+<p class="muted">A modeled payment is not a lender quote or final loan estimate. Fees, reserves and ATM vault float are listed separately; float and protected reserves are liquidity needs, not operating expenses. Reconfirm stale or expired terms with the source.</p>
+<div class="comparison-grid">
+{% for item in report.options %}{% set q=item.quote %}{% set a=item.analysis %}
+<article class="financing-option">
+<p class="eyebrow">{{ q.record_type|replace('_',' ') }}</p><h3>{{ q.lender_label }}</h3><p class="muted">{{ q.program_label }}</p>
+<p><span class="pill">{{ a.status|replace('_',' ')|title }}</span></p>
+{% for flag in a.review_flags %}<p class="notice">{{ flag|replace('_',' ')|title }}</p>{% endfor %}
+<div class="evidence-row"><span>Recorded purchase basis</span><strong>${{ q.purchase_price }}</strong></div>
+<div class="evidence-row"><span>Recorded loan principal</span><strong>${{ q.principal }}</strong></div>
+<div class="evidence-row"><span>Fixed APR / term</span><strong>{{ q.apr_percent }}% / {{ q.term_months }} months</strong></div>
+<div class="evidence-row"><span>Modeled monthly payment</span><strong>${{ a.modeled_monthly_payment }}</strong></div>
+<div class="evidence-row"><span>Modeled annual debt service</span><strong>${{ a.modeled_annual_debt_service }}</strong></div>
+<div class="evidence-row"><span>Modeled scheduled interest</span><strong>${{ a.modeled_interest }}</strong></div>
+<div class="evidence-row"><span>Recorded gross project cash need</span><strong>${{ a.recorded_project_cash_needed }}</strong></div>
+<div class="evidence-row"><span>Unverified buyer funding gap</span><strong>${{ a.unverified_buyer_cash_gap }}</strong></div>
+<div class="evidence-row"><span>Reserved liquidity (not expense)</span><strong>${{ q.reserve_cash }}</strong></div>
+{% if op.vertical=='atm' %}<div class="evidence-row"><span>Physical vault cash (not expense)</span><strong>${{ q.vault_cash }}</strong></div>{% endif %}
+<div class="evidence-row"><span>Illustrative operating/debt ratio</span><strong>{{ a.illustrative_operating_to_debt_ratio if a.illustrative_operating_to_debt_ratio is not none else 'Unavailable' }}</strong></div>
+<p class="muted">Source {{ q.source_date }}{% if q.expiration_date %} · Recorded expiration {{ q.expiration_date }}{% else %} · Expiration not specified{% endif %}</p>
+<p class="muted">Page/reference: {{ q.source_locator }} · {{ q.source_evidence_status|replace('_',' ')|title }}</p>
+<p><a href="{{ url_for('download_document',oid=op.id,artifact_id=q.source_artifact_id) }}">Retrieve protected original →</a></p>
+<small>Option {{ q.id }} · Original digest {{ q.source_sha256[:16] }}…</small>
+{% if q.supersedes %}<p class="muted">Documented correction of option {{ q.supersedes[:12] }}…; original history preserved.</p>{% endif %}
+</article>
+{% endfor %}
+</div></section>
+{% else %}
+<section class="panel"><h2>No documented financing options yet.</h2><p class="muted">Upload an actual lender document first. We will not populate sample offers, interest rates, or lender promises into your acquisition records.</p></section>
+{% endif %}
+<section class="workspace"><div class="main-column">
+<div class="panel">
+<p class="eyebrow">DOCUMENTARY SOURCE</p><h2>Original financing documents</h2>
+{% for e in originals %}<div class="evidence-row"><div><strong>{{ artifacts[e.artifact_id].name }}</strong>
+<small>{{ e.status|replace('_',' ')|title }} · {{ e.source }} · {{ e.id[:12] }}…</small></div>
+<a href="{{ url_for('download_document',oid=op.id,artifact_id=e.artifact_id) }}">Download original</a></div>
+{% else %}<p class="muted">No financing term-sheet originals have been uploaded.</p>{% endfor %}
+<p><a class="button" href="{{ url_for('opportunity',oid=op.id) }}#doc-upload">Upload a financing term sheet in the evidence dossier →</a></p>
+<p class="muted">Use the “Financing correspondence / term sheet” evidence category. BuyBox only records and models the actual document; it does not verify the lender, apply for a loan, or send it to Teller.</p>
+</div></div><aside class="side-column">
+<div class="panel">
+<p class="eyebrow">OWNER TERM TRANSCRIPTION</p><h2>Record a written financing option</h2>
+{% if originals %}
+<form method="post" action="{{ url_for('financing_option',oid=op.id) }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<label>Source original<select name="evidence_id" required>{% for e in originals %}
+<option value="{{ e.id }}">{{ artifacts[e.artifact_id].name }} · {{ e.status|replace('_',' ')|title }} · {{ e.id[:8] }}</option>
+{% endfor %}</select></label>
+<label>Lender/source label<input name="lender_name" maxlength="120" required placeholder="As stated on the actual document"></label>
+<label>Program/term-sheet label<input name="program_name" maxlength="120" required></label>
+<label>Exact page/paragraph/row locator<input name="source_locator" maxlength="240" required placeholder="Page 2, financing terms"></label>
+<label>Document date<input type="date" name="source_date" required></label>
+<label>Expiration date (leave blank when not specified)<input type="date" name="expiration_date"></label>
+<label>Purchase price basis (USD)<input type="number" name="purchase_price" min="0.01" step="0.01" required></label>
+<label>Written loan principal (USD)<input type="number" name="principal" min="0.01" step="0.01" required></label>
+<label>Written fixed APR (%)<input type="number" name="apr_percent" min="0" max="100" step="0.0001" required></label>
+<label>Written full amortization term (12–360 months)<input type="number" name="term_months" min="12" max="360" step="1" required></label>
+<label>Origination fee, USD<input type="number" name="origination_fee" min="0" step="0.01" value="0" required></label>
+<label>Other lender fees, USD<input type="number" name="lender_fee" min="0" step="0.01" value="0" required></label>
+<label>Owner-estimated other closing costs, USD<input type="number" name="other_closing_cost" min="0" step="0.01" value="0" required></label>
+<label>Proposed cash reserve, USD<input type="number" name="reserve_cash" min="0" step="0.01" value="0" required></label>
+{% if op.vertical=='atm' %}
+<label>Physical ATM vault cash needed, USD<input type="number" name="vault_cash" min="0" step="0.01" value="0" required></label>
+{% else %}
+<input type="hidden" name="vault_cash" value="0">
+{% endif %}
+<label>Documented correction to existing option (optional)<select name="supersedes"><option value="">New independent option</option>
+{% for item in report.options %}<option value="{{ item.quote.id }}">{{ item.quote.lender_label }} · {{ item.quote.id[:8] }}</option>{% endfor %}
+</select></label>
+<label>Correction reason (required only when replacing an option)<textarea name="correction_reason" maxlength="1000" rows="2"></textarea></label>
+<button type="submit" class="primary">Record source-bound terms</button>
+<small>This does not transmit an application, select a lender, authorize cash movement, or assert funding availability.</small>
+</form>
+{% else %}<p class="muted">Upload an actual original before entering lender terms. Manual estimates belong in Scenario Lab, not a fabricated lender offer.</p>{% endif %}
+</div>
+<div class="panel"><p class="eyebrow">✧ SOULAANA</p><h2>Explain financing terms</h2>
+<p class="muted">Soulaana can explain recorded costs, model outputs, source references and missing proof. She cannot assert approval, waive protected floors or move OB capital.</p>
+<a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='financing') }}">Open financing explanation →</a></div>
+</aside></section>
+{% endblock %}
