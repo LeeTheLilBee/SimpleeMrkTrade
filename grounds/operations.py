@@ -166,6 +166,18 @@ class GroundsOperations:
                     "UPDATE units SET lifecycle='occupied' WHERE unit_ref=? AND property_ref=?",
                     (unit_ref, property_ref),
                 )
+                db.execute(
+                    """INSERT INTO lease_members
+                       (lease_ref,property_ref,unit_ref,subject_ref,relationship,status,joined_at)
+                       VALUES(?,?,?,?,?,'active',?)""",
+                    (lease_ref,property_ref,unit_ref,resident_ref,"primary",_now()),
+                )
+                db.execute(
+                    """INSERT INTO lease_member_events
+                       (event_ref,lease_ref,subject_ref,actor_ref,action,occurred_at)
+                       VALUES(?,?,?,?,'primary_registered',?)""",
+                    (uuid4().hex,lease_ref,resident_ref,actor.subject_ref,_now()),
+                )
         except sqlite3.IntegrityError as exc:
             raise GroundsConflict("lease already active or wrong property/unit") from exc
 
@@ -191,6 +203,38 @@ class GroundsOperations:
                 "UPDATE units SET lifecycle='make_ready' WHERE unit_ref=? AND property_ref=?",
                 (lease["unit_ref"], property_ref),
             )
+            members=db.execute(
+                "SELECT subject_ref FROM lease_members WHERE lease_ref=? AND status='active'",
+                (lease_ref,),
+            ).fetchall()
+            db.execute(
+                """UPDATE lease_members SET status='ended',revoked_at=?
+                   WHERE lease_ref=? AND status='active'""",
+                (_now(),lease_ref),
+            )
+            for member in members:
+                db.execute(
+                    """INSERT INTO lease_member_events
+                       (event_ref,lease_ref,subject_ref,actor_ref,action,occurred_at)
+                       VALUES(?,?,?,?,'lease_ended',?)""",
+                    (uuid4().hex,lease_ref,member["subject_ref"],actor.subject_ref,_now()),
+                )
+
+    @staticmethod
+    def _resident_lease(db, actor: TowerScope, property_ref: str, unit_ref: str):
+        actor.require_role("resident")
+        actor.require_unit(property_ref,unit_ref)
+        lease=db.execute(
+            """SELECT l.lease_ref,l.start_on,l.end_on,l.vault_proof_ref,l.revision
+               FROM leases l JOIN lease_members m ON m.lease_ref=l.lease_ref
+               AND m.property_ref=l.property_ref AND m.unit_ref=l.unit_ref
+               WHERE l.property_ref=? AND l.unit_ref=? AND l.status='active'
+                 AND m.subject_ref=? AND m.status='active'""",
+            (property_ref,unit_ref,actor.subject_ref),
+        ).fetchone()
+        if lease is None:
+            raise AccessDenied("active authorized resident lease unavailable")
+        return lease
 
     def submit_maintenance(self, actor: TowerScope, *, work_ref: str,
                            intake: MaintenanceIntake):
@@ -209,13 +253,9 @@ class GroundsOperations:
             with self.store.transaction(write=True) as db:
                 lease_ref = None
                 if actor.role == "resident":
-                    lease = db.execute(
-                        """SELECT lease_ref FROM leases WHERE property_ref=? AND unit_ref=?
-                           AND resident_ref=? AND status='active'""",
-                        (intake.property_ref, intake.unit_ref, actor.subject_ref),
-                    ).fetchone()
-                    if lease is None:
-                        raise AccessDenied("resident lease unavailable")
+                    lease = self._resident_lease(
+                        db,actor,intake.property_ref,intake.unit_ref,
+                    )
                     lease_ref = lease["lease_ref"]
                 else:
                     unit = db.execute(
@@ -250,13 +290,7 @@ class GroundsOperations:
             if (row["created_by"] != actor.subject_ref
                 or row["unit_ref"] not in actor.unit_refs):
                 raise AccessDenied("work order unavailable")
-            active = db.execute(
-                """SELECT 1 FROM leases WHERE property_ref=? AND unit_ref=?
-                   AND resident_ref=? AND status='active'""",
-                (row["property_ref"], row["unit_ref"], actor.subject_ref),
-            ).fetchone()
-            if active is None:
-                raise AccessDenied("work order unavailable")
+            self._resident_lease(db,actor,row["property_ref"],row["unit_ref"])
         elif actor.role in ("maintenance_technician", "vendor"):
             if row["assigned_to"] != actor.subject_ref or work_ref not in actor.assigned_work_refs:
                 raise AccessDenied("work order unavailable")
@@ -276,11 +310,14 @@ class GroundsOperations:
             if actor.role == "resident":
                 rows = db.execute(
                     """SELECT w.* FROM work_orders w
-                       WHERE property_ref=? AND created_by=? AND unit_ref IN (
-                         SELECT unit_ref FROM leases WHERE property_ref=? AND
-                         resident_ref=? AND status='active')
+                       WHERE w.property_ref=? AND w.created_by=? AND EXISTS(
+                         SELECT 1 FROM leases l JOIN lease_members m ON m.lease_ref=l.lease_ref
+                         WHERE l.property_ref=w.property_ref AND l.unit_ref=w.unit_ref
+                           AND l.status='active' AND m.subject_ref=?
+                           AND m.status='active' AND m.property_ref=w.property_ref
+                           AND m.unit_ref=w.unit_ref)
                        ORDER BY created_at DESC""",
-                    (property_ref, actor.subject_ref, property_ref, actor.subject_ref),
+                    (property_ref, actor.subject_ref, actor.subject_ref),
                 )
             elif actor.role in ("maintenance_technician", "vendor"):
                 if not actor.assigned_work_refs:
@@ -379,13 +416,7 @@ class GroundsOperations:
         actor.require_role("resident")
         actor.require_unit(property_ref, unit_ref)
         with self.store.transaction() as db:
-            lease = db.execute(
-                """SELECT lease_ref,start_on,end_on,vault_proof_ref FROM leases
-                   WHERE property_ref=? AND unit_ref=? AND resident_ref=? AND status='active'""",
-                (property_ref,unit_ref,actor.subject_ref),
-            ).fetchone()
-            if lease is None:
-                raise AccessDenied("resident lease unavailable")
+            lease=self._resident_lease(db,actor,property_ref,unit_ref)
             unit = db.execute(
                 "SELECT label,building_ref FROM units WHERE property_ref=? AND unit_ref=?",
                 (property_ref,unit_ref),
