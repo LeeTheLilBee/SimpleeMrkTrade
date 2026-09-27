@@ -45,6 +45,7 @@ from .saved_search import (normalize_filters, create_saved_search, saved_searche
 from .claim_register import (record_source_claim, record_owner_document_review,
     integrity_report, active_claims, owner_reviewed_source)
 from .diligence import diligence_snapshot, create_diligence_task
+from .financing import record_financing_option, financing_snapshot, FINANCING_EVIDENCE_KIND
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -513,6 +514,43 @@ def create_app(config=None):
                 expected_revision=int(request.form["revision"]))
         return redirect(url_for("opportunity",oid=oid))
 
+    @app.get("/opportunities/<oid>/financing")
+    @login_required
+    def financing_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        originals=[e for e in op.get("evidence",[])
+            if e.get("kind")==FINANCING_EVIDENCE_KIND
+            and e.get("status") in ("RECEIVED","DOCUMENT_SUPPORTED")
+            and e.get("artifact_id")
+            and any(a.get("id")==e["artifact_id"] for a in op.get("artifacts",[]))]
+        return render_template("financing.html",op=op,
+            report=financing_snapshot(op),originals=originals,
+            artifacts={a["id"]:a for a in op.get("artifacts",[])})
+
+    @app.post("/opportunities/<oid>/financing/options")
+    @login_required
+    def financing_option(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            keys=("evidence_id","lender_name","program_name","source_locator",
+                  "source_date","expiration_date","purchase_price","principal",
+                  "apr_percent","term_months","origination_fee","lender_fee",
+                  "other_closing_cost","reserve_cash","vault_cash","supersedes",
+                  "correction_reason")
+            kwargs={key:request.form.get(key,"") for key in keys}
+            revised,item=record_financing_option(
+                op,actor_ref=owner_actor(conn),**kwargs)
+            save(conn,revised,"FinancingOptionRecorded",{
+                "option_id":item["id"],"source_artifact_id":item["source_artifact_id"],
+                "source_sha256":item["source_sha256"],
+                "supersedes":item["supersedes"],"approved":False,
+                "teller_readiness":"UNKNOWN"},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("financing_room",oid=oid),code=303)
+
     @app.get("/opportunities/<oid>/diligence")
     @login_required
     def diligence_room(oid):
@@ -632,7 +670,7 @@ def create_app(config=None):
         with db() as conn:
             op=load(conn,oid)
             if not op: abort(404)
-            if kind not in {e["kind"] for e in get_vertical(op["vertical"])["evidence"]}:
+            if kind not in ({e["kind"] for e in get_vertical(op["vertical"])["evidence"]} | {FINANCING_EVIDENCE_KIND}):
                 abort(400,"Unregistered evidence category")
             item=add_evidence(op,kind,status="RECEIVED",reference=reference,
                               source=source_party,notes=request.form.get("notes","")[:1000])
@@ -670,7 +708,7 @@ def create_app(config=None):
                         notes="Original encrypted document received; not yet reviewed")
                 item["artifact_id"]=descriptor["id"]
                 op=invalidate_on_change(op,changed_fields=["evidence",kind],
-                        reason="Original seller document received",
+                        reason="Original acquisition or financing document received",
                         source_reference=descriptor["id"])
                 save(conn,op,"OriginalDocumentReceived",
                         {"kind":kind,"artifact_id":descriptor["id"],"sha256":descriptor["sha256"]},
