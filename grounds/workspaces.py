@@ -77,9 +77,15 @@ def build_workspace(actor:TowerScope, operations:GroundsOperations, *,
                     "soulaana":({"source":first["source"],"message":first["message"],
                                   "next_useful_action":first["next_useful_action"]}
                                  if first else None)}
-        if actor.role in ("property_manager","maintenance_supervisor"):
+        if actor.role=="property_manager":
             projection["property_pulse"]=operations.property_pulse(
                 actor,property_ref=property_ref,
+            )
+        elif actor.role=="maintenance_supervisor":
+            # A supervisor's work queue must not silently grant owner/manager
+            # property intelligence or Teller financial administration.
+            projection["open_assigned_property_work_count"]=sum(
+                item["state"]!="closed" for item in cards
             )
         return projection
     if actor.role=="leasing_agent":
