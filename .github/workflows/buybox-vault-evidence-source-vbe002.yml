@@ -1,0 +1,45 @@
+name: BuyBox Tower Vault metadata source regression VBE002
+
+on:
+  push:
+    branches:
+      - buybox-vault-evidence-source-ci-vbe002
+  pull_request:
+    paths:
+      - 'tower/buybox_evidence_handoff.py'
+      - 'tower/test_buybox_evidence_handoff.py'
+      - 'vault/buybox_evidence_handoff_contract.py'
+      - 'vault/buybox_evidence_lineage_registry.py'
+      - 'vault/test_buybox_evidence_handoff_contract.py'
+      - 'vault/test_buybox_evidence_lineage_registry.py'
+      - '.github/workflows/buybox-vault-evidence-source-vbe002.yml'
+      - 'docs/BUYBOX_VAULT_EVIDENCE_SOURCE_CI_VBE002.md'
+
+permissions:
+  contents: read
+
+jobs:
+  metadata-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test-only dependency
+        run: python -m pip install 'pytest>=8,<10'
+      - name: Compile exact metadata and lineage modules
+        run: |
+          python -m py_compile \
+            tower/buybox_evidence_handoff.py \
+            vault/buybox_evidence_handoff_contract.py \
+            vault/buybox_evidence_lineage_registry.py
+      - name: Run metadata, deny-default Tower preparation and local lineage tests
+        run: |
+          python -m pytest -q \
+            vault/test_buybox_evidence_handoff_contract.py \
+            tower/test_buybox_evidence_handoff.py \
+            vault/test_buybox_evidence_lineage_registry.py
