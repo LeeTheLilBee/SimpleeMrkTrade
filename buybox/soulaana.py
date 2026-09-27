@@ -10,7 +10,7 @@ from .registry import get_vertical
 from .dealroom import current_tasks
 
 INTENTS = frozenset({
-    "overview", "evidence", "diligence", "economics", "changes", "red_team", "next_action"
+    "overview", "evidence", "diligence", "financing", "economics", "changes", "red_team", "next_action"
 })
 
 def context(op, intent="overview"):
@@ -27,6 +27,7 @@ def context(op, intent="overview"):
         "overview":{"evidence","economics","changes"},
         "evidence":{"evidence"},
         "diligence":{"diligence"},
+        "financing":{"financing"},
         "economics":{"economics"},
         "changes":{"changes"},
         "red_team":{"economics","evidence"},
@@ -84,6 +85,32 @@ def context(op, intent="overview"):
                       task["status"].lower()+"; owner-entered deadline "+
                       task["due_date"]+". This does not contact the seller."),
                      [task["id"]], "PENDING_OWNER_ACTION")
+    if "financing" in relevant:
+        from .financing import financing_snapshot
+        offers=financing_snapshot(op)
+        note("EXTERNAL_READINESS_UNKNOWN",
+             "Teller money and management readiness is UNKNOWN. Source documents and modeled loan payments are not approvals, signed funding or deployment authority.",
+             label="NOT_APPROVED")
+        for option in offers["options"]:
+            q=option["quote"]; a=option["analysis"]
+            note("SOURCE_LINKED_FINANCING",
+                 (q["lender_label"]+" / "+q["program_label"]+
+                  ": document-recorded principal $"+q["principal"]+
+                  " at fixed APR "+q["apr_percent"]+"% for "+str(q["term_months"])+
+                  " months. BuyBox models $"+a["modeled_monthly_payment"]+
+                  " per month and unverified buyer cash gap $"+
+                  a["unverified_buyer_cash_gap"]+". These calculations do not establish lender approval, protected cash or staff capacity."),
+                 [q["id"],q["source_artifact_id"],q["source_evidence_id"]],
+                 a["status"])
+            if a["review_flags"]:
+                note("FINANCING_RECHECK_REQUIRED",
+                     "Reconfirm recorded terms against the original: "+
+                     ", ".join(a["review_flags"])+". No outdated document is silently accepted.",
+                     [q["id"]], "SOURCE_OR_PRICE_CHANGED")
+        if not offers["options"]:
+            note("FINANCING_MISSING",
+                 "No current original-backed financing terms are recorded. BuyBox will not invent a lender, rate or bank commitment.",
+                 label="NO_DOCUMENTED_OPTION")
     if "economics" in relevant:
         result=analysis["financials"]
         if result["status"]=="CALCULATED":
