@@ -1,0 +1,32 @@
+name: Vault canonical registry Cloud ref source proof VCR002-006
+on:
+  push:
+    branches: [vault-canonical-registry-cloud-ref-vcr002-006]
+  pull_request:
+    paths:
+      - 'vault/canonical_evidence_registry.py'
+      - 'vault/test_canonical_evidence_registry*.py'
+      - 'docs/VAULT_CANONICAL_CLOUD_REF_VCR002_006.md'
+      - '.github/workflows/vault-canonical-cloud-ref-vcr002-006.yml'
+permissions:
+  contents: read
+jobs:
+  canonical-source-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 52e64b7cfa967a5ed2e98cbcb48f94caf027c121
+          path: cloud-source
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest
+      - name: Verify original and cross-source exact refs
+        run: python -m pytest -q vault/test_canonical_evidence_registry.py vault/test_canonical_evidence_registry_cloud_ref.py
