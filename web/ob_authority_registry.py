@@ -2026,6 +2026,63 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_attention"
+] = _record(
+    concept_key="owner_attention",
+    authority_id="OB_OWNER_ATTENTION_V1",
+    authority_class="READ_ONLY_CANONICAL_OWNER_ATTENTION_QUEUE",
+    implementation_ref="web/ob_owner_attention.py",
+    implementation_role="SOURCE_BOUND_SAFETY_PRIORITY_AND_OWNER_REVIEW_QUEUE",
+    owns=(
+        "read-only owner attention ordering over verified canonical recommendation and Soulaana receipts",
+        "distinct-source guard pattern review prioritized without a live alert actuator",
+        "immutable non-money-bearing proof reference requiring later Tower authorization",
+    ),
+    inputs=("OB_SOULAANA_EXPLANATION_V1",),
+    triggers=(
+        "explicit verified recommendation and full Soulaana explanation lineage",
+        "optional verified same-account guard receipt with matching underlying recommendation",
+    ),
+    effects=(
+        "emit deterministic owner inspection priority without rewriting source BLOCK/HOLD/REVIEW_ONLY",
+        "preserve canonical safety block above advisory guard and owner-review context",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "turn owner queue into automated broker order or trade strategy rank",
+        "treat source-asserted incidents as authenticated market events",
+        "automatic notification, kill switch, safety dismissal or policy override",
+        "infer money spendability or create direct OB–BuyBox integration",
+        "change mode, move capital or widen safety limits",
+    ),
+    failure_behavior=(
+        "Missing or tampered source evidence prevents owner attention proof; "
+        "a canonical blocked candidate can never become ready by queue priority."
+    ),
+    explanation=(
+        "Each owner task cites exact source receipt ID/hash and code; "
+        "only the owner may inspect source context through authorized surfaces."
+    ),
+    evidence=(
+        "canonical recommendation and Soulaana hashes",
+        "optional guard receipt/hash and distinct source codes",
+        "immutable owner attention queue fingerprint",
+    ),
+    review_visibility=(
+        "Owner review queue only; no live alert dispatch, broker submission or "
+        "Teller acquisition readiness output."
+    ),
+    temporal_validity="INHERITS_FULL_VERIFIED_CANONICAL_SOURCE_LINEAGE",
+    deterministic=True,
+    learning_boundary=(
+        "Priority cannot mutate source truth, source safety, mode, "
+        "capital policy or owner decisions."
+    ),
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
