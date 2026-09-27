@@ -29,7 +29,6 @@ def test_076_077_old_get_between_gate_and_view_cannot_read_new_workspace(monkeyp
     )
     moment = {"armed": True, "token": None}
 
-    @app.before_request
     def rotate_during_first_read():
         if request.path != hosted.API + path or not moment["armed"]:
             return None
@@ -38,6 +37,12 @@ def test_076_077_old_get_between_gate_and_view_cannot_read_new_workspace(monkeyp
         assert new.status_code == 200, new.get_data(as_text=True)
         moment["token"] = new.json["new_rehearsal_token"]
         return None
+
+    # Test-only injection AFTER first dispatch: Flask intentionally rejects
+    # public decorator registration after a request has already been served.
+    # The app is isolated; append directly to its callback list to produce the
+    # deterministic between-gate-and-view race, not a production route change.
+    app.before_request_funcs.setdefault(None, []).append(rotate_during_first_read)
 
     stale = get(first, hosted.API + path, old_token)
     assert stale.status_code == 409, stale.get_data(as_text=True)
