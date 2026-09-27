@@ -1979,6 +1979,53 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "soulaana_explanation"
+] = _record(
+    concept_key="soulaana_explanation",
+    authority_id="OB_SOULAANA_EXPLANATION_V1",
+    authority_class="READ_ONLY_CANONICAL_RECEIPT_EXPLANATION",
+    implementation_ref="web/ob_soulaana_explanations.py",
+    implementation_role="SOURCE_BOUND_RECOMMENDATION_SAFETY_AND_GUARD_TRANSLATION",
+    owns=(
+        "deterministic owner-facing explanation cards bound to canonical source receipts",
+        "exact known or unknown reason code translation without invented market facts",
+        "optional source-asserted adverse guard explanation, never an actuator",
+    ),
+    inputs=("OB_RECOMMENDATION_REVIEW_V1", "OB_ADVERSE_GUARD_REVIEW_V1"),
+    triggers=(
+        "explicit verified recommendation/safety and source lineage",
+        "optional fully verified same-recommendation guard evidence",
+    ),
+    effects=(
+        "emit immutable source-labelled explanation cards and amount-free proof reference",
+        "preserve canonical BLOCKED/EVIDENCE_PENDING/OWNER_REVIEW_READY status",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "invent market, broker, return or financial source truth",
+        "relabel canonical safety denial as a recommendation",
+        "select winning strategy, contract, trading mode or risk limit",
+        "broker order, capital movement, direct OB–BuyBox connection",
+    ),
+    failure_behavior=(
+        "Tampered/missing recommendation or guard source lineage fails closed; "
+        "unknown reason code remains exact source code without fabricated explanation."
+    ),
+    explanation="Owner sees why a source was held or blocked and exact receipt provenance.",
+    evidence=(
+        "canonical recommendation and safety receipt IDs and fingerprints",
+        "optional guard receipt and verified source fingerprints",
+        "deterministic card contents and immutable explanation hash",
+    ),
+    review_visibility="Contextual Soulaana explanation only, not a trading, money or readiness authority.",
+    temporal_validity="INHERITS_VERIFIED_CANONICAL_SOURCE_TIME_AND_STATUS",
+    deterministic=True,
+    learning_boundary="May explain source evidence but cannot mutate source state or learning policy.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
