@@ -40,7 +40,8 @@ class CanonicalEvidenceRegistry:
                   tower_receipt_ref TEXT NOT NULL, retention_policy_id TEXT NOT NULL,
                   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
                   UNIQUE(entity_id,evidence_id,version_id),
-                  FOREIGN KEY(parent_version_id) REFERENCES archival_receipts(version_id)
+                  FOREIGN KEY(parent_version_id) REFERENCES archival_receipts(version_id),
+                  UNIQUE(parent_version_id)
                 );
                 CREATE TABLE IF NOT EXISTS decision_snapshots(
                   snapshot_id TEXT PRIMARY KEY, entity_id TEXT NOT NULL,
@@ -84,6 +85,8 @@ class CanonicalEvidenceRegistry:
             if parent_version_id:
                 parent=db.execute("SELECT entity_id,evidence_id FROM archival_receipts WHERE version_id=?",(parent_version_id,)).fetchone()
                 if parent!=(entity_id,evidence_id): raise RegistryError("missing or cross-entity parent version")
+                if db.execute("SELECT 1 FROM archival_receipts WHERE parent_version_id=?",(parent_version_id,)).fetchone():
+                    raise RegistryError("parent already has a successor; resolve correction conflict")
             else:
                 if db.execute("SELECT 1 FROM archival_receipts WHERE entity_id=? AND evidence_id=?",(entity_id,evidence_id)).fetchone():
                     raise RegistryError("subsequent version requires parent")
@@ -97,9 +100,9 @@ class CanonicalEvidenceRegistry:
         for value in (snapshot_id,entity_id,acquisition_id,rule_version): _id(value)
         if not isinstance(evidence_versions,list) or not evidence_versions:
             raise RegistryError("snapshot needs evidence versions")
+        for value in evidence_versions: _id(value)
         if len(evidence_versions)!=len(set(evidence_versions)):
             raise RegistryError("duplicate evidence version")
-        for value in evidence_versions: _id(value)
         with self._db() as db:
             db.execute("BEGIN IMMEDIATE")
             for version in evidence_versions:
