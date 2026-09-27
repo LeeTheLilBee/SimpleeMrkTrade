@@ -9,6 +9,8 @@ from grounds.operations import GroundsOperations, GroundsConflict
 from grounds.storage import GroundsStore
 from grounds.test_grounds_operations import fixture_scope
 from grounds.work_resources import GroundsWorkResources
+from grounds.stewardship import GroundsStewardship
+from grounds.soulaana import explain_work_resources, explain_preventive_due
 
 
 class GroundsResourceTests(unittest.TestCase):
@@ -113,6 +115,35 @@ class GroundsResourceTests(unittest.TestCase):
         with self.assertRaises(GroundsConflict):
             self.resources.record(self.tech,work_ref="w1",resource_type="labor",
                                   label="Duplicate",quantity=10,event_ref="labor1")
+
+    def test_soulaana_explains_staff_only_physical_quantities_without_finance(self):
+        self._in_progress()
+        self.resources.record(
+            self.tech,work_ref="w1",resource_type="labor",
+            label="Fix plumbing",quantity=25,event_ref="labor-soulaana",
+        )
+        explained=explain_work_resources(self.manager,self.resources,work_ref="w1")
+        self.assertIn("25 minutes",explained["message"])
+        self.assertFalse(explained["resident_billed"])
+        self.assertFalse(explained["teller_transaction_created"])
+        with self.assertRaises(AccessDenied):
+            explain_work_resources(self.resident,self.resources,work_ref="w1")
+        stewardship=GroundsStewardship(self.store)
+        stewardship.record_asset(self.manager,property_ref="p1",unit_ref="u1",
+                                 asset_ref="fixture",label="Faucet",category="plumbing")
+        stewardship.create_preventive_plan(
+            self.manager,property_ref="p1",asset_ref="fixture",plan_ref="plan1",
+            cadence_days=30,next_due_on="2026-09-26",
+        )
+        due=explain_preventive_due(
+            self.manager,stewardship,property_ref="p1",as_of="2026-09-26",
+        )
+        self.assertEqual(due["due_plan_count"],1)
+        self.assertFalse(due["dispatch_confirmed"])
+        with self.assertRaises(AccessDenied):
+            explain_preventive_due(
+                self.resident,stewardship,property_ref="p1",as_of="2026-09-26",
+            )
 
     def test_invalid_quantities_and_unrecognized_categories(self):
         self._in_progress()
