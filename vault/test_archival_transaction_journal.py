@@ -62,3 +62,15 @@ def test_reconciliation_must_reverify_cloud(tmp_path):
     j.advance(request_id="req-1",expected_state="RECONCILE_REQUIRED",to_state="CLOUD_COMMITTED",receipt_digest=H("c"))
     j.advance(request_id="req-1",expected_state="CLOUD_COMMITTED",to_state="ARCHIVED",receipt_digest=H("d"))
     assert j.verify_chain("req-1")
+
+def test_chain_detects_mutated_workflow_digest(tmp_path):
+    j=start(tmp_path)
+    j.advance(request_id="req-1",expected_state="RECEIVED",to_state="QUARANTINED")
+    j.advance(request_id="req-1",expected_state="QUARANTINED",to_state="VERIFIED",receipt_digest=H("a"))
+    j.advance(request_id="req-1",expected_state="VERIFIED",to_state="ENCRYPTED",receipt_digest=H("b"))
+    j.advance(request_id="req-1",expected_state="ENCRYPTED",to_state="CLOUD_COMMITTED",receipt_digest=H("c"))
+    j.advance(request_id="req-1",expected_state="CLOUD_COMMITTED",to_state="ARCHIVED",receipt_digest=H("d"))
+    assert j.verify_chain("req-1")
+    with sqlite3.connect(j.path) as db:
+        db.execute("UPDATE workflows SET cloud_digest=? WHERE request_id=?",(H("e"),"req-1"))
+    assert not j.verify_chain("req-1")
