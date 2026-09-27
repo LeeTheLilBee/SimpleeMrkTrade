@@ -172,6 +172,31 @@ class HouseholdTests(unittest.TestCase):
         with self.assertRaises(AccessDenied):
             self.ops.get_work_order(self.primary,work_ref="unit2-request")
 
+    def test_new_lease_same_subject_does_not_reopen_private_history_from_old_lease(self):
+        self.ops.submit_maintenance(
+            self.primary,work_ref="old-lease-job",
+            intake=MaintenanceIntake(
+                "p1","u1","plumbing","Private old-lease issue",False,"contact_first",
+            ),
+        )
+        self.ops.end_lease(
+            self.manager,property_ref="p1",lease_ref="l1",expected_revision=1,
+        )
+        # TEST FIXTURE ONLY: stand in for completed, certified turnover. Production
+        # must use exact proof-gated GroundsStewardship turnover before ready.
+        with self.ops.store.transaction(write=True) as db:
+            db.execute("UPDATE units SET lifecycle='ready' WHERE unit_ref='u1' AND property_ref='p1'")
+        self.ops.activate_lease(
+            self.manager,property_ref="p1",unit_ref="u1",lease_ref="l-next",
+            resident_ref="person1",start_on="2028-01-01",end_on="2028-12-31",
+        )
+        self.assertEqual(self.ops.list_work_orders(self.primary,property_ref="p1"),[])
+        self.assertEqual(self.ops.resident_home(
+            self.primary,property_ref="p1",unit_ref="u1",
+        )["maintenance"],[])
+        with self.assertRaises(AccessDenied):
+            self.ops.get_work_order(self.primary,work_ref="old-lease-job")
+
     def test_ending_lease_invalidates_every_member(self):
         self._add()
         self.ops.end_lease(self.manager,property_ref="p1",lease_ref="l1",expected_revision=1)
