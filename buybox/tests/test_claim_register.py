@@ -128,7 +128,7 @@ class ClaimIntegrityTests(unittest.TestCase):
         e,_=original(op,contents=b"%PDF-1.7\nA\n%%EOF",name="source.pdf")
         op["readiness"]["teller"]={"source":"teller","status":"READY"}
         op["tower_authorizations"]=["old-approval"]
-        with self.assertRaisesRegex(ClaimRegisterError,"LINKED_ORIGINAL_REQUIRED"):
+        with self.assertRaisesRegex(ClaimRegisterError,"ACTIVE_DOCUMENT_EVIDENCE_REQUIRED"):
             statement(op,"invented-id","80000")
         with self.assertRaisesRegex(ClaimRegisterError,"FULL_YEAR_PERIOD_REQUIRED"):
             statement(op,e["id"],"80000",period_key="2025")
