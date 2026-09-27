@@ -197,6 +197,9 @@
           message("Work state changed in Grounds. No notification has been delivered.");
           await refresh();
         }));
+        if (work.state==="scheduled" && work.revision !== undefined) {
+          actions.append(makeButton("Assign technician", async () => showTechnicianForm(card,work)));
+        }
         actions.append(makeButton("Appointment status", async () => showAppointments(card,work)));
       } else if (data.role==="maintenance_technician") {
         const next=techNext[work.state];
@@ -209,6 +212,41 @@
       }
       card.append(actions); target.append(card);
     }
+  }
+  async function showTechnicianForm(card,work) {
+    const roster=await request("technicians?" + new URLSearchParams({property_ref:state.property}));
+    if(!roster.connected) {
+      message("Tower's verified maintenance staff roster is not yet connected. No assignment was made.",true);
+      return;
+    }
+    if (!Array.isArray(roster.technicians) || !roster.technicians.length) {
+      message("No authorized maintenance technicians were returned for this property.",true);
+      return;
+    }
+    card.querySelector(".mini-form")?.remove();
+    const form=el("form",null,"mini-form");
+    const label=el("label","Authorized technician");
+    const choose=el("select");choose.required=true;
+    for (const person of roster.technicians) {
+      const option=el("option",person.label);option.value=person.staff_ref;
+      choose.append(option);
+    }
+    label.append(choose);form.append(label);
+    const submit=el("button","Record assignment","primary");
+    submit.type="submit";form.append(submit);
+    form.addEventListener("submit",async event=>{
+      event.preventDefault();submit.disabled=true;
+      try{
+        const assigned=await request("work/assign",{
+          work_ref:work.work_ref,technician_ref:choose.value,
+          expected_revision:work.revision,
+        });
+        message("Assigned in Grounds. This does not prove staff notification or authorize entry.");
+        form.remove();await refresh();
+      }catch(error){message(error.message,true);}
+      finally{submit.disabled=false;}
+    });
+    card.append(form);
   }
   function showAppointmentForm(card,work) {
     card.querySelector(".mini-form")?.remove();
