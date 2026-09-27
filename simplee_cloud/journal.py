@@ -245,6 +245,14 @@ class SQLiteOperationalJournal:
             if next_state in _CODE:
                 self._incident(conn, tag=tag, scope=namespace, code=next_state)
 
+    def record_reconcile_intent(self, *, namespace: str, original_request_id: str) -> None:
+        self._scope(namespace)
+        tag = _request_tag(namespace, original_request_id)
+        with self._tx() as conn:
+            if self._state(conn, tag) not in ("WRITE_RESERVED", "WRITE_UNCERTAIN"):
+                raise CloudError("only unresolved writes can be reconciled")
+            self._append(conn, event="RECONCILE_INTENT", tag=tag, scope=namespace)
+
     def record_read_incident(self, *, namespace: str, request_id: str):
         self._scope(namespace)
         tag = _request_tag(namespace, request_id)
