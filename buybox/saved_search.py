@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS buybox_saved_searches(
  filters_json TEXT NOT NULL,
  created_at TEXT NOT NULL,
  created_by TEXT NOT NULL,
- archived_at TEXT
+ archived_at TEXT,
+ archived_by TEXT
 );
 CREATE TABLE IF NOT EXISTS buybox_saved_search_checks(
  seq INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -103,12 +104,12 @@ def create_saved_search(db, *, name, filters, actor_reference="local_owner"):
     record={
         "id":str(uuid4()),"name":name.strip(),
         "filters":criteria,"created_at":_instant(),
-        "created_by":actor_reference,"archived_at":None,
+        "created_by":actor_reference,"archived_at":None,"archived_by":None,
     }
     with db:
-        db.execute("INSERT INTO buybox_saved_searches VALUES (?,?,?,?,?,?)",
+        db.execute("INSERT INTO buybox_saved_searches VALUES (?,?,?,?,?,?,?)",
                    (record["id"],record["name"],_encode(criteria),
-                    record["created_at"],record["created_by"],None))
+                    record["created_at"],record["created_by"],None,None))
     return deepcopy(record)
 
 
@@ -116,7 +117,7 @@ def _record(row):
     return {"id":row["id"],"name":row["name"],
             "filters":json.loads(row["filters_json"]),
             "created_at":row["created_at"],"created_by":row["created_by"],
-            "archived_at":row["archived_at"]}
+            "archived_at":row["archived_at"],"archived_by":row["archived_by"]}
 
 
 def saved_searches(db):
@@ -221,8 +222,9 @@ def archive_saved_search(db, search_id, *, actor_reference="local_owner"):
         raise SavedSearchError("ACTOR_REQUIRED")
     with db:
         changed=db.execute("""UPDATE buybox_saved_searches
-            SET archived_at=? WHERE id=? AND archived_at IS NULL""",
-            (_instant(),search_id)).rowcount
+            SET archived_at=?,archived_by=?
+            WHERE id=? AND archived_at IS NULL""",
+            (_instant(),actor_reference,search_id)).rowcount
     if changed!=1:
         raise SavedSearchError("SEARCH_NOT_FOUND_OR_ALREADY_ARCHIVED")
     return {"search_id":search_id,"archived":True,"external_request_made":False}
