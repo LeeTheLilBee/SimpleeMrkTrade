@@ -26,6 +26,6 @@ jobs:
       - name: Source-bound owner manual preflight and compatibility
         run: |
           python -m py_compile web/ob_manual_live_owner_preflight.py tests/test_obml001_005_owner_manual_source_preflight.py
-          python -m pytest -q tests/test_obml001_005_owner_manual_source_preflight.py tests/test_obres001_005_fail_closed_source_recovery.py tests/test_obattn001_005_owner_attention.py tests/test_obauth001_005_canonical_authority_registry.py tests/test_twr_obml_owner_handoff_request_contract.py
+          python -m pytest -q tests/test_obml001_005_owner_manual_source_preflight.py tests/test_obres001_005_fail_closed_source_recovery.py tests/test_obattn001_005_owner_attention.py tests/test_obauth001_005_canonical_authority_registry.py
       - name: Full repository regression
         run: python -m pytest -q tests
