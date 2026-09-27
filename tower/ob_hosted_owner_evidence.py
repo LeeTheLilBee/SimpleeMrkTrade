@@ -94,3 +94,41 @@ def build_finalized_owner_evidence_packet(
     # Round-trip to detach the owner-facing copy from volatile mutable rows.
     clean = json.loads(json.dumps(content, allow_nan=False, sort_keys=True))
     return {**clean, "packet_hash": stable_hash(clean)}
+
+
+def verify_downloaded_owner_evidence_packet(packet: object) -> dict[str, object]:
+    """Offline recomputation; integrity only, NOT an authenticated signature."""
+    value = _dict(packet, "downloaded packet")
+    stated = value.get("packet_hash")
+    material = {key: content for key, content in value.items() if key != "packet_hash"}
+    if (
+        set(value) != {
+            "schema_version", "report_state", "session_id", "source_kind",
+            "account_key", "fictional_starting_units",
+            "source_provider_authenticated", "tower_issuer_receipt_exported",
+            "broker_or_capital_authenticated", "manual_live_authorized",
+            "broker_submission", "capital_movement",
+            "durable_server_archive", "server_restart_recovery",
+            "this_is_a_third_party_attestation", "tick_count",
+            "reports", "final", "packet_hash",
+        }
+        or value.get("schema_version") != SCHEMA
+        or value.get("report_state") != "OWNER_DOWNLOADED_FINALIZED_REPORT_ONLY"
+        or type(stated) is not str or stated != stable_hash(material)
+    ):
+        raise ValueError("downloaded packet format/hash rejected")
+    expected = build_finalized_owner_evidence_packet(
+        value["session_id"], value["reports"], value["final"],
+    )
+    if expected != value:
+        raise ValueError("downloaded packet content/source boundary rejected")
+    return {
+        "state": "VALID_LOCAL_INTEGRITY_ONLY",
+        "session_id": value["session_id"],
+        "tick_count": value["tick_count"],
+        "final_report_hash": value["final"]["report_hash"],
+        "packet_hash": value["packet_hash"],
+        "broker_or_provider_authenticated": False,
+        "tower_permission_issued": False,
+        "manual_live_authorized": False,
+    }
