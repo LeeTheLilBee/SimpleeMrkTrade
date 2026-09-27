@@ -100,6 +100,7 @@ def test_obres003_one_restoration_or_new_wallclock_same_payload_cannot_advance()
     assert not result.components[0].two_distinct_restoration_claims
     replay = replace(
         restored1, source_revision="r2", observed_at_utc="2026-09-24T14:02:00+00:00",
+        received_at_utc="2026-09-24T14:02:00+00:00",
     )
     with pytest.raises(ValueError, match="integrity mismatch"):
         build_recovery_review(**args, observations=(restored1, replay))
