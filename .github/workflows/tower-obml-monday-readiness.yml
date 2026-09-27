@@ -30,6 +30,13 @@ jobs:
           ref: cced86992fabdb6a91de3fb3e48a1f1f4aaf0478
           path: pinned-obml-phase-source
           persist-credentials: false
+      - name: Pin separate source-only OBML Tower request PR68
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: badef7fab30f93be6878d89b28f4863cfa6fc202
+          path: obml-request-source
+          persist-credentials: false
       - name: Pin canonical signed OB account identity source
         uses: actions/checkout@v4
         with:
