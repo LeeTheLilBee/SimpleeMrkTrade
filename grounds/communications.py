@@ -8,7 +8,7 @@ notice-read marks only a local UI action and cannot prove receipt/legal service.
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from .access import AccessDenied, TowerScope
@@ -26,11 +26,13 @@ def _slot(start_at: str, end_at: str) -> tuple[str,str]:
         utc_start=start.astimezone(timezone.utc)
         utc_end=end.astimezone(timezone.utc)
         seconds=(utc_end-utc_start).total_seconds()
-        if utc_start<=datetime.now(timezone.utc) or not 0<seconds<=8*3600:
+        now=datetime.now(timezone.utc)
+        if (utc_start<=now or utc_start>now+timedelta(days=366)
+            or not 0<seconds<=8*3600):
             raise ValueError
         return utc_start.isoformat(),utc_end.isoformat()
     except (ValueError,TypeError,OverflowError) as exc:
-        raise GroundsConflict("appointment requires a future timezone-aware window up to 8 hours") from exc
+        raise GroundsConflict("appointment requires a timezone-aware window within 366 days, lasting at most 8 hours") from exc
 
 
 class GroundsCommunications:
