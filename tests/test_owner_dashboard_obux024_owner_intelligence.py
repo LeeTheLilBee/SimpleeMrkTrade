@@ -56,7 +56,7 @@ def test_obux024_today_edge_is_the_primary_owner_research_layer():
 
 def test_obux024_readiness_trust_beta_are_progressively_disclosed():
     for marker in [
-        "MANUAL LIVE READINESS",
+        "OWNER REHEARSAL · LIVE HOLD",
         "SYSTEM TRUST",
         "PRIVATE BETA",
         "More owner intelligence",
