@@ -25,7 +25,9 @@ def _verified_proof(verifier: Callable[[object], Mapping], message: object,
         value = verifier(message)
     except Exception as exc:
         raise AccessDenied("proof rejected") from exc
-    if not isinstance(value, Mapping) or value.get("status") != "verified_sealed" or value.get("kind") != kind:
+    if (not isinstance(value, Mapping) or value.get("status") != "verified_sealed"
+        or value.get("source") != "vault" or value.get("audience") != "grounds"
+        or value.get("kind") != kind):
         raise AccessDenied("proof rejected")
     for name, bound in expected.items():
         if value.get(name) != bound:
