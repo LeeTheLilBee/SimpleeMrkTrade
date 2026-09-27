@@ -26,9 +26,19 @@ RELEASE_REQUIREMENTS={
 def source_completion_status()->dict:
     foundation=foundation_status()
     return {
-        "mode":"source_only","review_label":"FICTIONAL_DEVELOPER_WALKTHROUGH_AVAILABLE",
+        "mode":"source_only","review_label":"REAL_DATA_WEB_SOURCE_AVAILABLE_EXTERNAL_RELEASE_GATES_LOCKED",
         "role_contract_count":foundation["roles_defined"],
         "fictional_browser_preview":foundation["local_preview_available"],
+        "real_data_web_source_available":foundation["real_data_browser_ui_source_available"],
+        "tower_guarded_wsgi_source_available":foundation["server_injected_tower_wsgi_api_source_available"],
+        "postgres_schema_and_adapter_source_available":(
+            foundation["postgresql_baseline_schema_source_available"]
+            and foundation["postgresql_transaction_adapter_source_available"]
+        ),
+        "real_postgres_ci_workflow_available":True,
+        "real_postgres_ci_result_must_be_checked_externally":True,
+        "retry_safe_work_and_appointment_source_available":True,
+        "tower_staff_directory_and_assignment_receiver_certified":False,
         "developer_demo_command":"python -m grounds.dev_demo --fictional-only",
         "domain_tests_required":True,"latest_github_ci_must_be_confirmed_externally":True,
         "demo_result_is_not_production_evidence":True,
