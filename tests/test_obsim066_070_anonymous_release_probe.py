@@ -10,7 +10,7 @@ HOST = "https://simplee-tower-ob.onrender.com"
 REVISION = "a" * 40
 
 
-def _case(*, health=200, revision=REVISION, route=302, api=403,
+def _case(*, health=200, revision=REVISION, route=302, api=403, evidence=403,
           broker=False, capital=False, manual=False, auto=False, header=""):
     data = {
         "status": "tower_hosted_tower_runtime_manifest_ready",
@@ -25,6 +25,7 @@ def _case(*, health=200, revision=REVISION, route=302, api=403,
         "/tower/runtime-manifest.json": (200, json.dumps(data).encode()),
         "/ob/owner-rehearsal": (route, b""),
         "/ob/owner-rehearsal/status.json": (api, b""),
+        "/ob/owner-rehearsal/evidence.json": (evidence, b""),
     }, header
 
 
@@ -67,6 +68,7 @@ def test_067_published_exact_revision_and_anonymous_denials_are_passive(monkeypa
     ({"health": 503}, "TOWER_HEALTH_NOT_VERIFIED"),
     ({"route": 200}, "ANONYMOUS_OWNER_REHEARSAL_DISCLOSURE"),
     ({"api": 200}, "ANONYMOUS_OWNER_REHEARSAL_DISCLOSURE"),
+    ({"evidence": 200}, "ANONYMOUS_OWNER_REHEARSAL_DISCLOSURE"),
     ({"broker": True}, "HOSTED_SAFETY_HOLD_NOT_CONFIRMED"),
     ({"capital": True}, "HOSTED_SAFETY_HOLD_NOT_CONFIRMED"),
     ({"manual": True}, "HOSTED_SAFETY_HOLD_NOT_CONFIRMED"),
@@ -108,4 +110,5 @@ def test_070_invalid_revision_and_no_redirect_following():
     assert check.PATHS == (
         "/tower/healthz", "/tower/runtime-manifest.json",
         "/ob/owner-rehearsal", "/ob/owner-rehearsal/status.json",
+        "/ob/owner-rehearsal/evidence.json",
     )
