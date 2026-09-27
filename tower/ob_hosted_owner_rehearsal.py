@@ -251,6 +251,19 @@ def register_ob_hosted_owner_rehearsal(
         item = get_workspace()
         instant = clock()
         with lock:
+            # The before_request token check may have completed before an
+            # overlapping /new request replaced this workspace. Check again
+            # atomically with mutation, so no detached old-token request can
+            # commit a report or return an apparently current success.
+            key = scope()
+            if (workspaces.get(key) is not item
+                    or not secrets.compare_digest(
+                        item.csrf, request.headers.get("X-OB-Rehearsal-Token", "")
+                    )):
+                return jsonify({
+                    "status": "REHEARSAL_SESSION_ROTATED_REENTER_TOWER",
+                    "simulation_only": True, "manual_live_unlock": False,
+                }), 409
             try:
                 result = action(item, instant)
                 payload = view(item, instant)
@@ -315,9 +328,17 @@ def register_ob_hosted_owner_rehearsal(
             return jsonify({"status": "EXACT_EMPTY_JSON_COMMAND_REQUIRED"}), 400
         item = get_workspace()
         with lock:
+            key = scope()
+            if (workspaces.get(key) is not item
+                    or not secrets.compare_digest(
+                        item.csrf, request.headers.get("X-OB-Rehearsal-Token", "")
+                    )):
+                return jsonify({
+                    "status": "REHEARSAL_SESSION_ROTATED_REENTER_TOWER",
+                    "simulation_only": True, "manual_live_unlock": False,
+                }), 409
             if item.desk.session.status.value != "STOPPED":
                 return jsonify({"status": "STOP_EXISTING_SESSION_FIRST"}), 409
-            key = scope()
             new_item = _Workspace(clock())
             # A new rehearsal is a new capability boundary. Rotate the
             # process-local anti-CSRF token and return it ONLY in this exact
