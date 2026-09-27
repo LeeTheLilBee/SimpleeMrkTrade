@@ -316,8 +316,11 @@ def register_ob_hosted_owner_rehearsal(
             return jsonify(_strict_object(SAMPLE.read_bytes()))
 
     def evidence():
-        item = get_workspace()
         with lock:
+            # The owner-final evidence read is a capability too. A /new reset
+            # must revoke a previously approved old-token GET even if the
+            # request has passed before_request before the token rotated.
+            item = _current_read_item()
             if item.desk.session.status.value != "STOPPED" or item.store.final is None:
                 return jsonify({"status": "FINALIZE_VOLATILE_REPORT_BEFORE_EXPORT",
                                 "simulation_only": True, "manual_live_unlock": False}), 409
