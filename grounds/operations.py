@@ -149,6 +149,14 @@ class GroundsOperations:
             raise GroundsConflict("lease proof attachment requires a certified Tower/Vault handoff")
         try:
             with self.store.transaction(write=True) as db:
+                unit=db.execute(
+                    "SELECT lifecycle FROM units WHERE unit_ref=? AND property_ref=?",
+                    (unit_ref,property_ref),
+                ).fetchone()
+                if unit is None:
+                    raise AccessDenied("unit unavailable")
+                if unit["lifecycle"]!="ready":
+                    raise GroundsConflict("lease activation requires a ready unit")
                 db.execute(
                     """INSERT INTO leases(lease_ref,property_ref,unit_ref,resident_ref,start_on,
                        end_on,status,vault_proof_ref) VALUES (?,?,?,?,?,?,'active',?)""",
