@@ -15,7 +15,7 @@ import re
 import secrets
 import sqlite3
 import stat
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -103,7 +103,7 @@ class SQLiteOperationalJournal:
             conn.close()
 
     def _schema(self):
-        with self._connect() as conn:
+        with closing(self._connect()) as conn:
             conn.execute("""CREATE TABLE IF NOT EXISTS intents (
                 request_tag TEXT PRIMARY KEY, namespace_digest TEXT NOT NULL,
                 object_ref TEXT NOT NULL, ciphertext_sha256 TEXT NOT NULL,
@@ -140,6 +140,17 @@ class SQLiteOperationalJournal:
             if row["event_hash"] != expected:
                 raise IntegrityError("operational event integrity mismatch")
             previous = expected
+        orphan = conn.execute("""
+            SELECT COUNT(*) FROM intents i
+            WHERE NOT EXISTS (
+                SELECT 1 FROM events e
+                WHERE e.request_tag=i.request_tag AND
+                      e.namespace_digest=i.namespace_digest AND
+                      e.event_type='WRITE_RESERVED'
+            )
+        """).fetchone()[0]
+        if orphan:
+            raise IntegrityError("orphan write intent without audit reservation")
         return expected_seq, previous
 
     def verify_chain(self) -> dict:
