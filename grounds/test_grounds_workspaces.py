@@ -88,6 +88,11 @@ class WorkspacesTests(unittest.TestCase):
         manager=build_workspace(self.manager,self.ops,property_ref="p1")
         self.assertEqual(manager["room"],"property_service_desk")
         self.assertEqual(manager["property_pulse"]["open_work_orders"],1)
+        supervisor=fixture_scope("super","maintenance_supervisor",("p1",))
+        supview=build_workspace(supervisor,self.ops,property_ref="p1")
+        self.assertEqual(supview["open_assigned_property_work_count"],1)
+        self.assertNotIn("property_pulse",supview)
+        self.assertNotIn("rent_collections",supview)
 
     def test_leasing_regional_owner_use_scoped_source_without_money_fiction(self):
         agent=fixture_scope("agent","leasing_agent",("p1",))
