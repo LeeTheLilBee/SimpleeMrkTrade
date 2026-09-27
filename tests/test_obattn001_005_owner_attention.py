@@ -101,7 +101,6 @@ def test_obattn004_repeated_distinct_source_guard_is_prioritized_without_actuato
         )
     with pytest.raises(ValueError, match="OBSOUL"):
         build_owner_attention(explanation, rec, **args)
-    return q
 
 
 def test_obattn004_source_block_remains_above_source_guard(tmp_path):
