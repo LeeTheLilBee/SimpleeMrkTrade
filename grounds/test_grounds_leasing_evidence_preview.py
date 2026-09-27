@@ -150,6 +150,18 @@ class GroundsPreviewTests(unittest.TestCase):
         self.assertIn('data-role="leasing_agent"',page)
         self.assertIn('data-role="property_manager"',page)
         self.assertIn('data-role="owner"',page)
+        for role in (
+            "maintenance_supervisor","regional_manager","inspector","turnover_crew",
+            "grounds_janitorial","renovation_coordinator","compliance","vendor",
+        ):
+            self.assertIn('data-role="'+role+'"',page)
+            self.assertIn('<option value="'+role+'">',page)
+        self.assertIn("notice:read",page)
+        self.assertIn("appointment:request",page)
+        self.assertIn("appointment:propose",page)
+        self.assertIn("appointment:accept",page)
+        self.assertIn("entry permission",page.lower())
+        self.assertIn("Soulaana",page)
         parser=InlineScripts();parser.feed(page)
         self.assertFalse(parser.external)
         script="\n".join(parser.scripts)
