@@ -78,6 +78,8 @@ def foundation_status() -> dict:
         "nonfinancial_work_resource_log_local_available": True,
         "local_fixture_integrity_check_available": True,
         "local_fixture_backup_available": True,
+        "local_owner_operating_aggregate_available": True,
+        "clouds_operational_publisher_enabled": False,
         "hosted_backup_restore_certified": False,
         "actual_vendor_billing_or_payroll_enabled": False,
         "certified_vault_file_ingestion_enabled": False,
