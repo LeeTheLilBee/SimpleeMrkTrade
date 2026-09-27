@@ -384,5 +384,26 @@ class GroundsStore:
 
     def initialize(self):
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        if self.path.is_symlink():
+            raise ValueError("local Grounds fixture may not be a symlink")
+        if self.path.is_file():
+            # CREATE TABLE IF NOT EXISTS is NOT a schema migration. Refuse known
+            # old disposable layouts before any schema DDL could partly modify
+            # them. Real private database migrations must be designed separately.
+            with self.transaction() as check:
+                for table in ("property_notices","notice_reads"):
+                    exists=check.execute(
+                        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                        (table,),
+                    ).fetchone()
+                    if exists:
+                        columns={item["name"] for item in check.execute(
+                            'PRAGMA table_info("'+table+'")',
+                        )}
+                        if "lease_ref" not in columns:
+                            raise ValueError(
+                                "legacy local Grounds schema: no automatic notice migration; "
+                                "recreate disposable fictional fixture only"
+                            )
         with self.transaction() as db:
             db.executescript(SCHEMA)
