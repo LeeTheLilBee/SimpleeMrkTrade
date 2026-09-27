@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import re
+import stat
 import tempfile
 
 from web.ob_multi_simulation_harness import (
@@ -93,8 +94,17 @@ class LocalSimulationReportStore:
         return self.root / session_id
 
     def _write(self, path: Path, payload: dict[str, object]) -> None:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        if path.exists():
+        # Never write through a symlinked owner archive or an accessible directory.
+        # Do not silently chmod an owner-chosen path whose permissions are unsafe.
+        if self.root.is_symlink() or path.parent.is_symlink():
+            raise ValueError("symlinked simulation archive forbidden")
+        self.root.mkdir(parents=True, exist_ok=True, mode=0o700)
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        if (self.root.is_symlink() or path.parent.is_symlink() or
+                any(stat.S_IMODE(folder.stat().st_mode) & 0o077
+                    for folder in (self.root, path.parent))):
+            raise ValueError("simulation archive must be private")
+        if path.exists() or path.is_symlink():
             raise FileExistsError("simulation report already exists")
         temporary: str | None = None
         try:
@@ -106,11 +116,19 @@ class LocalSimulationReportStore:
                 json.dump(payload, file, sort_keys=True, separators=(",", ":"), allow_nan=False)
                 file.flush()
                 os.fsync(file.fileno())
-            # A session has one owner/writer; no report path is intentionally replaced.
-            if path.exists():
-                raise FileExistsError("simulation report already exists")
-            os.replace(temporary, path)
+            # Atomic no-clobber publication: os.replace can overwrite a report
+            # created by a second writer between existence check and publication.
+            # A same-directory hard link fails atomically if the final path exists.
+            os.link(temporary, path, follow_symlinks=False)
+            Path(temporary).unlink()
             temporary = None
+            # Persist the directory entry on POSIX where supported.
+            if hasattr(os, "O_DIRECTORY"):
+                directory_fd = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+                try:
+                    os.fsync(directory_fd)
+                finally:
+                    os.close(directory_fd)
         finally:
             if temporary is not None:
                 Path(temporary).unlink(missing_ok=True)
