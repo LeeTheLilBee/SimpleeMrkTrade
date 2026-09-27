@@ -61,7 +61,7 @@ def build_app(monkeypatch, *, enabled=True, authorized=True, stepped=True, acces
         clock=lambda: state["now"],
     )
     client = app.test_client()
-    with client.session_transaction() as cookie:
+    with client.session_transaction(base_url=ORIGIN) as cookie:
         cookie["tower-session"] = "tower-session-" + "b" * 36
         cookie[hosted.SESSION_OWNER_ID] = "owner-test-1"
     return app, client, state
@@ -228,7 +228,7 @@ def test_060_logout_session_rotation_memory_restart_and_headers(monkeypatch):
     assert page.headers["Cache-Control"] == "no-store, private"
     assert "frame-ancestors 'none'" in page.headers["Content-Security-Policy"]
     assert page.headers["Referrer-Policy"] == "no-referrer"
-    with client.session_transaction() as cookie:
+    with client.session_transaction(base_url=ORIGIN) as cookie:
         cookie["tower-session"] = "tower-session-rotated"
     assert get(client, hosted.API + "status.json", token).status_code == 409
     newer = setup_page(client)
