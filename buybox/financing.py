@@ -150,6 +150,34 @@ def monthly_payment(principal,apr,months):
                 principal*r/(Decimal("1")-(Decimal("1")+r)**(-months)))
     return amount.quantize(CENTS,rounding=ROUND_HALF_UP)
 
+def scheduled_cashflows(principal, apr, months):
+    """Cent-rounded fixed amortization with an adjusted final payment."""
+    balance=Decimal(principal)
+    rate=Decimal(apr)/Decimal("1200")
+    nominal=monthly_payment(principal,apr,months)
+    payments=[]
+    accrued=Decimal("0")
+    with localcontext() as ctx:
+        ctx.prec=48
+        for month in range(1,months+1):
+            interest=(balance*rate).quantize(CENTS,rounding=ROUND_HALF_UP)
+            due=(balance+interest).quantize(CENTS,rounding=ROUND_HALF_UP)
+            actual=due if month==months or due<nominal else nominal
+            principal_paid=actual-interest
+            if principal_paid<0:
+                raise FinancingError("NON_AMORTIZING_MODEL_NOT_SUPPORTED")
+            balance=(balance-principal_paid).quantize(CENTS,rounding=ROUND_HALF_UP)
+            accrued+=interest
+            payments.append(actual)
+    return {
+        "nominal_payment":nominal,
+        "first_year_payment":sum(payments[:12],Decimal("0")),
+        "total":sum(payments,Decimal("0")),
+        "interest":accrued.quantize(CENTS),
+        "last_payment":payments[-1],
+        "end_balance":balance,
+    }
+
 def option_analysis(op, quote, *, today=None):
     today=today or date.today()
     if isinstance(today,str):today=_date(today,"EVALUATION_DATE_INVALID")
@@ -165,18 +193,21 @@ def option_analysis(op, quote, *, today=None):
     if not source_ok:reasons.append("ORIGINAL_DOCUMENT_LINK_OR_HASH_CHANGED")
     if expiration and _date(expiration,"EXPIRATION_DATE_INVALID")<today:
         reasons.append("RECORDED_TERMS_EXPIRED")
+    if _date(quote["source_date"],"SOURCE_DATE_REQUIRED")>today:
+        reasons.append("RECORDED_SOURCE_DATE_IN_FUTURE")
     if quote.get("asking_price_basis")!=op.get("asking_price"):
         reasons.append("OPPORTUNITY_ASKING_PRICE_CHANGED")
-    payment=monthly_payment(quote["principal"],quote["apr_percent"],quote["term_months"])
+    schedule=scheduled_cashflows(quote["principal"],quote["apr_percent"],quote["term_months"])
+    payment=schedule["nominal_payment"]
     principal=Decimal(quote["principal"])
-    total=payment*quote["term_months"]
-    modeled_interest=max(Decimal("0"),total-principal)
+    total=schedule["total"]
+    modeled_interest=schedule["interest"]
     cost_fields=("origination_fee","lender_fee","other_closing_cost","reserve_cash","vault_cash")
     total_project=Decimal(quote["purchase_price"])+sum((Decimal(quote[k]) for k in cost_fields),Decimal("0"))
     owner_gap=total_project-principal
     from .core import scenario_calculation
     base=scenario_calculation(op)
-    annual=payment*12
+    annual=schedule["first_year_payment"]
     operating=None
     coverage=None
     if base["status"]=="CALCULATED":
@@ -190,6 +221,7 @@ def option_analysis(op, quote, *, today=None):
         "modeled_monthly_payment":str(payment),
         "modeled_annual_debt_service":str(annual),
         "modeled_total_scheduled_payments":str(total),
+        "modeled_adjusted_final_payment":str(schedule["last_payment"]),
         "modeled_interest":str(modeled_interest),
         "recorded_project_cash_needed":str(total_project.quantize(CENTS)),
         "unverified_buyer_cash_gap":str(owner_gap.quantize(CENTS)),
