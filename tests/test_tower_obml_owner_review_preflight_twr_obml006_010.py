@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from tower import obml_owner_review_preflight as preflight
-from tower.app_registry import route_by_path
+from tower.app_registry import registered_apps, route_by_path
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_CONTRACT = (
@@ -65,7 +65,7 @@ def test_current_owner_and_existing_ob_receipt_never_activate_obml(
 def test_existing_owner_launch_is_not_replaced_by_manual_review_route():
     assert preflight.CANONICAL_OB_ENTRY == "/tower/launch/observatory"
     assert preflight.PROTECTED_DESTINATION == "/ob/dashboard"
-    assert route_by_path("/tower/launch/observatory") is not None
+    assert any(app["app_id"] == "observatory" and app["tower_launch_route"] == "/tower/launch/observatory" for app in registered_apps())
     assert route_by_path("/tower/launch/obml") is None
 
 
