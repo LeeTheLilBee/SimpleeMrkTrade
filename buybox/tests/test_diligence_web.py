@@ -81,7 +81,7 @@ class DiligenceWebTests(unittest.TestCase):
         reopened=self.client.get("/opportunities/"+self.oid+"/diligence")
         self.assertIn(b"2026-10-05",reopened.data)
         self.assertIn(b"Open Deal Integrity",reopened.data)
-        self.assertIn(b"does not contact",reopened.data.lower())
+        self.assertIn(b"does not send a seller request",reopened.data.lower())
 
     def test_duplicate_stale_unknown_and_invalid_deadline_fail_closed(self):
         before=self.op()
