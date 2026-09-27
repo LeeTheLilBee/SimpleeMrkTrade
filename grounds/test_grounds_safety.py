@@ -107,6 +107,42 @@ class SafetyTests(unittest.TestCase):
         )
         self.assertFalse(changed["legal_entry_notice_proven"])
 
+    def test_explicit_no_entry_blocks_job_start_and_in_progress_is_not_entry_proof(self):
+        self.safety.acknowledge_urgency(
+            self.manager,work_ref="urgent1",assessed_urgency="priority",
+        )
+        revision=1
+        for state in ("received","under_review","scheduled"):
+            revision=self.ops.advance_work_order(
+                self.manager,work_ref="urgent1",next_state=state,expected_revision=revision,
+            )["revision"]
+        technician=fixture_scope(
+            "tech","maintenance_technician",("p1",),assignments=("urgent1",),
+        )
+        revision=self.ops.assign_work_order(
+            self.manager,work_ref="urgent1",technician=technician,
+            expected_revision=revision,
+        )["revision"]
+        self.safety.record_entry_preference(
+            self.resident,work_ref="urgent1",preference="no",expected_revision=0,
+        )
+        with self.assertRaises(GroundsConflict):
+            self.ops.advance_work_order(
+                technician,work_ref="urgent1",next_state="in_progress",
+                expected_revision=revision,
+            )
+        self.safety.record_entry_preference(
+            self.resident,work_ref="urgent1",preference="contact_first",
+            expected_revision=1,
+        )
+        moved=self.ops.advance_work_order(
+            technician,work_ref="urgent1",next_state="in_progress",
+            expected_revision=revision,
+        )
+        self.assertEqual(moved["state"],"in_progress")
+        self.assertFalse(moved["entry_authorized"])
+        self.assertFalse(moved["notification_sent"])
+
     def test_outbox_is_property_scoped_metadata_pending_not_messages_sent(self):
         pending=self.safety.pending_event_intents(self.manager,property_ref="p1")
         self.assertEqual(set(e["event_kind"] for e in pending),{
