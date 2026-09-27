@@ -354,6 +354,9 @@ class GroundsOperations:
                 )
             else:
                 raise AccessDenied("work queue unavailable")
+            if actor.role == "resident":
+                # Active Grounds membership cannot broaden a narrower Tower unit grant.
+                return [_record(row) for row in rows if row["unit_ref"] in actor.unit_refs]
             return [_record(row) for row in rows]
 
     def advance_work_order(self, actor: TowerScope, *, work_ref: str,
