@@ -49,4 +49,4 @@ To inspect the visual prototype, open `grounds/ui/preview.html` locally in a bro
 
 A fake verifier appears only in unit-test fixtures and the explicit `dev_demo.py` fictional runner. No real public route may trust a caller-supplied role, identity, proof verifier or payment projection.
 
-See `docs/THE_GROUNDS_RECOVERED_PLAN_GRD001_005.md`, `docs/THE_GROUNDS_IMPLEMENTATION_GRD006_019.md`, `docs/THE_GROUNDS_STEWARDSHIP_GRD024_033.md`, `docs/THE_GROUNDS_RESIDENT_SERVICES_GRD037_055.md`, `docs/THE_GROUNDS_PRE_TOWER_GRD056_065.md`, and `docs/THE_GROUNDS_OWNER_STATUS_GRD066_070.md` for scope, delivered code, explicit non-effects and launch gates.
+See `docs/THE_GROUNDS_RECOVERED_PLAN_GRD001_005.md`, `docs/THE_GROUNDS_IMPLEMENTATION_GRD006_019.md`, `docs/THE_GROUNDS_STEWARDSHIP_GRD024_033.md`, `docs/THE_GROUNDS_RESIDENT_SERVICES_GRD037_055.md`, `docs/THE_GROUNDS_PRE_TOWER_GRD056_065.md`, `docs/THE_GROUNDS_OWNER_STATUS_GRD066_070.md`, and `docs/THE_GROUNDS_DEVELOPER_ACCEPTANCE_GRD071_079.md` for scope, delivered code, walkthrough acceptance, explicit non-effects and live-release gates.
