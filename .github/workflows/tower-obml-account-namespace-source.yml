@@ -25,6 +25,6 @@ jobs:
       - name: Compile and test source-only Tower account namespace boundary
         run: |
           python -m py_compile tower/obml_account_namespace_source.py tests/test_tower_obml_account_namespace_source.py
-          python -m pytest -q tests/test_tower_obml_account_namespace_source.py tests/test_obml001_005_owner_manual_source_preflight.py tests/test_obml006_010_tower_contract_inspection.py tests/test_obml011_015_owner_beta_gate_report.py tests/test_obauth006_010_account_identity_truth.py
+          python -m pytest -q tests/test_tower_obml_account_namespace_source.py tests/test_obml001_005_owner_manual_source_preflight.py tests/test_obml006_010_tower_contract_inspection.py tests/test_obml011_015_owner_beta_gate_report.py tests/test_obauth006_010_account_identity_truth_taxonomy.py
       - name: Full repository regression
         run: python -m pytest -q tests
