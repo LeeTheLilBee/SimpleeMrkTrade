@@ -309,7 +309,11 @@ class GroundsOperations:
             if (row["created_by"] != actor.subject_ref
                 or row["unit_ref"] not in actor.unit_refs):
                 raise AccessDenied("work order unavailable")
-            self._resident_lease(db,actor,row["property_ref"],row["unit_ref"])
+            current_lease=self._resident_lease(
+                db,actor,row["property_ref"],row["unit_ref"],
+            )
+            if row["lease_ref"]!=current_lease["lease_ref"]:
+                raise AccessDenied("work order unavailable")
         elif actor.role in ("maintenance_technician", "vendor"):
             if row["assigned_to"] != actor.subject_ref or work_ref not in actor.assigned_work_refs:
                 raise AccessDenied("work order unavailable")
@@ -332,6 +336,7 @@ class GroundsOperations:
                        WHERE w.property_ref=? AND w.created_by=? AND EXISTS(
                          SELECT 1 FROM leases l JOIN lease_members m ON m.lease_ref=l.lease_ref
                          WHERE l.property_ref=w.property_ref AND l.unit_ref=w.unit_ref
+                           AND l.lease_ref=w.lease_ref
                            AND l.status='active' AND m.subject_ref=?
                            AND m.status='active' AND m.property_ref=w.property_ref
                            AND m.unit_ref=w.unit_ref)
@@ -477,7 +482,9 @@ class GroundsOperations:
                 "property_ref": property_ref, "unit_ref": unit_ref,
                 "unit_label": unit["label"], "building_ref": unit["building_ref"],
                 "lease": _record(lease),
-                "maintenance": self._orders_for_resident(db, actor, property_ref, unit_ref),
+                "maintenance": self._orders_for_resident(
+                    db, actor, property_ref, unit_ref, lease["lease_ref"],
+                ),
                 "notices": [_record(row) for row in notices],
                 "rent": {"source": "teller", "status": "awaiting_verified_projection",
                          "amount_due_cents": None, "checkout_url": None,
@@ -485,12 +492,12 @@ class GroundsOperations:
             }
 
     @staticmethod
-    def _orders_for_resident(db, actor, property_ref, unit_ref):
+    def _orders_for_resident(db, actor, property_ref, unit_ref, lease_ref):
         return [_record(row) for row in db.execute(
             """SELECT work_ref,category,state,emergency_flag,updated_at FROM work_orders
-               WHERE property_ref=? AND unit_ref=? AND created_by=?
+               WHERE property_ref=? AND unit_ref=? AND created_by=? AND lease_ref=?
                ORDER BY created_at DESC""",
-            (property_ref, unit_ref, actor.subject_ref),
+            (property_ref, unit_ref, actor.subject_ref, lease_ref),
         )]
 
     def property_pulse(self, actor: TowerScope, *, property_ref: str) -> dict:
