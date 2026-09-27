@@ -44,6 +44,7 @@ def classify(canonical_origin: str, secondary_origin: str, exact_revision: str,
                     field: observed.get(field) for field in (
                         "health_http", "manifest_http", "published_revision",
                         "anonymous_owner_page_http", "anonymous_owner_status_http",
+                    "anonymous_final_evidence_http",
                     )
                 },
             }
