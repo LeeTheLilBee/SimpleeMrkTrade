@@ -27,8 +27,9 @@ from .access import AccessDenied, TowerScope
 from .communications import GroundsCommunications
 from .maintenance import MaintenanceIntake
 from .operations import GroundsConflict, GroundsOperations
+from .postgres import PostgresGroundsStore
 from .safety import GroundsSafety
-from .storage import GroundsStore
+from .storage import GroundsStore, GroundsStoreBase
 from .workspaces import build_workspace
 
 _UI=Path(__file__).parent/"ui"
@@ -150,18 +151,28 @@ class GroundsWebApp:
     The receiver is a trusted SERVER-INJECTED callable returning TowerScope
     after Tower has independently checked signed session, audience, replay,
     current grants and revocation. No HTTP body/header can choose this callable.
-    The current GroundsStore constructor is SQLite: local test only. Public
-    startup/host authorization remains held until a private production store
-    is independently certified; this module does not create that service.
+    SQLite is accepted only in explicit fixture mode; private PostgreSQL must
+    pass a real read-only schema preflight. Neither condition authenticates a
+    Tower sender: production composition MUST supply its separately certified
+    receiver and must not install a fixture callback on a public ingress.
     """
-    def __init__(self,store:GroundsStore,*,tower_receiver:Callable,
+    def __init__(self,store:GroundsStoreBase,*,tower_receiver:Callable,
                  csrf_secret:bytes,local_fixture_only:bool=False):
-        if not isinstance(store,GroundsStore) or not callable(tower_receiver):
-            raise GroundsWebConfigurationError("store and server-owned Tower receiver required")
-        if local_fixture_only is not True:
-            raise GroundsWebConfigurationError(
-                "live private storage/receiver not certified; local fixture mode must be explicit"
-            )
+        if not callable(tower_receiver):
+            raise GroundsWebConfigurationError("server-owned Tower receiver required")
+        if type(store) is GroundsStore:
+            if local_fixture_only is not True:
+                raise GroundsWebConfigurationError(
+                    "SQLite is disposable fiction only, never private production storage"
+                )
+        elif type(store) is PostgresGroundsStore:
+            if local_fixture_only:
+                raise GroundsWebConfigurationError(
+                    "PostgreSQL must not be silently demoted into fictional local mode"
+                )
+            store.assert_schema_ready()
+        else:
+            raise GroundsWebConfigurationError("supported transaction-backed Grounds store required")
         self.store=store
         self.receiver=tower_receiver
         self.csrf=SessionCSRF(csrf_secret)
