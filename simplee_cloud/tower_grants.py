@@ -185,10 +185,12 @@ class SourceOnlyTowerGrantVerifier:
     ) -> AuthorizedCloudInvocation:
         if not isinstance(grant, SignedTowerGrant) or not isinstance(expected, TrustedVaultScope):
             raise AccessDenied("trusted grant and scope required")
+        if not isinstance(grant.key_id, str) or not _KEY_ID.fullmatch(grant.key_id):
+            raise AccessDenied("invalid Tower signing key identity")
         key = self._keys.get(grant.key_id)
-        if key is None or not isinstance(grant.payload, bytes) or not isinstance(
-            grant.signature, bytes
-        ) or len(grant.signature) != 64:
+        if key is None or not isinstance(grant.payload, bytes) or not (
+            1 <= len(grant.payload) <= 4096
+        ) or not isinstance(grant.signature, bytes) or len(grant.signature) != 64:
             raise AccessDenied("unknown signer or malformed Tower signature")
         try:
             from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
