@@ -8,7 +8,7 @@
   // explicitly authorized /new mutation; never store it persistently.
   let token = root.dataset.obCsrf;
   const $ = (id) => document.getElementById(id);
-  const controls = ["refresh", "sample", "tick", "pause", "resume", "stop", "new"];
+  const controls = ["refresh", "sample", "tick", "pause", "resume", "stop", "new", "evidence"];
   let busy = false;
   let last = null;
   let connected = false;
@@ -85,6 +85,7 @@
     $("refresh").disabled = busy;
     $("sample").disabled = busy;
     $("new").disabled = !active || state !== "STOPPED";
+    $("evidence").disabled = !active || state !== "STOPPED";
   }
   async function refresh() {
     if (busy) return;
@@ -157,8 +158,47 @@
     "Sealed " + result.archive_tick_count + " report(s) as " + result.archive_state +
     ". Report-only recovery never restores a trading session."
   ));
+  $("evidence").addEventListener("click", async () => {
+    if (busy || !connected || !last || last.state !== "STOPPED") return;
+    busy = true;
+    updateControls();
+    try {
+      const packet = await api("/ob/owner-rehearsal/evidence.json");
+      if (
+        packet.schema_version !== "OBSIM_OWNER_EPHEMERAL_FINAL_EVIDENCE_V1"
+        || packet.report_state !== "OWNER_DOWNLOADED_FINALIZED_REPORT_ONLY"
+        || packet.source_kind !== "SYNTHETIC"
+        || packet.durable_server_archive !== false
+        || packet.manual_live_authorized !== false
+        || !Array.isArray(packet.reports)
+        || typeof packet.packet_hash !== "string"
+      ) throw new Error("Final report envelope rejected");
+      const blob = new Blob([JSON.stringify(packet, null, 2)], {
+        type: "application/json"
+      });
+      const localUrl = URL.createObjectURL(blob);
+      try {
+        const link = document.createElement("a");
+        const safeId = String(packet.session_id || "session").replace(/[^a-zA-Z0-9-]/g, "");
+        link.href = localUrl;
+        link.download = "ob-proof-demo-" + safeId + ".json";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        say("Owner report-only packet prepared for local download. Verify your device saved it before resetting: volatile server reports will disappear. This is not broker/Tower attestation.");
+      } finally {
+        URL.revokeObjectURL(localUrl);
+      }
+    } catch (error) {
+      say("Final evidence export was NOT confirmed (" + error.message + "). Keep this volatile rehearsal open and check its status.");
+    } finally {
+      busy = false;
+      await refresh();
+      updateControls();
+    }
+  });
   $("new").addEventListener("click", () => mutate("/ob/owner-rehearsal/new.json", {}, () =>
-    "New owner-started SYNTHETIC session. The previous finalized volatile report is no longer retained."
+    "New owner-started SYNTHETIC session. The previous finalized volatile report is no longer retained; save finalized evidence first."
   ));
   refresh();
   // A countdown display is NOT an unattended report, source poll or tick.
