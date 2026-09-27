@@ -1,0 +1,30 @@
+name: OBSIM051-055 local source release does not unlock hosted OB
+on:
+  push:
+    branches:
+      - 'obsim051-055-*'
+  pull_request:
+    branches:
+      - 'obsim016-020-free-on-demand-session'
+permissions:
+  contents: read
+jobs:
+  source-only-no-hosted-grant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax and explicit local-only route tests
+        run: |
+          python -m py_compile tests/test_obsim051_055_source_release_isolation.py
+          node --check web/static/ob/ob_local_owner_rehearsal.js
+          node tests/test_obbeta011_015_owner_source_proof_labels.js
+          python -m pytest -q tests/test_obsim051_055_source_release_isolation.py tests/test_obsim046_050_loopback_owner_rehearsal_ui.py tests/test_obsim041_045_local_terminal_owner_rehearsal.py tests/test_obsim036_040_explicit_owner_rehearsal_input.py
+      - name: Full accepted repository regression
+        run: python -m pytest -q tests
