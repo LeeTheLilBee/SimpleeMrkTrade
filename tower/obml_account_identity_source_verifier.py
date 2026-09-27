@@ -158,17 +158,27 @@ def verify_signed_ob_account_source(
     return VerifiedOBAccountSource(claims=MappingProxyType(claims))
 
 
-def consume_verified_ob_account_nonce(
-    db: sqlite3.Connection, verified: VerifiedOBAccountSource, *,
+def consume_signed_ob_account_source(
+    db: sqlite3.Connection,
+    token: str, *,
+    shared_secret: str | bytes,
+    expected_account_key: str,
+    expected_current_fingerprint: str,
     now_epoch: int,
 ) -> bool:
-    """Atomic source-replay refusal on an approved durable SQLite transaction.
+    """Reverify actual signed bytes inside the public replay entrypoint.
 
-    A failed consume must NOT be promoted to review authority. This ledger is
-    not automatically deployed/mounted, and its success isn't Tower owner auth.
+    A caller-constructed VerifiedOBAccountSource wrapper cannot mutate the
+    replay ledger. The future server adapter must derive expected account
+    and CURRENT fingerprint independently from authenticated OB source.
+    This method still grants no Tower person, brokerage or Manual Live role.
     """
-    if not isinstance(verified, VerifiedOBAccountSource):
-        raise OBAccountSourceVerificationError("SIGNED_SOURCE_REQUIRED")
+    verified = verify_signed_ob_account_source(
+        token, shared_secret=shared_secret,
+        expected_account_key=expected_account_key,
+        expected_current_fingerprint=expected_current_fingerprint,
+        now_epoch=now_epoch,
+    )
     if type(now_epoch) is not int or now_epoch >= verified.claims["expires_at_epoch"]:
         return False
     if not isinstance(db, sqlite3.Connection) or db.in_transaction:
