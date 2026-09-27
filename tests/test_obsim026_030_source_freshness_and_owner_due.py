@@ -146,9 +146,7 @@ def test_explicit_old_historical_replay_remains_historical_not_live(tmp_path):
 
 def test_documented_source_limit_does_not_grant_trading():
     contract = session_contract()
-    assert contract["declared_live_max_source_age_seconds"] == (
-        DECLARED_LIVE_MAX_SOURCE_AGE_SECONDS == 120
-    )
+    assert contract["declared_live_max_source_age_seconds"] == DECLARED_LIVE_MAX_SOURCE_AGE_SECONDS == 120
     assert contract["stale_declared_live_input_advances_simulation"] is False
     assert contract["owner_due_hint_is_timer_or_permission"] is False
     for flag in ("broker_submission", "capital_movement", "manual_live_unlock",
