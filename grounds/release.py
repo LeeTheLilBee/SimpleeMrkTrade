@@ -1,0 +1,57 @@
+"""GRD077 — source-vs-live release status: descriptive, never an unlock switch.
+
+Actual release may only occur after the owner reviews independently verified,
+current Tower/Teller/Vault/storage/notification/privacy evidence outside this
+package. Supplying booleans, a green unit test, a preview screenshot or a
+locally simulated ticket cannot authorize live traffic or create entitlements.
+"""
+from __future__ import annotations
+
+from copy import deepcopy
+from typing import Mapping
+
+from .contract import foundation_status
+
+RELEASE_REQUIREMENTS={
+    "tower_identity_and_scopes":"Tower-certified signed resident/staff/owner handoff and per-resource revocation",
+    "private_storage_and_recovery":"Hosted private tenant store, safe migrations, backup and restore evidence",
+    "teller_billing_checkout":"Fresh authenticated invoices, Tower-mediated checkout, webhook reconciliation and failures",
+    "vault_sealed_documents":"Certified, private file/document intake and proof verification with revocation and retention",
+    "staff_dispatch_and_notifications":"Actual after-hours urgency escalation, acknowledgment, provider delivery and safe failure path",
+    "housing_privacy_accessibility":"Jurisdiction-specific entry/notice/lease review, privacy, fair access and accessibility acceptance",
+    "soulaana_source_runtime":"Read-only authorized source adapter with current revision, freshness and privacy checks",
+    "owner_release_acceptance":"Explicit owner decision based on the compiled certification packet",
+}
+
+def source_completion_status()->dict:
+    foundation=foundation_status()
+    return {
+        "mode":"source_only","review_label":"FICTIONAL_DEVELOPER_WALKTHROUGH_AVAILABLE",
+        "role_contract_count":foundation["roles_defined"],
+        "fictional_browser_preview":foundation["local_preview_available"],
+        "developer_demo_command":"python -m grounds.dev_demo --fictional-only",
+        "domain_tests_required":True,"latest_github_ci_must_be_confirmed_externally":True,
+        "demo_result_is_not_production_evidence":True,
+        "actual_resident_sessions_enabled":False,
+        "tower_receiver_certified":False,"checkout_enabled":False,
+        "vault_file_upload_enabled":False,"notifications_delivered":False,
+        "paid_infrastructure_provisioned":False,
+        "live_tenant_release_authorized":False,
+    }
+
+def review_live_requirements(evidence:Mapping[str,bool]|None=None)->dict:
+    """A self-reported checklist is not verified acceptance or authorization."""
+    supplied=evidence if isinstance(evidence,Mapping) else {}
+    marked=sorted(key for key in RELEASE_REQUIREMENTS if supplied.get(key) is True)
+    absent=sorted(set(RELEASE_REQUIREMENTS)-set(marked))
+    return deepcopy({
+        "stage":"not_live","mode":"advisory_only",
+        "requirement_details":RELEASE_REQUIREMENTS,
+        "self_reported_items":marked,
+        "missing_or_unverified":absent,
+        "review_state":"EXTERNAL_CERTIFICATION_AND_OWNER_ACCEPTANCE_REQUIRED",
+        "trusts_self_reported_evidence":False,
+        "runtime_unlocked":False,"tenant_session_accepted":False,
+        "real_money_movement_enabled":False,"live_release_authorized":False,
+        "provider_resources_created":False,
+    })
