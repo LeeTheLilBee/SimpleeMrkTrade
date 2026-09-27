@@ -40,6 +40,8 @@ from .tower_owner_receiver import (verify_tower_buybox_owner_handoff,
 from .tower_session_store import (create_owner_session,read_owner_session,
     revoke_owner_session)
 from .tower_evidence import freeze_local_evidence_snapshot, HandoffPreparationError
+from .claim_register import (record_source_claim, record_owner_document_review,
+    integrity_report, active_claims, owner_reviewed_source)
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -441,6 +443,65 @@ def create_app(config=None):
                 "source_reference":machine["source_reference"]},
                 expected_revision=int(request.form["revision"]))
         return redirect(url_for("opportunity",oid=oid))
+
+    @app.get("/opportunities/<oid>/integrity")
+    @login_required
+    def deal_integrity(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        artifacts={a["id"]:a for a in op.get("artifacts",[])}
+        available=[
+            {"evidence":e,"artifact":artifacts[e["artifact_id"]]}
+            for e in op.get("evidence",[])
+            if e.get("artifact_id") in artifacts
+            and e.get("status") in ("RECEIVED","DOCUMENT_SUPPORTED","THIRD_PARTY_VERIFIED")
+        ]
+        current_claims=active_claims(op)
+        return render_template("integrity.html",op=op,
+            report=integrity_report(op),claims=current_claims,
+            sources=available,artifacts=artifacts,
+            reviewable_claim_ids={c["id"] for c in current_claims
+                                  if owner_reviewed_source(op,c) is not None})
+
+    @app.post("/opportunities/<oid>/claims")
+    @login_required
+    def record_claim(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,record=record_source_claim(
+                op,evidence_id=request.form.get("evidence_id",""),
+                subject_id=request.form.get("subject_id",""),
+                field=request.form.get("field",""),
+                value=request.form.get("value",""),
+                period_key=request.form.get("period_key",""),
+                locator=request.form.get("locator",""),
+                topic_key=request.form.get("topic_key") or None,
+                supersedes_claim_id=request.form.get("supersedes_claim_id") or None,
+                correction_reason=request.form.get("correction_reason") or None)
+            save(conn,revised,"SourceClaimRecorded",{
+                "claim_id":record["id"],"evidence_id":record["evidence_id"],
+                "artifact_id":record["artifact_id"],"field":record["field"],
+                "supersedes":record["supersedes"],
+                "automatically_accepted":False},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("deal_integrity",oid=oid),code=303)
+
+    @app.post("/opportunities/<oid>/claims/<claim_id>/review")
+    @login_required
+    def document_claim_review(oid,claim_id):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,record=record_owner_document_review(
+                op,claim_id=claim_id,rationale=request.form.get("rationale",""))
+            save(conn,revised,"SourceClaimDocumentReviewed",{
+                "claim_id":record["id"],"supersedes":claim_id,
+                "evidence_id":record["evidence_id"],
+                "scope":"DOCUMENT_SUPPORT_ONLY","independently_verified":False},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("deal_integrity",oid=oid),code=303)
 
     @app.post("/opportunities/<oid>/source")
     @login_required

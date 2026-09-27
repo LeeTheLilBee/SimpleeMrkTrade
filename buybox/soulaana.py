@@ -81,6 +81,16 @@ def context(op, intent="overview"):
                  [change["source_reference"]],"STALE_ANALYSIS")
         else:
             note("RECORDED_STATE","No material change has been recorded for this opportunity.")
+    if "evidence" in relevant or intent in ("red_team", "next_action"):
+        for discrepancy in analysis.get("deal_integrity", {}).get("discrepancies", []):
+            note(
+                "SOURCE_DISCREPANCY",
+                ("The original documents disagree about "+
+                 discrepancy["field"].replace("_", " ").lower()+
+                 " for "+discrepancy["subject_id"]+" at "+
+                 discrepancy["period_key"]+
+                 ". Neither source has been selected as fact, and this blocks analytical qualification."),
+                discrepancy["claim_ids"], "UNRESOLVED_DOCUMENT_CONFLICT")
     for finding in analysis["findings"]:
         note("POLICY_RESULT",finding["reason"],[finding["rule_id"]],finding["level"])
     if intent=="red_team":
@@ -95,6 +105,12 @@ def context(op, intent="overview"):
             note("OWNER_RECORDED_TASK",
                  "Next recorded task: "+first["title"]+"; due "+first["due_date"]+".",
                  [first["id"]],first["status"])
+        elif analysis.get("deal_integrity", {}).get("discrepancies"):
+            first=analysis["deal_integrity"]["discrepancies"][0]
+            note("RULE_DERIVED_ACTION",
+                 "Compare the supporting documents and investigate the conflicting "+
+                 first["field"].replace("_"," ").lower()+" statements in Deal Integrity.",
+                 first["claim_ids"],"PROPOSED_NOT_EXECUTED")
         elif evidence["missing_critical"]:
             note("RULE_DERIVED_ACTION",
                  "Request or verify "+evidence["missing_critical"][0].replace("_"," ")+".",

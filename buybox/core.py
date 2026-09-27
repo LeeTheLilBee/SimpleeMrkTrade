@@ -162,9 +162,20 @@ def evaluate(op):
     vertical=get_vertical(op["vertical"])
     ev=evidence_summary(op)
     base=scenario_calculation(op)
+    from .claim_register import integrity_report
+    integrity=integrity_report(op)
     findings=_atm_rules(op,ev) if op["vertical"]=="atm" else (
         [{"rule_id":"CORE-EVIDENCE","level":"BLOCK","reason":"Conflicted source evidence"}]
         if ev["conflicts"] else [])
+    for discrepancy in integrity["discrepancies"]:
+        findings.append({
+            "rule_id":"CORE-CLAIM-CONFLICT", "level":"BLOCK",
+            "reason":("Contradictory source claims for "+
+                      discrepancy["field"].replace("_"," ").lower()+
+                      " at "+discrepancy["subject_id"]+" ("+
+                      discrepancy["period_key"]+"); no source has been chosen."),
+            "claim_ids": discrepancy["claim_ids"],
+        })
     teller=_readiness(op,"teller")
     # External readiness is not assumed merely because the financial model is positive.
     if teller=="BLOCKED":
@@ -187,7 +198,8 @@ def evaluate(op):
     # Qualified means analytical screening only; never authorization to buy.
     return {"opportunity_id":op["id"],"vertical":op["vertical"],
             "registry_version":vertical["version"],"evaluated_at":now(),
-            "judgment":judgment,"evidence":ev,"financials":base,
+            "judgment":judgment,"evidence":ev,"deal_integrity":integrity,
+            "financials":base,
             "findings":findings,"teller_readiness":teller,
             "closing_authorized":False,"purchase_authorized":False}
 
