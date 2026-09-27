@@ -40,6 +40,8 @@ from .tower_owner_receiver import (verify_tower_buybox_owner_handoff,
 from .tower_session_store import (create_owner_session,read_owner_session,
     revoke_owner_session)
 from .tower_evidence import freeze_local_evidence_snapshot, HandoffPreparationError
+from .saved_search import (normalize_filters, create_saved_search, saved_searches,
+    get_saved_search, latest_check, run_saved_search, archive_saved_search)
 from .claim_register import (record_source_claim, record_owner_document_review,
     integrity_report, active_claims, owner_reviewed_source)
 
@@ -126,6 +128,16 @@ def create_app(config=None):
                 yield connection
         finally:
             connection.close()
+
+    def owner_actor(conn):
+        # Never let an HTTP form supply the actor of a stored search or check.
+        if auth_mode != "tower":
+            return "local_owner"
+        claims=read_owner_session(conn,session.get("tower_session_handle"),
+                                  now_epoch=int(datetime.now(timezone.utc).timestamp()))
+        if claims is None:
+            abort(403,"Tower owner session required")
+        return claims["actor_ref"]
 
     def login_required(fn):
         @wraps(fn)
@@ -262,6 +274,62 @@ def create_app(config=None):
             opportunities=list_opportunities(conn)
             snapshot=build_focus(opportunities,lambda oid:activity(conn,oid))
         return render_template("focus.html",snapshot=snapshot)
+
+    @app.get("/saved-searches")
+    @login_required
+    def saved_search_home():
+        with db() as conn:
+            records=saved_searches(conn)
+            entries=[{"definition":saved,"latest":latest_check(conn,saved["id"])}
+                     for saved in records]
+        selected=request.args.get("vertical","")
+        if selected and selected not in VERTICALS:
+            abort(400,"Unknown acquisition category")
+        q=request.args.get("q","")[:120]
+        return render_template("saved_searches.html",entries=entries,
+                               selected_vertical=selected,q=q)
+
+    @app.post("/saved-searches")
+    @login_required
+    def add_saved_search():
+        with db() as conn:
+            record=create_saved_search(
+                conn,name=request.form.get("name",""),
+                filters={"vertical":request.form.get("vertical") or None,
+                         "query":request.form.get("query",""),
+                         "max_price":request.form.get("max_price") or None},
+                actor_reference=owner_actor(conn))
+        return redirect(url_for("saved_search_detail",sid=record["id"]),code=303)
+
+    @app.get("/saved-searches/<sid>")
+    @login_required
+    def saved_search_detail(sid):
+        with db() as conn:
+            definition=get_saved_search(conn,sid)
+            if definition is None: abort(404)
+            latest=latest_check(conn,sid)
+            matched=[]
+            if latest:
+                for oid in latest["result"]["match_ids"]:
+                    op=load(conn,oid)
+                    matched.append({"id":oid,"current_name":op["name"] if op else "Record unavailable",
+                                    "last_checked":latest["current_snapshot"].get(oid)})
+        return render_template("saved_search_detail.html",
+            definition=definition,latest=latest,matched=matched)
+
+    @app.post("/saved-searches/<sid>/check")
+    @login_required
+    def check_saved_search(sid):
+        with db() as conn:
+            run_saved_search(conn,sid)
+        return redirect(url_for("saved_search_detail",sid=sid),code=303)
+
+    @app.post("/saved-searches/<sid>/archive")
+    @login_required
+    def archive_saved_search_route(sid):
+        with db() as conn:
+            archive_saved_search(conn,sid,actor_reference=owner_actor(conn))
+        return redirect(url_for("saved_search_home"),code=303)
 
     @app.post("/opportunities")
     @login_required
