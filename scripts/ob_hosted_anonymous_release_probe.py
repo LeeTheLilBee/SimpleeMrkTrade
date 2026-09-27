@@ -24,6 +24,7 @@ PATHS = (
     "/tower/runtime-manifest.json",
     "/ob/owner-rehearsal",
     "/ob/owner-rehearsal/status.json",
+    "/ob/owner-rehearsal/evidence.json",
 )
 DENIED_STATUSES = frozenset((301, 302, 303, 307, 308, 401, 403, 404, 409, 410, 503))
 
@@ -106,12 +107,14 @@ def probe(origin: str, expected_revision: str) -> dict[str, object]:
     manifest = payload("/tower/runtime-manifest.json")
     anon = results["/ob/owner-rehearsal"]["status"]
     anon_api = results["/ob/owner-rehearsal/status.json"]["status"]
+    anon_evidence = results["/ob/owner-rehearsal/evidence.json"]["status"]
     outcome["observed"] = {
         "health_http": health["status"],
         "manifest_http": manifest_status,
         "published_revision": manifest.get("revision", "") if manifest else "UNKNOWN",
         "anonymous_owner_page_http": anon,
         "anonymous_owner_status_http": anon_api,
+        "anonymous_final_evidence_http": anon_evidence,
     }
     if health["status"] != 200:
         outcome["reason"] = "TOWER_HEALTH_NOT_VERIFIED"
@@ -135,7 +138,7 @@ def probe(origin: str, expected_revision: str) -> dict[str, object]:
     if any(results[path]["revision_header"] not in ("", expected_revision) for path in PATHS):
         outcome["reason"] = "INCONSISTENT_PUBLISHED_REVISION_HEADERS"
         return outcome
-    if anon not in DENIED_STATUSES or anon_api not in DENIED_STATUSES:
+    if any(status not in DENIED_STATUSES for status in (anon, anon_api, anon_evidence)):
         outcome["reason"] = "ANONYMOUS_OWNER_REHEARSAL_DISCLOSURE"
         return outcome
     # Passive compatibility only. Anonymous denial is not an owner login test;
