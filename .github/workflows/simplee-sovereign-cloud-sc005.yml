@@ -1,0 +1,37 @@
+name: Simplee Sovereign Cloud SC005 recovery source checks
+
+on:
+  push:
+    branches:
+      - simplee-cloud-sc005-recovery-checkpoints
+  pull_request:
+    paths:
+      - 'simplee_cloud/**'
+      - '.github/workflows/simplee-sovereign-cloud-sc005.yml'
+      - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC005_RECOVERY_CHECKPOINTS.md'
+
+permissions:
+  contents: read
+
+jobs:
+  source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install synthetic test dependencies only
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Compile SC001-SC005 source modules and test files
+        run: |
+          python -m py_compile simplee_cloud/__init__.py simplee_cloud/contracts.py simplee_cloud/service.py simplee_cloud/local_backend.py simplee_cloud/backup.py simplee_cloud/journal.py simplee_cloud/operations.py simplee_cloud/s3_backend.py simplee_cloud/provider_review.py simplee_cloud/tower_grants.py simplee_cloud/checkpoints.py simplee_cloud/recovery_drill.py simplee_cloud/tests/test_sc001_storage.py simplee_cloud/tests/test_sc001_backup.py simplee_cloud/tests/test_sc002_operations.py simplee_cloud/tests/test_sc003_provider.py simplee_cloud/tests/test_sc004_tower_grants.py simplee_cloud/tests/test_sc005_recovery.py
+      - name: Run Cloud full source security and recovery regression
+        run: |
+          python -m pytest -q simplee_cloud/tests/test_sc001_storage.py simplee_cloud/tests/test_sc001_backup.py simplee_cloud/tests/test_sc002_operations.py simplee_cloud/tests/test_sc003_provider.py simplee_cloud/tests/test_sc004_tower_grants.py simplee_cloud/tests/test_sc005_recovery.py
