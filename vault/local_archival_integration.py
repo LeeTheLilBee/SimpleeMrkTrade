@@ -74,7 +74,10 @@ class VaultLocalOrchestrator:
             return receipt_id,ref,meta
         except Exception:
             current=self.journal.status(request_id)
-            if current in {"ENCRYPTED","CLOUD_COMMITTED"}:
+            if current in {"RECEIVED","QUARANTINED","VERIFIED"}:
+                self.journal.advance(request_id=request_id,expected_state=current,
+                    to_state="REJECTED")
+            elif current in {"ENCRYPTED","CLOUD_COMMITTED"}:
                 self.journal.advance(request_id=request_id,expected_state=current,
                     to_state="RECONCILE_REQUIRED")
             raise
