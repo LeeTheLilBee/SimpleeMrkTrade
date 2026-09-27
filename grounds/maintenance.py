@@ -33,7 +33,7 @@ TRANSITIONS = {
 
 def _required(value: str, label: str, *, max_length: int = 128) -> str:
     if (not isinstance(value, str) or not value.strip()
-        or len(value.strip()) > max_length or "\\x00" in value):
+        or len(value.strip()) > max_length or "\x00" in value):
         raise ValueError(f"{label} missing, invalid or too long")
     return value.strip()
 
@@ -58,7 +58,7 @@ class MaintenanceIntake:
             raise ValueError("invalid entry_permission")
         if (not isinstance(self.photo_refs,tuple) or len(self.photo_refs)>8
             or any(not isinstance(ref,str) or not ref.strip()
-                   or len(ref.strip())>128 or "\\x00" in ref for ref in self.photo_refs)):
+                   or len(ref.strip())>128 or "\x00" in ref for ref in self.photo_refs)):
             raise ValueError("photo_refs must be at most eight bounded opaque references")
         # An emergency flag is an intake alert, never an emergency response guarantee.
 
