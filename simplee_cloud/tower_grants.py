@@ -31,7 +31,7 @@ _FIELDS = frozenset({
 })
 _OPERATIONS = frozenset({
     "WRITE_CIPHERTEXT", "READ_CIPHERTEXT", "BACKUP_CIPHERTEXT",
-    "VERIFY_BACKUP", "RECONCILE_WRITE",
+    "VERIFY_BACKUP", "RECONCILE_WRITE", "RECONCILE_BACKUP",
 })
 _ID = re.compile(r"[A-Za-z0-9_.:-]{1,128}\Z")
 _NONCE = re.compile(r"[0-9a-f]{32}\Z")
