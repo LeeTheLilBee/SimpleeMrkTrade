@@ -356,8 +356,18 @@ CREATE INDEX IF NOT EXISTS tours_by_property ON leasing_tours(property_ref,start
 """
 
 
-class GroundsStore:
-    """Owned by the future certified application composition root only."""
+class GroundsStoreBase:
+    """Nominal boundary for transaction-backed Grounds stores.
+
+    Domain code needs only transaction(write=...) yielding a SQL cursor-like
+    executor. It must never infer live readiness from this base class alone.
+    """
+    def transaction(self, *, write: bool = False):
+        raise NotImplementedError
+
+
+class GroundsStore(GroundsStoreBase):
+    """SQLite is for disposable fictional local fixtures only."""
 
     def __init__(self, path: str | Path):
         if not isinstance(path, (str, Path)) or not str(path).strip() or str(path) == ":memory:":
