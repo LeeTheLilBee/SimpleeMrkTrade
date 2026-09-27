@@ -186,19 +186,25 @@ CREATE TABLE IF NOT EXISTS property_notices (
   notice_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),
   unit_ref TEXT,
+  lease_ref TEXT,
   headline TEXT NOT NULL,
   body TEXT NOT NULL,
   published_at TEXT NOT NULL,
-  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref),
+  FOREIGN KEY(lease_ref,unit_ref,property_ref) REFERENCES leases(lease_ref,unit_ref,property_ref),
+  CHECK((unit_ref IS NULL AND lease_ref IS NULL)
+     OR (unit_ref IS NOT NULL AND lease_ref IS NOT NULL))
 );
-CREATE INDEX IF NOT EXISTS notices_property ON property_notices(property_ref,unit_ref);
+CREATE INDEX IF NOT EXISTS notices_property ON property_notices(property_ref,unit_ref,lease_ref);
 CREATE TABLE IF NOT EXISTS notice_reads (
   notice_ref TEXT NOT NULL REFERENCES property_notices(notice_ref),
   subject_ref TEXT NOT NULL,
+  lease_ref TEXT NOT NULL REFERENCES leases(lease_ref),
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),
   unit_ref TEXT NOT NULL,
   read_at TEXT NOT NULL,
-  PRIMARY KEY(notice_ref,subject_ref)
+  PRIMARY KEY(notice_ref,lease_ref,subject_ref),
+  FOREIGN KEY(lease_ref,unit_ref,property_ref) REFERENCES leases(lease_ref,unit_ref,property_ref)
 );
 CREATE TABLE IF NOT EXISTS work_appointments (
   appointment_ref TEXT PRIMARY KEY,
