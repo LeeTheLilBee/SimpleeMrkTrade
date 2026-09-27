@@ -67,6 +67,10 @@
         <article class="lane"><h3>Experimental</h3><p>No accepted simulation report yet.</p></article>
       </div>
       <p class="quiet">Ephemeral report hash: <code id="lastHash">No report</code>. Reports are stored in volatile process memory only. Restart or deployment loses this session; there is no durable archive or resume.</p>
+      <div class="actions">
+        <button id="evidence" type="button" class="button secondary" disabled>Save finalized Proof/Demo evidence</button>
+      </div>
+      <p class="quiet">After stopping, save a report-only JSON copy on your device before creating a new rehearsal or leaving this volatile server. Its hash checks detect changes in the exported packet; it is not authenticated broker/market proof, Tower permission, or a third-party attestation.</p>
     </section>
     <p id="feedback" class="feedback" aria-live="polite">Tower-protected synthetic rehearsal is loading. Nothing here is live trading authorization.</p>
     <noscript>This protected hosted rehearsal needs JavaScript. For an independent local-only rehearsal, use the separate Python terminal.</noscript>
