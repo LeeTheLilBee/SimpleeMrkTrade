@@ -10,6 +10,7 @@ on:
       - 'docs/THE_GROUNDS_RESIDENT_SERVICES_GRD037_055.md'
       - 'docs/THE_GROUNDS_PRE_TOWER_GRD056_065.md'
       - 'docs/THE_GROUNDS_OWNER_STATUS_GRD066_070.md'
+      - 'docs/THE_GROUNDS_DEVELOPER_ACCEPTANCE_GRD071_079.md'
       - '.github/workflows/grounds-source-contract.yml'
   push:
     branches:
