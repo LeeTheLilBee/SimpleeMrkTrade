@@ -1517,7 +1517,7 @@
               class="ob-owner-instrument-grid"
             >
               ${contextTile(
-                "MANUAL LIVE READINESS",
+                "OWNER REHEARSAL · LIVE HOLD",
                 readiness.label
                 || "Unavailable",
                 (
@@ -1525,14 +1525,15 @@
                   && readiness.blockers.length
                     ? (
                         readiness.blockers.length
-                        + " blocker"
+                        + " practice blocker"
                         + (
                             readiness.blockers.length === 1
                               ? ""
                               : "s"
                           )
+                        + " · external gates pending"
                       )
-                    : "No verified blocker count"
+                    : "External Tower/provider gates pending"
                 )
               )}
 
