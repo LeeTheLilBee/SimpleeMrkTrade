@@ -386,7 +386,7 @@ def create_app(config=None):
             if op is None: abort(404)
         return render_template("soulaana.html",op=op,
             context=soulaana_context(op,intent),intents=(
-            ("overview","Overview"),("evidence","Evidence"),
+            ("overview","Overview"),("evidence","Evidence"),("diligence","Diligence"),
             ("economics","Economics"),("changes","What changed"),
             ("red_team","Red Team"),("next_action","Next action")))
 
