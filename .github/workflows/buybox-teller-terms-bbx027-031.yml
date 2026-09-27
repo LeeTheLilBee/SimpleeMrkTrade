@@ -1,0 +1,47 @@
+name: BuyBox Teller readiness terms BBX027-031
+
+on:
+  push:
+    branches:
+      - buybox-teller-readiness-terms-bbx027-031
+  pull_request:
+    paths:
+      - 'buybox/**'
+      - 'docs/BUYBOX_TELLER_READINESS_QUESTION_BBX027_031.md'
+      - '.github/workflows/buybox-teller-terms-bbx027-031.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-only-money-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install BuyBox source/runtime requirements
+        run: python -m pip install -r buybox/requirements.txt
+      - name: Pin exact Tower action contract
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 5dfab66f7ca1a99b885bdee036e84abc1b6abdf9
+          path: tower-contract
+          persist-credentials: false
+      - name: Pin metadata-only Vault evidence contract
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 1b9a3e191cf8f8b61adb59b790033983f767f42f
+          path: upstream-proof
+          persist-credentials: false
+      - name: Full BuyBox source regression and pinned cross-app boundaries
+        env:
+          BUYBOX_TOWER_ACTION_CONTRACT_PATH: tower-contract/tower/buybox_action_contract.py
+          BUYBOX_CANONICAL_CONTRACT_PATH: upstream-proof/vault/buybox_evidence_handoff_contract.py
+        run: python -m unittest discover -s buybox/tests -v
