@@ -18,7 +18,27 @@ REQUIRED_TABLES=frozenset((
     "work_orders","work_events","work_resource_events","work_appointments",
     "event_outbox","inspections","inspection_findings","inspection_resolutions",
     "turnovers","turnover_inspections","turnover_events",
+    "property_notices","notice_reads","appointment_events","emergency_reviews",
+    "work_entry_preferences","lease_member_events","work_evidence_refs",
 ))
+
+# Detect old local developer schemas without treating CREATE TABLE IF NOT EXISTS
+# as a migration. Never automatically mutate a database of unknown provenance.
+REQUIRED_COLUMNS={
+    "leases":("lease_ref","property_ref","unit_ref","resident_ref","status"),
+    "lease_members":("lease_ref","property_ref","unit_ref","subject_ref","status"),
+    "work_orders":("work_ref","property_ref","unit_ref","lease_ref","state",
+                   "emergency_flag","revision"),
+    "property_notices":("notice_ref","property_ref","unit_ref","lease_ref"),
+    "notice_reads":("notice_ref","subject_ref","lease_ref","property_ref","unit_ref"),
+    "work_appointments":("appointment_ref","work_ref","property_ref","unit_ref",
+                         "requested_by","state","revision"),
+    "work_resource_events":("event_ref","work_ref","action","resource_type",
+                            "reverses_event_ref"),
+    "emergency_reviews":("work_ref","reviewed_by","urgency"),
+    "turnovers":("turnover_ref","property_ref","unit_ref","lease_ref","state"),
+    "turnover_inspections":("turnover_ref","inspection_ref"),
+}
 
 
 class LocalIntegrityError(RuntimeError):
@@ -34,6 +54,15 @@ def inspect_local_store(store: GroundsStore) -> dict:
                 "SELECT name FROM sqlite_master WHERE type='table'",
             )}
             missing=sorted(REQUIRED_TABLES-tables)
+            missing_columns={}
+            for table,expected in REQUIRED_COLUMNS.items():
+                if table in tables:
+                    actual={row["name"] for row in db.execute(
+                        'PRAGMA table_info("'+table+'")',
+                    )}
+                    absent=sorted(set(expected)-actual)
+                    if absent:
+                        missing_columns[table]=absent
             integrity=[row[0] for row in db.execute("PRAGMA integrity_check")]
             foreign_keys=sum(1 for _ in db.execute("PRAGMA foreign_key_check"))
             checks={
@@ -78,12 +107,15 @@ def inspect_local_store(store: GroundsStore) -> dict:
                           AND i.property_ref=t.property_ref AND i.unit_ref=t.unit_ref
                           AND i.category='turnover' AND i.state='closed')""",
             }
-            issue_counts={name:db.execute(sql).fetchone()[0] for name,sql in checks.items()} if not missing else {}
-            healthy=(not missing and integrity==["ok"] and foreign_keys==0
+            issue_counts=({name:db.execute(sql).fetchone()[0] for name,sql in checks.items()}
+                          if not missing and not missing_columns else {})
+            healthy=(not missing and not missing_columns and integrity==["ok"]
+                     and foreign_keys==0
                      and all(count==0 for count in issue_counts.values()))
             return {
                 "mode":"local_fixture_only","healthy":healthy,
-                "missing_tables":missing,"sqlite_integrity_ok":integrity==["ok"],
+                "missing_tables":missing,"missing_columns":missing_columns,
+                "sqlite_integrity_ok":integrity==["ok"],
                 "foreign_key_violations":foreign_keys,
                 "domain_issue_counts":issue_counts,
                 "migration_certified":False,"production_restore_certified":False,
@@ -105,7 +137,13 @@ def make_local_fixture_backup(store: GroundsStore, destination: str|Path) -> dic
     source_report=inspect_local_store(store)
     if not source_report["healthy"]:
         raise LocalIntegrityError("refusing backup from an inconsistent local fixture")
+    created=False
     try:
+        # Exclusive creation closes the check-then-open race: another file
+        # appearing at destination must never be overwritten or later deleted.
+        with dest.open("xb"):
+            pass
+        created=True
         with sqlite3.connect(str(store.path)) as source:
             with sqlite3.connect(str(dest)) as target:
                 source.backup(target)
@@ -113,7 +151,7 @@ def make_local_fixture_backup(store: GroundsStore, destination: str|Path) -> dic
         if not dest_report["healthy"]:
             raise LocalIntegrityError("copied local fixture failed integrity validation")
     except Exception as exc:
-        if dest.is_file():
+        if created and dest.is_file():
             dest.unlink()
         if isinstance(exc,LocalIntegrityError):
             raise
