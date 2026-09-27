@@ -105,12 +105,18 @@ def test_replay_denied_across_distinct_database_connections():
     with tempfile.TemporaryDirectory() as dirname:
         path = Path(dirname) / "synthetic_source_nonce.sqlite3"
         with sqlite3.connect(path) as db:
-            assert receiver.consume_verified_ob_account_nonce(
-                db, verified, now_epoch=NOW,
+            assert receiver.consume_signed_ob_account_source(
+                db, payload["token"], shared_secret=SECRET,
+                expected_account_key=payload["account_key"],
+                expected_current_fingerprint=payload["fingerprint"],
+                now_epoch=NOW,
             ) is True
         with sqlite3.connect(path) as db:
-            assert receiver.consume_verified_ob_account_nonce(
-                db, verified, now_epoch=NOW,
+            assert receiver.consume_signed_ob_account_source(
+                db, payload["token"], shared_secret=SECRET,
+                expected_account_key=payload["account_key"],
+                expected_current_fingerprint=payload["fingerprint"],
+                now_epoch=NOW,
             ) is False
             assert db.execute(
                 "SELECT COUNT(*) FROM tower_obml_account_source_nonce"
@@ -125,8 +131,11 @@ def test_replay_ledger_never_commits_unrelated_caller_transaction():
         db.execute("INSERT INTO unrelated VALUES (1)")
         with pytest.raises(receiver.OBAccountSourceVerificationError,
                            match="FRESH_SOURCE_LEDGER_REQUIRED"):
-            receiver.consume_verified_ob_account_nonce(
-                db, verified, now_epoch=NOW,
+            receiver.consume_signed_ob_account_source(
+                db, payload["token"], shared_secret=SECRET,
+                expected_account_key=payload["account_key"],
+                expected_current_fingerprint=payload["fingerprint"],
+                now_epoch=NOW,
             )
         assert db.in_transaction
         db.rollback()
@@ -137,8 +146,11 @@ def test_expired_nonce_cannot_be_consumed_after_verification():
     payload = source_export()
     verified = verify(payload)
     with sqlite3.connect(":memory:") as db:
-        assert receiver.consume_verified_ob_account_nonce(
-            db, verified, now_epoch=NOW + 61,
+        assert receiver.consume_signed_ob_account_source(
+            db, payload["token"], shared_secret=SECRET,
+                expected_account_key=payload["account_key"],
+                expected_current_fingerprint=payload["fingerprint"],
+                now_epoch=NOW + 61,
         ) is False
 
 
@@ -205,6 +217,23 @@ def test_duplicate_json_field_and_oversized_token_denied():
         verify(payload, token=sign_raw(duplicate.encode("utf-8")))
     with pytest.raises(receiver.OBAccountSourceVerificationError):
         verify(payload, token="x" * 4097)
+
+
+def test_caller_constructed_verified_wrapper_is_not_accepted_by_public_replay_entrypoint():
+    payload = source_export()
+    forged = receiver.VerifiedOBAccountSource(claims={"nonce": "a" * 32})
+    with sqlite3.connect(":memory:") as db:
+        with pytest.raises(receiver.OBAccountSourceVerificationError):
+            receiver.consume_signed_ob_account_source(
+                db, forged, shared_secret=SECRET,
+                expected_account_key=payload["account_key"],
+                expected_current_fingerprint=payload["fingerprint"],
+                now_epoch=NOW,
+            )
+        assert db.execute(
+            "SELECT COUNT(*) FROM sqlite_master "
+            "WHERE type='table' AND name='tower_obml_account_source_nonce'"
+        ).fetchone()[0] == 0
 
 
 def test_verified_claims_immutable_and_no_public_grant_or_endpoint():
