@@ -134,6 +134,18 @@ class GroundsWebTests(unittest.TestCase):
                     csrf_secret=self.secret,local_fixture_only=False,
                 )
 
+    def test_health_liveness_is_nonprivate_and_readiness_stays_closed_for_fixtures(self):
+        live=self.invoke("/grounds/health/live")
+        self.assertEqual(live["status"],"200 OK")
+        self.assertEqual(live["json"],{"service":"grounds","live":True})
+        self.assertNotIn("resident",str(live["json"]))
+        self.assertEqual(live["headers"]["Cache-Control"],"no-store, private, max-age=0")
+        ready=self.invoke("/grounds/health/ready")
+        self.assertEqual(ready["status"],"503 Service Unavailable")
+        self.assertEqual(ready["json"],{"ready":False})
+        for path in ("/grounds","/grounds/app.js","/grounds/api/me"):
+            self.assertEqual(self.invoke(path)["status"],"401 Unauthorized")
+
     def test_every_get_and_static_page_requires_server_owned_scope(self):
         for url in ("/grounds","/grounds/app.js","/grounds/app.css",
                     "/grounds/api/me","/grounds/api/workspace?property_ref=p1&unit_ref=u1"):
