@@ -47,19 +47,19 @@ class GroundsCommunications:
         actor.require_unit(property_ref,unit_ref)
         _required(notice_ref,"notice_ref",max_length=128)
         with self.store.transaction(write=True) as db:
-            self.ops._resident_lease(db,actor,property_ref,unit_ref)
+            lease=self.ops._resident_lease(db,actor,property_ref,unit_ref)
             notice=db.execute(
                 """SELECT 1 FROM property_notices WHERE notice_ref=? AND property_ref=?
-                   AND (unit_ref IS NULL OR unit_ref=?)""",
-                (notice_ref,property_ref,unit_ref),
+                   AND (unit_ref IS NULL OR (unit_ref=? AND lease_ref=?))""",
+                (notice_ref,property_ref,unit_ref,lease["lease_ref"]),
             ).fetchone()
             if notice is None:
                 raise AccessDenied("notice unavailable")
             db.execute(
                 """INSERT OR IGNORE INTO notice_reads
-                   (notice_ref,subject_ref,property_ref,unit_ref,read_at)
-                   VALUES(?,?,?,?,?)""",
-                (notice_ref,actor.subject_ref,property_ref,unit_ref,_now()),
+                   (notice_ref,subject_ref,lease_ref,property_ref,unit_ref,read_at)
+                   VALUES(?,?,?,?,?,?)""",
+                (notice_ref,actor.subject_ref,lease["lease_ref"],property_ref,unit_ref,_now()),
             )
             return {"notice_ref":notice_ref,"read_in_app":True,
                     "delivery_confirmed":False,"legal_service_proven":False}
@@ -105,7 +105,8 @@ class GroundsCommunications:
 
     def _visible(self,db,actor,appointment_ref):
         item=db.execute(
-            """SELECT a.*,w.created_by,w.assigned_to,w.state AS work_state
+            """SELECT a.*,w.created_by,w.assigned_to,w.lease_ref AS work_lease_ref,
+                      w.state AS work_state
                FROM work_appointments a JOIN work_orders w ON w.work_ref=a.work_ref
                WHERE a.appointment_ref=?""",(appointment_ref,),
         ).fetchone()
@@ -114,7 +115,8 @@ class GroundsCommunications:
         if actor.role=="resident":
             if item["requested_by"]!=actor.subject_ref or item["created_by"]!=actor.subject_ref:
                 raise AccessDenied("appointment unavailable")
-            self.ops._resident_lease(db,actor,item["property_ref"],item["unit_ref"])
+            # Recheck the *exact work lease*, not only current occupancy of the unit.
+            self.ops._visible_order(db,actor,item["work_ref"])
         elif actor.role=="maintenance_technician":
             if item["assigned_to"]!=actor.subject_ref or item["work_ref"] not in actor.assigned_work_refs:
                 raise AccessDenied("appointment unavailable")
@@ -144,12 +146,14 @@ class GroundsCommunications:
                 raise GroundsConflict("appointment state or revision changed")
             if item["work_state"]=="closed":
                 raise GroundsConflict("closed work order cannot be scheduled")
-            # No staff proposal for a requester who has lost active occupancy.
+            # A different active lease for the same person/unit cannot revive an
+            # old lease's request or appointment.
             member=db.execute(
                 """SELECT 1 FROM lease_members m JOIN leases l ON l.lease_ref=m.lease_ref
                    WHERE m.subject_ref=? AND m.property_ref=? AND m.unit_ref=?
-                   AND m.status='active' AND l.status='active'""",
-                (item["requested_by"],item["property_ref"],item["unit_ref"]),
+                     AND m.lease_ref=? AND m.status='active' AND l.status='active'""",
+                (item["requested_by"],item["property_ref"],item["unit_ref"],
+                 item["work_lease_ref"]),
             ).fetchone()
             if member is None:
                 raise AccessDenied("resident membership no longer active")
