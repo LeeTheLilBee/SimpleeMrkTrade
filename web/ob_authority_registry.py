@@ -2083,6 +2083,64 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "recovery_review"
+] = _record(
+    concept_key="recovery_review",
+    authority_id="OB_RECOVERY_REVIEW_V1",
+    authority_class="FAIL_CLOSED_SOURCE_RECOVERY_INSPECTION",
+    implementation_ref="web/ob_recovery_review.py",
+    implementation_role="CANONICAL_ATTENTION_BOUND_OUTAGE_CONFLICT_STALE_RECONCILIATION_REVIEW",
+    owns=(
+        "immutable account/component-bound outage, stale, unknown, conflict and restoration source observations",
+        "distinct chronological source-revision and payload-hash restoration evidence",
+        "non-actuating owner review of required NEW canonical source reconciliation",
+    ),
+    inputs=("OB_OWNER_ATTENTION_V1",),
+    triggers=(
+        "explicit verified owner attention and complete upstream receipt lineage",
+        "bounded owner/source-labelled recovery observations at an explicit timezone-aware as-of",
+    ),
+    effects=(
+        "emit canonical safety BLOCK retention or restrictive source recovery HOLD states",
+        "require fresh independent market, identity, financial, runtime and owner permission verification",
+        "emit deterministic non-money-bearing recovery proof reference",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "automatic provider switch, restart, replay, safety/kill-switch clear or broker submission",
+        "treat repeated self-asserted hashes as bank/broker authentication",
+        "automatically release protected reserves or overwrite canonical Effective Policy",
+        "promote simulated evidence into actual broker position, balance or performance",
+        "direct BuyBox access or bypass Tower/Teller readiness controls",
+    ),
+    failure_behavior=(
+        "Tampered OBATTN or recovery observation, duplicate source, future or stale receipt, "
+        "cross-account/component mismatch and out-of-order observations fail closed. "
+        "Restored source claims require a newly verified upstream canonical review."
+    ),
+    explanation=(
+        "Owner sees source-labelled component state, blocked recovery reasons and specific "
+        "revalidation gates without any automatic runtime action."
+    ),
+    evidence=(
+        "verified OBATTN upstream IDs and hashes",
+        "per-component source revision, payload integrity and observation chronology",
+        "recovery review ID/hash with non-money-bearing Tower-required reference",
+    ),
+    review_visibility=(
+        "Owner-only recovery inspection; no institution authenticity, live readiness or real balance claim."
+    ),
+    temporal_validity="EXPLICIT_AS_OF_AND_SOURCE_OBSERVATION_EXPIRY_BOUND",
+    deterministic=True,
+    learning_boundary=(
+        "Recovery source claims cannot widen risk, dismiss safety, change modes, grant execution, "
+        "or train on owner-asserted outcomes as actual broker truth."
+    ),
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {

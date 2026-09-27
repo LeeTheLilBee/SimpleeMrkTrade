@@ -1,0 +1,31 @@
+name: OBRES001-005 fail-closed recovery review
+on:
+  push:
+    branches:
+      - 'obres001-005-*'
+  pull_request:
+    paths:
+      - 'web/ob_recovery_review.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_obres001_005_fail_closed_source_recovery.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - '.github/workflows/obres001-005-recovery.yml'
+permissions:
+  contents: read
+jobs:
+  recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax and focused fail-closed recovery
+        run: |
+          python -m py_compile web/ob_recovery_review.py tests/test_obres001_005_fail_closed_source_recovery.py
+          python -m pytest -q tests/test_obres001_005_fail_closed_source_recovery.py tests/test_obattn001_005_owner_attention.py tests/test_obsoul001_005_source_bound_explanations.py tests/test_obauth001_005_canonical_authority_registry.py
+      - name: Complete repository regression
+        run: python -m pytest -q tests
