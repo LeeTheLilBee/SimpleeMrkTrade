@@ -23,7 +23,7 @@ from web.ob_on_demand_simulation_session import (
 
 SCHEMA_VERSION = "OBSIM_EXPLICIT_OWNER_REHEARSAL_INPUT_V1"
 DESK_VERSION = "OBSIM_LOCAL_OWNER_REHEARSAL_DESK_V1"
-ROOT_FIELDS = frozenset(("schema_version", "source_kind", "frame", "calendar", "decisions"))
+ROOT_FIELDS = frozenset(("schema_version", "source_kind", "account_key", "frame", "calendar", "decisions"))
 FRAME_FIELDS = frozenset((
     "frame_id", "observed_at", "symbol", "instrument_kind", "contract_id",
     "mark_price", "underlying_price", "source_reference",
@@ -70,7 +70,7 @@ def _positive_number(value: object, name: str) -> float:
 
 
 def build_explicit_owner_rehearsal_step(
-    payload: Mapping[str, object], *, source_kind: SourceKind,
+    payload: Mapping[str, object], *, source_kind: SourceKind, account_key: str,
 ) -> ReplayStep:
     """Build only from all fields explicitly declared; never invent a price or decision.
 
@@ -83,6 +83,8 @@ def build_explicit_owner_rehearsal_step(
     raw = _exact(payload, ROOT_FIELDS, "owner rehearsal input")
     if raw["schema_version"] != SCHEMA_VERSION or raw["source_kind"] != source_kind.value:
         raise ValueError("owner rehearsal schema/source kind mismatch")
+    if _text(raw["account_key"], "account key") != account_key:
+        raise ValueError("owner rehearsal account scope mismatch")
     frame = _exact(raw["frame"], FRAME_FIELDS, "market frame")
     calendar = _exact(raw["calendar"], CALENDAR_FIELDS, "calendar")
     supplied = _exact(
@@ -208,6 +210,7 @@ class LocalOwnerRehearsalDesk:
             raise ValueError("owner desk is not due for an explicit replay input")
         step = build_explicit_owner_rehearsal_step(
             payload, source_kind=self._session.source_kind,
+            account_key=self._session.initial_harness.account_key,
         )
         next_session = tick_session(self._session, step, now=now, store=self._store)
         self._session = next_session
