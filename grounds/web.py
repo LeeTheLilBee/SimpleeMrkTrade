@@ -21,7 +21,7 @@ import re
 from pathlib import Path
 from typing import Callable
 from urllib.parse import parse_qs
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from .access import AccessDenied, TowerScope
 from .communications import GroundsCommunications
@@ -138,12 +138,30 @@ class SessionCSRF:
 
     def token(self,scope:TowerScope)->str:
         scope.assert_active()
-        payload="grounds-csrf-v1\x1f"+scope.session_ref+"\x1f"+scope.subject_ref+"\x1f"+scope.role+"\x1f"+str(scope.expires_at)
+        # The short-lived Tower handoff expiry may rotate while the verified
+        # *session* stays active. Tie CSRF to that session, not a ticket TTL.
+        # This is not an authorization grant: receiver + assert_active run on
+        # every request, and revocation must be enforced by Tower.
+        payload="grounds-csrf-v2\x1f"+scope.session_ref+"\x1f"+scope.subject_ref+"\x1f"+scope.role
         return hmac.new(self._secret,payload.encode("utf-8"),hashlib.sha256).hexdigest()
 
     def verify(self,scope:TowerScope,token:str)->bool:
         return (isinstance(token,str) and len(token)==64
                 and hmac.compare_digest(self.token(scope),token))
+
+def _idempotency_key(environ):
+    """Require a browser-created UUIDv4 for create actions, no silent fallback."""
+    value=environ.get("HTTP_X_GROUNDS_IDEMPOTENCY_KEY")
+    if not isinstance(value,str) or len(value)!=36:
+        raise GroundsBadRequest("Idempotency key required")
+    try:
+        token=UUID(value)
+    except (ValueError,AttributeError) as exc:
+        raise GroundsBadRequest("Invalid idempotency key") from exc
+    if token.version!=4 or str(token)!=value:
+        raise GroundsBadRequest("Invalid idempotency key")
+    return value
+
 
 class GroundsWebApp:
     """Mount ONLY behind verified Tower request middleware and private datastore.
@@ -179,6 +197,16 @@ class GroundsWebApp:
         self.ops=GroundsOperations(store)
         self.communications=GroundsCommunications(store)
         self.safety=GroundsSafety(store)
+
+    def _resource_ref(self,actor,kind,key,*refs):
+        """Opaque stable identifier; session/subject/target bound, never guessable."""
+        actor.assert_active()
+        message=json.dumps(
+            ["grounds-create-v1",actor.session_ref,actor.subject_ref,actor.role,
+             kind,key,*refs],ensure_ascii=False,separators=(",",":"),
+        ).encode("utf-8")
+        digest=hmac.new(self.csrf._secret,message,hashlib.sha256).hexdigest()[:40]
+        return ("work_" if kind=="work" else "appt_")+digest
 
     def _response(self,start_response,status,payload,content_type="application/json; charset=utf-8"):
         raw=(json.dumps(payload,ensure_ascii=False,separators=(",",":"),allow_nan=False).encode("utf-8")
@@ -269,7 +297,28 @@ class GroundsWebApp:
                 body["emergency_flag"],
                 _bounded_text(body["entry_permission"],"entry_permission",32),
             )
-            return self.ops.submit_maintenance(actor,work_ref=uuid4().hex,intake=intake)
+            work_ref=self._resource_ref(
+                actor,"work",_idempotency_key(environ),intake.property_ref,intake.unit_ref,
+            )
+            try:
+                return self.ops.submit_maintenance(actor,work_ref=work_ref,intake=intake)
+            except GroundsConflict:
+                # Unique resource ref makes uncertain-network retries safe after
+                # first commit; no stale/other-lease data is returned.
+                existing=self.ops.get_work_order(actor,work_ref=work_ref)
+                expected={
+                    "property_ref":intake.property_ref,"unit_ref":intake.unit_ref,
+                    "created_by":actor.subject_ref,"category":intake.category,
+                    "description":intake.description,
+                    "emergency_flag":int(intake.emergency_flag),
+                    "entry_permission":intake.entry_permission,
+                }
+                if any(existing.get(key)!=value for key,value in expected.items()):
+                    raise GroundsConflict("idempotency key reused with different request")
+                return {"work_ref":work_ref,"state":existing["state"],
+                        "emergency_flag":bool(existing["emergency_flag"]),
+                        "emergency_dispatch_confirmed":False,"notification_sent":False,
+                        "replayed":True}
         if path=="/grounds/api/notice-read":
             _exact(body,{"property_ref","unit_ref","notice_ref"})
             return self.communications.mark_notice_read(
@@ -278,10 +327,28 @@ class GroundsWebApp:
                 notice_ref=_ref(body["notice_ref"],"notice_ref"))
         if path=="/grounds/api/appointment/request":
             _exact(body,{"work_ref","start_at","end_at"})
-            return self.communications.request_appointment(
-                actor,work_ref=_ref(body["work_ref"],"work_ref"),appointment_ref=uuid4().hex,
-                start_at=_bounded_text(body["start_at"],"start_at",64),
-                end_at=_bounded_text(body["end_at"],"end_at",64))
+            from .communications import _slot
+            work_ref=_ref(body["work_ref"],"work_ref")
+            start_at=_bounded_text(body["start_at"],"start_at",64)
+            end_at=_bounded_text(body["end_at"],"end_at",64)
+            appointment_ref=self._resource_ref(
+                actor,"appointment",_idempotency_key(environ),work_ref,
+            )
+            try:
+                return self.communications.request_appointment(
+                    actor,work_ref=work_ref,appointment_ref=appointment_ref,
+                    start_at=start_at,end_at=end_at)
+            except GroundsConflict:
+                existing=self.communications.appointment(
+                    actor,appointment_ref=appointment_ref,
+                )
+                normalized=_slot(start_at,end_at)
+                if (existing["work_ref"]!=work_ref or
+                    (existing["start_at"],existing["end_at"])!=normalized):
+                    raise GroundsConflict("idempotency key reused with different appointment")
+                return {"appointment_ref":appointment_ref,"state":existing["state"],
+                        "revision":existing["revision"],"dispatch_confirmed":False,
+                        "entry_consent_granted":False,"replayed":True}
         if path=="/grounds/api/appointment/propose":
             _exact(body,{"appointment_ref","start_at","end_at","expected_revision"})
             return self.communications.propose_appointment(
