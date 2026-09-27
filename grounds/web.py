@@ -42,6 +42,8 @@ _NO_CACHE=[("Cache-Control","no-store, private, max-age=0"),
             "frame-ancestors 'none'; script-src 'self'; style-src 'self'; "
             "connect-src 'self'; img-src 'self'; font-src 'self'")]
 _ROUTES={
+    ("GET","/grounds/health/live"),
+    ("GET","/grounds/health/ready"),
     ("GET","/grounds"),
     ("GET","/grounds/app.css"),
     ("GET","/grounds/app.js"),
@@ -195,6 +197,7 @@ class GroundsWebApp:
         else:
             raise GroundsWebConfigurationError("supported transaction-backed Grounds store required")
         self.store=store
+        self.local_fixture_only=(type(store) is GroundsStore)
         if (staff_directory is None)!=(staff_resolver is None):
             raise GroundsWebConfigurationError("Tower staff roster and resolver must be configured together")
         if staff_directory is not None and (
@@ -231,6 +234,28 @@ class GroundsWebApp:
         path=environ.get("PATH_INFO","")
         if (method,path) not in _ROUTES:
             return self._response(start_response,"404 Not Found",{"error":"not_found"})
+        if path=="/grounds/health/live":
+            # Infrastructure-only liveness. It NEVER grants access or asserts
+            # production acceptance. Avoid private tenant/provider details.
+            return self._response(start_response,"200 OK",{"service":"grounds","live":True})
+        if path=="/grounds/health/ready":
+            # A green source test, fixture DB, or self-reported scope can never
+            # promote a service to hosted request-readiness.
+            if self.local_fixture_only:
+                return self._response(start_response,"503 Service Unavailable",{"ready":False})
+            check=getattr(self.receiver,"health_check",None)
+            if not callable(check):
+                return self._response(start_response,"503 Service Unavailable",{"ready":False})
+            try:
+                if check() is not True:
+                    raise GroundsWebConfigurationError("Tower receiver not current")
+                with self.store.transaction() as db:
+                    row=db.execute("SELECT 1").fetchone()
+                    if row is None or row[0]!=1:
+                        raise GroundsWebConfigurationError("store unavailable")
+            except Exception:
+                return self._response(start_response,"503 Service Unavailable",{"ready":False})
+            return self._response(start_response,"200 OK",{"ready":True})
         # No API or UI is ever served to an unverified requester. Test adapters
         # must never be installed on a public route.
         try:
