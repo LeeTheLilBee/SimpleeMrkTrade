@@ -88,6 +88,113 @@ class CommunicationsTests(unittest.TestCase):
                 self.primary,property_ref="p1",unit_ref="u1",notice_ref="nonexistent",
             )
 
+    def test_unit_notice_needs_current_lease_and_read_is_per_lease(self):
+        self.ops.publish_notice(
+            self.manager,property_ref="p1",notice_ref="public1",
+            headline="General notice",body="Property wide example",
+        )
+        self.ops.publish_notice(
+            self.manager,property_ref="p1",unit_ref="u1",notice_ref="unit-l1",
+            headline="Previous lease confidential notice",body="Old lease only",
+        )
+        for ref in ("public1","unit-l1"):
+            self.comms.mark_notice_read(
+                self.primary,property_ref="p1",unit_ref="u1",notice_ref=ref,
+            )
+        self.assertEqual(
+            {x["notice_ref"]:x["read_in_app"] for x in self.ops.resident_home(
+                self.primary,property_ref="p1",unit_ref="u1",
+            )["notices"]},
+            {"public1":1,"unit-l1":1},
+        )
+        self.ops.end_lease(
+            self.manager,property_ref="p1",lease_ref="l1",expected_revision=1,
+        )
+        with self.assertRaises(GroundsConflict):
+            self.ops.publish_notice(
+                self.manager,property_ref="p1",unit_ref="u1",notice_ref="vacant",
+                headline="Vacant",body="Cannot address a nonexistent current lease",
+            )
+        # Fixture-only representation of independently verified turnover.
+        # No production caller is permitted to change readiness with raw SQL.
+        with self.ops.store.transaction(write=True) as db:
+            db.execute(
+                "UPDATE units SET lifecycle='ready' WHERE property_ref='p1' AND unit_ref='u1'",
+            )
+        self.ops.activate_lease(
+            self.manager,property_ref="p1",unit_ref="u1",lease_ref="l2",
+            resident_ref="resident1",start_on="2028-01-01",end_on="2028-12-31",
+        )
+        home=self.ops.resident_home(self.primary,property_ref="p1",unit_ref="u1")
+        self.assertEqual(
+            [x["notice_ref"] for x in home["notices"]],["public1"],
+        )
+        self.assertEqual(home["notices"][0]["read_in_app"],0)
+        with self.assertRaises(AccessDenied):
+            self.comms.mark_notice_read(
+                self.primary,property_ref="p1",unit_ref="u1",notice_ref="unit-l1",
+            )
+        self.comms.mark_notice_read(
+            self.primary,property_ref="p1",unit_ref="u1",notice_ref="public1",
+        )
+        with self.ops.store.transaction() as db:
+            prior=db.execute(
+                """SELECT read_at FROM notice_reads
+                   WHERE notice_ref='public1' AND lease_ref='l1' AND subject_ref='resident1'""",
+            ).fetchone()
+            current=db.execute(
+                """SELECT read_at FROM notice_reads
+                   WHERE notice_ref='public1' AND lease_ref='l2' AND subject_ref='resident1'""",
+            ).fetchone()
+            self.assertIsNotNone(prior)
+            self.assertIsNotNone(current)
+
+    def test_old_lease_appointment_cannot_be_viewed_or_reproposed_after_releasing_unit(self):
+        start,end=times()
+        self.comms.request_appointment(
+            self.primary,work_ref="w1",appointment_ref="old-ap",
+            start_at=start,end_at=end,
+        )
+        self.ops.end_lease(
+            self.manager,property_ref="p1",lease_ref="l1",expected_revision=1,
+        )
+        with self.ops.store.transaction(write=True) as db:
+            db.execute(
+                "UPDATE units SET lifecycle='ready' WHERE property_ref='p1' AND unit_ref='u1'",
+            )
+        self.ops.activate_lease(
+            self.manager,property_ref="p1",unit_ref="u1",lease_ref="l2",
+            resident_ref="resident1",start_on="2028-01-01",end_on="2028-12-31",
+        )
+        with self.assertRaises(AccessDenied):
+            self.comms.appointment(self.primary,appointment_ref="old-ap")
+        with self.assertRaises(AccessDenied):
+            self.comms.history(self.primary,appointment_ref="old-ap")
+        with self.assertRaises(AccessDenied):
+            self.comms.accept_appointment(
+                self.primary,appointment_ref="old-ap",expected_revision=1,
+            )
+        with self.assertRaises(AccessDenied):
+            self.comms.cancel_appointment(
+                self.primary,appointment_ref="old-ap",expected_revision=1,
+            )
+        with self.assertRaises(AccessDenied):
+            self.comms.propose_appointment(
+                self.manager,appointment_ref="old-ap",start_at=start,
+                end_at=end,expected_revision=1,
+            )
+        self.ops.submit_maintenance(
+            self.primary,work_ref="new-job",
+            intake=MaintenanceIntake(
+                "p1","u1","plumbing","Current lease request",False,"contact_first",
+            ),
+        )
+        valid=self.comms.request_appointment(
+            self.primary,work_ref="new-job",appointment_ref="new-ap",
+            start_at=start,end_at=end,
+        )
+        self.assertEqual(valid["state"],"requested")
+
     def test_appointment_request_proposal_acceptance_without_entry_authorization(self):
         start,end=times()
         created=self.comms.request_appointment(
