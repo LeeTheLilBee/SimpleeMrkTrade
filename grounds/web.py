@@ -51,7 +51,9 @@ _ROUTES={
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
     ("GET","/grounds/api/entry-preference"),
+    ("GET","/grounds/api/technicians"),
     ("POST","/grounds/api/work"),
+    ("POST","/grounds/api/work/assign"),
     ("POST","/grounds/api/notice-read"),
     ("POST","/grounds/api/appointment/request"),
     ("POST","/grounds/api/appointment/propose"),
@@ -175,7 +177,8 @@ class GroundsWebApp:
     receiver and must not install a fixture callback on a public ingress.
     """
     def __init__(self,store:GroundsStoreBase,*,tower_receiver:Callable,
-                 csrf_secret:bytes,local_fixture_only:bool=False):
+                 csrf_secret:bytes,local_fixture_only:bool=False,
+                 staff_directory:Callable|None=None,staff_resolver:Callable|None=None):
         if not callable(tower_receiver):
             raise GroundsWebConfigurationError("server-owned Tower receiver required")
         if type(store) is GroundsStore:
@@ -192,7 +195,15 @@ class GroundsWebApp:
         else:
             raise GroundsWebConfigurationError("supported transaction-backed Grounds store required")
         self.store=store
+        if (staff_directory is None)!=(staff_resolver is None):
+            raise GroundsWebConfigurationError("Tower staff roster and resolver must be configured together")
+        if staff_directory is not None and (
+            not callable(staff_directory) or not callable(staff_resolver)
+        ):
+            raise GroundsWebConfigurationError("server-owned Tower staff adapters must be callable")
         self.receiver=tower_receiver
+        self.staff_directory=staff_directory
+        self.staff_resolver=staff_resolver
         self.csrf=SessionCSRF(csrf_secret)
         self.ops=GroundsOperations(store)
         self.communications=GroundsCommunications(store)
@@ -285,6 +296,46 @@ class GroundsWebApp:
             if path=="/grounds/api/entry-preference":
                 q=_query(environ,{"work_ref"})
                 return self.safety.entry_preference(actor,work_ref=_ref(q["work_ref"],"work_ref"))
+            if path=="/grounds/api/technicians":
+                actor.require_role("owner","property_manager","maintenance_supervisor")
+                q=_query(environ,{"property_ref"})
+                property_ref=_ref(q["property_ref"],"property_ref")
+                actor.require_property(property_ref)
+                if self.staff_directory is None:
+                    return {"connected":False,"technicians":[]}
+                entries=self.staff_directory(actor,property_ref)
+                if not isinstance(entries,list) or len(entries)>100:
+                    raise GroundsWebConfigurationError("invalid Tower staff directory")
+                refs=set()
+                safe=[]
+                for item in entries:
+                    if not isinstance(item,dict) or set(item)!={"staff_ref","label"}:
+                        raise GroundsWebConfigurationError("invalid Tower staff directory")
+                    ref=_ref(item["staff_ref"],"staff_ref")
+                    label=_bounded_text(item["label"],"staff_label",100)
+                    if ref in refs:
+                        raise GroundsWebConfigurationError("duplicate Tower staff identity")
+                    refs.add(ref)
+                    safe.append({"staff_ref":ref,"label":label})
+                return {"connected":True,"technicians":safe}
+        if path=="/grounds/api/work/assign":
+            _exact(body,{"work_ref","technician_ref","expected_revision"})
+            actor.require_role("owner","property_manager","maintenance_supervisor")
+            work_ref=_ref(body["work_ref"],"work_ref")
+            technician_ref=_ref(body["technician_ref"],"technician_ref")
+            if self.staff_resolver is None:
+                raise GroundsConflict("Tower technician roster is not connected")
+            work=self.ops.get_work_order(actor,work_ref=work_ref)
+            tech=self.staff_resolver(actor,work["property_ref"],work_ref,technician_ref)
+            if (not isinstance(tech,TowerScope) or
+                tech.subject_ref!=technician_ref or tech.role!="maintenance_technician"):
+                raise AccessDenied("certified technician assignment unavailable")
+            tech.assert_active()
+            tech.require_property(work["property_ref"])
+            return self.ops.assign_work_order(
+                actor,work_ref=work_ref,technician=tech,
+                expected_revision=_revision(body["expected_revision"]),
+            )
         if path=="/grounds/api/work":
             _exact(body,{"property_ref","unit_ref","category","description","emergency_flag","entry_permission"})
             if type(body["emergency_flag"]) is not bool:
