@@ -129,6 +129,13 @@ class FinancingWebTests(unittest.TestCase):
         self.assertEqual(financing_snapshot(self.current())["options"][0]["analysis"]["teller_readiness"],
                          "UNKNOWN")
 
+    def test_tampered_encrypted_original_cannot_support_lender_terms(self):
+        evidence,artifact=self.original()
+        (self.docs/artifact["storage_reference"]).write_bytes(b"tampered-ciphertext")
+        response=self.terms(evidence["id"])
+        self.assertEqual(response.status_code,409)
+        self.assertFalse(self.current().get("financing_options"))
+
     def test_anonymous_cannot_access_documents_or_finance(self):
         e,a=self.original()
         anon=self.app.test_client()
