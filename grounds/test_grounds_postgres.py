@@ -5,6 +5,8 @@ Never point GROUNDS_TEST_POSTGRES_URL at live or shared customer data.
 """
 from __future__ import annotations
 
+import io
+import json
 import os
 import re
 import sqlite3
@@ -23,6 +25,7 @@ from grounds.postgres import (
 from grounds.safety import GroundsSafety
 from grounds.test_grounds_operations import fixture_scope
 from grounds.work_resources import GroundsWorkResources
+from grounds.web import GroundsWebApp
 
 URL=os.environ.get("GROUNDS_TEST_POSTGRES_URL")
 
@@ -76,6 +79,89 @@ class PostgresGroundsTests(unittest.TestCase):
             self.manager,property_ref=self.id,unit_ref=self.u,lease_ref=self.l,
             resident_ref="resident",start_on="2026-09-26",end_on="2027-09-25",
         )
+
+    def test_real_postgres_wsgi_browser_command_to_durable_rows(self):
+        # This remains an in-process synthetic Tower receiver, NEVER a public
+        # authentication route. The HTTP layer and persistence are REAL code/PG.
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda environ:environ["test.fixture.actor"],
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        def call(path,actor,*,method="GET",payload=None,key=None):
+            raw=json.dumps(payload).encode("utf-8") if payload is not None else b""
+            query=""
+            if "?" in path:
+                path,query=path.split("?",1)
+            env={
+                "REQUEST_METHOD":method,"PATH_INFO":path,"QUERY_STRING":query,
+                "CONTENT_TYPE":"application/json","CONTENT_LENGTH":str(len(raw)),
+                "wsgi.input":io.BytesIO(raw),"test.fixture.actor":actor,
+            }
+            if method=="POST":
+                env["HTTP_X_GROUNDS_CSRF"]=app.csrf.token(actor)
+                if key:
+                    env["HTTP_X_GROUNDS_IDEMPOTENCY_KEY"]=key
+            response={}
+            def start(status,headers):
+                response["status"]=status
+                response["headers"]=dict(headers)
+            data=b"".join(app(env,start))
+            response["json"]=json.loads(data)
+            return response
+        payload={
+            "property_ref":self.id,"unit_ref":self.u,"category":"plumbing",
+            "description":"Actual Postgres-backed WSGI synthetic check",
+            "emergency_flag":False,"entry_permission":"contact_first",
+        }
+        key=str(uuid4())
+        first=call("/grounds/api/work",self.resident,method="POST",payload=payload,key=key)
+        self.assertEqual(first["status"],"201 Created")
+        repeat=call("/grounds/api/work",self.resident,method="POST",payload=payload,key=key)
+        self.assertTrue(repeat["json"]["replayed"])
+        self.assertEqual(first["json"]["work_ref"],repeat["json"]["work_ref"])
+        work=first["json"]["work_ref"]
+        listing=call(
+            "/grounds/api/workspace?property_ref="+self.id+"&unit_ref="+self.u,
+            self.resident,
+        )
+        self.assertEqual(listing["json"]["work_orders"][0]["work_ref"],work)
+        self.assertIsNone(listing["json"]["rent"]["amount_due_cents"])
+        start=datetime.now(timezone.utc)+timedelta(days=3)
+        ap_payload={"work_ref":work,"start_at":start.isoformat(),
+                    "end_at":(start+timedelta(hours=2)).isoformat()}
+        ap_key=str(uuid4())
+        ap=call("/grounds/api/appointment/request",self.resident,method="POST",
+                payload=ap_payload,key=ap_key)
+        self.assertEqual(ap["status"],"201 Created")
+        ap_retry=call("/grounds/api/appointment/request",self.resident,method="POST",
+                      payload=ap_payload,key=ap_key)
+        self.assertTrue(ap_retry["json"]["replayed"])
+        self.assertEqual(ap_retry["json"]["appointment_ref"],ap["json"]["appointment_ref"])
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM work_orders WHERE property_ref=?",(self.id,),
+            ).fetchone()[0],1)
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM work_events WHERE work_ref=?",(work,),
+            ).fetchone()[0],1)
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM work_appointments WHERE work_ref=?",(work,),
+            ).fetchone()[0],1)
+        outsider=fixture_scope("wrong","resident",(self.id,),(self.u,))
+        self.assertEqual(call("/grounds/api/work?work_ref="+work,outsider)["status"],
+                         "404 Not Found")
+        self.ops.end_lease(self.manager,property_ref=self.id,lease_ref=self.l,
+                           expected_revision=1)
+        with self.store.transaction(write=True) as db:
+            # CI-only stand-in for independent proof-gated turnover; not API.
+            db.execute("UPDATE units SET lifecycle='ready' WHERE unit_ref=?",(self.u,))
+        self.ops.activate_lease(self.manager,property_ref=self.id,unit_ref=self.u,
+                                lease_ref="next-"+self.l,resident_ref="resident",
+                                start_on="2028-01-01",end_on="2028-12-31")
+        self.assertEqual(call("/grounds/api/work?work_ref="+work,self.resident)["status"],
+                         "404 Not Found")
+        self.assertEqual(call("/grounds/api/appointments?work_ref="+work,self.resident)["status"],
+                         "404 Not Found")
 
     def test_schema_does_not_auto_migrate_and_row_shape(self):
         ready=self.store.assert_schema_ready()
