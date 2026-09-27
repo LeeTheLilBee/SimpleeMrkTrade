@@ -137,6 +137,9 @@ def test_exact_current_active_authorities_are_registered():
         "adverse_guard_review":
             "OB_ADVERSE_GUARD_REVIEW_V1",
 
+        "soulaana_explanation":
+            "OB_SOULAANA_EXPLANATION_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
