@@ -257,6 +257,13 @@ class CommunicationsTests(unittest.TestCase):
                 self.primary,work_ref="w1",appointment_ref="too-long",
                 start_at=start,end_at=(datetime.fromisoformat(start)+timedelta(hours=9)).isoformat(),
             )
+        too_far=(datetime.now(timezone.utc)+timedelta(days=367)).isoformat()
+        even_later=(datetime.now(timezone.utc)+timedelta(days=367,hours=2)).isoformat()
+        with self.assertRaises(GroundsConflict):
+            self.comms.request_appointment(
+                self.primary,work_ref="w1",appointment_ref="too-far",
+                start_at=too_far,end_at=even_later,
+            )
         with self.assertRaises(AccessDenied):
             self.comms.request_appointment(
                 self.other,work_ref="w1",appointment_ref="other",start_at=start,end_at=end,
