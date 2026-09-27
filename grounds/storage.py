@@ -215,6 +215,8 @@ CREATE TABLE IF NOT EXISTS work_appointments (
   FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref)
 );
 CREATE INDEX IF NOT EXISTS appointments_per_work ON work_appointments(work_ref,state);
+CREATE UNIQUE INDEX IF NOT EXISTS one_active_appointment_per_work
+  ON work_appointments(work_ref) WHERE state!='cancelled';
 CREATE TABLE IF NOT EXISTS appointment_events (
   event_ref TEXT PRIMARY KEY,
   appointment_ref TEXT NOT NULL REFERENCES work_appointments(appointment_ref),
