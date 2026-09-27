@@ -39,6 +39,7 @@ def claim(preflight, **changes):
         verified_tower_attestation=True,
         capability_scope={
             "owner_readiness_review_only": True,
+            "manual_broker_placement_by_human_outside_ob": True,
             **{name: False for name in FORBIDDEN_GRANTS},
         },
     )
@@ -132,6 +133,11 @@ def test_obml008_missing_fields_extra_secret_and_forbidden_caps_do_not_leak():
     c = evaluate(preflight, recovery, evidence, owner, caps)
     assert "TOWER_FORBIDDEN_EXECUTION_CAPABILITY_CLAIM" in c.reasons
     assert not c.broker_api_submission
+    extended = claim(preflight)
+    extended["capability_scope"] = {**extended["capability_scope"], "unattended_live": True}
+    extra = evaluate(preflight, recovery, evidence, owner, extended)
+    assert "TOWER_UNKNOWN_OR_MISSING_CAPABILITY_SCOPE_FIELD" in extra.reasons
+    assert not extra.structural_match_only
 
 
 def test_obml009_canonical_block_remains_block_under_claim_and_bad_source_rejected():
