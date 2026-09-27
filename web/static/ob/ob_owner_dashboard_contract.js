@@ -110,20 +110,11 @@
   const safeArray = (value) => Array.isArray(value) ? value : [];
 
   const sourceLooksVerified = (payload) => {
-    if (!payload || typeof payload !== "object") return false;
-
-    const source = safeText(payload.source, "").toLowerCase();
-
-    if (
-      source.includes("fallback") ||
-      source.includes("preview") ||
-      source.includes("demo")
-    ) {
-      return false;
-    }
-
-    if (payload.verified === false) return false;
-    return true;
+    // Keep the public method name for backward compatibility, but NEVER
+    // treat an HTTP 200 or a JSON body's own "verified" as trusted proof.
+    // There is no independently authenticated owner/provider receipt here.
+    void payload;
+    return false;
   };
 
   const fetchSource = async (name, url) => {
@@ -147,19 +138,27 @@
           status: "guarded",
           http_status: response.status,
           verified: false,
+          source_observed: false,
+          independent_provenance_authenticated: false,
           payload: null,
           error: `HTTP ${response.status}`
         };
       }
 
+      const observed = Boolean(
+        payload && typeof payload === "object" && !Array.isArray(payload) &&
+        Object.keys(payload).length > 0
+      );
       return {
         name,
         url,
-        status: "available",
+        status: observed ? "available" : "guarded",
         http_status: response.status,
-        verified: sourceLooksVerified(payload),
-        payload,
-        error: null
+        source_observed: observed,
+        verified: observed && sourceLooksVerified(payload),
+        independent_provenance_authenticated: false,
+        payload: observed ? payload : null,
+        error: observed ? null : "Empty or invalid source declaration"
       };
     } catch (error) {
       return {
@@ -168,6 +167,8 @@
         status: "unavailable",
         http_status: null,
         verified: false,
+        source_observed: false,
+        independent_provenance_authenticated: false,
         payload: null,
         error: error && error.message ? error.message : "fetch failed"
       };
@@ -222,22 +223,13 @@
   });
 
   const missionSnapshot = () => {
-    const snapshot = window.OB_OWNER_MISSION_SNAPSHOT;
-
-    if (
-      !snapshot ||
-      snapshot.verified !== true ||
-      !Array.isArray(snapshot.missions)
-    ) {
-      return {
-        verified: false,
-        missions: []
-      };
-    }
-
+    // This older dashboard receives a page-global declaration, not an
+    // independently authenticated financial-source receipt. Never convert
+    // a caller-controlled "verified" flag into actual money or milestones.
+    void window.OB_OWNER_MISSION_SNAPSHOT;
     return {
-      verified: true,
-      missions: snapshot.missions
+      verified: false,
+      missions: []
     };
   };
 
@@ -298,7 +290,8 @@
     const payload = source.payload || {};
     const trust = payload.trust || {};
 
-    const verified = source.verified === true;
+    const verified = false;
+    const observed = source.source_observed === true;
 
     const freshness =
       verified &&
@@ -312,9 +305,11 @@
 
     return {
       verified,
-      label: verified
-        ? safeText(trust.label || payload.display_label, "Verified source")
-        : "Guarded · verify source",
+      source_observed: observed,
+      independent_provenance_authenticated: false,
+      label: observed
+        ? "Engine trust declaration received · independently unverified"
+        : "Guarded · trust source unavailable",
       level,
       freshness_score: freshness,
       safe_to_display: verified
@@ -323,9 +318,9 @@
       needs_attention:
         !verified ||
         ["fallback", "missing", "stale", "guarded"].includes(level),
-      explanation: verified
-        ? "Soulaana can identify the trust label supplied by the engine-trust layer."
-        : "Soulaana does not have a verified owner-wide engine-trust result on this surface yet."
+      explanation: observed
+        ? "Soulaana received source-declared trust labels; provenance has not been independently authenticated here."
+        : "Soulaana does not have an independently verified owner-wide engine-trust result on this surface yet."
     };
   };
 
@@ -334,9 +329,10 @@
     const payload = source.payload || {};
     const scorecard = payload.readiness_scorecard || {};
 
-    const verified = source.verified === true;
+    const verified = false;
+    const observed = source.source_observed === true;
 
-    const blockers = verified
+    const blockers = observed
       ? safeArray(payload.remaining_live_blockers).map((item) => ({
           id: safeText(item.blocker_id, "blocker"),
           label: safeText(item.label, "Readiness blocker"),
@@ -347,18 +343,20 @@
 
     return {
       verified,
-      label: verified
-        ? safeText(
-            scorecard.readiness_label,
-            "Owner confidence evidence available"
-          )
-        : "Guarded · readiness evidence not verified",
+      operator_practice_source_observed: observed,
+      independent_provenance_authenticated: false,
+      label: observed
+        ? "Owner rehearsal evidence received · Real Manual Live HOLD"
+        : "Guarded · practice source unavailable · Real Manual Live HOLD",
       score:
-        verified && Number.isFinite(Number(scorecard.readiness_score))
+        observed && Number.isFinite(Number(scorecard.readiness_score))
           ? Number(scorecard.readiness_score)
           : null,
+      score_is_practice_only: true,
+      tower_owner_clearance_verified: false,
+      authenticated_broker_source_verified: false,
       blockers,
-      needs_attention: !verified || blockers.length > 0,
+      needs_attention: true,
 
       // GP035 confidence tooling never creates real execution permission.
       real_manual_live_ready: false,
@@ -371,7 +369,8 @@
   const betaSummary = () => {
     const source = state.sources.private_beta || {};
     const payload = source.payload || {};
-    const verified = source.verified === true;
+    const verified = false;
+    const observed = source.source_observed === true;
 
     const rawStatus =
       payload.owner_go_no_go_status ||
@@ -381,39 +380,28 @@
 
     return {
       verified,
-      label: verified
-        ? safeText(rawStatus, "Verified beta control evidence available")
-        : "Guarded · beta launch evidence not verified",
+      source_observed: observed,
+      actual_hosted_beta_access_verified: false,
+      label: observed
+        ? "Private beta declaration received · hosted clearance unverified"
+        : "Guarded · beta launch evidence unavailable",
       expansion_recommended: false,
       private_only: true,
       public_launch_enabled: false,
-      explanation: verified
-        ? "Owner Dashboard can summarize the protected beta-control evidence without becoming the control plane."
-        : "Soulaana will not claim beta readiness from missing, protected, or fallback evidence."
+      explanation: "An endpoint declaration is not independently authenticated hosted owner clearance."
     };
   };
 
   const historySummary = () => {
-    const snapshot = window.OB_OWNER_CHANGE_HISTORY;
-
-    if (
-      snapshot &&
-      snapshot.verified === true &&
-      Array.isArray(snapshot.items)
-    ) {
-      return {
-        verified: true,
-        items: snapshot.items.slice(0, 8)
-      };
-    }
-
+    // A client/page-global "verified" cannot attest an owner-history issuer.
+    void window.OB_OWNER_CHANGE_HISTORY;
     return {
       verified: false,
       items: [
         {
           title: "No verified owner-change history yet",
           detail:
-            "I will not invent a 'since you were here' story. Owner change-history needs a verified source before I summarize it."
+            "I will not invent a 'since you were here' story. Owner change-history needs independently authenticated source evidence before I summarize it."
         }
       ]
     };
