@@ -120,11 +120,8 @@ def _build(
         recovery.canonical_recommendation_state == "BLOCKED"
     )
     reasons = tuple(sorted(set(preflight.reason_codes) | set(inspection.reasons) | set(recovery.reason_codes)))
-    source_states = (
-        "BLOCKED_CANONICAL_SOURCE" if blocked else "HOLD_CANONICAL_REVALIDATION"
-        if recovery.state != "NO_ADVERSE_SOURCE_REPORTED_NOT_SAFETY_PROOF"
-        else "SOURCE_REVIEW_ONLY"
-    )
+    # OBRES has no state that independently certifies a real recovered provider.
+    source_states = "BLOCKED_CANONICAL_SOURCE" if blocked else "HOLD_CANONICAL_REVALIDATION"
     records = (
         BetaGate(
             "CANONICAL_RECOVERY_AND_SAFETY", "SOURCE", source_states,
