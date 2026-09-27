@@ -422,10 +422,13 @@ class GroundsOperations:
                 (property_ref,unit_ref),
             ).fetchone()
             notices = db.execute(
-                """SELECT notice_ref,headline,body,published_at FROM property_notices
-                   WHERE property_ref=? AND (unit_ref IS NULL OR unit_ref=?)
-                   ORDER BY published_at DESC""",
-                (property_ref, unit_ref),
+                """SELECT n.notice_ref,n.headline,n.body,n.published_at,
+                          CASE WHEN r.read_at IS NULL THEN 0 ELSE 1 END AS read_in_app
+                   FROM property_notices n
+                   LEFT JOIN notice_reads r ON r.notice_ref=n.notice_ref AND r.subject_ref=?
+                   WHERE n.property_ref=? AND (n.unit_ref IS NULL OR n.unit_ref=?)
+                   ORDER BY n.published_at DESC""",
+                (actor.subject_ref,property_ref,unit_ref),
             ).fetchall()
             return {
                 "property_ref": property_ref, "unit_ref": unit_ref,
