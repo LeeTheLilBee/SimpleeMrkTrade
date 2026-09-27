@@ -74,6 +74,16 @@ def verify(payload, token=None, now=NOW, secret=SECRET):
     )
 
 
+def describe(payload, token=None, secret=SECRET, now=NOW):
+    return receiver.describe_verified_source(
+        payload["token"] if token is None else token,
+        shared_secret=secret,
+        expected_account_key=payload["account_key"],
+        expected_current_fingerprint=payload["fingerprint"],
+        now_epoch=now,
+    )
+
+
 @pytest.mark.parametrize("account", (
     "personal", "trust", "simplee_world_business",
     "simplee_on_the_go_atm", "the_grounds_apartment",
@@ -89,7 +99,7 @@ def test_actual_independently_pinned_ob_source_matches_tower_verifier(account):
         "capital_verified", "manual_live_authorized",
     ):
         assert getattr(verified, false_field) is False
-    summary = receiver.describe_verified_source(verified)
+    summary = describe(payload)
     assert summary["source_identity_signature_verified"] is True
     assert summary["tower_obml_permission_issued"] is False
     assert summary["manual_live_authorized"] is False
@@ -240,6 +250,38 @@ def test_caller_constructed_verified_wrapper_is_not_accepted_by_public_replay_en
         ).fetchone()[0] == 0
 
 
+
+def test_public_source_summary_must_reverify_signed_bytes_not_caller_wrapper():
+    payload = source_export()
+    forged = receiver.VerifiedOBAccountSource(
+        claims={
+            "account_key": payload["account_key"],
+            "account_identity_fingerprint": payload["fingerprint"],
+            "nonce": "a" * 32,
+        },
+    )
+    with pytest.raises(receiver.OBAccountSourceVerificationError):
+        receiver.describe_verified_source(
+            forged, shared_secret=SECRET,
+            expected_account_key=payload["account_key"],
+            expected_current_fingerprint=payload["fingerprint"], now_epoch=NOW,
+        )
+    with pytest.raises(receiver.OBAccountSourceVerificationError):
+        describe(payload, secret="wrong-source-signing-key-test-0123456789")
+    with pytest.raises(receiver.OBAccountSourceVerificationError):
+        describe(payload, now=NOW + 61)
+    with pytest.raises(receiver.OBAccountSourceVerificationError):
+        receiver.describe_verified_source(
+            payload["token"], shared_secret=SECRET,
+            expected_account_key="personal",
+            expected_current_fingerprint=payload["fingerprint"], now_epoch=NOW,
+        )
+    summary = describe(payload)
+    assert summary["source_identity_signature_verified"] is True
+    assert summary["tower_obml_permission_issued"] is False
+    assert summary["manual_live_authorized"] is False
+
+
 def test_verified_claims_immutable_and_no_public_grant_or_endpoint():
     payload = source_export()
     verified = verify(payload)
@@ -252,4 +294,4 @@ def test_verified_claims_immutable_and_no_public_grant_or_endpoint():
     ):
         assert forbidden not in source
     for key in ("balance", "broker_token", "owner_password"):
-        assert key not in receiver.describe_verified_source(verified)
+        assert key not in describe(payload)
