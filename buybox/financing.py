@@ -127,6 +127,9 @@ def record_financing_option(op, *, evidence_id, lender_name, program_name,
         "recorded_against_revision":op.get("version"),
         "recorded_by":actor,
         "record_type":"OWNER_TRANSCRIBED_ORIGINAL",
+        "source_term_fields":["lender_label","program_label","principal","apr_percent","term_months",
+                              "origination_fee","lender_fee","source_date","expiration_date"],
+        "owner_cost_assumption_fields":["purchase_price","other_closing_cost","reserve_cash","vault_cash"],
         "lender_approval_confirmed":False,"teller_readiness":"UNKNOWN",
         "authorizes_money":False,"authorizes_acquisition":False,
         "supersedes":prior["id"] if prior else None,
@@ -188,6 +191,12 @@ def option_analysis(op, quote, *, today=None):
                    if item.get("id")==quote["source_evidence_id"]),None)
     source_ok=bool(a and a.get("sha256")==quote["source_sha256"] and
                    evidence and evidence.get("artifact_id")==a["id"])
+    reviewed_current=bool(source_ok and (
+        evidence.get("status")=="DOCUMENT_SUPPORTED" or
+        any(e.get("supersedes")==evidence["id"] and
+            e.get("artifact_id")==a["id"] and
+            e.get("status")=="DOCUMENT_SUPPORTED"
+            for e in op.get("evidence",[]))))
     expiration=quote.get("expiration_date")
     reasons=[]
     if not source_ok:reasons.append("ORIGINAL_DOCUMENT_LINK_OR_HASH_CHANGED")
@@ -217,7 +226,7 @@ def option_analysis(op, quote, *, today=None):
         "option_id":quote["id"],"record_type":"SOURCE_TRANSCRIPTION_AND_MODELED_FINANCING",
         "review_flags":reasons,
         "status":"RECHECK_SOURCE_OR_PRICE" if reasons else "RECORDED_NOT_APPROVED",
-        "source_documentary_reviewed":quote["source_evidence_status"]=="DOCUMENT_SUPPORTED",
+        "source_documentary_reviewed":reviewed_current,
         "modeled_monthly_payment":str(payment),
         "modeled_annual_debt_service":str(annual),
         "modeled_total_scheduled_payments":str(total),
