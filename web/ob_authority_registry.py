@@ -2193,6 +2193,54 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_manual_live_tower_contract_inspection"
+] = _record(
+    concept_key="owner_manual_live_tower_contract_inspection",
+    authority_id="OB_OWNER_MANUAL_LIVE_TOWER_CONTRACT_INSPECTION_V1",
+    authority_class="READ_ONLY_UNTRUSTED_TOWER_HANDOFF_CONFORMANCE_INSPECTION",
+    implementation_ref="web/ob_manual_live_tower_contract_inspection.py",
+    implementation_role="SOURCE_BOUND_TOWER_REQUEST_SHAPE_GAP_AND_DENIAL_REPORT",
+    owns=(
+        "OB-side non-sensitive schema/shape inspection of untrusted Tower handoff claims",
+        "explicit proof that plausible claim or claimed verified bit never grants owner authority",
+        "required field mismatch, account/purpose/route/TTL and forbidden capability reporting",
+    ),
+    inputs=("OB_OWNER_MANUAL_LIVE_SOURCE_PREFLIGHT_V1", "OB_ACCOUNT_IDENTITY_TRUTH_V1"),
+    triggers=(
+        "fully reverified canonical OBML preflight, recovery and full source bundle",
+        "optional untrusted candidate Tower response with explicit inspection timestamp",
+    ),
+    effects=(
+        "emit immutable redacted structure-only Tower request compatibility/denial receipt",
+        "retain missing trusted issuer/session, nonce, step-up, revocation and broker gates",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "use client-provided verified attestation flag or source hash as issuer authentication",
+        "implement a second Tower identity/role/step-up/replay/revocation engine in OB",
+        "accept forged owner, cross-account, expired, wrong route/purpose or execution claim",
+        "place an order, move capital, clear safety, unlock Manual Live/Hybrid/Automated",
+        "expose raw identity/session secrets or create OB–BuyBox capital path",
+    ),
+    failure_behavior=(
+        "Malformed/mismatched claims and upstream source tampering remain hold or hard block; "
+        "even syntactically matching presented claims stay untrusted until Tower implements server verification."
+    ),
+    explanation="Owner and Tower implementers see redacted exact mismatch and unmet server-authentication gate.",
+    evidence=(
+        "canonical OBML preflight source ID/hash",
+        "Tower request v1 required field conformance and redacted structural digest",
+        "immutable non-executing hold/denial proof with no token material",
+    ),
+    review_visibility="Tower contract gap review only; not an OAuth verifier or owner live authorization.",
+    temporal_validity="UNTRUSTED_TIME_SHAPE_ONLY_PENDING_SERVER_CLOCK_AND_NONCE_VERIFICATION",
+    deterministic=True,
+    learning_boundary="No source claim, beta claim or rehearsal may promote live permission or trading policy.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
