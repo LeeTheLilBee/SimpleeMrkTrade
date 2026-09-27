@@ -471,3 +471,9 @@ if not app.extensions.get(
         "live_auto_authorized":
             False,
     }
+
+
+# OBML026–030: read-only, owner-authenticated Monday release blocker desk.
+# It does not issue Manual Live credentials or activate a mode.
+from tower.obml_monday_owner_readiness import register_obml_monday_readiness
+register_obml_monday_readiness(app)

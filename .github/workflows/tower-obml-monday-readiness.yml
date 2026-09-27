@@ -1,0 +1,59 @@
+name: Tower Monday OBML owner-readiness desk OBML026-030
+
+on:
+  push:
+    branches:
+      - tower-obml-monday-readiness-obml026-030
+  pull_request:
+    paths:
+      - 'tower/obml_monday_owner_readiness.py'
+      - 'web/hosted_tower.py'
+      - 'tests/test_tower_obml_monday_readiness_obml026_030.py'
+      - 'docs/TOWER_OBML_MONDAY_OWNER_READINESS_OBML026_030.md'
+      - '.github/workflows/tower-obml-monday-readiness.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  owner-readiness-no-live-grant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Independently pin merged OBML021-025 first-live phases
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: cced86992fabdb6a91de3fb3e48a1f1f4aaf0478
+          path: pinned-obml-phase-source
+          persist-credentials: false
+      - name: Pin separate source-only OBML Tower request PR68
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: badef7fab30f93be6878d89b28f4863cfa6fc202
+          path: obml-request-source
+          persist-credentials: false
+      - name: Pin canonical signed OB account identity source
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: cced86992fabdb6a91de3fb3e48a1f1f4aaf0478
+          path: obai-source
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing hosted Tower runtime/test requirements
+        run: |
+          python -m pip install -r deploy/hosted_tower/requirements.txt pytest
+      - name: Owner-only status, exact phase parity, signed OB source and existing defaults
+        run: |
+          python -m pytest -q \
+            tests/test_tower_obml_monday_readiness_obml026_030.py \
+            tests/test_tower_obml_owner_review_preflight_twr_obml006_010.py \
+            tests/test_tower_obml_account_identity_source_verifier_twr011_015.py \
+            tests/test_tower_app_registry_security_map.py
