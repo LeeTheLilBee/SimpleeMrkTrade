@@ -163,6 +163,31 @@ class PostgresGroundsTests(unittest.TestCase):
         self.assertEqual(call("/grounds/api/appointments?work_ref="+work,self.resident)["status"],
                          "404 Not Found")
 
+    def test_readiness_checks_actual_postgres_and_explicit_receiver_health(self):
+        class SyntheticTowerReceiver:
+            def __call__(self,environ):
+                return environ["test.fixture.actor"]
+            def health_check(self):
+                return True  # CI fixture ONLY; no real Tower signature here.
+        app=GroundsWebApp(
+            self.store,tower_receiver=SyntheticTowerReceiver(),
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        def probe(path):
+            result={}
+            def start(status,headers):
+                result["status"]=status
+                result["headers"]=dict(headers)
+            payload=b"".join(app({
+                "REQUEST_METHOD":"GET","PATH_INFO":path,
+                "QUERY_STRING":"","wsgi.input":io.BytesIO(),
+            },start))
+            result["json"]=json.loads(payload)
+            return result
+        self.assertEqual(probe("/grounds/health/live")["status"],"200 OK")
+        self.assertEqual(probe("/grounds/health/ready")["json"],{"ready":True})
+        self.assertEqual(probe("/grounds/api/me")["status"],"401 Unauthorized")
+
     def test_schema_does_not_auto_migrate_and_row_shape(self):
         ready=self.store.assert_schema_ready()
         self.assertEqual(ready["backend"],"postgresql")
