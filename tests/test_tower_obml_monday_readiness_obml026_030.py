@@ -20,7 +20,7 @@ def app_for_test():
     app.secret_key = "synthetic-test-only-owner-readiness-key"
     login = Blueprint("tower_human_login", __name__)
 
-    @login.get("/tower/login")
+    @login.get("/tower/login", endpoint="login")
     def login_view():
         return "Login"
 
