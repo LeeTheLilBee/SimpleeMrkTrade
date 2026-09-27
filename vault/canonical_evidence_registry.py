@@ -10,15 +10,23 @@ import hashlib
 import json
 import re
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
 
 _ID=re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$")
 _SHA=re.compile(r"^[a-f0-9]{64}$")
+# Exact internal VLT1 Cloud/Vault ciphertext object reference contract.
+_OBJECT_REF=re.compile(r"^objects/[a-f0-9]{48}$")
 class RegistryError(ValueError): pass
 
 def _id(value):
     if not isinstance(value,str) or not _ID.fullmatch(value):
         raise RegistryError("invalid opaque identifier")
+    return value
+
+def _object_ref(value):
+    if not isinstance(value,str) or not _OBJECT_REF.fullmatch(value):
+        raise RegistryError("invalid internal ciphertext object reference")
     return value
 
 def _hash(value):
@@ -57,19 +65,25 @@ class CanonicalEvidenceRegistry:
                 CREATE TRIGGER IF NOT EXISTS snapshot_no_delete BEFORE DELETE ON decision_snapshots
                   BEGIN SELECT RAISE(ABORT,'append-only snapshots'); END;
             """)
+    @contextmanager
     def _db(self):
         db=sqlite3.connect(self.path,timeout=10)
-        db.execute("PRAGMA foreign_keys=ON")
-        db.execute("PRAGMA busy_timeout=10000")
-        return db
+        try:
+            db.execute("PRAGMA foreign_keys=ON")
+            db.execute("PRAGMA busy_timeout=10000")
+            with db:
+                yield db
+        finally:
+            db.close()
 
     def record_archival(self, *, receipt_id, request_id, entity_id, evidence_id,
         version_id, original_sha256, ciphertext_sha256, object_ref,
         scan_receipt_ref, tower_receipt_ref, retention_policy_id,
         parent_version_id=None):
-        ids=[receipt_id,request_id,entity_id,evidence_id,version_id,object_ref,
+        ids=[receipt_id,request_id,entity_id,evidence_id,version_id,
              scan_receipt_ref,tower_receipt_ref,retention_policy_id]
         for item in ids: _id(item)
+        _object_ref(object_ref)
         _hash(original_sha256);_hash(ciphertext_sha256)
         if parent_version_id is not None: _id(parent_version_id)
         values=(receipt_id,request_id,entity_id,evidence_id,version_id,parent_version_id,
