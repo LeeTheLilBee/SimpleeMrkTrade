@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ definition.name }} · BuyBox{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('saved_search_home') }}">← All saved searches</a>
+<section class="hero">
+  <p class="eyebrow">OPPORTUNITY RADAR · ACTUAL SAVED RECORDS</p>
+  <h1>{{ definition.name }}</h1>
+  <p>{{ verticals[definition.filters.vertical].label if definition.filters.vertical else 'All categories' }} ·
+  Query: {{ definition.filters.query or 'Any' }} · Max price: {{ '$' ~ definition.filters.max_price if definition.filters.max_price else 'Not specified' }}</p>
+</section>
+{% if definition.archived_at %}
+  <section class="panel"><h2>Archived owner view</h2><p class="muted">Archived at {{ definition.archived_at }}. Previous checks remain preserved; this search cannot generate new checks.</p></section>
+{% else %}
+  <form method="post" action="{{ url_for('check_saved_search',sid=definition.id) }}" class="compact-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="primary">Check current BuyBox records</button>
+  </form>
+{% endif %}
+{% if latest %}
+<section class="stats">
+  <div class="tile"><small>Last check</small><strong class="small-stat">{{ latest.checked_at }}</strong></div>
+  <div class="tile"><small>Saved matches then</small><strong>{{ latest.result.match_count }}</strong></div>
+  <div class="tile"><small>Newly matching since previous check</small><strong>{{ latest.result.delta.newly_matching|length }}</strong></div>
+  <div class="tile"><small>Updated matches</small><strong>{{ latest.result.delta.revised|length }}</strong></div>
+</section>
+{% if latest.result.delta.first_baseline %}
+<section class="panel"><p class="eyebrow">FIRST OWNER CHECK</p><h2>Baseline established.</h2>
+<p class="muted">These records were already in your saved BuyBox workspace. The first check is not an external newly-listed notification.</p></section>
+{% else %}
+<section class="panel"><p class="eyebrow">WHAT CHANGED SINCE YOUR LAST CHECK?</p>
+  <h2>Saved-source changes</h2>
+  {% for id in latest.result.delta.newly_matching %}
+    <p><a href="{{ url_for('opportunity',oid=id) }}">Newly matches this filter: {{ id }}</a></p>
+  {% endfor %}
+  {% for change in latest.result.delta.revised %}
+    <p><a href="{{ url_for('opportunity',oid=change.id) }}">Saved record updated: {{ change.id }}</a> · Revision {{ change.previous_revision }} → {{ change.current_revision }}</p>
+  {% endfor %}
+  {% for id in latest.result.delta.no_longer_matching %}
+    <p><a href="{{ url_for('opportunity',oid=id) }}">No longer matches: {{ id }}</a></p>
+  {% endfor %}
+  {% if not latest.result.delta.newly_matching and not latest.result.delta.revised and not latest.result.delta.no_longer_matching %}
+    <p class="muted">No saved-source changes detected since the previous owner-requested check.</p>
+  {% endif %}
+</section>
+{% endif %}
+<section class="panel"><p class="eyebrow">LAST OBSERVED MATCHES</p><h2>Opportunity references</h2>
+  <p class="muted">The revision number below belongs to your last explicit check. Names are retrieved from the current local workspace and may have changed since then; check again to refresh the snapshot.</p>
+  {% for match in matched %}
+    <div class="evidence-row"><div><strong>{{ match.current_name }}</strong><small>Last-check revision {{ match.last_checked.revision }} · source hash {{ match.last_checked.digest[:16] }}…</small></div>
+      <a href="{{ url_for('opportunity',oid=match.id) }}">Open dossier →</a></div>
+  {% else %}<p class="muted">No saved opportunities matched at the last check.</p>{% endfor %}
+  <small>Source: persisted BuyBox opportunity revisions only. No external listing feed, notification delivery or purchase authorization.</small>
+</section>
+{% else %}
+<section class="panel"><p class="eyebrow">NOT CHECKED</p><h2>Establish your first baseline.</h2>
+<p class="muted">No Radar result exists yet. Your saved filter alone does not create notifications or inspect an external marketplace.</p></section>
+{% endif %}
+{% if not definition.archived_at %}
+<section class="panel"><p class="eyebrow">MANAGE VIEW</p><h2>Archive this saved filter</h2>
+<p class="muted">Archiving stops new manual checks and retains previous snapshots; it does not delete opportunities.</p>
+<form method="post" action="{{ url_for('archive_saved_search_route',sid=definition.id) }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <button type="submit">Archive search</button>
+</form></section>
+{% endif %}
+{% endblock %}

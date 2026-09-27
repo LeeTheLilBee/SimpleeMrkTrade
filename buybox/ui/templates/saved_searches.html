@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Saved Searches · BuyBox{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">DISCOVERY · OWNER SAVED SEARCHES</p>
+  <h1>Keep your buy boxes organized.</h1>
+  <p>Save filters across real owner-entered acquisition records. Opportunity Radar compares saved BuyBox revisions only when you click Check. It does not poll external listings or invent notifications.</p>
+</section>
+<section class="workspace">
+  <div class="main-column">
+    <div class="panel">
+      <p class="eyebrow">YOUR SEARCHES</p><h2>Saved views</h2>
+      {% for entry in entries %}
+        {% set saved=entry.definition %}{% set latest=entry.latest %}
+        <article class="claim-card">
+          <p class="eyebrow">{{ 'ARCHIVED' if saved.archived_at else 'OWNER SAVED VIEW' }}</p>
+          <h3>{{ saved.name }}</h3>
+          <p class="muted">Asset category: {{ verticals[saved.filters.vertical].label if saved.filters.vertical else 'All acquisition categories' }}
+             · Query: {{ saved.filters.query or 'Any' }} · Max asking price: {{ '$' ~ saved.filters.max_price if saved.filters.max_price else 'Not specified' }}</p>
+          {% if latest %}
+            <p>Last owner check: {{ latest.checked_at }} · {{ latest.result.match_count }} recorded matches</p>
+            {% if latest.result.delta.first_baseline %}
+              <small>First baseline — these were not automatically classified as newly discovered listings.</small>
+            {% else %}
+              <small>{{ latest.result.delta.newly_matching|length }} newly matching, {{ latest.result.delta.revised|length }} revised, {{ latest.result.delta.no_longer_matching|length }} no longer matching since prior owner check.</small>
+            {% endif %}
+          {% else %}<p class="muted">No owner check recorded yet. Your first check establishes a baseline, not a new-listing alert.</p>{% endif %}
+          <a class="button" href="{{ url_for('saved_search_detail',sid=saved.id) }}">Open saved view →</a>
+          {% if not saved.archived_at %}
+          <form method="post" action="{{ url_for('check_saved_search',sid=saved.id) }}" class="compact-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button class="primary" type="submit">Check saved records now</button>
+          </form>
+          {% endif %}
+        </article>
+      {% else %}
+        <p class="muted">You have not saved any discovery filters. Create one below; no sample searches have been installed.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <aside class="side-column">
+    <div class="panel">
+      <p class="eyebrow">NEW SAVED SEARCH</p><h2>Remember these filters</h2>
+      <form method="post" action="{{ url_for('add_saved_search') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label>Search name<input name="name" maxlength="100" required placeholder="e.g., Georgia ATM ownership diligence"></label>
+        <label>Acquisition category<select name="vertical">
+          <option value="">All acquisition categories</option>
+          {% for key,manifest in verticals.items() %}
+          <option value="{{ key }}" {% if selected_vertical==key %}selected{% endif %}>{{ manifest.label }}</option>
+          {% endfor %}
+        </select></label>
+        <label>Keywords / city / market<input name="query" maxlength="120" value="{{ q }}" placeholder="Optional"></label>
+        <label>Maximum asking price, USD<input name="max_price" type="number" min="0" max="1000000000000" step="0.01" placeholder="Optional"></label>
+        <button type="submit" class="primary">Save acquisition filter</button>
+      </form>
+    </div>
+    <div class="panel">
+      <p class="eyebrow">RADAR LIMITS</p><h2>Real changes, not noise.</h2>
+      <p class="muted">Saved Search detects new matching opportunities and changed or no-longer-matching records only after an owner-requested check. Live broker feeds and scheduled notifications are not connected.</p>
+      <a class="button" href="{{ url_for('index') }}">Return to Discover →</a>
+    </div>
+  </aside>
+</section>
+{% endblock %}
