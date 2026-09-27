@@ -8,7 +8,7 @@ service is an independent future integration.
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from .access import AccessDenied, TowerScope
@@ -107,8 +107,12 @@ class GroundsLeasing:
             starts = datetime.fromisoformat(starts_at)
             if starts.tzinfo is None or starts.utcoffset() is None:
                 raise ValueError
-        except (ValueError,TypeError) as exc:
-            raise GroundsConflict("tour must have explicit timezone") from exc
+            now=datetime.now(timezone.utc)
+            utc_start=starts.astimezone(timezone.utc)
+            if not now < utc_start <= now+timedelta(days=366):
+                raise ValueError
+        except (ValueError,TypeError,OverflowError) as exc:
+            raise GroundsConflict("tour requires a future timezone-aware time within 366 days") from exc
         with self.store.transaction(write=True) as db:
             row = self._prospect(db,property_ref,prospect_ref)
             if row["revision"] != expected_revision or row["stage"] != "contacted":
