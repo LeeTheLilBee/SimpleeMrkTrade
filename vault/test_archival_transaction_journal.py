@@ -35,7 +35,7 @@ def test_no_false_archive_and_reconciliation(tmp_path):
     j.advance(request_id="req-1",expected_state="VERIFIED",to_state="ENCRYPTED",receipt_digest=H("b"))
     j.advance(request_id="req-1",expected_state="ENCRYPTED",to_state="RECONCILE_REQUIRED")
     assert j.status("req-1")=="RECONCILE_REQUIRED"
-    with pytest.raises(JournalError,match="cloud commit missing"):
+    with pytest.raises(JournalError,match="invalid state transition"):
         j.advance(request_id="req-1",expected_state="RECONCILE_REQUIRED",to_state="ARCHIVED",receipt_digest=H("d"))
     j.advance(request_id="req-1",expected_state="RECONCILE_REQUIRED",to_state="CLOUD_COMMITTED",receipt_digest=H("c"))
     j.advance(request_id="req-1",expected_state="CLOUD_COMMITTED",to_state="ARCHIVED",receipt_digest=H("d"))
