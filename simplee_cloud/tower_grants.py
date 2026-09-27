@@ -155,7 +155,7 @@ class SourceOnlyTowerGrantVerifier:
     def __init__(
         self, *, tower_public_keys: Mapping[str, bytes],
         peer_is_authenticated_vault: Callable[[object], bool],
-        tower_decision_is_active: Callable[[str], bool],
+        tower_policy_is_current: Callable[[dict], bool],
         replay_store: SQLiteNonceReplayStore,
         now_epoch_seconds: Callable[[], int],
         mode: str = "disabled",
@@ -165,7 +165,7 @@ class SourceOnlyTowerGrantVerifier:
         if not tower_public_keys or not isinstance(replay_store, SQLiteNonceReplayStore):
             raise CloudError("pinned Tower keys and durable replay state required")
         if not all(callable(x) for x in (
-            peer_is_authenticated_vault, tower_decision_is_active, now_epoch_seconds
+            peer_is_authenticated_vault, tower_policy_is_current, now_epoch_seconds
         )):
             raise CloudError("independent authority verification callbacks required")
         if not all(
@@ -175,7 +175,7 @@ class SourceOnlyTowerGrantVerifier:
             raise CloudError("invalid pinned Tower public-key registry")
         self._keys = dict(tower_public_keys)
         self._peer = peer_is_authenticated_vault
-        self._active = tower_decision_is_active
+        self._active = tower_policy_is_current
         self._replay = replay_store
         self._now = now_epoch_seconds
 
@@ -221,7 +221,11 @@ class SourceOnlyTowerGrantVerifier:
         )
         if not ref_ok:
             raise AccessDenied("object reference does not match operation")
-        iat, exp, now = doc["iat"], doc["exp"], self._now()
+        try:
+            now = self._now()
+        except Exception as exc:
+            raise AccessDenied("trusted clock unavailable") from exc
+        iat, exp = doc["iat"], doc["exp"]
         if not all(type(x) is int for x in (iat, exp, now)) or (
             iat > now + 5 or exp <= now or exp <= iat or exp - iat > 120
         ):
@@ -234,7 +238,11 @@ class SourceOnlyTowerGrantVerifier:
                 raise AccessDenied("signed grant differs from trusted Vault scope")
         try:
             peer_ok = self._peer(authenticated_transport_peer) is True
-            active = self._active(doc["decision_ref"]) is True
+            policy = {field: doc[field] for field in (
+                "decision_ref", "approval_ref", "step_up_ref", "entity_id",
+                "purpose", "operation", "classification", "request_id",
+            )}
+            active = self._active(policy) is True
         except Exception as exc:
             raise AccessDenied("peer or revocation verification unavailable") from exc
         if not peer_ok or not active:
