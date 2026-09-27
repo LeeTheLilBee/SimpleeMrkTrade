@@ -1,0 +1,30 @@
+name: Tower Grounds source-only handoff
+on:
+  push:
+    branches:
+      - tower-grounds-role-handoff-twr-grd001-005
+    paths:
+      - 'tower/grounds_handoff_requirements_v1.py'
+      - 'tower/test_grounds_handoff_requirements_v1.py'
+      - 'docs/TOWER_GROUNDS_HANDOFF_REVIEW_TWR_GRD001_005.md'
+      - '.github/workflows/tower-grounds-handoff-contract.yml'
+  pull_request:
+    paths:
+      - 'tower/grounds_handoff_requirements_v1.py'
+      - 'tower/test_grounds_handoff_requirements_v1.py'
+      - 'docs/TOWER_GROUNDS_HANDOFF_REVIEW_TWR_GRD001_005.md'
+      - '.github/workflows/tower-grounds-handoff-contract.yml'
+jobs:
+  source-only:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile source requirements
+        run: python -m py_compile tower/grounds_handoff_requirements_v1.py tower/test_grounds_handoff_requirements_v1.py
+      - name: Run isolated requirements tests
+        run: python -m unittest tower.test_grounds_handoff_requirements_v1 -v
