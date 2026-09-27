@@ -1,0 +1,45 @@
+name: Vault Real Operations source regression VRO003
+
+on:
+  push:
+    branches:
+      - vault-real-operations-source-ci-vro003
+  pull_request:
+    paths:
+      - 'vault/real_operations_encrypted_storage.py'
+      - 'vault/real_operations_managed_object_store.py'
+      - 'vault/test_real_operations_encrypted_storage.py'
+      - 'vault/test_real_operations_managed_object_store.py'
+      - '.github/workflows/vault-real-operations-source-vro003.yml'
+      - 'docs/VAULT_REAL_OPERATIONS_SOURCE_CI_VRO003.md'
+
+permissions:
+  contents: read
+
+jobs:
+  local-contract-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test-only dependencies
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Check source syntax
+        run: |
+          python -m py_compile \
+            vault/real_operations_encrypted_storage.py \
+            vault/real_operations_managed_object_store.py \
+            vault/test_real_operations_encrypted_storage.py \
+            vault/test_real_operations_managed_object_store.py
+      - name: Run exact fake-client encrypted source tests only
+        run: |
+          python -m pytest -q \
+            vault/test_real_operations_encrypted_storage.py \
+            vault/test_real_operations_managed_object_store.py
