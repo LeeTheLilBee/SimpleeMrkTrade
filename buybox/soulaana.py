@@ -10,7 +10,7 @@ from .registry import get_vertical
 from .dealroom import current_tasks
 
 INTENTS = frozenset({
-    "overview", "evidence", "diligence", "financing", "economics", "changes", "red_team", "next_action"
+    "overview", "evidence", "diligence", "financing", "valuation", "economics", "changes", "red_team", "next_action"
 })
 
 def context(op, intent="overview"):
@@ -28,6 +28,7 @@ def context(op, intent="overview"):
         "evidence":{"evidence"},
         "diligence":{"diligence"},
         "financing":{"financing"},
+        "valuation":{"valuation"},
         "economics":{"economics"},
         "changes":{"changes"},
         "red_team":{"economics","evidence"},
@@ -111,6 +112,33 @@ def context(op, intent="overview"):
             note("FINANCING_MISSING",
                  "No current original-backed financing terms are recorded. BuyBox will not invent a lender, rate or bank commitment.",
                  label="NO_DOCUMENTED_OPTION")
+    if "valuation" in relevant:
+        from .comparables import market_evidence_report
+        market=market_evidence_report(op)
+        note("SOURCE_ONLY_MARKET_RESEARCH",
+             "BuyBox has "+str(market["active_count"])+" original-backed owner-recorded comparison observations. These do not establish an independent appraisal, certified closed sale, price ceiling or lending decision.",
+             label="NO_TARGET_VALUATION")
+        for cohort in market["cohorts"]:
+            identifiers=cohort["observation_ids"]
+            if cohort["status"]=="DESCRIPTIVE_COHORT_ONLY":
+                note("DESCRIPTIVE_COMPARABLE_COHORT",
+                     cohort["market"]+" / "+cohort["basis"].replace("_"," ").lower()+
+                     " / "+cohort["source_kind"].replace("_"," ").lower()+
+                     ": "+str(cohort["distinct_subject_count"])+" recorded distinct subjects. Observed range "+
+                     cohort["observed_min"]+" to "+cohort["observed_max"]+
+                     ", median "+cohort["observed_median"]+" "+cohort["unit"]+
+                     ". Original event dates run from "+cohort["earliest_event_date"]+
+                     " to "+cohort["latest_event_date"]+". These are descriptive owner transcriptions, not a target valuation.",
+                     identifiers+cohort["source_artifact_ids"],"NOT_APPRAISED")
+            else:
+                note("INSUFFICIENT_MARKET_EVIDENCE",
+                     cohort["market"]+" / "+cohort["basis"].replace("_"," ").lower()+
+                     " has fewer than two distinct sourced subjects of the same type. BuyBox will not invent a benchmark.",
+                     identifiers,"INSUFFICIENT_DISTINCT_SUBJECTS")
+        if not market["cohorts"]:
+            note("MARKET_SOURCE_MISSING",
+                 "No original-backed comparable evidence has been recorded for this opportunity.",
+                 label="NO_DOCUMENTED_COMPARABLES")
     if "economics" in relevant:
         result=analysis["financials"]
         if result["status"]=="CALCULATED":

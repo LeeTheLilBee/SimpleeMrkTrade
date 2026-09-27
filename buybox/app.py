@@ -46,6 +46,8 @@ from .claim_register import (record_source_claim, record_owner_document_review,
     integrity_report, active_claims, owner_reviewed_source)
 from .diligence import diligence_snapshot, create_diligence_task
 from .financing import record_financing_option, financing_snapshot, FINANCING_EVIDENCE_KIND
+from .comparables import (COMPARABLE_EVIDENCE_KIND, record_comparable,
+    market_evidence_report)
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -388,7 +390,7 @@ def create_app(config=None):
         return render_template("soulaana.html",op=op,
             context=soulaana_context(op,intent),intents=(
             ("overview","Overview"),("evidence","Evidence"),("diligence","Diligence"),
-            ("financing","Financing"),("economics","Economics"),("changes","What changed"),
+            ("financing","Financing"),("valuation","Comparable Research"),("economics","Economics"),("changes","What changed"),
             ("red_team","Red Team"),("next_action","Next action")))
 
     @app.post("/compare")
@@ -513,6 +515,52 @@ def create_app(config=None):
                 "source_reference":machine["source_reference"]},
                 expected_revision=int(request.form["revision"]))
         return redirect(url_for("opportunity",oid=oid))
+
+    @app.get("/opportunities/<oid>/valuation")
+    @login_required
+    def valuation_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        documents=[e for e in op.get("evidence",[])
+            if e.get("kind")==COMPARABLE_EVIDENCE_KIND
+            and e.get("status") in ("RECEIVED","DOCUMENT_SUPPORTED")
+            and e.get("artifact_id")
+            and any(a.get("id")==e["artifact_id"] for a in op.get("artifacts",[]))]
+        from .comparables import BASIS_BY_VERTICAL, SOURCE_KINDS
+        return render_template("valuation.html",op=op,
+            report=market_evidence_report(op),documents=documents,
+            bases=BASIS_BY_VERTICAL[op["vertical"]],
+            kinds=sorted(SOURCE_KINDS),
+            artifacts={a["id"]:a for a in op.get("artifacts",[])})
+
+    @app.post("/opportunities/<oid>/valuation/comparables")
+    @login_required
+    def record_market_comparable(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            e=next((e for e in op.get("evidence",[])
+                    if e.get("id")==request.form.get("evidence_id")),None)
+            original=next((a for a in op.get("artifacts",[])
+                           if e and a.get("id")==e.get("artifact_id")),None)
+            if original is not None:
+                try: docstore.read(original)
+                except ValueError:
+                    abort(409,"Comparable original missing or fails integrity checks")
+            fields=("evidence_id","subject_id","market","source_kind","basis",
+                    "price","denominator","event_date","locator","supersedes",
+                    "correction_reason")
+            kwargs={k:request.form.get(k,"") for k in fields}
+            revised,item=record_comparable(op,actor_ref=owner_actor(conn),**kwargs)
+            save(conn,revised,"ComparableSourceRecorded",{
+                "record_id":item["id"],"source_sha256":item["source_sha256"],
+                "source_artifact_id":item["source_artifact_id"],
+                "source_kind":item["source_kind"],
+                "basis":item["basis"],"supersedes":item["supersedes"],
+                "independent_appraisal":False},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("valuation_room",oid=oid),code=303)
 
     @app.get("/opportunities/<oid>/financing")
     @login_required
@@ -702,7 +750,7 @@ def create_app(config=None):
         with db() as conn:
             op=load(conn,oid)
             if not op: abort(404)
-            if kind not in ({e["kind"] for e in get_vertical(op["vertical"])["evidence"]} | {FINANCING_EVIDENCE_KIND}):
+            if kind not in ({e["kind"] for e in get_vertical(op["vertical"])["evidence"]} | {FINANCING_EVIDENCE_KIND, COMPARABLE_EVIDENCE_KIND}):
                 abort(400,"Unregistered evidence category")
             from werkzeug.utils import secure_filename
             filename=secure_filename(file.filename)

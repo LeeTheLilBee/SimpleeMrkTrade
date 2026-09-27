@@ -33,3 +33,6 @@
 /* BBX059 — readable lender-document comparison, never a color-only funding signal. */
 .financing-option{background:#27344b;border:1px solid #58617a;border-radius:16px;padding:18px;overflow-wrap:anywhere}
 .financing-option h3{margin:.4rem 0}.financing-option .evidence-row{gap:14px}.financing-option .notice{margin:10px 0;background:#604230;border:1px solid #987046;color:#fff0d5}.financing-option small{display:block;color:#c2d1e5;margin-top:12px}.financing-option .evidence-row strong{text-align:right}
+
+/* BBX064: source-located market research stays readable without relying on color alone. */
+.claim-card .evidence-row,.financing-option .evidence-row{gap:12px}.comparison-grid .financing-option{min-width:0}.financing-option .notice{overflow-wrap:anywhere}
