@@ -448,11 +448,27 @@ class GroundsOperations:
         headline, body = _required(headline, "headline"), _required(body, "body", max_length=4000)
         try:
             with self.store.transaction(write=True) as db:
+                lease_ref=None
+                if unit_ref is not None:
+                    unit=db.execute(
+                        "SELECT 1 FROM units WHERE property_ref=? AND unit_ref=?",
+                        (property_ref,unit_ref),
+                    ).fetchone()
+                    if unit is None:
+                        raise GroundsConflict("notice unit unavailable")
+                    lease=db.execute(
+                        """SELECT lease_ref FROM leases
+                           WHERE property_ref=? AND unit_ref=? AND status='active'""",
+                        (property_ref,unit_ref),
+                    ).fetchone()
+                    if lease is None:
+                        raise GroundsConflict("unit notice requires an active target lease")
+                    lease_ref=lease["lease_ref"]
                 db.execute(
                     """INSERT INTO property_notices
-                       (notice_ref,property_ref,unit_ref,headline,body,published_at)
-                       VALUES(?,?,?,?,?,?)""",
-                    (notice_ref, property_ref, unit_ref, headline, body, _now()),
+                       (notice_ref,property_ref,unit_ref,lease_ref,headline,body,published_at)
+                       VALUES(?,?,?,?,?,?,?)""",
+                    (notice_ref,property_ref,unit_ref,lease_ref,headline,body,_now()),
                 )
                 _outbox(db,property_ref=property_ref,event_kind="notice_visible_in_app",
                         resource_ref=notice_ref,revision=1)
@@ -473,10 +489,13 @@ class GroundsOperations:
                 """SELECT n.notice_ref,n.headline,n.body,n.published_at,
                           CASE WHEN r.read_at IS NULL THEN 0 ELSE 1 END AS read_in_app
                    FROM property_notices n
-                   LEFT JOIN notice_reads r ON r.notice_ref=n.notice_ref AND r.subject_ref=?
-                   WHERE n.property_ref=? AND (n.unit_ref IS NULL OR n.unit_ref=?)
+                   LEFT JOIN notice_reads r ON r.notice_ref=n.notice_ref
+                     AND r.subject_ref=? AND r.lease_ref=?
+                   WHERE n.property_ref=? AND (n.unit_ref IS NULL OR
+                     (n.unit_ref=? AND n.lease_ref=?))
                    ORDER BY n.published_at DESC""",
-                (actor.subject_ref,property_ref,unit_ref),
+                (actor.subject_ref,lease["lease_ref"],property_ref,
+                 unit_ref,lease["lease_ref"]),
             ).fetchall()
             return {
                 "property_ref": property_ref, "unit_ref": unit_ref,
