@@ -57,8 +57,7 @@
           <small>Claim ID: {{ c.id }} · Artifact SHA-256 {{ c.artifact_sha256[:20] }}…</small>
           {% if c.supersedes %}<p class="muted">A later revision of claim {{ c.supersedes[:12] }}…; original preserved.</p>{% endif %}
           {% if c.state=='SOURCE_RECORDED' %}
-            {% set supporting=evidence_by_id.get(c.evidence_id) %}
-            {% if supporting and supporting.status=='DOCUMENT_SUPPORTED' %}
+            {% if c.id in reviewable_claim_ids %}
               <form method="post" action="{{ url_for('document_claim_review',oid=op.id,claim_id=c.id) }}" class="panel-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <input type="hidden" name="revision" value="{{ op.version }}">
