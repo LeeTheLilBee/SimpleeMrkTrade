@@ -36,7 +36,7 @@ def test_obml011_missing_tower_and_owner_fit_stays_hold_with_all_external_gates(
     assert result.report_state == "HOLD_REAL_TOWER_AND_PROVIDER_GATES"
     assert result.canonical_recommendation_state == "EVIDENCE_PENDING"
     assert "TOWER_HANDOFF_MISSING" in result.upstream_reason_codes
-    assert "OWNER_FIT_SOURCE_NOT_PROVIDED" in " ".join(result.upstream_reason_codes)
+    assert "CANONICAL_OWNER_REVIEW_NOT_READY" in result.upstream_reason_codes
     assert result.external_gate_ids_still_pending == tuple(g for g, _ in REQUIRED_EXTERNAL_GATES)
     assert len(result.gate_records) == len(SOURCE_GATES) + len(REQUIRED_EXTERNAL_GATES)
     assert all(not gate.live_authority_granted and not gate.externally_authenticated for gate in result.gate_records)
