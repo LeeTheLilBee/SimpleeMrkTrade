@@ -16,6 +16,7 @@ from .contracts import (
     AccessDenied, BackupReceipt, CloudError, IntegrityError, StorageReceipt,
 )
 from .operations import JournaledCiphertextOperations
+from .journaled_backup import JournaledBackupOperations
 from .recovery_drill import SyntheticRecoveryEvidence, run_source_restore_drill
 from .tower_grants import (
     AuthorizedCloudInvocation, SignedTowerGrant, SourceOnlyTowerGrantVerifier,
@@ -40,6 +41,7 @@ class SourceOnlyBoundCloudPort:
         tower_verifier: SourceOnlyTowerGrantVerifier,
         canonical_scope_resolver: CanonicalScopeResolver,
         backup: IndependentBackupService | None = None,
+        journaled_backup: JournaledBackupOperations | None = None,
         canonical_backup_resolver: CanonicalBackupResolver | None = None,
         mode: str = "disabled",
     ):
@@ -52,15 +54,21 @@ class SourceOnlyBoundCloudPort:
         if backup is not None and (
             not isinstance(backup, IndependentBackupService) or
             backup.source is not operations.source or
+            not isinstance(journaled_backup, JournaledBackupOperations) or
+            journaled_backup.backup is not backup or
+            journaled_backup.operations is not operations or
             not callable(canonical_backup_resolver)
         ):
-            raise CloudError("backup must share this source and trusted receipt resolver")
-        if canonical_backup_resolver is not None and backup is None:
-            raise CloudError("backup resolver without matching backup service")
+            raise CloudError("backup requires same journaled source and trusted receipt resolver")
+        if backup is None and (
+            canonical_backup_resolver is not None or journaled_backup is not None
+        ):
+            raise CloudError("backup components must be configured together")
         self._operations = operations
         self._tower = tower_verifier
         self._resolve = canonical_scope_resolver
         self._backup = backup
+        self._journaled_backup = journaled_backup
         self._resolve_backup = canonical_backup_resolver
 
     def _invocation(
@@ -154,10 +162,29 @@ class SourceOnlyBoundCloudPort:
             grant=grant, authenticated_transport_peer=authenticated_transport_peer,
             request_id=request_id, operation="BACKUP_CIPHERTEXT",
         )
-        return self._backup.create(
+        return self._journaled_backup.create(
             context=invocation.context,
             source_object_ref=invocation.object_ref,
             source_ciphertext_sha256=invocation.ciphertext_sha256,
+        )
+
+    def reconcile_original_backup(
+        self, *, grant: SignedTowerGrant, authenticated_transport_peer: object,
+        original_request_id: str,
+    ) -> dict:
+        if self._journaled_backup is None:
+            raise AccessDenied("durable independent backup not configured")
+        invocation = self._invocation(
+            grant=grant, authenticated_transport_peer=authenticated_transport_peer,
+            request_id=original_request_id, operation="RECONCILE_BACKUP",
+        )
+        # Signed grant binds the ORIGINAL source object/hash. The journal
+        # alone supplies the opaque generated backup ref that may have been
+        # lost when provider ACK timed out; the caller cannot replace it.
+        return self._journaled_backup.reconcile_original_backup(
+            context=invocation.context, original_request_id=original_request_id,
+            canonical_source_object_ref=invocation.object_ref,
+            canonical_source_sha256=invocation.ciphertext_sha256,
         )
 
     def verify_backup_copy(
