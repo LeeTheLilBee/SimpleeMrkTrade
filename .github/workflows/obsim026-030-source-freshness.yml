@@ -1,0 +1,44 @@
+name: OBSIM026-030 declared source freshness and passive owner cadence
+
+on:
+  push:
+    branches:
+      - obsim026-030-owner-cadence-source-freshness
+  pull_request:
+    branches:
+      - obsim016-020-free-on-demand-session
+    paths:
+      - 'web/ob_on_demand_simulation_session.py'
+      - 'tests/test_obsim026_030_source_freshness_and_owner_due.py'
+      - '.github/workflows/obsim026-030-source-freshness.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-owner-session:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install established local test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Compile source-only session and tests
+        run: |
+          python -m py_compile \
+            web/ob_on_demand_simulation_session.py \
+            tests/test_obsim026_030_source_freshness_and_owner_due.py
+      - name: Check new source freshness and accepted OBSIM regressions
+        run: |
+          python -m pytest -q \
+            tests/test_obsim026_030_source_freshness_and_owner_due.py \
+            tests/test_obsim021_025_local_report_no_clobber.py \
+            tests/test_obsim016_020_on_demand_session.py \
+            tests/test_obsim011_015_adverse_scenario_regressions.py \
+            tests/test_obsim006_010_deterministic_replay.py \
+            tests/test_obsim001_005_multi_simulation_harness.py
