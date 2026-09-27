@@ -177,6 +177,11 @@ class SoulaanaContextTests(unittest.TestCase):
         pulse=explain_property_pulse(self.owner,self.ops,property_ref="p1")
         self.assertEqual((pulse["units"],pulse["occupied_units"],pulse["open_work_orders"]),(1,1,1))
         self.assertIsNone(pulse["rent_collections"])
+        self.assertEqual(pulse["untriaged_urgent_work"],1)
+        self.assertEqual(pulse["open_turnovers"],0)
+        self.assertEqual(pulse["unresolved_serious_inspection_findings"],0)
+        self.assertIn("human urgency review",pulse["message"])
+        self.assertFalse(pulse["emergency_dispatch_confirmed"])
         self.assertFalse(pulse["ob_queried"])
         with self.assertRaises(AccessDenied):
             explain_property_pulse(self.outside,self.ops,property_ref="p1")
