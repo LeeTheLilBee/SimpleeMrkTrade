@@ -515,6 +515,28 @@ class GroundsOperations:
                 "SELECT COUNT(*) FROM work_orders WHERE property_ref=? AND state!='closed'",
                 (property_ref,),
             ).fetchone()[0]
+            untriaged_urgent=db.execute(
+                """SELECT COUNT(*) FROM work_orders w
+                   LEFT JOIN emergency_reviews r ON r.work_ref=w.work_ref
+                   WHERE w.property_ref=? AND w.emergency_flag=1 AND w.state!='closed'
+                     AND r.work_ref IS NULL""",(property_ref,),
+            ).fetchone()[0]
+            open_turnovers=db.execute(
+                "SELECT COUNT(*) FROM turnovers WHERE property_ref=? AND state!='complete'",
+                (property_ref,),
+            ).fetchone()[0]
+            unresolved_serious=db.execute(
+                """SELECT COUNT(*) FROM inspection_findings f
+                   JOIN inspections i ON i.inspection_ref=f.inspection_ref
+                   LEFT JOIN inspection_resolutions r ON r.finding_ref=f.finding_ref
+                   WHERE i.property_ref=? AND i.state!='closed'
+                     AND f.severity IN ('major','urgent') AND r.finding_ref IS NULL""",
+                (property_ref,),
+            ).fetchone()[0]
             return {**_record(prop), "units":unit_count, "occupied_units":occupied_count,
-                    "open_work_orders":open_work, "financial_source":"teller",
+                    "open_work_orders":open_work,
+                    "untriaged_urgent_work":untriaged_urgent,
+                    "open_turnovers":open_turnovers,
+                    "unresolved_serious_inspection_findings":unresolved_serious,
+                    "source_observed_at":_now(),"financial_source":"teller",
                     "rent_collections":None}
