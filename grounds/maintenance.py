@@ -31,9 +31,10 @@ TRANSITIONS = {
     ("reopened", "under_review"): frozenset({"property_manager", "maintenance_supervisor"}),
 }
 
-def _required(value: str, label: str) -> str:
-    if not isinstance(value, str) or not value.strip():
-        raise ValueError(f"{label} required")
+def _required(value: str, label: str, *, max_length: int = 128) -> str:
+    if (not isinstance(value, str) or not value.strip()
+        or len(value.strip()) > max_length or "\\x00" in value):
+        raise ValueError(f"{label} missing, invalid or too long")
     return value.strip()
 
 @dataclass(frozen=True)
@@ -47,16 +48,18 @@ class MaintenanceIntake:
     photo_refs: tuple[str, ...] = ()
 
     def __post_init__(self):
-        for name in ("property_ref", "unit_ref", "category", "description"):
-            _required(getattr(self, name), name)
+        _required(self.property_ref,"property_ref",max_length=128)
+        _required(self.unit_ref,"unit_ref",max_length=128)
+        _required(self.category,"category",max_length=80)
+        _required(self.description,"description",max_length=2000)
         if type(self.emergency_flag) is not bool:
             raise ValueError("emergency_flag must be boolean")
-        if self.entry_permission not in ENTRY_PERMISSIONS:
+        if not isinstance(self.entry_permission,str) or self.entry_permission not in ENTRY_PERMISSIONS:
             raise ValueError("invalid entry_permission")
-        if not isinstance(self.photo_refs, tuple) or any(
-            not isinstance(ref, str) or not ref.strip() for ref in self.photo_refs
-        ):
-            raise ValueError("photo_refs must be nonempty opaque references")
+        if (not isinstance(self.photo_refs,tuple) or len(self.photo_refs)>8
+            or any(not isinstance(ref,str) or not ref.strip()
+                   or len(ref.strip())>128 or "\\x00" in ref for ref in self.photo_refs)):
+            raise ValueError("photo_refs must be at most eight bounded opaque references")
         # An emergency flag is an intake alert, never an emergency response guarantee.
 
 @dataclass(frozen=True)
