@@ -115,15 +115,19 @@ class FinancingTests(unittest.TestCase):
                                      lender_name="Second provider",apr_percent="5"))
         self.assertEqual(financing_snapshot(op,today="2026-09-27")["active_option_count"],2)
         op,c=record_financing_option(op,**terms(second["id"],apr_percent="4",
-                                     supersedes=b["id"],
+                                     lender_name="Second provider",supersedes=b["id"],
                                      correction_reason="New original provided"))
         self.assertEqual(op["financing_options"][1]["id"],b["id"])
         self.assertEqual(op["financing_options"][1]["apr_percent"],"5")
         self.assertEqual(c["supersedes"],b["id"])
+        with self.assertRaisesRegex(FinancingError,"CORRECTION_PROVIDER_AND_PROGRAM_SCOPE_MISMATCH"):
+            record_financing_option(op,**terms(first["id"],supersedes=a["id"],
+                                                lender_name="Different provider",
+                                                correction_reason="Not the same provider"))
         self.assertEqual(set(q["id"] for q in current_options(op)),{a["id"],c["id"]})
         with self.assertRaisesRegex(FinancingError,"CURRENT_OPTION_CORRECTION_TARGET"):
-            record_financing_option(op,**terms(second["id"],supersedes=b["id"],
-                                  correction_reason="Invalid old target"))
+            record_financing_option(op,**terms(second["id"],lender_name="Second provider",
+                                  supersedes=b["id"],correction_reason="Invalid old target"))
 
     def test_reject_unsupported_loan_shapes_bad_ranges_and_non_atm_vault(self):
         op=new_opportunity("atm","Invalid terms",100000)
