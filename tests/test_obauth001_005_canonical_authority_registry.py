@@ -140,6 +140,9 @@ def test_exact_current_active_authorities_are_registered():
         "soulaana_explanation":
             "OB_SOULAANA_EXPLANATION_V1",
 
+        "owner_attention":
+            "OB_OWNER_ATTENTION_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
