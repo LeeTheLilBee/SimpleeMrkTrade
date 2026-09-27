@@ -2241,6 +2241,60 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_beta_gate_report"
+] = _record(
+    concept_key="owner_beta_gate_report",
+    authority_id="OB_OWNER_BETA_GATE_REPORT_V1",
+    authority_class="SOURCE_BOUND_OWNER_BETA_DEPENDENCY_REPORT",
+    implementation_ref="web/ob_manual_live_beta_gate_report.py",
+    implementation_role="REAL_TOWER_AND_PROVIDER_GATE_GAP_REPORT_NO_LIVE_GRANT",
+    owns=(
+        "independently revalidated OBML source and untrusted Tower contract inspection receipts",
+        "redacted eight-gate external proof checklist with permanent source-only hold",
+        "canonical safety block precedence and exact account-bound lineage fingerprints",
+    ),
+    inputs=(
+        "OB_OWNER_MANUAL_LIVE_SOURCE_PREFLIGHT_V1",
+        "OB_OWNER_MANUAL_LIVE_TOWER_CONTRACT_INSPECTION_V1",
+    ),
+    triggers=(
+        "explicit canonical Manual Live source preflight",
+        "Tower request shape inspection and exact source evidence at supplied canonical time",
+    ),
+    effects=(
+        "emit immutable source-only beta external-gate gap report",
+        "preserve source BLOCK/HOLD and require independent Tower, provider and owner approvals",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "promote a claim hash, static Tower request shape, or rehearsal to production permission",
+        "accept external-authentication truth booleans from an untrusted caller",
+        "authenticate provider account, invent actual order/fill or release protected funds",
+        "execute a broker order, unlock Manual Live, Hybrid or Automated or bypass safety",
+        "send balances or readiness directly to BuyBox",
+    ),
+    failure_behavior=(
+        "Tampered upstream inspection or source lineage fails closed; "
+        "all actual external proof gates remain pending until separate trusted integrations."
+    ),
+    explanation=(
+        "Owner can see the exact source/permission/provider gaps before Monday beta "
+        "without viewing raw tokens or being shown a false live-ready badge."
+    ),
+    evidence=(
+        "OBRES, OBML preflight and Tower inspection IDs and integrity hashes",
+        "explicit never-self-certified external proof gate IDs",
+        "immutable redacted owner beta report hash",
+    ),
+    review_visibility="Amount-free owner readiness gap report, never an execution or hosted access grant.",
+    temporal_validity="REQUIRES_FULL_CURRENT_UPSTREAM_REVALIDATION_AND_EXTERNAL_GATE_CHECKS",
+    deterministic=True,
+    learning_boundary="Cannot train on rehearsal as actual broker performance or grant an operating mode.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
