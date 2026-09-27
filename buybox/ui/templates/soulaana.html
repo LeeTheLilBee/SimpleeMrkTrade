@@ -9,7 +9,7 @@
 <h2>{{ context.summary }}</h2><p>Judgment: {{ context.judgment|replace('_',' ')|title }} · Teller readiness: {{ context.readiness }}</p>
 <small>Soulaana's live AI service is not connected yet. This view explains recorded evidence, calculations, policy results, and owner actions. It cannot modify source data or authorize a transaction.</small></section>
 <section class="context-grid">{% for entry in context.entries %}
-<article class="panel"><p class="eyebrow">{{ entry.classification|replace('_',' ') }}{% if entry.label %} · {{ entry.label }}{% endif %}</p><p>{{ entry.text }}</p>
+<article class="panel"><p class="eyebrow">{{ entry.classification|replace('_',' ') }}{% if entry.label %} · {{ entry.label|replace('_',' ') }}{% endif %}</p><p>{{ entry.text }}</p>
 {% if entry.references %}<div class="reference-row"><small>Record references</small>{% for ref in entry.references %}<code>{{ ref }}</code>{% endfor %}</div>{% endif %}</article>
 {% else %}<article class="panel"><p>No documented findings for this view. Unknown information is not presumed to be favorable.</p></article>{% endfor %}</section>
 <p class="muted">No action on this page changes policy, source evidence, a seller relationship, Teller capital or Tower permissions.</p>
