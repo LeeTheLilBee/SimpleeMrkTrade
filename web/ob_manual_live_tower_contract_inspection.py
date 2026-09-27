@@ -163,8 +163,19 @@ def _build(
     caps = claim.get("capability_scope")
     if not isinstance(caps, dict) or any(caps.get(k) is not False for k in FORBIDDEN_GRANTS):
         reasons.add("TOWER_FORBIDDEN_EXECUTION_CAPABILITY_CLAIM")
-    if not isinstance(caps, dict) or caps.get("owner_readiness_review_only") is not True:
+    if (
+        not isinstance(caps, dict) or
+        caps.get("owner_readiness_review_only") is not True or
+        caps.get("manual_broker_placement_by_human_outside_ob") is not True
+    ):
         reasons.add("TOWER_REVIEW_ONLY_SCOPE_MISSING")
+    if isinstance(caps, dict) and set(caps) != (
+        set(FORBIDDEN_GRANTS) | {
+            "owner_readiness_review_only",
+            "manual_broker_placement_by_human_outside_ob",
+        }
+    ):
+        reasons.add("TOWER_UNKNOWN_OR_MISSING_CAPABILITY_SCOPE_FIELD")
     # No OB-side test of the asserted verified_tower_attestation field could
     # authenticate the issuer: even a syntactically plausible claim stays HOLD.
     if claim.get("verified_tower_attestation") is not None:
