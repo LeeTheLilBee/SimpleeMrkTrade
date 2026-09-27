@@ -46,7 +46,7 @@ class DiligenceTests(unittest.TestCase):
         self.assertEqual(task["due_date"],"2026-10-02")
         self.assertEqual(task["created_against_opportunity_revision"],op["version"])
         self.assertEqual(task["owner"],"local_owner")
-        self.assertFalse(task["does_not_contact_seller"] is False)
+        self.assertTrue(task["does_not_contact_seller"])
         self.assertTrue(task["does_not_verify_evidence"])
         self.assertTrue(task["does_not_authorize_purchase"])
         self.assertEqual(len(current_tasks(revised)),1)
