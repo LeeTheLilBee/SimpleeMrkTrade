@@ -15,6 +15,7 @@ from .capital import verified_apartment_readiness
 from .leasing import GroundsLeasing
 from .stewardship import GroundsStewardship
 from .teller import resident_rent_projection
+from .work_resources import GroundsWorkResources
 
 _WORK_MESSAGES = {
     "submitted": ("Your request has been received in Grounds.","Management review"),
@@ -249,4 +250,41 @@ def explain_property_pulse(actor:TowerScope,operations:GroundsOperations,*,
                   "Actual rent collections and deployable capital are Teller-owned.",
         "next_useful_action":"Review assigned property work and verify Teller financial status",
         "rent_collections":None,"ob_queried":False,"capital_approved":False,
+    }
+
+
+def explain_work_resources(actor:TowerScope,resources:GroundsWorkResources,*,
+                           work_ref:str)->dict:
+    """Staff-only physical work accounting; never a resident bill or Teller ledger."""
+    if not isinstance(resources,GroundsWorkResources):
+        raise TypeError("GroundsWorkResources required")
+    view=resources.summary(actor,work_ref=work_ref)
+    return {
+        "speaker":"Soulaana","source":"grounds","work_ref":work_ref,
+        "source_work_revision":view["source_work_revision"],
+        "recorded_event_count":view["resource_event_count"],
+        "message":"Staff recorded "+str(view["net_material_items"])+
+                  " net material items and "+str(view["net_labor_minutes"])+
+                  " minutes of labor. Corrections remain in the append-only history. "+
+                  "These are physical-work quantities, not inventory balances, payroll or invoices.",
+        "next_useful_action":"Review scoped physical-work history and verified repair evidence",
+        "resident_billed":False,"payroll_changed":False,"teller_transaction_created":False,
+        "action_executed":False,
+    }
+
+
+def explain_preventive_due(actor:TowerScope,stewardship:GroundsStewardship,*,
+                           property_ref:str,as_of:str)->dict:
+    """Only authorized property staff receive a dated due-list explanation."""
+    if not isinstance(stewardship,GroundsStewardship):
+        raise TypeError("GroundsStewardship required")
+    plans=stewardship.due_plans(actor,property_ref=property_ref,as_of=as_of)
+    return {
+        "speaker":"Soulaana","source":"grounds","property_ref":property_ref,
+        "source_as_of_date":as_of,"due_plan_count":len(plans),
+        "message":str(len(plans))+" preventive plans have scheduled due dates on or before "+
+                  as_of+". This does not confirm a worker assignment or an actual completed repair.",
+        "next_useful_action":"Review due plans and assign a verified maintenance workflow",
+        "external_schedule_created":False,"dispatch_confirmed":False,
+        "action_executed":False,
     }
