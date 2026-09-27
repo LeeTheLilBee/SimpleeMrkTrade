@@ -19,7 +19,7 @@ from .storage import GroundsStore
 
 def _proof(verifier: Callable[[object], Mapping], document: object,
            *, kind: str, lease_ref: str, property_ref: str,
-           unit_ref: str, subject_ref: str) -> str:
+           unit_ref: str, subject_ref: str, relationship: str | None = None) -> str:
     if not callable(verifier):
         raise AccessDenied("certified Tower/Vault membership verifier required")
     try:
@@ -34,6 +34,8 @@ def _proof(verifier: Callable[[object], Mapping], document: object,
     ):
         if result.get(key)!=expected:
             raise AccessDenied("membership proof/scope mismatch")
+    if relationship is not None and result.get("relationship")!=relationship:
+        raise AccessDenied("membership relationship mismatch")
     return _required(result.get("proof_ref"),"proof_ref",max_length=128)
 
 
@@ -58,23 +60,10 @@ class GroundsResidency:
         proof_ref=_proof(
             proof_verifier,signed_grant,kind="lease_member_grant",
             lease_ref=lease_ref,property_ref=property_ref,unit_ref=unit_ref,
-            subject_ref=subject_ref,
+            subject_ref=subject_ref,relationship=relationship,
         )
-        # A proof of co-tenancy is different from permission for an occupant
-        # to pay bills/sign leases. Neither grants a Tower session by itself.
-        if not isinstance(signed_grant,Mapping):
-            # Original wire payload is opaque; certified verifier supplies
-            # normalized claims, not raw signed input. Verified relationship
-            # is checked by a separate verifier call to keep the returned
-            # immutable normalized material authoritative.
-            pass
-        # Verify the relationship from certified material, not user arguments.
-        try:
-            verified=proof_verifier(signed_grant)
-        except Exception as exc:
-            raise AccessDenied("membership evidence rejected") from exc
-        if not isinstance(verified,Mapping) or verified.get("relationship")!=relationship:
-            raise AccessDenied("membership relationship mismatch")
+        # Proof of co-tenancy is not a new Tower session, rent obligation,
+        # lease signing authority, or independent permission to access peers.
         with self.store.transaction(write=True) as db:
             lease=db.execute(
                 """SELECT status,resident_ref FROM leases
