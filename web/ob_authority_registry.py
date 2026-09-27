@@ -2141,6 +2141,58 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_manual_live_source_preflight"
+] = _record(
+    concept_key="owner_manual_live_source_preflight",
+    authority_id="OB_OWNER_MANUAL_LIVE_SOURCE_PREFLIGHT_V1",
+    authority_class="READ_ONLY_OWNER_MANUAL_BROKER_SOURCE_PREFLIGHT",
+    implementation_ref="web/ob_manual_live_owner_preflight.py",
+    implementation_role="FULL_RECOVERY_LINEAGE_AND_EXPLICIT_OWNER_REVIEW_HOLD",
+    owns=(
+        "source-bound owner-only manual Level 1 preflight and human-review checklist",
+        "explicit missing Tower and broker external authenticity requirements",
+        "immutable redacted hold proof without creating trading authority",
+    ),
+    inputs=("OB_RECOVERY_REVIEW_V1", "OB_OPERATING_MODE_V1"),
+    triggers=(
+        "fully verified OBRES and upstream account-scoped source receipts",
+        "optional owner-asserted plan bound to exact review-only candidate",
+    ),
+    effects=(
+        "surface canonical safety blocks and missing source reconciliation",
+        "retain Tower server-side authorization and broker authentication as unmet gates",
+        "show separate human broker placement and independent provider reconciliation steps",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "treat dry-run/owner assertion/source hash as Tower identity or broker confirmation",
+        "turn PAPER or reviewer interest into Manual Live activation",
+        "broker API order, human order fabrication, simulated fill promoted to actual fill",
+        "risk/safety override, protected capital release, Hybrid or Automated unlock",
+        "direct OB–BuyBox financial-readiness path",
+    ),
+    failure_behavior=(
+        "Tampered OBRES source, missing account identity or unsafe owner plan fails closed; "
+        "even complete source-only rehearsal remains on Tower and broker evidence hold."
+    ),
+    explanation=(
+        "Owner sees immutable reason codes, current source mode, manual checklist and "
+        "what the real Tower and external broker must separately establish."
+    ),
+    evidence=(
+        "OBRES and OBATTN exact source IDs/hashes",
+        "canonical account/mode reference",
+        "optional explicit owner plan and source preflight fingerprint",
+    ),
+    review_visibility="Source-only rehearsal and hold receipt, never production Manual Live permission.",
+    temporal_validity="REQUIRES_FRESH_CANONICAL_UPSTREAM_AND_INDEPENDENT_EXTERNAL_VERIFICATION",
+    deterministic=True,
+    learning_boundary="No simulated outcomes, owner claims or rehearsals may widen trading policy.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {
