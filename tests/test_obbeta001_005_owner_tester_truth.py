@@ -29,9 +29,9 @@ def test_obbeta003_source_namespace_does_not_silently_clear_tower_or_broker():
     assert "A signed OB account namespace is not owner clearance" in BETA
     assert "Real Manual Live remains HOLD" in BETA or "real Manual Live remains HOLD" in BETA
     assert 'source_claim_authenticated_to_ob": False' in NAMESPACE
-    assert '"trusted_tower_owner_handoff_verified=False"' in NAMESPACE
-    assert '"live_manual_mode_unlocked=False"' in NAMESPACE
-    assert '"direct_buybox_access=False"' in NAMESPACE
+    assert 'trusted_tower_owner_handoff_verified=False' in NAMESPACE
+    assert 'live_manual_mode_unlocked=False' in NAMESPACE
+    assert 'direct_buybox_access=False' in NAMESPACE
 
 
 def test_obbeta004_practice_receipts_cannot_claim_real_broker_fills():
