@@ -195,6 +195,10 @@ CREATE TABLE IF NOT EXISTS turnover_events (
   occurred_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS turnover_history ON turnover_events(turnover_ref,revision);
+CREATE TABLE IF NOT EXISTS turnover_inspections (
+  turnover_ref TEXT PRIMARY KEY REFERENCES turnovers(turnover_ref),
+  inspection_ref TEXT NOT NULL UNIQUE REFERENCES inspections(inspection_ref)
+);
 CREATE TABLE IF NOT EXISTS leasing_prospects (
   prospect_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),
