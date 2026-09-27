@@ -1,0 +1,46 @@
+name: Tower BuyBox Teller proposal source review TWR212-216
+
+on:
+  push:
+    branches:
+      - tower-buybox-teller-proposal-review-twr212-216
+  pull_request:
+    paths:
+      - 'tower/buybox_teller_proposal_review.py'
+      - 'tests/test_tower_buybox_teller_proposal_review_twr212_216.py'
+      - 'docs/TOWER_BUYBOX_TELLER_PROPOSAL_TWR212_216.md'
+      - '.github/workflows/tower-buybox-teller-proposal-twr212-216.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-intake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Independently pin BuyBox's actual producer
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 728219b4fe1175dbbdb6387c578fc798e1262ef0
+          path: source-buybox-pinned
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install source-only Tower and BuyBox requirements
+        run: |
+          python -m pip install -r deploy/hosted_tower/requirements.txt pytest
+          python -m pip install -r source-buybox-pinned/buybox/requirements.txt
+      - name: Exact source-to-source proposal and existing default-deny regression
+        run: |
+          python -m pytest -q \
+            tests/test_tower_buybox_teller_proposal_review_twr212_216.py \
+            tests/test_tower_buybox_action_contract_twr202_206.py \
+            tests/test_tower_buybox_registry_boundary_twr201.py \
+            tests/test_tower_app_registry_security_map.py \
+            tests/test_tower_teller_persistence_exchange_twr193_197.py
