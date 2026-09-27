@@ -3,7 +3,7 @@
   const root = "/grounds";
   const csrf = document.querySelector('meta[name="grounds-csrf"]').content;
   const $ = id => document.getElementById(id);
-  const state = { me: null, view: null, property: "", unit: "", busy: false };
+  const state = { me: null, view: null, property: "", unit: "", busy: false, maintenanceRetry: null };
   function el(tag, text, klass) {
     const node = document.createElement(tag);
     if (text !== undefined && text !== null) node.textContent = String(text);
@@ -19,12 +19,19 @@
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
   }
-  async function request(path, data) {
+  function newIdempotencyKey() {
+    if (!globalThis.crypto || typeof globalThis.crypto.randomUUID !== "function") {
+      throw new Error("A secure browser connection is required to create new requests.");
+    }
+    return globalThis.crypto.randomUUID();
+  }
+  async function request(path, data, idempotencyKey) {
     const options = { credentials: "same-origin", cache: "no-store", headers: { "Accept": "application/json" } };
     if (data !== undefined) {
       options.method = "POST";
       options.headers["Content-Type"] = "application/json";
       options.headers["X-Grounds-CSRF"] = csrf;
+      if (idempotencyKey !== undefined) options.headers["X-Grounds-Idempotency-Key"] = idempotencyKey;
       options.body = JSON.stringify(data);
     }
     let response, result;
@@ -212,15 +219,24 @@
       wrapper.append(input); form.append(wrapper); return input;
     }
     const start=addDate("Start"); const end=addDate("End");
+    let retry=null;
     const submit=el("button","Send appointment request","primary full");submit.type="submit";form.append(submit);
     form.addEventListener("submit",async event => {
       event.preventDefault();submit.disabled=true;
       try {
         const startDate=new Date(start.value),endDate=new Date(end.value);
         if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) throw new Error("Choose valid start and end dates.");
-        const result=await request("appointment/request",{work_ref:work.work_ref,
-          start_at:startDate.toISOString(),end_at:endDate.toISOString()});
-        message("Appointment " + result.appointment_ref + " requested in Grounds. Not yet confirmed or dispatched.");
+        const payload={work_ref:work.work_ref,
+          start_at:startDate.toISOString(),end_at:endDate.toISOString()};
+        const fingerprint=JSON.stringify(payload);
+        if(!retry || retry.fingerprint!==fingerprint){
+          retry={fingerprint,key:newIdempotencyKey()};
+        }
+        const result=await request("appointment/request",payload,retry.key);
+        retry=null;
+        message("Appointment " + result.appointment_ref +
+          (result.replayed ? " recovered after retry." : " requested in Grounds.") +
+          " Not yet confirmed or dispatched.");
         form.remove();
       } catch(error) { message(error.message,true); } finally { submit.disabled=false; }
     });
@@ -293,13 +309,21 @@
         event.preventDefault();const button=event.submitter;button.disabled=true;
         try {
           selected();
-          const result=await request("work",{
+          const payload={
             property_ref:state.property,unit_ref:state.unit,
             category:$("category").value,description:$("description").value,
             emergency_flag:$("urgent").checked,entry_permission:$("entry").value
-          });
+          };
+          const fingerprint=JSON.stringify(payload);
+          if (!state.maintenanceRetry || state.maintenanceRetry.fingerprint!==fingerprint) {
+            state.maintenanceRetry={fingerprint,key:newIdempotencyKey()};
+          }
+          const result=await request("work",payload,state.maintenanceRetry.key);
+          state.maintenanceRetry=null;
           $("request-form").reset();
-          message("Maintenance request recorded: "+result.work_ref+". It has not been externally delivered or dispatched.");
+          message("Maintenance request " + result.work_ref +
+            (result.replayed ? " recovered after retry." : " recorded.") +
+            " It has not been externally delivered or dispatched.");
           await refresh();
         }catch(error){message(error.message,true);}finally{button.disabled=false;}
       });
