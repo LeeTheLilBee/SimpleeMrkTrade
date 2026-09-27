@@ -434,6 +434,10 @@ class SQLiteOperationalJournal:
             for row in conn.execute("SELECT request_tag FROM intents"):
                 state = self._state(conn, row["request_tag"]) or "UNVERIFIED"
                 states[state] = states.get(state, 0) + 1
+            backup_states = {}
+            for row in conn.execute("SELECT request_tag FROM backup_intents"):
+                state = self._backup_state(conn, row["request_tag"]) or "UNVERIFIED"
+                backup_states[state] = backup_states.get(state, 0) + 1
             incidents = conn.execute("SELECT COUNT(*) FROM incidents").fetchone()[0]
             return {
                 "status": "SOURCE_ONLY_NO_GO",
@@ -445,6 +449,12 @@ class SQLiteOperationalJournal:
                                       states.get("RECONCILE_CORRUPT", 0) +
                                       states.get("REPLAY_INTEGRITY_FAILURE", 0),
                 "incident_count": incidents,
+                "backup_count": sum(backup_states.values()),
+                "pending_backups": backup_states.get("BACKUP_RESERVED", 0) +
+                                   backup_states.get("BACKUP_UNCERTAIN", 0),
+                "backup_missing_or_corrupt": backup_states.get("BACKUP_RECONCILE_MISSING", 0) +
+                                             backup_states.get("BACKUP_RECONCILE_CORRUPT", 0) +
+                                             backup_states.get("BACKUP_REPLAY_INTEGRITY_FAILURE", 0),
                 "external_checkpoint_certified": False,
                 "hosted_alert_delivery_certified": False,
             }
