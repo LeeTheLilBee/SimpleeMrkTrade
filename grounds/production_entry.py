@@ -15,7 +15,7 @@ verification and never consumes claimed role flags supplied by a browser.
 """
 from __future__ import annotations
 
-import importlib
+from importlib import import_module
 import os
 from collections.abc import Callable
 
@@ -44,7 +44,7 @@ def create_wsgi_application():
     if len(secret)<32 or len(set(secret))<8:
         raise GroundsProductionUnavailable("high-entropy CSRF configuration required")
     try:
-        authority=importlib.import_module("tower.grounds_runtime_receiver")
+        authority=import_module("tower.grounds_runtime_receiver")
         factory=getattr(authority,"create_certified_grounds_receiver")
     except (ImportError,AttributeError) as exc:
         raise GroundsProductionUnavailable(
