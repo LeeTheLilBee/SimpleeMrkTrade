@@ -40,3 +40,5 @@ jobs:
             tests/test_obauth006_010_account_identity_truth_taxonomy.py \
             tests/test_obml001_005_owner_manual_source_preflight.py \
             tests/test_obml006_010_tower_contract_inspection.py
+      - name: Full repository regression
+        run: python -m pytest -q tests
