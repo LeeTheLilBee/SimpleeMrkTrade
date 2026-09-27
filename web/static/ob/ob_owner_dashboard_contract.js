@@ -367,37 +367,11 @@
   const sourceLooksVerified = (
     payload
   ) => {
-    if (
-      !payload
-      || typeof payload !== "object"
-    ) {
-      return false;
-    }
-
-    const source =
-      safeText(
-        payload.source,
-        ""
-      ).toLowerCase();
-
-    if (
-      source.includes("fallback")
-      || source.includes("preview")
-      || source.includes("demo")
-      || source.includes("sample")
-      || source.includes("mock")
-      || source.includes("seed")
-    ) {
-      return false;
-    }
-
-    if (
-      payload.verified === false
-    ) {
-      return false;
-    }
-
-    return true;
+    // HTTP success and self-reported verification do not authenticate source
+    // provenance. No trusted server-side proof is consumed by this browser
+    // contract; labels must remain independently unverified.
+    void payload;
+    return false;
   };
 
 
@@ -429,25 +403,40 @@
         payload = {};
       }
 
+      const usable =
+        (
+          response.ok
+          && payload
+          && typeof payload === "object"
+          && !Array.isArray(payload)
+          && Object.keys(payload).length > 0
+        );
+
       return {
         name,
         url,
 
         status:
-          response.ok
+          usable
             ? "available"
             : "guarded",
 
+        source_observed:
+          usable,
+
         verified:
           (
-            response.ok
+            usable
             && sourceLooksVerified(
               payload
             )
           ),
 
+        independent_provenance_authenticated:
+          false,
+
         payload:
-          response.ok
+          usable
             ? payload
             : null
       };
@@ -463,6 +452,12 @@
           "unavailable",
 
         verified:
+          false,
+
+        source_observed:
+          false,
+
+        independent_provenance_authenticated:
           false,
 
         payload:
@@ -1206,31 +1201,26 @@
       state.sources.engine_trust
       || {};
 
-    const payload =
-      safeObject(
-        source.payload
-      );
-
-    const trust =
-      safeObject(
-        payload.trust
-      );
+    const observed =
+      source.status === "available";
 
     return {
       verified:
-        source.verified === true,
+        false,
+
+      source_observed:
+        observed,
+
+      independent_provenance_authenticated:
+        false,
 
       label:
-        source.verified === true
-          ? safeText(
-              trust.label
-              || payload.display_label,
-              "Verified"
-            )
-          : "Guarded · verify source",
+        observed
+          ? "Source trust labels received · independently unverified"
+          : "Guarded · trust source unavailable",
 
       needs_attention:
-        source.verified !== true
+        true
     };
   };
 
@@ -1253,7 +1243,7 @@
       );
 
     const blockers =
-      source.verified === true
+      source.status === "available"
         ? safeArray(
             payload.remaining_live_blockers
           )
@@ -1270,7 +1260,7 @@
         "operator_practice_only_not_tower_or_provider",
 
       operator_practice_source_observed:
-        source.verified === true,
+        source.status === "available",
 
       score_is_practice_only:
         true,
@@ -1285,7 +1275,7 @@
         false,
 
       score:
-        source.verified === true
+        source.status === "available"
           ? num(
               scorecard.readiness_score
             )
@@ -1295,7 +1285,7 @@
 
       needs_attention:
         (
-          source.verified !== true
+          source.status !== "available"
           || blockers.length > 0
         ),
 
@@ -1322,25 +1312,23 @@
       state.sources.private_beta
       || {};
 
-    const payload =
-      safeObject(
-        source.payload
-      );
+    const observed =
+      source.status === "available";
 
     return {
       verified:
-        source.verified === true,
+        false,
+
+      source_observed:
+        observed,
+
+      actual_hosted_beta_access_verified:
+        false,
 
       label:
-        source.verified === true
-          ? safeText(
-              payload.owner_go_no_go_status
-              || payload.owner_decision
-              || payload.launch_status
-              || payload.status,
-              "Verified private beta evidence available"
-            )
-          : "Guarded · beta evidence not verified",
+        observed
+          ? "Private beta checklist received · hosted clearance unverified"
+          : "Guarded · beta evidence unavailable",
 
       private_only:
         true,
