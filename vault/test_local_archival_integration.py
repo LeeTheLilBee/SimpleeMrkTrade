@@ -58,7 +58,7 @@ def test_scan_mismatch_fails_closed(tmp_path):
     app=fixture(tmp_path,BadScan())
     with pytest.raises(IntegrationError,match="scanner digest mismatch"):
         app.archive(**params())
-    assert app.journal.status("request-1")=="QUARANTINED"
+    assert app.journal.status("request-1")=="REJECTED"
     assert app.store.objects=={}
 
 def test_wrong_entity_restore_rejected(tmp_path):
