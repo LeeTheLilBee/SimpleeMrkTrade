@@ -145,5 +145,5 @@
   // A countdown display is NOT an unattended report, source poll or tick.
   setInterval(() => {
     if (document.visibilityState === "visible" && !busy) refresh();
-  }, 1000);
+  }, 5000);
 })();
