@@ -61,6 +61,24 @@ class GroundsFoundationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             sample_intake(emergency_flag="yes")
 
+    def test_maintenance_intake_bounded_and_bad_shapes_fail_closed(self):
+        for bad in (
+            {"property_ref":"p"*129},
+            {"unit_ref":"u"*129},
+            {"category":"c"*81},
+            {"description":"d"*2001},
+            {"description":"\u0000hidden"},
+            {"entry_permission":[]},
+            {"photo_refs":tuple("ref"+str(i) for i in range(9))},
+            {"photo_refs":("x"*129,)},
+            {"photo_refs":("okay",1)},
+        ):
+            with self.subTest(bad=str(bad)[:70]):
+                with self.assertRaises(ValueError):
+                    sample_intake(**bad)
+        # Bounded multiline descriptions remain supported.
+        self.assertEqual(sample_intake(description="Water dripping\\nNeed assistance").category,"plumbing")
+
     def test_work_order_begins_submitted(self):
         order = WorkOrder("wo-example", sample_intake())
         self.assertEqual(order.state, "submitted")
