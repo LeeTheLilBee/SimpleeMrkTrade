@@ -5,7 +5,7 @@ from vault.canonical_evidence_registry import CanonicalEvidenceRegistry,Registry
 def record(reg,**changes):
     p=dict(receipt_id="receipt-1",request_id="request-1",entity_id="entity-1",
         evidence_id="evidence-1",version_id="version-1",original_sha256="a"*64,
-        ciphertext_sha256="b"*64,object_ref="object-1",scan_receipt_ref="scan-1",
+        ciphertext_sha256="b"*64,object_ref="objects/"+"1"*48,scan_receipt_ref="scan-1",
         tower_receipt_ref="tower-1",retention_policy_id="policy-1")
     p.update(changes)
     return reg.record_archival(**p)
@@ -15,14 +15,14 @@ def test_idempotency_and_correction_lineage(tmp_path):
     assert record(reg)=="receipt-1"
     assert record(reg)=="receipt-1"
     assert record(reg,receipt_id="receipt-2",request_id="request-2",
-        version_id="version-2",object_ref="object-2",parent_version_id="version-1")=="receipt-2"
+        version_id="version-2",object_ref="objects/"+"2"*48,parent_version_id="version-1")=="receipt-2"
     assert reg.redacted_receipt("receipt-2","entity-1")["parent_version_id"]=="version-1"
     assert reg.redacted_receipt("receipt-2","entity-2") is None
     with pytest.raises(RegistryError,match="conflicting request"):
         record(reg,original_sha256="c"*64)
     with pytest.raises(RegistryError,match="parent"):
         record(reg,receipt_id="receipt-3",request_id="request-3",
-            version_id="version-3",object_ref="object-3",parent_version_id="missing")
+            version_id="version-3",object_ref="objects/"+"3"*48,parent_version_id="missing")
 
 def test_snapshot_exact_versions_and_append_only(tmp_path):
     path=tmp_path/"vault.sqlite"
