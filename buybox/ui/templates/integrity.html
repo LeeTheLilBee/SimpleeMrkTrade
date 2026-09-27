@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Deal Integrity · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero">
+  <p class="eyebrow">DEAL INTEGRITY · SOURCE DOCUMENTS</p>
+  <h1>What do the originals actually say?</h1>
+  <p>Compare source-located statements from your uploaded documents. BuyBox never silently chooses a seller claim, edits the underlying file, verifies ownership, or converts these statements into spendable capital.</p>
+</section>
+<section class="stats">
+  <div class="tile"><small>Current source statements</small><strong>{{ report.active_claim_count }}</strong></div>
+  <div class="tile"><small>Owner document reviews</small><strong>{{ report.owner_document_reviewed_count }}</strong></div>
+  <div class="tile"><small>Unresolved discrepancies</small><strong>{{ report.unresolved_count }}</strong></div>
+  <div class="tile"><small>External transaction authority</small><strong>None</strong></div>
+</section>
+{% if report.discrepancies %}
+<section class="panel">
+  <p class="eyebrow">CONTRADICTORY SOURCES · ACTION NEEDED</p>
+  <h2>Discrepancy desk</h2>
+  <p class="muted">Only like-for-like subject, field and reporting period are compared. An unresolved discrepancy blocks analytical qualification; neither a seller's statement nor an owner note resolves it automatically.</p>
+  {% for conflict in report.discrepancies %}
+  <article class="discrepancy-card">
+    <p class="eyebrow">{{ conflict.kind|replace('_',' ') }} · {{ conflict.state|replace('_',' ') }}</p>
+    <h3>{{ conflict.field|replace('_',' ')|title }} — {{ conflict.subject_id }}</h3>
+    <p class="muted">Period/as-of date: {{ conflict.period_key }} · {{ conflict.distinct_values }} differing values</p>
+    {% for claim in claims if claim.id in conflict.claim_ids %}
+      <div class="evidence-row">
+        <div>
+          <strong>{{ claim.raw_value }} {{ claim.unit }}</strong>
+          <small>{{ claim.locator }} · {{ claim.state|replace('_',' ')|title }}</small>
+        </div><small>Source {{ claim.artifact_id[:8] }}…</small>
+      </div>
+    {% endfor %}
+    <p class="muted">Soulaana can explain the differences and point to the source records, but cannot choose a winning document or waive the review.</p>
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<section class="panel"><p class="eyebrow">SOURCE COMPARISON</p><h2>No contradictory current statements recorded.</h2>
+<p class="muted">This is not a clean-title certificate or a completed diligence result. It may simply mean there are not enough independent source statements to compare.</p></section>
+{% endif %}
+<section class="workspace">
+  <div class="main-column">
+    <div class="panel">
+      <p class="eyebrow">DOCUMENT-LOCATED STATEMENTS</p><h2>Current source claims</h2>
+      {% for c in claims|reverse %}
+        <article class="claim-card">
+          <p class="eyebrow">{{ c.state|replace('_',' ') }} · {{ c.field|replace('_',' ') }}</p>
+          <h3>{{ c.raw_value }} {% if c.unit != 'TEXT' %}{{ c.unit }}{% endif %}</h3>
+          <p class="muted">Subject: {{ c.subject_id }} · As-of/reporting period: {{ c.period_key }}</p>
+          {% if c.field=='OTHER' %}<p class="muted">Topic: {{ c.topic_key }}</p>{% endif %}
+          <p><strong>Exact source location:</strong> {{ c.locator }}</p>
+          <p><strong>Source:</strong> {{ c.source_party or 'Source party not recorded' }}
+          {% if artifacts.get(c.artifact_id) %}
+             · <a href="{{ url_for('download_document',oid=op.id,artifact_id=c.artifact_id) }}">Retrieve original attachment</a>
+          {% endif %}</p>
+          <small>Claim ID: {{ c.id }} · Artifact SHA-256 {{ c.artifact_sha256[:20] }}…</small>
+          {% if c.supersedes %}<p class="muted">A later revision of claim {{ c.supersedes[:12] }}…; original preserved.</p>{% endif %}
+          {% if c.state=='SOURCE_RECORDED' %}
+            {% set supporting=evidence_by_id.get(c.evidence_id) %}
+            {% if supporting and supporting.status=='DOCUMENT_SUPPORTED' %}
+              <form method="post" action="{{ url_for('document_claim_review',oid=op.id,claim_id=c.id) }}" class="panel-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="revision" value="{{ op.version }}">
+                <label>What did you personally verify in this original document?
+                  <textarea name="rationale" maxlength="1000" rows="3" required></textarea>
+                </label><button type="submit">Record owner documentary review</button>
+              </form>
+            {% else %}
+              <p class="muted">Review the linked original in the opportunity dossier before recording support for this claim.</p>
+            {% endif %}
+          {% else %}
+            <p class="muted">Owner documentary review recorded. This is not independent verification or a selected underwriting input.</p>
+          {% endif %}
+        </article>
+      {% else %}
+        <p class="muted">No source-located claims recorded yet. Upload an original and record a statement below.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <aside class="side-column">
+    <div class="panel">
+      <p class="eyebrow">NEW SOURCE STATEMENT</p><h2>Record only what the document says</h2>
+      {% if sources %}
+      <form method="post" action="{{ url_for('record_claim',oid=op.id) }}" class="panel-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="revision" value="{{ op.version }}">
+        <label>Actual uploaded original
+          <select name="evidence_id" required>
+          {% for src in sources %}
+            <option value="{{ src.evidence.id }}">{{ src.artifact.name }} · {{ src.evidence.kind|replace('_',' ') }} · {{ src.evidence.status|replace('_',' ') }} · {{ src.evidence.id[:8] }}</option>
+          {% endfor %}
+          </select>
+        </label>
+        <label>Subject (deal, parcel ID, machine serial, etc.)
+          <input name="subject_id" maxlength="128" value="deal" required>
+        </label>
+        <label>Statement type
+          <select name="field" required>
+            <option value="ASKING_PRICE">Asking price (USD)</option>
+            <option value="ANNUAL_REVENUE">Annual revenue (USD)</option>
+            <option value="ANNUAL_EXPENSES">Annual expenses (USD)</option>
+            <option value="INCLUDED_ASSET_COUNT">Included asset count</option>
+            <option value="OWNERSHIP">Ownership statement</option>
+            <option value="CONTRACT_ASSIGNABILITY">Contract assignability</option>
+            <option value="OTHER">Other source statement</option>
+          </select>
+        </label>
+        <label>Other topic (only when using Other)
+          <input name="topic_key" maxlength="100" placeholder="Water rights, rent roll, etc.">
+        </label>
+        <label>Value as printed in the original
+          <input name="value" maxlength="300" required>
+        </label>
+        <label>Source date or exact 12-month reporting period
+          <input name="period_key" maxlength="30" required placeholder="2026-09-26 or 2025-01-01 / 2025-12-31">
+        </label>
+        <label>Exact locator in the original
+          <input name="locator" maxlength="240" required placeholder="Page 3, machine row 6, invoice line 12">
+        </label>
+        <label>Replace an earlier statement (only for a documented correction)
+          <select name="supersedes_claim_id">
+            <option value="">New independent source statement</option>
+            {% for c in claims %}
+              <option value="{{ c.id }}">{{ c.field|replace('_',' ') }} · {{ c.subject_id }} · {{ c.period_key }} · {{ c.id[:8] }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Correction rationale (required only if replacing)
+          <textarea name="correction_reason" maxlength="1000" rows="2"></textarea>
+        </label>
+        <button type="submit" class="primary">Preserve source statement</button>
+      </form>
+      {% else %}
+        <p class="muted">A claim must be tied to an original uploaded file and a recorded evidence reference. A seller's message alone cannot become a verified file.</p>
+        <a class="button primary" href="{{ url_for('opportunity',oid=op.id) }}">Upload actual original →</a>
+      {% endif %}
+    </div>
+    <div class="panel"><p class="eyebrow">✧ SOULAANA</p>
+      <h2>Understand the discrepancy</h2>
+      <p class="muted">Her explanation includes the recorded source references, what differs and what's still unknown.</p>
+      <a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='evidence') }}">Open evidence explanation →</a>
+    </div>
+  </aside>
+</section>
+{% endblock %}
