@@ -336,6 +336,11 @@ def register_ob_hosted_owner_rehearsal(
             API + name + ".json", endpoint="ob_owner_rehearsal_hosted_" + name,
             view_func=fn, methods=[method],
         )
+    @app.context_processor
+    def _ob_hosted_rehearsal_owner_dashboard_link():
+        # Presentation hint only. Real route still revalidates Tower on every call.
+        return {"ob_hosted_owner_rehearsal_available": enabled}
+
     app.extensions["ob_hosted_owner_rehearsal_registered"] = {
         "enabled": enabled, "canonical_origin_configured": bool(configured_origin),
         "durable_archive": False, "manual_live_grant": False,
