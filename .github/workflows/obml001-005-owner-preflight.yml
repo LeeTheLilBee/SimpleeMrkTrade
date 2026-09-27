@@ -1,0 +1,31 @@
+name: OBML001-005 owner-only source preflight
+on:
+  push:
+    branches:
+      - 'obml001-005-*'
+  pull_request:
+    paths:
+      - 'web/ob_manual_live_owner_preflight.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_obml001_005_owner_manual_source_preflight.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - '.github/workflows/obml001-005-owner-preflight.yml'
+permissions:
+  contents: read
+jobs:
+  manual-review-source-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Source-bound owner manual preflight and compatibility
+        run: |
+          python -m py_compile web/ob_manual_live_owner_preflight.py tests/test_obml001_005_owner_manual_source_preflight.py
+          python -m pytest -q tests/test_obml001_005_owner_manual_source_preflight.py tests/test_obres001_005_fail_closed_source_recovery.py tests/test_obattn001_005_owner_attention.py tests/test_obauth001_005_canonical_authority_registry.py
+      - name: Full repository regression
+        run: python -m pytest -q tests
