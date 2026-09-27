@@ -117,6 +117,11 @@ class GroundsOperationsTests(unittest.TestCase):
                                     resident_ref="r",start_on="2027-01-01",end_on="2026-01-01")
         self.ops.end_lease(self.manager,property_ref="p1",lease_ref="l1",expected_revision=1)
         with self.assertRaises(GroundsConflict):
+            self.ops.activate_lease(
+                self.manager,property_ref="p1",unit_ref="u1",lease_ref="l3",
+                resident_ref="new-resident",start_on="2027-09-26",end_on="2028-09-25",
+            )  # make_ready must be certified ready before another lease
+        with self.assertRaises(GroundsConflict):
             self.ops.end_lease(self.manager,property_ref="p1",lease_ref="l1",expected_revision=1)
         with self.assertRaises(AccessDenied):
             self.ops.resident_home(self.resident,property_ref="p1",unit_ref="u1")
