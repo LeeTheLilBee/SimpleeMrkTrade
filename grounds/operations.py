@@ -293,7 +293,9 @@ class GroundsOperations:
                             resource_ref=work_ref,revision=1)
         except sqlite3.IntegrityError as exc:
             raise GroundsConflict("duplicate or invalid request") from exc
-        return {"work_ref": work_ref, "state": "submitted", "emergency_flag": intake.emergency_flag}
+        return {"work_ref": work_ref, "state": "submitted",
+                "emergency_flag": intake.emergency_flag,
+                "emergency_dispatch_confirmed":False,"notification_sent":False}
 
     def _visible_order(self, db, actor: TowerScope, work_ref: str):
         actor.assert_active()
@@ -369,6 +371,14 @@ class GroundsOperations:
                     raise GroundsConflict("urgency flag requires human triage acknowledgment")
             if actor.role == "vendor":
                 raise AccessDenied("vendor transition not yet authorized")
+            if next_state=="in_progress":
+                preference=db.execute(
+                    "SELECT preference FROM work_entry_preferences WHERE work_ref=?",
+                    (work_ref,),
+                ).fetchone()
+                effective=(preference["preference"] if preference else row["entry_permission"])
+                if effective=="no":
+                    raise GroundsConflict("resident no-entry preference blocks work start pending human review")
             after = transition_work_order(
                 WorkOrder(work_ref, MaintenanceIntake(
                     row["property_ref"],row["unit_ref"],row["category"],row["description"],
@@ -385,7 +395,8 @@ class GroundsOperations:
             _event(db, work_ref, actor, "transition", row["state"], after.state, revision)
             _outbox(db,property_ref=row["property_ref"],event_kind="work_changed",
                     resource_ref=work_ref,revision=revision)
-            return {"work_ref": work_ref, "state": after.state, "revision": revision}
+            return {"work_ref": work_ref, "state": after.state, "revision": revision,
+                    "entry_authorized":False,"notification_sent":False}
 
     def assign_work_order(self, actor: TowerScope, *, work_ref: str,
                           technician: TowerScope, expected_revision: int):
