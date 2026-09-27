@@ -1,0 +1,33 @@
+name: OBSIM086-090 bounded offline owner evidence read
+on:
+  push:
+    branches:
+      - 'obsim086-090-*'
+  pull_request:
+    branches:
+      - 'tower-hosted-runtime-identity-twr081-085'
+    paths:
+      - 'scripts/ob_verify_owner_evidence.py'
+      - 'tests/test_obsim086_090_offline_owner_evidence_read_hardening.py'
+      - '.github/workflows/obsim086-090-offline-proof-read.yml'
+permissions:
+  contents: read
+jobs:
+  offline-proof-read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Compile and negative secure file read regression
+        run: |
+          python -m py_compile scripts/ob_verify_owner_evidence.py
+          python -m pytest -q tests/test_obsim086_090_offline_owner_evidence_read_hardening.py tests/test_obsim076_080_owner_final_evidence_export.py tests/test_obsim081_085_anonymous_final_evidence_denial.py tests/test_obsim076_080_hosted_read_token_race.py
+      - name: Complete accepted Tower regression
+        run: python -m pytest -q tests
