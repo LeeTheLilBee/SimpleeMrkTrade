@@ -14,7 +14,7 @@ from web.ob_tower_account_identity_export import (
 )
 from tower.obml_account_namespace_source import (
     NamespaceSourceRefused, verify_ob_account_namespace_source,
-    namespace_source_contract,
+    namespace_source_contract, ISSUER, AUDIENCE,
 )
 
 TEST_SOURCE_KEY = b"test-only-key-ob-tower-namespace-interop-2026-abcdef0123456789"
@@ -119,10 +119,8 @@ def test_source_signature_does_not_satisfy_tower_owner_or_manual_live_contract()
     source = source_export_contract()
     receiver = namespace_source_contract()
     assert source["schema_version"] == receiver["source_schema"]
-    assert source["issuer"] == receiver["authority"].replace(
-        "TOWER_OBML_OB_ACCOUNT_NAMESPACE_SOURCE_RECEIPT_V1", "observatory-account-identity"
-    )
-    assert source["audience"] == "tower-obml-account-check"
+    assert source["issuer"] == ISSUER
+    assert source["audience"] == AUDIENCE
     assert source["max_lifetime_seconds"] == receiver["max_ttl_seconds"] == 60
     assert receiver["atomic_durable_nonce_consumption_required"] is True
     assert receiver["default_nonce_store_provided"] is False
