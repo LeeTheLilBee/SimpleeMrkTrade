@@ -23,7 +23,7 @@ from .contracts import CloudError, IntegrityError, valid_object_ref, valid_sha25
 
 _NAMESPACE = re.compile(r"[0-9a-f]{64}\Z")
 _CODE = {"WRITE_UNCERTAIN", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
-         "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE"}
+         "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "BACKUP_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE"}
 _STATES = {"WRITE_RESERVED", "WRITE_UNCERTAIN", "WRITE_ACKNOWLEDGED",
            "RECONCILE_PRESENT", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
            "REPLAY_INTEGRITY_FAILURE"}
@@ -286,6 +286,12 @@ class SQLiteOperationalJournal:
         tag = _request_tag(namespace, request_id)
         with self._tx() as conn:
             self._incident(conn, tag=tag, scope=namespace, code="READ_INTEGRITY_FAILURE")
+
+    def record_backup_incident(self, *, namespace: str, request_id: str):
+        self._scope(namespace)
+        tag = _request_tag(namespace, request_id)
+        with self._tx() as conn:
+            self._incident(conn, tag=tag, scope=namespace, code="BACKUP_INTEGRITY_FAILURE")
 
     def record_safe_event(self, event: dict) -> None:
         if not isinstance(event, dict) or set(event) != {
