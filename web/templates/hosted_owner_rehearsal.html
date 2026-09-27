@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>The Observatory · Tower Owner Rehearsal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_local_owner_rehearsal.css') }}">
+  <script src="{{ url_for('static', filename='ob/ob_hosted_owner_rehearsal.js') }}" defer></script>
+</head>
+<body data-ob-room="hosted-owner-rehearsal" data-ob-hosted-survey-paper="true">
+  <div class="sky" aria-hidden="true"></div>
+  <main class="shell" id="localRehearsalMount" data-ob-csrf="{{ csrf }}" data-source-kind="{{ source_kind }}">
+    <header class="hero glass">
+      <span class="eyebrow">THE OBSERVATORY / PROOF·DEMO</span>
+      <h1>Owner Rehearsal</h1>
+      <p>Three simulation lanes. Your explicit synthetic input. No invented market ticks.</p>
+      <div class="chips">
+        <span class="chip safe">TOWER PROTECTED OWNER · SYNTHETIC</span>
+        <span class="chip">10,000 SIMULATED UNITS</span>
+        <span class="chip warn">REAL MANUAL LIVE · HOLD</span>
+      </div>
+      <p class="boundary">Tower rechecks the owner session, step-up and Observatory access on every request. This page does NOT authenticate a broker, external market source or live capital. It never places an order or moves funds.</p>
+    </header>
+    <section class="grid" aria-label="Rehearsal workspace">
+      <div class="glass panel control">
+        <div class="section-head">
+          <div><span class="eyebrow">SESSION CONTROL</span><h2>One explicit tick at a time</h2></div>
+          <span id="sessionState" class="chip">Checking</span>
+        </div>
+        <div class="metric-row">
+          <div class="metric"><small>Accepted reports</small><strong id="tickCount">—</strong></div>
+          <div class="metric"><small>Next explicit input</small><strong id="dueStatus">—</strong></div>
+          <div class="metric"><small>Source classification</small><strong id="sourceKind">{{ source_kind }}</strong></div>
+        </div>
+        <p class="quiet">A 30-second due indicator is a reminder, not a report. Offline time is never backfilled. Source declarations are not independently authenticated.</p>
+        <div class="actions">
+          <button id="refresh" type="button" class="button secondary">Refresh status</button>
+          <button id="pause" type="button" class="button secondary">Pause</button>
+          <button id="resume" type="button" class="button secondary">Resume</button>
+          <button id="stop" type="button" class="button caution">Stop &amp; finalize volatile report</button><button id="new" type="button" class="button secondary">New synthetic rehearsal</button>
+        </div>
+      </div>
+      <div class="glass panel input-panel">
+        <div class="section-head">
+          <div><span class="eyebrow">EXPLICIT INPUT</span><h2>Review before submitting</h2></div>
+          <span class="chip">HISTORICAL / SYNTHETIC</span>
+        </div>
+        <p>Use your own carefully classified replay JSON. The included sample uses fictional marks and HOLD decisions, not a market data feed. A second tick requires a new, later observation, unique frame ID and unique decision IDs.</p>
+        <button id="sample" type="button" class="button secondary">Load labelled synthetic example</button>
+        <label for="inputJson">Owner-authored JSON</label>
+        <textarea id="inputJson" rows="14" spellcheck="false" placeholder="Paste an explicit three-lane historical/synthetic replay input here."></textarea>
+        <div class="actions">
+          <button id="tick" type="button" class="button primary">Submit one simulated tick</button>
+        </div>
+        <p class="quiet">Submission requires current Tower owner authorization, this page's one-time session token, the next due interval, exact Proof/Demo account scope and all three explicit decisions. No automatic selection, brokerage submission or real account mode unlock.</p>
+      </div>
+    </section>
+    <section class="glass panel" aria-label="Simulation evidence">
+      <div class="section-head">
+        <div><span class="eyebrow">REHEARSAL EVIDENCE</span><h2>Control · Integrated · Experimental</h2></div>
+        <span class="chip">VOLATILE REPORT ONLY</span>
+      </div>
+      <div class="lanes" id="laneCards">
+        <article class="lane"><h3>Control</h3><p>No accepted synthetic report yet.</p></article>
+        <article class="lane"><h3>Integrated</h3><p>No accepted simulation report yet.</p></article>
+        <article class="lane"><h3>Experimental</h3><p>No accepted simulation report yet.</p></article>
+      </div>
+      <p class="quiet">Ephemeral report hash: <code id="lastHash">No report</code>. Reports are stored in volatile process memory only. Restart or deployment loses this session; there is no durable archive or resume.</p>
+    </section>
+    <p id="feedback" class="feedback" aria-live="polite">Tower-protected synthetic rehearsal is loading. Nothing here is live trading authorization.</p>
+    <noscript>This protected hosted rehearsal needs JavaScript. For an independent local-only rehearsal, use the separate Python terminal.</noscript>
+  </main>
+</body>
+</html>
