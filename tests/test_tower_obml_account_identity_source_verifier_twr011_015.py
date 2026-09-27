@@ -142,17 +142,21 @@ def test_replay_ledger_never_commits_unrelated_caller_transaction():
         assert db.execute("SELECT COUNT(*) FROM unrelated").fetchone()[0] == 0
 
 
-def test_expired_nonce_cannot_be_consumed_after_verification():
+def test_expired_source_reverified_before_nonce_insert():
     payload = source_export()
-    verified = verify(payload)
     with sqlite3.connect(":memory:") as db:
-        assert receiver.consume_signed_ob_account_source(
-            db, payload["token"], shared_secret=SECRET,
+        with pytest.raises(receiver.OBAccountSourceVerificationError,
+                           match="ACCOUNT_EXPORT_EXPIRED_OR_INVALID"):
+            receiver.consume_signed_ob_account_source(
+                db, payload["token"], shared_secret=SECRET,
                 expected_account_key=payload["account_key"],
                 expected_current_fingerprint=payload["fingerprint"],
                 now_epoch=NOW + 61,
-        ) is False
-
+            )
+        assert db.execute(
+            "SELECT COUNT(*) FROM sqlite_master "
+            "WHERE type='table' AND name='tower_obml_account_source_nonce'"
+        ).fetchone()[0] == 0
 
 def test_current_expected_fingerprint_and_exact_account_are_required():
     payload = source_export()
