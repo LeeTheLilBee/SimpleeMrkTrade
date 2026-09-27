@@ -100,6 +100,32 @@ CREATE TABLE IF NOT EXISTS work_orders (
 );
 CREATE INDEX IF NOT EXISTS work_property ON work_orders(property_ref,state);
 CREATE INDEX IF NOT EXISTS work_assignee ON work_orders(assigned_to,state);
+CREATE UNIQUE INDEX IF NOT EXISTS work_scope_identity
+  ON work_orders(work_ref,property_ref,unit_ref);
+CREATE TABLE IF NOT EXISTS work_resource_events (
+  event_ref TEXT PRIMARY KEY,
+  work_ref TEXT NOT NULL,
+  property_ref TEXT NOT NULL,
+  unit_ref TEXT NOT NULL,
+  action TEXT NOT NULL CHECK(action IN ('record','reverse')),
+  resource_type TEXT NOT NULL CHECK(resource_type IN ('material','labor')),
+  label TEXT NOT NULL CHECK(length(trim(label)) BETWEEN 1 AND 160),
+  quantity INTEGER NOT NULL CHECK(quantity BETWEEN 1 AND 1000000),
+  quantity_unit TEXT NOT NULL CHECK(quantity_unit IN ('items','minutes')),
+  reverses_event_ref TEXT REFERENCES work_resource_events(event_ref),
+  recorded_by TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  FOREIGN KEY(work_ref,property_ref,unit_ref)
+    REFERENCES work_orders(work_ref,property_ref,unit_ref),
+  CHECK((action='record' AND reverses_event_ref IS NULL) OR
+        (action='reverse' AND reverses_event_ref IS NOT NULL)),
+  CHECK((resource_type='material' AND quantity_unit='items') OR
+        (resource_type='labor' AND quantity_unit='minutes'))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS resource_event_one_reversal
+  ON work_resource_events(reverses_event_ref)
+  WHERE reverses_event_ref IS NOT NULL;
+CREATE INDEX IF NOT EXISTS work_resource_history ON work_resource_events(work_ref,recorded_at,event_ref);
 CREATE TABLE IF NOT EXISTS work_events (
   event_ref TEXT PRIMARY KEY,
   work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
