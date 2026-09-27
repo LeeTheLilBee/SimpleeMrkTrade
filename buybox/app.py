@@ -48,6 +48,7 @@ from .diligence import diligence_snapshot, create_diligence_task
 from .financing import record_financing_option, financing_snapshot, FINANCING_EVIDENCE_KIND
 from .comparables import (COMPARABLE_EVIDENCE_KIND, record_comparable,
     market_evidence_report)
+from .decision_desk import decision_dossier, record_owner_research_disposition
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -515,6 +516,35 @@ def create_app(config=None):
                 "source_reference":machine["source_reference"]},
                 expected_revision=int(request.form["revision"]))
         return redirect(url_for("opportunity",oid=oid))
+
+    @app.get("/opportunities/<oid>/decision-desk")
+    @login_required
+    def decision_desk_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        return render_template("decision_desk.html",op=op,
+            report=decision_dossier(op),
+            evidence_refs=[e for e in op.get("evidence",[]) if e.get("id")])
+
+    @app.post("/opportunities/<oid>/decision-desk/notes")
+    @login_required
+    def research_disposition(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,record=record_owner_research_disposition(
+                conn,op,choice=request.form.get("choice",""),
+                rationale=request.form.get("rationale",""),
+                actor_ref=owner_actor(conn),
+                cited_evidence_ids=request.form.getlist("evidence_id"))
+            save(conn,revised,"OwnerResearchDispositionRecorded",{
+                "record_id":record["id"],"choice":record["choice"],
+                "source_opportunity_revision":record["source_opportunity_revision"],
+                "source_snapshot_digest":record["source_snapshot_digest"],
+                "purchase_authorized":False,"external_action":False},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("decision_desk_room",oid=oid),code=303)
 
     @app.get("/opportunities/<oid>/valuation")
     @login_required
