@@ -24,8 +24,16 @@ main{padding:27px clamp(20px,3vw,54px) 70px;max-width:1500px;width:100%;margin:0
 <button type="button" class="navitem" data-role="property_manager">◈ &nbsp; Management</button>
 <button type="button" class="navitem" data-role="leasing_agent">◇ &nbsp; Leasing Office</button>
 <button type="button" class="navitem" data-role="owner">✧ &nbsp; Owner Overview</button>
+<button type="button" class="navitem" data-role="maintenance_supervisor">▥ &nbsp; Maintenance Desk</button>
+<button type="button" class="navitem" data-role="regional_manager">◉ &nbsp; Regional View</button>
+<button type="button" class="navitem" data-role="inspector">▣ &nbsp; Inspections</button>
+<button type="button" class="navitem" data-role="turnover_crew">▤ &nbsp; Make Ready</button>
+<button type="button" class="navitem" data-role="grounds_janitorial">✿ &nbsp; Grounds Care</button>
+<button type="button" class="navitem" data-role="renovation_coordinator">▧ &nbsp; Renovations</button>
+<button type="button" class="navitem" data-role="compliance">◌ &nbsp; Compliance</button>
+<button type="button" class="navitem" data-role="vendor">◇ &nbsp; Vendor</button>
 </nav>
-<div class="foot">Designed as one Grounds product behind Tower, not five disconnected apps. This page has no authentication, database, processor or network connection.</div>
+<div class="foot">Designed as one Grounds product behind Tower, not separate disconnected apps. This page has no authentication, database, processor or network connection.</div>
 </aside>
 <main>
 <header class="topline">
@@ -35,6 +43,14 @@ main{padding:27px clamp(20px,3vw,54px) 70px;max-width:1500px;width:100%;margin:0
 <option value="resident">Resident</option><option value="maintenance_technician">Maintenance technician</option>
 <option value="property_manager">Property manager</option><option value="leasing_agent">Leasing agent</option>
 <option value="owner">Owner</option>
+<option value="maintenance_supervisor">Maintenance supervisor</option>
+<option value="regional_manager">Regional manager</option>
+<option value="inspector">Inspector</option>
+<option value="turnover_crew">Turnover crew</option>
+<option value="grounds_janitorial">Janitorial / grounds</option>
+<option value="renovation_coordinator">Renovation coordinator</option>
+<option value="compliance">Compliance</option>
+<option value="vendor">Assigned vendor</option>
 </select></label>
 </header>
 <div class="callout" role="note"><strong>Development preview.</strong> Do not enter actual tenant information. All work orders below live in this browser tab only and disappear on refresh. Pay Rent, user authentication, notifications, and real dispatch are not connected.</div>
@@ -44,13 +60,13 @@ main{padding:27px clamp(20px,3vw,54px) 70px;max-width:1500px;width:100%;margin:0
 </section>
 <div id="feedback" aria-live="polite" class="sr-only"></div>
 <div id="content" class="grid"></div>
-<footer class="quiet" style="margin-top:35px">THE GROUNDS / GRD015 · Visual prototype only · Tower controls real entry · Teller owns payment truth · Vault holds sealed evidence.</footer>
+<footer class="quiet" style="margin-top:35px">THE GROUNDS / GRD048 · Visual prototype only · Tower controls real entry · Teller owns payment truth · Vault holds sealed evidence.</footer>
 </main>
 </div>
 <script>
 "use strict";
 // Every record below is fictional preview data, never fetched, stored or sent.
-const demo = {role:"resident",orders:[{id:"DEMO-001",property:"Demo Garden",unit:"101",createdBy:"resident",
+const demo = {role:"resident",noticeRead:false,appointment:null,orders:[{id:"DEMO-001",property:"Demo Garden",unit:"101",createdBy:"resident",
 category:"Plumbing",description:"Sample kitchen faucet request",urgent:false,entry:"Contact first",
 state:"submitted",revision:1,assignee:null,history:["Submitted by resident"]}]};
 const headings = {
@@ -58,7 +74,15 @@ resident:["Welcome home.","Your home, maintenance, lease and notices in one calm
 maintenance_technician:["Today's work.","See only assigned jobs, status, entry permission and the next useful action."],
 property_manager:["Property operations.","Keep the building running with a live-to-you work queue, residents and occupancy."],
 leasing_agent:["Leasing office.","Unit availability, tours, move-ins and renewals in one workspace."],
-owner:["Your property world.","A clear, property-owned overview without another financial ledger."]};
+owner:["Your property world.","A clear, property-owned overview without another financial ledger."],
+maintenance_supervisor:["Maintenance desk.","Human triage, assignments and service accountability in one property-scoped space."],
+regional_manager:["Regional overview.","Portfolio pulse with access restricted to your assigned properties."],
+inspector:["Assigned inspections.","Proof-backed findings, conditions and review, limited to your assigned inspections."],
+turnover_crew:["Make-ready queue.","Prepare units with linked inspections, repair work and an explicit final review."],
+grounds_janitorial:["Grounds care.","Your assigned common-area work, checklists and follow-up status."],
+renovation_coordinator:["Renovation board.","Phased renovation work, schedules and approvals."],
+compliance:["Compliance desk.","Assigned deadlines, notices and source-backed review records."],
+vendor:["Your assigned job.","Temporary and tightly scoped work, not unrestricted resident or property access."]};
 const esc = v => String(v).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const stateLabel = s => s.replaceAll("_"," ");
 const statePill = s => '<span class="pill '+(s==="waiting"?"waiting":"")+'">'+esc(stateLabel(s))+'</span>';
@@ -104,9 +128,14 @@ function resident(){
  kpi("Rent due","—","Verified Teller invoice not connected")+
  kpi("Maintenance",String(demo.orders.length),"In-memory preview requests")+
  card('<div class="eyebrow">Rent & payments</div><h2>Your rent, in one place.</h2><p class="muted">Grounds displays lease context. Teller owns the invoice, available payment methods, autopay, receipts and reconciliation.</p><div class="notice">Amount due and next due date will appear only from a fresh, verified Teller response.</div><div class="actions"><button class="button" disabled title="Teller integration required">Pay Rent · not connected</button><button class="button ghost" disabled>Autopay · not connected</button></div>')+
- card('<div class="eyebrow">Lease & notices</div><h2>Your documents and updates.</h2><div class="listrow"><strong>Sample lease</strong><div class="quiet">Unit 101 · A sealed lease reference will be retrieved through Tower and Vault after integration.</div></div><div class="listrow"><strong>Building notices</strong><div class="quiet">Example: Community updates will appear here from Grounds property management.</div></div>')+
+ card('<div class="eyebrow">Lease & notices</div><h2>Your documents and updates.</h2><div class="listrow"><strong>Sample lease</strong><div class="quiet">Unit 101 · A sealed lease reference will be retrieved through Tower and Vault after integration.</div></div><div class="listrow"><strong>Building notice · water maintenance example</strong><div class="quiet">Status: '+(demo.noticeRead?'Read in this browser tab':'Unread in this browser tab')+'. This is not legal service or delivery confirmation.</div><div class="actions">'+(demo.noticeRead?'<span class="pill">Read locally</span>':button('Mark demo notice read','notice:read','notice'))+'</div></div>')+
  card('<div class="eyebrow">Maintenance Center</div><h2>Tell us what needs fixing.</h2>'+form)+
- card('<div class="eyebrow">Track & confirm</div><h2>Your requests.</h2>'+demo.orders.map(orderCard).join(''),"half");
+ card('<div class="eyebrow">Track & confirm</div><h2>Your requests.</h2>'+demo.orders.map(orderCard).join(''),"half")+
+ card('<div class="eyebrow">Appointments · fictional demo</div><h2>Choose a visit window.</h2><p class="muted">A visit request and acceptance are not entry authorization or legal notice.</p>'+
+ (demo.appointment?'<div class="notice">Status: '+esc(demo.appointment)+'. No real calendar, technician dispatch, notification or entry permission.</div>':'<div class="notice">No in-app window requested.</div>')+
+ '<div class="actions">'+(!demo.appointment?button('Request sample window','appointment:request','appointment'):
+ demo.appointment==='proposed'?button('Accept sample proposal','appointment:accept','appointment'):
+ demo.appointment!=='cancelled'?button('Cancel sample appointment','appointment:cancel','appointment','ghost'):'<span class="pill">Local demo cancelled</span>')+'</div>',"half");
 }
 function technician(){
  return kpi("Assigned demo jobs",String(ordersForRole().length),"Only work explicitly assigned to this demo role")+
@@ -120,6 +149,9 @@ function manager(){
  kpi("Open requests",String(demo.orders.filter(x=>x.state!=="closed").length),"Sample work queue")+
  kpi("Urgency flags",String(demo.orders.filter(x=>x.urgent&&x.state!=="closed").length),"Human assessment still required")+
  workSection("Review & dispatch")+
+ card('<h2>Sample appointment request.</h2><p class="muted">A staff proposal still needs resident acceptance and separate entry/notice checks.</p>'+
+ '<div class="notice">Current demo: '+esc(demo.appointment||"No resident request")+'</div>'+
+ '<div class="actions">'+(demo.appointment==="requested"?button("Propose sample window","appointment:propose","appointment"):'<span class="quiet">No proposal action currently pending.</span>')+'</div>',"wide")+
  card('<h2>Property desk.</h2><div class="listrow"><strong>Unit readiness</strong><div class="quiet">Occupancy, inspection, turnovers, preventive work and asset history.</div></div><div class="listrow"><strong>Leasing coordination</strong><div class="quiet">Tours, renewals, vacancy preparation and assigned follow-ups.</div></div>',"half")+
  card('<h2>Money & records.</h2><p class="muted">The Teller owns rent and financial administration. The Vault holds sealed lease, repair and inspection evidence. Grounds handles physical operations and property decisions.</p>',"half");
 }
@@ -137,7 +169,26 @@ function owner(){
  card('<h2>Expansion & records.</h2><p class="muted">BuyBox hands off a property only after verified closing. Grounds owns the ongoing asset record; Tower mediates Vault proof; Clouds receives permission-safe owner summaries; Soulaana explains changes without overriding rules.</p>',"half")+
  workSection("Sample property work");
 }
-const pages={resident,maintenance_technician:technician,property_manager:manager,leasing_agent:leasing,owner};
+const roleInfo={
+ maintenance_supervisor:["Human-triaged maintenance","Assignment and escalation","Parts, labor and evidence"],
+ regional_manager:["Assigned-property status","Management follow-up","Portfolio safety and capacity"],
+ inspector:["Assigned inspection cards","Finding severity","Verified resolution evidence"],
+ turnover_crew:["Assigned make-ready units","Turnover-specific inspections","Final review dependencies"],
+ grounds_janitorial:["Common-area task queue","Cleaning and grounds checklists","Completed-work evidence"],
+ renovation_coordinator:["Phased renovation projects","Contractor milestones","CapEx and approval gates"],
+ compliance:["Assigned compliance cases","Deadlines and notices","Proof and audit history"],
+ vendor:["Only assigned jobs","Expiry-bound temporary permissions","Completion and proof updates"]
+};
+function supportRole(){
+ const info=roleInfo[demo.role];
+ return card('<div class="eyebrow">Role-specific room · local design</div><h2>'+esc(headings[demo.role][0])+'</h2><p class="muted">'+esc(headings[demo.role][1])+'</p><div class="notice">A certified Tower assignment is required before real records, actions or another resident’s information may appear.</div>',"wide")+
+ info.map((heading,i)=>kpi(esc(heading),"—",i===0?"Workspace contract ready for integration":"No live source or assignment connected")).join("")+
+ card('<h2>What comes next.</h2><p class="muted">The operating version uses protected Grounds work and proof records, Tower property/job permissions, and Vault evidence. This fictional preview does not grant access or dispatch work.</p>',"wide");
+}
+const pages={resident,maintenance_technician:technician,property_manager:manager,leasing_agent:leasing,owner,
+ maintenance_supervisor:supportRole,regional_manager:supportRole,inspector:supportRole,
+ turnover_crew:supportRole,grounds_janitorial:supportRole,renovation_coordinator:supportRole,
+ compliance:supportRole,vendor:supportRole};
 function soulaanaCard(){
  const latest=demo.orders[0];
  const messages={
@@ -153,7 +204,9 @@ function soulaanaCard(){
  closed:"The example record is closed. Its local history remains until refresh.",
  reopened:"The resident reopened the example. Management should review it again."
  };
- const message=demo.role==="leasing_agent"?
+ const message=roleInfo[demo.role]?
+ "I will explain only your Tower-assigned work, its source and next step. No actual assignment data is connected in this preview.":
+ demo.role==="leasing_agent"?
  "I can explain unit availability and the next leasing action once real scoped records are connected.":
  demo.role==="owner"?
  "I show property operating context. Real collections and protected capital readiness must come from verified Teller records, never guessed from Observatory accounts.":
@@ -192,6 +245,11 @@ document.getElementById("content").addEventListener("click",e=>{
  const btn=e.target.closest("[data-action]");if(!btn)return;
  const action=btn.dataset.action;
  if(action.startsWith("next:"))transition(btn.dataset.id,action.slice(5));
+ if(action==="notice:read"&&demo.role==="resident"){demo.noticeRead=true;render();}
+ if(action==="appointment:request"&&demo.role==="resident"&&!demo.appointment){demo.appointment="requested";render();}
+ if(action==="appointment:propose"&&demo.role==="property_manager"&&demo.appointment==="requested"){demo.appointment="proposed";render();}
+ if(action==="appointment:accept"&&demo.role==="resident"&&demo.appointment==="proposed"){demo.appointment="accepted";render();}
+ if(action==="appointment:cancel"&&demo.role==="resident"&&demo.appointment&&!["cancelled"].includes(demo.appointment)){demo.appointment="cancelled";render();}
 });
 document.getElementById("content").addEventListener("submit",e=>{
  if(e.target.id!=="request"||demo.role!=="resident")return;
