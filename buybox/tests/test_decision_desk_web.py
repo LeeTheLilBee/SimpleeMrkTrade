@@ -72,7 +72,7 @@ class OwnerDecisionWebTests(unittest.TestCase):
         self.assertEqual(page.status_code,200)
         self.assertIn(b"No source-bound research dispositions recorded yet",page.data)
         self.assertIn(b"Unknown / Unknown",page.data)
-        self.assertNotIn(b"Approve Acquisition",page.data)
+        self.assertNotIn(b'value="APPROVE_ACQUISITION"',page.data)
         self.assertFalse(self.current().get("research_decisions"))
 
     def test_owner_action_persists_with_exact_saved_source_and_soulaana(self):
