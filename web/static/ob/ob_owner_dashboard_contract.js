@@ -145,9 +145,10 @@
         };
       }
 
-      const observed =
+      const observed = Boolean(
         payload && typeof payload === "object" && !Array.isArray(payload) &&
-        Object.keys(payload).length > 0;
+        Object.keys(payload).length > 0
+      );
       return {
         name,
         url,
@@ -222,25 +223,13 @@
   });
 
   const missionSnapshot = () => {
-    const snapshot = window.OB_OWNER_MISSION_SNAPSHOT;
-
-    if (
-      !snapshot ||
-      // A page-global Boolean is not an independently authenticated
-      // bank, broker, or capital authority; never display fake balances.
-      snapshot.verified !== true ||
-      !Array.isArray(snapshot.missions) ||
-      true
-    ) {
-      return {
-        verified: false,
-        missions: []
-      };
-    }
-
+    // This older dashboard receives a page-global declaration, not an
+    // independently authenticated financial-source receipt. Never convert
+    // a caller-controlled "verified" flag into actual money or milestones.
+    void window.OB_OWNER_MISSION_SNAPSHOT;
     return {
-      verified: true,
-      missions: snapshot.missions
+      verified: false,
+      missions: []
     };
   };
 
@@ -404,27 +393,15 @@
   };
 
   const historySummary = () => {
-    const snapshot = window.OB_OWNER_CHANGE_HISTORY;
-
-    if (
-      snapshot &&
-      snapshot.verified === true &&
-      Array.isArray(snapshot.items) &&
-      false // window globals cannot authenticate owner change history
-    ) {
-      return {
-        verified: true,
-        items: snapshot.items.slice(0, 8)
-      };
-    }
-
+    // A client/page-global "verified" cannot attest an owner-history issuer.
+    void window.OB_OWNER_CHANGE_HISTORY;
     return {
       verified: false,
       items: [
         {
           title: "No verified owner-change history yet",
           detail:
-            "I will not invent a 'since you were here' story. Owner change-history needs a verified source before I summarize it."
+            "I will not invent a 'since you were here' story. Owner change-history needs independently authenticated source evidence before I summarize it."
         }
       ]
     };
