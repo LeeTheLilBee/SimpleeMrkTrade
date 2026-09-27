@@ -159,6 +159,23 @@ class SQLiteOperationalJournal:
             return {"valid": True, "event_count": seq, "head_sha256": digest,
                     "external_checkpoint_certified": False}
 
+    def checkpoint_head(self, event_count: int) -> str:
+        """Return a fully verified hash-chain prefix, for independent signature proof."""
+        if type(event_count) is not int or event_count < 0:
+            raise IntegrityError("invalid checkpoint event count")
+        with closing(self._connect()) as conn:
+            total, _ = self._verify(conn)
+            if event_count > total:
+                raise IntegrityError("journal rollback or missing signed checkpoint history")
+            if event_count == 0:
+                return _GENESIS
+            row = conn.execute(
+                "SELECT event_hash FROM events WHERE seq=?", (event_count,)
+            ).fetchone()
+            if row is None:
+                raise IntegrityError("missing checkpoint event")
+            return row[0]
+
     def _append(self, conn: sqlite3.Connection, *, event: str, tag: str,
                 scope: str, code: str = "-") -> None:
         prior = conn.execute("SELECT seq,event_hash FROM events ORDER BY seq DESC LIMIT 1").fetchone()
