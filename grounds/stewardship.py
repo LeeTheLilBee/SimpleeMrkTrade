@@ -431,6 +431,56 @@ class GroundsStewardship:
                     "unit_lifecycle":"ready","proof_ref":proof_ref,
                     "resident_notification_sent":False}
 
+    def inspection_summary(self,actor:TowerScope,*,property_ref:str,inspection_ref:str)->dict:
+        self._access(actor,property_ref,"owner","property_manager","maintenance_supervisor")
+        with self.store.transaction() as db:
+            item=db.execute(
+                """SELECT inspection_ref,property_ref,unit_ref,category,state,planned_on,revision
+                   FROM inspections WHERE property_ref=? AND inspection_ref=?""",
+                (property_ref,inspection_ref),
+            ).fetchone()
+            if item is None:
+                raise AccessDenied("inspection unavailable")
+            unresolved=db.execute(
+                """SELECT COUNT(*) FROM inspection_findings f
+                   LEFT JOIN inspection_resolutions r ON r.finding_ref=f.finding_ref
+                   WHERE f.inspection_ref=? AND f.severity IN ('major','urgent')
+                     AND r.finding_ref IS NULL""",
+                (inspection_ref,),
+            ).fetchone()[0]
+            findings=db.execute(
+                "SELECT COUNT(*) FROM inspection_findings WHERE inspection_ref=?",
+                (inspection_ref,),
+            ).fetchone()[0]
+            return {**dict(item),"findings_count":findings,
+                    "unresolved_major_or_urgent":unresolved,
+                    "external_notification_sent":False}
+
+    def turnover_summary(self,actor:TowerScope,*,property_ref:str,turnover_ref:str)->dict:
+        self._access(actor,property_ref,"owner","property_manager")
+        with self.store.transaction() as db:
+            item=self._turnover(db,property_ref,turnover_ref)
+            linked=db.execute(
+                """SELECT i.inspection_ref,i.state FROM turnover_inspections t
+                   JOIN inspections i ON i.inspection_ref=t.inspection_ref
+                   WHERE t.turnover_ref=?""",(turnover_ref,),
+            ).fetchone()
+            blocking=db.execute(
+                """SELECT COUNT(*) FROM work_orders WHERE property_ref=? AND unit_ref=?
+                   AND state!='closed'""",
+                (property_ref,item["unit_ref"]),
+            ).fetchone()[0]
+            return {
+                "turnover_ref":turnover_ref,"property_ref":property_ref,
+                "unit_ref":item["unit_ref"],"state":item["state"],
+                "revision":item["revision"],
+                "inspection_ref":linked["inspection_ref"] if linked else None,
+                "inspection_state":linked["state"] if linked else None,
+                "open_unit_work_orders":blocking,
+                "final_sealed_proof_present":bool(item["final_vault_proof_ref"]),
+                "notification_sent":False,
+            }
+
     def turnover_history(self,actor:TowerScope,*,property_ref:str,turnover_ref:str) -> list[dict]:
         self._access(actor,property_ref,"owner","property_manager")
         with self.store.transaction() as db:
