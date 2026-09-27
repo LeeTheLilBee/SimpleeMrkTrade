@@ -99,6 +99,14 @@ class LocalIntegrityTests(unittest.TestCase):
                     notice_ref TEXT,subject_ref TEXT,property_ref TEXT,
                     unit_ref TEXT,read_at TEXT)""",
             )
+        with self.assertRaisesRegex(ValueError,"no automatic notice migration"):
+            GroundsStore(incomplete).initialize()
+        with sqlite3.connect(str(incomplete)) as db:
+            original={row[1] for row in db.execute("PRAGMA table_info(property_notices)")}
+            self.assertNotIn("lease_ref",original)
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='table'",
+            ).fetchone()[0],2)
         status=inspect_local_store(GroundsStore(incomplete))
         self.assertFalse(status["healthy"])
         self.assertIn("lease_ref",status["missing_columns"]["property_notices"])
@@ -110,6 +118,16 @@ class LocalIntegrityTests(unittest.TestCase):
                 GroundsStore(incomplete),
                 Path(self.temp.name)/"legacy-copy.sqlite3",
             )
+
+    def test_init_rejects_symlink_instead_of_modifying_original_fixture(self):
+        alias=Path(self.temp.name)/"alias.sqlite3"
+        try:
+            alias.symlink_to(self.store.path)
+        except (NotImplementedError,OSError):
+            self.skipTest("symlinks unavailable in this test environment")
+        with self.assertRaisesRegex(ValueError,"symlink"):
+            GroundsStore(alias).initialize()
+        self.assertTrue(inspect_local_store(self.store)["healthy"])
 
     def test_unknown_or_damaged_file_denied_without_exposing_user_content(self):
         with self.assertRaises(LocalIntegrityError):
