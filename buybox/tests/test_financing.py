@@ -89,6 +89,23 @@ class FinancingTests(unittest.TestCase):
         self.assertEqual(option_analysis(op,q,today="2026-09-27")["status"],
                          "RECHECK_SOURCE_OR_PRICE")
 
+    def test_owner_documentary_review_tracks_exact_original_successor_not_a_new_bank_approval(self):
+        op=new_opportunity("atm","Document review",100000)
+        e,a=original(op)
+        op,q=record_financing_option(op,**terms(e["id"]))
+        self.assertFalse(option_analysis(op,q,today="2026-09-27")["source_documentary_reviewed"])
+        prior=next(item for item in op["evidence"] if item["id"]==e["id"])
+        prior["status"]="SUPERSEDED"
+        reviewed={**deepcopy(prior),"id":str(uuid4()),"supersedes":e["id"],
+                  "status":"DOCUMENT_SUPPORTED"}
+        op["evidence"].append(reviewed)
+        analysis=option_analysis(op,q,today="2026-09-27")
+        self.assertTrue(analysis["source_documentary_reviewed"])
+        self.assertFalse(analysis["loan_approval"])
+        self.assertEqual(analysis["teller_readiness"],"UNKNOWN")
+        op["artifacts"][0]["sha256"]="f"*64
+        self.assertFalse(option_analysis(op,q,today="2026-09-27")["source_documentary_reviewed"])
+
     def test_two_real_options_and_append_only_correction(self):
         op=new_opportunity("atm","Compare documents",100000)
         first,_=original(op,source="First provider")
