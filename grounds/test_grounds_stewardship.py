@@ -106,7 +106,7 @@ class GroundsStewardshipTests(unittest.TestCase):
             self.manager,property_ref="p1",asset_ref="a1",plan_ref="plan1",
             cadence_days=30,next_due_on=today,
         )
-        proof={"status":"verified_sealed","kind":"preventive_completion",
+        proof={"status":"verified_sealed","source":"vault","audience":"grounds","kind":"preventive_completion",
                "property_ref":"p1","plan_ref":"plan1","asset_ref":"a1","work_ref":"w1",
                "completed_on":today,"proof_ref":"test-proof-1"}
         with self.assertRaises(AccessDenied):
@@ -122,6 +122,13 @@ class GroundsStewardshipTests(unittest.TestCase):
                 completed_on=today,expected_revision=1,signed_proof={**proof,"asset_ref":"other"},
                 proof_verifier=lambda doc:doc,
             )
+        for incorrect in ({"source":"observatory"},{"audience":"buybox"}):
+            with self.assertRaises(AccessDenied):
+                self.st.complete_preventive_plan(
+                    self.manager,property_ref="p1",plan_ref="plan1",work_ref="w1",
+                    completed_on=today,expected_revision=1,
+                    signed_proof={**proof,**incorrect},proof_verifier=lambda doc:doc,
+                )
         with self.assertRaises(AccessDenied):
             self.st.complete_preventive_plan(
                 self.manager,property_ref="p1",plan_ref="plan1",work_ref="w1",
@@ -173,7 +180,7 @@ class GroundsStewardshipTests(unittest.TestCase):
                 self.inspector,property_ref="p1",inspection_ref="i1",
                 finding_ref="f-bad",severity="minor",narrative="No assignment protocol",
             )
-        proof={"status":"verified_sealed","kind":"inspection_resolution","property_ref":"p1",
+        proof={"status":"verified_sealed","source":"vault","audience":"grounds","kind":"inspection_resolution","property_ref":"p1",
                "inspection_ref":"i1","finding_ref":"f1","unit_ref":"u1","proof_ref":"proof-clear-1"}
         with self.assertRaises(AccessDenied):
             self.st.resolve_inspection_finding(
@@ -342,7 +349,7 @@ class GroundsStewardshipTests(unittest.TestCase):
             self.manager,property_ref="p1",turnover_ref="t1",
             next_state="final_review",expected_revision=3,
         )
-        proof={"status":"verified_sealed","kind":"turnover_final",
+        proof={"status":"verified_sealed","source":"vault","audience":"grounds","kind":"turnover_final",
                "property_ref":"p1","unit_ref":"u1","turnover_ref":"t1","proof_ref":"final-proof-1"}
         with self.assertRaises(AccessDenied):
             self.st.complete_turnover(
