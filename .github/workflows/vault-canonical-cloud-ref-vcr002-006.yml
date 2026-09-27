@@ -1,7 +1,7 @@
 name: Vault canonical registry Cloud ref source proof VCR002-006
 on:
   push:
-    branches: [vault-canonical-registry-cloud-ref-vcr002-006]
+    branches: [vault-canonical-registry-cloud-ref-vcr002-006, vault-canonical-evidence-registry-v1]
   pull_request:
     paths:
       - 'vault/canonical_evidence_registry.py'
