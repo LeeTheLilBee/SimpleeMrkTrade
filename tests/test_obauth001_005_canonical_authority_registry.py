@@ -152,6 +152,9 @@ def test_exact_current_active_authorities_are_registered():
         "owner_manual_live_tower_contract_inspection":
             "OB_OWNER_MANUAL_LIVE_TOWER_CONTRACT_INSPECTION_V1",
 
+        "owner_beta_gate_report":
+            "OB_OWNER_BETA_GATE_REPORT_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
