@@ -168,23 +168,41 @@ class GroundsStewardship:
 
     def plan_inspection(self, actor: TowerScope, *, property_ref: str,
                         inspection_ref: str, category: str, planned_on: str,
-                        unit_ref: str | None = None) -> dict:
+                        unit_ref: str | None = None,
+                        turnover_ref: str | None = None) -> dict:
         actor=self._access(actor,property_ref,"owner","property_manager","maintenance_supervisor")
         _required(inspection_ref,"inspection_ref",max_length=128)
         _required(category,"category",max_length=80)
         _date(planned_on)
+        if (category=="turnover") != (turnover_ref is not None):
+            raise GroundsConflict("turnover inspections require exact turnover link; other types forbid it")
+        if turnover_ref is not None and unit_ref is None:
+            raise GroundsConflict("turnover inspection requires unit")
         try:
             with self.store.transaction(write=True) as db:
+                if turnover_ref is not None:
+                    turn=db.execute(
+                        """SELECT state FROM turnovers
+                           WHERE turnover_ref=? AND property_ref=? AND unit_ref=?""",
+                        (turnover_ref,property_ref,unit_ref),
+                    ).fetchone()
+                    if turn is None or turn["state"]!="inspection":
+                        raise AccessDenied("active matching turnover inspection stage required")
                 db.execute(
                     """INSERT INTO inspections
                        (inspection_ref,property_ref,unit_ref,category,state,planned_on,created_by,updated_at)
                        VALUES(?,?,?,?,'planned',?,?,?)""",
                     (inspection_ref,property_ref,unit_ref,category,planned_on,actor.subject_ref,_now()),
                 )
+                if turnover_ref is not None:
+                    db.execute(
+                        "INSERT INTO turnover_inspections(turnover_ref,inspection_ref) VALUES(?,?)",
+                        (turnover_ref,inspection_ref),
+                    )
         except sqlite3.IntegrityError as exc:
-            raise GroundsConflict("inspection duplicated or unit/property mismatch") from exc
+            raise GroundsConflict("inspection duplicated, already linked, or unit/property mismatch") from exc
         return {"inspection_ref":inspection_ref,"state":"planned","revision":1,
-                "inspector_self_service_enabled":False}
+                "turnover_ref":turnover_ref,"inspector_self_service_enabled":False}
 
     def advance_inspection(self, actor: TowerScope, *, property_ref: str,
                            inspection_ref: str, next_state: str,
@@ -335,10 +353,11 @@ class GroundsStewardship:
     @staticmethod
     def _closed_turnover_inspection(db,item) -> bool:
         return db.execute(
-            """SELECT 1 FROM inspections WHERE property_ref=? AND unit_ref=?
-               AND category='turnover' AND state='closed'
-               AND planned_on>=substr(?,1,10) LIMIT 1""",
-            (item["property_ref"],item["unit_ref"],item["created_at"]),
+            """SELECT 1 FROM turnover_inspections ti
+               JOIN inspections i ON i.inspection_ref=ti.inspection_ref
+               WHERE ti.turnover_ref=? AND i.property_ref=? AND i.unit_ref=?
+                 AND i.category='turnover' AND i.state='closed' LIMIT 1""",
+            (item["turnover_ref"],item["property_ref"],item["unit_ref"]),
         ).fetchone() is not None
 
     @staticmethod
