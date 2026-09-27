@@ -1,0 +1,31 @@
+name: OBML011-015 owner beta gate report
+on:
+  push:
+    branches:
+      - 'obml011-015-*'
+  pull_request:
+    paths:
+      - 'web/ob_manual_live_beta_gate_report.py'
+      - 'web/ob_authority_registry.py'
+      - 'tests/test_obml011_015_owner_beta_gate_report.py'
+      - 'tests/test_obauth001_005_canonical_authority_registry.py'
+      - '.github/workflows/obml011-015-beta-gates.yml'
+permissions:
+  contents: read
+jobs:
+  source-only-owner-beta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax and upstream lineage gates
+        run: |
+          python -m py_compile web/ob_manual_live_beta_gate_report.py tests/test_obml011_015_owner_beta_gate_report.py
+          python -m pytest -q tests/test_obml011_015_owner_beta_gate_report.py tests/test_obml006_010_tower_contract_inspection.py tests/test_obml001_005_owner_manual_source_preflight.py tests/test_obauth001_005_canonical_authority_registry.py
+      - name: Complete repository regression
+        run: python -m pytest -q tests
