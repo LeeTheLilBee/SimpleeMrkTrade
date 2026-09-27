@@ -33,7 +33,6 @@ def inject_rotation_after_access_gate(app, state, *, request_path):
     lock = captured["lock"]
     fired = []
 
-    @app.before_request
     def _test_interleave_authorized_rotation():
         if request.path == request_path and not fired:
             with lock:
@@ -45,6 +44,11 @@ def inject_rotation_after_access_gate(app, state, *, request_path):
                 assert old.csrf != new.csrf
                 workspaces[key] = new
                 fired.append((old, new))
+    # Deliberate test-only injection after Flask has handled the setup page:
+    # do not mutate a deployed app's routing or register production hooks.
+    app.before_request_funcs.setdefault(None, []).append(
+        _test_interleave_authorized_rotation
+    )
     return fired
 
 
@@ -75,11 +79,13 @@ def test_078_079_owner_revoked_after_initial_gate_cannot_read(monkeypatch, endpo
     app, client, state = build_app(monkeypatch)
     token = setup_page(client)
 
-    @app.before_request
     def _test_authority_lost_after_gate():
         if request.path == hosted.API + endpoint:
             state["access"] = False
 
+    app.before_request_funcs.setdefault(None, []).append(
+        _test_authority_lost_after_gate
+    )
     denied = get(client, hosted.API + endpoint, token)
     assert denied.status_code != 200
     assert "new_rehearsal_token" not in denied.get_data(as_text=True)
