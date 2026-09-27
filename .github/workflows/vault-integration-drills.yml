@@ -1,0 +1,20 @@
+name: Vault synthetic integration and recovery drills
+on:
+  pull_request:
+    paths:
+      - 'vault/**'
+      - '.github/workflows/vault-integration-drills.yml'
+  workflow_dispatch:
+jobs:
+  synthetic-drills:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest cryptography
+      - run: python -m pytest -q vault/test_archival_transaction_journal.py vault/test_local_archival_integration.py
