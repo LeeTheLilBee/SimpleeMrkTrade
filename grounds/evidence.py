@@ -12,7 +12,7 @@ from uuid import uuid4
 
 from .access import AccessDenied, TowerScope
 from .operations import GroundsOperations, GroundsConflict, _required, _now
-from .storage import GroundsStore
+from .storage import GroundsStoreBase
 
 PROOF_KINDS = frozenset(("intake","before","after","completion","inspection"))
 ROLE_KINDS = {
@@ -25,9 +25,9 @@ ROLE_KINDS = {
 
 
 class GroundsWorkProof:
-    def __init__(self, store: GroundsStore):
-        if not isinstance(store, GroundsStore):
-            raise TypeError("GroundsStore required")
+    def __init__(self, store: GroundsStoreBase):
+        if not isinstance(store, GroundsStoreBase):
+            raise TypeError("transaction-backed Grounds store required")
         self.store = store
         self.operations = GroundsOperations(store)
 
