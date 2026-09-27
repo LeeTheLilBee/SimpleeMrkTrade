@@ -71,7 +71,9 @@ class PostgresStaticTests(unittest.TestCase):
         self.assertEqual(row["item"],row[0])
         self.assertEqual(row["quantity"],row[1])
         self.assertEqual(dict(row),{"item":"washer","quantity":3})
-        self.assertIsNone(PgResults(StubCursor()).fetchone() if False else None)
+        cursor=StubCursor()
+        self.assertEqual(PgResults(cursor).fetchone()["work_ref"],"work-fake")
+        self.assertIsNone(PgResults(cursor).fetchone())
 
     def test_placeholder_translation_never_interpolates_user_text(self):
         conn=StubConnection()
