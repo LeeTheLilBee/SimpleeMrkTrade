@@ -1,0 +1,116 @@
+{
+  "schema_version": "TOWER_OBML_OWNER_HANDOFF_REQUEST_V1",
+  "status": "SOURCE_ONLY_UNIMPLEMENTED_NO_LIVE_GRANT",
+  "owner": "THE_TOWER",
+  "consumer": "THE_OBSERVATORY_OBML_OWNER_READINESS",
+  "product_app_id": "observatory",
+  "level": "MANUAL_LIVE_1",
+  "purpose": "OBML_OWNER_REVIEW",
+  "existing_launch_entry": "/tower/launch/observatory",
+  "protected_destination": "/ob/dashboard",
+  "handoff_required_fields": [
+    "issuer",
+    "audience",
+    "principal_id",
+    "principal_role",
+    "owner_session_id",
+    "session_binding_hash",
+    "account_key",
+    "account_identity_fingerprint",
+    "purpose",
+    "permission",
+    "launch_route",
+    "issued_at_utc",
+    "expires_at_utc",
+    "nonce",
+    "step_up_event_ref",
+    "step_up_at_utc",
+    "revocation_epoch",
+    "decision_id",
+    "verified_tower_attestation"
+  ],
+  "auth_requirements": [
+    "SERVER_AUTHENTICATED_OWNER_SESSION",
+    "AUTHORIZED_OWNER_ACCOUNT_BOUND",
+    "EXPLICIT_OBML_OWNER_REVIEW_PERMISSION",
+    "FRESH_PURPOSE_BOUND_STEP_UP",
+    "SHORT_LIVED_AND_REPLAY_PROTECTED",
+    "CURRENT_REVOCATION_AND_SESSION_STATUS",
+    "TRUSTED_SERVER_SIDE_ISSUER_VERIFICATION",
+    "EXACT_APP_PURPOSE_AUDIENCE_ROUTE"
+  ],
+  "deny_if": [
+    "NO_OWNER_SESSION",
+    "BETA_OR_NON_OWNER",
+    "CROSS_ACCOUNT_OR_UNKNOWN_ACCOUNT",
+    "MISSING_OR_EXPIRED_STEP_UP",
+    "MISSING_OR_EXPIRED_ASSERTION",
+    "REPLAYED_NONCE",
+    "REVOKED_SESSION_OR_PERMISSION",
+    "WRONG_PURPOSE_AUDIENCE_OR_LAUNCH_ROUTE",
+    "FAILURE_TO_VERIFY_SERVER_ATTESTATION",
+    "SAFETY_KILL_SWITCH_OR_MODE_POLICY_DENIAL",
+    "MISSING_CANONICAL_OB_EVIDENCE"
+  ],
+  "required_denial_response": [
+    "deny",
+    "reason_code",
+    "source_decision_ref",
+    "non_sensitive_timestamp"
+  ],
+  "required_audit": [
+    "deny_and_allow_review_decisions",
+    "owner_and_account_scoped_redacted_ids",
+    "step_up_source_reference",
+    "nonce_replay_rejection",
+    "revocation_rejection"
+  ],
+  "capability_scope": {
+    "owner_readiness_review_only": true,
+    "manual_broker_placement_by_human_outside_ob": true,
+    "trade_intent_creation": false,
+    "order_authorized": false,
+    "broker_order_api": false,
+    "automatic_execution": false,
+    "hybrid_execution": false,
+    "capital_movement": false,
+    "protected_floor_release": false,
+    "safety_clearance_override": false
+  },
+  "ob_additional_gates": [
+    "CANONICAL_OBMODE_AND_EFFECTIVE_POLICY",
+    "OBSAFE_OBREC_OBATTN_OBRES_FULL_SOURCE_REVERIFICATION",
+    "SOURCE_FRESHNESS_AND_ACCOUNT_IDENTITY",
+    "BROKER_ACCOUNT_AND_OPTIONS_PERMISSIONS_EXTERNALLY_VERIFIED",
+    "BROKER_ACTUAL_ACTION_INDEPENDENT_RECONCILIATION",
+    "OWNER_REVIEW_CENTER_RECEIPT"
+  ],
+  "not_authorized_by_this_contract": [
+    "LIVE_ACTIVATION",
+    "REAL_BROKER_ORDER",
+    "HYBRID_OR_AUTOMATED",
+    "ACTUAL_BANK_OR_BROKER_PROVENANCE",
+    "PRODUCTION_DEPLOYMENT"
+  ],
+  "implementation_acceptance_tests": [
+    "NON_OWNER_FAILS_CLOSED",
+    "MISSING_STEP_UP_FAILS_CLOSED",
+    "STALE_STEP_UP_FAILS_CLOSED",
+    "MISMATCHED_ACCOUNT_OR_PURPOSE_FAILS_CLOSED",
+    "REVOKED_OR_REPLAYED_ASSERTION_FAILS_CLOSED",
+    "SOURCE_HASH_ONLY_IS_NOT_AUTHENTICATION",
+    "LEGITIMATE_OWNER_CAN_VIEW_REVIEW_ONLY_WITH_ALL_GATES",
+    "BROKER_API_CAPABILITY_ALWAYS_FALSE",
+    "MODE_REMAINS_LOCKED_WITHOUT_INDEPENDENT_PROVIDER_EVIDENCE"
+  ],
+  "source_dependencies": [
+    "tower/ob_tower_bridge_adapter.py",
+    "tower/ob_mode_clearance.py",
+    "tower/ob_tower_route_guard.py",
+    "tower/step_up_auth.py",
+    "tower/tower_human_login_ob_launch.py",
+    "web/ob_recovery_review.py"
+  ],
+  "budget_constraint": "DO_NOT_PROVISION_PAID_RENDER_OR_EXTERNAL_SERVICES",
+  "boundary": "Request for Tower implementer, not a current authorization receipt."
+}

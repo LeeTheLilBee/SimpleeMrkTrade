@@ -1,0 +1,27 @@
+name: TWR-OBML source-only Tower owner handoff request
+on:
+  push:
+    branches:
+      - 'twr-obml001-005-*'
+  pull_request:
+    paths:
+      - 'tower/contracts/twr_obml_owner_handoff_request_v1.json'
+      - 'ob_evidence/manual_live/tower_obml_owner_handoff_request.md'
+      - 'tests/test_twr_obml_owner_handoff_request_contract.py'
+      - '.github/workflows/twr-obml-handoff-request.yml'
+permissions:
+  contents: read
+jobs:
+  no-authority-request:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Validate Tower handoff request contract
+        run: python -m pytest -q tests/test_twr_obml_owner_handoff_request_contract.py
+      - name: Complete repository regression
+        run: python -m pytest -q tests
