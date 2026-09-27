@@ -10,7 +10,7 @@ from .registry import get_vertical
 from .dealroom import current_tasks
 
 INTENTS = frozenset({
-    "overview", "evidence", "economics", "changes", "red_team", "next_action"
+    "overview", "evidence", "diligence", "economics", "changes", "red_team", "next_action"
 })
 
 def context(op, intent="overview"):
@@ -26,6 +26,7 @@ def context(op, intent="overview"):
     relevant = {
         "overview":{"evidence","economics","changes"},
         "evidence":{"evidence"},
+        "diligence":{"diligence"},
         "economics":{"economics"},
         "changes":{"changes"},
         "red_team":{"economics","evidence"},
@@ -56,6 +57,33 @@ def context(op, intent="overview"):
                      str(snapshot.get("opportunity_revision"))+
                      ". Its source hash is preserved. Tower/Vault archival has NOT been requested or verified.",
                      [x for x in refs if x], "NOT_ARCHIVED")
+    if "diligence" in relevant:
+        from .diligence import diligence_snapshot
+        queue=diligence_snapshot(op)
+        note("RECORDED_DILIGENCE_STATE",
+             (str(queue["documentary_supported_count"])+" of "+
+              str(queue["total_requirements"])+" registered evidence categories have "+
+              "recorded documentary support; "+
+              str(queue["critical_outstanding"])+" critical categories remain "+
+              "outstanding. This does not imply independent verification, "+
+              "Vault archival or Tower closing authorization."),
+             label="ACTUAL_RECORDS_NOT_CERTIFICATION")
+        outstanding=[r for r in queue["requirements"]
+                     if r["critical"] and not r["documentary_supported"]]
+        for item in outstanding:
+            note("DILIGENCE_REQUIREMENT",
+                 (item["kind"].replace("_"," ").title()+": recorded status "+
+                  item["recorded_state"].replace("_"," ").lower()+
+                  ". Obtain/review the original before relying on this category."),
+                 [item["evidence_id"]] if item["evidence_id"] else [],
+                 "CRITICAL_OPEN")
+        for item in queue["requirements"]:
+            for task in item["open_tasks"]:
+                note("OWNER_RECORDED_TASK",
+                     (task["title"]+"; current state "+
+                      task["status"].lower()+"; owner-entered deadline "+
+                      task["due_date"]+". This does not contact the seller."),
+                     [task["id"]], "PENDING_OWNER_ACTION")
     if "economics" in relevant:
         result=analysis["financials"]
         if result["status"]=="CALCULATED":

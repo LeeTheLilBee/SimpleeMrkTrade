@@ -19,3 +19,13 @@
 .compact-form button{white-space:normal}
 .small-stat{font-size:14px!important;line-height:1.45;word-break:break-word}
 @media(max-width:580px){.compact-form{display:flex}.compact-form button{width:100%}}
+
+/* BBX049: evidence workbench uses readable, non-color-only status labels. */
+.diligence-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.diligence-card{padding:18px;border:1px solid #51617d;background:#28334a;border-radius:15px;min-width:0;overflow-wrap:anywhere}
+.diligence-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.diligence-heading h3{margin:6px 0 12px}
+.diligence-card code{font-size:11px;overflow-wrap:anywhere}
+.diligence-task{padding:12px;border:1px solid #67708b;border-radius:12px;margin:12px 0;background:#1e293c}
+.diligence-task small{color:#d3deee}
+.diligence-card .panel-form{margin-top:15px}
