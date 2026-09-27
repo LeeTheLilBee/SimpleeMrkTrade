@@ -1,6 +1,6 @@
 # TWR–OBML account namespace signature check — source-only Monday handoff
 
-Parent: `c183606775ee82d8ee5e4290529bdc798b0fd1bc` (accepted OBML011–015 redacted owner-beta gate report). Related Tower clearance request **draft PR #68** and separate OB mission-account export **draft PR #80**. This isolated implementation does not modify either branch or assert their draft code is merged.
+Parent: `c183606775ee82d8ee5e4290529bdc798b0fd1bc` (accepted OBML011–015 redacted owner-beta gate report). Related Tower clearance request **draft PR #68** and OB mission-account export **PR #80, merged into main as `196a7632f9687f49181f757f62632595858dfbcf`** after 77 focused and 1,452 full repository tests. This isolated Tower implementation does not modify the owner-clearance request or claim its draft code is merged.
 
 ## Boundary
 
@@ -12,7 +12,7 @@ There is **no production key**, key transport, configured endpoint, nonce store,
 
 ## Monday integration acceptance
 
-1. Review and land PR #80 producer only after its tests pass; verify its emitted token end-to-end against this consumer with a **test key**, not production credentials. Freeze schema and key ownership jointly.
+1. PR #80 source producer is accepted. Verify its emitted token end-to-end against this consumer with a **test key**, not production credentials. Freeze schema and key ownership jointly.
 2. Merge or apply draft PR #68 handoff request into the canonical Tower workstream after resolving its older base; verify Tower's actual session/permission/step-up/revocation/replay issuer and OB receiver, with negative tests.
 3. Test cross-account and Proof/Demo refusal, nonce replay across worker/process restart, revoked/missing session, stale step-up, wrong purpose/audience/route, stale market and canonical safety BLOCK. Verify no live mode opens from a good namespace signature.
 4. Perform owner beta through Tower → OB on a genuinely available hosted runtime. Until trusted external Tower/broker evidence exists, label the result Survey/Paper or owner rehearsal only, not broker-backed Manual Live.
