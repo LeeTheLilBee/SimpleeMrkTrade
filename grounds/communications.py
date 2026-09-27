@@ -213,6 +213,33 @@ class GroundsCommunications:
             return {"appointment_ref":appointment_ref,"state":"cancelled","revision":revision,
                     "notification_sent":False}
 
+    def appointments_for_work(self,actor:TowerScope,*,work_ref:str)->list[dict]:
+        """Read-only, exact-current-work/lease- or staff-assignment-scoped history.
+
+        Cancelled appointment history remains visible only to the requester
+        while that *same original lease* is active, or authorized scoped staff.
+        Never returns resident identity or legal entry authorization.
+        """
+        actor=self.ops._scope(actor)
+        with self.store.transaction() as db:
+            self.ops._visible_order(db,actor,work_ref)
+            if actor.role=="resident":
+                rows=db.execute(
+                    """SELECT appointment_ref,work_ref,start_at,end_at,state,revision
+                       FROM work_appointments
+                       WHERE work_ref=? AND requested_by=?
+                       ORDER BY updated_at DESC,appointment_ref DESC LIMIT 50""",
+                    (work_ref,actor.subject_ref),
+                )
+            else:
+                rows=db.execute(
+                    """SELECT appointment_ref,work_ref,start_at,end_at,state,revision
+                       FROM work_appointments WHERE work_ref=?
+                       ORDER BY updated_at DESC,appointment_ref DESC LIMIT 50""",
+                    (work_ref,),
+                )
+            return [dict(row) for row in rows]
+
     def history(self,actor:TowerScope,*,appointment_ref:str)->list[dict]:
         actor=self.ops._scope(actor)
         with self.store.transaction() as db:
