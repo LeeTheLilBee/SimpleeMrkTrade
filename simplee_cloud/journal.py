@@ -23,7 +23,7 @@ from .contracts import CloudError, IntegrityError, valid_object_ref, valid_sha25
 
 _NAMESPACE = re.compile(r"[0-9a-f]{64}\Z")
 _CODE = {"WRITE_UNCERTAIN", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
-         "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE"}
+         "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "BACKUP_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE"}
 _STATES = {"WRITE_RESERVED", "WRITE_UNCERTAIN", "WRITE_ACKNOWLEDGED",
            "RECONCILE_PRESENT", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
            "REPLAY_INTEGRITY_FAILURE"}
@@ -159,6 +159,23 @@ class SQLiteOperationalJournal:
             return {"valid": True, "event_count": seq, "head_sha256": digest,
                     "external_checkpoint_certified": False}
 
+    def checkpoint_head(self, event_count: int) -> str:
+        """Return a fully verified hash-chain prefix, for independent signature proof."""
+        if type(event_count) is not int or event_count < 0:
+            raise IntegrityError("invalid checkpoint event count")
+        with closing(self._connect()) as conn:
+            total, _ = self._verify(conn)
+            if event_count > total:
+                raise IntegrityError("journal rollback or missing signed checkpoint history")
+            if event_count == 0:
+                return _GENESIS
+            row = conn.execute(
+                "SELECT event_hash FROM events WHERE seq=?", (event_count,)
+            ).fetchone()
+            if row is None:
+                raise IntegrityError("missing checkpoint event")
+            return row[0]
+
     def _append(self, conn: sqlite3.Connection, *, event: str, tag: str,
                 scope: str, code: str = "-") -> None:
         prior = conn.execute("SELECT seq,event_hash FROM events ORDER BY seq DESC LIMIT 1").fetchone()
@@ -269,6 +286,12 @@ class SQLiteOperationalJournal:
         tag = _request_tag(namespace, request_id)
         with self._tx() as conn:
             self._incident(conn, tag=tag, scope=namespace, code="READ_INTEGRITY_FAILURE")
+
+    def record_backup_incident(self, *, namespace: str, request_id: str):
+        self._scope(namespace)
+        tag = _request_tag(namespace, request_id)
+        with self._tx() as conn:
+            self._incident(conn, tag=tag, scope=namespace, code="BACKUP_INTEGRITY_FAILURE")
 
     def record_safe_event(self, event: dict) -> None:
         if not isinstance(event, dict) or set(event) != {
