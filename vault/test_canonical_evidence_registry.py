@@ -48,3 +48,20 @@ def test_rejects_raw_locations_and_invalid_hash(tmp_path):
         record(reg,object_ref="/tmp/private/file.pdf")
     with pytest.raises(RegistryError):
         record(reg,original_sha256="not-a-hash")
+
+def test_correction_cannot_fork(tmp_path):
+    reg=CanonicalEvidenceRegistry(tmp_path/"vault.sqlite")
+    record(reg)
+    record(reg,receipt_id="receipt-2",request_id="request-2",
+        version_id="version-2",object_ref="object-2",parent_version_id="version-1")
+    with pytest.raises(RegistryError,match="successor"):
+        record(reg,receipt_id="receipt-3",request_id="request-3",
+            version_id="version-3",object_ref="object-3",parent_version_id="version-1")
+    assert record(reg,receipt_id="receipt-3",request_id="request-3",
+        version_id="version-3",object_ref="object-3",parent_version_id="version-2")=="receipt-3"
+
+def test_snapshot_rejects_unhashable_version_input_cleanly(tmp_path):
+    reg=CanonicalEvidenceRegistry(tmp_path/"vault.sqlite")
+    with pytest.raises(RegistryError,match="invalid opaque"):
+        reg.seal_decision_snapshot(snapshot_id="snap-1",entity_id="entity-1",
+            acquisition_id="deal-1",rule_version="rules-1",evidence_versions=[["bad"]])
