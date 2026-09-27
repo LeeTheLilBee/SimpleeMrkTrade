@@ -2,6 +2,7 @@
 import tempfile
 import unittest
 from pathlib import Path
+import sqlite3
 
 from grounds.dev_integrity import (
     LocalIntegrityError, inspect_local_store, make_local_fixture_backup,
@@ -82,6 +83,33 @@ class LocalIntegrityTests(unittest.TestCase):
         with self.assertRaises(LocalIntegrityError):
             make_local_fixture_backup(self.store,target)
         self.assertFalse(target.exists())
+
+    def test_stale_legacy_schema_is_detected_without_migration_or_row_exposure(self):
+        # A plausible old local fixture still has the table names but not
+        # lease-bound notice columns; inspection must not pronounce it healthy.
+        incomplete=Path(self.temp.name)/"legacy-fixture.sqlite3"
+        with sqlite3.connect(str(incomplete)) as db:
+            db.execute(
+                """CREATE TABLE property_notices(
+                    notice_ref TEXT,property_ref TEXT,unit_ref TEXT,
+                    headline TEXT,body TEXT,published_at TEXT)""",
+            )
+            db.execute(
+                """CREATE TABLE notice_reads(
+                    notice_ref TEXT,subject_ref TEXT,property_ref TEXT,
+                    unit_ref TEXT,read_at TEXT)""",
+            )
+        status=inspect_local_store(GroundsStore(incomplete))
+        self.assertFalse(status["healthy"])
+        self.assertIn("lease_ref",status["missing_columns"]["property_notices"])
+        self.assertIn("lease_ref",status["missing_columns"]["notice_reads"])
+        self.assertIn("leases",status["missing_tables"])
+        self.assertEqual(status["domain_issue_counts"],{})
+        with self.assertRaises(LocalIntegrityError):
+            make_local_fixture_backup(
+                GroundsStore(incomplete),
+                Path(self.temp.name)/"legacy-copy.sqlite3",
+            )
 
     def test_unknown_or_damaged_file_denied_without_exposing_user_content(self):
         with self.assertRaises(LocalIntegrityError):
