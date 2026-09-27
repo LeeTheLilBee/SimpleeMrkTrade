@@ -1,0 +1,41 @@
+name: Simplee Sovereign Cloud SC006C owner readiness source summary
+
+on:
+  push:
+    branches:
+      - simplee-cloud-sc006c-owner-preflight-report
+  pull_request:
+    paths:
+      - 'simplee_cloud/**'
+      - '.github/workflows/simplee-cloud-sc006c-owner-preflight.yml'
+      - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC006C_OWNER_PREFLIGHT.md'
+
+permissions:
+  contents: read
+
+jobs:
+  source-test-and-owner-hold-summary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install synthetic test dependencies
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Compile Cloud and merged Vault VLT1 source
+        run: |
+          python -m compileall -q simplee_cloud
+          python -m py_compile vault/real_operations_encrypted_storage.py
+      - name: Run entire synthetic source suite
+        run: python -m pytest -q simplee_cloud/tests/
+      - name: Publish source-only owner release HOLD card
+        if: always()
+        run: |
+          python -m simplee_cloud.owner_preflight >> "$GITHUB_STEP_SUMMARY"
