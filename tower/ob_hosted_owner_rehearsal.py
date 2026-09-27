@@ -21,6 +21,7 @@ from urllib.parse import urlsplit
 
 from flask import abort, jsonify, render_template, request, session
 
+from tower.ob_hosted_owner_evidence import build_finalized_owner_evidence_packet
 from tower.tower_human_login_ob_launch import (
     SESSION_OWNER_ID, ensure_tower_session_id, operational_ob_access_active,
     owner_session_active, step_up_active,
@@ -35,7 +36,7 @@ SCHEMA = "OBSIM_HOSTED_OWNER_EPHEMERAL_REHEARSAL_V1"
 ENTRY = "/ob/owner-rehearsal"
 API = ENTRY + "/"
 METHODS = ("status.json", "sample.json", "tick.json", "pause.json",
-           "resume.json", "stop.json", "new.json")
+           "resume.json", "stop.json", "new.json", "evidence.json")
 EXACT_PATHS = frozenset((ENTRY, *(API + method for method in METHODS)))
 MAX_BYTES = 65536
 MAX_WORKSPACES = 8
@@ -295,6 +296,21 @@ def register_ob_hosted_owner_rehearsal(
     def sample():
         return jsonify(_strict_object(SAMPLE.read_bytes()))
 
+    def evidence():
+        item = get_workspace()
+        with lock:
+            if item.desk.session.status.value != "STOPPED" or item.store.final is None:
+                return jsonify({"status": "FINALIZE_VOLATILE_REPORT_BEFORE_EXPORT",
+                                "simulation_only": True, "manual_live_unlock": False}), 409
+            try:
+                packet = build_finalized_owner_evidence_packet(
+                    item.desk.session.session_id, item.store.rows, item.store.final,
+                )
+            except (ValueError, TypeError, OverflowError):
+                return jsonify({"status": "REPORT_INTEGRITY_EXPORT_DENIED",
+                                "simulation_only": True, "manual_live_unlock": False}), 409
+            return jsonify(packet)
+
     def tick():
         try:
             payload = _strict_object(request.get_data())
@@ -355,7 +371,7 @@ def register_ob_hosted_owner_rehearsal(
         ("status", status, "GET"), ("sample", sample, "GET"),
         ("tick", tick, "POST"), ("pause", pause, "POST"),
         ("resume", resume, "POST"), ("stop", stop, "POST"),
-        ("new", fresh, "POST"),
+        ("new", fresh, "POST"), ("evidence", evidence, "GET"),
     ):
         app.add_url_rule(
             API + name + ".json", endpoint="ob_owner_rehearsal_hosted_" + name,

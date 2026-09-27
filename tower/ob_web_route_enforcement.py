@@ -26,6 +26,7 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
         "/ob/owner-rehearsal/resume.json",
         "/ob/owner-rehearsal/stop.json",
         "/ob/owner-rehearsal/new.json",
+        "/ob/owner-rehearsal/evidence.json",
     }
 )
 
