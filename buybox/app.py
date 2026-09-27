@@ -670,7 +670,7 @@ def create_app(config=None):
         with db() as conn:
             op=load(conn,oid)
             if not op: abort(404)
-            if kind not in ({e["kind"] for e in get_vertical(op["vertical"])["evidence"]} | {FINANCING_EVIDENCE_KIND}):
+            if kind not in {e["kind"] for e in get_vertical(op["vertical"])["evidence"]}:
                 abort(400,"Unregistered evidence category")
             item=add_evidence(op,kind,status="RECEIVED",reference=reference,
                               source=source_party,notes=request.form.get("notes","")[:1000])
@@ -691,7 +691,7 @@ def create_app(config=None):
         with db() as conn:
             op=load(conn,oid)
             if not op: abort(404)
-            if kind not in {e["kind"] for e in get_vertical(op["vertical"])["evidence"]}:
+            if kind not in ({e["kind"] for e in get_vertical(op["vertical"])["evidence"]} | {FINANCING_EVIDENCE_KIND}):
                 abort(400,"Unregistered evidence category")
             from werkzeug.utils import secure_filename
             filename=secure_filename(file.filename)
