@@ -71,7 +71,7 @@ def setup(tmp_path, *, peer=None, active=None, clock=None):
     verifier = SourceOnlyTowerGrantVerifier(
         tower_public_keys={"synthetic-key-1": public},
         peer_is_authenticated_vault=peer or (lambda value: value is PEER),
-        tower_decision_is_active=active or (lambda ref: ref == "tower-decision-1"),
+        tower_policy_is_current=active or (lambda policy: policy["decision_ref"] == "tower-decision-1" and policy["approval_ref"] == "approval-1" and policy["step_up_ref"] == "stepup-1"),
         replay_store=replay, now_epoch_seconds=clock or (lambda: NOW),
         mode="source_test",
     )
@@ -197,7 +197,7 @@ def test_replay_persists_across_store_reopening(tmp_path):
     reopened = SourceOnlyTowerGrantVerifier(
         tower_public_keys={"synthetic-key-1": public},
         peer_is_authenticated_vault=lambda value: value is PEER,
-        tower_decision_is_active=lambda ref: True,
+        tower_policy_is_current=lambda policy: True,
         replay_store=persisted, now_epoch_seconds=lambda: NOW,
         mode="source_test",
     )
@@ -214,7 +214,7 @@ def test_no_source_fixture_can_enable_production(tmp_path):
         SourceOnlyTowerGrantVerifier(
             tower_public_keys={"synthetic-key-1": public},
             peer_is_authenticated_vault=lambda p: True,
-            tower_decision_is_active=lambda d: True,
+            tower_policy_is_current=lambda policy: True,
             replay_store=replay, now_epoch_seconds=lambda: NOW,
         )
     assert replay.count() == 0
