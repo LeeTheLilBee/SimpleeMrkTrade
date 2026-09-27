@@ -8,6 +8,7 @@ on:
       - 'docs/THE_GROUNDS_STEWARDSHIP_GRD024_033.md'
       - 'docs/THE_GROUNDS_SOULAANA_AND_GAPS_GRD034_036.md'
       - 'docs/THE_GROUNDS_RESIDENT_SERVICES_GRD037_055.md'
+      - 'docs/THE_GROUNDS_PRE_TOWER_GRD056_065.md'
       - '.github/workflows/grounds-source-contract.yml'
   push:
     branches:
