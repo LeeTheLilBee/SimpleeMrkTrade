@@ -29,6 +29,12 @@ class GroundsFoundationTests(unittest.TestCase):
         self.assertFalse(truth["teller_connected"])
         self.assertFalse(truth["resident_rent_checkout_enabled"])
         self.assertFalse(truth["paid_infrastructure_provisioned"])
+        self.assertTrue(truth["real_data_browser_ui_source_available"])
+        self.assertTrue(truth["server_injected_tower_wsgi_api_source_available"])
+        self.assertTrue(truth["postgresql_baseline_schema_source_available"])
+        self.assertTrue(truth["postgresql_transaction_adapter_source_available"])
+        self.assertFalse(truth["postgresql_hosted_connection_certified"])
+        self.assertFalse(truth["real_tower_http_receiver_connected"])
 
     def test_resident_home_includes_rent_and_maintenance(self):
         home = resident_home_contract()
