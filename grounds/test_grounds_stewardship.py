@@ -145,7 +145,7 @@ class GroundsStewardshipTests(unittest.TestCase):
     def test_inspection_review_rejects_missing_or_severe_findings(self):
         today=date.today().isoformat()
         self.st.plan_inspection(self.manager,property_ref="p1",unit_ref="u1",
-                                inspection_ref="i1",category="turnover",planned_on=today)
+                                inspection_ref="i1",category="routine",planned_on=today)
         self.st.advance_inspection(
             self.manager,property_ref="p1",inspection_ref="i1",
             next_state="in_progress",expected_revision=1,
@@ -211,7 +211,7 @@ class GroundsStewardshipTests(unittest.TestCase):
         today=date.today().isoformat()
         self.st.plan_inspection(
             self.manager,property_ref="p1",unit_ref="u1",inspection_ref="inspect-turn",
-            category="turnover",planned_on=today,
+            category="turnover",planned_on=today,turnover_ref="t1",
         )
         self.st.advance_inspection(
             self.manager,property_ref="p1",inspection_ref="inspect-turn",
@@ -229,6 +229,42 @@ class GroundsStewardshipTests(unittest.TestCase):
             self.manager,property_ref="p1",inspection_ref="inspect-turn",
             next_state="closed",expected_revision=3,
         )
+
+    def test_unlinked_or_old_same_day_inspection_does_not_satisfy_turnover(self):
+        today=date.today().isoformat()
+        # A routine inspection of the same unit—even today—cannot be reused.
+        self.st.plan_inspection(
+            self.manager,property_ref="p1",unit_ref="u1",inspection_ref="old-inspection",
+            category="routine",planned_on=today,
+        )
+        self.st.advance_inspection(self.manager,property_ref="p1",
+                                   inspection_ref="old-inspection",next_state="in_progress",
+                                   expected_revision=1)
+        self.st.record_finding(self.manager,property_ref="p1",inspection_ref="old-inspection",
+                               finding_ref="old-observation",severity="observation",
+                               narrative="Unrelated routine check")
+        self.st.advance_inspection(self.manager,property_ref="p1",
+                                   inspection_ref="old-inspection",next_state="review",
+                                   expected_revision=2)
+        self.st.advance_inspection(self.manager,property_ref="p1",
+                                   inspection_ref="old-inspection",next_state="closed",
+                                   expected_revision=3)
+        self._begin_turnover()
+        self.st.advance_turnover(self.manager,property_ref="p1",turnover_ref="t1",
+                                 next_state="inspection",expected_revision=1)
+        with self.assertRaises(GroundsConflict):
+            self.st.advance_turnover(self.manager,property_ref="p1",turnover_ref="t1",
+                                     next_state="work",expected_revision=2)
+        with self.assertRaises(GroundsConflict):
+            self.st.plan_inspection(
+                self.manager,property_ref="p1",unit_ref="u1",inspection_ref="unlinked",
+                category="turnover",planned_on=today,
+            )
+        with self.assertRaises(AccessDenied):
+            self.st.plan_inspection(
+                self.manager,property_ref="p1",unit_ref="u1",inspection_ref="wrong-turn",
+                category="turnover",planned_on=today,turnover_ref="unknown",
+            )
 
     def test_no_turnover_before_ended_lease_and_single_active_case(self):
         with self.assertRaises(AccessDenied):
