@@ -21,7 +21,7 @@ NEXT={
  "VERIFIED":{"ENCRYPTED","REJECTED"},
  "ENCRYPTED":{"CLOUD_COMMITTED","RECONCILE_REQUIRED","REJECTED"},
  "CLOUD_COMMITTED":{"ARCHIVED","RECONCILE_REQUIRED"},
- "RECONCILE_REQUIRED":{"CLOUD_COMMITTED","ARCHIVED","REJECTED"},
+ "RECONCILE_REQUIRED":{"CLOUD_COMMITTED","REJECTED"},
  "ARCHIVED":set(),"REJECTED":set()
 }
 class JournalError(ValueError): pass
@@ -127,7 +127,13 @@ class ArchivalJournal:
             if step!=index or prev!=prior or (index and old!=rows[index-1][2]):return False
             if self.digest(request_id,step,old,new,receipt,prev)!=digest:return False
             prior=digest
-        return (rows[-1][2],rows[-1][0])==state
+        if (rows[-1][2],rows[-1][0])!=state:return False
+        if rows[0][1] is not None or rows[0][2]!="RECEIVED":return False
+        for i in range(1,len(rows)):
+            old,new=rows[i][1],rows[i][2]
+            if new not in NEXT.get(old,set()):return False
+            if new in {"VERIFIED","ENCRYPTED","CLOUD_COMMITTED","ARCHIVED"} and not rows[i][3]:return False
+        return True
     def owner_summary(self,entity_id):
         valid_id(entity_id)
         with self.db() as db:
