@@ -1,0 +1,44 @@
+name: Tower Grounds source-only scope review TWR-GRD007-011
+
+on:
+  push:
+    branches:
+      - tower-grounds-scope-review-twr-grd007-011
+  pull_request:
+    paths:
+      - 'tower/grounds_scope_review_v1.py'
+      - 'tests/test_tower_grounds_scope_review_twr_grd007_011.py'
+      - 'docs/TOWER_GROUNDS_SCOPE_REVIEW_TWR_GRD007_011.md'
+      - '.github/workflows/tower-grounds-scope-review-twr-grd007-011.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-only-scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pin independently reviewed Grounds role definitions
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: ec4919ad1a35503c54d2fb907c8bf08ed573583d
+          path: grounds-source
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install canonical Tower runtime and test requirements
+        run: |
+          python -m pip install -r deploy/hosted_tower/requirements.txt pytest
+      - name: Exact Grounds role, source scope and existing default-deny regression
+        run: |
+          python -m pytest -q \
+            tests/test_tower_grounds_scope_review_twr_grd007_011.py \
+            tower/test_grounds_handoff_requirements_v1.py \
+            tests/test_tower_app_registry_security_map.py \
+            tests/test_tower_authoritative_truth_contract_twr121_125.py
