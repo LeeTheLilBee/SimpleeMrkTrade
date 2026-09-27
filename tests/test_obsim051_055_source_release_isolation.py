@@ -22,7 +22,11 @@ def test_obsim051_importing_source_only_does_not_export_a_hosted_app():
 
 
 def test_obsim052_canonical_tower_route_registry_still_denies_unapproved_rehearsal():
-    assert not is_approved_ob_web_room("/ob/owner-rehearsal")
+    # Hosted adapter has its own exact registered Tower-protected surface.
+    # This source-only regression must NEVER mistake that for a new mount
+    # of the standalone loopback Flask factory or a live trading grant.
+    assert is_approved_ob_web_room("/ob/owner-rehearsal")
+    assert not is_approved_ob_web_room("/ob/owner-rehearsal/arbitrary")
     assert route_by_path("/ob/owner-rehearsal") is None
     assert is_approved_ob_web_room("/ob/owner-dashboard")
 
