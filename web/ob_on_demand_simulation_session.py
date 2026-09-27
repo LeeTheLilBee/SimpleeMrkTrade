@@ -26,6 +26,9 @@ from web.ob_multi_simulation_replay import ReplayStep, replay_three_lanes
 SCHEMA_VERSION = "OB_ON_DEMAND_SIMULATION_SESSION_V1"
 SERVICE_VERSION = "OBSIM016_020_FREE_OWNER_SESSION"
 INTERVAL_SECONDS = 30
+# A declared live observation is never provider authentication; stale inputs
+# cannot silently advance a new simulation tick or appear as fresh prices.
+DECLARED_LIVE_MAX_SOURCE_AGE_SECONDS = 120
 # Replaying the entire accepted history from a fresh harness is bounded until
 # a separately reviewed incremental/checkpoint replay contract exists.
 MAX_TICKS = 120
@@ -185,6 +188,45 @@ def start_session(
     )
 
 
+def inspect_owner_session_due(
+    session: OwnerSimulationSession, *, now: datetime,
+) -> dict[str, object]:
+    """Read-only owner UI clock hint. No timer, data adapter, replay or grant.
+
+    A READY hint requires one *new explicit* canonical input; it does not
+    assert that a current market frame, price provider or Tower identity exists.
+    """
+    if not isinstance(session, OwnerSimulationSession):
+        raise ValueError("canonical owner simulation session required")
+    instant = _utc(now)
+    if instant < session.last_tick_at:
+        raise ValueError("owner session clock cannot move backwards")
+    state = (
+        "STOPPED" if session.status is SessionStatus.STOPPED else
+        "PAUSED" if session.status is SessionStatus.PAUSED else
+        "BOUNDED_BETA_EXHAUSTED" if len(session.steps) >= MAX_TICKS else
+        "WAIT_INTERVAL" if (instant - session.last_tick_at).total_seconds() < INTERVAL_SECONDS else
+        "READY_FOR_EXPLICIT_INPUT"
+    )
+    remainder = max(
+        0.0, INTERVAL_SECONDS - (instant - session.last_tick_at).total_seconds(),
+    ) if state == "WAIT_INTERVAL" else None
+    return {
+        "schema_version": "OBSIM_OWNER_DUE_HINT_V1",
+        "session_id": session.session_id,
+        "state": state,
+        "due_in_seconds": remainder,
+        "accepted_ticks": len(session.reports),
+        "next_input_present": False,
+        "market_source_authenticated": False,
+        "owner_identity_authenticated_here": False,
+        "automatic_tick_scheduled": False,
+        "simulation_only": True,
+        "broker_submission": False,
+        "manual_live_unlock": False,
+    }
+
+
 def tick_session(
     session: OwnerSimulationSession, step: ReplayStep, *,
     now: datetime, store: LocalSimulationReportStore,
@@ -204,6 +246,12 @@ def tick_session(
         raise ValueError("cannot report an observation from the future")
     if not isinstance(step.frame.source_reference, str) or not step.frame.source_reference.strip():
         raise ValueError("market frame requires explicit source reference")
+    source_age_seconds = (instant - observed).total_seconds()
+    if (
+        session.source_kind is SourceKind.LIVE_OBSERVED
+        and source_age_seconds > DECLARED_LIVE_MAX_SOURCE_AGE_SECONDS
+    ):
+        raise ValueError("declared live observation is stale; wait for explicit fresh input")
 
     # Recompute against an untouched fresh harness: never bypass accepted replay
     # validation, synthetic fills, CAPSIM, OBTIME, receipt chain, or lane isolation.
@@ -228,7 +276,7 @@ def tick_session(
     freshness = (
         session.source_kind.value
         if session.source_kind is not SourceKind.LIVE_OBSERVED
-        else ("FRESH" if age <= 120 else "STALE")
+        else "FRESH_DECLARED_UNVERIFIED"
     )
     events = [
         {
@@ -246,6 +294,7 @@ def tick_session(
         "frame_id": step.frame.frame_id, "observed_at": step.frame.observed_at,
         "source_reference": step.frame.source_reference,
         "source_kind": session.source_kind.value, "source_claim_verified": False,
+        "source_provider_authenticated": False,
         "source_age_seconds": age, "source_freshness": freshness,
         "market_time_receipt_id": step.market_time.receipt_id,
         "lanes": current, "deltas": deltas, "events": events,
@@ -310,6 +359,9 @@ def session_contract() -> dict[str, object]:
         "owner_initiated": True, "interval_seconds": INTERVAL_SECONDS,
         "three_isolated_existing_lanes": True, "fresh_harness_replay": True,
         "bounded_beta_max_ticks": MAX_TICKS, "local_report_only": True,
+        "declared_live_max_source_age_seconds": DECLARED_LIVE_MAX_SOURCE_AGE_SECONDS,
+        "stale_declared_live_input_advances_simulation": False,
+        "owner_due_hint_is_timer_or_permission": False,
         "caller_supplies_verified_market_time_and_explicit_decisions": True,
         "no_unattended_timer_or_hosting": True, "no_price_feed_or_trade_generator": True,
         "simulation_only": True, "broker_submission": False, "capital_movement": False,
