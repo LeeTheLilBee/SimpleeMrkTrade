@@ -7,6 +7,13 @@ from scripts.ob_anonymous_two_host_inventory import CANONICAL, SECONDARY, classi
 
 
 def test_081_new_final_evidence_route_is_fixed_read_only_and_denied(monkeypatch):
+    # Assert the production fixed-path allowlist before replacing its transport
+    # with a mocked GET, so the test cannot accidentally assert the mock.
+    for bad in ("/ob/owner-rehearsal/evidence.json?token=bad",
+                "/ob/owner-rehearsal/evidence.json/raw",
+                "/ob/owner-rehearsal/export-all"):
+        with pytest.raises(ValueError):
+            check._get(base.HOST, bad)
     cases, _ = base._case()
     base._inject(monkeypatch, cases)
     value = check.probe(base.HOST, base.REVISION)
@@ -17,11 +24,6 @@ def test_081_new_final_evidence_route_is_fixed_read_only_and_denied(monkeypatch)
     assert value["manual_live_authorized"] is False
     assert "/ob/owner-rehearsal/evidence.json" in check.PATHS
     assert all(route.startswith("/") for route in check.PATHS)
-    for bad in ("/ob/owner-rehearsal/evidence.json?token=bad",
-                "/ob/owner-rehearsal/evidence.json/raw",
-                "/ob/owner-rehearsal/export-all"):
-        with pytest.raises(ValueError):
-            check._get(base.HOST, bad)
 
 
 @pytest.mark.parametrize("status", [200, 201, 204, 206])
