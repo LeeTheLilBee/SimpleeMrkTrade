@@ -349,6 +349,15 @@ if not getattr(
 from tower.ob_product_landing import register_ob_product_landing
 register_ob_product_landing(app)
 
+# OBSIM056–060 — separately reviewed, default-OFF, exact-route owner synthetic
+# rehearsal. Never import or proxy the 127.0.0.1-only reference Flask app.
+# Hosted activation requires OB_OWNER_REHEARSAL_HOSTED_ENABLED=1 AND the exact
+# approved HTTPS OB_OWNER_REHEARSAL_ORIGIN; no live trading grant is implied.
+from tower.ob_hosted_owner_rehearsal import register_configured_ob_hosted_owner_rehearsal
+
+register_configured_ob_hosted_owner_rehearsal(app)
+
+
 # TWR189 — protected Tower -> Teller handoff exchange.
 # TWR190 will activate the actual /tower/launch/teller corridor.
 from tower.teller_handoff_web import register_teller_handoff_web

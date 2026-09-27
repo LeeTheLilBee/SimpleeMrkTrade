@@ -66,6 +66,19 @@
         </div>
       </header>
 
+      {% if ob_hosted_owner_rehearsal_available %}
+      <section aria-label="Owner synthetic rehearsal" class="ob-owner-rehearsal-entry"
+        style="margin:16px 0;padding:18px;border:1px solid rgba(213,186,255,.25);border-radius:18px;background:rgba(30,20,60,.8);color:#f9f5ff">
+        <strong>Owner Rehearsal · Survey / Paper</strong>
+        <p style="color:#c6bcdc">A protected, owner-started SYNTHETIC three-lane practice room.
+        Reports live only in this server process and disappear on restart/deployment.
+        No broker, live capital or Manual Live permission.</p>
+        <a href="{{ url_for('ob_owner_rehearsal_hosted_page') }}"
+          style="display:inline-block;padding:10px 18px;border-radius:999px;background:#d9bafc;color:#1a102e;font-weight:700">
+          Open synthetic rehearsal
+        </a>
+      </section>
+      {% endif %}
       <div id="ownerDashboardMount"></div>
     </div>
   </div>
