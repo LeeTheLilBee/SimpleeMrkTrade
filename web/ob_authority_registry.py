@@ -2295,6 +2295,56 @@ ACTIVE_AUTHORITY_RECORDS[
 )
 
 
+ACTIVE_AUTHORITY_RECORDS[
+    "owner_manual_namespace_cross_check"
+] = _record(
+    concept_key="owner_manual_namespace_cross_check",
+    authority_id="OB_OWNER_MANUAL_LIVE_NAMESPACE_CROSS_CHECK_V1",
+    authority_class="REDACTED_SOURCE_ONLY_TOWER_NAMESPACE_CORRELATION",
+    implementation_ref="web/ob_manual_live_namespace_cross_check.py",
+    implementation_role="CORRELATE_SOURCE_NAMESPACE_WITH_CANONICAL_BETA_HOLD_WITHOUT_AUTHENTICATION",
+    owns=(
+        "redacted source-only Tower namespace observation correlation against canonical OB beta report",
+        "preserve exactly all externally pending Tower/provider/broker Manual Live gates",
+        "explicitly distinguish in-memory source claim shape from trusted Tower owner authorization",
+    ),
+    inputs=("OB_OWNER_BETA_GATE_REPORT_V1",),
+    triggers=(
+        "full canonical source beta report revalidation",
+        "optional source-only Tower namespace observation with same-account and time shape",
+    ),
+    effects=(
+        "emit immutable MISSING/REJECTED/CONSISTENT_SOURCE_CLAIM_ONLY inspection",
+        "preserve canonical BLOCK/HOLD and never authorize a real owner review or trade",
+    ),
+    state_mutation_scope="NONE",
+    forbidden=(
+        "treat an in-memory receipt or account signature as trusted Tower owner grant",
+        "configure source verification key, replay store, signed issuer or hosted permission",
+        "skip account-specific session/step-up/revocation or real provider gates",
+        "broker submission, capital movement, live mode unlock or direct BuyBox money access",
+    ),
+    failure_behavior=(
+        "Tampered beta source lineage fails closed; invalid/expired/cross-account source observation "
+        "is rejected and source match cannot reduce external pending proof gates."
+    ),
+    explanation=(
+        "Owner sees namespace source observation separately from unresolved Tower owner permission, "
+        "broker proof and actual hosted crossing, with no tokens, identities or balances exposed."
+    ),
+    evidence=(
+        "exact OB beta report ID and integrity hash",
+        "source namespace claim correlation fingerprint, never raw token or nonce",
+        "immutable pending external gate IDs and checkpoint integrity hash",
+    ),
+    review_visibility="Amount-free owner source-only checklist; no production clearance.",
+    temporal_validity="CANONICAL_BETA_SOURCE_AS_OF_AND_SOURCE_OBSERVATION_EXPIRY_BOUND",
+    deterministic=True,
+    learning_boundary="Cannot promote rehearsal or source namespace signature to actual provider outcome.",
+    deferred_integrations=(),
+)
+
+
 PENDING_AUTHORITY_SLOTS = {
 
     "source_provenance": {

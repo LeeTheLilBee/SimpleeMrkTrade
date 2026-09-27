@@ -155,6 +155,9 @@ def test_exact_current_active_authorities_are_registered():
         "owner_beta_gate_report":
             "OB_OWNER_BETA_GATE_REPORT_V1",
 
+        "owner_manual_namespace_cross_check":
+            "OB_OWNER_MANUAL_LIVE_NAMESPACE_CROSS_CHECK_V1",
+
         "trade_intent":
             "OB_TRADE_INTENT_V1",
 
