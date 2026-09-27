@@ -1,0 +1,31 @@
+name: OBML Tower actual source namespace interoperability
+on:
+  push:
+    branches:
+      - 'obml-tower-account-namespace-interoperability'
+  pull_request:
+    paths:
+      - 'tests/test_obml_tower_account_namespace_interop.py'
+      - 'ob_evidence/manual_live/obml_tower_account_namespace_interop_handoff.md'
+      - '.github/workflows/obml-tower-account-namespace-interoperability.yml'
+permissions:
+  contents: read
+jobs:
+  producer-receiver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Compile both source modules and real integration acceptance
+        run: |
+          python -m py_compile web/ob_tower_account_identity_export.py tower/obml_account_namespace_source.py tests/test_obml_tower_account_namespace_interop.py
+          python -m pytest -q tests/test_obml_tower_account_namespace_interop.py tests/test_obml011_015_account_identity_export.py tests/test_tower_obml_account_namespace_source.py tests/test_obml011_015_owner_beta_gate_report.py
+      - name: Complete repository regression
+        run: python -m pytest -q tests
