@@ -20,13 +20,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Checkout exact sealed BuyBox receiver used by existing Tower interop suite
-        uses: actions/checkout@v4
-        with:
-          repository: LeeTheLilBee/SimpleeMrkTrade
-          ref: 3e265c79f61c02ba149c53734757d8d9fd501608
-          path: receiver-source
-          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
