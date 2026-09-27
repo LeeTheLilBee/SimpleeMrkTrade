@@ -1,6 +1,6 @@
 # The Grounds — developer walkthrough completion and Tower acceptance packet (GRD071–079)
 
-Status: **usable source-only developer walkthrough with fictional records; NOT a live resident/staff app.** Source of truth is [draft Grounds PR #51](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/51). Separate Tower review is [draft PR #52](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/52). Do not merge, activate protected doors, host private tenant data or provision paid resources on the strength of this packet.
+Status: **usable source-only developer walkthrough with fictional records; NOT a live resident/staff app.** Source of truth is [draft Grounds PR #51](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/51). The separate [Tower requirements PR #52](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/52) was merged into `tower-hosted-runtime-identity-twr081-085` as source-only review material; its code still reports `route_registered=False` and `receiver_certified=False`. Merging the requirements does **not** integrate or unlock Grounds. Do not merge, activate protected doors, host private tenant data or provision paid resources on the strength of this packet.
 
 ## Changes completed
 
