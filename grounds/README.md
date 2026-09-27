@@ -2,7 +2,7 @@
 
 The Grounds is a role-specific resident and property operations app for Simplee World. The resident enters through Tower, sees a lease/unit context, starts rent checkout through Teller, submits and follows maintenance, and reads notices. Technicians, leasing, management and the owner get scoped workspaces.
 
-This branch now contains two intentionally distinct UI experiences: **`ui/preview.html` is a fictional local walkthrough**, whereas **`ui/app.html`, `ui/app.css`, `ui/app.js` and `web.py` are a real-data browser and server API** that only operate after a trusted server injects an authenticated TowerScope. The new WSGI application currently refuses public/production composition, accepts only explicit `local_fixture_only=True` for in-process tests, and is **not hosted** or connected to real resident accounts. Never put personal data into previews, fixtures, or the disposable SQLite store. Private PostgreSQL and current/revocable Tower identity remain separate release dependencies.
+This branch now contains two intentionally distinct UI experiences: **`ui/preview.html` is a fictional local walkthrough**, whereas **`ui/app.html`, `ui/app.css`, `ui/app.js` and `web.py` are a real-data browser and server API** that only operate after a trusted server injects an authenticated TowerScope. The WSGI application accepts SQLite **only** in explicit `local_fixture_only=True` tests and can accept a separately provisioned PostgreSQL store only after its real schema preflight. `production_entry.py` is an explicit future deployment factory which refuses to initialize without an exact certified `tower.grounds_runtime_receiver` implementation, a private PostgreSQL URL and high-entropy session-CSRF configuration. Tower has **not implemented/certified that receiver yet**, and Grounds is **not hosted** or connected to real resident accounts. Never put personal data into previews, fixtures, or the disposable SQLite store. Private PostgreSQL and current/revocable Tower identity remain separate release dependencies.
 
 ### Local no-cost checks
 
@@ -47,7 +47,8 @@ To inspect the visual prototype, open `grounds/ui/preview.html` locally in a bro
 - `dev_demo.py` — deliberate offline fictional end-to-end scenario, never a real authentication or service layer.
 - `release.py` — truthful source walkthrough status and immutable no-auto-unlock tenant release review.
 - `ui/app.html`, `ui/app.css`, `ui/app.js` — real-data responsive resident/staff interface; no sample people, forged payment buttons or role switcher.
-- `web.py` — server-injected Tower authentication on every HTTP read/write, bounded WSGI API and session-scoped CSRF; local fixture mode only until Tower/private hosting is independently certified.
+- `web.py` — server-injected Tower authentication on every HTTP read/write, bounded WSGI API and session-scoped CSRF; SQLite forbidden in private production composition.
+- `production_entry.py` — real deployment factory that fails closed without the missing certified Tower runtime receiver, private PostgreSQL schema and configured secrets; it does not start a service itself.
 - `storage.py::GroundsStoreBase` — common domain transaction contract; the old `GroundsStore` remains disposable SQLite.
 - `postgres.py` — real psycopg3 PostgreSQL domain transaction adapter with serializable writes and read-only baseline compatibility; no implicit production migrations.
 - `sql/0001_initial_postgres.sql` — reviewed fresh private PostgreSQL baseline schema with lease/notice/asset/appointment/turnover constraints.
