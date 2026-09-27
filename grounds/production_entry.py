@@ -20,7 +20,7 @@ import os
 from collections.abc import Callable
 
 from .postgres import PostgresGroundsStore
-from .web import GroundsWebApp, GroundsWebConfigurationError
+from .web import GroundsWebApp
 
 
 class GroundsProductionUnavailable(RuntimeError):
@@ -63,7 +63,7 @@ def create_wsgi_application():
         return GroundsWebApp(
             store,tower_receiver=receiver,csrf_secret=secret,local_fixture_only=False,
         )
-    except (GroundsWebConfigurationError,Exception) as exc:
+    except Exception as exc:
         # Generic operator error. Real migration/connection details stay private
         # and should be sent only to an independently approved secure log system.
         raise GroundsProductionUnavailable(
