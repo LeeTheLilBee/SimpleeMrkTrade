@@ -13,11 +13,13 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 from urllib.parse import urlsplit
 
 from grounds.access import AccessDenied
 from grounds.maintenance import MaintenanceIntake
 from grounds.operations import GroundsOperations
+from grounds.postgres import PostgresGroundsStore
 from grounds.storage import GroundsStore
 from grounds.test_grounds_operations import fixture_scope
 from grounds.web import GroundsWebApp, GroundsWebConfigurationError, SessionCSRF
@@ -99,6 +101,30 @@ class GroundsWebTests(unittest.TestCase):
                           csrf_secret=b"changeme",local_fixture_only=True)
         with self.assertRaises(GroundsWebConfigurationError):
             SessionCSRF(b"x"*32)
+
+    def test_postgres_web_composition_demands_actual_schema_preflight(self):
+        pg=PostgresGroundsStore("postgresql://not-an-actual-db.example/grounds")
+        with patch.object(pg,"assert_schema_ready",return_value={
+            "backend":"postgresql","schema_compatible":True,
+        }) as ready:
+            app=GroundsWebApp(
+                pg,tower_receiver=lambda env:env["test.fixture.actor"],
+                csrf_secret=self.secret,local_fixture_only=False,
+            )
+            self.assertIs(app.store,pg)
+            ready.assert_called_once_with()
+        with self.assertRaises(GroundsWebConfigurationError):
+            GroundsWebApp(
+                pg,tower_receiver=lambda env:self.resident,
+                csrf_secret=self.secret,local_fixture_only=True,
+            )
+        with patch.object(pg,"assert_schema_ready",
+                          side_effect=ValueError("schema not ready")):
+            with self.assertRaises(ValueError):
+                GroundsWebApp(
+                    pg,tower_receiver=lambda env:self.resident,
+                    csrf_secret=self.secret,local_fixture_only=False,
+                )
 
     def test_every_get_and_static_page_requires_server_owned_scope(self):
         for url in ("/grounds","/grounds/app.js","/grounds/app.css",
