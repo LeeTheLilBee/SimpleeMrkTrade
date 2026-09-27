@@ -276,6 +276,88 @@ class SQLiteOperationalJournal:
                     "ciphertext_size": record["ciphertext_size"],
                     "state": self._state(conn, tag)}
 
+    def backup_intent(self, *, namespace: str, request_id: str) -> dict | None:
+        """Look up only canonical durable source-side backup reservation."""
+        self._scope(namespace)
+        tag = _backup_tag(namespace, request_id)
+        with closing(self._connect()) as conn:
+            self._verify(conn)
+            row = conn.execute(
+                "SELECT * FROM backup_intents WHERE request_tag=?", (tag,)
+            ).fetchone()
+            if row is None:
+                return None
+            return {
+                **{k: row[k] for k in (
+                    "namespace_digest", "source_object_ref",
+                    "source_ciphertext_sha256", "backup_ref", "backup_sha256",
+                    "backup_size", "key_reference",
+                )},
+                "state": self._backup_state(conn, tag),
+            }
+
+    def reserve_backup(self, *, namespace: str, request_id: str,
+                       source_object_ref: str, source_digest: str,
+                       backup_ref: str, backup_digest: str, backup_size: int,
+                       key_reference: str) -> None:
+        self._scope(namespace)
+        if not (valid_object_ref(source_object_ref) and valid_sha256(source_digest)
+                and valid_backup_ref(backup_ref) and valid_sha256(backup_digest)):
+            raise CloudError("invalid bound backup refs or SHA")
+        if type(backup_size) is not int or not 33 <= backup_size <= MAX_ENVELOPE_BYTES + 64:
+            raise CloudError("invalid bounded backup size")
+        if not isinstance(key_reference, str) or not re.fullmatch(
+            r"[A-Za-z0-9_.:-]{1,128}", key_reference
+        ):
+            raise CloudError("invalid private backup key reference")
+        tag = _backup_tag(namespace, request_id)
+        with self._tx() as conn:
+            if conn.execute(
+                "SELECT 1 FROM backup_intents WHERE request_tag=?", (tag,)
+            ).fetchone() is not None:
+                raise CloudError("backup reservation already exists; reconcile, never re-PUT")
+            conn.execute(
+                "INSERT INTO backup_intents VALUES(?,?,?,?,?,?,?,?,?)",
+                (tag, namespace, source_object_ref, source_digest, backup_ref,
+                 backup_digest, backup_size, key_reference, _now()),
+            )
+            self._append(conn, event="BACKUP_RESERVED", tag=tag, scope=namespace)
+
+    def backup_transition(self, *, namespace: str, request_id: str, next_state: str):
+        allowed = {
+            "BACKUP_ACKNOWLEDGED": {"BACKUP_RESERVED"},
+            "BACKUP_UNCERTAIN": {"BACKUP_RESERVED"},
+            "BACKUP_RECONCILE_PRESENT": {"BACKUP_RESERVED", "BACKUP_UNCERTAIN"},
+            "BACKUP_RECONCILE_MISSING": {"BACKUP_RESERVED", "BACKUP_UNCERTAIN"},
+            "BACKUP_RECONCILE_CORRUPT": {"BACKUP_RESERVED", "BACKUP_UNCERTAIN"},
+            "BACKUP_REPLAY_INTEGRITY_FAILURE": {
+                "BACKUP_ACKNOWLEDGED", "BACKUP_RECONCILE_PRESENT",
+            },
+        }
+        if next_state not in allowed:
+            raise CloudError("unsupported backup state")
+        self._scope(namespace)
+        tag = _backup_tag(namespace, request_id)
+        with self._tx() as conn:
+            if conn.execute(
+                "SELECT 1 FROM backup_intents WHERE request_tag=?", (tag,)
+            ).fetchone() is None:
+                raise CloudError("unknown backup reservation")
+            state = self._backup_state(conn, tag)
+            if state not in allowed[next_state]:
+                raise CloudError("duplicate or forbidden backup transition")
+            self._append(conn, event=next_state, tag=tag, scope=namespace)
+            if next_state in _CODE:
+                self._incident(conn, tag=tag, scope=namespace, code=next_state)
+
+    def record_backup_reconcile_intent(self, *, namespace: str, request_id: str):
+        self._scope(namespace)
+        tag = _backup_tag(namespace, request_id)
+        with self._tx() as conn:
+            if self._backup_state(conn, tag) not in ("BACKUP_RESERVED", "BACKUP_UNCERTAIN"):
+                raise CloudError("backup cannot be reconciled in current state")
+            self._append(conn, event="BACKUP_RECONCILE_INTENT", tag=tag, scope=namespace)
+
     def _incident(self, conn: sqlite3.Connection, *, tag: str, scope: str, code: str):
         if code not in _CODE:
             raise CloudError("unknown incident code")
