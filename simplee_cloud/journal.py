@@ -19,14 +19,19 @@ from contextlib import closing, contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .contracts import CloudError, IntegrityError, valid_object_ref, valid_sha256
+from .contracts import CloudError, IntegrityError, MAX_ENVELOPE_BYTES, valid_backup_ref, valid_object_ref, valid_sha256
 
 _NAMESPACE = re.compile(r"[0-9a-f]{64}\Z")
 _CODE = {"WRITE_UNCERTAIN", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
-         "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "BACKUP_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE"}
+         "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "BACKUP_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE",
+         "BACKUP_UNCERTAIN", "BACKUP_RECONCILE_MISSING", "BACKUP_RECONCILE_CORRUPT",
+         "BACKUP_REPLAY_INTEGRITY_FAILURE"}
 _STATES = {"WRITE_RESERVED", "WRITE_UNCERTAIN", "WRITE_ACKNOWLEDGED",
            "RECONCILE_PRESENT", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
            "REPLAY_INTEGRITY_FAILURE"}
+_BACKUP_STATES = {"BACKUP_RESERVED", "BACKUP_UNCERTAIN", "BACKUP_ACKNOWLEDGED",
+                  "BACKUP_RECONCILE_PRESENT", "BACKUP_RECONCILE_MISSING",
+                  "BACKUP_RECONCILE_CORRUPT", "BACKUP_REPLAY_INTEGRITY_FAILURE"}
 _SAFE_EVENTS = {"read_intent", "read_verified", "backup_intent",
                 "backup_acknowledged", "restore_verification_intent",
                 "restore_copy_verified"}
@@ -41,6 +46,12 @@ def _request_tag(namespace: str, request_id: str) -> str:
     if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", request_id):
         raise CloudError("invalid internal request identity")
     return hashlib.sha256(("write:v1:" + namespace + ":" + request_id).encode()).hexdigest()
+
+
+def _backup_tag(namespace: str, request_id: str) -> str:
+    if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", request_id):
+        raise CloudError("invalid backup request identity")
+    return hashlib.sha256(("backup:v1:" + namespace + ":" + request_id).encode()).hexdigest()
 
 
 def _hash_event(seq: int, kind: str, tag: str, scope: str, code: str, at: str, previous: str) -> str:
@@ -120,7 +131,14 @@ class SQLiteOperationalJournal:
                 incident_code TEXT NOT NULL, severity TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )""")
-            for table in ("intents", "events", "incidents"):
+            conn.execute("""CREATE TABLE IF NOT EXISTS backup_intents (
+                request_tag TEXT PRIMARY KEY, namespace_digest TEXT NOT NULL,
+                source_object_ref TEXT NOT NULL, source_ciphertext_sha256 TEXT NOT NULL,
+                backup_ref TEXT NOT NULL, backup_sha256 TEXT NOT NULL,
+                backup_size INTEGER NOT NULL, key_reference TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )""")
+            for table in ("intents", "events", "incidents", "backup_intents"):
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_update
                     BEFORE UPDATE ON {table} BEGIN SELECT RAISE(ABORT, 'append-only record'); END""")
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_delete
@@ -151,6 +169,16 @@ class SQLiteOperationalJournal:
         """).fetchone()[0]
         if orphan:
             raise IntegrityError("orphan write intent without audit reservation")
+        orphan_backup = conn.execute("""
+            SELECT COUNT(*) FROM backup_intents b WHERE NOT EXISTS (
+                SELECT 1 FROM events e
+                WHERE e.request_tag=b.request_tag AND
+                      e.namespace_digest=b.namespace_digest AND
+                      e.event_type='BACKUP_RESERVED'
+            )
+        """).fetchone()[0]
+        if orphan_backup:
+            raise IntegrityError("orphan backup intent without journal reservation")
         return expected_seq, previous
 
     def verify_chain(self) -> dict:
@@ -197,6 +225,15 @@ class SQLiteOperationalJournal:
         return None
 
     @staticmethod
+    def _backup_state(conn: sqlite3.Connection, tag: str) -> str | None:
+        for row in conn.execute(
+            "SELECT event_type FROM events WHERE request_tag=? ORDER BY seq DESC", (tag,)
+        ):
+            if row["event_type"] in _BACKUP_STATES:
+                return row["event_type"]
+        return None
+
+    @staticmethod
     def _scope(scope: str) -> None:
         if not isinstance(scope, str) or not _NAMESPACE.fullmatch(scope):
             raise CloudError("invalid internal namespace digest")
@@ -238,6 +275,88 @@ class SQLiteOperationalJournal:
                     "ciphertext_sha256": record["ciphertext_sha256"],
                     "ciphertext_size": record["ciphertext_size"],
                     "state": self._state(conn, tag)}
+
+    def backup_intent(self, *, namespace: str, request_id: str) -> dict | None:
+        """Look up only canonical durable source-side backup reservation."""
+        self._scope(namespace)
+        tag = _backup_tag(namespace, request_id)
+        with closing(self._connect()) as conn:
+            self._verify(conn)
+            row = conn.execute(
+                "SELECT * FROM backup_intents WHERE request_tag=?", (tag,)
+            ).fetchone()
+            if row is None:
+                return None
+            return {
+                **{k: row[k] for k in (
+                    "namespace_digest", "source_object_ref",
+                    "source_ciphertext_sha256", "backup_ref", "backup_sha256",
+                    "backup_size", "key_reference",
+                )},
+                "state": self._backup_state(conn, tag),
+            }
+
+    def reserve_backup(self, *, namespace: str, request_id: str,
+                       source_object_ref: str, source_digest: str,
+                       backup_ref: str, backup_digest: str, backup_size: int,
+                       key_reference: str) -> None:
+        self._scope(namespace)
+        if not (valid_object_ref(source_object_ref) and valid_sha256(source_digest)
+                and valid_backup_ref(backup_ref) and valid_sha256(backup_digest)):
+            raise CloudError("invalid bound backup refs or SHA")
+        if type(backup_size) is not int or not 33 <= backup_size <= MAX_ENVELOPE_BYTES + 64:
+            raise CloudError("invalid bounded backup size")
+        if not isinstance(key_reference, str) or not re.fullmatch(
+            r"[A-Za-z0-9_.:-]{1,128}", key_reference
+        ):
+            raise CloudError("invalid private backup key reference")
+        tag = _backup_tag(namespace, request_id)
+        with self._tx() as conn:
+            if conn.execute(
+                "SELECT 1 FROM backup_intents WHERE request_tag=?", (tag,)
+            ).fetchone() is not None:
+                raise CloudError("backup reservation already exists; reconcile, never re-PUT")
+            conn.execute(
+                "INSERT INTO backup_intents VALUES(?,?,?,?,?,?,?,?,?)",
+                (tag, namespace, source_object_ref, source_digest, backup_ref,
+                 backup_digest, backup_size, key_reference, _now()),
+            )
+            self._append(conn, event="BACKUP_RESERVED", tag=tag, scope=namespace)
+
+    def backup_transition(self, *, namespace: str, request_id: str, next_state: str):
+        allowed = {
+            "BACKUP_ACKNOWLEDGED": {"BACKUP_RESERVED"},
+            "BACKUP_UNCERTAIN": {"BACKUP_RESERVED"},
+            "BACKUP_RECONCILE_PRESENT": {"BACKUP_RESERVED", "BACKUP_UNCERTAIN"},
+            "BACKUP_RECONCILE_MISSING": {"BACKUP_RESERVED", "BACKUP_UNCERTAIN"},
+            "BACKUP_RECONCILE_CORRUPT": {"BACKUP_RESERVED", "BACKUP_UNCERTAIN"},
+            "BACKUP_REPLAY_INTEGRITY_FAILURE": {
+                "BACKUP_ACKNOWLEDGED", "BACKUP_RECONCILE_PRESENT",
+            },
+        }
+        if next_state not in allowed:
+            raise CloudError("unsupported backup state")
+        self._scope(namespace)
+        tag = _backup_tag(namespace, request_id)
+        with self._tx() as conn:
+            if conn.execute(
+                "SELECT 1 FROM backup_intents WHERE request_tag=?", (tag,)
+            ).fetchone() is None:
+                raise CloudError("unknown backup reservation")
+            state = self._backup_state(conn, tag)
+            if state not in allowed[next_state]:
+                raise CloudError("duplicate or forbidden backup transition")
+            self._append(conn, event=next_state, tag=tag, scope=namespace)
+            if next_state in _CODE:
+                self._incident(conn, tag=tag, scope=namespace, code=next_state)
+
+    def record_backup_reconcile_intent(self, *, namespace: str, request_id: str):
+        self._scope(namespace)
+        tag = _backup_tag(namespace, request_id)
+        with self._tx() as conn:
+            if self._backup_state(conn, tag) not in ("BACKUP_RESERVED", "BACKUP_UNCERTAIN"):
+                raise CloudError("backup cannot be reconciled in current state")
+            self._append(conn, event="BACKUP_RECONCILE_INTENT", tag=tag, scope=namespace)
 
     def _incident(self, conn: sqlite3.Connection, *, tag: str, scope: str, code: str):
         if code not in _CODE:
@@ -315,6 +434,10 @@ class SQLiteOperationalJournal:
             for row in conn.execute("SELECT request_tag FROM intents"):
                 state = self._state(conn, row["request_tag"]) or "UNVERIFIED"
                 states[state] = states.get(state, 0) + 1
+            backup_states = {}
+            for row in conn.execute("SELECT request_tag FROM backup_intents"):
+                state = self._backup_state(conn, row["request_tag"]) or "UNVERIFIED"
+                backup_states[state] = backup_states.get(state, 0) + 1
             incidents = conn.execute("SELECT COUNT(*) FROM incidents").fetchone()[0]
             return {
                 "status": "SOURCE_ONLY_NO_GO",
@@ -326,6 +449,12 @@ class SQLiteOperationalJournal:
                                       states.get("RECONCILE_CORRUPT", 0) +
                                       states.get("REPLAY_INTEGRITY_FAILURE", 0),
                 "incident_count": incidents,
+                "backup_count": sum(backup_states.values()),
+                "pending_backups": backup_states.get("BACKUP_RESERVED", 0) +
+                                   backup_states.get("BACKUP_UNCERTAIN", 0),
+                "backup_missing_or_corrupt": backup_states.get("BACKUP_RECONCILE_MISSING", 0) +
+                                             backup_states.get("BACKUP_RECONCILE_CORRUPT", 0) +
+                                             backup_states.get("BACKUP_REPLAY_INTEGRITY_FAILURE", 0),
                 "external_checkpoint_certified": False,
                 "hosted_alert_delivery_certified": False,
             }
