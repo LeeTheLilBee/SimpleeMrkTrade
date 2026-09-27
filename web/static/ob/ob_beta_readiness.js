@@ -7,16 +7,16 @@
   const betaState = {
     access: "Invite-only",
     nda: "Required before access",
-    mode: "Paper / Manual Live Level 1",
+    mode: "Survey / Paper · owner rehearsal only",
     proof: "Private proof only",
     billing: "Tower-owned, not OB-owned",
-    broker: "Manual broker placement only"
+    broker: "No beta broker placement · real Manual Live HOLD"
   };
 
   const betaTabs = [
     { key: "checklist", label: "Beta Checklist" },
     { key: "tester", label: "Tester Rules" },
-    { key: "sop", label: "Manual Live SOP" },
+    { key: "sop", label: "Owner Rehearsal SOP" },
     { key: "feedback", label: "Feedback Questions" },
     { key: "proof", label: "Private Proof" },
     { key: "tower", label: "Tower Boundary" }
@@ -25,9 +25,9 @@
   const betaChecklist = [
     ["NDA required", "Tester must complete NDA/access rules before entering OB."],
     ["Private access only", "No public signup, no public proof, no public marketing route inside OB."],
-    ["Mode is limited", "Beta starts with Paper and Manual Live Level 1 review behavior only."],
-    ["Manual broker flow", "OB gives checklist. Owner/tester manually places or does not place at broker."],
-    ["Receipts required", "Approve, reject, snooze, fill confirmation, and review actions should create receipts."],
+    ["Mode is limited", "Tester beta is Survey/Paper only. Manual Live Level 1 is owner-only rehearsal until separately authorized."],
+    ["No real broker instruction", "Beta checklists are practice-only. No beta session authorizes an owner or tester to place a real broker order."],
+    ["Practice receipts required", "Simulated review decisions and outcomes must be labeled as practice, never as independently reconciled broker fills."],
     ["Feedback required", "Tester should report clarity, confusion, trust, and action-pressure concerns."]
   ];
 
@@ -36,19 +36,19 @@
     ["No financial promises", "Tester must not treat OB as guaranteed profit or investment advice."],
     ["No public sharing", "Screenshots, proof, reports, and demo records stay private unless Tower clears them."],
     ["No credential sharing", "Invite access is personal and cannot be shared."],
-    ["No broker automation", "Beta does not include broker API, one-click execution, or automated live trading."],
+    ["No broker placement or automation", "Tester beta is Survey/Paper only, without Manual Live, broker orders, API execution or automatic trading."],
     ["Report confusion", "If a card feels unclear or emotionally pressuring, tester must flag it."]
   ];
 
   const manualLiveSOP = [
-    ["OB detects", "OB identifies a candidate and creates a complete review card."],
-    ["Tower checks", "The Tower permission state stays visible. Live Auto Locked remains locked."],
-    ["Tester reviews", "Tester reads Trade Center card, Soulaana note, risk, and broker checklist."],
-    ["Tester decides", "Approve for manual placement, reject, or snooze / watch."],
-    ["Broker is manual", "Tester manually enters the trade at broker if approved and appropriate."],
-    ["OB records", "Tester confirms filled, submitted, not placed, changed, or canceled."],
-    ["OB monitors", "If filled, OB tracks monitoring state and exit review receipts."],
-    ["Review Center learns", "Receipts stay private and get classified in Review Center."]
+    ["OB rehearses", "OB shows a source-labeled practice candidate and review-only card."],
+    ["Tower boundary", "A signed OB account namespace is not owner clearance. Real owner session, account entitlement, purpose-bound step-up, revocation and hosted crossing remain independent gates."],
+    ["Owner rehearses", "Only the owner walks through the Manual Live L1 practice checklist with clearly classified evidence."],
+    ["Owner records practice choice", "Record a rehearsal decision to defer, decline, watch or review; never create live placement permission."],
+    ["No production placement", "No real order follows from a beta checklist. Future owner-only Manual Live needs separate Tower, provider, safety and operating approvals."],
+    ["OB labels practice outcomes", "Use simulated/rehearsal labels, not authenticated submitted or filled broker outcomes."],
+    ["OB observes rehearsal", "Track practice follow-up without claiming a real position or independently reconciled fill."],
+    ["Review Center preserves evidence", "Keep practice receipts private and source-classified, separate from real provider-authenticated outcomes."]
   ];
 
   const feedbackQuestions = [
@@ -72,7 +72,7 @@
     },
     {
       id: "manual",
-      label: "Did the Manual Live process make it clear that you must place trades manually at the broker?",
+      label: "Did the beta clearly explain that real Manual Live is locked and this is only a Survey/Paper or owner rehearsal?",
       type: "select",
       options: ["Yes", "Somewhat", "No", "I thought OB was executing"]
     },
@@ -222,8 +222,8 @@
   function sopPanel() {
     return `
       <div class="ob-beta-panel green">
-        <span>Manual Live Level 1 rule</span>
-        <strong>OB is the brain. The Tower is the lock. Soulaana is the guidance. The tester/owner is the hand. The broker is the execution venue. OB remembers everything.</strong>
+        <span>Owner-only rehearsal boundary</span>
+        <strong>OB and Soulaana guide an owner rehearsal. Tower controls access, but a valid account-source signature is not a live grant. No actual brokerage order is authorized by this beta SOP.</strong>
       </div>
 
       ${listPanel(manualLiveSOP)}
@@ -322,7 +322,7 @@
       <div class="ob-beta-head">
         <div>
           <strong>Private Beta Readiness</strong>
-          <span>NDA required, invite-only, Manual Live Level 1, private proof, Tower-controlled access.</span>
+          <span>NDA required; tester Survey/Paper, owner-only rehearsal, private proof and Tower-controlled access. Real Manual Live remains HOLD.</span>
         </div>
         <button class="ob-beta-close" id="obBetaClose">×</button>
       </div>
@@ -330,7 +330,7 @@
       ${statusCards()}
 
       <div class="ob-beta-guard-card">
-        <strong>Beta boundary:</strong><br>
+        <strong>Beta boundary: real Manual Live remains HOLD.</strong><br>
         This is not public launch, not broker API execution, not automated live trading, and not a public proof funnel.
       </div>
 
@@ -417,12 +417,12 @@
         <div>
           <div class="ob-label">Beta Readiness</div>
           <div class="manual-live-title">Private tester flow</div>
-          <div class="manual-live-subtitle">NDA, tester rules, Manual Live SOP, feedback questions, private proof, and Tower boundary are consolidated here.</div>
+          <div class="manual-live-subtitle">NDA, tester Survey/Paper rules, owner rehearsal, feedback, private proof and Tower boundary are consolidated here. No real broker placement is authorized.</div>
         </div>
 
         <div class="manual-live-chip-row">
           <span class="manual-live-chip gold">Invite-only</span>
-          <span class="manual-live-chip green">SOP ready</span>
+          <span class="manual-live-chip green">Rehearsal SOP</span>
           <span class="manual-live-chip red">No public proof</span>
         </div>
       </div>
