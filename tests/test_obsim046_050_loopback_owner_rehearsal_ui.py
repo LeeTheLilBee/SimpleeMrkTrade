@@ -61,9 +61,11 @@ def test_obsim046_local_surface_is_actual_dark_glass_and_not_hosted_entrypoint(t
     assert html.headers["Referrer-Policy"] == "no-referrer"
     assert get(client, "/api/status", token).status_code == 200
     assert not archive.exists()
-    assert "create_local_owner_rehearsal_app" not in (
-        ROOT / "web/managed_staging.py"
-    ).read_text()
+    # Main and Tower expose different dormant WSGI entrypoint filenames.
+    for entrypoint in ("web/managed_staging.py", "web/hosted_tower.py"):
+        target = ROOT / entrypoint
+        if target.exists():
+            assert "create_local_owner_rehearsal_app" not in target.read_text()
     assert "ob_local_owner_rehearsal" not in (
         ROOT / "web/templates/owner_dashboard.html"
     ).read_text()
