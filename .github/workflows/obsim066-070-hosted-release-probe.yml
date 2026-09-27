@@ -1,0 +1,33 @@
+name: OBSIM066-070 anonymous hosted release probe contract
+on:
+  push:
+    branches:
+      - 'obsim066-070-*'
+  pull_request:
+    branches:
+      - 'tower-hosted-runtime-identity-twr081-085'
+permissions:
+  contents: read
+jobs:
+  passive-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing tests
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Compile probe, protected adapter and browser
+        run: |
+          python -m py_compile scripts/ob_hosted_anonymous_release_probe.py tests/test_obsim066_070_anonymous_release_probe.py
+          node --check web/static/ob/ob_hosted_owner_rehearsal.js
+      - name: All passive release negative cases and active Tower owner HTTP regressions
+        run: |
+          python -m pytest -q tests/test_obsim066_070_anonymous_release_probe.py tests/test_obsim061_065_hosted_token_lifecycle.py tests/test_obsim056_060_hosted_owner_rehearsal.py tests/test_tower_ob_web_route_enforcement.py
+      - name: Tower login and hosted runtime baseline
+        run: |
+          python -m pytest -q tests/test_tower_human_login_ob_native_launch.py web/test_hosted_tower_entrypoint.py
