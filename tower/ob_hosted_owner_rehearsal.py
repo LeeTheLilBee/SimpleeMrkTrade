@@ -287,13 +287,44 @@ def register_ob_hosted_owner_rehearsal(
             csrf=item.csrf, source_kind="SYNTHETIC",
         )
 
-    def status():
+    def read_checked_workspace():
+        """Recheck the exact workspace and token under lock at read time.
+
+        A request may pass before_request against the old workspace, then
+        overlap an authorized /new rotation before its view executes. Never
+        read or present the replacement workspace using the old token.
+        The caller MUST hold lock while validating and using the item.
+        """
         item = get_workspace()
+        key = scope()
+        if (workspaces.get(key) is not item
+                or not secrets.compare_digest(
+                    item.csrf, request.headers.get("X-OB-Rehearsal-Token", "")
+                )):
+            return None
+        return item
+
+    def read_rotated():
+        return jsonify({
+            "status": "REHEARSAL_SESSION_ROTATED_REENTER_TOWER",
+            "simulation_only": True, "manual_live_unlock": False,
+            "durable_archive": False, "broker_submission": False,
+        }), 409
+
+    def status():
         with lock:
+            item = read_checked_workspace()
+            if item is None:
+                return read_rotated()
             return jsonify(view(item, clock()))
 
     def sample():
-        return jsonify(_strict_object(SAMPLE.read_bytes()))
+        # The sample is fixed fictional data, but an old CSRF capability
+        # must not return a successful authenticated API result after reset.
+        with lock:
+            if read_checked_workspace() is None:
+                return read_rotated()
+            return jsonify(_strict_object(SAMPLE.read_bytes()))
 
     def tick():
         try:
