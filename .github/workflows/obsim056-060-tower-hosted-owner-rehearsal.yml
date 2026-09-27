@@ -2,10 +2,10 @@ name: OBSIM056-060 Tower protected hosted synthetic rehearsal
 on:
   push:
     branches:
-      - 'tower-ob-hosted-rehearsal-adapter-0927'
+      - 'tower-ob-hosted-owner-synthetic-beta-0927'
   pull_request:
     branches:
-      - 'tower-ob-obsim-source-unification-0927'
+      - 'tower-hosted-runtime-identity-twr081-085'
 permissions:
   contents: read
 jobs:
