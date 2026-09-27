@@ -1,0 +1,37 @@
+name: Simplee Sovereign Cloud SC006B concurrent source checks
+
+on:
+  push:
+    branches:
+      - simplee-cloud-sc006b-concurrency-hardening
+  pull_request:
+    paths:
+      - 'simplee_cloud/**'
+      - '.github/workflows/simplee-cloud-sc006b-concurrency.yml'
+      - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC006B_CONCURRENT_REQUESTS.md'
+
+permissions:
+  contents: read
+
+jobs:
+  concurrent-source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install synthetic test dependencies only
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Compile the exact Cloud package and merged Vault envelope
+        run: |
+          python -m compileall -q simplee_cloud
+          python -m py_compile vault/real_operations_encrypted_storage.py
+      - name: Run complete source suite including concurrent fault injections
+        run: python -m pytest -q simplee_cloud/tests/
