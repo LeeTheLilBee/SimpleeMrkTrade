@@ -35,3 +35,5 @@ jobs:
         run: python -m compileall -q grounds
       - name: Run full Grounds domain and boundary tests
         run: python -m unittest discover -s grounds -p 'test_*.py' -v
+      - name: Execute isolated fictional Grounds walkthrough
+        run: python -m grounds.dev_demo --fictional-only > /dev/null
