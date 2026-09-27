@@ -138,16 +138,16 @@ def test_auth_peer_revocation_and_unavailable_authority_denied(tmp_path):
     with pytest.raises(AccessDenied, match="unauthenticated"):
         check(verifier, grant, c, peer=object())
     assert replay.count() == 0
-    _, _, revoked_verifier = setup(
+    revoked_private, _, revoked_verifier = setup(
         tmp_path / "revoked", active=lambda ref: False,
     )
     with pytest.raises(AccessDenied):
-        check(revoked_verifier, grant, c)
-    _, _, unavailable = setup(
+        check(revoked_verifier, sign(c, revoked_private), c)
+    unavailable_private, _, unavailable = setup(
         tmp_path / "offline", active=lambda ref: (_ for _ in ()).throw(OSError("offline")),
     )
     with pytest.raises(AccessDenied, match="unavailable"):
-        check(unavailable, grant, c)
+        check(unavailable, sign(c, unavailable_private), c)
 
 
 def test_signature_tamper_unknown_key_and_duplicate_field_denied(tmp_path):
