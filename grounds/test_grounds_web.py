@@ -249,6 +249,66 @@ class GroundsWebTests(unittest.TestCase):
         other=fixture_scope("someone_else","resident",("p1",),("u1",))
         self.assertFalse(self.app.csrf.verify(other,token))
 
+    def test_staff_assignment_requires_server_owned_current_roster_and_exact_technician(self):
+        created=self.post("/grounds/api/work",self.resident,{
+            "property_ref":"p1","unit_ref":"u1","category":"plumbing",
+            "description":"Staff assignment test","emergency_flag":False,
+            "entry_permission":"contact_first",
+        })["json"]
+        work=created["work_ref"]
+        revision=1
+        for state in ("received","under_review","scheduled"):
+            moved=self.post("/grounds/api/work/transition",self.manager,{
+                "work_ref":work,"next_state":state,"expected_revision":revision,
+            })
+            self.assertEqual(moved["status"],"201 Created")
+            revision=moved["json"]["revision"]
+        empty=self.invoke("/grounds/api/technicians?property_ref=p1",actor=self.manager)
+        self.assertEqual(empty["json"],{"connected":False,"technicians":[]})
+        self.assertEqual(self.invoke(
+            "/grounds/api/technicians?property_ref=p1",actor=self.resident,
+        )["status"],"404 Not Found")
+        unconnected=self.post("/grounds/api/work/assign",self.manager,{
+            "work_ref":work,"technician_ref":"tech","expected_revision":revision,
+        })
+        self.assertEqual(unconnected["status"],"409 Conflict")
+        tech=fixture_scope("tech","maintenance_technician",("p1",),assignments=(work,))
+        roster=lambda actor,property_ref:(
+            [{"staff_ref":"tech","label":"Available maintenance technician"}]
+            if actor.role=="property_manager" and property_ref=="p1" else []
+        )
+        correct_resolver=lambda actor,property_ref,work_ref,technician_ref:(
+            tech if (actor.role=="property_manager" and property_ref=="p1"
+                     and work_ref==work and technician_ref=="tech") else None
+        )
+        app=GroundsWebApp(
+            self.store,tower_receiver=self.app.receiver,csrf_secret=self.secret,
+            local_fixture_only=True,staff_directory=roster,staff_resolver=correct_resolver,
+        )
+        self.app=app
+        directory=self.invoke("/grounds/api/technicians?property_ref=p1",actor=self.manager)
+        self.assertEqual(directory["status"],"200 OK")
+        self.assertEqual(directory["json"]["technicians"][0]["staff_ref"],"tech")
+        self.assertEqual(self.post("/grounds/api/work/assign",self.manager,{
+            "work_ref":work,"technician_ref":"unknown","expected_revision":revision,
+        })["status"],"404 Not Found")
+        assignment=self.post("/grounds/api/work/assign",self.manager,{
+            "work_ref":work,"technician_ref":"tech","expected_revision":revision,
+        })
+        self.assertEqual(assignment["status"],"201 Created")
+        self.assertEqual(assignment["json"]["assigned_to"],"tech")
+        self.assertEqual(self.invoke(
+            "/grounds/api/work?work_ref="+work,actor=tech,
+        )["status"],"200 OK")
+        self.assertEqual(self.post("/grounds/api/work/assign",self.resident,{
+            "work_ref":work,"technician_ref":"tech","expected_revision":revision+1,
+        })["status"],"404 Not Found")
+        with self.assertRaises(GroundsWebConfigurationError):
+            GroundsWebApp(
+                self.store,tower_receiver=self.app.receiver,csrf_secret=self.secret,
+                local_fixture_only=True,staff_directory=roster,
+            )
+
     def test_real_domain_resident_submission_notice_and_staff_triage(self):
         payload={"property_ref":"p1","unit_ref":"u1","category":"plumbing",
                  "description":"Fixture leak reported by real-data API test",
