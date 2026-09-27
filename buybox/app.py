@@ -41,7 +41,7 @@ from .tower_session_store import (create_owner_session,read_owner_session,
     revoke_owner_session)
 from .tower_evidence import freeze_local_evidence_snapshot, HandoffPreparationError
 from .claim_register import (record_source_claim, record_owner_document_review,
-    integrity_report, active_claims)
+    integrity_report, active_claims, owner_reviewed_source)
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -457,10 +457,12 @@ def create_app(config=None):
             if e.get("artifact_id") in artifacts
             and e.get("status") in ("RECEIVED","DOCUMENT_SUPPORTED","THIRD_PARTY_VERIFIED")
         ]
+        current_claims=active_claims(op)
         return render_template("integrity.html",op=op,
-            report=integrity_report(op),claims=active_claims(op),
+            report=integrity_report(op),claims=current_claims,
             sources=available,artifacts=artifacts,
-            evidence_by_id={e["id"]:e for e in op.get("evidence",[])})
+            reviewable_claim_ids={c["id"] for c in current_claims
+                                  if owner_reviewed_source(op,c) is not None})
 
     @app.post("/opportunities/<oid>/claims")
     @login_required
