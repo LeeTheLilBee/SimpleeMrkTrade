@@ -16,6 +16,10 @@
 <p class="muted">Owner-recorded status from the current BuyBox source. This is not a Tower approval or an independently certified valuation.</p>
 <div class="evidence-row"><span>Annual financial calculation</span><strong>{{ report.financial_status|replace('_',' ')|title }}</strong></div>
 <div class="evidence-row"><span>Original-backed financing alternatives</span><strong>{{ report.actual_recorded_financing_options }}</strong></div>
+<div class="evidence-row"><span>Source-backed insurance document records</span><strong>{{ report.insurance_record_count }}</strong></div>
+<div class="evidence-row"><span>Insurance source review flags</span><strong>{{ report.insurance_source_recheck_count }}</strong></div>
+<div class="evidence-row"><span>Coverage in force / lender insurance conditions</span><strong>Unknown / Not verified</strong></div>
+<p class="muted"><a href="{{ url_for('insurance_room',oid=op.id) }}">Review original insurance sources and premium assumptions →</a></p>
 <div class="evidence-row"><span>Recorded comparable observations</span><strong>{{ report.actual_recorded_comparables }}</strong></div>
 <div class="evidence-row"><span>Open owner tasks</span><strong>{{ report.actual_open_tasks }}</strong></div>
 {% if report.missing_critical_kinds %}<h3>Critical proof outstanding</h3>
