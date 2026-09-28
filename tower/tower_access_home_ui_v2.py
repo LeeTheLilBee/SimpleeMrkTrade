@@ -92,11 +92,23 @@ def active_return_receipt() -> Dict[str, Any] | None:
     return None
 
 
+# Client navigation supplies this as a display hint, not evidence of location.
+# Bound it so no caller can inject arbitrary content into the Tower session/UI.
+OB_RETURN_ROOM_LABELS = frozenset({
+    "Dashboard", "Market Map", "Trade Center", "Review Center",
+    "Owner Console", "Owner Dashboard", "Symbol Page",
+})
+
+
 def record_ob_return_receipt(
     *,
     source: str = "observatory",
     last_room: str | None = None,
 ) -> Dict[str, Any]:
+    safe_last_room = (
+        last_room if isinstance(last_room, str) and last_room in OB_RETURN_ROOM_LABELS
+        else "unknown"
+    )
     owner_id = session.get(
         "owner_id"
     )
@@ -113,7 +125,7 @@ def record_ob_return_receipt(
         "role": role,
         "owner_session_preserved": bool(owner_id and role == "owner"),
         "clearance_preserved": role == "owner",
-        "last_room": last_room or "unknown",
+        "last_room": safe_last_room,
         "returned_at": utc_now().isoformat(),
         "broker_submission": False,
         "capital_movement": False,
