@@ -669,5 +669,6 @@ def get_tower_vault_protocol_gate_readiness() -> Dict[str, Any]:
         "vault_answers_tower_only": True,
         "teller_direct_vault_access_allowed": False,
         "raw_vault_links_exposed_to_teller": False,
+        "raw_vault_files_exposed_to_teller": False,
         "ready_for_next_corridor": "GP471-GP480 — Tower Authorized View Protocol",
     }
