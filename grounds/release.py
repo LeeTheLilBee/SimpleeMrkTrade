@@ -42,6 +42,8 @@ def source_completion_status()->dict:
         "privacy_minimized_leasing_read_desk_source_available":True,
         "role_scoped_physical_workboard_source_available":True,
         "actual_dispatch_inspection_signoff_vault_and_entry_certified":False,
+        "independent_operational_runtime_release_gate_source_available":True,
+        "certified_tower_operational_release_issuer_and_guard_connected":False,
         "real_applicant_intake_and_decisions_certified":False,
         "human_on_call_escalation_or_provider_delivery_certified":False,
         "tower_staff_directory_and_assignment_receiver_certified":False,
