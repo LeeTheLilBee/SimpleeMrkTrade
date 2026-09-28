@@ -373,6 +373,22 @@ CREATE TABLE IF NOT EXISTS turnover_inspections (
   turnover_ref TEXT PRIMARY KEY REFERENCES turnovers(turnover_ref),
   inspection_ref TEXT NOT NULL UNIQUE REFERENCES inspections(inspection_ref)
 );
+CREATE TABLE IF NOT EXISTS move_task_events (
+  event_ref TEXT PRIMARY KEY,
+  lease_ref TEXT NOT NULL,
+  property_ref TEXT NOT NULL,
+  unit_ref TEXT NOT NULL,
+  subject_ref TEXT NOT NULL,
+  phase TEXT NOT NULL CHECK(phase IN ('move_in','move_out')),
+  task_ref TEXT NOT NULL,
+  status TEXT NOT NULL CHECK(status IN ('planned','self_reported_done')),
+  revision INTEGER NOT NULL CHECK(revision>0),
+  recorded_at TEXT NOT NULL,
+  FOREIGN KEY(lease_ref,unit_ref,property_ref) REFERENCES leases(lease_ref,unit_ref,property_ref),
+  UNIQUE(lease_ref,subject_ref,phase,task_ref,revision)
+);
+CREATE INDEX IF NOT EXISTS move_task_lease_subject_idx
+ ON move_task_events(lease_ref,subject_ref,phase,task_ref,revision);
 CREATE TABLE IF NOT EXISTS leasing_prospects (
   prospect_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),
