@@ -102,6 +102,19 @@ def predicted_vs_actual(op,records):
     return {"predicted":predicted,"latest_actual":latest,"net_variance":variance,
             "learning_state":"ACTUAL_AVAILABLE" if latest else "NO_POST_CLOSE_ACTUAL_YET"}
 
+def counterparty_library(opportunities,record_lookup):
+    people=defaultdict(lambda:{"roles":set(),"deals":set(),"notes":0})
+    for op in opportunities:
+        for r in record_lookup(op["id"]):
+            if r["kind"]!="COUNTERPARTY": continue
+            name=(r["payload"].get("name") or "").strip()
+            if not name: continue
+            people[name]["roles"].add(r["payload"].get("role") or "counterparty")
+            people[name]["deals"].add(op["id"]); people[name]["notes"]+=1
+    return [{"name":name,"roles":sorted(v["roles"]),"deal_count":len(v["deals"]),
+             "record_count":v["notes"],"reliability_rating_inferred":False}
+            for name,v in sorted(people.items())]
+
 def lender_library(opportunities):
     lenders=defaultdict(lambda:{"options":0,"verticals":set(),"programs":set()})
     for op in opportunities:
@@ -193,6 +206,7 @@ def playbook(op): return {"vertical":op["vertical"],"steps":PLAYBOOKS[op["vertic
 
 def build_portfolio_studio(opportunities,thesis,record_lookup):
     return {"command_map":command_map(opportunities),"geo_expansion":geo_expansion(opportunities),
+            "counterparty_library":counterparty_library(opportunities,record_lookup),
             "lender_library":lender_library(opportunities),
             "calendar":acquisition_calendar(opportunities,record_lookup),
             "capital_board":capital_board(opportunities)}
