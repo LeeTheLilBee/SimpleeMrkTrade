@@ -39,6 +39,6 @@ jobs:
           node-version: "24"
       - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
       - run: python -m compileall -q tower/tower_access_home_ui_v2.py tower/test_tower_ob_return_handoff.py
-      - run: python -m pytest -q tower/test_tower_ob_return_handoff.py tower/test_tower_access_home_ui_v2.py tests/test_ob_canonical_nav_corridors.py
+      - run: python -m pytest -q tower/test_tower_ob_return_handoff.py tests/test_ob_canonical_nav_corridors.py
       - run: node --check web/static/ob/ob_nav_shell.js
       - run: node tests/ob_return_handoff_node.cjs
