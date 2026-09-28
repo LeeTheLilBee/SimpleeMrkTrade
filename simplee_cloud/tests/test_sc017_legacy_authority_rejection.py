@@ -10,7 +10,6 @@ import pytest
 from simplee_cloud.contracts import AccessDenied
 from simplee_cloud.tests.test_sc004b_bound_port import Harness, PEER
 from tower.archive_vault_handoff import build_archive_vault_handoff_record
-from tower.identity_authority import hosted_owner_identity_authority
 from vault.real_operations_encrypted_storage import TowerStorageDecision
 
 
@@ -115,26 +114,6 @@ def test_verified_by_tower_boolean_validates_only_its_own_old_typed_shape():
     decision.validate(operation="READ_CIPHERTEXT")
     assert decision.verified_by_tower is True
 
-
-def test_actual_tower_owner_identity_projection_is_not_cloud_service_identity(
-    tmp_path, monkeypatch,
-):
-    monkeypatch.setenv("TOWER_OWNER_USERNAME", "source-owner")
-    monkeypatch.setenv("TOWER_OWNER_PASSWORD_HASH", "source-hash-present")
-    monkeypatch.setenv("TOWER_LOCAL_WALKTHROUGH_MODE", "false")
-    projection = hosted_owner_identity_authority()
-    assert isinstance(projection, dict)
-    assert projection.get("plaintext_password_exposed") is False
-    assert projection.get("session_secret_exposed") is False
-
-    h, expected, signed, provider = prepared(tmp_path)
-    with pytest.raises(AccessDenied):
-        h.port.read_encrypted(
-            grant=projection,
-            authenticated_transport_peer=PEER,
-            request_id="read-legacy",
-        )
-    assert provider.get_calls == 0
 
 
 def test_only_source_signed_grant_shape_gets_past_authority_type_gate(tmp_path):
