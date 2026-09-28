@@ -30,6 +30,7 @@ from .operations import GroundsConflict, GroundsOperations
 from .postgres import PostgresGroundsStore
 from .safety import GroundsSafety
 from .storage import GroundsStore, GroundsStoreBase
+from .teller import resident_rent_projection
 from .workspaces import build_workspace
 
 _UI=Path(__file__).parent/"ui"
@@ -49,6 +50,7 @@ _ROUTES={
     ("GET","/grounds/app.js"),
     ("GET","/grounds/api/me"),
     ("GET","/grounds/api/workspace"),
+    ("GET","/grounds/api/rent"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
@@ -180,7 +182,8 @@ class GroundsWebApp:
     """
     def __init__(self,store:GroundsStoreBase,*,tower_receiver:Callable,
                  csrf_secret:bytes,local_fixture_only:bool=False,
-                 staff_directory:Callable|None=None,staff_resolver:Callable|None=None):
+                 staff_directory:Callable|None=None,staff_resolver:Callable|None=None,
+                 teller_document_source:Callable|None=None,teller_verifier:Callable|None=None):
         if not callable(tower_receiver):
             raise GroundsWebConfigurationError("server-owned Tower receiver required")
         if type(store) is GroundsStore:
@@ -204,6 +207,14 @@ class GroundsWebApp:
             not callable(staff_directory) or not callable(staff_resolver)
         ):
             raise GroundsWebConfigurationError("server-owned Tower staff adapters must be callable")
+        if (teller_document_source is None)!=(teller_verifier is None):
+            raise GroundsWebConfigurationError("Teller source and independent verifier must be configured together")
+        if teller_document_source is not None and (
+            not callable(teller_document_source) or not callable(teller_verifier)
+        ):
+            raise GroundsWebConfigurationError("server-owned Teller adapters must be callable")
+        self.teller_document_source=teller_document_source
+        self.teller_verifier=teller_verifier
         self.receiver=tower_receiver
         self.staff_directory=staff_directory
         self.staff_resolver=staff_resolver
@@ -301,12 +312,31 @@ class GroundsWebApp:
                 return {"role":actor.role,"property_refs":sorted(actor.property_refs),
                         "unit_refs":sorted(actor.unit_refs) if actor.role=="resident" else [],
                         "session_authenticated":True,"expires_at":actor.expires_at,
-                        "payment_connected":False,"notification_delivery_connected":False}
+                        "payment_connected":False,"rent_read_connected":self.teller_document_source is not None,
+                        "notification_delivery_connected":False}
             if path=="/grounds/api/workspace":
                 q=_query(environ,{"property_ref"},{"unit_ref"})
                 return build_workspace(
                     actor,self.ops,property_ref=_ref(q["property_ref"],"property_ref"),
                     unit_ref=_ref(q["unit_ref"],"unit_ref") if "unit_ref" in q else None)
+            if path=="/grounds/api/rent":
+                q=_query(environ,{"property_ref","unit_ref"})
+                actor.require_role("resident")
+                home=self.ops.resident_home(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                    unit_ref=_ref(q["unit_ref"],"unit_ref"),
+                )
+                if self.teller_document_source is None:
+                    return {"source":"teller","status":"not_connected","amount_due_cents":None,
+                            "checkout_url":None,"checkout_execution_enabled":False}
+                # Only a server-owned Tower/Teller source retrieves the signed document.
+                # The existing verifier independently checks original issuer/signature,
+                # replay and exact audience; resident_rent_projection additionally
+                # rechecks current actor/property/unit/lease and short freshness.
+                document=self.teller_document_source(actor,home)
+                return resident_rent_projection(
+                    actor,home,document,teller_verifier=self.teller_verifier,
+                )
             if path=="/grounds/api/work":
                 q=_query(environ,{"work_ref"})
                 return self.ops.get_work_order(actor,work_ref=_ref(q["work_ref"],"work_ref"))
