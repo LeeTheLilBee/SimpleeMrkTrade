@@ -23,6 +23,7 @@
     null;
 
   let focusedRegion = null;
+  let focusedRegionKey = null;
   let selectedSymbol = null;
 
 
@@ -865,6 +866,7 @@
   // This spotlight only interprets existing marketMapContract membership.
   function showWholeSky() {
     focusedRegion = null;
+    focusedRegionKey = null;
     selectedSymbol = null;
     applySkyFocus();
     const drawer = byId("marketMapFocus");
@@ -890,6 +892,7 @@
 
   function focusRegion(index, name, count, sector) {
     focusedRegion = index;
+    focusedRegionKey = name;
     selectedSymbol = null;
     applySkyFocus();
     const drawer = byId("marketMapFocus");
@@ -910,6 +913,7 @@
 
   function spotlightSymbol(symbol, index, regionName, flags) {
     focusedRegion = index;
+    focusedRegionKey = regionName;
     selectedSymbol = symbol;
     applySkyFocus();
     const drawer = byId("marketMapFocus");
@@ -1462,6 +1466,15 @@
     }
 
 
+    // Retain the same *named* region across canonical reorder; never focus the wrong sector.
+    if (focusedRegionKey !== null) {
+      const actual = sectors.findIndex(function (sector) {
+        const source = safeObject(sector);
+        return text(source.name || source.sector, "Unnamed source sector") === focusedRegionKey;
+      });
+      if (actual < 0) showWholeSky();
+      else focusedRegion = actual;
+    }
     const columns = Math.max(1, Math.min(4, Math.ceil(Math.sqrt(sectors.length * 1.6))));
     const rows = Math.ceil(sectors.length / columns);
     mount.style.setProperty("--sky-height", Math.max(760, rows * 276) + "px");
