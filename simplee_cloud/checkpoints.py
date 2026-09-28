@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import hmac
 import json
 import re
 import secrets
@@ -151,10 +152,26 @@ def deliver_source_checkpoint(
 ) -> str:
     if mode != "source_test":
         raise CloudError("external checkpoint delivery not authorized")
-    if sink is None or not callable(getattr(sink, "put_if_absent", None)):
-        raise CloudError("separate immutable checkpoint sink required")
+    if sink is None or not all(callable(getattr(sink, method, None)) for method in (
+        "put_if_absent", "get",
+    )):
+        raise CloudError("separate checkpoint sink with verified read-back required")
     doc = verify_checkpoint(signed, pinned_public_keys=pinned_public_keys, journal=journal)
     sink.put_if_absent(doc["checkpoint_ref"], signed)
-    # This means only that an injected sink returned, not that its independent
-    # administration, jurisdiction, immutability or offsite placement is proven.
+    # An ACK alone may conceal a dropped or substituted checkpoint. Verify
+    # exact signed bytes after create-only PUT. A failed read-back is an
+    # uncertain externally accepted write; NEVER blindly retry/re-PUT it.
+    try:
+        returned = sink.get(doc["checkpoint_ref"])
+    except Exception as exc:
+        raise IntegrityError("external checkpoint read-back unavailable; reconcile independently") from exc
+    if not isinstance(returned, SignedCheckpoint) or not all((
+        isinstance(returned.payload, bytes), isinstance(returned.signature, bytes),
+        hmac.compare_digest(returned.payload, signed.payload) if isinstance(returned.payload, bytes) else False,
+        hmac.compare_digest(returned.signature, signed.signature) if isinstance(returned.signature, bytes) else False,
+    )):
+        raise IntegrityError("externally stored checkpoint differs from exact signed original")
+    verify_checkpoint(returned, pinned_public_keys=pinned_public_keys, journal=journal)
+    # Fake sink roundtrip is NOT proof of independent operator, immutable
+    # retention, physical ownership or signed long-term offsite custody.
     return doc["checkpoint_ref"]
