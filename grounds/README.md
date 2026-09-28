@@ -36,10 +36,10 @@ To inspect the visual prototype, open `grounds/ui/preview.html` locally in a bro
 - `contract.py` — supported rooms and system boundaries.
 - `access.py` — normalized externally verified Tower-scoped identity placeholder; requires certified verifier.
 - `storage.py` — local SQLite property/lease/work-order/leasing reference records.
-- `operations.py` — owner/manager/resident/technician scoped property, lease, notice and maintenance actions.\n- `acquisition_handoff.py` — idempotent multifamily post-close receiver; requires a fresh independently verified Tower close/title/encumbrance handoff and persists exact BuyBox source lineage before creating an owned property.
+- `operations.py` — owner/manager/resident/technician scoped property, lease, notice and maintenance actions.\n- `acquisition_handoff.py` — idempotent multifamily post-close receiver; requires a fresh independently verified Tower close/title/encumbrance handoff and persists exact BuyBox source lineage before creating an owned property.\n- `acquisition_handoff.py` — idempotent multifamily post-close receiver; requires a fresh independently verified Tower close/title/encumbrance handoff and persists exact BuyBox source lineage before creating an owned property.
 - `maintenance.py` — state transition policy.
 - `leasing.py` — availability, opaque prospect stages and tour plans.
-- `teller.py` — exact-unit, exact-lease verified Teller rent display, no checkout. `web.py` exposes it to the resident UI only when paired server-owned Teller source/verifier adapters are injected.
+- `teller.py` — exact-unit, exact-lease verified Teller rent display, no checkout. `web.py` exposes it to the resident UI only when paired server-owned Teller source/verifier adapters are injected. `web.py` exposes it to the resident UI only when paired server-owned Teller source/verifier adapters are injected.
 - `evidence.py` — only verified opaque Vault/Tower proof references.
 - `capital.py` — five-lane apartment reserve/readiness snapshot sourced through Teller, no money movement.
 - `soulaana.py` — read-only source-bound explanations for work, verified rent/readiness, leases, appointments, stewardship, leasing, owner pulse, physical materials and preventive due dates.
