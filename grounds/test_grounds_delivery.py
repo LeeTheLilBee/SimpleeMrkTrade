@@ -68,6 +68,30 @@ class DeliveryReceiptTests(unittest.TestCase):
             payload,receipt_verifier=lambda doc:doc,now=1000, # TEST FIXTURE ONLY
         )
 
+    def test_accepted_provider_and_queued_human_receipts_remain_open_for_review(self):
+        desk=GroundsDeliveryDesk(self.store)
+        self.record(self.payload(
+            self.work_event,state="accepted",
+            receipt="accepted-work",provider="accepted-provider",
+        ))
+        self.record(self.payload(
+            self.urgent_event,kind="urgent_human_escalation",state="queued",
+            receipt="queued-human",provider="queued-provider",
+        ))
+        view=desk.staff_status(self.manager,property_ref="p1")
+        work=next(x for x in view["visible_items"]
+                  if x["event_ref"]==self.work_event["event_ref"])
+        urgent=next(x for x in view["visible_items"]
+                    if x["event_ref"]==self.urgent_event["event_ref"])
+        self.assertEqual(work["latest_verified_historical_notification_state"],"accepted")
+        self.assertEqual(urgent["latest_verified_historical_human_escalation_state"],"queued")
+        self.assertTrue(work["requires_provider_review"])
+        self.assertTrue(urgent["requires_provider_review"])
+        self.assertEqual(view["visible_provider_review_count"],2)
+        self.assertEqual(view["not_historically_proven_delivered"],2)
+        self.assertFalse(view["provider_currently_connected"])
+        self.assertFalse(view["retry_dispatch_connected"])
+
     def test_delivery_desk_never_converts_intent_to_provider_truth(self):
         desk=GroundsDeliveryDesk(self.store)
         initial=desk.staff_status(self.manager,property_ref="p1")
