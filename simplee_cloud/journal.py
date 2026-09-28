@@ -28,7 +28,11 @@ _NAMESPACE = re.compile(r"[0-9a-f]{64}\Z")
 _CODE = {"WRITE_UNCERTAIN", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
          "REPLAY_INTEGRITY_FAILURE", "READ_INTEGRITY_FAILURE", "BACKUP_INTEGRITY_FAILURE", "AUDIT_SINK_FAILURE",
          "BACKUP_UNCERTAIN", "BACKUP_RECONCILE_MISSING", "BACKUP_RECONCILE_CORRUPT",
-         "BACKUP_REPLAY_INTEGRITY_FAILURE"}
+         "BACKUP_REPLAY_INTEGRITY_FAILURE",
+         "PRIMARY_READ_BACKEND_ERROR", "PRIMARY_REPLAY_BACKEND_ERROR",
+         "PRIMARY_RECONCILE_BACKEND_ERROR", "BACKUP_SOURCE_BACKEND_ERROR",
+         "BACKUP_REPLAY_BACKEND_ERROR", "BACKUP_RECONCILE_BACKEND_ERROR",
+         "BACKUP_VERIFY_BACKEND_ERROR"}
 _STATES = {"WRITE_RESERVED", "WRITE_UNCERTAIN", "WRITE_ACKNOWLEDGED",
            "RECONCILE_PRESENT", "RECONCILE_MISSING", "RECONCILE_CORRUPT",
            "REPLAY_INTEGRITY_FAILURE"}
@@ -444,6 +448,22 @@ class SQLiteOperationalJournal:
         with self._tx() as conn:
             self._incident(conn, tag=tag, scope=namespace, code="READ_INTEGRITY_FAILURE")
 
+    def record_backend_incident(self, *, namespace: str, request_id: str,
+                                code: str) -> None:
+        """Opaque provider/outage metadata, never exception text or raw entity."""
+        allowed = {
+            "PRIMARY_READ_BACKEND_ERROR", "PRIMARY_REPLAY_BACKEND_ERROR",
+            "PRIMARY_RECONCILE_BACKEND_ERROR", "BACKUP_SOURCE_BACKEND_ERROR",
+            "BACKUP_REPLAY_BACKEND_ERROR", "BACKUP_RECONCILE_BACKEND_ERROR",
+            "BACKUP_VERIFY_BACKEND_ERROR",
+        }
+        if code not in allowed:
+            raise CloudError("unexpected backend incident classification")
+        self._scope(namespace)
+        tag = _request_tag(namespace, request_id)
+        with self._tx() as conn:
+            self._incident(conn, tag=tag, scope=namespace, code=code)
+
     def record_backup_incident(self, *, namespace: str, request_id: str):
         self._scope(namespace)
         tag = _request_tag(namespace, request_id)
@@ -477,6 +497,9 @@ class SQLiteOperationalJournal:
                 state = self._backup_state(conn, row["request_tag"]) or "UNVERIFIED"
                 backup_states[state] = backup_states.get(state, 0) + 1
             incidents = conn.execute("SELECT COUNT(*) FROM incidents").fetchone()[0]
+            backend_errors = conn.execute(
+                "SELECT COUNT(*) FROM incidents WHERE incident_code LIKE '%_BACKEND_ERROR'"
+            ).fetchone()[0]
             return {
                 "status": "SOURCE_ONLY_NO_GO",
                 "event_count": seq, "head_sha256": digest,
@@ -487,6 +510,8 @@ class SQLiteOperationalJournal:
                                       states.get("RECONCILE_CORRUPT", 0) +
                                       states.get("REPLAY_INTEGRITY_FAILURE", 0),
                 "incident_count": incidents,
+                "backend_error_events": backend_errors,
+                "provider_incident_delivery_certified": False,
                 "backup_count": sum(backup_states.values()),
                 "pending_backups": backup_states.get("BACKUP_RESERVED", 0) +
                                    backup_states.get("BACKUP_UNCERTAIN", 0),

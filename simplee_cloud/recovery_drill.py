@@ -66,6 +66,18 @@ def run_source_restore_drill(
             namespace=receipt.namespace_digest, request_id=context.request_id,
         )
         raise
+    except AccessDenied:
+        # Rejected authority is NOT a storage provider outage.
+        raise
+    except CloudError:
+        # Do not relabel local shape/configuration errors as provider failure.
+        raise
+    except Exception:
+        journal.record_backend_incident(
+            namespace=receipt.namespace_digest, request_id=context.request_id,
+            code="BACKUP_VERIFY_BACKEND_ERROR",
+        )
+        raise
     duration_ms = max(0, (time.monotonic_ns() - began) // 1_000_000)
     return SyntheticRecoveryEvidence(
         drill_id=drill_id, verified_ciphertext=True, elapsed_ms=duration_ms,
