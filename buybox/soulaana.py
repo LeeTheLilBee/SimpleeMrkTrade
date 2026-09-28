@@ -10,7 +10,7 @@ from .registry import get_vertical
 from .dealroom import current_tasks
 
 INTENTS = frozenset({
-    "overview", "evidence", "diligence", "financing", "insurance", "valuation", "decision", "closing", "economics", "changes", "red_team", "next_action"
+    "overview", "evidence", "diligence", "financing", "insurance", "valuation", "decision", "offer", "closing", "economics", "changes", "red_team", "next_action"
 })
 
 def context(op, intent="overview"):
@@ -31,6 +31,7 @@ def context(op, intent="overview"):
         "insurance":{"insurance"},
         "valuation":{"valuation"},
         "decision":{"decision"},
+        "offer":{"offer"},
         "closing":{"closing"},
         "economics":{"economics"},
         "changes":{"changes"},
@@ -188,6 +189,34 @@ def context(op, intent="overview"):
             note("OWNER_NOTE_NOT_YET_RECORDED",
                  "No source-bound owner research disposition has been preserved yet. Notes do not replace Tower permissions or Teller readiness.",
                  label="NO_OWNER_DISPOSITION")
+    if "offer" in relevant:
+        from .offer_lab import offer_lab_snapshot
+        lab=offer_lab_snapshot(op)
+        note("OFFER_AUTHORITY_ABSENT",
+             "Offer Lab contains private owner scenarios only. No scenario was sent to a seller, converted into an LOI, approved by Tower, or funded by Teller.",
+             label="PRIVATE_MODEL_ONLY")
+        for row in lab["scenarios"]:
+            analysis_row=row["analysis"]
+            change=("unknown" if analysis_row["price_delta_from_current_asking"] is None
+                    else "$"+analysis_row["price_delta_from_current_asking"])
+            note("OWNER_PRIVATE_OFFER_SCENARIO",
+                 (row["name"]+": proposed price $"+row["proposed_purchase_price"]+
+                  ", delta from current asking "+change+
+                  ", seller credit $"+row["requested_seller_credit"]+
+                  ", diligence "+str(row["due_diligence_days"])+
+                  " days, planned close "+row["planned_closing_date"]+
+                  ". This is private modeling and not a transmitted offer."),
+                 [row["id"],row["source_snapshot_digest"]],
+                 analysis_row["status"])
+            if analysis_row["review_flags"]:
+                note("OFFER_SCENARIO_RECHECK_REQUIRED",
+                     "Recheck this private scenario against current source records: "+
+                     ", ".join(analysis_row["review_flags"])+".",
+                     [row["id"]],"SOURCE_OR_ASSUMPTION_CHANGED")
+        if not lab["scenarios"]:
+            note("OFFER_SCENARIO_NOT_RECORDED",
+                 "No private owner offer scenario is recorded. BuyBox will not invent a purchase price or seller terms.",
+                 label="NO_PRIVATE_SCENARIO")
     if "closing" in relevant:
         from .closing_review import closing_review_snapshot
         closing=closing_review_snapshot(op)

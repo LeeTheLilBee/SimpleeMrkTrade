@@ -1,0 +1,110 @@
+{% extends "base.html" %}{% block title %}Offer Lab · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero">
+  <p class="eyebrow">OFFER LAB · PRIVATE OWNER MODELING</p>
+  <h1>Shape terms before anything becomes an offer.</h1>
+  <p>These are internal scenarios only. BuyBox does not send them to a seller, create an LOI, sign a contract, reserve capital, or make a Tower/Teller decision.</p>
+</section>
+<section class="stats">
+  <div class="tile"><small>Current asking price</small><strong>{{ '$' ~ report.asking_price if report.asking_price is not none else 'Unknown' }}</strong></div>
+  <div class="tile"><small>Current private scenarios</small><strong>{{ report.current_scenario_count }}</strong></div>
+  <div class="tile"><small>Seller contacted by BuyBox</small><strong>No</strong></div>
+  <div class="tile"><small>Offer authority</small><strong>Not granted</strong></div>
+</section>
+
+<section class="workspace"><div class="main-column">
+  <div class="panel">
+    <p class="eyebrow">SCENARIO HISTORY</p><h2>Owner-modeled alternatives</h2>
+    {% for row in report.scenarios %}
+    <article class="offer-card">
+      <p class="eyebrow">{{ row.display_state|replace('_',' ') }} · {{ row.analysis.status|replace('_',' ') }}</p>
+      <h3>{{ row.name }}</h3>
+      <div class="evidence-row"><span>Proposed purchase price</span><strong>${{ row.proposed_purchase_price }}</strong></div>
+      <div class="evidence-row"><span>Delta from current asking</span>
+        <strong>{% if row.analysis.price_delta_from_current_asking is not none %}${{ row.analysis.price_delta_from_current_asking }}{% else %}Unknown{% endif %}</strong>
+      </div>
+      <div class="evidence-row"><span>Seller credit requested</span><strong>${{ row.requested_seller_credit }}</strong></div>
+      <div class="evidence-row"><span>Net price before other costs</span><strong>${{ row.analysis.net_price_before_other_costs }}</strong></div>
+      <div class="evidence-row"><span>Earnest money modeled</span><strong>${{ row.earnest_money }}</strong></div>
+      <div class="evidence-row"><span>Due diligence window</span><strong>{{ row.due_diligence_days }} days</strong></div>
+      <div class="evidence-row"><span>Financing contingency</span><strong>{{ 'Included' if row.financing_contingency else 'Not included' }}</strong></div>
+      <div class="evidence-row"><span>Owner-planned closing</span><strong>{{ row.planned_closing_date }}</strong></div>
+      {% if row.financing_option_id %}
+      <p class="muted">Financing source: {{ row.financing_option_id }} · source digest {{ row.financing_source_sha256[:16] }}…</p>
+      {% else %}<p class="muted">No financing alternative linked to this private scenario.</p>{% endif %}
+      {% if row.insurance_record_id %}
+      <p class="muted">Insurance source: {{ row.insurance_record_id }} · source digest {{ row.insurance_source_sha256[:16] }}…</p>
+      {% else %}<p class="muted">No insurance record linked to this private scenario.</p>{% endif %}
+      {% if row.analysis.review_flags %}
+      <p class="notice">Recheck: {{ row.analysis.review_flags|join(', ')|replace('_',' ') }}</p>
+      {% else %}<p class="muted">No current BuyBox source-freshness flag on this scenario. This still does not authorize transmission or closing.</p>{% endif %}
+      <p>{{ row.rationale }}</p>
+      {% if row.terms_note %}<p class="muted">Other modeled terms: {{ row.terms_note }}</p>{% endif %}
+      <small>Source revision {{ row.source_opportunity_revision }} · Scenario digest {{ row.local_record_sha256[:16] }}… · Sent externally: No</small>
+      {% if row.supersedes %}<p class="muted">Correction of scenario {{ row.supersedes[:12] }}…; earlier record preserved.</p>{% endif %}
+    </article>
+    {% else %}
+    <p class="muted">No private offer scenarios recorded yet. BuyBox does not generate a sample offer for you.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<aside class="side-column">
+  <div class="panel">
+    <p class="eyebrow">NEW PRIVATE SCENARIO</p><h2>Model your own terms</h2>
+    <form method="post" action="{{ url_for('offer_lab_record',oid=op.id) }}" class="panel-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="revision" value="{{ op.version }}">
+      <label>Scenario name<input name="name" maxlength="120" required placeholder="Example: lower price / longer diligence"></label>
+      <label>Proposed purchase price (USD)<input type="number" name="proposed_purchase_price" min="0.01" step="0.01" required></label>
+      <label>Earnest money modeled (USD)<input type="number" name="earnest_money" min="0" step="0.01" value="0" required></label>
+      <label>Seller credit requested (USD)<input type="number" name="requested_seller_credit" min="0" step="0.01" value="0" required></label>
+      <label>Due diligence days<input type="number" name="due_diligence_days" min="0" max="365" step="1" required></label>
+      <label><input type="checkbox" name="financing_contingency"> Include financing contingency in this model</label>
+      <label>Owner-planned closing date<input type="date" name="planned_closing_date" required></label>
+      <label>Current financing source to compare (optional)
+        <select name="financing_option_id"><option value="">None selected</option>
+        {% for q in report.financing_choices %}
+          <option value="{{ q.id }}">{{ q.lender_label }} · {{ q.program_label }} · {{ q.id[:8] }}</option>
+        {% endfor %}
+        </select>
+      </label>
+      <label>Current insurance source to compare (optional)
+        <select name="insurance_record_id"><option value="">None selected</option>
+        {% for ins in report.insurance_choices %}
+          <option value="{{ ins.id }}">{{ ins.carrier_label }} · {{ ins.document_kind }} · {{ ins.id[:8] }}</option>
+        {% endfor %}
+        </select>
+      </label>
+      <label>Why are you modeling these terms?
+        <textarea name="rationale" maxlength="2000" rows="4" required></textarea>
+      </label>
+      <label>Other private terms/conditions
+        <textarea name="terms_note" maxlength="2000" rows="4" placeholder="Inspection access, assignment condition, seller training, transition, etc."></textarea>
+      </label>
+      <label>Correction to an existing scenario (optional)
+        <select name="supersedes"><option value="">New scenario</option>
+        {% for row in report.scenarios if row.display_state=='CURRENT_PRIVATE_SCENARIO' %}
+          <option value="{{ row.id }}">{{ row.name }} · {{ row.id[:8] }}</option>
+        {% endfor %}
+        </select>
+      </label>
+      <label>Correction reason (required only when replacing)
+        <textarea name="correction_reason" maxlength="1000" rows="2"></textarea>
+      </label>
+      <button type="submit" class="primary">Save private scenario</button>
+      <small>No email, seller message, LOI, contract, lender request, Tower action or capital movement is created.</small>
+    </form>
+  </div>
+  <div class="panel">
+    <p class="eyebrow">PROTECTED NEXT STEP</p><h2>Not an LOI.</h2>
+    <p class="muted">If you later decide to pursue a scenario, a future Tower-governed DRAFT_LOI workflow must revalidate the exact current opportunity, selected terms, owner step-up, permissions and external readiness. BuyBox cannot promote a private scenario by itself.</p>
+  </div>
+  <div class="panel">
+    <p class="eyebrow">✧ SOULAANA</p><h2>Explain your modeled terms</h2>
+    <p class="muted">Soulaana can compare price deltas and source flags without selecting a winner or contacting the seller.</p>
+    <a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='offer') }}">Open Offer Lab explanation →</a>
+  </div>
+</aside></section>
+{% endblock %}
