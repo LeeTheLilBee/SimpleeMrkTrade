@@ -1,0 +1,35 @@
+name: Tower Grounds current provider admission review
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/grounds_current_provider_admission.py"
+      - "tower/test_grounds_current_provider_admission.py"
+      - "docs/TOWER_GROUNDS_CURRENT_PROVIDER_ADMISSION.md"
+      - ".github/workflows/tower-grounds-current-provider-admission.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/grounds_current_provider_admission.py"
+      - "tower/test_grounds_current_provider_admission.py"
+      - "docs/TOWER_GROUNDS_CURRENT_PROVIDER_ADMISSION.md"
+      - ".github/workflows/tower-grounds-current-provider-admission.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  independent-current-scope-denials:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "pytest>=8,<10"
+      - run: python -m compileall -q tower/grounds_current_provider_admission.py
+      - run: python -m pytest -q tower/test_grounds_current_provider_admission.py
