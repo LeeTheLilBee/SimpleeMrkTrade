@@ -93,7 +93,15 @@ def _claims(payload: bytes) -> dict:
 
 
 class SQLiteNonceReplayStore:
-    """Source-only unique nonce ledger; independent hardening remains required."""
+    """Source-only one-use ledger with append-only, hash-bound consumption events.
+
+    This detects partial/local row tampering and rollback in the source model.
+    It is NOT independently operated replay infrastructure, external WORM, or
+    protection against an administrator who rewrites the complete DB and every
+    independent checkpoint.
+    """
+
+    _ZERO = "0" * 64
 
     def __init__(self, path: Path, *, mode: str = "disabled"):
         if mode != "source_test":
@@ -122,20 +130,93 @@ class SQLiteNonceReplayStore:
                 "CREATE TABLE IF NOT EXISTS consumed("
                 "nonce_tag TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)"
             )
+            conn.execute(
+                """CREATE TABLE IF NOT EXISTS replay_events(
+                   seq INTEGER PRIMARY KEY,
+                   nonce_tag TEXT NOT NULL UNIQUE,
+                   expires_at INTEGER NOT NULL,
+                   previous_hash TEXT NOT NULL,
+                   event_hash TEXT NOT NULL,
+                   FOREIGN KEY(nonce_tag) REFERENCES consumed(nonce_tag))"""
+            )
+            for table in ("consumed", "replay_events"):
+                conn.execute(
+                    f"""CREATE TRIGGER IF NOT EXISTS {table}_block_update
+                    BEFORE UPDATE ON {table}
+                    BEGIN SELECT RAISE(ABORT, 'append-only replay record'); END"""
+                )
+                conn.execute(
+                    f"""CREATE TRIGGER IF NOT EXISTS {table}_block_delete
+                    BEFORE DELETE ON {table}
+                    BEGIN SELECT RAISE(ABORT, 'append-only replay record'); END"""
+                )
 
     def _connection(self):
         conn = sqlite3.connect(str(self.path), isolation_level=None, timeout=5)
         conn.execute("PRAGMA busy_timeout=5000")
         conn.execute("PRAGMA synchronous=FULL")
+        conn.execute("PRAGMA foreign_keys=ON")
         conn.execute("PRAGMA journal_mode=DELETE")
         return conn
 
+    @staticmethod
+    def _event_hash(seq: int, nonce_tag: str, expiry: int, previous: str) -> str:
+        material = json.dumps(
+            ["tower_grant_consumed:v2", seq, nonce_tag, expiry, previous],
+            separators=(",", ":"), ensure_ascii=True,
+        ).encode()
+        return hashlib.sha256(material).hexdigest()
+
+    @classmethod
+    def _verify(cls, conn: sqlite3.Connection) -> tuple[int, str]:
+        expected_seq, previous = 0, cls._ZERO
+        events = conn.execute(
+            """SELECT seq,nonce_tag,expires_at,previous_hash,event_hash
+               FROM replay_events ORDER BY seq"""
+        ).fetchall()
+        for seq, tag, expiry, prior, digest in events:
+            expected_seq += 1
+            if seq != expected_seq or prior != previous:
+                raise AccessDenied("Tower replay ledger sequence/chain mismatch")
+            if (
+                not isinstance(tag, str) or not re.fullmatch(r"[0-9a-f]{64}", tag) or
+                type(expiry) is not int or expiry <= 0
+            ):
+                raise AccessDenied("Tower replay ledger contains invalid consumption")
+            expected = cls._event_hash(seq, tag, expiry, previous)
+            if digest != expected:
+                raise AccessDenied("Tower replay ledger integrity mismatch")
+            previous = expected
+
+        consumed = conn.execute(
+            "SELECT nonce_tag,expires_at FROM consumed ORDER BY nonce_tag"
+        ).fetchall()
+        bound = conn.execute(
+            "SELECT nonce_tag,expires_at FROM replay_events ORDER BY nonce_tag"
+        ).fetchall()
+        if consumed != bound:
+            raise AccessDenied("Tower replay rows differ from append-only consumption events")
+        return expected_seq, previous
+
     def consume(self, key_id: str, nonce: str, expiry: int):
+        if not isinstance(key_id, str) or not _KEY_ID.fullmatch(key_id):
+            raise AccessDenied("invalid replay signing key identity")
+        if not isinstance(nonce, str) or not _NONCE.fullmatch(nonce):
+            raise AccessDenied("invalid replay nonce")
+        if type(expiry) is not int or expiry <= 0:
+            raise AccessDenied("invalid replay expiry")
         tag = hashlib.sha256((key_id + ":" + nonce).encode()).hexdigest()
         with closing(self._connection()) as conn:
             try:
                 conn.execute("BEGIN IMMEDIATE")
+                count, previous = self._verify(conn)
                 conn.execute("INSERT INTO consumed VALUES (?,?)", (tag, expiry))
+                seq = count + 1
+                digest = self._event_hash(seq, tag, expiry, previous)
+                conn.execute(
+                    "INSERT INTO replay_events VALUES (?,?,?,?,?)",
+                    (seq, tag, expiry, previous, digest),
+                )
                 conn.commit()
             except sqlite3.IntegrityError as exc:
                 conn.rollback()
@@ -146,7 +227,21 @@ class SQLiteNonceReplayStore:
 
     def count(self) -> int:
         with closing(self._connection()) as conn:
+            self._verify(conn)
             return conn.execute("SELECT COUNT(*) FROM consumed").fetchone()[0]
+
+    def verify_chain(self) -> dict:
+        with closing(self._connection()) as conn:
+            count, head = self._verify(conn)
+            consumed = conn.execute("SELECT COUNT(*) FROM consumed").fetchone()[0]
+        return {
+            "valid": True,
+            "consumed_count": consumed,
+            "event_count": count,
+            "head_sha256": head,
+            "external_checkpoint_certified": False,
+            "production_authorized": False,
+        }
 
 
 class SourceOnlyTowerGrantVerifier:
