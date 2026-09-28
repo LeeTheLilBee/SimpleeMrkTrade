@@ -18,6 +18,12 @@ from __future__ import annotations
 
 from web.app import app as app
 
+# OBDATA009 — replace the old static-universe/seed V25 response only on
+# hosted Tower. The exact protected read route remains under Tower's guard.
+# Never treat the existence of a renderer as a connected market provider.
+from tower.ob_market_source_status import register_hosted_ob_market_source_status
+register_hosted_ob_market_source_status(app)
+
 
 HOSTED_ENTRYPOINT = "web.hosted_tower:app"
 PRODUCTION_DEPLOYMENT = False
