@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}What-If Portfolio · BuyBox{% endblock %}{% block content %}
+<a class="back" href="{{ url_for('intelligence_home') }}">← Intelligence Studio</a>
+<section class="hero"><p class="eyebrow">WHAT-IF PORTFOLIO BUILDER</p><h1>{{ report.count }} possible acquisition{% if report.count != 1 %}s{% endif %}</h1>
+<p>Combined acquisition requirements only. No capital readiness, financing approval, or purchase authority is assumed.</p></section>
+<section class="stats"><div class="tile"><small>Combined asking total</small><strong>{{ '$' ~ report.asking_total if report.asking_total else 'Incomplete pricing' }}</strong></div>
+<div class="tile"><small>Vertical types</small><strong>{{ report.verticals|length }}</strong></div><div class="tile"><small>Regions</small><strong>{{ report.regions|length }}</strong></div><div class="tile"><small>Capital readiness</small><strong>Not assumed</strong></div></section>
+<section class="panel"><h2>Selected opportunities</h2>{% for op in ops %}<div class="evidence-row"><div><strong>{{ op.name }}</strong><small>{{ op.vertical|replace('_',' ')|title }} · {{ op.location.region or 'Region unknown' }}</small></div><span>{{ '$' ~ op.asking_price if op.asking_price else 'Unknown' }}</span></div>{% endfor %}</section>
+<section class="panel"><h2>Concentration view</h2><p>Verticals: {{ report.verticals }}</p><p>Regions: {{ report.regions }}</p><p class="muted">Teller must separately determine whether any combination is financially and operationally deployable.</p></section>
+{% endblock %}
