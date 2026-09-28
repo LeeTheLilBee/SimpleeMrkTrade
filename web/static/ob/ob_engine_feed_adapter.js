@@ -565,6 +565,11 @@
         payload
       );
 
+    // A protected route may exist while no authorized market-data provider is
+    // wired. A pending source is not the same as a fresh market snapshot.
+    const sourcePending =
+      safe.market_data_state === "provider_not_configured";
+
     // ----------------------------------------------------------------------------------------------
     // OBDATA007_OPTIONS_RESEARCH_PROJECTION
     //
@@ -688,7 +693,12 @@
       null;
 
 
-    if (
+    if (sourcePending) {
+      freshness = "unavailable";
+      projectionStatus = "unavailable";
+    }
+
+    else if (
       sourceType === "quarantined"
     ) {
       freshness =
@@ -891,6 +901,10 @@
       );
 
 
+    if (sourcePending) {
+      warnings.push("Market data provider not configured. Old universe seed data remains quarantined.");
+    }
+
     if (
       projectionStatus === "provenance_required"
     ) {
@@ -935,6 +949,9 @@
       projection_status:
         projectionStatus,
 
+      market_data_state:
+        sourcePending ? "provider_not_configured" : "source_bound",
+
       freshness,
 
       source,
@@ -965,6 +982,10 @@
 
       reason:
         (
+          sourcePending
+            ? safeText(safe.reason,
+                "No authorized market data source connected. The old seed snapshot remains unavailable.").slice(0, 400)
+            :
           projectionStatus === "fresh"
             ? "Source-backed engine snapshot is within its freshness window."
             :
