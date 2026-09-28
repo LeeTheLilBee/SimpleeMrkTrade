@@ -396,7 +396,7 @@ def create_app(config=None):
         return render_template("soulaana.html",op=op,
             context=soulaana_context(op,intent),intents=(
             ("overview","Overview"),("evidence","Evidence"),("diligence","Diligence"),
-            ("financing","Financing"),("insurance","Insurance"),("valuation","Comparable Research"),("decision","Decision"),("economics","Economics"),("changes","What changed"),
+            ("financing","Financing"),("insurance","Insurance"),("valuation","Comparable Research"),("decision","Decision"),("closing","Closing"),("economics","Economics"),("changes","What changed"),
             ("red_team","Red Team"),("next_action","Next action")))
 
     @app.post("/compare")
