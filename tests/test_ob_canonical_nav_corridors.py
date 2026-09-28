@@ -27,7 +27,7 @@ class ObservatoryCanonicalNavigationTests(unittest.TestCase):
     def test_all_hover_nav_targets_are_canonical_and_tower_mapped(self):
         script = NAV.read_text(encoding="utf-8")
         targets = re.findall(
-            r'navLink\\(path,\\s*"([^"]+)",\\s*"([^"]+)"',
+            r'navLink\(path,\s*"([^"]+)",\s*"([^"]+)"',
             script,
         )
         self.assertEqual(
