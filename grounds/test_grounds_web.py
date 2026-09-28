@@ -769,8 +769,8 @@ class GroundsWebTests(unittest.TestCase):
             {"work_ref":"confirm-web","outcome":"resolved",
              "expected_revision":revision,"note":""},
         )
-        # Authenticated property staff are in-scope to this work but cannot submit a resident response.
-        self.assertEqual(denied["status"],"409 Conflict")
+        # Staff cannot impersonate the resident completion response; endpoint fails closed.
+        self.assertEqual(denied["status"],"404 Not Found")
         key=str(uuid4())
         result=self.post(
             "/grounds/api/work-completion",self.resident,
