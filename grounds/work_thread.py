@@ -112,6 +112,11 @@ class GroundsWorkThread:
                      AND r.delivery_state='delivered'""",
                 (row["property_ref"],work_ref),
             ).fetchone()[0]
+            completions=[dict(r) for r in db.execute(
+                """SELECT outcome,note,resulting_state,recorded_at
+                   FROM work_completion_events WHERE work_ref=?
+                   ORDER BY to_revision,recorded_at""",(work_ref,),
+            )]
         messages=list(reversed(rows))
         # Timeline is a derived read-only projection. Never reveal the internal
         # author's subject ID or protected staff notes to resident/technician.
@@ -121,6 +126,10 @@ class GroundsWorkThread:
         ]+[
             {"kind":"message","role":m["author_role"],"body":m["body"],
              "audience":m["audience"],"occurred_at":m["created_at"]} for m in messages
+        ]+[
+            {"kind":"resident_completion","outcome":x["outcome"],
+             "note":x["note"],"state":x["resulting_state"],
+             "occurred_at":x["recorded_at"]} for x in completions
         ]
         timeline.sort(key=lambda item:item["occurred_at"])
         return {
@@ -135,6 +144,10 @@ class GroundsWorkThread:
             "can_post_staff_internal":staff and row["state"]!="closed",
             "in_app_post_is_not_external_delivery":True,
             "verified_historical_delivered_event_count":receipts,
+            "resident_completion_response_count":len(completions),
+            "latest_resident_completion_response":(
+                completions[-1] if completions else None
+            ),
             "provider_currently_connected":False,
             "emergency_services_contacted":False,"entry_authorized":False,
         }
