@@ -2,8 +2,8 @@
 
 SQLite writes use BEGIN IMMEDIATE, synchronous=FULL, process-private paths and
 database-level UPDATE/DELETE denial for intent/event/incident records.
-SC007 binds complete primary/backup intent rows to reservation events. Earlier
-source-only journals with unbound reservations are rejected, not silently upgraded.
+SC007 and SC007B bind complete reservation and incident rows to event hashes. Earlier
+source-only journals with unbound reservation/incident events are rejected, not silently upgraded.
 A hash chain detects accidental/incomplete history changes, NOT malicious full
 database rewrites; independent signed/offsite checkpoints remain a release gate.
 No file body, plaintext, raw entity ID, Vault receipt or Tower credential is stored.
@@ -17,6 +17,7 @@ import re
 import secrets
 import sqlite3
 import stat
+from collections import Counter
 from contextlib import closing, contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -60,6 +61,12 @@ def _reservation_hash(kind: str, values: tuple) -> str:
     """Bind the COMPLETE immutable reservation row into the event hash chain."""
     material = json.dumps([kind, *values], separators=(",", ":"), ensure_ascii=True).encode()
     return "reservation:v2:" + hashlib.sha256(material).hexdigest()
+
+
+def _incident_hash(values: tuple) -> str:
+    """Opaque digest of all immutable incident metadata, without raw fields."""
+    material = json.dumps(["INCIDENT_RECORDED", *values], separators=(",", ":"), ensure_ascii=True).encode()
+    return "incident:v2:" + hashlib.sha256(material).hexdigest()
 
 
 def _hash_event(seq: int, kind: str, tag: str, scope: str, code: str, at: str, previous: str) -> str:
@@ -188,6 +195,21 @@ class SQLiteOperationalJournal:
                     event_type, tuple(record)
                 ):
                     raise IntegrityError("reserved ciphertext metadata differs from audit commitment")
+        # SC007B: event count and immutable incident payloads must match in
+        # BOTH directions. Several incidents may share a request tag, so use
+        # a multiset rather than accepting a single matching event.
+        records = conn.execute("SELECT * FROM incidents").fetchall()
+        expected_incidents = Counter(
+            (row["request_tag"], _incident_hash(tuple(row))) for row in records
+        )
+        actual_incidents = Counter(
+            (row["request_tag"], row["code"])
+            for row in conn.execute(
+                "SELECT request_tag,code FROM events WHERE event_type='INCIDENT_RECORDED'"
+            )
+        )
+        if actual_incidents != expected_incidents:
+            raise IntegrityError("incident metadata differs from audit commitment")
         return expected_seq, previous
 
     def verify_chain(self) -> dict:
@@ -374,12 +396,15 @@ class SQLiteOperationalJournal:
     def _incident(self, conn: sqlite3.Connection, *, tag: str, scope: str, code: str):
         if code not in _CODE:
             raise CloudError("unknown incident code")
-        conn.execute(
-            "INSERT INTO incidents VALUES(?,?,?,?,?)",
-            (secrets.token_hex(16), tag, code, "critical" if "CORRUPT" in code or
-             "INTEGRITY" in code else "warning", _now()),
+        values = (
+            secrets.token_hex(16), tag, code,
+            "critical" if "CORRUPT" in code or "INTEGRITY" in code else "warning", _now(),
         )
-        self._append(conn, event="INCIDENT_RECORDED", tag=tag, scope=scope, code=code)
+        conn.execute("INSERT INTO incidents VALUES(?,?,?,?,?)", values)
+        self._append(
+            conn, event="INCIDENT_RECORDED", tag=tag, scope=scope,
+            code=_incident_hash(values),
+        )
 
     def transition(self, *, namespace: str, request_id: str, next_state: str) -> None:
         allowed = {
