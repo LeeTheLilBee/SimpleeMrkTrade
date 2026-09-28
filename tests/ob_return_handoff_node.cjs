@@ -1,4 +1,4 @@
-"""OB return navigation must use the existing Tower-owner endpoint, not a bypass."""
+// OB return navigation must use the existing Tower-owner endpoint, not a bypass.
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
