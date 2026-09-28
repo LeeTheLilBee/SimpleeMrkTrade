@@ -4,7 +4,8 @@ import pytest
 from flask import Flask
 
 from tower.ecosystem_direct_route_guard import (
-    ACCESS_RECEIPT_KEYS, register_ecosystem_direct_route_guard,
+    ACCESS_RECEIPT_KEYS, build_ecosystem_access_receipt,
+    register_ecosystem_direct_route_guard,
 )
 from tower.ecosystem_return_routes import register_ecosystem_return_routes
 from tower.tower_human_login_ob_launch import (
@@ -93,12 +94,22 @@ def test_invalid_access_receipt_is_removed_and_denied(client):
 def test_server_issued_shape_can_open_only_its_exact_app_path(client):
     login(client)
     with client.session_transaction() as session:
+        now = 1_800_000_000
         session[ACCESS_RECEIPT_KEYS["vault"]] = {
+            "schema_version": "tower.ecosystem.access-receipt.v1",
             "app_id": "vault",
             "allowed": True,
+            "owner_id": session["owner_id"],
+            "tower_session_id": session["tower_session_id"],
+            "issued_at_epoch": now,
+            "expires_at_epoch": now + 300,
             "owner_session_preserved": True,
+            "new_entitlement_granted": False,
+            "dangerous_action_unlocked": False,
         }
-    assert client.get("/vault").status_code == 200
+    import unittest.mock as mock
+    with mock.patch("tower.ecosystem_direct_route_guard.time.time", return_value=1_800_000_010):
+        assert client.get("/vault").status_code == 200
     assert client.get("/grounds").status_code == 503
 
 
@@ -160,3 +171,31 @@ def test_return_json_requires_owner_and_never_grants_app_access(client):
     assert payload["new_entitlement_granted"] is False
     with client.session_transaction() as session:
         assert "tower_teller_access_receipt" not in session
+
+
+def test_access_receipt_helper_binds_current_owner_session_and_expires(client):
+    login(client)
+    with client.application.test_request_context("/"):
+        # Move the real browser session into this context only through a request;
+        # helper must never accept an anonymous context.
+        with pytest.raises(ValueError):
+            build_ecosystem_access_receipt("vault", now_epoch=1_800_000_000)
+
+    # A stale receipt copied from another session must fail even when its app id
+    # and booleans look right.
+    with client.session_transaction() as session:
+        session[ACCESS_RECEIPT_KEYS["clouds"]] = {
+            "schema_version": "tower.ecosystem.access-receipt.v1",
+            "app_id": "clouds",
+            "allowed": True,
+            "owner_id": session["owner_id"],
+            "tower_session_id": "tower_session_from_some_other_browser",
+            "issued_at_epoch": 1_800_000_000,
+            "expires_at_epoch": 1_800_000_300,
+            "owner_session_preserved": True,
+            "new_entitlement_granted": False,
+            "dangerous_action_unlocked": False,
+        }
+    import unittest.mock as mock
+    with mock.patch("tower.ecosystem_direct_route_guard.time.time", return_value=1_800_000_010):
+        assert client.get("/clouds/status.json").status_code == 503
