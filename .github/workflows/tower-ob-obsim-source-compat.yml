@@ -55,11 +55,27 @@ jobs:
           ref: badef7fab30f93be6878d89b28f4863cfa6fc202
           path: obml-request-source
           persist-credentials: false
+      - name: Checkout exact independent BuyBox readiness producer
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 728219b4fe1175dbbdb6387c578fc798e1262ef0
+          path: source-buybox-pinned
+          persist-credentials: false
+      - name: Checkout exact independent OB Manual Live phase contract
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: cced86992fabdb6a91de3fb3e48a1f1f4aaf0478
+          path: pinned-obml-phase-source
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install test and existing runtime dependencies
-        run: python -m pip install pytest tzdata flask requests yfinance
+        run: |
+          python -m pip install pytest tzdata flask requests yfinance
+          python -m pip install -r source-buybox-pinned/buybox/requirements.txt
       - name: Syntax of local source / no hosted alias
         run: |
           python -m py_compile web/ob_observation_temporal_validity.py web/ob_market_time_authority.py web/ob_multi_simulation_harness.py web/ob_capital_simulation_authority.py web/ob_multi_simulation_replay.py web/ob_on_demand_simulation_session.py web/ob_explicit_owner_rehearsal_input.py web/ob_local_owner_rehearsal_ui.py scripts/ob_local_owner_rehearsal.py scripts/ob_local_owner_rehearsal_web.py

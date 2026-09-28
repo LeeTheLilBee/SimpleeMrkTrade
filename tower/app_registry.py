@@ -133,7 +133,7 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
     ),
 
     # TWR201 — BuyBox is a known ecosystem application, not a live doorway.
-    # The draft BuyBox workspace currently uses development-only local login.
+    # The BuyBox workspace currently uses development-only local login.
     # Do not represent that as Tower identity or hosted availability.
     TowerAppRegistration(
         app_id="buybox",

@@ -36,3 +36,6 @@ Manual Live L1 remains HOLD per issue #115. Tower's operational OB entry
 receipt is not an account/purpose-bound Manual Live grant. Remaining
 authentic owner, broker permission, money/protected floors and durable
 cross-redeploy replay proof cannot be fabricated from CI.
+
+## First exact-head repair result
+[Run 36374278377](https://github.com/LeeTheLilBee/SimpleeMrkTrade/actions/runs/36374278377): the historical optional full suite improved to **4 failed, 1,179 passed**. Remaining issues identified by actual failure logs: two more independently pinned missing producer/phase fixtures; stale Symbol Page expected mount (`symbolRoomMount` versus actual `obSymbolRoom`); and the product truth audit correctly flagged a literal legacy `draft` comment in `tower/app_registry.py`. This follow-up adds the exact independent checkouts, refreshes only the test selector, and changes the misleading source comment without changing registry behavior. The full suite is still nonblocking until its exact-head rerun proves zero failures.
