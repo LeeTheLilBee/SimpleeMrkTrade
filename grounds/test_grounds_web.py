@@ -81,6 +81,7 @@ class GroundsWebTests(unittest.TestCase):
             environ["HTTP_X_GROUNDS_CSRF"]=csrf
         if method=="POST" and url.path in (
             "/grounds/api/work","/grounds/api/appointment/request",
+            "/grounds/api/work-message",
         ):
             key=str(uuid4()) if idempotency=="auto" else idempotency
             if key is not None:
@@ -584,6 +585,51 @@ class GroundsWebTests(unittest.TestCase):
         self.assertEqual(p["json"]["total_scope_count"],2)
         self.assertFalse(p["json"]["money_fields_included"])
 
+
+
+    def test_work_thread_is_private_plain_text_and_idempotent(self):
+        request=self.post("/grounds/api/work",self.resident,{
+            "property_ref":"p1","unit_ref":"u1","category":"plumbing",
+            "description":"Synthetic faucet", "emergency_flag":False,
+            "entry_permission":"contact_first",
+        })["json"]
+        work=request["work_ref"]
+        path="/grounds/api/work-thread?work_ref="+work
+        self.assertEqual(self.invoke(path)["status"],"401 Unauthorized")
+        self.assertEqual(self.invoke(path,actor=self.other)["status"],"404 Not Found")
+        key=str(uuid4())
+        payload={"work_ref":work,"body":"Can I have a status update?","audience":"shared"}
+        first=self.post("/grounds/api/work-message",self.resident,payload,idempotency=key)
+        self.assertEqual(first["status"],"201 Created")
+        self.assertFalse(first["json"]["external_notification_delivered"])
+        again=self.post("/grounds/api/work-message",self.resident,payload,idempotency=key)
+        self.assertTrue(again["json"]["replayed"])
+        changed=self.post("/grounds/api/work-message",self.resident,{
+            **payload,"body":"I changed the message",
+        },idempotency=key)
+        self.assertEqual(changed["status"],"409 Conflict")
+        staff_only=self.post("/grounds/api/work-message",self.manager,{
+            "work_ref":work,"body":"Internal record only","audience":"staff_internal",
+        })
+        self.assertEqual(staff_only["status"],"201 Created")
+        resident=self.invoke(path,actor=self.resident)
+        self.assertEqual(resident["status"],"200 OK")
+        self.assertEqual(resident["json"]["visible_message_count"],1)
+        self.assertNotIn("Internal record only",str(resident["json"]))
+        self.assertNotIn("author_ref",str(resident["json"]))
+        self.assertFalse(resident["json"]["provider_currently_connected"])
+        manager=self.invoke(path,actor=self.manager)
+        self.assertEqual(manager["json"]["visible_message_count"],2)
+        self.assertIn("Internal record only",str(manager["json"]))
+        self.assertEqual(resident["headers"]["Cache-Control"],"no-store, private, max-age=0")
+        self.assertEqual(self.post("/grounds/api/work-message",self.resident,{
+            "work_ref":work,"body":"Not allowed","audience":"staff_internal",
+        })["status"],"404 Not Found")
+        self.assertEqual(self.post("/grounds/api/work-message",self.resident,{
+            **payload,"role":"owner",
+        })["status"],"400 Bad Request")
+        self.assertEqual(self.post("/grounds/api/work-message",self.resident,
+                                   payload,idempotency=None)["status"],"400 Bad Request")
 
 
 if __name__=="__main__":
