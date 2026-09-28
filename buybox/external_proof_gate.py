@@ -121,7 +121,7 @@ def _valid_stored_proof(proof, op, fingerprint):
     if not isinstance(proof, dict) or set(proof) != _PROOF_RECORD_FIELDS:
         return False
     if (
-        proof["kind"] not in KINDS
+        not isinstance(proof["kind"], str) or proof["kind"] not in KINDS
         or proof["source_opportunity_id"] != op.get("id")
         or type(proof["source_opportunity_revision"]) is not int
         or proof["source_opportunity_revision"] < 1
