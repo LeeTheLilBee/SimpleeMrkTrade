@@ -222,7 +222,11 @@
     }
     $("safety-count").textContent = desk.unreviewed_urgent_count + " awaiting human review";
     $("safety-delivery").textContent = desk.pending_local_event_intents +
-      " internal event intents are pending. No external recipient delivery, emergency dispatch or after-hours escalation is confirmed by this desk.";
+      " internal event intents remain pending; " +
+      (desk.verified_historical_delivery_event_count ?? 0) +
+      " events have verified historical delivery receipts; " +
+      (desk.verified_historical_human_acknowledged_event_count ?? 0) +
+      " have historical human acknowledgment receipts. These do not prove current provider connectivity, on-call coverage, legal service or emergency dispatch.";
     if (!desk.queue.length) {
       target.append(el("p", "No unreviewed urgent intake is visible in the current property snapshot. This is not emergency coverage or dispatch confirmation.", "footnote"));
     }
