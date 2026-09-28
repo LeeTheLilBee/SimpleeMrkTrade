@@ -277,16 +277,21 @@ def validate_teller_packet(packet: Mapping[str, Any]) -> Tuple[bool, List[str]]:
 
 
 def _contains_allowed_value(value: str, allowed_values: Tuple[str, ...]) -> bool:
+    """Match an exact lane or an explicit slash-delimited sub-lane only.
+
+    Arbitrary substring matching could let e.g. "FakeSimpleePay" inherit the
+    "SimpleePay" lane. Hierarchy is allowed only as "Parent / Child".
+    """
+    normalized = value.strip().casefold()
+    if not normalized:
+        return False
     if not allowed_values:
         return True
-
-    lowered_value = value.lower()
-    lowered_allowed = tuple(item.lower() for item in allowed_values)
-
-    return lowered_value in lowered_allowed or any(
-        lowered_value.startswith(item) or item in lowered_value
-        for item in lowered_allowed
-    )
+    for allowed in allowed_values:
+        base = str(allowed).strip().casefold()
+        if base and (normalized == base or normalized.startswith(base + " / ")):
+            return True
+    return False
 
 
 def evaluate_tower_vault_gate(
@@ -362,16 +367,22 @@ def evaluate_tower_vault_gate(
     sensitivity_level = str(teller_packet.get("sensitivity_level", ""))
     requested_output_type = str(teller_packet.get("requested_output_type", ""))
 
-    if actor_context.allowed_roles and requester_role not in actor_context.allowed_roles:
+    if (
+        requester_role != actor_context.role
+        or (actor_context.allowed_roles and requester_role not in actor_context.allowed_roles)
+    ):
         return make_decision(
             TowerDecision.ROLE_MISMATCH,
-            f"Requester role {requester_role} is not allowed for this actor context.",
+            "Requester role does not match the verified Tower actor context.",
         )
 
-    if actor_context.allowed_entities and requester_entity not in actor_context.allowed_entities:
+    if (
+        requester_entity != actor_context.entity
+        or (actor_context.allowed_entities and requester_entity not in actor_context.allowed_entities)
+    ):
         return make_decision(
             TowerDecision.LANE_MISMATCH,
-            f"Requester entity {requester_entity} is not allowed for this actor context.",
+            "Requester entity does not match the verified Tower actor context.",
         )
 
     if not _contains_allowed_value(business_context, actor_context.allowed_business_contexts):
