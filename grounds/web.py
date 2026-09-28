@@ -262,7 +262,7 @@ class GroundsWebApp:
              kind,key,*refs],ensure_ascii=False,separators=(",",":"),
         ).encode("utf-8")
         digest=hmac.new(self.csrf._secret,message,hashlib.sha256).hexdigest()[:40]
-        prefixes={"work":"work_","appointment":"appt_","message":"msg_","move_task":"move_"}
+        prefixes={"work":"work_","appointment":"appt_","message":"msg_","move_task":"move_","completion":"complete_"}
         if kind not in prefixes:
             raise GroundsWebConfigurationError("unsupported private create kind")
         return prefixes[kind]+digest
