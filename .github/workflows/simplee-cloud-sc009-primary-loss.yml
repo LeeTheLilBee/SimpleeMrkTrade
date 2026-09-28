@@ -1,0 +1,41 @@
+name: Simplee Cloud SC009 primary-loss encrypted recovery source proof
+
+on:
+  push:
+    branches:
+      - simplee-cloud-sc009-primary-loss-restore-source
+  pull_request:
+    paths:
+      - 'simplee_cloud/**'
+      - '.github/workflows/simplee-cloud-sc009-primary-loss.yml'
+      - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC009_PRIMARY_LOSS_REHEARSAL.md'
+      - 'vault/real_operations_encrypted_storage.py'
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-site-loss-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install synthetic test dependencies only
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Compile merged Cloud and Vault source
+        run: |
+          python -m compileall -q simplee_cloud
+          python -m py_compile vault/real_operations_encrypted_storage.py vault/archival_transaction_journal.py vault/canonical_evidence_registry.py
+      - name: Run source-only primary loss and entire Cloud suite
+        run: python -m pytest -q simplee_cloud/tests/
+      - name: Publish default-off owner evidence list
+        if: always()
+        run: python -m simplee_cloud.owner_preflight >> "$GITHUB_STEP_SUMMARY"
