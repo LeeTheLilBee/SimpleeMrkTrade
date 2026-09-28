@@ -10,6 +10,7 @@ import sqlite3
 from uuid import uuid4
 
 from .access import AccessDenied, TowerScope
+from .delivery import GroundsDeliveryReceipts
 from .operations import GroundsOperations, GroundsConflict, _now
 from .storage import GroundsStoreBase
 
@@ -20,6 +21,7 @@ class GroundsSafety:
             raise TypeError("transaction-backed Grounds store required")
         self.store=store
         self.ops=GroundsOperations(store)
+        self.receipts=GroundsDeliveryReceipts(store)
 
     def acknowledge_urgency(self,actor:TowerScope,*,work_ref:str,
                             assessed_urgency:str)->dict:
@@ -54,9 +56,20 @@ class GroundsSafety:
                 """SELECT urgency,reviewed_at FROM emergency_reviews WHERE work_ref=?""",
                 (work_ref,),
             ).fetchone()
+            escalation=db.execute(
+                """SELECT 1 FROM event_delivery_receipts r
+                   JOIN event_outbox o ON o.event_ref=r.event_ref
+                   WHERE o.property_ref=? AND o.resource_ref=?
+                     AND o.event_kind='urgent_intake_requires_human_review'
+                     AND r.receipt_kind='urgent_human_escalation'
+                     AND r.delivery_state='human_acknowledged' LIMIT 1""",
+                (order["property_ref"],work_ref),
+            ).fetchone()
             return {"work_ref":work_ref,"resident_urgent_flag":bool(order["emergency_flag"]),
                     "human_review_recorded":row is not None,
                     "assessed_urgency":row["urgency"] if row else None,
+                    "verified_historical_human_acknowledgment":escalation is not None,
+                    "human_escalation_acknowledged":escalation is not None,
                     "external_dispatch_confirmed":False}
 
     def record_entry_preference(self,actor:TowerScope,*,work_ref:str,preference:str,
@@ -144,6 +157,7 @@ class GroundsSafety:
                    WHERE property_ref=? AND status='pending'""",
                 (property_ref,),
             ).fetchone()[0]
+        receipt_status=self.receipts.property_status(actor,property_ref=property_ref)
         return {
             "source":"grounds","property_ref":property_ref,
             "unreviewed_urgent_count":backlog,
@@ -155,6 +169,9 @@ class GroundsSafety:
                 "external_dispatch_confirmed":False,
             } for row in rows],
             "pending_local_event_intents":pending,
+            "verified_historical_delivery_event_count":receipt_status["delivered_event_count"],
+            "verified_historical_human_acknowledged_event_count":
+                receipt_status["urgent_human_acknowledged_event_count"],
             "provider_connected":False,"recipient_delivery_proven":False,
             "human_on_call_escalation_confirmed":False,
             "emergency_services_contacted":False,"legal_notice_proven":False,
@@ -174,9 +191,14 @@ class GroundsSafety:
 
     def delivery_status(self,actor:TowerScope,*,property_ref:str)->dict:
         pending=self.pending_event_intents(actor,property_ref=property_ref)
+        receipts=self.receipts.property_status(actor,property_ref=property_ref)
         return {
             "property_ref":property_ref,"pending_intent_count":len(pending),
             "provider_connected":False,"recipient_resolution_enabled":False,
-            "delivered_count":0,"legal_service_proven":False,
-            "emergency_dispatch_confirmed":False,
+            "verified_receipt_count":receipts["verified_receipt_count"],
+            "delivered_count":receipts["delivered_event_count"],
+            "failed_receipt_count":receipts["failed_receipt_count"],
+            "urgent_human_acknowledged_event_count":
+                receipts["urgent_human_acknowledged_event_count"],
+            "legal_service_proven":False,"emergency_dispatch_confirmed":False,
         }
