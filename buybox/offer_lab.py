@@ -232,6 +232,8 @@ def offer_lab_snapshot(op,*,today=None):
         "opportunity_id":op["id"],"opportunity_revision":op["version"],
         "current_scenario_count":len(current),
         "scenarios":rows,
+        "financing_choices":current_options(op),
+        "insurance_choices":current_insurance_records(op),
         "asking_price":op.get("asking_price"),
         "seller_contact_sent":False,"loi_created":False,
         "tower_authorized":False,"teller_readiness":"UNKNOWN",
