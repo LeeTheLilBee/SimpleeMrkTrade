@@ -462,6 +462,31 @@ def prepare_tower_authorized_view_protocol(
         assert_no_raw_vault_exposure(safe_result, "blocked authorized view result")
         return safe_result
 
+    # A supplied protocol object is not Tower approval. Bind it to the exact
+    # accompanying Tower gate decision before preparing any view material.
+    decision = gate_result.get("tower_decision")
+    safe_return = gate_result.get("safe_return_for_teller")
+    if (
+        not isinstance(decision, Mapping)
+        or not isinstance(safe_return, Mapping)
+        or not isinstance(protocol_request, Mapping)
+        or decision.get("allowed") is not True
+        or decision.get("decision") not in {"allowed", "redacted"}
+        or not isinstance(decision.get("tower_decision_receipt_id"), str)
+        or not decision["tower_decision_receipt_id"]
+        or decision["tower_decision_receipt_id"]
+            != protocol_request.get("tower_decision_receipt_id")
+        or decision.get("redaction_required") is not
+            protocol_request.get("redaction_required")
+        or (decision.get("decision") == "redacted")
+            != (decision.get("redaction_required") is True)
+        or safe_return.get("request_id")
+            != protocol_request.get("originating_teller_request_id")
+        or safe_return.get("tower_decision_receipt_id")
+            != decision["tower_decision_receipt_id"]
+    ):
+        raise ValueError("Tower gate decision and view request are not bound")
+
     protocol_action = str(protocol_request.get("protocol_action", ""))
 
     if protocol_action == "request_authorized_download_prep":
@@ -568,6 +593,7 @@ def build_demo_gate_result(
         "vault_protocol_request": protocol_request,
         "safe_return_for_teller": {
             "request_id": "teller_tower_request_demo_gp471",
+            "tower_decision_receipt_id": "tower-vault-gate-demo471",
             "status": "redacted" if redaction_required else "allowed",
             "vault_direct_access_allowed": False,
             "raw_files_included": False,
