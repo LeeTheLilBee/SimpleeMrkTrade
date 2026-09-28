@@ -10,7 +10,7 @@ from .registry import get_vertical
 from .dealroom import current_tasks
 
 INTENTS = frozenset({
-    "overview", "evidence", "diligence", "financing", "valuation", "decision", "economics", "changes", "red_team", "next_action"
+    "overview", "evidence", "diligence", "financing", "insurance", "valuation", "decision", "economics", "changes", "red_team", "next_action"
 })
 
 def context(op, intent="overview"):
@@ -28,6 +28,7 @@ def context(op, intent="overview"):
         "evidence":{"evidence"},
         "diligence":{"diligence"},
         "financing":{"financing"},
+        "insurance":{"insurance"},
         "valuation":{"valuation"},
         "decision":{"decision"},
         "economics":{"economics"},
@@ -113,6 +114,32 @@ def context(op, intent="overview"):
             note("FINANCING_MISSING",
                  "No current original-backed financing terms are recorded. BuyBox will not invent a lender, rate or bank commitment.",
                  label="NO_DOCUMENTED_OPTION")
+    if "insurance" in relevant:
+        from .insurance import insurance_snapshot
+        insurance=insurance_snapshot(op)
+        note("COVERAGE_AUTHORITY_UNKNOWN",
+             "No live insurer/broker confirmation, policy binding, premium payment, lender compliance, Teller readiness or Tower closing authorization has been established by the BuyBox insurance records.",
+             label="COVERAGE_IN_FORCE_UNKNOWN")
+        for item in insurance["records"]:
+            rec=item["record"]; review=item["assessment"]
+            label=("$"+review["annual_premium"]+" annual premium" if review["annual_premium"] is not None
+                   else "premium not stated")
+            note("SOURCE_LINKED_INSURANCE",
+                 rec["document_kind"].lower()+" as recorded from "+rec["carrier_label"]+
+                 " ("+label+"). Owner-transcribed coverages: "+
+                 ", ".join(rec["coverage_codes"])+
+                 ". Original source and recorded effective/expiration dates must be independently checked; the document label alone does not confirm a policy is in force.",
+                 [rec["id"],rec["source_evidence_id"],rec["source_artifact_id"]],
+                 review["status"])
+            if review["review_flags"]:
+                note("INSURANCE_RECHECK_REQUIRED",
+                     "Insurance source review flags: "+", ".join(review["review_flags"])+
+                     ". Follow up with insurer/broker and any actual lender conditions.",
+                     [rec["id"]], "NOT_INDEPENDENTLY_CONFIRMED")
+        if not insurance["records"]:
+            note("INSURANCE_NOT_RECORDED",
+                 "No original-backed insurance record is entered. Ask an insurance professional about the actual asset's exposures, limits, exclusions, costs, timing and any lender requirements.",
+                 label="INSURABILITY_NOT_ESTABLISHED")
     if "valuation" in relevant:
         from .comparables import market_evidence_report
         market=market_evidence_report(op)
