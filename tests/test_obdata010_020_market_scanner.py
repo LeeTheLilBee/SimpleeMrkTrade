@@ -138,3 +138,41 @@ def test_sec_public_json_is_filings_not_market_data():
     assert good["filings"][0]["form"]=="8-K"
     assert good["market_quotes"]==good["options_chains"]==good["positions"]==[]
     assert good["trading_authorized"] is False
+
+
+def test_alpaca_iex_mapper_never_fetches_or_confuses_limited_feed():
+    from engine.market_scanner.alpaca_iex_ingress import (
+        normalize_trade, normalize_completed_daily_bars, PRODUCT, PROVIDER, VENUE,
+    )
+    trade={"T":"t","S":"XYZ","x":"V","p":"101.25","s":10,
+           "t":(NOW-timedelta(seconds=20)).isoformat()}
+    try:
+        normalize_trade(trade,transport_verified=False,feed="iex")
+        assert False,"Must deny unverified source transport"
+    except ValueError:
+        pass
+    mapped=normalize_trade(trade,transport_verified=True,feed="iex")
+    assert (mapped["provider"],mapped["product"],mapped["venue"])==(PROVIDER,PRODUCT,VENUE)
+    assert mapped["source_is_consolidated"] is False
+    assert mapped["eligible_as_options_quote"] is False
+    vendor_bars=[]
+    for i in range(25):
+        vendor_bars.append({"t":(NOW-timedelta(days=25-i)).isoformat(),
+                            "c":str(88+i/2),"v":2000})
+    try:
+        normalize_completed_daily_bars(vendor_bars,transport_verified=True,
+              feed="iex",vendor_dataset_completed=False)
+        assert False,"In-progress day cannot become finalized history"
+    except ValueError:
+        pass
+    converted=normalize_completed_daily_bars(vendor_bars,transport_verified=True,
+        feed="iex",vendor_dataset_completed=True)
+    approved=Entitlement(provider=PROVIDER,product=PRODUCT,venue=VENUE,
+        license_verified=True,scope="owner_private_research",
+        permits_derived_research=True,permits_client_display=True,
+        is_consolidated=False)
+    result=scan_equities(observations=[mapped],daily_bars={"XYZ":converted},
+         entitlement=approved,now=NOW)
+    assert result["status"]=="SOURCE_OBSERVED"
+    assert result["coverage"]=="single_venue_or_limited"
+    assert result["trading_authorized"] is False
