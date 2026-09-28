@@ -51,6 +51,7 @@ _ROUTES={
     ("GET","/grounds/api/me"),
     ("GET","/grounds/api/workspace"),
     ("GET","/grounds/api/rent"),
+    ("GET","/grounds/api/safety-desk"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
@@ -351,6 +352,11 @@ class GroundsWebApp:
             if path=="/grounds/api/entry-preference":
                 q=_query(environ,{"work_ref"})
                 return self.safety.entry_preference(actor,work_ref=_ref(q["work_ref"],"work_ref"))
+            if path=="/grounds/api/safety-desk":
+                q=_query(environ,{"property_ref"})
+                return self.safety.staff_safety_desk(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                )
             if path=="/grounds/api/technicians":
                 actor.require_role("owner","property_manager","maintenance_supervisor")
                 q=_query(environ,{"property_ref"})
