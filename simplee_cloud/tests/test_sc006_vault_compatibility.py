@@ -135,7 +135,7 @@ def test_entity_separation_and_forged_canonical_vault_scope_fail_closed(tmp_path
     original, key, envelope, metadata = vault_envelope()
     configure(h, envelope, metadata)
     write(h)
-    with pytest.raises(ObjectMissing):
+    with pytest.raises(CloudError, match="acknowledged matching primary"):
         read(h, req="foreign-read", entity="another-entity")
     grant = h.grant("wrong-scope-write", "WRITE_CIPHERTEXT")
     h.canonical[("wrong-scope-write", "WRITE_CIPHERTEXT")] = None
