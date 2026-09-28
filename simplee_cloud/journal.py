@@ -518,20 +518,23 @@ class SQLiteOperationalJournal:
             raise CloudError("invalid bound read ref/digest")
         tag = _read_tag(namespace, request_id)
         with self._tx() as conn:
-            # Close the SC027 preflight/read race inside the same write lock
-            # that creates the immutable read reservation.
-            self._require_acknowledged_primary(
-                conn, namespace, object_ref, digest,
-            )
             record = conn.execute(
                 "SELECT * FROM read_intents WHERE request_tag=?", (tag,),
             ).fetchone()
+            if record is not None and (
+                record["namespace_digest"], record["object_ref"],
+                record["ciphertext_sha256"],
+            ) != (namespace, object_ref, digest):
+                # Request-ID reuse must not be rebound to a different object,
+                # regardless of whether that alternate ref has primary lineage.
+                raise CloudError("read idempotency conflict; new request required")
+            # Close the SC027 preflight/read race inside the same write lock.
+            # Retried exact reads are also denied if the primary later enters
+            # an integrity HOLD.
+            self._require_acknowledged_primary(
+                conn, namespace, object_ref, digest,
+            )
             if record is not None:
-                if (
-                    record["namespace_digest"], record["object_ref"],
-                    record["ciphertext_sha256"],
-                ) != (namespace, object_ref, digest):
-                    raise CloudError("read idempotency conflict; new request required")
                 return "READ_RESERVED_EXISTING"
             values = (tag, namespace, object_ref, digest, _now())
             conn.execute("INSERT INTO read_intents VALUES(?,?,?,?,?)", values)
