@@ -1,0 +1,60 @@
+{% extends "base.html" %}{% block title %}Red Team · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero"><p class="eyebrow">RED TEAM · ACTUAL DOCUMENTED FINANCIAL BASE</p>
+<h1>Stress the assumptions, preserve the facts.</h1>
+<p>Record a hypothetical change against your actual saved, original-backed and owner-reviewed annual revenue and expense figures. Every assumption is labeled, versioned, and separate from history. This financial-only model cannot represent every asset-specific hazard.</p></section>
+<section class="stats">
+<div class="tile"><small>Historical owner stress records</small><strong>{{ report.count }}</strong></div>
+<div class="tile"><small>Current source version</small><strong>{{ op.version }}</strong></div>
+<div class="tile"><small>External finance readiness</small><strong>Unknown</strong></div>
+<div class="tile"><small>Protected authorization</small><strong>None</strong></div>
+</section>
+<section class="workspace"><div class="main-column">
+<div class="panel">
+<p class="eyebrow">DOCUMENTED BASE CASE</p><h2>{{ '$' ~ baseline.recorded_operating_difference if baseline else 'Unavailable' }}</h2>
+{% if baseline %}
+<p class="muted">Reporting period: {{ baseline.reporting_period }}. This is annual revenue minus recorded expenses, not independently audited net profit or full lender underwriting.</p>
+{% for source in baseline.source_metrics %}
+<div class="evidence-row"><span>{{ source.metric|replace('_',' ')|title }}</span><small>Reviewed evidence {{ source.evidence_id }} · Original digest {{ source.original_sha256[:16] }}…</small></div>
+{% endfor %}
+{% else %}
+<p class="notice">An exact-period financial base with two linked uploaded originals and current reviewed evidence is required before this room can save an owner stress scenario. Enter and review actual annual records in the dossier first.</p>
+<a href="{{ url_for('opportunity',oid=op.id) }}#doc-upload" class="button">Go to original evidence intake →</a>
+{% endif %}</div>
+<div class="panel"><p class="eyebrow">RECORDED OWNER STRESSES</p><h2>Revisit the decisions, without rewriting history</h2>
+{% for record in report.records %}
+<article class="red-team-card">
+<p class="eyebrow">{{ record.freshness|replace('_',' ') }} · {{ record.schema_version }}</p>
+<h3>{{ record.name }}</h3><p>{{ record.rationale }}</p>
+<div class="evidence-row"><span>Original annual operating difference</span><strong>${{ record.recorded_operating_difference }}</strong></div>
+<div class="evidence-row"><span>Revenue multiplier</span><strong>{{ record.revenue_factor }}</strong></div>
+<div class="evidence-row"><span>Expense multiplier</span><strong>{{ record.expense_factor }}</strong></div>
+<div class="evidence-row"><span>Modeled annual operating difference</span><strong>${{ record.modeled_operating_difference }}</strong></div>
+<div class="evidence-row"><span>Modeled change from base</span><strong>${{ record.modeled_difference_from_base }}</strong></div>
+<p class="muted">Source revision {{ record.source_opportunity_revision }} · Recorded revision {{ record.recorded_opportunity_revision }} · Period {{ record.reporting_period }}.</p>
+{% if record.freshness!='CURRENT_SOURCE_VERSION' %}<p class="notice">Historical model: the opportunity has changed. Recheck current evidence and record a new scenario if still useful.</p>{% endif %}
+<small>Original snapshot {{ record.source_snapshot_digest[:20] }}… · Scenario {{ record.id }} · Model cannot authorize a purchase.</small>
+</article>
+{% else %}<p class="muted">No owner stress scenarios recorded. The app does not prefill invented market events or financial histories.</p>{% endfor %}
+</div></div>
+<aside class="side-column">
+<div class="panel"><p class="eyebrow">OWNER ASSUMPTION</p><h2>Record an explicit financial stress</h2>
+{% if baseline %}
+<form method="post" action="{{ url_for('record_red_team',oid=op.id) }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<input type="hidden" name="revision" value="{{ op.version }}">
+<label>Scenario name<input name="name" required maxlength="120" placeholder="Owner-defined operating stress"></label>
+<label>Why should we consider these assumptions?<textarea name="rationale" maxlength="1500" rows="4" required placeholder="Specify where this hypothesis comes from and what it cannot account for."></textarea></label>
+<label>Revenue multiplier, 0–3<input type="number" name="revenue_factor" min="0" max="3" step="0.0001" value="1" required></label>
+<label>Expense multiplier, 0–3<input type="number" name="expense_factor" min="0" max="3" step="0.0001" value="1" required></label>
+<p class="muted">1 means unchanged. For example, a reduction in the revenue multiplier means lower modeled revenue; this is not a claim that the reduction will occur. The recorded financial evidence is never overwritten.</p>
+<button type="submit" class="primary">Preserve owner stress and source snapshot</button>
+</form>
+{% else %}<p class="muted">This form unlocks when comparable, original-backed annual figures have been reviewed and saved.</p>{% endif %}
+</div><div class="panel"><p class="eyebrow">✧ SOULAANA</p><h2>Explain the stress</h2>
+<p class="muted">Soulaana can relate your real evidence, recorded assumption and model limitations; she will not claim this is a verified prediction or approval.</p>
+<a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='red_team') }}">Open Red Team explanation →</a>
+</div><div class="panel"><p class="eyebrow">BOUNDARY</p>
+<p>Hazards such as water rights, lease assignability, lost locations, insurance changes, taxes, balloon payments, or ATM vault replenishment require actual vertical-specific source and modeling contracts. This generic financial multiplier cannot stand in for them. Teller and Tower retain all external readiness and protected decisions.</p>
+</div></aside></section>{% endblock %}
