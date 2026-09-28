@@ -218,7 +218,7 @@ def evaluate_ob_mode_clearance(
             'risk_score': max(current_risk_score, 45),
             'required_actions': ['request_mode_action_clearance'],
             'human_reason': 'This OB mode does not allow that action.',
-            'soulaana_translation': f'Soulaana: {policy.get('label')} exists, but action {action} is not allowed in this mode.',
+            'soulaana_translation': f"Soulaana: {policy.get('label')} exists, but action {action} is not allowed in this mode.",
             'metadata': {'user_id': user_id, 'mode_key': mode_key, 'action': action, 'allowed_actions': allowed_actions},
         }
 
@@ -233,7 +233,7 @@ def evaluate_ob_mode_clearance(
             'risk_score': max(current_risk_score, 70),
             'required_actions': ['upgrade_clearance', 'owner_review'],
             'human_reason': 'User clearance is not high enough for this OB mode.',
-            'soulaana_translation': f'Soulaana: {policy.get('label')} needs {required_level} clearance. This user only has {user_clearance_level}.',
+            'soulaana_translation': f"Soulaana: {policy.get('label')} needs {required_level} clearance. This user only has {user_clearance_level}.",
             'metadata': {'user_id': user_id, 'mode_key': mode_key, 'required_clearance_level': required_level, 'user_clearance_level': user_clearance_level},
         }
 
@@ -360,7 +360,7 @@ def evaluate_ob_mode_clearance(
         'risk_score': current_risk_score,
         'required_actions': [],
         'human_reason': 'The Tower allowed this OB mode.',
-        'soulaana_translation': f'Soulaana: {policy.get('label')} is cleared. You are inside this mode only, not every neighboring room.',
+        'soulaana_translation': f"Soulaana: {policy.get('label')} is cleared. You are inside this mode only, not every neighboring room.",
         'metadata': {
             'user_id': user_id,
             'role': role,
