@@ -46,6 +46,9 @@ from .claim_register import (record_source_claim, record_owner_document_review,
     integrity_report, active_claims, owner_reviewed_source)
 from .diligence import diligence_snapshot, create_diligence_task
 from .financing import record_financing_option, financing_snapshot, FINANCING_EVIDENCE_KIND
+from .insurance import (INSURANCE_EVIDENCE_KIND, SOURCE_KINDS as INSURANCE_SOURCE_KINDS,
+    DOCUMENT_KINDS as INSURANCE_DOCUMENT_KINDS, COVERAGE_CODES as INSURANCE_COVERAGES,
+    record_insurance_document, insurance_snapshot, project_financing_with_insurance)
 from .comparables import (COMPARABLE_EVIDENCE_KIND, record_comparable,
     market_evidence_report)
 from .decision_desk import decision_dossier, record_owner_research_disposition
@@ -392,7 +395,7 @@ def create_app(config=None):
         return render_template("soulaana.html",op=op,
             context=soulaana_context(op,intent),intents=(
             ("overview","Overview"),("evidence","Evidence"),("diligence","Diligence"),
-            ("financing","Financing"),("valuation","Comparable Research"),("decision","Decision"),("economics","Economics"),("changes","What changed"),
+            ("financing","Financing"),("insurance","Insurance"),("valuation","Comparable Research"),("decision","Decision"),("economics","Economics"),("changes","What changed"),
             ("red_team","Red Team"),("next_action","Next action")))
 
     @app.post("/compare")
@@ -642,6 +645,70 @@ def create_app(config=None):
                 expected_revision=int(request.form.get("revision","")))
         return redirect(url_for("valuation_room",oid=oid),code=303)
 
+    @app.get("/opportunities/<oid>/insurance")
+    @login_required
+    def insurance_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        artifacts={a["id"]:a for a in op.get("artifacts",[])}
+        originals=[e for e in op.get("evidence",[])
+                   if e.get("kind") in INSURANCE_SOURCE_KINDS
+                   and e.get("status") in ("RECEIVED","DOCUMENT_SUPPORTED")
+                   and e.get("artifact_id") in artifacts]
+        report=insurance_snapshot(op)
+        from .financing import current_options
+        financing=current_options(op)
+        for entry in report["records"]:
+            entry["financing_overlays"]=(
+                [project_financing_with_insurance(op,entry["record"],q)
+                 for q in financing]
+                if entry["record"]["annual_premium"] is not None else []
+            )
+        return render_template("insurance.html",op=op,report=report,
+            originals=originals,artifacts=artifacts,
+            document_kinds=sorted(INSURANCE_DOCUMENT_KINDS),
+            coverage_codes=sorted(INSURANCE_COVERAGES),
+            financing_labels={q["id"]:q["lender_label"]+" / "+q["program_label"]
+                              for q in financing})
+
+    @app.post("/opportunities/<oid>/insurance/records")
+    @login_required
+    def insurance_record(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            # Verify the encrypted original's authenticated bytes and digest
+            # before allowing the source to support an owner transcription.
+            evidence_id=request.form.get("evidence_id","")
+            linked=next((e for e in op.get("evidence",[])
+                         if e.get("id")==evidence_id),None)
+            artifact=next((a for a in op.get("artifacts",[])
+                           if linked and a.get("id")==linked.get("artifact_id")),None)
+            if artifact is not None:
+                try: docstore.read(artifact)
+                except ValueError:
+                    abort(409,"Original insurance document unavailable or integrity check failed")
+            fields=("evidence_id","document_kind","carrier_label","broker_label",
+                    "source_locator","source_date","quote_valid_until",
+                    "effective_date","expiration_date","planned_closing_date",
+                    "annual_premium","upfront_premium_due","limits_note",
+                    "deductible_note","exclusion_note","supersedes","correction_reason")
+            data={key:request.form.get(key,"") for key in fields}
+            data["coverage_codes"]=request.form.getlist("coverage_codes")
+            data["upfront_in_financing_costs"]="upfront_in_financing_costs" in request.form
+            data["annual_in_operating_expenses"]="annual_in_operating_expenses" in request.form
+            revised,item=record_insurance_document(op,actor_ref=owner_actor(conn),**data)
+            save(conn,revised,"InsuranceDocumentRecorded",{
+                "insurance_record_id":item["id"],
+                "source_artifact_id":item["source_artifact_id"],
+                "source_sha256":item["source_sha256"],
+                "document_kind":item["document_kind"],
+                "supersedes":item["supersedes"],
+                "coverage_in_force":"UNKNOWN","insurer_contacted":False},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("insurance_room",oid=oid),code=303)
+
     @app.get("/opportunities/<oid>/financing")
     @login_required
     def financing_room(oid):
@@ -830,7 +897,7 @@ def create_app(config=None):
         with db() as conn:
             op=load(conn,oid)
             if not op: abort(404)
-            if kind not in ({e["kind"] for e in get_vertical(op["vertical"])["evidence"]} | {FINANCING_EVIDENCE_KIND, COMPARABLE_EVIDENCE_KIND}):
+            if kind not in ({e["kind"] for e in get_vertical(op["vertical"])["evidence"]} | {FINANCING_EVIDENCE_KIND, COMPARABLE_EVIDENCE_KIND, INSURANCE_EVIDENCE_KIND}):
                 abort(400,"Unregistered evidence category")
             from werkzeug.utils import secure_filename
             filename=secure_filename(file.filename)

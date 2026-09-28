@@ -45,3 +45,10 @@
 /* BBX074 Red Team: recorded owner hypotheses remain visually distinct from original facts. */
 .red-team-card{background:#293349;border:1px solid #66708d;border-radius:15px;padding:18px;margin:15px 0;overflow-wrap:anywhere}
 .red-team-card h3{margin:.4rem 0}.red-team-card .evidence-row{gap:14px}.red-team-card .evidence-row strong{text-align:right}.red-team-card small{display:block;color:#c6d3e3;margin-top:12px}
+
+/* BBX079 insurance original cards and accessible coverage controls. */
+.insurance-checkboxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:.6rem 0}
+.insurance-checkboxes label{display:flex;gap:8px;align-items:flex-start;border:1px solid #57637a;border-radius:9px;padding:8px;font-size:.9rem;overflow-wrap:anywhere}
+.insurance-checkboxes input[type=checkbox]{width:auto;min-width:18px;height:18px;margin-top:2px}
+fieldset{min-width:0;border:1px solid #59647a;border-radius:12px;margin:10px 0;padding:12px}
+.financing-option .diligence-task{margin-top:14px;border-top:1px solid #59647a;padding-top:12px}

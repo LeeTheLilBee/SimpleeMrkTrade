@@ -18,6 +18,7 @@ from .tower_action_draft import stored_source_snapshot, BuyBoxTowerActionPrepara
 from .diligence import diligence_snapshot
 from .dealroom import current_tasks
 from .financing import current_options
+from .insurance import insurance_snapshot
 from .comparables import current_comparables
 
 CHOICES=frozenset({"WATCH", "DEFER", "REQUEST_EVIDENCE", "DECLINE"})
@@ -33,6 +34,7 @@ def _text(value,code,limit):
 def decision_dossier(op):
     ev=evaluate(op)
     diligence=diligence_snapshot(op)
+    insurance=insurance_snapshot(op)
     notes=op.get("research_decisions",[])
     decisions=[]
     for d in reversed(notes):
@@ -50,6 +52,12 @@ def decision_dossier(op):
         "unresolved_source_discrepancies":ev["deal_integrity"]["unresolved_count"],
         "financial_status":ev["financials"]["status"],
         "actual_recorded_financing_options":len(current_options(op)),
+        "insurance_record_count":insurance["current_document_count"],
+        "insurance_source_recheck_count":sum(
+            bool(item["assessment"]["review_flags"])
+            for item in insurance["records"]),
+        "insurance_coverage_in_force":"UNKNOWN",
+        "insurance_lender_conditions_verified":False,
         "actual_recorded_comparables":len(current_comparables(op)),
         "critical_diligence_outstanding":diligence["critical_outstanding"],
         "actual_open_tasks":sum(t["status"] in ("OPEN","WAITING") for t in current_tasks(op)),
@@ -99,6 +107,9 @@ def record_owner_research_disposition(db, op, *, choice, rationale, actor_ref,
         "captured_unresolved_discrepancies":assessment["unresolved_source_discrepancies"],
         "captured_financial_status":assessment["financial_status"],
         "captured_option_count":assessment["actual_recorded_financing_options"],
+        "captured_insurance_record_count":assessment["insurance_record_count"],
+        "captured_insurance_source_recheck_count":assessment["insurance_source_recheck_count"],
+        "captured_insurance_coverage_state":"UNKNOWN",
         "captured_comparable_count":assessment["actual_recorded_comparables"],
         "teller_money_ready":"UNKNOWN","teller_management_ready":"UNKNOWN",
         "tower_authorization":None,"authorizes_purchase":False,
