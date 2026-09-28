@@ -17,6 +17,9 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
         "/ob/review-center",
         "/ob/owner-console",
         "/ob/owner-dashboard",
+        # OBDATA003: the exact read-only source for all protected OB rooms.
+        # Never approve a wildcard or substitute a demonstration feed.
+        "/ob/engine-feed-snapshot.json",
         # OBSIM hosted synthetic owner rehearsal: exact enumerated paths only.
         "/ob/owner-rehearsal",
         "/ob/owner-rehearsal/status.json",
@@ -97,6 +100,10 @@ def register_ob_protected_route_enforcement(app):
 
         if not is_approved_ob_web_room(path):
             abort(403)
+
+        # Snapshot is a private, read-only same-origin GET/HEAD contract.
+        if path == "/ob/engine-feed-snapshot.json" and request.method not in {"GET", "HEAD"}:
+            abort(405)
 
         if not owner_session_active():
             return redirect("/tower/login")
