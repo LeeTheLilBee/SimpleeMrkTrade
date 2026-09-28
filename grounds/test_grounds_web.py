@@ -769,7 +769,8 @@ class GroundsWebTests(unittest.TestCase):
             {"work_ref":"confirm-web","outcome":"resolved",
              "expected_revision":revision,"note":""},
         )
-        self.assertEqual(denied["status"],"404 Not Found")
+        # Authenticated property staff are in-scope to this work but cannot submit a resident response.
+        self.assertEqual(denied["status"],"409 Conflict")
         key=str(uuid4())
         result=self.post(
             "/grounds/api/work-completion",self.resident,
