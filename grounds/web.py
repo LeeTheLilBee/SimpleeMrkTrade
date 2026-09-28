@@ -28,6 +28,7 @@ from .communications import GroundsCommunications
 from .leasing import GroundsLeasing
 from .experience import GroundsExperience
 from .work_thread import GroundsWorkThread
+from .work_completion import GroundsWorkCompletion
 from .move_concierge import GroundsMoveConcierge
 from .delivery_desk import GroundsDeliveryDesk
 from .privacy_log import GroundsResidentPrivacyLog
@@ -77,6 +78,7 @@ _ROUTES={
     ("GET","/grounds/api/technicians"),
     ("POST","/grounds/api/work"),
     ("POST","/grounds/api/work-message"),
+    ("POST","/grounds/api/work-completion"),
     ("POST","/grounds/api/move-task"),
     ("POST","/grounds/api/work/assign"),
     ("POST","/grounds/api/notice-read"),
@@ -247,6 +249,7 @@ class GroundsWebApp:
         self.stewardship=GroundsStewardship(store)
         self.experience=GroundsExperience(store)
         self.work_thread=GroundsWorkThread(store)
+        self.work_completion=GroundsWorkCompletion(store)
         self.move_concierge=GroundsMoveConcierge(store)
         self.delivery_desk=GroundsDeliveryDesk(store)
         self.privacy=GroundsResidentPrivacyLog(store)
@@ -259,7 +262,7 @@ class GroundsWebApp:
              kind,key,*refs],ensure_ascii=False,separators=(",",":"),
         ).encode("utf-8")
         digest=hmac.new(self.csrf._secret,message,hashlib.sha256).hexdigest()[:40]
-        prefixes={"work":"work_","appointment":"appt_","message":"msg_","move_task":"move_"}
+        prefixes={"work":"work_","appointment":"appt_","message":"msg_","move_task":"move_","completion":"complete_"}
         if kind not in prefixes:
             raise GroundsWebConfigurationError("unsupported private create kind")
         return prefixes[kind]+digest
@@ -527,6 +530,19 @@ class GroundsWebApp:
                 actor,property_ref=property_ref,unit_ref=unit_ref,
                 phase=phase,task_ref=task_ref,status=status,
                 expected_revision=revision,event_ref=event_ref,
+            )
+        if path=="/grounds/api/work-completion":
+            _exact(body,{"work_ref","outcome","expected_revision"},{"note"})
+            work_ref=_ref(body["work_ref"],"work_ref")
+            outcome=_bounded_text(body["outcome"],"outcome",32)
+            revision=_revision(body["expected_revision"])
+            note=_bounded_text(body.get("note",""),"note",800) if body.get("note","") else ""
+            event_ref=self._resource_ref(
+                actor,"completion",_idempotency_key(environ),work_ref,outcome,
+            )
+            return self.work_completion.respond(
+                actor,work_ref=work_ref,outcome=outcome,
+                expected_revision=revision,event_ref=event_ref,note=note,
             )
         if path=="/grounds/api/work-message":
             _exact(body,{"work_ref","body","audience"})

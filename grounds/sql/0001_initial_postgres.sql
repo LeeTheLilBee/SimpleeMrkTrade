@@ -157,6 +157,24 @@ CREATE TABLE IF NOT EXISTS work_messages (
 );
 CREATE INDEX IF NOT EXISTS work_messages_scope_idx
   ON work_messages(work_ref,property_ref,audience,created_at);
+CREATE TABLE IF NOT EXISTS work_completion_events (
+  event_ref TEXT PRIMARY KEY,
+  work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  unit_ref TEXT NOT NULL,
+  lease_ref TEXT,
+  resident_ref TEXT NOT NULL,
+  outcome TEXT NOT NULL CHECK(outcome IN ('resolved','still_needs_attention')),
+  note TEXT NOT NULL DEFAULT '' CHECK(length(note)<=800),
+  from_revision INTEGER NOT NULL CHECK(from_revision>0),
+  to_revision INTEGER NOT NULL CHECK(to_revision=from_revision+1),
+  resulting_state TEXT NOT NULL CHECK(resulting_state IN ('closed','reopened')),
+  recorded_at TEXT NOT NULL,
+  FOREIGN KEY(unit_ref,property_ref) REFERENCES units(unit_ref,property_ref),
+  FOREIGN KEY(lease_ref) REFERENCES leases(lease_ref)
+);
+CREATE INDEX IF NOT EXISTS work_completion_work_idx
+  ON work_completion_events(work_ref,to_revision,recorded_at);
 CREATE TABLE IF NOT EXISTS emergency_reviews (
   work_ref TEXT PRIMARY KEY REFERENCES work_orders(work_ref),
   urgency TEXT NOT NULL CHECK(urgency IN ('routine','priority','emergency')),

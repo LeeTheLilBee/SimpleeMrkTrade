@@ -727,6 +727,11 @@
         await showWorkConversation(card,work);
       }));
       if (data.role === "resident") {
+        if (work.state === "confirmation" && work.revision !== undefined) {
+          actions.append(makeButton("Confirm or reopen this repair", async () => {
+            showCompletionForm(card,work);
+          }));
+        }
         actions.append(makeButton("Request an appointment", async () => showAppointmentForm(card,work)));
         actions.append(makeButton("Entry preference", async () => showPreferenceForm(card,work)));
         actions.append(makeButton("Appointment status", async () => showAppointments(card,work)));
@@ -760,6 +765,47 @@
       card.append(actions); target.append(card);
     }
   }
+  function showCompletionForm(card,work) {
+    card.querySelector(".mini-form")?.remove();
+    const form=el("form",null,"mini-form work-completion-form");
+    form.append(el("p","Does this repair look resolved? Your response updates the Grounds work record only. It is not a waiver, inspection certification or payment decision.","footnote"));
+    const label=el("label","Optional note for the property team");
+    const note=el("textarea");note.maxLength=800;note.rows=3;
+    label.append(note);form.append(label);
+    const actions=el("div",null,"actions");
+    const resolved=el("button","Yes · looks resolved","primary");
+    const needs=el("button","No · still needs attention","outline");
+    resolved.type="button";needs.type="button";actions.append(resolved,needs);form.append(actions);
+    let pending=null;
+    async function submit(outcome,button) {
+      if(state.busy) return;
+      state.busy=true;resolved.disabled=true;needs.disabled=true;
+      try {
+        const payload={
+          work_ref:work.work_ref,outcome,
+          expected_revision:work.revision,note:note.value,
+        };
+        const fingerprint=JSON.stringify(payload);
+        if(!pending || pending.fingerprint!==fingerprint)
+          pending={fingerprint,key:newIdempotencyKey()};
+        const result=await request("work-completion",payload,pending.key);
+        pending=null;
+        message(outcome==="resolved" ?
+          "You confirmed the repair looks resolved. Grounds closed the request; this did not waive any rights." :
+          "You told the property team this still needs attention. Grounds reopened the request.");
+        form.remove();
+        await refresh();
+      } catch(error) {
+        message(error.message,true);
+      } finally {
+        resolved.disabled=false;needs.disabled=false;state.busy=false;
+      }
+    }
+    resolved.addEventListener("click",()=>submit("resolved",resolved));
+    needs.addEventListener("click",()=>submit("still_needs_attention",needs));
+    card.append(form);
+  }
+
   async function showWorkConversation(card,work) {
     const generation=state.loadGeneration;
     const property=state.property;
@@ -781,6 +827,11 @@
       if(item.kind==="state")
         entry.append(el("strong","Status · " + item.state.replaceAll("_"," ")),
           el("p","Recorded action: " + item.action),
+          el("span",asDate(item.occurred_at),"meta"));
+      else if(item.kind==="resident_completion")
+        entry.append(el("strong","Resident completion response · " +
+          item.outcome.replaceAll("_"," ")),
+          el("p",item.note || "No additional note recorded."),
           el("span",asDate(item.occurred_at),"meta"));
       else
         entry.append(el("strong",item.role.replaceAll("_"," ") +

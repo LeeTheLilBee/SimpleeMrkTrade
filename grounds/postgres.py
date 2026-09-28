@@ -32,6 +32,7 @@ _REQUIRED_COLUMNS={
     "lease_members":("lease_ref","property_ref","unit_ref","subject_ref","status"),
     "work_orders":("work_ref","property_ref","unit_ref","lease_ref","revision","state"),
     "work_messages":("message_ref","work_ref","property_ref","author_ref","audience","body"),
+    "work_completion_events":("event_ref","work_ref","property_ref","unit_ref","lease_ref","resident_ref","outcome","from_revision","to_revision","resulting_state"),
     "move_task_events":("event_ref","lease_ref","property_ref","unit_ref","subject_ref","phase","task_ref","status","revision"),
     "resident_access_events":("access_ref","lease_ref","property_ref","unit_ref","actor_ref","resource_kind","resource_ref"),
     "property_notices":("notice_ref","property_ref","unit_ref","lease_ref"),
@@ -48,6 +49,7 @@ _REQUIRED_INDEXES=frozenset((
     "resource_event_one_reversal","acquisition_receipt_opportunity",
     "delivery_receipts_property","delivery_receipts_event","work_messages_scope_idx",
     "move_task_lease_subject_idx","resident_access_lease_subject_idx",
+    "work_completion_work_idx",
 ))
 
 class PostgresGroundsConfigurationError(ValueError):

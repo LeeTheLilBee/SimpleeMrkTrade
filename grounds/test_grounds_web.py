@@ -82,6 +82,7 @@ class GroundsWebTests(unittest.TestCase):
         if method=="POST" and url.path in (
             "/grounds/api/work","/grounds/api/appointment/request",
             "/grounds/api/work-message",
+            "/grounds/api/work-completion",
             "/grounds/api/move-task",
         ):
             key=str(uuid4()) if idempotency=="auto" else idempotency
@@ -730,6 +731,74 @@ class GroundsWebTests(unittest.TestCase):
             "/grounds/api/privacy-history?property_ref=p1&unit_ref=u1",actor=self.resident,
         )
         self.assertEqual(denied["status"],"404 Not Found")
+
+
+    def test_resident_completion_http_closes_or_reopens_only_confirmation_work(self):
+        tech=fixture_scope("completion-tech","maintenance_technician",("p1",),(),("confirm-web",))
+        created=self.ops.submit_maintenance(
+            self.resident,work_ref="confirm-web",
+            intake=MaintenanceIntake("p1","u1","plumbing",
+                                     "Synthetic resident completion endpoint",False,
+                                     "contact_first"),
+        )
+        revision=1  # submit_maintenance persists initial revision 1; response omits internals
+        for state in ("received","under_review","scheduled"):
+            revision=self.ops.advance_work_order(
+                self.manager,work_ref="confirm-web",next_state=state,
+                expected_revision=revision,
+            )["revision"]
+        revision=self.ops.assign_work_order(
+            self.manager,work_ref="confirm-web",technician=tech,
+            expected_revision=revision,
+        )["revision"]
+        revision=self.ops.advance_work_order(
+            tech,work_ref="confirm-web",next_state="in_progress",
+            expected_revision=revision,
+        )["revision"]
+        revision=self.ops.advance_work_order(
+            tech,work_ref="confirm-web",next_state="completed",
+            expected_revision=revision,
+        )["revision"]
+        revision=self.ops.advance_work_order(
+            self.manager,work_ref="confirm-web",next_state="confirmation",
+            expected_revision=revision,
+        )["revision"]
+
+        denied=self.post(
+            "/grounds/api/work-completion",self.manager,
+            {"work_ref":"confirm-web","outcome":"resolved",
+             "expected_revision":revision,"note":""},
+        )
+        # Staff cannot impersonate the resident completion response; endpoint fails closed.
+        self.assertEqual(denied["status"],"404 Not Found")
+        key=str(uuid4())
+        result=self.post(
+            "/grounds/api/work-completion",self.resident,
+            {"work_ref":"confirm-web","outcome":"still_needs_attention",
+             "expected_revision":revision,"note":"Still leaking after the repair."},
+            idempotency=key,
+        )
+        self.assertEqual(result["status"],"201 Created")
+        self.assertEqual(result["json"]["state"],"reopened")
+        self.assertFalse(result["json"]["legal_waiver_created"])
+        replay=self.post(
+            "/grounds/api/work-completion",self.resident,
+            {"work_ref":"confirm-web","outcome":"still_needs_attention",
+             "expected_revision":revision,"note":"Still leaking after the repair."},
+            idempotency=key,
+        )
+        self.assertTrue(replay["json"]["replayed"])
+        thread=self.invoke(
+            "/grounds/api/work-thread?work_ref=confirm-web",actor=self.resident,
+        )
+        self.assertEqual(thread["status"],"200 OK")
+        self.assertEqual(thread["json"]["resident_completion_response_count"],1)
+        response=[x for x in thread["json"]["timeline"]
+                  if x["kind"]=="resident_completion"][0]
+        self.assertEqual(response["outcome"],"still_needs_attention")
+        self.assertEqual(response["state"],"reopened")
+        self.assertNotIn("resident",str(response).lower().replace("resident_completion",""))
+
 
 
 if __name__=="__main__":
