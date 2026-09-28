@@ -35,7 +35,9 @@
       .get("ob_arrival") === "fresh";
     const snapshot = state().snapshot();
     if (!fresh && internalReturn()
-      && snapshot.ephemeral.checkIn.status !== "not_started") {
+      && snapshot.ephemeral.checkIn.status !== "not_started"
+      && snapshot.persistent.beta.sopAcknowledgedVersion === document.body.dataset.obSopVersion
+      && snapshot.persistent.beta.whatsNewAcknowledgedVersion === document.body.dataset.obWhatsNewVersion) {
       document.documentElement.classList.remove("ob-entry-pending");
       return Promise.resolve(false);
     }
@@ -131,7 +133,10 @@
           }
         });
         box.addEventListener("change", e => {
-          if (e.target.matches('input[type="radio"]')) values[e.target.name] = e.target.value;
+          if (e.target.matches('input[type="radio"]')) {
+            values[e.target.name] = e.target.value;
+            skipped = false;
+          }
           if (e.target.matches("[data-accept]")) acceptedSop = e.target.checked;
           if (e.target.matches("[data-remember]")) remember = e.target.checked;
         });
