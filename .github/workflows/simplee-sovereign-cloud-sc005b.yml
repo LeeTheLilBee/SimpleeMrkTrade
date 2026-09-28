@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc005b-backup-idempotency
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-sovereign-cloud-sc005b.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC005B_DURABLE_BACKUP.md'
 
