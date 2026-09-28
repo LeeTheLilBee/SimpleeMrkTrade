@@ -660,10 +660,11 @@ def create_app(config=None):
         from .financing import current_options
         financing=current_options(op)
         for entry in report["records"]:
-            entry["financing_overlays"]=[
-                project_financing_with_insurance(op,entry["record"],q)
-                for q in financing
-            ]
+            entry["financing_overlays"]=(
+                [project_financing_with_insurance(op,entry["record"],q)
+                 for q in financing]
+                if entry["record"]["annual_premium"] is not None else []
+            )
         return render_template("insurance.html",op=op,report=report,
             originals=originals,artifacts=artifacts,
             document_kinds=sorted(INSURANCE_DOCUMENT_KINDS),
