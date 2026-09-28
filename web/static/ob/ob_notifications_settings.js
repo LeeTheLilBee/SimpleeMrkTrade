@@ -2,7 +2,7 @@
 
 (function () {
   const SETTINGS_KEY = "ob.v20.settings";
-  const READ_KEY = "ob.v20.readNotifications";
+  const READ_KEY = "ob.beta.x111.read.v1";
 
 
 
@@ -13,40 +13,19 @@
     soulaanaIntensity: "auntie"
   };
 
-  const notifications = [
-    {
-      id: "manual-live-mu",
-      title: "Manual Live candidate ready",
-      body: "MU CALL · Moderate risk · Review Trade Center before any broker action.",
-      time: "Now",
-      type: "manual",
-      href: "/ob/trade-center"
-    },
-    {
-      id: "sector-crowding",
-      title: "Sector crowding watch",
-      body: "Semiconductors are bright, but OB wants correlation and repeat-risk visible before escalation.",
-      time: "Recent",
-      type: "risk",
-      href: "/ob/market-map"
-    },
-    {
-      id: "review-receipt",
-      title: "Review receipt pending",
-      body: "Manual Live and review records should be classified as official, test, private proof, or quarantined.",
-      time: "Today",
-      type: "review",
-      href: "/ob/review-center"
-    },
-    {
-      id: "tower-boundary",
-      title: "Tower boundary reminder",
-      body: "Live Auto Locked remains locked. OB can explain, prepare, and record. Owner places manually at broker.",
-      time: "Always",
-      type: "tower",
-      href: "/ob/owner-console"
-    }
-  ];
+  // All historical V20 demo notifications are retired. Read only the new canonical
+  // beta intelligence projection, or show the genuinely empty state.
+  let notifications = [];
+  function refreshNotifications() {
+    const api = window.OBBetaExperience;
+    const rows = api && typeof api.alertRows === "function" ? api.alertRows() : [];
+    notifications = rows.map(item => ({
+      id: item.id, title: item.title, body: item.detail,
+      time: item.as_of, type: item.kind, href: item.href,
+      dismissible: item.dismissible
+    }));
+    return notifications;
+  }
 
   function loadSettings() {
     try {
@@ -63,20 +42,20 @@
 
   function loadRead() {
     try {
-      return JSON.parse(localStorage.getItem(READ_KEY) || "[]");
+      return JSON.parse(sessionStorage.getItem(READ_KEY) || "[]");
     } catch (error) {
       return [];
     }
   }
 
   function saveRead(readIds) {
-    localStorage.setItem(READ_KEY, JSON.stringify(Array.from(new Set(readIds))));
+    sessionStorage.setItem(READ_KEY, JSON.stringify(Array.from(new Set(readIds)).filter(id => !String(id).startsWith("source:"))));
     updateNotificationBadges();
   }
 
   function unreadCount() {
     const read = loadRead();
-    return notifications.filter(item => !read.includes(item.id)).length;
+    return refreshNotifications().filter(item => !item.dismissible || !read.includes(item.id)).length;
   }
 
   function applySettings(settings) {
@@ -131,6 +110,7 @@
   }
 
   function openNotificationsDrawer() {
+    refreshNotifications();
     const read = loadRead();
 
     const body = `
@@ -140,8 +120,8 @@
       </div>
 
       <div class="ob-notification-list" style="margin-top: 12px;">
-        ${notifications.map(item => {
-          const isUnread = !read.includes(item.id);
+        ${notifications.length ? notifications.map(item => {
+          const isUnread = !item.dismissible || !read.includes(item.id);
           return `
             <div class="ob-notification-card ${isUnread ? "unread" : ""}">
               <div class="ob-notification-top">
@@ -155,13 +135,11 @@
                 <button class="ob-drawer-button" data-notification-open="${item.href}" data-notification-read="${item.id}">
                   Open room
                 </button>
-                <button class="ob-drawer-button aqua" data-notification-read="${item.id}">
-                  Mark read
-                </button>
+                ${item.dismissible ? '<button class="ob-drawer-button aqua" data-notification-read="' + item.id + '">Acknowledge</button>' : '<span>Safety hold · cannot dismiss</span>'}
               </div>
             </div>
           `;
-        }).join("")}
+        }).join("") : '<div class="ob-notification-card"><strong>No verified alerts right now.</strong><p>Previous demonstration tickers and placeholder candidates are retired.</p></div>'}
       </div>
 
       <div class="ob-notification-actions" style="margin-top: 12px;">
@@ -176,7 +154,7 @@
     document.querySelectorAll("[data-notification-read]").forEach(button => {
       button.addEventListener("click", function () {
         const id = this.getAttribute("data-notification-read");
-        saveRead([...loadRead(), id]);
+        if (!String(id).startsWith("source:")) saveRead([...loadRead(), id]);
 
         const openHref = this.getAttribute("data-notification-open");
         if (openHref) {
@@ -190,7 +168,7 @@
     const markAll = document.getElementById("obMarkAllNotificationsRead");
     if (markAll) {
       markAll.addEventListener("click", function () {
-        saveRead(notifications.map(item => item.id));
+        saveRead(notifications.filter(item => item.dismissible).map(item => item.id));
         openNotificationsDrawer();
       });
     }
@@ -387,7 +365,7 @@
   }
 
   function buildFloatButtons() {
-    if (document.getElementById("obNotifyFloat")) return;
+    if (document.getElementById("obNotifyFloat") || window.OBBetaExperience) return;
 
     const wrap = document.createElement("div");
     wrap.id = "obNotifyFloat";
@@ -417,7 +395,7 @@
   document.addEventListener("DOMContentLoaded", boot);
 
   window.OB_NOTIFICATIONS_SETTINGS_V20 = {
-    notifications,
+    get notifications() { return refreshNotifications(); },
     loadSettings,
     saveSettings,
     openNotificationsDrawer,
