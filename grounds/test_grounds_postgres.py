@@ -18,6 +18,7 @@ from uuid import uuid4
 from grounds.access import AccessDenied
 from grounds.acquisition_handoff import GroundsAcquisitionHandoff, SCHEMA_VERSION as CLOSE_SCHEMA
 from grounds.delivery import GroundsDeliveryReceipts, SCHEMA_VERSION as DELIVERY_SCHEMA
+from grounds.delivery_desk import GroundsDeliveryDesk
 from grounds.communications import GroundsCommunications
 from grounds.maintenance import MaintenanceIntake
 from grounds.operations import GroundsConflict, GroundsOperations
@@ -669,6 +670,32 @@ class PostgresGroundsTests(unittest.TestCase):
             concierge.resident_checklist(
                 self.resident,property_ref=self.id,unit_ref=self.u,
             )
+
+
+    def test_real_postgres_staff_delivery_desk_requires_exact_grant(self):
+        desk=GroundsDeliveryDesk(self.store)
+        item=desk.staff_status(self.manager,property_ref=self.id)
+        self.assertEqual(item["total_local_intents"],0)
+        self.assertFalse(item["provider_currently_connected"])
+        self.assertFalse(item["retry_dispatch_connected"])
+        self.assertFalse(item["emergency_dispatch_confirmed"])
+        self.assertEqual(item["visible_items"],[])
+        with self.assertRaises(AccessDenied):
+            desk.staff_status(self.resident,property_ref=self.id)
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda env:env["test.fixture.actor"],
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        result={}
+        def start(status,headers):
+            result["status"]=status
+        raw=b"".join(app({
+            "REQUEST_METHOD":"GET","PATH_INFO":"/grounds/api/delivery-desk",
+            "QUERY_STRING":"property_ref="+self.id,
+            "wsgi.input":io.BytesIO(b""),"test.fixture.actor":self.manager,
+        },start))
+        self.assertEqual(result["status"],"200 OK")
+        self.assertFalse(json.loads(raw)["provider_currently_connected"])
 
 
 if __name__=="__main__":
