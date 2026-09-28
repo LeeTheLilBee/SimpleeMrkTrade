@@ -464,5 +464,39 @@ class GroundsWebTests(unittest.TestCase):
         self.assertFalse(after["recipient_delivery_proven"])
 
 
+    def test_leasing_board_is_property_scoped_and_excludes_vault_contacts(self):
+        from grounds.leasing import GroundsLeasing
+        leasing=GroundsLeasing(self.store)
+        leasing.register_prospect(
+            self.manager,property_ref="p1",prospect_ref="opaque-prospect",
+            contact_vault_ref="private-vault-reference",desired_unit_ref="u1",
+        )
+        self.assertEqual(self.invoke(
+            "/grounds/api/leasing?property_ref=p1",actor=self.resident,
+        )["status"],"404 Not Found")
+        self.assertEqual(self.invoke(
+            "/grounds/api/leasing?property_ref=p1",actor=self.outsider,
+        )["status"],"404 Not Found")
+        self.assertEqual(self.invoke(
+            "/grounds/api/leasing?property_ref=p1&contact_vault_ref=x",actor=self.manager,
+        )["status"],"400 Bad Request")
+        self.assertEqual(self.invoke(
+            "/grounds/api/leasing?property_ref=p1",
+        )["status"],"401 Unauthorized")
+        response=self.invoke("/grounds/api/leasing?property_ref=p1",actor=self.manager)
+        self.assertEqual(response["status"],"200 OK")
+        self.assertEqual(response["headers"]["Cache-Control"],"no-store, private, max-age=0")
+        view=response["json"]
+        self.assertEqual(view["source"],"grounds")
+        self.assertEqual(view["property_ref"],"p1")
+        self.assertEqual(view["prospects"][0]["prospect_ref"],"opaque-prospect")
+        self.assertNotIn("contact_vault_ref",str(view))
+        self.assertNotIn("private-vault-reference",str(view))
+        self.assertFalse(view["application_decisions_enabled"])
+        self.assertFalse(view["vault_contact_open_enabled"])
+        self.assertFalse(view["notifications_delivered"])
+        self.assertIsNone(view["advertised_rent"])
+
+
 if __name__=="__main__":
     unittest.main()
