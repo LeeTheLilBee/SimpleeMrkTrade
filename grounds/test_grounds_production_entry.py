@@ -67,6 +67,31 @@ class ProductionEntryTests(unittest.TestCase):
                 ):
                     create_wsgi_application()
 
+    def test_tower_receiver_alone_cannot_authorize_tenant_runtime(self):
+        with patch.dict(os.environ,{
+            "GROUNDS_PRIVATE_POSTGRES_URL":"postgresql://fake/private",
+            "GROUNDS_CSRF_SECRET_HEX":bytes(range(32)).hex(),
+        },clear=True):
+            class TowerWithoutOwnerOperationalRelease:
+                @staticmethod
+                def create_certified_grounds_receiver():
+                    return lambda environ:None
+                @staticmethod
+                def create_certified_grounds_staff_directory():
+                    return lambda actor,property_ref:[]
+                @staticmethod
+                def create_certified_grounds_staff_resolver():
+                    return lambda *args:None
+            with patch("grounds.production_entry.import_module",
+                       return_value=TowerWithoutOwnerOperationalRelease()):
+                with patch("grounds.production_entry.PostgresGroundsStore",
+                           side_effect=AssertionError("DB must stay unopened")) as store:
+                    with self.assertRaisesRegex(
+                        GroundsProductionUnavailable,"independent Grounds operational release",
+                    ):
+                        create_wsgi_application()
+                    store.assert_not_called()
+
     def test_preflight_database_failure_never_leaks_connection_string(self):
         dsn="postgresql://not-real-secret:private@example.invalid/test"
         with patch.dict(os.environ,{
@@ -83,6 +108,14 @@ class ProductionEntryTests(unittest.TestCase):
                 @staticmethod
                 def create_certified_grounds_staff_resolver():
                     return lambda actor,property_ref,work_ref,technician_ref:None
+                @staticmethod
+                def create_certified_grounds_operational_release_guard():
+                    class FictionalGuard:
+                        def __call__(self,environ):
+                            return False
+                        def health_check(self):
+                            return False
+                    return FictionalGuard()
             with patch("grounds.production_entry.import_module",
                        return_value=FutureTower()):
                 with patch("grounds.production_entry.GroundsWebApp",

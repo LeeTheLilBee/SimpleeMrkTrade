@@ -22,11 +22,22 @@ ENV = {
 }
 
 
+def _test_guard():
+    class FictionalGuard:
+        def __call__(self,environ):
+            return False
+        def health_check(self):
+            return False
+    return FictionalGuard()
+
+
 def _certified_factories():
     return SimpleNamespace(
         create_certified_grounds_receiver=lambda: (lambda environ: None),
         create_certified_grounds_staff_directory=lambda: (lambda actor, prop: []),
         create_certified_grounds_staff_resolver=lambda: (lambda *args: None),
+        # Synthetic factory is used solely by this isolated error-path test.
+        create_certified_grounds_operational_release_guard=lambda: _test_guard(),
     )
 
 

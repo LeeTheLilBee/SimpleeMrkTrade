@@ -20,6 +20,7 @@ import os
 from collections.abc import Callable
 
 from .postgres import PostgresGroundsStore
+from .operational_release import GroundsOperationalReleaseGate
 from .web import GroundsWebApp
 
 
@@ -67,13 +68,32 @@ def create_wsgi_application():
     )):
         raise GroundsProductionUnavailable("certified Tower adapters unavailable")
     try:
+        # Release is independent of Tower login and of DB readiness. It is
+        # authored by an independently approved Tower-owned certification
+        # receiver, never self-reported configuration or this app's checklist.
+        release_module=import_module("tower.grounds_operational_release")
+        release_factory=getattr(
+            release_module,"create_certified_grounds_operational_release_guard",
+        )
+        if not isinstance(release_factory,Callable):
+            raise TypeError("independent release authority unavailable")
+        release_authority=release_factory()
+        if (not isinstance(release_authority,Callable)
+            or not isinstance(getattr(release_authority,"health_check",None),Callable)):
+            raise TypeError("independent release authority unavailable")
+    except Exception:
+        raise GroundsProductionUnavailable(
+            "independent Grounds operational release authority is not implemented/certified"
+        ) from None
+    try:
         # Construct inside the sanitized failure boundary as well: adapter
         # preflight may reject malformed private connection configuration.
         store=PostgresGroundsStore(dsn)
-        return GroundsWebApp(
+        app=GroundsWebApp(
             store,tower_receiver=receiver,staff_directory=staff_directory,
             staff_resolver=staff_resolver,csrf_secret=secret,local_fixture_only=False,
         )
+        return GroundsOperationalReleaseGate(app,release_authority)
     except Exception as exc:
         # Generic operator error. Real migration/connection details stay private
         # and should be sent only to an independently approved secure log system.
