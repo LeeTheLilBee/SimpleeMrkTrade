@@ -16,6 +16,7 @@ import sqlite3
 
 from .tower_action_draft import stored_source_snapshot, BuyBoxTowerActionPreparationError
 from .tower_evidence import inspect_untrusted_response, HandoffPreparationError
+from .external_proof_gate import _deal_fingerprint
 
 class VaultReceiptError(ValueError):
     pass
@@ -62,7 +63,8 @@ def record_authenticated_archival_receipt(db,op,*,packet,raw_response,trusted_re
         "kind":"VAULT_CANONICAL_ARCHIVAL","issuer":"tower-vault-authenticated-corridor",
         "receipt_ref":response["archival_receipt_id"],"purpose":"acquisition-evidence-archival",
         "source_opportunity_id":src["opportunity_id"],"source_opportunity_revision":src["opportunity_revision"],
-        "source_snapshot_digest":src["input_snapshot_digest"],"evidence_id":response["evidence_id"],
+        "source_snapshot_digest":src["input_snapshot_digest"],"deal_fingerprint":_deal_fingerprint(op),
+        "evidence_id":response["evidence_id"],
         "source_document_id":packet["document"]["source_document_id"],"verified_sha256":response["verified_sha256"],
         "vault_document_ref":response["vault_document_ref"],"vault_version_ref":response["vault_version_ref"],
         "decision_snapshot_id":snapshot_id,"verified_at":now.astimezone(timezone.utc).isoformat(),
