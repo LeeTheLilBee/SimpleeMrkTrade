@@ -48,6 +48,22 @@ class GroundsWorkThread:
                 raise AccessDenied("staff-only note unavailable")
             if row["state"]=="closed":
                 raise GroundsConflict("closed work does not accept new conversation posts")
+            # Read the exact idempotency identity BEFORE attempting an INSERT.
+            # A PostgreSQL uniqueness violation aborts its transaction; do
+            # not query inside an already-aborted PG transaction on retry.
+            prior=db.execute(
+                """SELECT work_ref,property_ref,author_ref,author_role,audience,body
+                   FROM work_messages WHERE message_ref=?""",(message_ref,),
+            ).fetchone()
+            if prior is not None:
+                if (prior["work_ref"]!=work_ref or prior["property_ref"]!=row["property_ref"]
+                    or prior["author_ref"]!=actor.subject_ref or prior["author_role"]!=actor.role
+                    or prior["audience"]!=audience or prior["body"]!=body):
+                    raise GroundsConflict("conversation retry mismatched")
+                return {"message_ref":message_ref,"work_ref":work_ref,
+                        "posted_in_grounds":True,"replayed":True,
+                        "external_notification_delivered":False,
+                        "legal_notice_proven":False}
             try:
                 db.execute(
                     """INSERT INTO work_messages
@@ -57,22 +73,9 @@ class GroundsWorkThread:
                      actor.role,audience,body,timestamp),
                 )
             except sqlite3.IntegrityError as exc:
-                # A retry must match every meaningful field and re-pass the
-                # CURRENT Tower and lease/assignment scope, never disclose a
-                # prior message to a revoked/other tenant.
-                prior=db.execute(
-                    """SELECT work_ref,property_ref,author_ref,author_role,audience,body
-                       FROM work_messages WHERE message_ref=?""",(message_ref,),
-                ).fetchone()
-                if (prior is None or prior["work_ref"]!=work_ref
-                    or prior["property_ref"]!=row["property_ref"]
-                    or prior["author_ref"]!=actor.subject_ref or prior["author_role"]!=actor.role
-                    or prior["audience"]!=audience or prior["body"]!=body):
-                    raise GroundsConflict("conversation retry mismatched") from exc
-                return {"message_ref":message_ref,"work_ref":work_ref,
-                        "posted_in_grounds":True,"replayed":True,
-                        "external_notification_delivered":False,
-                        "legal_notice_proven":False}
+                # Competing transaction or constraint: rollback and require an
+                # externally replayed idempotent request, never continue on PG.
+                raise GroundsConflict("conversation insert conflicted; retry exact key") from exc
         return {"message_ref":message_ref,"work_ref":work_ref,
                 "posted_in_grounds":True,"replayed":False,
                 "external_notification_delivered":False,
