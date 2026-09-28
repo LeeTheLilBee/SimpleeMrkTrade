@@ -119,8 +119,12 @@ def record_insurance_document(
     if (any(not isinstance(code,str) or code not in COVERAGE_CODES for code in coverage_codes)
             or len(coverage_codes)!=len(set(coverage_codes))):
         raise InsuranceError("INVALID_OR_DUPLICATED_COVERAGE")
-    premium=_amount(annual_premium,"ANNUAL_PREMIUM_INVALID",positive=True)
-    upfront=_amount(upfront_premium_due,"UPFRONT_PREMIUM_INVALID")
+    if document_kind=="CERTIFICATE" and annual_premium in ("",None) and upfront_premium_due in ("",None):
+        premium=None
+        upfront=None
+    else:
+        premium=_amount(annual_premium,"ANNUAL_PREMIUM_INVALID",positive=True)
+        upfront=_amount(upfront_premium_due,"UPFRONT_PREMIUM_INVALID")
     included_closing=_yes_no(upfront_in_financing_costs,"CLOSING_COST_TREATMENT_REQUIRED")
     included_ops=_yes_no(annual_in_operating_expenses,"OPERATING_EXPENSE_TREATMENT_REQUIRED")
     notes={
@@ -206,16 +210,19 @@ def inspect_insurance_record(op,record,*,today=None):
         flags.append("CERTIFICATE_ALONE_DOES_NOT_VERIFY_CURRENT_COVERAGE")
     if record["document_kind"]=="QUOTE":
         flags.append("QUOTE_IS_NOT_BOUND_POLICY")
-    annual=Decimal(record["annual_premium"])
-    upfront=Decimal(record["upfront_premium_due"])
+    annual=(Decimal(record["annual_premium"])
+            if record["annual_premium"] is not None else None)
+    upfront=(Decimal(record["upfront_premium_due"])
+             if record["upfront_premium_due"] is not None else None)
     return {
         "record_id":record["id"],
         "status":"SOURCE_RECHECK_REQUIRED" if flags else "DOCUMENT_RECORDED_UNVERIFIED",
         "review_flags":flags,
         "source_documentary_reviewed":reviewed,
-        "annual_premium":str(annual),
-        "upfront_premium_due":str(upfront),
-        "illustrative_monthly_premium":str((annual/12).quantize(Decimal("0.01"))),
+        "annual_premium":str(annual) if annual is not None else None,
+        "upfront_premium_due":str(upfront) if upfront is not None else None,
+        "illustrative_monthly_premium":(
+            str((annual/12).quantize(Decimal("0.01"))) if annual is not None else None),
         "source_link_intact":linked,
         "coverage_in_force":"UNKNOWN","bound_coverage_verified":False,
         "premium_paid_verified":False,"lender_compliance_verified":False,
@@ -246,6 +253,9 @@ def project_financing_with_insurance(op, insurance_record, financing_option, *,t
     from .financing import option_analysis
     base=option_analysis(op,financing_option,today=today)
     ins=inspect_insurance_record(op,insurance_record,today=today)
+    if (insurance_record.get("annual_premium") is None or
+            insurance_record.get("upfront_premium_due") is None):
+        raise InsuranceError("DOCUMENT_HAS_NO_RECORDED_PREMIUM_TO_MODEL")
     upfront=Decimal(insurance_record["upfront_premium_due"])
     annual=Decimal(insurance_record["annual_premium"])
     additional_upfront=(Decimal("0") if insurance_record["upfront_in_financing_costs"] else upfront)
