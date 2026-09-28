@@ -1,0 +1,23 @@
+# Grounds GRD142–150 — reconcile verified close and provider receipt ledgers
+
+**Source provenance:** These are the two unique, previously stranded portions of draft Grounds PR #153 (`grounds-closeout-grd113-125`). That original branch predates rent-read GRD113–117 and the subsequently merged GRD118–141 operating desks; its exact-head source workflow failed in its *overlapping rent integration* test (expected HTTP 200, received 409). It is **not** merged or adopted wholesale. Only the independently testable close/delivery receiver modules and their fixture tests are ported to the current Grounds parent. The current rent API, WSGI/JS security, production release guard, safety desk, leasing and physical UI are retained intact.
+
+## GRD142–145: verified acquisition receipt
+
+`GroundsAcquisitionHandoff.accept_multifamily_close` consumes only a trusted server-injected Tower close verifier and an independently current owner `TowerScope`, with exact property grant. Requires source Tower, audience Grounds, kind multifamily post-close, BuyBox opportunity ID/revision/digest/proposal fingerprint, completed closing, verified owner and recorded encumbrance review, independently verified exact title/close/encumbrance references, bounded fresh issue/expiry. A local BuyBox ACQUIRED label, browser proposal, raw signed content or fake property listing cannot create a Grounds property. The newly recorded property and unique append-only `property_acquisition_receipts` lineage commit in one transaction. Idempotent same-content retry after revalidation; changed replay, duplicate accepted close/property or reused proof conflicts. No rent, money, title-signing authority or automatic lease activation results.
+
+This is **not** a live Tower issuer/receiver: sample identity/proof verifier lambdas exist solely in isolated fiction-only tests. Future production must independently authenticate the original closing receipt, current ownership/title and Tower issuer/nonce/replay before calling this domain operation.
+
+## GRD146–149: signed delivery and human-escalation receipt ledger
+
+`GroundsDeliveryReceipts.record` requires a server-owned independently certified receipt verifier. The exact Tower delivery-gateway receipt must bind an **existing** transactional outbox event, property, resource and source revision. Its append-only `event_delivery_receipts` distinguishes `notification_delivery` accepted/delivered/failed and `urgent_human_escalation` queued/human_acknowledged/failed; latter is admissible only against an urgent-intake outbox event. Exact retry is idempotent; changed replay and provider receipt reuse are rejected. A historical verified delivery is *not* legal notice, current provider connectivity or a guaranteed on-call roster. A historical human acknowledgment is **not** emergency-services dispatch, safe physical entry or an in-app local triage record.
+
+The existing `GroundsSafety` read paths now report **historical verified receipt counts**, independently from still-local pending event intents and current provider/dispatch booleans (still false). Staff safety UI may show these counts but never claims current coverage. No event is automatically marked externally delivered or removed from the local pending queue.
+
+## Schema and acceptance
+
+Both tables plus proof uniqueness and review indexes are integrated into the fresh SQLite fiction-only baseline and PostgreSQL v1 source schema. `PostgresGroundsStore.assert_schema_ready` and the fixture integrity checker now require both new ledgers so an older baseline cannot be silently treated as compatible. **This does not authorize an automatic migration of an existing real customer DB.** There is no hosted tenant DB or certified backup/restore; plan and test a separately approved versioned migration if a real database already exists.
+
+Fiction-only acquisition/delivery tests are ported from #153, and the real disposable PostgreSQL integration tests cover both SQL ledgers and cross-system no-money/no-dispatch semantics. Both exact child-head source/PG CI and exact merged parent head must pass before source acceptance.
+
+The production-entry operational-release guard remains mandatory and separately missing, as do actual `tower.grounds_runtime_receiver`, Tower close/delivery verifiers, Teller checkout/receipt reconciliation, Vault originals/scanning/retention, real on-call/provider delivery, approved private DB/restore, housing/privacy/accessibility/entry review and explicit owner hosted walkthrough. No paid Render service, public Grounds route, live user data, money transfer or external message is activated by this change.
