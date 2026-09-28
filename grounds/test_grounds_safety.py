@@ -186,5 +186,35 @@ class SafetyTests(unittest.TestCase):
             self.safety.triage_status(self.resident,work_ref="urgent1")
 
 
+    def test_staff_safety_desk_exact_property_and_reviewed_queue(self):
+        desk=self.safety.staff_safety_desk(self.manager,property_ref="p1")
+        self.assertEqual(desk["source"],"grounds")
+        self.assertEqual(desk["unreviewed_urgent_count"],1)
+        self.assertEqual(desk["queue"][0]["work_ref"],"urgent1")
+        self.assertEqual(desk["queue"][0]["unit_ref"],"u1")
+        self.assertEqual(desk["pending_local_event_intents"],2)
+        self.assertFalse(desk["provider_connected"])
+        self.assertFalse(desk["recipient_delivery_proven"])
+        self.assertFalse(desk["human_on_call_escalation_confirmed"])
+        self.assertFalse(desk["emergency_services_contacted"])
+        self.assertNotIn("description",desk["queue"][0])
+        self.assertNotIn("created_by",desk["queue"][0])
+        for denied,property_ref in ((self.resident,"p1"),(self.outside,"p1"),
+                                    (self.other,"p1"),(self.manager,"p2")):
+            with self.subTest(subject=denied.subject_ref,property_ref=property_ref):
+                with self.assertRaises(AccessDenied):
+                    self.safety.staff_safety_desk(denied,property_ref=property_ref)
+        self.safety.acknowledge_urgency(
+            self.manager,work_ref="urgent1",assessed_urgency="priority",
+        )
+        after=self.safety.staff_safety_desk(self.owner,property_ref="p1")
+        self.assertEqual(after["unreviewed_urgent_count"],0)
+        self.assertEqual(after["queue"],[])
+        # Historical local intents are still pending; human review does NOT
+        # magically establish delivery/dispatch.
+        self.assertEqual(after["pending_local_event_intents"],2)
+        self.assertFalse(after["recipient_delivery_proven"])
+
+
 if __name__=="__main__":
     unittest.main()
