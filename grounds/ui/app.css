@@ -7,3 +7,6 @@ html.comfortable-type{font-size:115%}.experience-grid{display:grid;grid-template
 
 /* GRD176: scoped maintenance timeline and message composer. */
 .work-conversation{margin-top:15px;padding:17px;border:1px solid var(--border);border-radius:15px;background:rgba(8,15,31,.45)}.work-conversation h4{margin:0;font-size:1.02rem}.timeline-entry{border-left:3px solid var(--aqua)}.timeline-entry p{overflow-wrap:anywhere;white-space:pre-wrap}.work-conversation .mini-form{margin-top:14px}.work-conversation .mini-form label{display:block}.work-conversation button{white-space:normal;text-align:center}.work-conversation .meta{font-variant-numeric:tabular-nums}
+
+/* GRD186: responsive move planning; no legal-completion affordance. */
+.move-phase{display:grid;gap:12px;padding:16px;border:1px solid var(--border);border-radius:16px;background:rgba(10,19,36,.45)}.move-phase h3{margin:0;font-size:1.04rem;color:var(--gold)}.move-phase button{margin-top:12px;white-space:normal;text-align:left}.move-phase .experience-tile{min-width:0}.move-phase .experience-tile p{white-space:normal}
