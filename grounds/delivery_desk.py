@@ -72,8 +72,8 @@ class GroundsDeliveryDesk:
                     "latest_verified_historical_human_escalation_state":
                         human_state if is_urgent else "not_applicable",
                     "requires_provider_review":
-                        notification_state in ("failed","no_verified_receipt")
-                        or (is_urgent and human_state in ("failed","no_verified_receipt")),
+                        notification_state!="delivered"
+                        or (is_urgent and human_state!="human_acknowledged"),
                     "urgent_human_source_intent":is_urgent,
                     "retry_available":False,"current_external_delivery_confirmed":False,
                 })
