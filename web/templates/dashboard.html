@@ -11,6 +11,10 @@
   <title>
     The Observatory · Dashboard
   </title>
+  <script>
+    // The real Dashboard remains covered until the Tower-launched check-in completes.
+    document.documentElement.classList.add("ob-entry-pending");
+  </script>
 
   <script>
     /*
@@ -70,6 +74,7 @@
   />
 
   <script src="/static/ob/ob_product_surface_policy.js?v=obux086090"></script>
+  <link rel="stylesheet" href="/static/ob/ob_checkin_entry.css?v=obux106110" />
 </head>
 
 <body
@@ -79,6 +84,7 @@
   data-ob-owner-dashboard="false"
   data-ob-owner-console="false"
   data-ob-beta="true"
+  data-ob-entry="checkin-carousel-then-dashboard"
   data-ob-build="OBUX091-095"
   data-ob-advisory-surface="self-directed-observation-and-paper"
   data-ob-owner-grade-candidates="false"
@@ -99,6 +105,7 @@
     <div class="ob-sky__grid"></div>
   </div>
 
+  <div id="obArrivalRoot" aria-live="polite"></div>
   <div
     id="ob-app"
     class="ob-user-app"
@@ -357,7 +364,7 @@
   ></script>
 
   <script
-    src="{{ url_for('static', filename='ob/ob_session_arrival.js') }}?v=obux071075"
+    src="{{ url_for('static', filename='ob/ob_checkin_entry.js') }}?v=obux106110"
   ></script>
 
   <script
