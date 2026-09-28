@@ -92,3 +92,27 @@ Reply with (1) verified current branch/repo/commit and what already exists, (2) 
 ## Hosting selection note
 
 **Confirmed by owner on 2026-09-26:** BuyBox's designated Render workspace is `Simplee World`, ID `tea-dag3rfu1egvs73a6s72g` (ending `a6s72g`). Existing `simplee-tower-ob` service must not be changed without verified Tower coordination. BuyBox MUST launch through Tower and use Tower identity and protected-action governance; it must not be exposed as a standalone application. Whether backend runtime is integrated into Tower's existing service or separately deployed behind Tower should be decided by the Tower architecture and hosting review. Durable protected storage remains required. Read-only inspection found no Postgres in this workspace; **do not create a public or ephemeral-storage deployment solely from workspace confirmation**. Confirm storage and access plan before creation.
+
+
+## September 28, 2026 — BuyBox source-side completion checkpoint
+
+The shared BuyBox development lane now includes the owner product through Offer Lab (BBX092–096), protected external-proof intake/readiness (BBX097–101), and the stacked canonical Vault receipt consumer (BBX102–106, pending final CI/merge at time of this note).
+
+### BuyBox side now implemented
+
+- Exact persisted opportunity/revision/digest source binding across protected local preparation.
+- Tower-governed owner receiver primitives and hosted fail-closed checks; development password disabled in Tower mode.
+- Persistent evidence, original-document integrity, diligence, Deal Integrity, Saved Search/Radar, Financing, Comparable Research, Decision Desk, Red Team, Insurance, Closing Review and private Offer Lab.
+- A protected read-only **Integration Readiness** room. There is no browser POST that can set READY.
+- External authority intake accepts only claims returned by separately trusted server adapters and binds them to a stable deal fingerprint. Proof-only saves do not invalidate sibling receipts; ordinary deal-source changes do.
+- Exact Vault `buybox.vault.evidence.v1` ARCHIVED response acceptance is now source-implemented behind a trusted Tower/Vault response verifier and exact request/evidence/frozen-snapshot/document/SHA correlation.
+
+### External producer work still required; BuyBox must not fake it
+
+1. **Tower:** real hosted owner launch/step-up/entitlement/action issuer, durable replay/revocation, protected action receipts and owner runtime acceptance.
+2. **Teller:** authoritative exact-deal money **and** management/capacity response contract and authenticated receipt. Preserve protected floors and ATM Set 1/Set 2 isolation. BuyBox will not define a synthetic Teller READY schema.
+3. **Vault/Tower/Cloud:** real authenticated original transfer, scan/quarantine, canonical Vault transaction, retention/recovery/provider durability and authenticated receipt issuance. BuyBox has the consumer, not the issuer.
+4. **Grounds / SimpleeOnTheGo:** independently authenticated two-phase operational receiver acceptance after verified close/title/contracts. A local ACQUIRED label does not count.
+5. **Hosting/owner acceptance:** durable private hosting, restore proof, runtime revision, secret-presence checks without disclosure, rollback and actual owner walkthrough require fresh owner-approved infrastructure decisions. No paid resources were authorized by this source work.
+
+Even if all four external proof categories are eventually present, BuyBox's readiness matrix still requires a separate owner release and does not itself authorize purchase, closing, money movement or operations.
