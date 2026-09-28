@@ -116,6 +116,26 @@ def probe(origin: str, expected_revision: str) -> dict[str, object]:
         "anonymous_owner_status_http": anon_api,
         "anonymous_final_evidence_http": anon_evidence,
     }
+    # Source configuration observation ONLY. A public manifest never provides
+    # authenticated owner walkthrough, hosted archive or production permission.
+    rehearsal = manifest.get("owner_rehearsal") if manifest else None
+    rehearsal = rehearsal if type(rehearsal) is dict else {}
+
+    def observed_bool(key: str) -> bool | None:
+        value = rehearsal.get(key)
+        return value if type(value) is bool else None
+
+    source_flags = {
+        field: observed_bool(field) for field in (
+            "exact_source_routes_registered", "explicit_feature_enabled",
+            "exact_https_origin_configured",
+            "source_runtime_activation_preconditions_met",
+        )
+    }
+    outcome["observed"]["owner_rehearsal_source"] = source_flags
+    outcome["hosted_owner_walkthrough_verified"] = False
+    outcome["durable_hosted_report_archive_verified"] = False
+
     if health["status"] != 200:
         outcome["reason"] = "TOWER_HEALTH_NOT_VERIFIED"
         return outcome
@@ -138,6 +158,29 @@ def probe(origin: str, expected_revision: str) -> dict[str, object]:
     if any(results[path]["revision_header"] not in ("", expected_revision) for path in PATHS):
         outcome["reason"] = "INCONSISTENT_PUBLISHED_REVISION_HEADERS"
         return outcome
+    # A source manifest with internally conflicting activation flags or a
+    # claim of owner/durability/trading acceptance is not safe to pass through.
+    all_configured = all(
+        source_flags[field] is True for field in (
+            "exact_source_routes_registered", "explicit_feature_enabled",
+            "exact_https_origin_configured",
+        )
+    )
+    preconditions = source_flags["source_runtime_activation_preconditions_met"]
+    if preconditions is True and not all_configured:
+        outcome["reason"] = "INCONSISTENT_HOSTED_REHEARSAL_SOURCE_FLAGS"
+        return outcome
+    if all_configured and preconditions is False:
+        outcome["reason"] = "INCONSISTENT_HOSTED_REHEARSAL_SOURCE_FLAGS"
+        return outcome
+    if any(rehearsal.get(flag) is not False for flag in (
+        "actual_owner_login_walkthrough_verified", "durable_report_archive",
+        "restart_recovery", "manual_live_clearance", "broker_submission",
+        "capital_movement",
+    )) and rehearsal:
+        outcome["reason"] = "UNSAFE_HOSTED_REHEARSAL_AUTHORITY_CLAIM"
+        return outcome
+
     if any(status not in DENIED_STATUSES for status in (anon, anon_api, anon_evidence)):
         outcome["reason"] = "ANONYMOUS_OWNER_REHEARSAL_DISCLOSURE"
         return outcome

@@ -34,6 +34,16 @@ def classify(canonical_origin: str, secondary_origin: str, exact_revision: str,
             # Tight allowlist: do not repeat accidental future secret/identity fields.
             observed = value.get("observed")
             observed = observed if type(observed) is dict else {}
+            flags = observed.get("owner_rehearsal_source")
+            flags = flags if type(flags) is dict else {}
+            safe_flags = {
+                field: flags.get(field) if type(flags.get(field)) is bool else None
+                for field in (
+                    "exact_source_routes_registered", "explicit_feature_enabled",
+                    "exact_https_origin_configured",
+                    "source_runtime_activation_preconditions_met",
+                )
+            }
             observations[label] = {
                 "origin": origin,
                 "status": value.get("status") if value.get("status") in (
@@ -47,6 +57,9 @@ def classify(canonical_origin: str, secondary_origin: str, exact_revision: str,
                     "anonymous_final_evidence_http",
                     )
                 },
+                "owner_rehearsal_source": safe_flags,
+                "owner_login_verified": False,
+                "durable_archive_verified": False,
             }
         except (OSError, ValueError, TimeoutError):
             observations[label] = {
