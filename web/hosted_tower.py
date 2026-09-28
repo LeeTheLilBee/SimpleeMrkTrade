@@ -414,6 +414,16 @@ from tower.ecosystem_integration_desk import register_tower_integration_desk
 
 register_tower_integration_desk(app)
 
+# Cross-system navigation safety:
+# - future app source routes cannot bypass Tower merely by being mounted
+# - product -> Tower return routes preserve only an existing owner session
+# These registrations grant no product entitlement or live release.
+from tower.ecosystem_direct_route_guard import register_ecosystem_direct_route_guard
+from tower.ecosystem_return_routes import register_ecosystem_return_routes
+
+register_ecosystem_direct_route_guard(app)
+register_ecosystem_return_routes(app)
+
 # ==============================================================================================================
 # TWR192_CANONICAL_HOSTED_FRONT_DOOR
 #
