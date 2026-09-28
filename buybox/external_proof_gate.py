@@ -28,6 +28,16 @@ OPAQUE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{7,255}$")
 class ExternalProofError(ValueError):
     pass
 
+def _deal_fingerprint(op):
+    """Stable across proof-only saves; changes for ordinary deal-source edits."""
+    material=deepcopy(op)
+    material.pop("external_proofs",None)
+    material.pop("version",None)
+    material.pop("updated_at",None)
+    return sha256(json.dumps(
+        material,sort_keys=True,separators=(",",":"),ensure_ascii=False
+    ).encode()).hexdigest()
+
 def _current_source(db, op):
     if not isinstance(db, sqlite3.Connection):
         raise ExternalProofError("PERSISTED_SOURCE_REQUIRED")
@@ -78,6 +88,7 @@ def record_verified_external_proof(db, op, *, kind, raw_proof, verifier, now_utc
         "source_opportunity_id":src["opportunity_id"],
         "source_opportunity_revision":src["opportunity_revision"],
         "source_snapshot_digest":src["input_snapshot_digest"],
+        "deal_fingerprint":_deal_fingerprint(op),
         "verified_at":now.astimezone(timezone.utc).isoformat(),
         "authentication_scope":"TRUSTED_SERVER_ADAPTER_ONLY",
         "browser_supplied_authority":False,
@@ -93,8 +104,9 @@ def record_verified_external_proof(db, op, *, kind, raw_proof, verifier, now_utc
 
 def integration_readiness(op):
     current = {}
+    fingerprint=_deal_fingerprint(op)
     for proof in op.get("external_proofs",[]):
-        if proof.get("source_opportunity_revision") == op.get("version"):
+        if proof.get("deal_fingerprint") == fingerprint:
             current[proof.get("kind")] = proof
     required = [
         "TOWER_PROTECTED_ACTION",
