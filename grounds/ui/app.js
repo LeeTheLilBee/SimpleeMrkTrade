@@ -99,11 +99,54 @@
           }
         }
       }
+      if (["owner","property_manager","maintenance_supervisor"].includes(state.me.role)) {
+        try {
+          const desk = await request("safety-desk?" + new URLSearchParams({ property_ref: state.property }));
+          if (generation === state.loadGeneration) renderSafetyDesk(desk);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("safety-list"));
+            $("safety-count").textContent = "Unavailable";
+            $("safety-delivery").textContent =
+              "Current human triage status could not be retrieved. Do not assume this property is clear or that anyone has been contacted.";
+          }
+        }
+      }
     } catch (error) {
       if (generation !== state.loadGeneration) return;
       $("content").classList.add("hidden"); $("locked").classList.remove("hidden");
       $("locked-reason").textContent = error.message;
       message(error.message, true);
+    }
+  }
+  function renderSafetyDesk(desk) {
+    const target = $("safety-list"); clear(target);
+    if (desk?.source !== "grounds" || desk.property_ref !== state.property ||
+        !Array.isArray(desk.queue) || !Number.isSafeInteger(desk.unreviewed_urgent_count) ||
+        !Number.isSafeInteger(desk.pending_local_event_intents)) {
+      $("safety-count").textContent = "Unverified";
+      $("safety-delivery").textContent = "Current safety data could not be verified.";
+      return;
+    }
+    $("safety-count").textContent = desk.unreviewed_urgent_count + " awaiting human review";
+    $("safety-delivery").textContent = desk.pending_local_event_intents +
+      " internal event intents are pending. No external recipient delivery, emergency dispatch or after-hours escalation is confirmed by this desk.";
+    if (!desk.queue.length) {
+      target.append(el("p", "No unreviewed urgent intake is visible in the current property snapshot. This is not emergency coverage or dispatch confirmation.", "footnote"));
+    }
+    for (const item of desk.queue) {
+      const card = el("article", null, "item");
+      card.append(el("h3", item.category + " · Unit " + item.unit_ref),
+        el("p", "Resident requested urgent human attention · " + asDate(item.created_at)));
+      card.append(makeButton("Record human priority review", async () => {
+        await request("urgency/review", { work_ref:item.work_ref, assessed_urgency:"priority" });
+        message("Human priority review recorded. This does not contact an emergency service or establish provider delivery.");
+        await refresh();
+      }));
+      target.append(card);
+    }
+    if (desk.unreviewed_urgent_count > desk.queue.length) {
+      target.append(el("p", "Additional urgent items exist beyond this limited display. Refresh or use the authorized work queue.", "footnote"));
     }
   }
   function renderRent(data) {
@@ -142,6 +185,13 @@
     } else if (data.work_orders) {
       summary.append(stat("AUTHORIZED WORK", data.work_orders.length));
     } else if (data.units) { summary.append(stat("RECORDED UNITS", data.units.length)); }
+    const hasSafetyDesk = ["owner","property_manager","maintenance_supervisor"].includes(data.role);
+    $("safety-panel").classList.toggle("hidden", !hasSafetyDesk);
+    if (hasSafetyDesk) {
+      clear($("safety-list"));
+      $("safety-count").textContent = "Checking";
+      $("safety-delivery").textContent = "Checking internal triage records. External delivery and dispatch are not confirmed.";
+    }
     $("rent-panel").classList.toggle("hidden", data.role !== "resident");
     $("request-panel").classList.toggle("hidden", data.role !== "resident");
     $("notices-panel").classList.toggle("hidden", data.role !== "resident");
