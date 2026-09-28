@@ -136,6 +136,11 @@ def scan_equities(*, observations: Iterable[Mapping], daily_bars: Mapping,
             for bar in bars:
                 if not isinstance(bar, Mapping):
                     raise ValueError("malformed_daily_bar")
+                if (str(bar.get("provider", "")) != entitlement.provider
+                        or str(bar.get("product", "")) != entitlement.product
+                        or str(bar.get("venue", "")) != entitlement.venue
+                        or bar.get("completed") is not True):
+                    raise ValueError("unverified_or_incomplete_history")
                 day = str(bar.get("day", ""))
                 date.fromisoformat(day)
                 prepared.append((day, _decimal(bar.get("close")), _decimal(bar.get("volume"), positive=False)))
@@ -144,6 +149,8 @@ def scan_equities(*, observations: Iterable[Mapping], daily_bars: Mapping,
             prepared.sort(key=lambda x: x[0])
             if prepared[-1][0] > clock.date().isoformat():
                 raise ValueError("future_history_date")
+            if (clock.date() - date.fromisoformat(prepared[-1][0])).days > 8:
+                raise ValueError("stale_completed_daily_history")
             # Historical close averages are not official market breadth or execution signals.
             mean5 = sum((b[1] for b in prepared[-5:]), Decimal(0)) / Decimal(5)
             mean20 = sum((b[1] for b in prepared[-20:]), Decimal(0)) / Decimal(20)
