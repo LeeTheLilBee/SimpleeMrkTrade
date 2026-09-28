@@ -109,6 +109,12 @@ class GroundsWebTests(unittest.TestCase):
                           csrf_secret=b"changeme",local_fixture_only=True)
         with self.assertRaises(GroundsWebConfigurationError):
             SessionCSRF(b"x"*32)
+        with self.assertRaises(GroundsWebConfigurationError):
+            GroundsWebApp(
+                self.store,tower_receiver=lambda e:self.resident,
+                csrf_secret=self.secret,local_fixture_only=True,
+                teller_rent_source=lambda actor,home:{},
+            )
 
     def test_postgres_web_composition_demands_actual_schema_preflight(self):
         pg=PostgresGroundsStore("postgresql://not-an-actual-db.example/grounds")
@@ -362,6 +368,53 @@ class GroundsWebTests(unittest.TestCase):
         self.assertEqual(home["notices"][0]["read_in_app"],1)
         self.assertEqual(home["work_orders"][0]["work_ref"],work)
         self.assertIsNone(home["rent"]["amount_due_cents"])
+
+    def test_verified_teller_rent_projection_is_exact_lease_bound_and_optional(self):
+        disconnected=self.invoke(
+            "/grounds/api/rent?property_ref=p1&unit_ref=u1",actor=self.resident,
+        )
+        self.assertEqual(disconnected["status"],"200 OK")
+        self.assertFalse(disconnected["json"]["connected"])
+        self.assertIsNone(disconnected["json"]["amount_due_cents"])
+
+        now=int(time.time())
+        signed={
+            "source":"teller","audience":"grounds","resident_ref":"resident",
+            "property_ref":"p1","unit_ref":"u1","lease_ref":"l1",
+            "observed_at":now,"expires_at":now+120,
+            "amount_due_cents":125050,"currency":"USD","invoice_status":"partial",
+            "due_on":"2026-10-01","teller_handoff_ref":"rent-handoff-1",
+        }
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda env:env["test.fixture.actor"],
+            csrf_secret=self.secret,local_fixture_only=True,
+            teller_rent_source=lambda actor,home:signed,
+            teller_verifier=lambda message:message, # TEST FIXTURE ONLY
+        )
+        self.app=app
+        verified=self.invoke(
+            "/grounds/api/rent?property_ref=p1&unit_ref=u1",actor=self.resident,
+        )
+        self.assertEqual(verified["status"],"200 OK")
+        self.assertTrue(verified["json"]["connected"])
+        self.assertEqual(verified["json"]["amount_due_cents"],125050)
+        self.assertEqual(verified["json"]["invoice_status"],"partial")
+        self.assertEqual(verified["json"]["teller_handoff_ref"],"rent-handoff-1")
+        self.assertFalse(verified["json"]["checkout_execution_enabled"])
+        self.assertEqual(self.invoke(
+            "/grounds/api/rent?property_ref=p1&unit_ref=u1",actor=self.other,
+        )["status"],"404 Not Found")
+
+        stale=dict(signed);stale["observed_at"]=now-500;stale["expires_at"]=now-200
+        self.app=GroundsWebApp(
+            self.store,tower_receiver=lambda env:env["test.fixture.actor"],
+            csrf_secret=self.secret,local_fixture_only=True,
+            teller_rent_source=lambda actor,home:stale,
+            teller_verifier=lambda message:message, # TEST FIXTURE ONLY
+        )
+        self.assertEqual(self.invoke(
+            "/grounds/api/rent?property_ref=p1&unit_ref=u1",actor=self.resident,
+        )["status"],"503 Service Unavailable")
 
     def test_appointment_access_current_lease_and_entry_preference(self):
         import datetime
