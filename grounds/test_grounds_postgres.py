@@ -751,7 +751,7 @@ class PostgresGroundsTests(unittest.TestCase):
                 False,"contact_first",
             ),
         )
-        revision=created["revision"]
+        revision=1  # submit_maintenance persists initial revision 1; response omits internals
         for state in ("received","under_review","scheduled"):
             revision=self.ops.advance_work_order(
                 self.manager,work_ref=work,next_state=state,
