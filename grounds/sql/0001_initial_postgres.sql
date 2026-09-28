@@ -179,6 +179,21 @@ CREATE TABLE IF NOT EXISTS event_outbox (
   UNIQUE(event_kind,resource_ref,source_revision)
 );
 CREATE INDEX IF NOT EXISTS outbox_property_pending ON event_outbox(property_ref,status,created_at);
+CREATE TABLE IF NOT EXISTS event_delivery_receipts (
+  receipt_ref TEXT PRIMARY KEY,
+  event_ref TEXT NOT NULL REFERENCES event_outbox(event_ref),
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  receipt_kind TEXT NOT NULL CHECK(receipt_kind IN ('notification_delivery','urgent_human_escalation')),
+  delivery_state TEXT NOT NULL CHECK(delivery_state IN ('accepted','delivered','queued','human_acknowledged','failed')),
+  provider_receipt_ref TEXT NOT NULL UNIQUE,
+  receipt_digest TEXT NOT NULL UNIQUE CHECK(length(receipt_digest)=64),
+  observed_at INTEGER NOT NULL,
+  recorded_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS delivery_receipts_property
+  ON event_delivery_receipts(property_ref,receipt_kind,delivery_state);
+CREATE INDEX IF NOT EXISTS delivery_receipts_event
+  ON event_delivery_receipts(event_ref,observed_at);
 CREATE TABLE IF NOT EXISTS work_evidence_refs (
   evidence_ref TEXT PRIMARY KEY,
   work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
