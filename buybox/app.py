@@ -53,6 +53,7 @@ from .comparables import (COMPARABLE_EVIDENCE_KIND, record_comparable,
     market_evidence_report)
 from .decision_desk import decision_dossier, record_owner_research_disposition
 from .red_team import record_owner_financial_stress, red_team_report, model_financial_stress
+from .closing_review import closing_review_snapshot, record_local_closing_review
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -598,6 +599,38 @@ def create_app(config=None):
                 "purchase_authorized":False,"external_action":False},
                 expected_revision=int(request.form.get("revision","")))
         return redirect(url_for("decision_desk_room",oid=oid),code=303)
+
+    @app.get("/opportunities/<oid>/closing-review")
+    @login_required
+    def closing_review_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        report=closing_review_snapshot(op)
+        return render_template("closing_review.html",op=op,report=report)
+
+    @app.post("/opportunities/<oid>/closing-review")
+    @login_required
+    def closing_review_record(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,record=record_local_closing_review(
+                conn,op,actor_ref=owner_actor(conn),
+                rationale=request.form.get("rationale",""),
+                financing_option_id=request.form.get("financing_option_id",""),
+                insurance_record_id=request.form.get("insurance_record_id",""),
+                planned_closing_date=request.form.get("planned_closing_date",""))
+            save(conn,revised,"ClosingReviewRecorded",{
+                "closing_review_id":record["id"],
+                "source_opportunity_revision":record["source_opportunity_revision"],
+                "source_snapshot_digest":record["source_snapshot_digest"],
+                "selected_financing_option_id":record["selected_financing_option_id"],
+                "selected_insurance_record_id":record["selected_insurance_record_id"],
+                "authorizes_closing":False,"money_moved":False,
+                "tower_authorization":False,"teller_readiness":"UNKNOWN"},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("closing_review_room",oid=oid),code=303)
 
     @app.get("/opportunities/<oid>/valuation")
     @login_required
