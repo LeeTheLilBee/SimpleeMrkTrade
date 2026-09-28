@@ -24,7 +24,7 @@
 
   <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='ob/ob_market_map.css') }}"
+    href="{{ url_for('static', filename='ob/ob_market_map.css') }}?v=obux096110"
   />
   <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
 </head>
@@ -34,6 +34,7 @@
   data-ob-market-map-version="OBUX031-OBUX035"
   data-ob-market-map-open-repair="OBFIX006-010"
   data-ob-market-map-live-updates="canonical-adapter"
+  data-ob-living-sky="obux096-110"
   data-ob-live-auto-locked="true"
 >
   <div
@@ -65,9 +66,8 @@
           </h1>
 
           <p>
-            See where the canonical Observatory projection has
-            source-backed market attention without digging through
-            engine plumbing or proof pages.
+            Explore a living, source-backed market sky. Focus a region,
+            select a symbol, and choose when to enter its Symbol Page.
           </p>
 
           <div class="market-map-lock-row">
@@ -242,7 +242,7 @@
           <div class="market-map-card-head">
             <div>
               <span class="market-map-eyebrow">
-                SOURCE-BACKED CONSTELLATIONS
+                A LIVING SOURCE-BOUND SKY
               </span>
 
               <h2 id="marketMapSkyTitle">
@@ -258,11 +258,25 @@
             </span>
           </div>
 
+          <div class="market-map-sky-tools">
+            <span id="marketMapSkyHint">Choose a sector region or a named star to explore. Positions are presentation, not price or momentum.</span>
+            <button id="marketMapReset" type="button" hidden>Show whole sky</button>
+          </div>
           <div
             id="marketMapSky"
             class="market-map-sky-field"
+            aria-label="Market sector regions and named symbol stars"
             aria-live="polite"
           ></div>
+          <aside id="marketMapFocus" class="market-map-focus" aria-live="polite" hidden>
+            <span class="market-map-eyebrow">SKY SPOTLIGHT · OBSERVATION ONLY</span>
+            <h3 id="marketMapFocusTitle"></h3>
+            <p id="marketMapFocusDescription"></p>
+            <div class="market-map-focus-actions">
+              <button id="marketMapFocusOpen" type="button" hidden>Open Symbol Page →</button>
+              <button id="marketMapFocusReset" type="button">Back to whole sky</button>
+            </div>
+          </aside>
         </section>
 
 
@@ -293,9 +307,10 @@
             </strong>
 
             <p>
-              A bright star means the canonical projection contains
-              a source-backed attention state there. Market Map never
-              places an order or moves capital.
+              Named stars represent only source-backed projected symbols.
+              A labelled ring means explicit membership; glow, nebula color,
+              and location are visual design, never trading permission,
+              market performance, or spendable capital.
             </p>
           </div>
         </aside>
@@ -380,7 +395,7 @@
     4. Soulaana interpretation
     5. Market Map renderer
 
-    Market Map performs no independent data fetch.
+    Market Map performs no independent data fetch.\n    OBUX096–110 scene coordinates are non-semantic layout only.
   -->
 
   <script

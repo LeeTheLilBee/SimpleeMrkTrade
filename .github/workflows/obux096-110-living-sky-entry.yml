@@ -1,0 +1,49 @@
+name: OBUX096-110 living sky and check-in-first entry
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/templates/market_map.html'
+      - 'web/static/ob/ob_market_map.js'
+      - 'web/static/ob/ob_market_map.css'
+      - 'web/templates/dashboard.html'
+      - 'web/static/ob/ob_checkin_entry.*'
+      - 'docs/market_map/LIVING_MARKET_SKY_V1.md'
+      - 'docs/owner_experience/OBUX106_110_CHECKIN_FIRST_ENTRY.md'
+      - 'tests/test_obux096_110_living_sky_entry.py'
+      - '.github/workflows/obux096-110-living-sky-entry.yml'
+  push:
+    branches: [obux096-110-living-market-sky-arrival]
+permissions:
+  contents: read
+jobs:
+  focused-source-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: python -m pip install pytest flask requests tzdata yfinance
+      - name: Check source syntax
+        run: |
+          node --check web/static/ob/ob_market_map.js
+          node --check web/static/ob/ob_checkin_entry.js
+          python -m py_compile tests/test_obux096_110_living_sky_entry.py
+      - name: Canonical Market Map and Dashboard regression plus new boundaries
+        run: |
+          python -m pytest -q \
+            tests/test_market_map_obux031_surface.py \
+            tests/test_market_map_obux032_live_truth.py \
+            tests/test_market_map_obux033_soulaana.py \
+            tests/test_market_map_obux034_interaction.py \
+            tests/test_market_map_obux035_legacy_retirement.py \
+            tests/test_ob_dashboard_obux056_060.py \
+            tests/test_ob_dual_dashboard_replacement_obux091_095.py \
+            tests/test_obux096_110_living_sky_entry.py
