@@ -37,6 +37,13 @@
     return !isOwnerSurface();
   }
 
+  // Owner Console has a real owner-only mission policy room, but the old V18
+  // full-width mission bar and V27 proof/status banners are not part of it.
+  // Owner Dashboard has its own separate Capital Lanes and must stay untouched.
+  function shouldPurgeLegacyChrome() {
+    return isBetaProductSurface() || currentRoom() === "Owner Console";
+  }
+
 
   function currentRoom() {
     const value =
@@ -127,7 +134,7 @@
     root
   ) {
     if (
-      !isBetaProductSurface()
+      !shouldPurgeLegacyChrome()
     ) {
       return;
     }
@@ -820,7 +827,7 @@
           mutations
         ) {
           if (
-            !isBetaProductSurface()
+            !shouldPurgeLegacyChrome()
           ) {
             return;
           }

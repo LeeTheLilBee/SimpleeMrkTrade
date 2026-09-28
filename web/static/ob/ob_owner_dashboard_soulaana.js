@@ -1,160 +1,292 @@
-// OBUX022_SOULAANA_OWNER_BRIEFING_ENGINE
+
+// OBUX091–095 — SOULAANA OWNER INTELLIGENCE BRIEFING
 (() => {
   "use strict";
 
-  const VERSION = "OBUX022_SOULAANA_OWNER_BRIEFING_ENGINE";
+  const VERSION =
+    "OBUX091_095_SOULAANA_OWNER_INTELLIGENCE";
 
-  const safeText = (value, fallback = "") => {
-    if (value === undefined || value === null || value === "") {
-      return fallback;
-    }
-    return String(value);
-  };
 
-  const buildBriefing = (contract) => {
-    const safe = contract || {};
-    const missions = Array.isArray(safe.mission_sky)
-      ? safe.mission_sky
-      : [];
-    const attention = Array.isArray(safe.owner_attention)
-      ? safe.owner_attention
-      : [];
+  const safeArray = (
+    value
+  ) => (
+    Array.isArray(
+      value
+    )
+      ? value
+      : []
+  );
 
-    const trust = safe.trust || {};
-    const readiness = safe.readiness || {};
-    const beta = safe.beta || {};
-    const interpretation = safe.interpretation_state || {};
 
-    const guardedSources = [
-      !trust.verified ? "engine trust" : null,
-      !readiness.verified ? "Manual Live readiness" : null,
-      !beta.verified ? "private beta state" : null
-    ].filter(Boolean);
+  const safeText = (
+    value,
+    fallback = ""
+  ) => (
+    value === undefined
+    || value === null
+    || value === ""
+      ? fallback
+      : String(value)
+  );
 
-    const highAttention = attention.filter(
-      (item) => item.priority === "high"
-    );
 
-    const verifiedCapitalMissions = missions.filter(
-      (mission) =>
-        mission.actual_capital_known ||
-        mission.capital_progress_known
-    );
+  const buildBriefing = (
+    contract
+  ) => {
+    const safe =
+      contract
+      || {};
+
+    const edge =
+      safe.today_edge
+      || {};
+
+    const now =
+      safeArray(
+        edge.now
+      );
+
+    const watch =
+      safeArray(
+        edge.watch
+      );
+
+    const notYet =
+      safeArray(
+        edge.not_yet
+      );
+
+    const attention =
+      safeArray(
+        safe.owner_attention
+      );
+
+    const trust =
+      safe.trust
+      || {};
+
+    const readiness =
+      safe.readiness
+      || {};
+
+    const lanes =
+      safeArray(
+        safe.capital_lanes
+      );
+
+    const guarded =
+      !(
+        edge.source_state
+        && edge
+          .source_state
+          .verified_current_market
+      );
+
 
     let headline;
-    let marketAndSystemRead;
+    let whatISee;
+    let nextMove;
 
-    if (guardedSources.length) {
+
+    if (
+      now.length
+    ) {
       headline =
-        "I can see the Observatory structure. I will not fake the missing truth.";
+        "I found verified research that deserves your eyes.";
 
-      marketAndSystemRead =
-        `Your owner view has ${missions.length} mission lanes defined, ` +
-        `but ${guardedSources.join(", ")} ${
-          guardedSources.length === 1 ? "is" : "are"
-        } still guarded or unverified on this surface.`;
-    } else if (highAttention.length) {
+      whatISee =
+        (
+          `${now.length} setup${now.length === 1 ? "" : "s"} `
+          + "made it into NOW from current source-backed engine truth."
+        );
+
+      nextMove =
+        (
+          "Open the first NOW setup, "
+          + "read why it surfaced, "
+          + "then decide whether you want to study the stock or its option contracts."
+        );
+
+    } else if (
+      watch.length
+    ) {
       headline =
-        "I found owner-level items that deserve your attention.";
+        "Nothing is screaming. I do have things worth watching.";
 
-      marketAndSystemRead =
-        `${highAttention.length} high-priority owner signal(s) are verified. ` +
-        "I would review those before digging into lower-level evidence.";
+      whatISee =
+        (
+          `${watch.length} current setup${watch.length === 1 ? "" : "s"} `
+          + "made WATCH, but the source did not prove a NOW state."
+        );
+
+      nextMove =
+        "Open WATCH only if you want more context.";
+
+    } else if (
+      guarded
+    ) {
+      headline =
+        "Some truth is still guarded.";
+
+      whatISee =
+        (
+          "I do not have enough current verified candidate truth "
+          + "to manufacture a trade idea."
+        );
+
+      nextMove =
+        "No forced move. Verify the market source first.";
+
     } else {
       headline =
-        "The Observatory is calm at owner altitude.";
+        "Nothing verified is forcing an owner decision.";
 
-      marketAndSystemRead =
-        "I do not see a verified owner-level emergency. I can keep watching without manufacturing urgency.";
+      whatISee =
+        "The Observatory is quiet at owner altitude.";
+
+      nextMove =
+        "No forced move. Pick a Capital Lane only when you need that context.";
     }
 
-    const capitalRead =
-      verifiedCapitalMissions.length
-        ? `${verifiedCapitalMissions.length} mission lane(s) have verified capital or progress snapshots available.`
-        : "I do not have verified capital progress for your mission lanes yet, so I will not pretend a goal is closer than the evidence proves.";
 
-    const readinessRead = readiness.verified
-      ? (
-          readiness.blockers && readiness.blockers.length
-            ? `Your readiness evidence still shows ${readiness.blockers.length} blocker(s). That is readiness work, not permission to trade.`
-            : "Your owner confidence evidence is available, but real Manual Live and Live Auto remain locked."
-        )
-      : "I cannot verify the readiness evidence from this surface yet. That means we stay conservative: no real Manual Live claim and Live Auto remains locked.";
+    const verifiedCapital =
+      lanes.filter(
+        lane =>
+          lane.actual_capital_known
+          || lane.capital_progress_known
+      );
 
-    const trustRead = trust.verified
-      ? (
-          trust.freshness_score === null ||
-          trust.freshness_score === undefined
-            ? `The feed trust layer reports ${safeText(trust.label, "a verified state")}.`
-            : `The feed trust layer reports ${safeText(trust.label, "a verified state")} with freshness ${trust.freshness_score}.`
-        )
-      : "I do not have a verified engine-trust result here yet. I would not expand reliance on data I cannot verify.";
-
-    const betaRead = beta.verified
-      ? `Private beta control evidence is available: ${safeText(beta.label, "review it before expansion")}.`
-      : "I do not have verified beta launch-control evidence on this surface, so I will not tell you beta is ready to expand.";
-
-    const attentionRead = attention.length
-      ? attention
-          .slice(0, 3)
-          .map((item) => safeText(item.title, "Owner item"))
-          .join(" · ")
-      : "Nothing verified is asking for your attention.";
-
-    const changeHistory = safe.since_you_were_here || {};
-    const changedRead = changeHistory.verified
-      ? "I have verified owner-change history available and can summarize what materially changed."
-      : "I do not have verified owner-change history yet. I will not invent a 'since you were here' story.";
-
-    const patterns = safe.patterns || {};
-    const lessonRead = patterns.verified
-      ? "I have enough verified cross-mission evidence to surface an owner-level pattern."
-      : "I do not have enough verified cross-mission performance evidence to call a pattern, win, mistake, crowding condition, or capital-pressure trend.";
-
-    const nextMove = highAttention.length
-      ? `Start with: ${safeText(highAttention[0].title, "the highest-priority verified owner item")}.`
-      : guardedSources.length
-        ? `Next best move: verify ${guardedSources[0]} before trusting a broader owner conclusion.`
-        : "Next best move: no forced action. Review only what meaningfully changed.";
 
     return {
-      version: VERSION,
-      eyebrow: "SOULAANA · OWNER BRIEFING",
+      version:
+        VERSION,
+
+      eyebrow:
+        "SOULAANA · OWNER BRIEFING",
+
       headline,
 
-      what_i_see: marketAndSystemRead,
-      your_missions: capitalRead,
-      what_needs_you: attentionRead,
-      readiness: readinessRead,
-      system_trust: trustRead,
-      beta_state: betaRead,
-      what_changed: changedRead,
-      what_im_learning: lessonRead,
+      what_i_see:
+        whatISee,
+
+      why_it_matters:
+        (
+          now.length
+            ? (
+                "NOW means the current source supplied enough candidate state "
+                + "to surface it here. It does not mean guaranteed profit."
+              )
+            : (
+                "I would rather show you less than invent certainty."
+              )
+        ),
+
+      capital_read:
+        verifiedCapital.length
+          ? (
+              `${verifiedCapital.length} Capital Lane`
+              + (
+                  verifiedCapital.length === 1
+                    ? ""
+                    : "s"
+                )
+              + " has verified capital or progress truth."
+            )
+          : (
+              "Capital policy is visible. "
+              + "Unverified balances stay unverified."
+            ),
+
+      what_needs_you:
+        attention.length
+          ? attention
+              .map(
+                item =>
+                  safeText(
+                    item.title,
+                    "Owner item"
+                  )
+              )
+              .join(
+                " · "
+              )
+          : (
+              "Nothing verified "
+              + "is asking for you."
+            ),
+
+      watch_count:
+        watch.length,
+
+      not_yet_count:
+        notYet.length,
+
+      readiness:
+        safeText(
+          readiness.label,
+          "Readiness unavailable"
+        ),
+
+      system_trust:
+        safeText(
+          trust.label,
+          "Trust unavailable"
+        ),
+
+      beta_state:
+        safeText(
+          safe.beta
+          && safe.beta.label,
+          "Beta state unavailable"
+        ),
+
+      what_changed:
+        "No verified owner-change history yet",
+
+      what_im_learning:
+        "No verified cross-lane pattern yet",
+
       what_can_wait:
-        "Raw diagnostics, file-by-file evidence, and deep administrative controls can wait unless this briefing gives you a reason to open them.",
-      next_best_move: nextMove,
+        (
+          "Anything outside NOW, "
+          + "your top-three attention items, "
+          + "or an explicit drawer can wait."
+        ),
+
+      next_best_move:
+        nextMove,
 
       no_action_needed:
-        interpretation.no_action_needed === true,
+        (
+          safe.interpretation_state
+          && safe
+            .interpretation_state
+            .no_action_needed
+          === true
+        ),
 
       owner_altitude:
-        "Normal Dashboard asks what is happening in the market. Owner Dashboard asks what is happening across your Observatory.",
+        (
+          "Normal Dashboard watches the Observatory. "
+          + "Owner Dashboard organizes your capital context "
+          + "and your private research intelligence."
+        ),
 
       evidence_rule:
-        "Soulaana explains first. Raw proof stays behind Show me why.",
-
-      boundaries: {
-        owner_only: true,
-        broker_action_performed: false,
-        capital_action_performed: false,
-        permission_mutation_performed: false,
-        live_auto_locked: true
-      }
+        (
+          "Short answer first. "
+          + "Deeper evidence stays collapsed until you ask."
+        )
     };
   };
 
-  window.OB_OWNER_DASHBOARD_SOULAANA_V22 = Object.freeze({
-    version: VERSION,
-    buildBriefing
-  });
+
+  window.OB_OWNER_DASHBOARD_SOULAANA_V22 =
+    Object.freeze({
+      version:
+        VERSION,
+
+      buildBriefing
+    });
+
 })();

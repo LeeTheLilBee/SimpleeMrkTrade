@@ -1,0 +1,1122 @@
+/* =================================================================================================
+   THE OBSERVATORY — OWNER CONSOLE / OBUX051–055
+   ================================================================================================= */
+
+:root {
+  --oboc-bg: #06070c;
+  --oboc-panel: rgba(13, 14, 24, .82);
+  --oboc-panel-strong: rgba(10, 11, 19, .97);
+  --oboc-line: rgba(255,255,255,.085);
+  --oboc-line-strong: rgba(255,255,255,.15);
+  --oboc-text: rgba(255,255,255,.95);
+  --oboc-muted: rgba(255,255,255,.56);
+  --oboc-faint: rgba(255,255,255,.34);
+  --oboc-gold: rgba(237,207,128,.96);
+  --oboc-violet: rgba(196,176,255,.96);
+  --oboc-green: rgba(130,231,190,.96);
+  --oboc-red: rgba(255,143,154,.96);
+  --oboc-orange: rgba(255,198,111,.96);
+}
+
+
+body[data-ob-room="owner-console"] {
+  margin: 0;
+  background: var(--oboc-bg);
+}
+
+
+.oboc {
+  position: relative;
+  z-index: 5;
+
+  max-width: 1700px;
+
+  margin: 0 auto;
+
+  padding:
+    32px 30px
+    90px;
+
+  color:
+    var(--oboc-text);
+}
+
+
+.oboc *,
+.oboc *::before,
+.oboc *::after {
+  box-sizing: border-box;
+}
+
+
+.oboc h1,
+.oboc h2,
+.oboc h3,
+.oboc p {
+  margin-top: 0;
+}
+
+
+.oboc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 21px;
+}
+
+
+.oboc-path,
+.oboc-eyebrow {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color:
+    var(--oboc-gold);
+
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+
+.oboc-header h1 {
+  margin-bottom: 7px;
+
+  font-size:
+    clamp(
+      2.4rem,
+      5vw,
+      4.8rem
+    );
+
+  font-weight: 650;
+
+  letter-spacing:
+    -.055em;
+
+  line-height: .98;
+}
+
+
+.oboc-header p {
+  margin-bottom: 0;
+
+  color:
+    var(--oboc-muted);
+
+  font-size: .92rem;
+}
+
+
+.oboc-header-state {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+
+.oboc-chip,
+.oboc-status-chip,
+.oboc-muted-chip {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 31px;
+
+  padding: 6px 10px;
+
+  border:
+    1px solid
+    var(--oboc-line);
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(255,255,255,.035);
+
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .68rem;
+
+  font-weight:
+    760;
+
+  letter-spacing:
+    .05em;
+}
+
+
+.oboc-chip.locked {
+  color:
+    var(--oboc-red);
+}
+
+
+.oboc-question-strip {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 10px;
+
+  margin-bottom:
+    15px;
+}
+
+
+.oboc-question-card {
+  min-height:
+    108px;
+
+  padding:
+    16px;
+
+  border:
+    1px solid
+    var(--oboc-line);
+
+  border-radius:
+    18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.052),
+      rgba(255,255,255,.018)
+    );
+}
+
+
+.oboc-question-card span,
+.oboc-question-card strong,
+.oboc-question-card small {
+  display: block;
+}
+
+
+.oboc-question-card span {
+  color:
+    var(--oboc-faint);
+
+  font-size:
+    .62rem;
+
+  font-weight:
+    780;
+
+  letter-spacing:
+    .1em;
+}
+
+
+.oboc-question-card strong {
+  margin-top:
+    12px;
+
+  font-size:
+    1.22rem;
+}
+
+
+.oboc-question-card small {
+  margin-top:
+    6px;
+
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .7rem;
+
+  line-height:
+    1.45;
+}
+
+
+.oboc-main-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(250px, .34fr)
+    minmax(0, 1fr);
+
+  gap: 15px;
+
+  align-items: start;
+}
+
+
+.oboc-secondary-grid {
+  display: grid;
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: 15px;
+
+  margin-top:
+    15px;
+}
+
+
+.oboc-panel {
+  border:
+    1px solid
+    var(--oboc-line);
+
+  border-radius:
+    23px;
+
+  background:
+    var(--oboc-panel);
+
+  box-shadow:
+    0 24px 70px
+    rgba(0,0,0,.25);
+
+  backdrop-filter:
+    blur(22px);
+
+  padding:
+    18px;
+}
+
+
+.oboc-attention-panel {
+  position: sticky;
+  top: 15px;
+}
+
+
+.oboc-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+
+.oboc-panel-head h2 {
+  margin: 0;
+
+  font-size:
+    1.15rem;
+}
+
+
+.oboc-panel-copy {
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .75rem;
+
+  line-height:
+    1.52;
+}
+
+
+.oboc-count {
+  display: grid;
+  place-items: center;
+
+  width: 29px;
+  height: 29px;
+
+  border-radius:
+    50%;
+
+  background:
+    rgba(255,255,255,.055);
+
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .7rem;
+}
+
+
+.oboc-attention-list {
+  display: grid;
+  gap: 8px;
+
+  margin-top:
+    14px;
+}
+
+
+.oboc-attention-card {
+  padding:
+    12px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.07);
+
+  border-radius:
+    14px;
+
+  background:
+    rgba(255,255,255,.026);
+}
+
+
+.oboc-attention-card.degraded {
+  box-shadow:
+    inset 3px 0
+    var(--oboc-red);
+}
+
+
+.oboc-attention-card.guarded {
+  box-shadow:
+    inset 3px 0
+    var(--oboc-orange);
+}
+
+
+.oboc-attention-card.unknown {
+  box-shadow:
+    inset 3px 0
+    rgba(255,255,255,.24);
+}
+
+
+.oboc-attention-card strong,
+.oboc-attention-card span,
+.oboc-attention-card small {
+  display: block;
+}
+
+
+.oboc-attention-card strong {
+  font-size:
+    .8rem;
+}
+
+
+.oboc-attention-card span {
+  margin-top:
+    5px;
+
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .69rem;
+
+  line-height:
+    1.4;
+}
+
+
+.oboc-attention-card small {
+  margin-top:
+    7px;
+
+  color:
+    var(--oboc-faint);
+
+  font-size:
+    .58rem;
+}
+
+
+.oboc-empty {
+  padding:
+    18px;
+
+  border:
+    1px dashed
+    rgba(255,255,255,.1);
+
+  border-radius:
+    14px;
+
+  color:
+    var(--oboc-faint);
+
+  font-size:
+    .72rem;
+}
+
+
+.oboc-health-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 8px;
+
+  margin-top:
+    16px;
+}
+
+
+.oboc-health-card {
+  min-height:
+    84px;
+
+  padding:
+    12px;
+
+  border-radius:
+    14px;
+
+  background:
+    rgba(255,255,255,.028);
+}
+
+
+.oboc-health-card span,
+.oboc-health-card strong,
+.oboc-health-card small {
+  display: block;
+}
+
+
+.oboc-health-card span {
+  color:
+    var(--oboc-faint);
+
+  font-size:
+    .62rem;
+}
+
+
+.oboc-health-card strong {
+  margin-top:
+    8px;
+
+  font-size:
+    .83rem;
+}
+
+
+.oboc-health-card small {
+  margin-top:
+    5px;
+
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .62rem;
+}
+
+
+.oboc-soulaana {
+  display: flex;
+  gap: 11px;
+
+  margin-top:
+    15px;
+
+  padding:
+    14px;
+
+  border:
+    1px solid
+    rgba(237,207,128,.18);
+
+  border-radius:
+    16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(237,207,128,.065),
+      rgba(153,117,236,.04)
+    );
+}
+
+
+.oboc-soulaana-mark {
+  color:
+    var(--oboc-violet);
+}
+
+
+.oboc-soulaana span {
+  color:
+    var(--oboc-gold);
+
+  font-size:
+    .65rem;
+
+  font-weight:
+    800;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    .09em;
+}
+
+
+.oboc-soulaana p {
+  margin:
+    5px 0 0;
+
+  color:
+    rgba(255,255,255,.7);
+
+  font-size:
+    .75rem;
+
+  line-height:
+    1.52;
+}
+
+
+.oboc-mission-list {
+  display: grid;
+  gap: 7px;
+
+  margin-top:
+    13px;
+}
+
+
+.oboc-mission-row {
+  display: grid;
+  grid-template-columns:
+    1fr auto;
+
+  gap: 12px;
+
+  align-items: center;
+
+  padding:
+    11px;
+
+  border-radius:
+    13px;
+
+  background:
+    rgba(255,255,255,.027);
+}
+
+
+.oboc-mission-row.selected {
+  border:
+    1px solid
+    rgba(237,207,128,.24);
+
+  background:
+    rgba(237,207,128,.055);
+}
+
+
+.oboc-mission-row strong,
+.oboc-mission-row span,
+.oboc-mission-row small {
+  display: block;
+}
+
+
+.oboc-mission-row strong {
+  font-size:
+    .76rem;
+}
+
+
+.oboc-mission-row span {
+  margin-top:
+    4px;
+
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .63rem;
+}
+
+
+.oboc-mission-row small {
+  color:
+    var(--oboc-faint);
+
+  font-size:
+    .59rem;
+}
+
+
+.oboc-source-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 8px;
+
+  margin-top:
+    16px;
+}
+
+
+.oboc-source-card {
+  padding:
+    11px;
+
+  border-radius:
+    13px;
+
+  background:
+    rgba(255,255,255,.028);
+}
+
+
+.oboc-source-card span,
+.oboc-source-card strong {
+  display: block;
+}
+
+
+.oboc-source-card span {
+  color:
+    var(--oboc-faint);
+
+  font-size:
+    .6rem;
+}
+
+
+.oboc-source-card strong {
+  margin-top:
+    7px;
+
+  overflow-wrap:
+    anywhere;
+
+  font-size:
+    .76rem;
+}
+
+
+.oboc-text-button {
+  margin-top:
+    12px;
+
+  border:
+    1px solid
+    var(--oboc-line);
+
+  border-radius:
+    11px;
+
+  background:
+    rgba(255,255,255,.035);
+
+  padding:
+    8px 11px;
+
+  color:
+    var(--oboc-muted);
+
+  font:
+    inherit;
+
+  font-size:
+    .7rem;
+
+  cursor:
+    pointer;
+}
+
+
+.oboc-room-panel {
+  margin-top:
+    15px;
+}
+
+
+.oboc-room-chain {
+  display: grid;
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap:
+    8px;
+
+  margin-top:
+    16px;
+}
+
+
+.oboc-room-card {
+  position:
+    relative;
+
+  min-height:
+    94px;
+
+  padding:
+    12px;
+
+  border-radius:
+    14px;
+
+  background:
+    rgba(255,255,255,.026);
+}
+
+
+.oboc-room-card:not(:last-child)::after {
+  position:
+    absolute;
+
+  top:
+    45px;
+
+  right:
+    -7px;
+
+  content:
+    "→";
+
+  color:
+    var(--oboc-faint);
+}
+
+
+.oboc-room-card span,
+.oboc-room-card strong,
+.oboc-room-card small {
+  display:
+    block;
+}
+
+
+.oboc-room-card span {
+  color:
+    var(--oboc-faint);
+
+  font-size:
+    .6rem;
+}
+
+
+.oboc-room-card strong {
+  margin-top:
+    8px;
+
+  font-size:
+    .78rem;
+}
+
+
+.oboc-room-card small {
+  margin-top:
+    5px;
+
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .59rem;
+}
+
+
+.oboc-lock-wall {
+  display:
+    grid;
+
+  grid-template-columns:
+    250px 1fr;
+
+  gap:
+    18px;
+
+  margin-top:
+    15px;
+
+  padding:
+    18px;
+
+  border:
+    1px solid
+    rgba(255,143,154,.14);
+
+  border-radius:
+    22px;
+
+  background:
+    linear-gradient(
+      140deg,
+      rgba(255,143,154,.055),
+      rgba(255,255,255,.018)
+    );
+}
+
+
+.oboc-lock-wall h2 {
+  margin:
+    0;
+
+  font-size:
+    1.1rem;
+}
+
+
+.oboc-lock-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0,1fr));
+
+  gap:
+    7px;
+}
+
+
+.oboc-lock-grid > div {
+  padding:
+    10px;
+
+  border-radius:
+    12px;
+
+  background:
+    rgba(0,0,0,.14);
+}
+
+
+.oboc-lock-grid span,
+.oboc-lock-grid strong {
+  display:
+    block;
+}
+
+
+.oboc-lock-grid span {
+  color:
+    var(--oboc-faint);
+
+  font-size:
+    .59rem;
+}
+
+
+.oboc-lock-grid strong {
+  margin-top:
+    6px;
+
+  color:
+    var(--oboc-red);
+
+  font-size:
+    .69rem;
+}
+
+
+.oboc-source-drawer {
+  position:
+    fixed;
+
+  z-index:
+    50;
+
+  top:
+    18px;
+
+  right:
+    18px;
+
+  bottom:
+    18px;
+
+  width:
+    min(
+      470px,
+      calc(100vw - 36px)
+    );
+
+  overflow-y:
+    auto;
+
+  padding:
+    20px;
+
+  border:
+    1px solid
+    var(--oboc-line-strong);
+
+  border-radius:
+    22px;
+
+  background:
+    var(--oboc-panel-strong);
+
+  box-shadow:
+    -20px 0 80px
+    rgba(0,0,0,.52);
+}
+
+
+.oboc-source-detail-list {
+  display:
+    grid;
+
+  gap:
+    8px;
+
+  margin-top:
+    18px;
+}
+
+
+.oboc-source-detail-row {
+  padding:
+    12px;
+
+  border-radius:
+    13px;
+
+  background:
+    rgba(255,255,255,.028);
+}
+
+
+.oboc-source-detail-row strong,
+.oboc-source-detail-row span {
+  display:
+    block;
+}
+
+
+.oboc-source-detail-row strong {
+  font-size:
+    .75rem;
+}
+
+
+.oboc-source-detail-row span {
+  margin-top:
+    5px;
+
+  color:
+    var(--oboc-muted);
+
+  font-size:
+    .64rem;
+
+  line-height:
+    1.4;
+}
+
+
+[data-status="HEALTHY"] {
+  color:
+    var(--oboc-green);
+}
+
+
+[data-status="GUARDED"] {
+  color:
+    var(--oboc-orange);
+}
+
+
+[data-status="DEGRADED"] {
+  color:
+    var(--oboc-red);
+}
+
+
+[data-status="LOCKED"] {
+  color:
+    var(--oboc-red);
+}
+
+
+[data-status="UNKNOWN"],
+[data-status="UNAVAILABLE"] {
+  color:
+    rgba(255,255,255,.52);
+}
+
+
+#oboc-compatibility {
+  display:
+    none !important;
+}
+
+
+@media (max-width: 1100px) {
+
+  .oboc-question-strip {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .oboc-main-grid,
+  .oboc-secondary-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .oboc-attention-panel {
+    position:
+      static;
+  }
+
+  .oboc-room-chain {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .oboc-lock-wall {
+    grid-template-columns:
+      1fr;
+  }
+
+}
+
+
+@media (max-width: 720px) {
+
+  .oboc {
+    padding:
+      20px 14px
+      70px;
+  }
+
+  .oboc-header {
+    flex-direction:
+      column;
+  }
+
+  .oboc-header-state {
+    justify-content:
+      flex-start;
+  }
+
+  .oboc-question-strip {
+    grid-template-columns:
+      1fr;
+  }
+
+  .oboc-health-grid,
+  .oboc-source-grid,
+  .oboc-room-chain,
+  .oboc-lock-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .oboc-room-card::after {
+    display:
+      none;
+  }
+
+}
