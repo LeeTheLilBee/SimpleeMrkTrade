@@ -6,6 +6,8 @@ on:
       - tower-hosted-runtime-identity-twr081-085
     paths:
       - "web/static/ob/ob_nav_shell.js"
+      - "web/templates/dashboard.html"
+      - "tests/test_ob_dashboard_practice_corridors.py"
       - "tower/ob_route_guard.py"
       - "tests/test_ob_canonical_nav_corridors.py"
       - ".github/workflows/tower-ob-canonical-hover-navigation.yml"
@@ -14,6 +16,8 @@ on:
       - tower-hosted-runtime-identity-twr081-085
     paths:
       - "web/static/ob/ob_nav_shell.js"
+      - "web/templates/dashboard.html"
+      - "tests/test_ob_dashboard_practice_corridors.py"
       - "tower/ob_route_guard.py"
       - "tests/test_ob_canonical_nav_corridors.py"
       - ".github/workflows/tower-ob-canonical-hover-navigation.yml"
@@ -35,5 +39,7 @@ jobs:
           node-version: "24"
       - name: Check exact menu destinations and default-deny guard
         run: python -m unittest discover -s tests -p 'test_ob_canonical_nav_corridors.py' -v
+      - name: Check Dashboard Practice links and preserve legacy default-deny
+        run: python -m unittest discover -s tests -p 'test_ob_dashboard_practice_corridors.py' -v
       - name: Parse hover navigation JavaScript
         run: node --check web/static/ob/ob_nav_shell.js
