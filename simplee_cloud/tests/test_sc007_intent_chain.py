@@ -91,6 +91,10 @@ def test_unsolicited_row_cannot_appear_without_one_reservation_event(tmp_path, t
         record = db.execute("SELECT * FROM " + table + " LIMIT 1").fetchone()
         mutated = list(record)
         mutated[0] = "e" * 64
+        if table == "intents":
+            mutated[2] = "objects/" + "e" * 48
+        else:
+            mutated[4] = "backups/" + "e" * 48
         db.execute(
             "INSERT INTO " + table + " VALUES (" + ",".join("?" for _ in cols) + ")",
             mutated,
