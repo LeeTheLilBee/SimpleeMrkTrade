@@ -53,7 +53,7 @@ _ROUTES={
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
     ("GET","/grounds/api/entry-preference"),
-    ("GET","/grounds/api/technicians"),
+    ("GET","/grounds/api/technicians"),\n    ("GET","/grounds/api/rent"),
     ("POST","/grounds/api/work"),
     ("POST","/grounds/api/work/assign"),
     ("POST","/grounds/api/notice-read"),
@@ -180,7 +180,8 @@ class GroundsWebApp:
     """
     def __init__(self,store:GroundsStoreBase,*,tower_receiver:Callable,
                  csrf_secret:bytes,local_fixture_only:bool=False,
-                 staff_directory:Callable|None=None,staff_resolver:Callable|None=None):
+                 staff_directory:Callable|None=None,staff_resolver:Callable|None=None,
+                 teller_rent_source:Callable|None=None,teller_verifier:Callable|None=None):
         if not callable(tower_receiver):
             raise GroundsWebConfigurationError("server-owned Tower receiver required")
         if type(store) is GroundsStore:
@@ -204,9 +205,17 @@ class GroundsWebApp:
             not callable(staff_directory) or not callable(staff_resolver)
         ):
             raise GroundsWebConfigurationError("server-owned Tower staff adapters must be callable")
+        if (teller_rent_source is None)!=(teller_verifier is None):
+            raise GroundsWebConfigurationError("Teller rent source and verifier must be configured together")
+        if teller_rent_source is not None and (
+            not callable(teller_rent_source) or not callable(teller_verifier)
+        ):
+            raise GroundsWebConfigurationError("server-owned Teller rent adapters must be callable")
         self.receiver=tower_receiver
         self.staff_directory=staff_directory
         self.staff_resolver=staff_resolver
+        self.teller_rent_source=teller_rent_source
+        self.teller_verifier=teller_verifier
         self.csrf=SessionCSRF(csrf_secret)
         self.ops=GroundsOperations(store)
         self.communications=GroundsCommunications(store)
@@ -321,6 +330,30 @@ class GroundsWebApp:
             if path=="/grounds/api/entry-preference":
                 q=_query(environ,{"work_ref"})
                 return self.safety.entry_preference(actor,work_ref=_ref(q["work_ref"],"work_ref"))
+            if path=="/grounds/api/rent":
+                actor.require_role("resident")
+                q=_query(environ,{"property_ref","unit_ref"})
+                property_ref=_ref(q["property_ref"],"property_ref")
+                unit_ref=_ref(q["unit_ref"],"unit_ref")
+                home=self.ops.resident_home(
+                    actor,property_ref=property_ref,unit_ref=unit_ref,
+                )
+                if self.teller_rent_source is None:
+                    return {
+                        "connected":False,"source":"teller",
+                        "status":"awaiting_verified_projection",
+                        "amount_due_cents":None,"checkout_execution_enabled":False,
+                    }
+                try:
+                    signed=self.teller_rent_source(actor,home)
+                    projection=resident_rent_projection(
+                        actor,home,signed,teller_verifier=self.teller_verifier,
+                    )
+                except Exception as exc:
+                    raise GroundsWebConfigurationError(
+                        "certified Teller rent source unavailable"
+                    ) from exc
+                return {"connected":True,**projection}
             if path=="/grounds/api/technicians":
                 actor.require_role("owner","property_manager","maintenance_supervisor")
                 q=_query(environ,{"property_ref"})
