@@ -62,6 +62,7 @@ def test_two_distinct_primary_refs_in_one_namespace_allowed(tmp_path):
 
 def test_different_backup_requests_cannot_alias_same_backup_ref(tmp_path):
     h = Harness(tmp_path)
+    write(h, "write-1")
     scope = namespace(h)
     ref = "backups/" + "a" * 48
     digest = hashlib.sha256(b"SCB1" + os.urandom(64)).hexdigest()
@@ -79,6 +80,8 @@ def test_different_backup_requests_cannot_alias_same_backup_ref(tmp_path):
 
 def test_backup_ref_can_repeat_across_different_namespace(tmp_path):
     h = Harness(tmp_path)
+    write(h, "write-trust", entity="trust")
+    write(h, "write-other", entity="different-entity")
     ref = "backups/" + "a" * 48
     digest = hashlib.sha256(b"SCB1" + os.urandom(64)).hexdigest()
     for request, entity in (("backup-1", "trust"), ("backup-2", "different-entity")):

@@ -362,6 +362,38 @@ class SQLiteOperationalJournal:
                 "state": self._backup_state(conn, tag),
             }
 
+    @staticmethod
+    def _require_acknowledged_primary(
+        conn: sqlite3.Connection, namespace: str, object_ref: str, digest: str,
+    ) -> None:
+        """Require the exact source ref/hash to have a durable primary ACK.
+
+        A physically readable object with no acknowledged journal intent is
+        NOT sufficient backup source provenance. Check again inside reserve's
+        BEGIN IMMEDIATE transaction to close a preflight/read race.
+        """
+        row = conn.execute(
+            """SELECT request_tag,ciphertext_sha256 FROM intents
+               WHERE namespace_digest=? AND object_ref=?""",
+            (namespace, object_ref),
+        ).fetchone()
+        if row is None or row["ciphertext_sha256"] != digest or (
+            SQLiteOperationalJournal._state(conn, row["request_tag"])
+            not in ("WRITE_ACKNOWLEDGED", "RECONCILE_PRESENT")
+        ):
+            raise CloudError("backup source requires acknowledged matching primary intent")
+
+    def require_acknowledged_primary(
+        self, *, namespace: str, object_ref: str, digest: str,
+    ) -> None:
+        """Fail before a first-time backup attempts any source-provider GET."""
+        self._scope(namespace)
+        if not valid_object_ref(object_ref) or not valid_sha256(digest):
+            raise CloudError("invalid source backup ref/digest")
+        with closing(self._connect()) as conn:
+            self._verify(conn)
+            self._require_acknowledged_primary(conn, namespace, object_ref, digest)
+
     def reserve_backup(self, *, namespace: str, request_id: str,
                        source_object_ref: str, source_digest: str,
                        backup_ref: str, backup_digest: str, backup_size: int,
@@ -387,6 +419,11 @@ class SQLiteOperationalJournal:
                 (namespace, backup_ref),
             ).fetchone() is not None:
                 raise CloudError("physical backup reference already reserved to another request")
+            # Mandatory transactional recheck even if the caller separately
+            # preflighted before a source read or an external I/O delay.
+            self._require_acknowledged_primary(
+                conn, namespace, source_object_ref, source_digest,
+            )
             values = (
                 tag, namespace, source_object_ref, source_digest, backup_ref,
                 backup_digest, backup_size, key_reference, _now(),

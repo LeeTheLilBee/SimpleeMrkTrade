@@ -98,6 +98,16 @@ class JournaledBackupOperations:
                 raise
             return self._receipt(existing)
 
+        # A physical GET alone does not prove this object belongs to a
+        # DURABLY acknowledged primary request. Fail before provider access.
+        # reserve_backup rechecks inside its BEGIN IMMEDIATE transaction.
+        # Existing ACKed backup replay above remains separately usable for
+        # recovering a primary that subsequently entered integrity HOLD.
+        self.journal.require_acknowledged_primary(
+            namespace=scope, object_ref=source_object_ref,
+            digest=source_ciphertext_sha256,
+        )
+
         # Source is a bound VLT1; the second SCB1 encryption has its own
         # distinct 32-byte backup key and cryptographically bound AAD.
         self.backup.source._audit(
