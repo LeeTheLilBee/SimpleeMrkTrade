@@ -1,0 +1,31 @@
+name: BuyBox insurance-to-Teller source cost proposal BBX082-086
+
+on:
+  push:
+    branches:
+      - buybox-insurance-teller-source-proposal-bbx082-086
+  pull_request:
+    paths:
+      - 'buybox/insurance_cost_question.py'
+      - 'buybox/tests/test_insurance_cost_question.py'
+      - 'docs/BUYBOX_INSURANCE_COST_SOURCE_BBX082_086.md'
+      - '.github/workflows/buybox-insurance-cost-source-bbx082-086.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-only-financial-costs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install existing BuyBox dependencies
+        run: python -m pip install -r buybox/requirements.txt
+      - name: Full existing BuyBox suite, includes source-only cost proposal
+        run: python -m unittest discover -s buybox/tests -v
