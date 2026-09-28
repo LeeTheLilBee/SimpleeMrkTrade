@@ -141,11 +141,22 @@ class GroundsLeasing:
             return {"tour_ref":tour_ref,"prospect_ref":prospect_ref,
                     "stage":"tour_scheduled","revision":revision,"notification_sent":False}
 
+    def list_prospects(self, actor: TowerScope, *, property_ref: str) -> list[dict]:
+        """Bounded operations index: never expose Vault contact refs or PII."""
+        self._access(actor,property_ref)
+        with self.store.transaction() as db:
+            return [dict(row) for row in db.execute(
+                """SELECT prospect_ref,desired_unit_ref,stage,revision,created_at,updated_at
+                   FROM leasing_prospects WHERE property_ref=?
+                   ORDER BY updated_at DESC,prospect_ref LIMIT 100""",
+                (property_ref,),
+            )]
+
     def list_tours(self, actor: TowerScope, *, property_ref: str) -> list[dict]:
         self._access(actor,property_ref)
         with self.store.transaction() as db:
             return [dict(x) for x in db.execute(
                 """SELECT tour_ref,prospect_ref,unit_ref,starts_at
-                   FROM leasing_tours WHERE property_ref=? ORDER BY starts_at""",
+                   FROM leasing_tours WHERE property_ref=? ORDER BY starts_at LIMIT 100""",
                 (property_ref,),
             )]
