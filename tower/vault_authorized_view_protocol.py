@@ -254,6 +254,31 @@ def validate_protocol_request(protocol_request: Mapping[str, Any]) -> List[str]:
     if protocol_request.get("raw_files_allowed_for_teller") is not False:
         problems.append("raw_files_allowed_for_teller must be false")
 
+    # A supplied protocol object is not Tower approval. Bind it to the exact
+    # accompanying Tower gate decision before preparing any view material.
+    decision = gate_result.get("tower_decision")
+    safe_return = gate_result.get("safe_return_for_teller")
+    if (
+        not isinstance(decision, Mapping)
+        or not isinstance(safe_return, Mapping)
+        or not isinstance(protocol_request, Mapping)
+        or decision.get("allowed") is not True
+        or decision.get("decision") not in {"allowed", "redacted"}
+        or not isinstance(decision.get("tower_decision_receipt_id"), str)
+        or not decision["tower_decision_receipt_id"]
+        or decision["tower_decision_receipt_id"]
+            != protocol_request.get("tower_decision_receipt_id")
+        or decision.get("redaction_required") is not
+            protocol_request.get("redaction_required")
+        or (decision.get("decision") == "redacted")
+            != (decision.get("redaction_required") is True)
+        or safe_return.get("request_id")
+            != protocol_request.get("originating_teller_request_id")
+        or safe_return.get("tower_decision_receipt_id")
+            != decision["tower_decision_receipt_id"]
+    ):
+        raise ValueError("Tower gate decision and view request are not bound")
+
     protocol_action = str(protocol_request.get("protocol_action", ""))
 
     if protocol_action == "request_authorized_download_prep":
