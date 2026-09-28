@@ -26,6 +26,7 @@ from uuid import UUID, uuid4
 from .access import AccessDenied, TowerScope
 from .communications import GroundsCommunications
 from .leasing import GroundsLeasing
+from .experience import GroundsExperience
 from .maintenance import MaintenanceIntake
 from .operations import GroundsConflict, GroundsOperations
 from .postgres import PostgresGroundsStore
@@ -56,6 +57,10 @@ _ROUTES={
     ("GET","/grounds/api/safety-desk"),
     ("GET","/grounds/api/leasing"),
     ("GET","/grounds/api/physical-desk"),
+    ("GET","/grounds/api/my-home"),
+    ("GET","/grounds/api/daily"),
+    ("GET","/grounds/api/property-health"),
+    ("GET","/grounds/api/owner-portfolio"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
@@ -229,6 +234,7 @@ class GroundsWebApp:
         self.safety=GroundsSafety(store)
         self.leasing=GroundsLeasing(store)
         self.stewardship=GroundsStewardship(store)
+        self.experience=GroundsExperience(store)
 
     def _resource_ref(self,actor,kind,key,*refs):
         """Opaque stable identifier; session/subject/target bound, never guessable."""
@@ -358,6 +364,25 @@ class GroundsWebApp:
             if path=="/grounds/api/entry-preference":
                 q=_query(environ,{"work_ref"})
                 return self.safety.entry_preference(actor,work_ref=_ref(q["work_ref"],"work_ref"))
+            if path=="/grounds/api/my-home":
+                q=_query(environ,{"property_ref","unit_ref"})
+                return self.experience.my_home(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                    unit_ref=_ref(q["unit_ref"],"unit_ref"),
+                )
+            if path=="/grounds/api/daily":
+                q=_query(environ,{"property_ref"})
+                return self.experience.daily(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                )
+            if path=="/grounds/api/property-health":
+                q=_query(environ,{"property_ref"})
+                return self.experience.property_health(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                )
+            if path=="/grounds/api/owner-portfolio":
+                _query(environ,set())
+                return self.experience.owner_portfolio(actor)
             if path=="/grounds/api/physical-desk":
                 q=_query(environ,{"property_ref"})
                 return self.stewardship.physical_workboard(
