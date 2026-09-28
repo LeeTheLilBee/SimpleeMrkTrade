@@ -1,8 +1,10 @@
+# Historical OBUX006–020 checks inspect the exact archived V16 design.
+# Active Dashboard uses separate modern product and security assertions.
 from pathlib import Path
 
 
 TEMPLATE = Path(
-    "web/templates/dashboard.html"
+    "docs/historical/obux_v16_dashboard.html"
 )
 
 ORGANIZER = Path(
@@ -14,7 +16,7 @@ CSS = Path(
 )
 
 DASHBOARD = Path(
-    "web/static/ob/ob_dashboard.js"
+    "docs/historical/obux_v16_dashboard.js"
 )
 
 

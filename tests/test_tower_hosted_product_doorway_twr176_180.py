@@ -34,8 +34,12 @@ def test_real_template_and_assets_survive(monkeypatch):
     response = app.test_client().get('/ob/dashboard')
     assert response.status_code == 200
     assert response.headers['X-OB-Product-Surface'] == 'dashboard'
-    assert b'ob_dashboard_soulaana_obux.css' in response.data
-    assert b'dashboardMount' in response.data
+    assert b'ob_dashboard_obux.css' in response.data
+    assert b'ob_checkin_entry.js' in response.data
+    assert b'id="obArrivalRoot"' in response.data
+    assert b'data-ob-surface="user-dashboard"' in response.data
+    assert b'ob_mission_accounts.js' not in response.data
+    assert b'ob_room_data_polish.js' not in response.data
     assert response.headers['Cache-Control'] == 'no-store'
     assert app.test_client().get('/static/ob/ob_dashboard.js').status_code == 200
 
