@@ -1,0 +1,127 @@
+{% extends "base.html" %}{% block title %}Closing Review · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero">
+  <p class="eyebrow">CLOSING REVIEW · SOURCE ASSEMBLY ONLY</p>
+  <h1>What is actually ready, and what still needs authority?</h1>
+  <p>This room assembles current BuyBox records before a protected closing request. It does not verify title, bind insurance, approve a lender, establish Teller capacity, move money, or issue Tower closing authority.</p>
+</section>
+<section class="stats">
+  <div class="tile"><small>Local source state</small><strong>{{ report.local_source_state|replace('_',' ')|title }}</strong></div>
+  <div class="tile"><small>Critical diligence outstanding</small><strong>{{ report.critical_diligence_outstanding }}</strong></div>
+  <div class="tile"><small>Unresolved source discrepancies</small><strong>{{ report.unresolved_source_discrepancies }}</strong></div>
+  <div class="tile"><small>Protected closing</small><strong>Blocked</strong></div>
+</section>
+
+<section class="workspace"><div class="main-column">
+  <div class="panel">
+    <p class="eyebrow">LOCAL SOURCE REVIEW</p><h2>Current BuyBox blockers</h2>
+    {% if report.source_blockers %}
+      {% for code in report.source_blockers %}
+      <div class="evidence-row"><span>{{ code|replace('_',' ')|title }}</span><strong>Review</strong></div>
+      {% endfor %}
+    {% else %}
+      <p>No current BuyBox source blocker is recorded. That does <strong>not</strong> mean the transaction is cleared to close.</p>
+    {% endif %}
+    <div class="evidence-row"><span>Document-linked operating baseline</span><strong>{{ report.financial_status|replace('_',' ')|title }}</strong></div>
+    <div class="evidence-row"><span>Open owner tasks</span><strong>{{ report.open_owner_tasks }}</strong></div>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">FINANCING SOURCES</p><h2>Current documented alternatives</h2>
+    {% for item in report.financing_options %}
+      <article class="closing-source-card">
+        <h3>{{ item.record.lender_label }} · {{ item.record.program_label }}</h3>
+        <p class="muted">Option {{ item.record.id }} · Source {{ item.record.source_artifact_id[:12] }}…</p>
+        <div class="evidence-row"><span>Recorded principal</span><strong>${{ item.record.principal }}</strong></div>
+        <div class="evidence-row"><span>Recorded APR / months</span><strong>{{ item.record.apr_percent }}% / {{ item.record.term_months }}</strong></div>
+        <div class="evidence-row"><span>Modeled monthly payment</span><strong>${{ item.assessment.modeled_monthly_payment }}</strong></div>
+        {% if item.assessment.review_flags %}
+        <p class="notice">Recheck: {{ item.assessment.review_flags|join(', ')|replace('_',' ') }}</p>
+        {% else %}<p class="muted">No current BuyBox source-freshness flag. Lender approval remains unverified.</p>{% endif %}
+      </article>
+    {% else %}
+      <p class="muted">No current original-backed financing alternative is recorded.</p>
+    {% endfor %}
+    <p><a class="button" href="{{ url_for('financing_room',oid=op.id) }}">Open Financing Desk →</a></p>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">INSURANCE SOURCES</p><h2>Current recorded coverage documents</h2>
+    {% for item in report.insurance_records %}
+      <article class="closing-source-card">
+        <h3>{{ item.record.carrier_label }} · {{ item.record.document_kind|title }}</h3>
+        <p class="muted">Record {{ item.record.id }} · Coverage in force: Unknown</p>
+        {% if item.assessment.review_flags %}
+        <p class="notice">Recheck: {{ item.assessment.review_flags|join(', ')|replace('_',' ') }}</p>
+        {% else %}<p class="muted">No current BuyBox source-freshness flag. Insurer confirmation and binding remain unverified.</p>{% endif %}
+      </article>
+    {% else %}
+      <p class="muted">No current original-backed insurance record is present.</p>
+    {% endfor %}
+    <p><a class="button" href="{{ url_for('insurance_room',oid=op.id) }}">Open Insurance Desk →</a></p>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">EXTERNAL AUTHORITY</p><h2>What BuyBox cannot establish by itself</h2>
+    {% for code in report.external_blockers %}
+      <div class="evidence-row"><span>{{ code|replace('_',' ')|title }}</span><strong>Not verified</strong></div>
+    {% endfor %}
+    <p class="muted">These are not administrative warnings you can click away. Tower, Teller, lender/closing professionals, insurer, title/ownership proof, and the actual recipient systems must establish their own truth.</p>
+  </div>
+
+  {% if report.historical_reviews %}
+  <div class="panel">
+    <p class="eyebrow">IMMUTABLE OWNER HISTORY</p><h2>Earlier local closing reviews</h2>
+    {% for review in report.historical_reviews %}
+      <article class="closing-source-card">
+        <h3>{{ review.recorded_at }}</h3>
+        <p>{{ review.rationale }}</p>
+        <p class="muted">Source revision {{ review.source_opportunity_revision }} · Local snapshot {{ review.local_snapshot_sha256[:16] }}…</p>
+        <p class="muted">Captured source state: {{ review.captured_local_source_state|replace('_',' ')|title }}</p>
+        {% if review.planned_closing_date %}<p>Owner-planned date: {{ review.planned_closing_date }}</p>{% endif %}
+        <small>Authorizes closing: No · Transmitted externally: No</small>
+      </article>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<aside class="side-column">
+  <div class="panel">
+    <p class="eyebrow">FREEZE AN OWNER REVIEW</p><h2>Record what you reviewed now</h2>
+    <p class="muted">This creates a historical local snapshot only. It never sends a closing request or changes lifecycle.</p>
+    <form method="post" action="{{ url_for('closing_review_record',oid=op.id) }}" class="panel-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="revision" value="{{ op.version }}">
+      <label>Financing alternative reviewed
+        <select name="financing_option_id">
+          <option value="">None selected / still unknown</option>
+          {% for item in report.financing_options %}
+          <option value="{{ item.record.id }}">{{ item.record.lender_label }} · {{ item.record.program_label }} · {{ item.record.id[:8] }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Insurance record reviewed
+        <select name="insurance_record_id">
+          <option value="">None selected / still unknown</option>
+          {% for item in report.insurance_records %}
+          <option value="{{ item.record.id }}">{{ item.record.carrier_label }} · {{ item.record.document_kind }} · {{ item.record.id[:8] }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Owner-planned closing date (optional)<input type="date" name="planned_closing_date"></label>
+      <label>Why are you freezing this review?
+        <textarea name="rationale" rows="5" maxlength="2000" required placeholder="What did you review, and what still needs to happen?"></textarea>
+      </label>
+      <button type="submit" class="primary">Freeze local closing review</button>
+      <small>No seller, lender, title company, Tower, Teller, Grounds, ATM Operations, or Vault message is sent.</small>
+    </form>
+  </div>
+  <div class="panel">
+    <p class="eyebrow">✧ SOULAANA</p><h2>Explain closing blockers</h2>
+    <p class="muted">Soulaana can explain the current source and authority gaps, but cannot certify readiness or sign off on the deal.</p>
+    <a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='closing') }}">Open closing explanation →</a>
+  </div>
+</aside></section>
+{% endblock %}
