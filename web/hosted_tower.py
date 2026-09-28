@@ -407,6 +407,13 @@ from tower.teller_owner_launch import register_teller_owner_launch_web
 
 register_teller_owner_launch_web(app)
 
+# TWR ecosystem owner-only integration desk. Registration and current
+# publication truth are reported separately; no future product launch is
+# authorized by this metadata view.
+from tower.ecosystem_integration_desk import register_tower_integration_desk
+
+register_tower_integration_desk(app)
+
 # ==============================================================================================================
 # TWR192_CANONICAL_HOSTED_FRONT_DOOR
 #
