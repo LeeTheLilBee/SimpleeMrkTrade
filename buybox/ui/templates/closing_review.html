@@ -78,7 +78,7 @@
         <h3>{{ review.recorded_at }}</h3>
         <p>{{ review.rationale }}</p>
         <p class="muted">Source revision {{ review.source_opportunity_revision }} · Local snapshot {{ review.local_snapshot_sha256[:16] }}…</p>
-        <p class="muted">Captured source state: {{ review.captured_local_source_state|replace('_',' ')|title }}</p>
+        <p class="muted">Captured source state: {{ review.captured_local_source_state|replace('_',' ')|title }} · {{ review.display_state|replace('_',' ')|title }}</p>
         {% if review.planned_closing_date %}<p>Owner-planned date: {{ review.planned_closing_date }}</p>{% endif %}
         <small>Authorizes closing: No · Transmitted externally: No</small>
       </article>
