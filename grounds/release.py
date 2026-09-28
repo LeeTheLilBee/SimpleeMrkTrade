@@ -39,6 +39,8 @@ def source_completion_status()->dict:
         "real_postgres_ci_result_must_be_checked_externally":True,
         "retry_safe_work_and_appointment_source_available":True,
         "authenticated_staff_safety_desk_source_available":True,
+        "privacy_minimized_leasing_read_desk_source_available":True,
+        "real_applicant_intake_and_decisions_certified":False,
         "human_on_call_escalation_or_provider_delivery_certified":False,
         "tower_staff_directory_and_assignment_receiver_certified":False,
         "developer_demo_command":"python -m grounds.dev_demo --fictional-only",

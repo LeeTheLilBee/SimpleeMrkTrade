@@ -112,11 +112,54 @@
           }
         }
       }
+      if (["owner","property_manager","leasing_agent"].includes(state.me.role)) {
+        try {
+          const leasing = await request("leasing?" + new URLSearchParams({ property_ref: state.property }));
+          if (generation === state.loadGeneration) renderLeasingDesk(leasing);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("leasing-list"));
+            $("leasing-count").textContent = "Unavailable";
+            $("leasing-status").textContent = "Current property leasing records could not be retrieved. No applications or tours were confirmed by this screen.";
+          }
+        }
+      }
     } catch (error) {
       if (generation !== state.loadGeneration) return;
       $("content").classList.add("hidden"); $("locked").classList.remove("hidden");
       $("locked-reason").textContent = error.message;
       message(error.message, true);
+    }
+  }
+  function renderLeasingDesk(desk) {
+    const target = $("leasing-list"); clear(target);
+    if (desk?.source !== "grounds" || desk.property_ref !== state.property ||
+        !Array.isArray(desk.units) || !Array.isArray(desk.prospects) || !Array.isArray(desk.tours)) {
+      $("leasing-count").textContent = "Unverified";
+      $("leasing-status").textContent = "Leasing source data could not be verified.";
+      return;
+    }
+    const ready = desk.units.filter(unit => unit.lifecycle === "ready").length;
+    $("leasing-count").textContent = ready + " recorded ready units";
+    $("leasing-status").textContent = desk.prospects.length + " recent opaque prospect records and " +
+      desk.tours.length + " scheduled tour records shown (first 100 per collection). No actual contact, applicant decision or delivered notification is certified.";
+    if (!desk.prospects.length && !desk.tours.length) {
+      target.append(el("p", "No authorized prospect or tour records are available in this property snapshot. Applicant intake is not connected here.", "footnote"));
+    }
+    for (const prospect of desk.prospects) {
+      const card = el("article", null, "item");
+      card.append(el("h3", "Prospect · " + prospect.prospect_ref),
+        el("p", "Recorded stage: " + prospect.stage +
+          " · Preferred unit: " + (prospect.desired_unit_ref || "Not recorded")),
+        el("span", "Updated: " + asDate(prospect.updated_at), "meta"));
+      target.append(card);
+    }
+    for (const tour of desk.tours) {
+      const card = el("article", null, "item");
+      card.append(el("h3", "Tour · " + tour.tour_ref),
+        el("p", "Unit " + tour.unit_ref + " · Scheduled " + asDate(tour.starts_at)),
+        el("span", "Prospect reference: " + tour.prospect_ref + " · Delivery not confirmed", "meta"));
+      target.append(card);
     }
   }
   function renderSafetyDesk(desk) {
@@ -187,6 +230,13 @@
     } else if (data.units) { summary.append(stat("RECORDED UNITS", data.units.length)); }
     const hasSafetyDesk = ["owner","property_manager","maintenance_supervisor"].includes(data.role);
     $("safety-panel").classList.toggle("hidden", !hasSafetyDesk);
+    const hasLeasingDesk = ["owner","property_manager","leasing_agent"].includes(data.role);
+    $("leasing-panel").classList.toggle("hidden", !hasLeasingDesk);
+    if (hasLeasingDesk) {
+      clear($("leasing-list"));
+      $("leasing-count").textContent = "Checking";
+      $("leasing-status").textContent = "Checking current scoped property inventory. Private contact and application decisions are unavailable.";
+    }
     if (hasSafetyDesk) {
       clear($("safety-list"));
       $("safety-count").textContent = "Checking";
