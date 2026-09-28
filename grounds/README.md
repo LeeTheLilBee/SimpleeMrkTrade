@@ -36,17 +36,17 @@ To inspect the visual prototype, open `grounds/ui/preview.html` locally in a bro
 - `contract.py` — supported rooms and system boundaries.
 - `access.py` — normalized externally verified Tower-scoped identity placeholder; requires certified verifier.
 - `storage.py` — local SQLite property/lease/work-order/leasing reference records.
-- `operations.py` — owner/manager/resident/technician scoped property, lease, notice and maintenance actions.
+- `operations.py` — owner/manager/resident/technician scoped property, lease, notice and maintenance actions.\n- `acquisition_handoff.py` — idempotent multifamily post-close receiver; requires a fresh independently verified Tower close/title/encumbrance handoff and persists exact BuyBox source lineage before creating an owned property.
 - `maintenance.py` — state transition policy.
 - `leasing.py` — availability, opaque prospect stages and tour plans.
-- `teller.py` — exact-unit, exact-lease verified Teller rent display, no checkout.
+- `teller.py` — exact-unit, exact-lease verified Teller rent display, no checkout. `web.py` exposes it to the resident UI only when paired server-owned Teller source/verifier adapters are injected.
 - `evidence.py` — only verified opaque Vault/Tower proof references.
 - `capital.py` — five-lane apartment reserve/readiness snapshot sourced through Teller, no money movement.
 - `soulaana.py` — read-only source-bound explanations for work, verified rent/readiness, leases, appointments, stewardship, leasing, owner pulse, physical materials and preventive due dates.
 - `stewardship.py` — property assets, certified preventive-plan completion, inspection findings/remediation and unit turnovers. No real dispatch, inspector self-service or automatic notifications.
 - `residency.py` — externally certified lease-member grant/revocation, co-tenant/occupant records and history, separately from Tower sessions.
 - `communications.py` — scoped in-app notice-read and appointment proposal/acceptance; not legal delivery or permission to enter.
-- `safety.py` — human-only urgent triage, resident entry preferences and metadata-only pending notification intents; no provider/dispatch.
+- `safety.py` — human-only urgent triage, resident entry preferences and metadata-only notification intents; no transport/dispatch.\n- `delivery.py` — append-only Tower-delivery-gateway receipt intake for exact notification intents and urgent human on-call acknowledgments; never equates a receipt with legal service or emergency-services dispatch.
 - `work_resources.py` — property/job-scoped append-only material counts and labor minutes, no costs, payroll, bills or inventory purchase.
 - `dev_integrity.py` — synthetic local SQLite invariant counts and opt-in unencrypted, no-overwrite developer-only fixture backup; not production recovery.
 - `owner_status.py` — owner-only, minimized physical-operating counts for future Tower-mediated Clouds review; no resident identifiers or live publisher.
