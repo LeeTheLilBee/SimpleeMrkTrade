@@ -10,6 +10,10 @@ on:
       - "tower/buybox_owner_handoff_issuer.py"
       - "tower/test_grounds_runtime_integration.py"
       - "tower/test_buybox_owner_handoff_issuer.py"
+      - "tower/ecosystem_direct_route_guard.py"
+      - "tower/ecosystem_return_routes.py"
+      - "tower/test_ecosystem_navigation_guard.py"
+      - "web/hosted_tower.py"
       - "docs/TOWER_SYSTEM_INTEGRATIONS_20260928.md"
       - ".github/workflows/tower-system-integrations.yml"
   push:
@@ -21,6 +25,10 @@ on:
       - "tower/buybox_owner_handoff_issuer.py"
       - "tower/test_grounds_runtime_integration.py"
       - "tower/test_buybox_owner_handoff_issuer.py"
+      - "tower/ecosystem_direct_route_guard.py"
+      - "tower/ecosystem_return_routes.py"
+      - "tower/test_ecosystem_navigation_guard.py"
+      - "web/hosted_tower.py"
       - "docs/TOWER_SYSTEM_INTEGRATIONS_20260928.md"
       - ".github/workflows/tower-system-integrations.yml"
 
@@ -36,9 +44,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: python -m pip install "pytest>=8,<10"
-      - run: python -m compileall -q tower/grounds_runtime_receiver.py tower/grounds_operational_release.py tower/buybox_owner_handoff_issuer.py tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py
-      - run: python -m pytest -q tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - run: python -m compileall -q tower/grounds_runtime_receiver.py tower/grounds_operational_release.py tower/buybox_owner_handoff_issuer.py tower/ecosystem_direct_route_guard.py tower/ecosystem_return_routes.py tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py web/hosted_tower.py
+      - run: python -m pytest -q tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py
+      - name: Hosted future-app routes never open by source registration alone
+        run: |
+          python - <<'PY'
+          from web.hosted_tower import app
+          client = app.test_client()
+          for path in ("/vault", "/clouds", "/grounds", "/buybox"):
+              response = client.get(path, follow_redirects=False)
+              assert response.status_code != 200, (path, response.status_code)
+          print("Hosted future-app routes remain fail-closed.")
+          PY
       - name: Preserve non-launchable registry truth
         run: |
           python - <<'PY'
