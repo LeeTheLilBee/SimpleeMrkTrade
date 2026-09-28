@@ -45,10 +45,10 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          from tower.vault_request_protocol_gate import get_tower_vault_request_protocol_gate_readiness
+          from tower.vault_request_protocol_gate import get_tower_vault_protocol_gate_readiness
           from tower.vault_authorized_view_protocol import get_tower_authorized_view_protocol_readiness
 
-          gate = get_tower_vault_request_protocol_gate_readiness()
+          gate = get_tower_vault_protocol_gate_readiness()
           view = get_tower_authorized_view_protocol_readiness()
           assert gate["teller_direct_vault_access_allowed"] is False
           assert gate["raw_vault_links_exposed_to_teller"] is False
