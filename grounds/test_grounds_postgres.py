@@ -29,6 +29,7 @@ from grounds.safety import GroundsSafety
 from grounds.test_grounds_operations import fixture_scope
 from grounds.work_resources import GroundsWorkResources
 from grounds.work_thread import GroundsWorkThread
+from grounds.move_concierge import GroundsMoveConcierge
 from grounds.web import GroundsWebApp
 
 URL=os.environ.get("GROUNDS_TEST_POSTGRES_URL")
@@ -624,6 +625,50 @@ class PostgresGroundsTests(unittest.TestCase):
         )
         with self.assertRaises(AccessDenied):
             thread.thread(self.resident,work_ref=work)
+
+
+    def test_real_postgres_current_lease_move_concierge_and_self_report(self):
+        concierge=GroundsMoveConcierge(self.store)
+        view=concierge.resident_checklist(
+            self.resident,property_ref=self.id,unit_ref=self.u,
+        )
+        self.assertEqual(view["lease_ref"],self.l)
+        event="move-"+uuid4().hex
+        kwargs=dict(property_ref=self.id,unit_ref=self.u,
+                    phase="move_in",task_ref="welcome_reviewed",
+                    status="planned",expected_revision=0,event_ref=event)
+        saved=concierge.mark_task(self.resident,**kwargs)
+        self.assertEqual(saved["revision"],1)
+        self.assertTrue(concierge.mark_task(self.resident,**kwargs)["replayed"])
+        self.assertFalse(saved["staff_or_legal_verification"])
+        view=concierge.resident_checklist(
+            self.resident,property_ref=self.id,unit_ref=self.u,
+        )
+        self.assertEqual(view["phases"][0]["tasks"][0]["status"],"planned")
+        self.assertFalse(view["keys_received_confirmed"])
+        desk=concierge.staff_move_desk(self.manager,property_ref=self.id)
+        self.assertFalse(desk["deposit_decision_authorized"])
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda env:env["test.fixture.actor"],
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        result={}
+        def start(status,headers):
+            result["status"]=status
+        raw=b"".join(app({
+            "REQUEST_METHOD":"GET","PATH_INFO":"/grounds/api/move-concierge",
+            "QUERY_STRING":"property_ref="+self.id+"&unit_ref="+self.u,
+            "wsgi.input":io.BytesIO(b""),"test.fixture.actor":self.resident,
+        },start))
+        self.assertEqual(result["status"],"200 OK")
+        self.assertEqual(json.loads(raw)["lease_ref"],self.l)
+        self.ops.end_lease(
+            self.manager,property_ref=self.id,lease_ref=self.l,expected_revision=1,
+        )
+        with self.assertRaises(AccessDenied):
+            concierge.resident_checklist(
+                self.resident,property_ref=self.id,unit_ref=self.u,
+            )
 
 
 if __name__=="__main__":
