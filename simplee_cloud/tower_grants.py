@@ -243,6 +243,23 @@ class SQLiteNonceReplayStore:
             "production_authorized": False,
         }
 
+    def checkpoint_head(self, event_count: int) -> str:
+        """Return a fully verified replay-chain prefix for external anchoring."""
+        if type(event_count) is not int or event_count < 0:
+            raise AccessDenied("invalid replay checkpoint event count")
+        with closing(self._connection()) as conn:
+            total, _ = self._verify(conn)
+            if event_count > total:
+                raise AccessDenied("replay checkpoint exceeds verified local history")
+            if event_count == 0:
+                return self._ZERO
+            row = conn.execute(
+                "SELECT event_hash FROM replay_events WHERE seq=?", (event_count,)
+            ).fetchone()
+            if row is None:
+                raise AccessDenied("missing replay checkpoint event")
+            return row[0]
+
 
 class SourceOnlyTowerGrantVerifier:
     """Do not expose as a route or install a synthetic peer/revocation verifier."""
