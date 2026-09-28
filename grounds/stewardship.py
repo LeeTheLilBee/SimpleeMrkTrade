@@ -67,6 +67,75 @@ class GroundsStewardship:
         return {"asset_ref":asset_ref,"property_ref":property_ref,
                 "unit_ref":unit_ref,"lifecycle":"active"}
 
+    def physical_workboard(self,actor:TowerScope,*,property_ref:str)->dict:
+        """Bounded role-scoped physical backlog, not dispatch or legal sign-off."""
+        actor=self._access(
+            actor,property_ref,"owner","property_manager","maintenance_supervisor",
+        )
+        today=date.today().isoformat()
+        owner_manager=actor.role in ("owner","property_manager")
+        with self.store.transaction() as db:
+            asset_count=db.execute(
+                "SELECT COUNT(*) FROM physical_assets WHERE property_ref=?",
+                (property_ref,),
+            ).fetchone()[0]
+            assets=[dict(row) for row in db.execute(
+                """SELECT asset_ref,unit_ref,label,category,lifecycle
+                   FROM physical_assets WHERE property_ref=?
+                   ORDER BY label,asset_ref LIMIT 100""",(property_ref,),
+            )]
+            due_count=db.execute(
+                """SELECT COUNT(*) FROM preventive_plans
+                   WHERE property_ref=? AND enabled=1 AND next_due_on<=?""",
+                (property_ref,today),
+            ).fetchone()[0]
+            due=[dict(row) for row in db.execute(
+                """SELECT plan_ref,asset_ref,next_due_on,cadence_days,revision
+                   FROM preventive_plans WHERE property_ref=? AND enabled=1
+                     AND next_due_on<=? ORDER BY next_due_on,plan_ref LIMIT 100""",
+                (property_ref,today),
+            )]
+            inspection_count=db.execute(
+                """SELECT COUNT(*) FROM inspections WHERE property_ref=? AND state!='closed'""",
+                (property_ref,),
+            ).fetchone()[0]
+            inspections=[dict(row) for row in db.execute(
+                """SELECT inspection_ref,unit_ref,category,state,planned_on,revision
+                   FROM inspections WHERE property_ref=? AND state!='closed'
+                   ORDER BY planned_on,inspection_ref LIMIT 100""",
+                (property_ref,),
+            )]
+            if owner_manager:
+                turnover_count=db.execute(
+                    """SELECT COUNT(*) FROM turnovers
+                       WHERE property_ref=? AND state!='complete'""",
+                    (property_ref,),
+                ).fetchone()[0]
+                turnovers=[dict(row) for row in db.execute(
+                    """SELECT turnover_ref,unit_ref,state,revision
+                       FROM turnovers WHERE property_ref=? AND state!='complete'
+                       ORDER BY turnover_ref LIMIT 100""",
+                    (property_ref,),
+                )]
+            else:
+                turnover_count=None
+                turnovers=[]
+        return {
+            "source":"grounds","property_ref":property_ref,"as_of":today,
+            "index_limit_per_collection":100,"assets":assets,
+            "due_preventive_plans":due,"open_inspections":inspections,
+            "open_turnovers":turnovers,
+            "counts":{
+                "assets":asset_count,"due_preventive_plans":due_count,
+                "open_inspections":inspection_count,"open_turnovers":turnover_count,
+            },
+            "turnover_view_authorized":owner_manager,
+            "provider_dispatch_confirmed":False,"inspection_signoff_automated":False,
+            "vault_evidence_fetch_connected":False,
+            "legal_entry_or_notice_authorized":False,
+            "capital_approval_enabled":False,
+        }
+
     def list_assets(self, actor: TowerScope, *, property_ref: str) -> list[dict]:
         self._access(actor,property_ref,"owner","property_manager","maintenance_supervisor")
         with self.store.transaction() as db:
