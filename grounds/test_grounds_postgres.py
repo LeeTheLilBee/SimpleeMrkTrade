@@ -291,5 +291,38 @@ class PostgresGroundsTests(unittest.TestCase):
                 )
 
 
+    def test_real_postgres_scoped_leasing_board_hides_contact(self):
+        from grounds.leasing import GroundsLeasing
+        leasing=GroundsLeasing(self.store)
+        ref="prospect-"+self.id
+        leasing.register_prospect(
+            self.manager,property_ref=self.id,prospect_ref=ref,
+            contact_vault_ref="private-contact-"+self.id,desired_unit_ref=self.u,
+        )
+        rows=leasing.list_prospects(self.manager,property_ref=self.id)
+        self.assertEqual(rows[0]["prospect_ref"],ref)
+        self.assertNotIn("contact_vault_ref",rows[0])
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda environ:environ["test.fixture.actor"],
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        def get(actor):
+            result={}
+            def start(status,headers):
+                result["status"]=status
+            raw=b"".join(app({
+                "REQUEST_METHOD":"GET","PATH_INFO":"/grounds/api/leasing",
+                "QUERY_STRING":"property_ref="+self.id,
+                "test.fixture.actor":actor,"wsgi.input":io.BytesIO(b""),
+            },start))
+            result["json"]=json.loads(raw)
+            return result
+        visible=get(self.manager)
+        self.assertEqual(visible["status"],"200 OK")
+        self.assertEqual(visible["json"]["prospects"][0]["prospect_ref"],ref)
+        self.assertNotIn("private-contact-"+self.id,str(visible["json"]))
+        self.assertEqual(get(self.resident)["status"],"404 Not Found")
+
+
 if __name__=="__main__":
     unittest.main()
