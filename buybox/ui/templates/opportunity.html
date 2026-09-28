@@ -83,3 +83,5 @@
 <p class="muted">Protected deal stages remain unavailable until real authenticated Tower/Teller integrations are connected.</p></div>
 <div class="panel"><p class="eyebrow">WHAT CHANGED?</p><h2>Activity history</h2>{% for entry in events[:12] %}<div class="event"><strong>{{ entry.event_type }}</strong><small>Revision {{ entry.revision }} · {{ entry.occurred_at }}</small></div>{% else %}<p class="muted">No activity.</p>{% endfor %}<small>{{ revisions|length }} preserved revisions</small></div></aside></section>
 {% endblock %}
+
+<a href="{{ url_for('integration_readiness_room', oid=op.id) }}">Integration Readiness</a>
