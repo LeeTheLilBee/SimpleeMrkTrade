@@ -63,6 +63,14 @@ class JournaledCiphertextOperations:
                     next_state="REPLAY_INTEGRITY_FAILURE",
                 )
                 raise IntegrityError("acknowledged ciphertext missing or corrupted")
+            except Exception:
+                # Provider outage is not evidence that acknowledged bytes are
+                # missing/corrupt. Preserve the durable ACK and report safely.
+                self.journal.record_backend_incident(
+                    namespace=scope, request_id=context.request_id,
+                    code="PRIMARY_REPLAY_BACKEND_ERROR",
+                )
+                raise
             return StorageReceipt(object_ref, expected_sha256, len(stored), scope)
 
         if state != "WRITE_RESERVED_NEW":
@@ -121,7 +129,15 @@ class JournaledCiphertextOperations:
             )
             return {"status": "CORRUPT_HOLD", "storage_receipt": None,
                     "vault_archive_committed": False}
-        # Provider/unexpected errors escape; the unresolved state persists.
+        except Exception:
+            # Fail closed but do not infer a missing/corrupt object from an
+            # unreachable provider. The original intent stays reconcilable.
+            self.journal.record_backend_incident(
+                namespace=scope, request_id=original_request_id,
+                code="PRIMARY_RECONCILE_BACKEND_ERROR",
+            )
+            raise
+        # Reconciliation only returns storage acknowledgement, never Vault finality.
         self.journal.transition(
             namespace=scope, request_id=original_request_id,
             next_state="RECONCILE_PRESENT",
@@ -143,6 +159,12 @@ class JournaledCiphertextOperations:
         except (ObjectMissing, IntegrityError):
             self.journal.record_read_incident(
                 namespace=scope, request_id=context.request_id,
+            )
+            raise
+        except Exception:
+            self.journal.record_backend_incident(
+                namespace=scope, request_id=context.request_id,
+                code="PRIMARY_READ_BACKEND_ERROR",
             )
             raise
         self.source._audit(action="read_verified", context=context, namespace=scope)
