@@ -55,6 +55,7 @@ from .decision_desk import decision_dossier, record_owner_research_disposition
 from .red_team import record_owner_financial_stress, red_team_report, model_financial_stress
 from .closing_review import closing_review_snapshot, record_local_closing_review
 from .offer_lab import offer_lab_snapshot, record_offer_scenario
+from .external_proof_gate import integration_readiness
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -638,6 +639,15 @@ def create_app(config=None):
                 "tower_authorization":False,"teller_readiness":"UNKNOWN"},
                 expected_revision=int(request.form.get("revision","")))
         return redirect(url_for("offer_lab_room",oid=oid),code=303)
+
+    @app.get("/opportunities/<oid>/integration-readiness")
+    @login_required
+    def integration_readiness_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        return render_template("integration_readiness.html",op=op,
+            report=integration_readiness(op))
 
     @app.get("/opportunities/<oid>/closing-review")
     @login_required

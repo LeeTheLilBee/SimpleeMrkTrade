@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Protected Integration Readiness</p>
+  <h1>{{ op.name }}</h1>
+  <p>This room reports external proof gaps. It never turns a local record into authority.</p>
+</section>
+<section class="grid">
+{% for item in report.requirements %}
+  <article class="card">
+    <p class="eyebrow">{{ item.kind|replace('_',' ')|title }}</p>
+    <h2>{{ "Verified receipt recorded" if item.present else "External proof pending" }}</h2>
+    {% if item.receipt_ref %}<p><code>{{ item.receipt_ref }}</code></p>{% endif %}
+  </article>
+{% endfor %}
+</section>
+<section class="card">
+  <h2>Release state</h2>
+  <p>{{ report.source_state|replace('_',' ')|title }}</p>
+  <p>Owner release is still required. This page cannot authorize purchase, closing, money movement, or operations.</p>
+</section>
+{% endblock %}
