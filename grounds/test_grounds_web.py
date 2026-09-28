@@ -765,7 +765,7 @@ class GroundsWebTests(unittest.TestCase):
         )["revision"]
 
         denied=self.post(
-            "/grounds/api/work-completion",self.other,
+            "/grounds/api/work-completion",self.manager,
             {"work_ref":"confirm-web","outcome":"resolved",
              "expected_revision":revision,"note":""},
         )
