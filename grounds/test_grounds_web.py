@@ -82,6 +82,7 @@ class GroundsWebTests(unittest.TestCase):
         if method=="POST" and url.path in (
             "/grounds/api/work","/grounds/api/appointment/request",
             "/grounds/api/work-message",
+            "/grounds/api/move-task",
         ):
             key=str(uuid4()) if idempotency=="auto" else idempotency
             if key is not None:
@@ -630,6 +631,51 @@ class GroundsWebTests(unittest.TestCase):
         })["status"],"400 Bad Request")
         self.assertEqual(self.post("/grounds/api/work-message",self.resident,
                                    payload,idempotency=None)["status"],"400 Bad Request")
+
+
+    def test_move_concierge_http_self_report_is_exact_lease_only(self):
+        route="/grounds/api/move-concierge?property_ref=p1&unit_ref=u1"
+        self.assertEqual(self.invoke(route)["status"],"401 Unauthorized")
+        self.assertEqual(self.invoke(route,actor=self.other)["status"],"404 Not Found")
+        self.assertEqual(self.invoke(route,actor=self.manager)["status"],"404 Not Found")
+        view=self.invoke(route,actor=self.resident)
+        self.assertEqual(view["status"],"200 OK")
+        self.assertEqual(view["json"]["lease_ref"],"l1")
+        self.assertIsNone(view["json"]["amount_due_cents"])
+        self.assertFalse(view["json"]["keys_received_confirmed"])
+        self.assertEqual(self.invoke(
+            route+"&role=owner",actor=self.resident,
+        )["status"],"400 Bad Request")
+        payload={
+            "property_ref":"p1","unit_ref":"u1",
+            "phase":"move_out","task_ref":"keys_return_plan",
+            "status":"planned","expected_revision":0,
+        }
+        key=str(uuid4())
+        first=self.post("/grounds/api/move-task",self.resident,payload,idempotency=key)
+        self.assertEqual(first["status"],"201 Created")
+        self.assertTrue(first["json"]["self_reported_only"])
+        self.assertFalse(first["json"]["staff_or_legal_verification"])
+        repeat=self.post("/grounds/api/move-task",self.resident,payload,idempotency=key)
+        self.assertEqual(repeat["status"],"201 Created")
+        self.assertTrue(repeat["json"]["replayed"])
+        altered=self.post("/grounds/api/move-task",self.resident,{
+            **payload,"status":"self_reported_done",
+        },idempotency=key)
+        self.assertEqual(altered["status"],"409 Conflict")
+        self.assertEqual(self.post("/grounds/api/move-task",self.other,payload)["status"],
+                         "404 Not Found")
+        self.assertEqual(self.post("/grounds/api/move-task",self.resident,{
+            **payload,"deposit_return_approved":True,
+        })["status"],"400 Bad Request")
+        moved=self.invoke(route,actor=self.resident)["json"]
+        self.assertEqual(moved["phases"][1]["tasks"][2]["status"],"planned")
+        staff=self.invoke("/grounds/api/move-desk?property_ref=p1",actor=self.manager)
+        self.assertEqual(staff["status"],"200 OK")
+        self.assertFalse(staff["json"]["resident_identity_included"])
+        self.assertEqual(self.invoke(
+            "/grounds/api/move-desk?property_ref=p1",actor=self.resident,
+        )["status"],"404 Not Found")
 
 
 if __name__=="__main__":
