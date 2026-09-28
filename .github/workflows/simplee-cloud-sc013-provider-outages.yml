@@ -1,0 +1,40 @@
+name: Simplee Cloud SC013 backend failure source incidents
+
+on:
+  push:
+    branches:
+      - simplee-cloud-sc013-provider-outage-incidents
+  pull_request:
+    paths:
+      - 'simplee_cloud/**'
+      - '.github/workflows/simplee-cloud-sc013-provider-outages.yml'
+      - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC013_PROVIDER_OUTAGE_INCIDENTS.md'
+
+permissions:
+  contents: read
+
+jobs:
+  source-backend-faults:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install synthetic test dependencies only
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Compile Cloud and Vault envelope
+        run: |
+          python -m compileall -q simplee_cloud
+          python -m py_compile vault/real_operations_encrypted_storage.py
+      - name: Run full Cloud source regression with outage injections
+        run: python -m pytest -q simplee_cloud/tests/
+      - name: Publish owner source-only release HOLD
+        if: always()
+        run: python -m simplee_cloud.owner_preflight >> "$GITHUB_STEP_SUMMARY"
