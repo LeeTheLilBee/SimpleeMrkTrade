@@ -7,14 +7,22 @@ PRODUCT_PATH = "/ob/dashboard"
 PRODUCT_ENDPOINT = "ob_dashboard_v16"
 PRODUCT_MARKERS = (
     'data-ob-room="dashboard"',
-    'id="dashboardMount"',
+    'data-ob-surface="user-dashboard"',
+    'data-ob-dashboard-role="normal"',
+    'id="obArrivalRoot"',
+    'id="ob-app"',
     '/static/ob/ob_dashboard.js',
+    '/static/ob/ob_checkin_entry.js',
 )
 PROOF_MARKERS = (
     'towerObRealSurfaceGuide',
     'towerObGuidedRoomAction',
     'Observatory protected run-through',
     'towerObWalkthroughEntry',
+    'ob_mission_accounts.js',
+    'ob_room_data_polish.js',
+    'ob_account_experience.js',
+    'ob_dashboard_simplification_obux.js',
 )
 
 
@@ -29,7 +37,12 @@ def register_ob_product_landing(app):
     if not callable(view) or view.__name__ != PRODUCT_ENDPOINT:
         raise RuntimeError("Canonical Observatory dashboard renderer unavailable")
     source, _, _ = app.jinja_loader.get_source(app.jinja_env, "dashboard.html")
-    if 'data-ob-room="dashboard"' not in source or 'id="dashboardMount"' not in source:
+    if not all(marker in source for marker in (
+        'data-ob-room="dashboard"',
+        'data-ob-surface="user-dashboard"',
+        'id="obArrivalRoot"',
+        'ob_checkin_entry.js',
+    )) or any(marker in source for marker in PROOF_MARKERS):
         raise RuntimeError("Canonical Observatory dashboard template unavailable")
 
     def verify_product_response(response):
