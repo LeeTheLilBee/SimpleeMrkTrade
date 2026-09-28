@@ -637,3 +637,224 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+
+
+/* OBUX096–110 · ORIGINAL LIVING SKY · no photograph/stock asset */
+:root {
+  --sky-void: #02070d;
+  --sky-deep: #061a27;
+  --sky-teal: #34b9b0;
+  --sky-mint: #9ce8d6;
+  --sky-silver: #e5edf4;
+  --sky-guard: #ed7f86;
+  --mm-panel: rgba(2, 13, 22, .90);
+  --mm-panel-soft: rgba(3, 22, 31, .72);
+  --mm-violet: #8dd8e9;
+  --mm-gold: #a8ded6;
+  --mm-aqua: #9ce8d6;
+  --mm-green: #73c5bc;
+  --mm-red: var(--sky-guard);
+  --mm-text: var(--sky-silver);
+}
+body[data-ob-living-sky] { background: var(--sky-void); }
+body[data-ob-living-sky] .market-map-app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 16% 23%, rgba(21, 94, 102, .20), transparent 46%),
+    radial-gradient(ellipse at 84% 72%, rgba(42, 77, 112, .22), transparent 50%),
+    linear-gradient(130deg, #02070d, #071522 55%, #02070d);
+}
+body[data-ob-living-sky] .market-map-heading h1 { color: var(--sky-silver); }
+body[data-ob-living-sky] .market-map-kicker,
+body[data-ob-living-sky] .market-map-eyebrow,
+body[data-ob-living-sky] .market-map-soulaana-lead span,
+body[data-ob-living-sky] .market-map-soulaana-grid span { color: var(--sky-mint); }
+body[data-ob-living-sky] .market-map-sky-panel {
+  position: relative;
+  overflow: hidden;
+  min-height: 840px;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 25% 75%, rgba(15, 111, 110, .22), transparent 48%),
+    radial-gradient(ellipse at 70% 20%, rgba(25, 66, 117, .28), transparent 56%),
+    linear-gradient(153deg, #030b15, #051c29 57%, #040a14);
+}
+body[data-ob-living-sky] .market-map-sky-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: .37;
+  background-image:
+    radial-gradient(circle, #d1f7ed 0 1px, transparent 1.5px),
+    radial-gradient(circle, #7cbed1 0 1px, transparent 1.7px),
+    radial-gradient(circle, #d5e8ee 0 .7px, transparent 1.2px);
+  background-size: 109px 127px, 163px 131px, 79px 151px;
+  background-position: 13px 37px, 64px 18px, 7px 89px;
+}
+body[data-ob-living-sky] .market-map-sky-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 11px;
+  color: #c1dadc;
+}
+body[data-ob-living-sky] #marketMapReset,
+body[data-ob-living-sky] .market-map-region-button,
+body[data-ob-living-sky] .market-map-focus-actions button {
+  border: 1px solid rgba(156,232,214,.45);
+  border-radius: 999px;
+  background: rgba(4, 28, 37, .86);
+  padding: 8px 13px;
+  color: var(--sky-silver);
+  cursor: pointer;
+  font: inherit;
+}
+body[data-ob-living-sky] [hidden] { display: none !important; }
+body[data-ob-living-sky] .market-map-sky-field {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: var(--sky-height, 760px);
+  overflow: hidden;
+  margin-top: 12px;
+}
+body[data-ob-living-sky] .market-map-constellation {
+  position: absolute;
+  left: var(--region-x, 0);
+  top: var(--region-y, 0);
+  width: var(--region-width, 48%);
+  height: var(--region-height, 320px);
+  min-height: 0;
+  border: 0;
+  border-radius: 45% 55% 52% 48%;
+  overflow: visible;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 51% 48%, hsla(var(--nebula-hue, 187), 68%, 35%, .25), transparent 62%),
+    radial-gradient(ellipse at 39% 68%, rgba(125, 221, 204, .09), transparent 72%);
+  transition: opacity .20s ease, filter .20s ease, transform .20s ease;
+}
+body[data-ob-living-sky] .market-map-constellation::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: 5% 1% 2%;
+  filter: blur(12px);
+  border-radius: 63% 38% 53% 47%;
+  background:
+    radial-gradient(ellipse at 30% 39%, hsla(var(--nebula-hue, 185), 78%, 51%, .18), transparent 66%),
+    radial-gradient(ellipse at 75% 65%, rgba(57, 135, 151, .19), transparent 55%);
+  transform: rotate(-8deg);
+}
+body[data-ob-living-sky] .market-map-constellation.is-muted { opacity: .27; filter: saturate(.55); }
+body[data-ob-living-sky] .market-map-constellation.is-focused {
+  z-index: 4;
+  transform: scale(1.045);
+  filter: drop-shadow(0 0 18px rgba(95, 219, 206, .16));
+}
+body[data-ob-living-sky] .market-map-constellation-head {
+  padding: 13px 11px 0;
+  align-items: start;
+}
+body[data-ob-living-sky] .market-map-constellation-title strong { font-size: 14px; }
+body[data-ob-living-sky] .market-map-constellation-title span { font-size: 10px; color: #bed4d6; }
+body[data-ob-living-sky] .market-map-region-button {
+  display: block;
+  margin-top: 10px;
+  padding: 5px 11px;
+  font-size: 10px;
+}
+body[data-ob-living-sky] .market-map-region-button[aria-pressed="true"] {
+  background: rgba(58, 161, 150, .34);
+}
+body[data-ob-living-sky] .market-map-sector-meta span {
+  color: #d2e5e4;
+  background: rgba(3, 20, 27, .7);
+}
+body[data-ob-living-sky] .market-map-star-field {
+  height: calc(100% - 78px);
+  min-height: 138px;
+  margin: 0 7px;
+}
+body[data-ob-living-sky] .market-map-star-field::before { display: none; }
+body[data-ob-living-sky] .market-map-star,
+body[data-ob-living-sky] .market-map-star.position,
+body[data-ob-living-sky] .market-map-star.signal,
+body[data-ob-living-sky] .market-map-star.candidate,
+body[data-ob-living-sky] .market-map-star.watch {
+  --star-tone: #d7eef0;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  box-shadow: none;
+}
+body[data-ob-living-sky] .market-map-star.position { --star-tone: #91e8e0; --size: 15px; }
+body[data-ob-living-sky] .market-map-star.signal { --star-tone: #c2e6e1; --size: 14px; }
+body[data-ob-living-sky] .market-map-star.candidate { --star-tone: #8ec9e9; --size: 12px; }
+body[data-ob-living-sky] .market-map-star.watch { --star-tone: #80d5b9; --size: 10px; }
+body[data-ob-living-sky] .market-map-star::before {
+  content: "";
+  display: block;
+  margin: auto;
+  width: var(--size, 9px);
+  height: var(--size, 9px);
+  border-radius: 50%;
+  background: var(--star-tone);
+  box-shadow: 0 0 8px 2px var(--star-tone), 0 0 20px rgba(100, 211, 217, .22);
+}
+body[data-ob-living-sky] .market-map-star:focus-visible,
+body[data-ob-living-sky] .market-map-region-button:focus-visible,
+body[data-ob-living-sky] .market-map-focus-actions button:focus-visible {
+  outline: 2px solid #d2fff2;
+  outline-offset: 3px;
+}
+body[data-ob-living-sky] .market-map-star-label {
+  top: calc(var(--y) + 17px);
+  color: #d9e9e8;
+  font-size: 10px;
+  font-weight: 650;
+}
+body[data-ob-living-sky] .market-map-focus {
+  position: relative;
+  z-index: 5;
+  margin-top: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(156,232,214,.34);
+  background: rgba(2, 18, 26, .95);
+  padding: 16px;
+  box-shadow: 0 10px 34px rgba(0,0,0,.35);
+}
+body[data-ob-living-sky] .market-map-focus h3 { margin: 8px 0; font-size: 22px; }
+body[data-ob-living-sky] .market-map-focus p { font-size: 13px; line-height: 1.6; color: #cfdddd; }
+body[data-ob-living-sky] .market-map-focus-actions { display:flex; gap: 9px; flex-wrap:wrap; }
+body[data-ob-living-sky] .market-map-empty { min-height: 560px; }
+@media (max-width: 760px) {
+  body[data-ob-living-sky] .market-map-sky-panel { min-height: 0; }
+  body[data-ob-living-sky] .market-map-sky-field { display:grid; min-height:0; gap: 12px; }
+  body[data-ob-living-sky] .market-map-constellation {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 300px;
+    border-radius: 34% 43% 32% 39%;
+  }
+  body[data-ob-living-sky] .market-map-constellation.is-focused { transform: none; }
+  body[data-ob-living-sky] .market-map-constellation.is-muted { opacity: .53; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-ob-living-sky] .market-map-constellation { transition: none; transform: none; }
+}
+@media (forced-colors: active) {
+  body[data-ob-living-sky] .market-map-constellation { border: 1px solid CanvasText; }
+  body[data-ob-living-sky] .market-map-star::before { border: 2px solid CanvasText; }
+}
