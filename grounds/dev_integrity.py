@@ -21,7 +21,7 @@ REQUIRED_TABLES=frozenset((
     "property_notices","notice_reads","appointment_events","emergency_reviews",
     "work_entry_preferences","lease_member_events","work_evidence_refs",
     "property_acquisition_receipts","event_delivery_receipts","work_messages",
-    "move_task_events","resident_access_events",
+    "move_task_events","resident_access_events","work_completion_events",
 ))
 
 # Detect old local developer schemas without treating CREATE TABLE IF NOT EXISTS
@@ -34,6 +34,8 @@ REQUIRED_COLUMNS={
                         "subject_ref","phase","task_ref","status","revision"),
     "resident_access_events":("access_ref","lease_ref","property_ref","unit_ref",
                              "actor_ref","resource_kind","resource_ref"),
+    "work_completion_events":("event_ref","work_ref","property_ref","unit_ref","lease_ref",
+                              "resident_ref","outcome","from_revision","to_revision","resulting_state"),
     "work_orders":("work_ref","property_ref","unit_ref","lease_ref","state",
                    "emergency_flag","revision"),
     "property_notices":("notice_ref","property_ref","unit_ref","lease_ref"),
