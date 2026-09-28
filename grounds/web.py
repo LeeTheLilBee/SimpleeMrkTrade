@@ -29,6 +29,7 @@ from .leasing import GroundsLeasing
 from .experience import GroundsExperience
 from .work_thread import GroundsWorkThread
 from .move_concierge import GroundsMoveConcierge
+from .delivery_desk import GroundsDeliveryDesk
 from .maintenance import MaintenanceIntake
 from .operations import GroundsConflict, GroundsOperations
 from .postgres import PostgresGroundsStore
@@ -66,6 +67,7 @@ _ROUTES={
     ("GET","/grounds/api/work-thread"),
     ("GET","/grounds/api/move-concierge"),
     ("GET","/grounds/api/move-desk"),
+    ("GET","/grounds/api/delivery-desk"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
@@ -244,6 +246,7 @@ class GroundsWebApp:
         self.experience=GroundsExperience(store)
         self.work_thread=GroundsWorkThread(store)
         self.move_concierge=GroundsMoveConcierge(store)
+        self.delivery_desk=GroundsDeliveryDesk(store)
 
     def _resource_ref(self,actor,kind,key,*refs):
         """Opaque stable identifier; session/subject/target bound, never guessable."""
@@ -367,6 +370,11 @@ class GroundsWebApp:
                 return self.move_concierge.resident_checklist(
                     actor,property_ref=_ref(q["property_ref"],"property_ref"),
                     unit_ref=_ref(q["unit_ref"],"unit_ref"),
+                )
+            if path=="/grounds/api/delivery-desk":
+                q=_query(environ,{"property_ref"})
+                return self.delivery_desk.staff_status(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
                 )
             if path=="/grounds/api/move-desk":
                 q=_query(environ,{"property_ref"})
