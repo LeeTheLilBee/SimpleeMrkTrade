@@ -83,6 +83,14 @@ class ProductionEntryTests(unittest.TestCase):
                 @staticmethod
                 def create_certified_grounds_staff_resolver():
                     return lambda actor,property_ref,work_ref,technician_ref:None
+                @staticmethod
+                def create_certified_grounds_operational_release_guard():
+                    class FictionalGuard:
+                        def __call__(self,environ):
+                            return False
+                        def health_check(self):
+                            return False
+                    return FictionalGuard()
             with patch("grounds.production_entry.import_module",
                        return_value=FutureTower()):
                 with patch("grounds.production_entry.GroundsWebApp",
