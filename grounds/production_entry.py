@@ -61,13 +61,15 @@ def create_wsgi_application():
         staff_directory=directory_factory()
         staff_resolver=resolver_factory()
     except Exception as exc:
-        raise GroundsProductionUnavailable("certified Tower adapters failed initialization") from exc
+        raise GroundsProductionUnavailable("certified Tower adapters failed initialization") from None
     if not all(isinstance(item,Callable) for item in (
         receiver,staff_directory,staff_resolver,
     )):
         raise GroundsProductionUnavailable("certified Tower adapters unavailable")
-    store=PostgresGroundsStore(dsn)
     try:
+        # Construct inside the sanitized failure boundary as well: adapter
+        # preflight may reject malformed private connection configuration.
+        store=PostgresGroundsStore(dsn)
         return GroundsWebApp(
             store,tower_receiver=receiver,staff_directory=staff_directory,
             staff_resolver=staff_resolver,csrf_secret=secret,local_fixture_only=False,
@@ -77,4 +79,4 @@ def create_wsgi_application():
         # and should be sent only to an independently approved secure log system.
         raise GroundsProductionUnavailable(
             "private Grounds database or authenticated runtime failed startup preflight"
-        ) from exc
+        ) from None
