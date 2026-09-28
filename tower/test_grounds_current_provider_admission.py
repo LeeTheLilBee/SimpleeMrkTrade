@@ -115,7 +115,12 @@ def test_tower_session_mismatch_and_unverified_identity_denied_before_membership
     tower[key] = value
     with pytest.raises(GroundsCurrentProviderUnavailable):
         inspect(tower_provider, grounds_provider)
-    assert not any(c[0] == "grounds" for c in calls)
+    if key == "subject_ref":
+        # Tower determines the subject; its current answer is rechecked at
+        # Grounds, which must independently reject an unrelated membership.
+        assert ("grounds", "other-person", "resident") in calls
+    else:
+        assert not any(c[0] == "grounds" for c in calls)
 
 
 def test_staff_requires_current_job_and_cannot_inherit_resident_lease():
