@@ -3,7 +3,13 @@ name: Integrated Vault and Sovereign Cloud source acceptance
 on:
   push:
     branches:
-      - vault-cloud-consolidated-source-ci-0927
+      - vault-dev
+    paths:
+      - 'vault/**'
+      - 'simplee_cloud/**'
+      - 'tower/buybox_evidence_handoff.py'
+      - 'tower/test_buybox_evidence_handoff.py'
+      - '.github/workflows/vault-cloud-consolidated-source.yml'
   pull_request:
     branches:
       - vault-dev
@@ -13,6 +19,11 @@ on:
       - 'tower/buybox_evidence_handoff.py'
       - 'tower/test_buybox_evidence_handoff.py'
       - '.github/workflows/vault-cloud-consolidated-source.yml'
+
+# Cancel obsolete work only for the same PR/ref, never a different review.
+concurrency:
+  group: vault-cloud-source-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -60,3 +71,6 @@ jobs:
             vault/test_retention_governance.py \
             vault/test_integrity_report.py \
             simplee_cloud/tests
+      - name: Publish unconditional source-only owner release HOLD
+        if: always()
+        run: python -m simplee_cloud.owner_preflight >> "$GITHUB_STEP_SUMMARY"
