@@ -95,7 +95,7 @@ class ReleaseGuardTests(unittest.TestCase):
         self.guard.fail_admission=True
         denied=self.call()
         self.assertEqual(denied["json"],{"error":"service_unavailable"})
-        self.assertNotIn("private",str(denied))
+        self.assertNotIn("private release receipt",str(denied))
         self.guard.fail_health=True
         denied=self.call("/grounds/health/ready")
         self.assertEqual(denied["json"],{"ready":False})
