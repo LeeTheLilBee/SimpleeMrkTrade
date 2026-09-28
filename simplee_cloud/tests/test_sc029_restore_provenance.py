@@ -254,10 +254,16 @@ def test_historically_committed_restore_before_backup_ack_never_retroactively_va
         primary.namespace_digest, h.backup.key_reference,
     )
     inject_restore(h, receipt)
-    h.journal.backup_transition(
-        namespace=primary.namespace_digest, request_id="backup-pending",
-        next_state="BACKUP_ACKNOWLEDGED",
-    )
+    # Model a legacy/self-consistent history that appended backup ACK AFTER
+    # the invalid restore reservation. Current API correctly refuses to mutate
+    # once verification detects the bad history, so inject only in this test.
+    from simplee_cloud.journal import _backup_tag
+    with sqlite3.connect(h.journal.path) as db:
+        append_event(
+            db, event="BACKUP_ACKNOWLEDGED",
+            tag=_backup_tag(primary.namespace_digest, "backup-pending"),
+            namespace=primary.namespace_digest,
+        )
     with pytest.raises(IntegrityError, match="earlier acknowledged backup"):
         h.journal.verify_chain()
 
