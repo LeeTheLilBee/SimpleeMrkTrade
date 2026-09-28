@@ -54,9 +54,18 @@ class GroundsSafety:
                 """SELECT urgency,reviewed_at FROM emergency_reviews WHERE work_ref=?""",
                 (work_ref,),
             ).fetchone()
+            escalation=db.execute(
+                """SELECT 1 FROM event_delivery_receipts r
+                   JOIN event_outbox o ON o.event_ref=r.event_ref
+                   WHERE o.resource_ref=? AND o.event_kind='urgent_intake_requires_human_review'
+                     AND r.receipt_kind='urgent_human_escalation'
+                     AND r.delivery_state='human_acknowledged' LIMIT 1""",
+                (work_ref,),
+            ).fetchone()
             return {"work_ref":work_ref,"resident_urgent_flag":bool(order["emergency_flag"]),
                     "human_review_recorded":row is not None,
                     "assessed_urgency":row["urgency"] if row else None,
+                    "human_escalation_acknowledged":escalation is not None,
                     "external_dispatch_confirmed":False}
 
     def record_entry_preference(self,actor:TowerScope,*,work_ref:str,preference:str,
@@ -124,9 +133,14 @@ class GroundsSafety:
 
     def delivery_status(self,actor:TowerScope,*,property_ref:str)->dict:
         pending=self.pending_event_intents(actor,property_ref=property_ref)
+        receipt_status=self.receipts.property_status(actor,property_ref=property_ref)
         return {
             "property_ref":property_ref,"pending_intent_count":len(pending),
             "provider_connected":False,"recipient_resolution_enabled":False,
-            "delivered_count":0,"legal_service_proven":False,
-            "emergency_dispatch_confirmed":False,
+            "verified_receipt_count":receipt_status["verified_receipt_count"],
+            "delivered_count":receipt_status["delivered_event_count"],
+            "failed_receipt_count":receipt_status["failed_receipt_count"],
+            "urgent_human_acknowledged_event_count":
+                receipt_status["urgent_human_acknowledged_event_count"],
+            "legal_service_proven":False,"emergency_dispatch_confirmed":False,
         }
