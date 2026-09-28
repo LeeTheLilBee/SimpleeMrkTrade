@@ -485,6 +485,60 @@ class SQLiteOperationalJournal:
         with self._tx() as conn:
             self._append(conn, event=event["event"], tag=tag, scope=scope)
 
+    @staticmethod
+    def _source_backup_coverage(conn: sqlite3.Connection) -> dict:
+        """Safe SOURCE journal-ACK coverage, never physical backup proof.
+
+        Match namespace + exact immutable primary ref + SHA. Counts distinct
+        acknowledged physical primary objects; an unresolved or corrupt backup
+        reservation cannot make an original appear protected.
+        """
+        primary = set()
+        for row in conn.execute(
+            "SELECT request_tag,namespace_digest,object_ref,ciphertext_sha256 FROM intents"
+        ):
+            if SQLiteOperationalJournal._state(conn, row["request_tag"]) in (
+                "WRITE_ACKNOWLEDGED", "RECONCILE_PRESENT",
+            ):
+                primary.add((
+                    row["namespace_digest"], row["object_ref"],
+                    row["ciphertext_sha256"],
+                ))
+        acknowledged = set()
+        pending = set()
+        for row in conn.execute(
+            """SELECT request_tag,namespace_digest,source_object_ref,
+                      source_ciphertext_sha256 FROM backup_intents"""
+        ):
+            key = (
+                row["namespace_digest"], row["source_object_ref"],
+                row["source_ciphertext_sha256"],
+            )
+            status = SQLiteOperationalJournal._backup_state(conn, row["request_tag"])
+            if status in ("BACKUP_ACKNOWLEDGED", "BACKUP_RECONCILE_PRESENT"):
+                acknowledged.add(key)
+            elif status in ("BACKUP_RESERVED", "BACKUP_UNCERTAIN"):
+                pending.add(key)
+        uncovered = primary - acknowledged
+        return {
+            "status": "SOURCE_JOURNAL_ACK_ONLY",
+            "acknowledged_primary_object_count": len(primary),
+            "matched_backup_ack_count": len(primary & acknowledged),
+            "uncovered_primary_object_count": len(uncovered),
+            "uncovered_with_pending_backup_count": len(uncovered & pending),
+            "uncovered_without_pending_backup_count": len(uncovered - pending),
+            "actual_backup_bytes_reverified": False,
+            "independent_failure_domain_certified": False,
+            "vault_canonical_backup_receipt_verified": False,
+            "production_authorized": False,
+        }
+
+    def source_backup_coverage(self) -> dict:
+        """Verify audit chain before reporting cross-reservation coverage."""
+        with closing(self._connect()) as conn:
+            self._verify(conn)
+            return self._source_backup_coverage(conn)
+
     def health(self) -> dict:
         with self._connect() as conn:
             seq, digest = self._verify(conn)
