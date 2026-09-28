@@ -49,6 +49,7 @@ from .financing import record_financing_option, financing_snapshot, FINANCING_EV
 from .comparables import (COMPARABLE_EVIDENCE_KIND, record_comparable,
     market_evidence_report)
 from .decision_desk import decision_dossier, record_owner_research_disposition
+from .red_team import record_owner_financial_stress, red_team_report, model_financial_stress
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -426,6 +427,40 @@ def create_app(config=None):
         return render_template("scenario.html",op=op,baseline=baseline,
             stressed=stressed,revenue_factor=revenue_factor,
             expense_factor=expense_factor)
+
+    @app.get("/opportunities/<oid>/red-team")
+    @login_required
+    def red_team_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        try:
+            baseline=model_financial_stress(op,revenue_factor="1",expense_factor="1")
+        except ValueError:
+            baseline=None
+        return render_template("red_team.html",op=op,
+            report=red_team_report(op),baseline=baseline)
+
+    @app.post("/opportunities/<oid>/red-team")
+    @login_required
+    def record_red_team(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,item=record_owner_financial_stress(
+                conn,op,name=request.form.get("name",""),
+                rationale=request.form.get("rationale",""),
+                revenue_factor=request.form.get("revenue_factor",""),
+                expense_factor=request.form.get("expense_factor",""),
+                actor_ref=owner_actor(conn))
+            save(conn,revised,"OwnerFinancialStressRecorded",{
+                "scenario_id":item["id"],
+                "source_revision":item["source_opportunity_revision"],
+                "source_digest":item["source_snapshot_digest"],
+                "record_type":item["record_type"],
+                "authorizes_purchase":False},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("red_team_room",oid=oid),code=303)
 
     @app.get("/opportunities/<oid>/deal-room")
     @login_required
