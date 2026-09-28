@@ -33,3 +33,19 @@
 <section class="panel"><p class="eyebrow">GEOGRAPHIC EXPANSION INTELLIGENCE</p><h2>Where multiple acquisition lanes are accumulating</h2>
 {% for x in studio.geo_expansion %}<div class="evidence-row"><div><strong>{{ x.city }}, {{ x.region }}</strong><small>{{ x.opportunities }} opportunity records · {{ x.vertical_diversity }} vertical type(s)</small></div></div>{% endfor %}</section>
 {% endblock %}
+<section class="panel"><p class="eyebrow">OPPORTUNITY INBOX</p><h2>Capture first, verify later.</h2>
+<form method="post" action="{{ url_for('intelligence_inbox') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<label>Category<select name="vertical" required>{% for key,v in verticals.items() %}<option value="{{ key }}">{{ v.label }}</option>{% endfor %}</select></label>
+<label>Working title<input name="title" required maxlength="160"></label>
+<label>Source URL<input name="source_url" type="url" maxlength="500"></label>
+<label>Raw intake note<textarea name="note" required maxlength="4000" rows="5" placeholder="Paste the listing summary, broker note, field notes, or anything you have. It remains owner-entered until sourced and reviewed."></textarea></label>
+<button class="primary" type="submit">Create provisional opportunity</button></form></section>
+
+<section class="panel"><p class="eyebrow">WHAT-IF PORTFOLIO BUILDER</p><h2>Combine possible acquisitions without pretending the capital exists.</h2>
+<form method="post" action="{{ url_for('intelligence_what_if') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+{% for op in opportunities %}<label class="compare-select"><input type="checkbox" name="opportunity_id" value="{{ op.id }}"> {{ op.name }} · {{ op.vertical|replace('_',' ')|title }}</label>{% endfor %}
+<button type="submit">Model selected portfolio</button></form></section>
+
+<section class="panel"><p class="eyebrow">BUYBOX WATCHTOWER</p><h2>Saved acquisition strategies</h2>
+{% for item in radar %}<div class="evidence-row"><div><strong><a href="{{ url_for('saved_search_detail',sid=item.definition.id) }}">{{ item.definition.name }}</a></strong><small>{{ item.definition.filters }}</small></div><span>{{ 'Checked' if item.latest else 'Never checked' }}</span></div>
+{% else %}<p class="muted">No saved searches yet. Opportunity Radar remains manual until an approved external listing feed exists.</p>{% endfor %}</section>
