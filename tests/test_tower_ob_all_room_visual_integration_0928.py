@@ -83,3 +83,21 @@ def test_referenced_static_room_assets_are_present():
                  "ob_review_center_projection.js","ob_review_center_obux.css",
                  "ob_owner_console_projection.js","ob_owner_console_obux.css"):
         assert (STATIC/name).is_file(),name
+
+
+def test_current_owner_cockpit_is_source_guarded_and_does_not_grant_execution():
+    contract=(STATIC/"ob_owner_dashboard_contract.js").read_text(encoding="utf-8")
+    for marker in ("owner_only:", "capital_lanes_owner_dashboard_only:",
+                   "non_owner_capital_lane_delivery:", "sourceLooksVerified",
+                   "actual_capital_known:", "verified_snapshot:",
+                   "broker_api_enabled:", "broker_order_submission_enabled:",
+                   "real_capital_movement_enabled:", "auto_execution_enabled:",
+                   "live_auto_locked:"):
+        assert marker in contract
+    for exact in ("non_owner_capital_lane_delivery:\n        false",
+                  "broker_api_enabled:\n        false",
+                  "broker_order_submission_enabled:\n        false",
+                  "real_capital_movement_enabled:\n        false",
+                  "auto_execution_enabled:\n        false",
+                  "live_auto_locked:\n        true"):
+        assert exact in contract
