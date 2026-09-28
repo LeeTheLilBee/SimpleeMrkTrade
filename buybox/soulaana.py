@@ -198,10 +198,31 @@ def context(op, intent="overview"):
     for finding in analysis["findings"]:
         note("POLICY_RESULT",finding["reason"],[finding["rule_id"]],finding["level"])
     if intent=="red_team":
+        from .red_team import red_team_report
+        report=red_team_report(op)
+        for record in report["records"]:
+            note("OWNER_RECORDED_STRESS",
+                 (record["name"]+": recorded owner assumption uses revenue factor "+
+                  record["revenue_factor"]+" and expense factor "+record["expense_factor"]+
+                  " against the source-linked annual period "+record["reporting_period"]+
+                  ". Modeled operating difference is $"+record["modeled_operating_difference"]+
+                  ", compared with the documented base difference $"+
+                  record["recorded_operating_difference"]+". Status: "+
+                  record["freshness"].replace("_"," ").lower()+
+                  ". This is an assumption, not historical performance or Teller authorization."),
+                 [record["id"],record["source_snapshot_digest"]]+
+                 [m["evidence_id"] for m in record["source_metrics"]],
+                 record["freshness"])
+        if not report["records"]:
+            note("STRESS_NOT_RECORDED",
+                 "No actual owner financial stress has been recorded for this opportunity. "
+                 "A reviewed, original-backed matched-period annual base is required first.",
+                 label="NO_INVENTED_STRESS")
         note("MODELING_LIMITATION",
-             "A full stress result requires accepted vertical-specific assumptions and inputs. "
-             "BuyBox will not invent lost locations, loan terms, vault cash or property operating figures.",
-             label="NO_INVENTED_SCENARIO")
+             "The financial multiplier model does not account for asset-specific hazards, "
+             "loan terms, replenishment timing, seller consent, independent audit, "
+             "Teller deployment or Tower protected actions.",
+             label="FINANCIAL_ONLY_NO_DECISION")
     if intent=="next_action":
         tasks=[x for x in current_tasks(op) if x["status"] in ("OPEN","WAITING")]
         if tasks:
