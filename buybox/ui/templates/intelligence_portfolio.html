@@ -22,6 +22,9 @@
 {% for x in studio.calendar[:20] %}<div class="evidence-row"><div><strong>{{ x.date }} · {{ x.opportunity_name }}</strong><small>{{ x.kind|replace('_',' ')|title }} · {{ x.label }}</small></div><span>{{ x.state }}</span></div>
 {% else %}<p class="muted">No dated acquisition items yet.</p>{% endfor %}</section>
 
+<section class="panel"><p class="eyebrow">COUNTERPARTY HISTORY</p><h2>Seller / broker relationship profiles</h2>
+{% for x in studio.counterparty_library %}<div class="evidence-row"><div><strong>{{ x.name }}</strong><small>{{ x.roles|join(', ') }} · {{ x.deal_count }} deal(s) · {{ x.record_count }} note(s)</small></div><span>No inferred rating</span></div>
+{% else %}<p class="muted">No counterparties recorded yet. BuyBox does not invent reliability ratings.</p>{% endfor %}</section>
 <section class="panel"><p class="eyebrow">LENDER LIBRARY</p><h2>Actual financing sources previously recorded</h2>
 {% for x in studio.lender_library %}<div class="evidence-row"><div><strong>{{ x.lender }}</strong><small>{{ x.recorded_options }} recorded option(s) · {{ x.verticals|join(', ') }}</small></div><span>Historical only</span></div>
 {% else %}<p class="muted">No financing sources have been recorded.</p>{% endfor %}</section>
