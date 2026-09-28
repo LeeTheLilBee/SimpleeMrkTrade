@@ -651,39 +651,62 @@ class SQLiteOperationalJournal:
             self._verify(conn)
             return self._source_backup_coverage(conn)
 
+    def _health_from_verified(
+        self, conn: sqlite3.Connection, seq: int, digest: str,
+    ) -> dict:
+        states = {}
+        for row in conn.execute("SELECT request_tag FROM intents"):
+            state = self._state(conn, row["request_tag"]) or "UNVERIFIED"
+            states[state] = states.get(state, 0) + 1
+        backup_states = {}
+        for row in conn.execute("SELECT request_tag FROM backup_intents"):
+            state = self._backup_state(conn, row["request_tag"]) or "UNVERIFIED"
+            backup_states[state] = backup_states.get(state, 0) + 1
+        incidents = conn.execute("SELECT COUNT(*) FROM incidents").fetchone()[0]
+        backend_errors = conn.execute(
+            "SELECT COUNT(*) FROM incidents WHERE incident_code LIKE '%_BACKEND_ERROR'"
+        ).fetchone()[0]
+        return {
+            "status": "SOURCE_ONLY_NO_GO",
+            "event_count": seq, "head_sha256": digest,
+            "write_count": sum(states.values()),
+            "pending_writes": states.get("WRITE_RESERVED", 0) + states.get("WRITE_UNCERTAIN", 0),
+            "reconciled_present": states.get("RECONCILE_PRESENT", 0),
+            "missing_or_corrupt": states.get("RECONCILE_MISSING", 0) +
+                                  states.get("RECONCILE_CORRUPT", 0) +
+                                  states.get("REPLAY_INTEGRITY_FAILURE", 0),
+            "incident_count": incidents,
+            "backend_error_events": backend_errors,
+            "provider_incident_delivery_certified": False,
+            "backup_count": sum(backup_states.values()),
+            "pending_backups": backup_states.get("BACKUP_RESERVED", 0) +
+                               backup_states.get("BACKUP_UNCERTAIN", 0),
+            "backup_missing_or_corrupt": backup_states.get("BACKUP_RECONCILE_MISSING", 0) +
+                                         backup_states.get("BACKUP_RECONCILE_CORRUPT", 0) +
+                                         backup_states.get("BACKUP_REPLAY_INTEGRITY_FAILURE", 0),
+            "external_checkpoint_certified": False,
+            "hosted_alert_delivery_certified": False,
+        }
+
+    def source_owner_metrics(self) -> tuple[dict, dict]:
+        """One verified read snapshot for owner health AND backup coverage.
+
+        The explicit read transaction retains one SQLite snapshot while both
+        aggregates are built; independent Tower replay DB is NOT included.
+        """
+        with closing(self._connect()) as conn:
+            conn.execute("BEGIN")
+            try:
+                seq, digest = self._verify(conn)
+                health = self._health_from_verified(conn, seq, digest)
+                coverage = self._source_backup_coverage(conn)
+                conn.commit()
+                return health, coverage
+            except BaseException:
+                conn.rollback()
+                raise
+
     def health(self) -> dict:
-        with self._connect() as conn:
+        with closing(self._connect()) as conn:
             seq, digest = self._verify(conn)
-            states = {}
-            for row in conn.execute("SELECT request_tag FROM intents"):
-                state = self._state(conn, row["request_tag"]) or "UNVERIFIED"
-                states[state] = states.get(state, 0) + 1
-            backup_states = {}
-            for row in conn.execute("SELECT request_tag FROM backup_intents"):
-                state = self._backup_state(conn, row["request_tag"]) or "UNVERIFIED"
-                backup_states[state] = backup_states.get(state, 0) + 1
-            incidents = conn.execute("SELECT COUNT(*) FROM incidents").fetchone()[0]
-            backend_errors = conn.execute(
-                "SELECT COUNT(*) FROM incidents WHERE incident_code LIKE '%_BACKEND_ERROR'"
-            ).fetchone()[0]
-            return {
-                "status": "SOURCE_ONLY_NO_GO",
-                "event_count": seq, "head_sha256": digest,
-                "write_count": sum(states.values()),
-                "pending_writes": states.get("WRITE_RESERVED", 0) + states.get("WRITE_UNCERTAIN", 0),
-                "reconciled_present": states.get("RECONCILE_PRESENT", 0),
-                "missing_or_corrupt": states.get("RECONCILE_MISSING", 0) +
-                                      states.get("RECONCILE_CORRUPT", 0) +
-                                      states.get("REPLAY_INTEGRITY_FAILURE", 0),
-                "incident_count": incidents,
-                "backend_error_events": backend_errors,
-                "provider_incident_delivery_certified": False,
-                "backup_count": sum(backup_states.values()),
-                "pending_backups": backup_states.get("BACKUP_RESERVED", 0) +
-                                   backup_states.get("BACKUP_UNCERTAIN", 0),
-                "backup_missing_or_corrupt": backup_states.get("BACKUP_RECONCILE_MISSING", 0) +
-                                             backup_states.get("BACKUP_RECONCILE_CORRUPT", 0) +
-                                             backup_states.get("BACKUP_REPLAY_INTEGRITY_FAILURE", 0),
-                "external_checkpoint_certified": False,
-                "hosted_alert_delivery_certified": False,
-            }
+            return self._health_from_verified(conn, seq, digest)

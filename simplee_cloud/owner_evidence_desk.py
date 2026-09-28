@@ -75,8 +75,10 @@ def owner_local_evidence_desk(
         "real_tower_issuer_verified": False,
         "real_vault_registry_verified": False,
         "owner_release_recorded": False,
+        "cross_ledger_point_in_time_certified": False,
         "local_storage": {
             "attention": local["attention"],
+            "local_storage_point_in_time_consistent": local["local_storage_point_in_time_consistent"],
             "journal_event_count": local["journal_event_count"],
             "pending_primary_count": local["pending_primary_count"],
             "pending_backup_count": local["pending_backup_count"],
