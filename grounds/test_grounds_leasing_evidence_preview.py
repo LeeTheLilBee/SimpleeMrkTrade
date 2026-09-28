@@ -97,6 +97,26 @@ class LeasingAndProofTests(unittest.TestCase):
             self.leasing.register_prospect(self.leaser,property_ref="p1",prospect_ref="pr1",
                                            contact_vault_ref="duplicate")
 
+    def test_read_only_leasing_index_excludes_private_vault_contact_and_cross_property(self):
+        prospect=self.leasing.register_prospect(
+            self.leaser,property_ref="p1",prospect_ref="private-pr",
+            contact_vault_ref="vault-contact-private",desired_unit_ref="u1",
+        )
+        self.assertEqual(prospect["stage"],"new")
+        rows=self.leasing.list_prospects(self.manager,property_ref="p1")
+        self.assertEqual(rows[0]["prospect_ref"],"private-pr")
+        self.assertEqual(rows[0]["stage"],"new")
+        self.assertNotIn("contact_vault_ref",rows[0])
+        self.assertNotIn("resident_ref",rows[0])
+        self.assertNotIn("name",rows[0])
+        for actor in (self.resident,self.tech,self.outside):
+            with self.assertRaises(AccessDenied):
+                self.leasing.list_prospects(actor,property_ref="p1")
+        self.assertEqual(self.leasing.list_prospects(self.owner,property_ref="p2"),[])
+        self.assertNotIn("contact_vault_ref",str(self.leasing.list_tours(
+            self.leaser,property_ref="p1",
+        )))
+
     def test_sealed_proof_identity_role_uniqueness_and_visibility(self):
         untrusted={"status":"verified_sealed","source":"vault","audience":"grounds",
                    "work_ref":"w1","property_ref":"p1","unit_ref":"u1",
