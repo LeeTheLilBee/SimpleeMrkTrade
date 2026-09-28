@@ -655,6 +655,31 @@ def _verified_owner_and_app(
         is not True
     ):
 
+        # Surface only the failed dimension; never disclose provider paths,
+        # credentials, receipt identifiers or treat it as an approval.
+        dimensions = app.get("display_dimensions")
+        allowed = (
+            "registered",
+            "implemented",
+            "published",
+            "environment_available",
+            "health_verified",
+            "user_entitled",
+            "launch_route_configured",
+        )
+        if isinstance(dimensions, Mapping):
+            for name in allowed:
+                dimension = dimensions.get(name)
+                if not isinstance(dimension, Mapping):
+                    continue
+                if (
+                    dimension.get("display_state") != "VERIFIED"
+                    or dimension.get("display_value") is not True
+                ):
+                    raise OwnerObservatoryHandoffError(
+                        "owner_observatory_app_not_launchable_" + name
+                    )
+
         raise OwnerObservatoryHandoffError(
             "owner_observatory_app_not_launchable"
         )
