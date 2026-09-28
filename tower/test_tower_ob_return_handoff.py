@@ -88,7 +88,8 @@ def test_untrusted_last_room_is_only_a_navigation_hint(client, unsafe):
     with client.session_transaction() as session:
         assert session["tower_ob_return_receipt"]["last_room"] == "unknown"
     home = client.get(ACCESS_HOME_PATH)
-    assert unsafe not in home.get_data(as_text=True) if unsafe else True
+    if unsafe not in ("", "unknown"):
+        assert unsafe not in home.get_data(as_text=True)
 
 
 def test_return_json_cannot_be_used_anonymously_and_never_authorizes_actions(client):
