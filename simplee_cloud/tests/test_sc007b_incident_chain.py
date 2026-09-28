@@ -18,6 +18,10 @@ def with_incident(tmp_path, *, duplicate=False):
         grant=h.grant("write-1", "WRITE_CIPHERTEXT"),
         authenticated_transport_peer=PEER, request_id="write-1", envelope=h.data,
     )
+    h.journal.reserve_read(
+        namespace=receipt.namespace_digest, request_id="read-1",
+        object_ref=h.ref, digest=h.digest,
+    )
     h.journal.record_read_incident(
         namespace=receipt.namespace_digest, request_id="read-1",
     )
