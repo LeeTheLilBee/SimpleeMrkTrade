@@ -54,6 +54,7 @@ from .comparables import (COMPARABLE_EVIDENCE_KIND, record_comparable,
 from .decision_desk import decision_dossier, record_owner_research_disposition
 from .red_team import record_owner_financial_stress, red_team_report, model_financial_stress
 from .closing_review import closing_review_snapshot, record_local_closing_review
+from .offer_lab import offer_lab_snapshot, record_offer_scenario
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -396,7 +397,7 @@ def create_app(config=None):
         return render_template("soulaana.html",op=op,
             context=soulaana_context(op,intent),intents=(
             ("overview","Overview"),("evidence","Evidence"),("diligence","Diligence"),
-            ("financing","Financing"),("insurance","Insurance"),("valuation","Comparable Research"),("decision","Decision"),("closing","Closing"),("economics","Economics"),("changes","What changed"),
+            ("financing","Financing"),("insurance","Insurance"),("valuation","Comparable Research"),("decision","Decision"),("offer","Offer Lab"),("closing","Closing"),("economics","Economics"),("changes","What changed"),
             ("red_team","Red Team"),("next_action","Next action")))
 
     @app.post("/compare")
@@ -599,6 +600,44 @@ def create_app(config=None):
                 "purchase_authorized":False,"external_action":False},
                 expected_revision=int(request.form.get("revision","")))
         return redirect(url_for("decision_desk_room",oid=oid),code=303)
+
+    @app.get("/opportunities/<oid>/offer-lab")
+    @login_required
+    def offer_lab_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+        return render_template("offer_lab.html",op=op,report=offer_lab_snapshot(op))
+
+    @app.post("/opportunities/<oid>/offer-lab/scenarios")
+    @login_required
+    def offer_lab_record(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            revised,record=record_offer_scenario(
+                conn,op,actor_ref=owner_actor(conn),
+                name=request.form.get("name",""),
+                proposed_purchase_price=request.form.get("proposed_purchase_price",""),
+                earnest_money=request.form.get("earnest_money",""),
+                requested_seller_credit=request.form.get("requested_seller_credit",""),
+                due_diligence_days=request.form.get("due_diligence_days",""),
+                financing_contingency=("financing_contingency" in request.form),
+                planned_closing_date=request.form.get("planned_closing_date",""),
+                financing_option_id=request.form.get("financing_option_id",""),
+                insurance_record_id=request.form.get("insurance_record_id",""),
+                rationale=request.form.get("rationale",""),
+                terms_note=request.form.get("terms_note",""),
+                supersedes=request.form.get("supersedes",""),
+                correction_reason=request.form.get("correction_reason",""))
+            save(conn,revised,"OwnerOfferScenarioRecorded",{
+                "scenario_id":record["id"],
+                "source_opportunity_revision":record["source_opportunity_revision"],
+                "source_snapshot_digest":record["source_snapshot_digest"],
+                "transmitted_to_seller":False,"loi_created":False,
+                "tower_authorization":False,"teller_readiness":"UNKNOWN"},
+                expected_revision=int(request.form.get("revision","")))
+        return redirect(url_for("offer_lab_room",oid=oid),code=303)
 
     @app.get("/opportunities/<oid>/closing-review")
     @login_required
