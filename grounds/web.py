@@ -25,6 +25,7 @@ from uuid import UUID, uuid4
 
 from .access import AccessDenied, TowerScope
 from .communications import GroundsCommunications
+from .leasing import GroundsLeasing
 from .maintenance import MaintenanceIntake
 from .operations import GroundsConflict, GroundsOperations
 from .postgres import PostgresGroundsStore
@@ -52,6 +53,7 @@ _ROUTES={
     ("GET","/grounds/api/workspace"),
     ("GET","/grounds/api/rent"),
     ("GET","/grounds/api/safety-desk"),
+    ("GET","/grounds/api/leasing"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
@@ -223,6 +225,7 @@ class GroundsWebApp:
         self.ops=GroundsOperations(store)
         self.communications=GroundsCommunications(store)
         self.safety=GroundsSafety(store)
+        self.leasing=GroundsLeasing(store)
 
     def _resource_ref(self,actor,kind,key,*refs):
         """Opaque stable identifier; session/subject/target bound, never guessable."""
@@ -352,6 +355,21 @@ class GroundsWebApp:
             if path=="/grounds/api/entry-preference":
                 q=_query(environ,{"work_ref"})
                 return self.safety.entry_preference(actor,work_ref=_ref(q["work_ref"],"work_ref"))
+            if path=="/grounds/api/leasing":
+                q=_query(environ,{"property_ref"})
+                property_ref=_ref(q["property_ref"],"property_ref")
+                # Every independent domain query asserts the actual Tower role
+                # and exact property again. No contact Vault ref or applicant PII.
+                return {
+                    "source":"grounds","property_ref":property_ref,
+                    "units":self.leasing.availability(actor,property_ref=property_ref),
+                    "prospects":self.leasing.list_prospects(actor,property_ref=property_ref),
+                    "tours":self.leasing.list_tours(actor,property_ref=property_ref),
+                    "index_limit_per_collection":100,
+                    "advertised_rent":None,"screening_enabled":False,
+                    "application_decisions_enabled":False,
+                    "vault_contact_open_enabled":False,"notifications_delivered":False,
+                }
             if path=="/grounds/api/safety-desk":
                 q=_query(environ,{"property_ref"})
                 return self.safety.staff_safety_desk(
