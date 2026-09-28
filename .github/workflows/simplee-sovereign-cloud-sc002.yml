@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc002-durable-operations
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-sovereign-cloud-sc002.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC002_OPERATIONS.md'
 
