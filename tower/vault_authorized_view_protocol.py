@@ -593,6 +593,7 @@ def build_demo_gate_result(
         "vault_protocol_request": protocol_request,
         "safe_return_for_teller": {
             "request_id": "teller_tower_request_demo_gp471",
+            "tower_decision_receipt_id": "tower-vault-gate-demo471",
             "status": "redacted" if redaction_required else "allowed",
             "vault_direct_access_allowed": False,
             "raw_files_included": False,
