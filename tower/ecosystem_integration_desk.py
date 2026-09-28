@@ -89,7 +89,7 @@ def _project_registered_app(app: dict) -> dict:
             "grounds", "buybox", "vault", "clouds",
         } else None,
         "owner_acceptance_verified": False,
-        "required_next": DEPENDENCIES[app_id],
+        "required_next": " ".join(DEPENDENCIES[app_id]),
         "broker_submission": False,
         "capital_movement": False,
         "payroll_execution": False,
