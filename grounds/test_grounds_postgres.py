@@ -28,6 +28,7 @@ from grounds.postgres import (
 from grounds.safety import GroundsSafety
 from grounds.test_grounds_operations import fixture_scope
 from grounds.work_resources import GroundsWorkResources
+from grounds.work_thread import GroundsWorkThread
 from grounds.web import GroundsWebApp
 
 URL=os.environ.get("GROUNDS_TEST_POSTGRES_URL")
@@ -575,6 +576,54 @@ class PostgresGroundsTests(unittest.TestCase):
         self.assertEqual(portfolio["status"],"200 OK")
         self.assertEqual(portfolio["json"]["total_scope_count"],1)
         self.assertFalse(portfolio["json"]["money_fields_included"])
+
+
+    def test_real_postgres_private_work_thread_and_revoked_lease(self):
+        work="thread-"+uuid4().hex
+        self.ops.submit_maintenance(
+            self.resident,work_ref=work,
+            intake=MaintenanceIntake(
+                self.id,self.u,"plumbing","Synthetic thread original",
+                False,"contact_first",
+            ),
+        )
+        thread=GroundsWorkThread(self.store)
+        key="m-"+uuid4().hex
+        first=thread.post(self.resident,work_ref=work,message_ref=key,
+                          body="Please share an update")
+        self.assertFalse(first["external_notification_delivered"])
+        self.assertTrue(thread.post(
+            self.resident,work_ref=work,message_ref=key,
+            body="Please share an update",
+        )["replayed"])
+        thread.post(self.manager,work_ref=work,
+                    message_ref="staff-"+uuid4().hex,
+                    body="Private operational note",audience="staff_internal")
+        reader=thread.thread(self.resident,work_ref=work)
+        self.assertEqual(reader["visible_message_count"],1)
+        self.assertNotIn("Private operational note",str(reader))
+        self.assertEqual(thread.thread(self.manager,work_ref=work)["visible_message_count"],2)
+        self.assertFalse(reader["provider_currently_connected"])
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda env:env["test.fixture.actor"],
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        status={}
+        def start(value,headers):
+            status["value"]=value
+        body=b"".join(app({
+            "REQUEST_METHOD":"GET","PATH_INFO":"/grounds/api/work-thread",
+            "QUERY_STRING":"work_ref="+work,"wsgi.input":io.BytesIO(b""),
+            "test.fixture.actor":self.resident,
+        },start))
+        self.assertEqual(status["value"],"200 OK")
+        self.assertEqual(json.loads(body)["visible_message_count"],1)
+        self.ops.end_lease(
+            self.manager,property_ref=self.id,lease_ref=self.l,
+            expected_revision=1,
+        )
+        with self.assertRaises(AccessDenied):
+            thread.thread(self.resident,work_ref=work)
 
 
 if __name__=="__main__":
