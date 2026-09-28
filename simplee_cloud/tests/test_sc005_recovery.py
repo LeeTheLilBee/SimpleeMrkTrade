@@ -59,8 +59,10 @@ def journal(tmp_path):
 
 
 def event(j, request_id):
+    # Generic synthetic append-only event for checkpoint-prefix tests. SC028
+    # reserves read_intent/read_verified exclusively for real bound read scope.
     j.record_safe_event({
-        "event": "read_intent", "request_id": request_id,
+        "event": "restore_verification_intent", "request_id": request_id,
         "tower_decision_ref": "synthetic-tower", "namespace_digest": NAMESPACE,
     })
 
