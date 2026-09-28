@@ -10,7 +10,7 @@ from .registry import get_vertical
 from .dealroom import current_tasks
 
 INTENTS = frozenset({
-    "overview", "evidence", "diligence", "financing", "insurance", "valuation", "decision", "economics", "changes", "red_team", "next_action"
+    "overview", "evidence", "diligence", "financing", "insurance", "valuation", "decision", "closing", "economics", "changes", "red_team", "next_action"
 })
 
 def context(op, intent="overview"):
@@ -31,6 +31,7 @@ def context(op, intent="overview"):
         "insurance":{"insurance"},
         "valuation":{"valuation"},
         "decision":{"decision"},
+        "closing":{"closing"},
         "economics":{"economics"},
         "changes":{"changes"},
         "red_team":{"economics","evidence"},
@@ -187,6 +188,38 @@ def context(op, intent="overview"):
             note("OWNER_NOTE_NOT_YET_RECORDED",
                  "No source-bound owner research disposition has been preserved yet. Notes do not replace Tower permissions or Teller readiness.",
                  label="NO_OWNER_DISPOSITION")
+    if "closing" in relevant:
+        from .closing_review import closing_review_snapshot
+        closing=closing_review_snapshot(op)
+        note("CLOSING_AUTHORITY_BLOCKED",
+             ("BuyBox local source state is "+
+              closing["local_source_state"].replace("_"," ").lower()+
+              ". Protected closing is still blocked because Tower closing authorization, "+
+              "Teller money/management readiness, title/ownership transfer, lender commitment, "+
+              "insurance in force and settlement completion have not been independently established."),
+             label="NOT_AUTHORIZED_TO_CLOSE")
+        for code in closing["source_blockers"]:
+            note("LOCAL_CLOSING_SOURCE_GAP",
+                 code.replace("_"," ").title()+
+                 ". This is a current BuyBox source/review gap, not permission to bypass it.",
+                 label="REVIEW_REQUIRED")
+        for code in closing["external_blockers"]:
+            note("EXTERNAL_CLOSING_GATE",
+                 code.replace("_"," ").title()+
+                 ". BuyBox cannot self-certify this external authority or completion state.",
+                 label="EXTERNAL_VERIFICATION_REQUIRED")
+        if closing["historical_reviews"]:
+            latest=closing["historical_reviews"][0]
+            note("OWNER_LOCAL_CLOSING_REVIEW",
+                 ("The owner froze a local closing review against opportunity revision "+
+                  str(latest["source_opportunity_revision"])+
+                  ". It remains historical source review only and did not move money, change lifecycle or contact an external system."),
+                 [latest["id"],latest["local_snapshot_sha256"]],
+                 "NON_AUTHORIZING_LOCAL_REVIEW")
+        else:
+            note("CLOSING_REVIEW_NOT_RECORDED",
+                 "No local owner closing review snapshot has been preserved yet.",
+                 label="NO_LOCAL_CLOSING_REVIEW")
     if "economics" in relevant:
         result=analysis["financials"]
         if result["status"]=="CALCULATED":
