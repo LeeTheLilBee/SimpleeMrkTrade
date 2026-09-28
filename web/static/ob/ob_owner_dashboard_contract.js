@@ -404,7 +404,7 @@
       }
 
       const usable =
-        (
+        Boolean(
           response.ok
           && payload
           && typeof payload === "object"
