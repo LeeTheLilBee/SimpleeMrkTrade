@@ -155,8 +155,10 @@ def analyze_offer_scenario(op,scenario,*,today=None):
     reasons=[]
     if scenario.get("asking_price_basis")!=op.get("asking_price"):
         reasons.append("CURRENT_ASKING_PRICE_CHANGED")
-    if scenario.get("source_opportunity_revision")!=op.get("version"):
-        reasons.append("SCENARIO_SOURCE_REVISION_IS_HISTORICAL")
+    material=op.get("last_material_change")
+    if (isinstance(material,dict) and isinstance(material.get("at"),str)
+            and material["at"]>scenario.get("recorded_at","")):
+        reasons.append("MATERIAL_DEAL_SOURCE_CHANGED_AFTER_SCENARIO")
     asking=Decimal(op["asking_price"]) if op.get("asking_price") is not None else None
     proposed=Decimal(scenario["proposed_purchase_price"])
     delta=None
