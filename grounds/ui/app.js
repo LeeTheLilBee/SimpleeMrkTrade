@@ -640,7 +640,8 @@
         if(value==="staff_internal" && !data.can_post_staff_internal) continue;
         const option=el("option",caption);option.value=value;audience.append(option);
       }
-      form.append(el("label","Visibility"),audience);
+      const visibilityLabel=el("label","Visibility");visibilityLabel.append(audience);
+      form.append(visibilityLabel);
       const send=el("button","Record in Grounds · not delivered externally","primary");
       send.type="submit";form.append(send);
       let retry=null;
