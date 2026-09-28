@@ -157,6 +157,20 @@ class SQLiteOperationalJournal:
                 backup_size INTEGER NOT NULL, key_reference TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )""")
+            # A physical ref belongs to one logical request inside ONE opaque
+            # namespace. The same random ref may exist in another namespace.
+            # Do not silently accept an existing source journal with aliases.
+            try:
+                conn.execute(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS unique_primary_ref "
+                    "ON intents(namespace_digest,object_ref)"
+                )
+                conn.execute(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS unique_backup_ref "
+                    "ON backup_intents(namespace_digest,backup_ref)"
+                )
+            except sqlite3.IntegrityError as exc:
+                raise IntegrityError("existing journal has aliased physical references") from exc
             for table in ("intents", "events", "incidents", "backup_intents"):
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_update
                     BEFORE UPDATE ON {table} BEGIN SELECT RAISE(ABORT, 'append-only record'); END""")
@@ -177,6 +191,17 @@ class SQLiteOperationalJournal:
             if row["event_hash"] != expected:
                 raise IntegrityError("operational event integrity mismatch")
             previous = expected
+        # Check uniqueness on every transaction even if an administrator has
+        # bypassed/dropped the source-only SQLite unique index.
+        for table, column in (
+            ("intents", "object_ref"), ("backup_intents", "backup_ref"),
+        ):
+            aliases = conn.execute(
+                "SELECT 1 FROM " + table + " GROUP BY namespace_digest," +
+                column + " HAVING COUNT(*)>1 LIMIT 1"
+            ).fetchone()
+            if aliases is not None:
+                raise IntegrityError("physical object reference reused by separate intents")
         # SC007: reservation metadata is now part of the immutable event
         # commitment, not merely an opaque request tag. Verify both directions
         # and demand exactly one reservation event per canonical intent.
@@ -290,6 +315,11 @@ class SQLiteOperationalJournal:
                 ):
                     raise CloudError("idempotency conflict; new request required")
                 return self._state(conn, tag) or "UNVERIFIED"
+            if conn.execute(
+                "SELECT 1 FROM intents WHERE namespace_digest=? AND object_ref=?",
+                (namespace, object_ref),
+            ).fetchone() is not None:
+                raise CloudError("physical object reference already reserved to another request")
             values = (tag, namespace, object_ref, digest, size, _now())
             conn.execute("INSERT INTO intents VALUES(?,?,?,?,?,?)", values)
             self._append(
@@ -352,6 +382,11 @@ class SQLiteOperationalJournal:
                 "SELECT 1 FROM backup_intents WHERE request_tag=?", (tag,)
             ).fetchone() is not None:
                 raise CloudError("backup reservation already exists; reconcile, never re-PUT")
+            if conn.execute(
+                "SELECT 1 FROM backup_intents WHERE namespace_digest=? AND backup_ref=?",
+                (namespace, backup_ref),
+            ).fetchone() is not None:
+                raise CloudError("physical backup reference already reserved to another request")
             values = (
                 tag, namespace, source_object_ref, source_digest, backup_ref,
                 backup_digest, backup_size, key_reference, _now(),
