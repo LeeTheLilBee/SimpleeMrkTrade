@@ -7,6 +7,7 @@ from pathlib import Path
 
 from grounds.access import AccessDenied
 from grounds.delivery import GroundsDeliveryReceipts, SCHEMA_VERSION
+from grounds.delivery_desk import GroundsDeliveryDesk
 from grounds.maintenance import MaintenanceIntake
 from grounds.operations import GroundsConflict, GroundsOperations
 from grounds.safety import GroundsSafety
@@ -66,6 +67,30 @@ class DeliveryReceiptTests(unittest.TestCase):
         return self.receipts.record(
             payload,receipt_verifier=lambda doc:doc,now=1000, # TEST FIXTURE ONLY
         )
+
+    def test_delivery_desk_never_converts_intent_to_provider_truth(self):
+        desk=GroundsDeliveryDesk(self.store)
+        initial=desk.staff_status(self.manager,property_ref="p1")
+        self.assertEqual(initial["total_local_intents"],2)
+        self.assertEqual(initial["not_historically_proven_delivered"],2)
+        self.assertFalse(initial["provider_currently_connected"])
+        self.assertFalse(initial["retry_dispatch_connected"])
+        self.assertTrue(any(i["urgent_human_source_intent"] for i in initial["visible_items"]))
+        receipt=self.payload(self.work_event,receipt="delivered-1",provider="delivery-provider-1")
+        self.record(receipt)
+        after=desk.staff_status(self.owner,property_ref="p1")
+        self.assertEqual(after["not_historically_proven_delivered"],1)
+        self.assertFalse(after["provider_currently_connected"])
+        self.assertFalse(after["legal_service_proven"])
+        item=next(i for i in after["visible_items"] if i["event_ref"]==self.work_event["event_ref"])
+        self.assertEqual(item["latest_verified_historical_notification_state"],"delivered")
+        self.assertFalse(item["current_external_delivery_confirmed"])
+        self.assertFalse(item["retry_available"])
+        for denied in (self.resident,):
+            with self.assertRaises(AccessDenied):
+                desk.staff_status(denied,property_ref="p1")
+        with self.assertRaises(AccessDenied):
+            desk.staff_status(self.manager,property_ref="p2")
 
     def test_verified_notification_receipt_is_append_only_and_idempotent(self):
         item=self.payload(self.work_event)
