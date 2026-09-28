@@ -18,6 +18,7 @@ class ReleaseBoundaryTests(unittest.TestCase):
         self.assertTrue(report["real_postgres_ci_result_must_be_checked_externally"])
         self.assertTrue(report["retry_safe_work_and_appointment_source_available"])
         self.assertTrue(report["combined_real_postgres_operational_and_tower_gate_regression_source_available"])
+        self.assertTrue(report["current_lease_resident_completion_confirmation_source_available"])
         self.assertFalse(report["external_owner_walkthrough_signed_off"])
         self.assertTrue(report["verified_post_close_property_receiver_source_available"])
         self.assertTrue(report["verified_delivery_receipt_ledger_source_available"])
