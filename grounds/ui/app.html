@@ -18,7 +18,7 @@
         <span class="brand-mark" aria-hidden="true">✦</span>
         <div><span class="micro">SIMPLEE WORLD / PROPERTY LIFE</span><strong>THE GROUNDS</strong></div>
       </div>
-      <div class="session" aria-live="polite"><span class="indicator"></span><span id="session-label">Checking access…</span></div>
+      <div class="session" aria-live="polite"><button id="text-size-toggle" type="button" class="outline" aria-pressed="false" aria-label="Use larger text">Larger text</button><span class="indicator"></span><span id="session-label">Checking access…</span></div>
     </header>
     <main id="main">
       <section class="welcome" aria-labelledby="page-title">
@@ -37,6 +37,11 @@
         <section id="summary" aria-label="Property summary" class="stat-grid"></section>
         <div class="columns">
           <div class="main-column">
+            <section id="my-home-panel" class="glass panel hidden" aria-labelledby="my-home-heading">
+              <div class="section-line"><h2 id="my-home-heading">My Home</h2><span id="my-home-count" class="pill muted">Checking</span></div>
+              <div id="my-home-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">This is a private view of your currently authorized lease, not a statement of payment, legal entry or delivered notice.</p>
+            </section>
             <section id="rent-panel" class="glass panel hidden" aria-labelledby="rent-heading">
               <div class="section-line"><h2 id="rent-heading">Rent &amp; your lease</h2><span class="pill muted">Teller source</span></div>
               <p id="rent-message">Teller has not supplied a current verified invoice. An unavailable amount is not a zero balance or proof that a payment was made.</p>
@@ -62,6 +67,11 @@
                 <button type="submit" class="primary">Submit maintenance request</button>
               </form>
             </section>
+            <section id="daily-panel" class="glass panel hidden" aria-labelledby="daily-heading">
+              <div class="section-line"><h2 id="daily-heading">The Daily Grounds</h2><span id="daily-count" class="pill muted">Checking</span></div>
+              <div id="daily-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">Operational source view only. Pending internal notification intents are not provider delivery or emergency response.</p>
+            </section>
             <section id="safety-panel" class="glass panel hidden" aria-labelledby="safety-heading">
               <div class="section-line"><h2 id="safety-heading">Human safety desk</h2><span id="safety-count" class="pill priority">Checking</span></div>
               <p class="footnote">This is an internal triage queue, not emergency-service dispatch. Contact emergency services directly when an immediate life-safety threat exists.</p>
@@ -79,6 +89,16 @@
               <p class="footnote">Current asset and preventive-work records, open inspections and authorized turnovers. A recorded state is not proof of dispatch, legal entry, external inspection sign-off or sealed evidence.</p>
               <div id="physical-list" class="stack" aria-live="polite"></div>
               <p id="physical-status" class="footnote">External evidence, dispatch and capital authority are not connected.</p>
+            </section>
+            <section id="property-health-panel" class="glass panel hidden" aria-labelledby="property-health-heading">
+              <div class="section-line"><h2 id="property-health-heading">Property Health</h2><span id="property-health-count" class="pill muted">Checking</span></div>
+              <div id="property-health-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">Physical source counts and a bounded response-time sample, not a certified service-level score. All financial truth remains with Teller.</p>
+            </section>
+            <section id="owner-portfolio-panel" class="glass panel hidden" aria-labelledby="owner-portfolio-heading">
+              <div class="section-line"><h2 id="owner-portfolio-heading">Your property portfolio</h2><span id="owner-portfolio-count" class="pill muted">Checking</span></div>
+              <div id="owner-portfolio-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">Only your currently Tower-granted property sources. No resident identity or OB/Teller balance is included.</p>
             </section>
             <section class="glass panel" aria-labelledby="work-heading">
               <div class="section-line"><h2 id="work-heading">Maintenance</h2><span id="work-count" class="pill muted">—</span></div>
