@@ -23,6 +23,7 @@ class SyntheticVaultAcceptance:
     def __init__(self, tmp_path, h, *, request_id="write-1",
                  evidence_id="synthetic-evidence", version_id="synthetic-version",
                  parent_version_id=None):
+        tmp_path.mkdir(parents=True, exist_ok=True)
         self.h = h
         self.request_id = request_id
         self.evidence_id = evidence_id
