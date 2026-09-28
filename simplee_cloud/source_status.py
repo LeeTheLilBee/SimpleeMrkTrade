@@ -34,10 +34,14 @@ def owner_safe_source_snapshot(journal: SQLiteOperationalJournal) -> dict:
     uncovered_pending = coverage["uncovered_with_pending_backup_count"]
     uncovered_without_pending = coverage["uncovered_without_pending_backup_count"]
     backend_events = health["backend_error_events"]
-    other_incident_events = health["incident_count"] - backend_events
+    restore_integrity_events = health["restore_integrity_incident_events"]
+    other_incident_events = (
+        health["incident_count"] - backend_events - restore_integrity_events
+    )
     values = (
         pending_primary, pending_backup, integrity_primary, integrity_backup,
-        backend_events, other_incident_events, health["event_count"],
+        backend_events, restore_integrity_events, other_incident_events,
+        health["event_count"],
         uncovered, uncovered_pending, uncovered_without_pending,
         restore_requests, restore_completed, restore_integrity, restore_pending,
         restore_pending_without_outage, restore_retryable_outage,
