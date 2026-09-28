@@ -36,6 +36,7 @@ def test_original_sky_has_source_only_provinces_and_not_the_old_even_card_grid()
         '"market-map-constellation"',
         '"market-map-region-button"',
         "selectedSymbol",
+        "focusedRegionKey",
         "if (selectedSymbol) openSymbol(selectedSymbol)",
         "No trade happens here",
     ):
@@ -82,6 +83,7 @@ def test_dashboard_is_tower_entry_checkin_modal_then_real_dashboard():
         "acceptedSop", "firstSop", "ob_arrival",
         "data-prev", "data-next", "data-accept",
         "data-remember", "ob-entry-pending",
+        "snapshot.persistent.beta.sopAcknowledgedVersion === document.body.dataset.obSopVersion",
         "ob:arrival-complete", "/tower/return/observatory",
     ):
         assert fragment in ENTRY
