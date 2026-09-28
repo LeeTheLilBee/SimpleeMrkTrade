@@ -428,6 +428,16 @@ def create_app(config=None):
             stressed=stressed,revenue_factor=revenue_factor,
             expense_factor=expense_factor)
 
+    def assert_red_team_original_integrity(op, model):
+        # Metadata alone cannot prove that a protected original is still
+        # decryptable and digest-identical. Fail closed before saving stress.
+        by_id={a["id"]:a for a in op.get("artifacts",[])}
+        for source in model["source_metrics"]:
+            descriptor=by_id.get(source["original_id"])
+            if descriptor is None or descriptor.get("sha256")!=source["original_sha256"]:
+                raise ValueError("STRESS_ORIGINAL_REFERENCE_CHANGED")
+            docstore.read(descriptor)
+
     @app.get("/opportunities/<oid>/red-team")
     @login_required
     def red_team_room(oid):
@@ -436,6 +446,7 @@ def create_app(config=None):
             if op is None: abort(404)
         try:
             baseline=model_financial_stress(op,revenue_factor="1",expense_factor="1")
+            assert_red_team_original_integrity(op,baseline)
         except ValueError:
             baseline=None
         return render_template("red_team.html",op=op,
@@ -447,6 +458,10 @@ def create_app(config=None):
         with db() as conn:
             op=load(conn,oid)
             if op is None: abort(404)
+            incoming_model=model_financial_stress(
+                op,revenue_factor=request.form.get("revenue_factor",""),
+                expense_factor=request.form.get("expense_factor",""))
+            assert_red_team_original_integrity(op,incoming_model)
             revised,item=record_owner_financial_stress(
                 conn,op,name=request.form.get("name",""),
                 rationale=request.form.get("rationale",""),
