@@ -102,12 +102,73 @@ def record_verified_external_proof(db, op, *, kind, raw_proof, verifier, now_utc
     revised.setdefault("external_proofs",[]).append(record)
     return revised, deepcopy(record)
 
+_PROOF_RECORD_FIELDS = frozenset({
+    "kind", "issuer", "receipt_ref", "purpose", "source_opportunity_id",
+    "source_opportunity_revision", "source_snapshot_digest", "deal_fingerprint",
+    "verified_at", "authentication_scope", "browser_supplied_authority",
+    "authorizes_purchase", "authorizes_money", "record_sha256",
+})
+_HEX64 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _valid_stored_proof(proof, op, fingerprint):
+    """Check local receipt-record integrity before displaying it as present.
+
+    This is NOT external issuer authentication: SHA-256 is not a MAC or
+    signature. Only record_verified_external_proof's trusted server verifier
+    may create authoritative external proof; owner release is separate.
+    """
+    if not isinstance(proof, dict) or set(proof) != _PROOF_RECORD_FIELDS:
+        return False
+    if (
+        proof["kind"] not in KINDS
+        or proof["source_opportunity_id"] != op.get("id")
+        or type(proof["source_opportunity_revision"]) is not int
+        or proof["source_opportunity_revision"] < 1
+        or type(op.get("version")) is not int
+        or proof["source_opportunity_revision"] > op["version"]
+        or proof["deal_fingerprint"] != fingerprint
+        or proof["authentication_scope"] != "TRUSTED_SERVER_ADAPTER_ONLY"
+        or proof["browser_supplied_authority"] is not False
+        or proof["authorizes_purchase"] is not False
+        or proof["authorizes_money"] is not False
+    ):
+        return False
+    if not isinstance(proof["source_snapshot_digest"], str) or not _HEX64.fullmatch(
+        proof["source_snapshot_digest"]
+    ):
+        return False
+    if not all(isinstance(proof[key], str) and OPAQUE.fullmatch(proof[key])
+               for key in ("issuer", "receipt_ref", "purpose")):
+        return False
+    timestamp = proof["verified_at"]
+    if not isinstance(timestamp, str):
+        return False
+    try:
+        verified_at = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    if verified_at.tzinfo is None or verified_at.utcoffset() is None:
+        return False
+    checksum = proof["record_sha256"]
+    if not isinstance(checksum, str) or not _HEX64.fullmatch(checksum):
+        return False
+    body = {key: value for key, value in proof.items() if key != "record_sha256"}
+    expected = sha256(json.dumps(
+        body, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode()).hexdigest()
+    return checksum == expected
+
+
 def integration_readiness(op):
     current = {}
     fingerprint=_deal_fingerprint(op)
-    for proof in op.get("external_proofs",[]):
-        if proof.get("deal_fingerprint") == fingerprint:
-            current[proof.get("kind")] = proof
+    candidates = op.get("external_proofs", [])
+    if not isinstance(candidates, list):
+        candidates = []
+    for proof in candidates:
+        if _valid_stored_proof(proof, op, fingerprint):
+            current[proof["kind"]] = proof
     required = [
         "TOWER_PROTECTED_ACTION",
         "TELLER_MONEY_AND_MANAGEMENT",
