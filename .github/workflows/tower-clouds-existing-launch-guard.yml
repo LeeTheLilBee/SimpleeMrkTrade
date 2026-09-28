@@ -1,0 +1,35 @@
+name: Tower Clouds existing-launch guard compatibility
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ecosystem_direct_route_guard.py"
+      - "tower/ecosystem_return_routes.py"
+      - "tower/test_clouds_generic_guard_compatibility.py"
+      - ".github/workflows/tower-clouds-existing-launch-guard.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ecosystem_direct_route_guard.py"
+      - "tower/ecosystem_return_routes.py"
+      - "tower/test_clouds_generic_guard_compatibility.py"
+      - ".github/workflows/tower-clouds-existing-launch-guard.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-clouds-not-shadowed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - run: python -m pytest -q tower/test_clouds_generic_guard_compatibility.py tower/test_ecosystem_navigation_guard.py
+      - run: python -m compileall -q tower/ecosystem_direct_route_guard.py tower/ecosystem_return_routes.py
