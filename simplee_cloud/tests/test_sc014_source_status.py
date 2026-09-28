@@ -101,7 +101,7 @@ def test_corrupt_primary_and_backend_outage_get_distinct_cards(tmp_path):
     # Separate synthetic outage event stays in its own nonterminal category.
     h.journal.record_backend_incident(
         namespace=receipt.namespace_digest, request_id="read-2",
-        code="PRIMARY_READ_BACKEND_ERROR",
+        code="PRIMARY_REPLAY_BACKEND_ERROR",
     )
     after = source_snapshot(h)
     assert after["primary_integrity_hold_count"] == 1
