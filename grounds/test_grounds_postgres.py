@@ -29,6 +29,7 @@ from grounds.postgres import (
 from grounds.safety import GroundsSafety
 from grounds.test_grounds_operations import fixture_scope
 from grounds.work_resources import GroundsWorkResources
+from grounds.work_completion import GroundsWorkCompletion
 from grounds.work_thread import GroundsWorkThread
 from grounds.move_concierge import GroundsMoveConcierge
 from grounds.privacy_log import GroundsResidentPrivacyLog
@@ -736,6 +737,60 @@ class PostgresGroundsTests(unittest.TestCase):
                 (self.l,"resident"),
             ).fetchone()
             self.assertEqual(row[0],2)
+
+
+    def test_resident_completion_ledger_executes_on_real_postgres(self):
+        work="confirm-"+uuid4().hex
+        tech=fixture_scope(
+            "confirm-tech","maintenance_technician",(self.id,),(),(work,),
+        )
+        created=self.ops.submit_maintenance(
+            self.resident,work_ref=work,
+            intake=MaintenanceIntake(
+                self.id,self.u,"plumbing","PG resident completion check",
+                False,"contact_first",
+            ),
+        )
+        revision=created["revision"]
+        for state in ("received","under_review","scheduled"):
+            revision=self.ops.advance_work_order(
+                self.manager,work_ref=work,next_state=state,
+                expected_revision=revision,
+            )["revision"]
+        revision=self.ops.assign_work_order(
+            self.manager,work_ref=work,technician=tech,
+            expected_revision=revision,
+        )["revision"]
+        revision=self.ops.advance_work_order(
+            tech,work_ref=work,next_state="in_progress",
+            expected_revision=revision,
+        )["revision"]
+        revision=self.ops.advance_work_order(
+            tech,work_ref=work,next_state="completed",
+            expected_revision=revision,
+        )["revision"]
+        revision=self.ops.advance_work_order(
+            self.manager,work_ref=work,next_state="confirmation",
+            expected_revision=revision,
+        )["revision"]
+        completion=GroundsWorkCompletion(self.store)
+        result=completion.respond(
+            self.resident,work_ref=work,outcome="still_needs_attention",
+            expected_revision=revision,event_ref="completion-"+uuid4().hex,
+            note="Synthetic PostgreSQL reopen",
+        )
+        self.assertEqual(result["state"],"reopened")
+        status=completion.status(self.resident,work_ref=work)
+        self.assertEqual(
+            status["latest_resident_response"]["outcome"],
+            "still_needs_attention",
+        )
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM work_completion_events WHERE work_ref=?",
+                (work,),
+            ).fetchone()[0],1)
+
 
 
 if __name__=="__main__":
