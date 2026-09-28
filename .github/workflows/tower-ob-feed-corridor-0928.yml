@@ -6,8 +6,12 @@ on:
     branches: [tower-hosted-runtime-identity-twr081-085]
     paths:
       - tower/ob_web_route_enforcement.py
+      - tower/ob_market_source_status.py
+      - web/hosted_tower.py
+      - web/static/ob/ob_engine_feed_adapter.js
       - tests/test_tower_ob_web_route_enforcement.py
       - tests/test_tower_ob_feed_corridor_runtime_0928.py
+      - tests/ob_feed_provider_pending_0928.test.cjs
       - .github/workflows/tower-ob-feed-corridor-0928.yml
 permissions:
   contents: read
@@ -99,8 +103,11 @@ jobs:
           node --check web/static/ob/ob_owner_dashboard_contract.js
           node --check web/static/ob/ob_owner_dashboard_soulaana.js
           python -m pytest -q tests/test_tower_ob_all_room_visual_integration_0928.py tests/test_market_map_obux031_surface.py tests/test_market_map_obux034_interaction.py
-      - name: Prove exact hosted read-only market snapshot route and inspect source implementation
-        run: python -m pytest -s -q tests/test_tower_ob_feed_corridor_runtime_0928.py tests/test_tower_ob_web_route_enforcement.py
+      - name: Prove exactly guarded source-status endpoint and no fixture promotion
+        run: |
+          node --check web/static/ob/ob_engine_feed_adapter.js
+          node tests/ob_feed_provider_pending_0928.test.cjs
+          python -m pytest -q tests/test_tower_ob_feed_corridor_runtime_0928.py tests/test_tower_ob_web_route_enforcement.py
       # A full-suite failure is now a real failed CI check, not green by masking.
       - name: Full Tower test suite (blocking)
         run: python -m pytest -q tests
