@@ -71,7 +71,7 @@ def test_sink_ack_then_substitutes_object_is_rejected(tmp_path, fault):
         def get(self, reference):
             original = self.items[reference]
             if fault == "signature":
-                return replace(original, signature=original.signature[:-1] + b"x")
+                return replace(original, signature=original.signature[:-1] + bytes([original.signature[-1] ^ 1]))
             if fault == "payload":
                 return replace(original, payload=original.payload[:-1] + b"x")
             if fault == "not_checkpoint":
