@@ -1070,7 +1070,7 @@ def test_twr140_first_wave_product_truth_wall_remains_zero():
 
     report = audit_product_surfaces(
         Path(
-            "/content/SimpleeMrkTrade"
+            Path(__file__).resolve().parents[1]
         ),
         relative_paths=RETIREMENT_FOCUS_SURFACES,
     )
