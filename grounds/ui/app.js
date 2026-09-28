@@ -3,7 +3,7 @@
   const root = "/grounds";
   const csrf = document.querySelector('meta[name="grounds-csrf"]').content;
   const $ = id => document.getElementById(id);
-  const state = { me: null, view: null, property: "", unit: "", busy: false, maintenanceRetry: null };
+  const state = { me: null, view: null, property: "", unit: "", busy: false, maintenanceRetry: null, loadGeneration: 0 };
   function el(tag, text, klass) {
     const node = document.createElement(tag);
     if (text !== undefined && text !== null) node.textContent = String(text);
@@ -77,6 +77,7 @@
   }
   async function refresh() {
     selected();
+    const generation = ++state.loadGeneration;
     if (!state.property) return;
     const qs = new URLSearchParams({ property_ref: state.property });
     if (state.me.role === "resident") {
@@ -85,13 +86,40 @@
     }
     try {
       const data = await request("workspace?" + qs);
+      if (generation !== state.loadGeneration) return;
       state.view = data; render(data);
       $("property-state").textContent = "Current";
+      if (state.me.role === "resident") {
+        try {
+          const rent = await request("rent?" + qs);
+          if (generation === state.loadGeneration) renderRent(rent);
+        } catch {
+          if (generation === state.loadGeneration) {
+            $("rent-message").textContent = "A verified Teller invoice is unavailable right now. Do not infer that your balance is zero or that payment was recorded.";
+          }
+        }
+      }
     } catch (error) {
+      if (generation !== state.loadGeneration) return;
       $("content").classList.add("hidden"); $("locked").classList.remove("hidden");
       $("locked-reason").textContent = error.message;
       message(error.message, true);
     }
+  }
+  function renderRent(data) {
+    const target = $("rent-message");
+    if (data?.status !== "verified_projection" ||
+        !Number.isSafeInteger(data.amount_due_cents) ||
+        data.amount_due_cents < 0 || data.currency !== "USD" ||
+        data.checkout_execution_enabled !== false) {
+      target.textContent = "Teller has not supplied a current verified invoice. Grounds cannot determine an amount due or take payment.";
+      return;
+    }
+    const amount = (data.amount_due_cents / 100).toLocaleString(undefined, {
+      style: "currency", currency: "USD"
+    });
+    target.textContent = "Verified Teller snapshot: " + amount + " shown as amount due; invoice status " +
+      data.invoice_status + "; due date " + data.due_on + ". This is a read-only status, not a payment or checkout confirmation.";
   }
   function render(data) {
     if (data.locked) {
