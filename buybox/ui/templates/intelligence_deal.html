@@ -1,0 +1,74 @@
+{% extends "base.html" %}{% block title %}Intelligence · {{ op.name }}{% endblock %}{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero"><p class="eyebrow">INTELLIGENCE STUDIO · {{ op.vertical|replace('_',' ')|upper }}</p><h1>{{ op.name }}</h1>
+<p>Strategy fit, timeline, pattern matching, post-close learning, counterparties, repairs, market notes, impact and decision packet.</p></section>
+
+<section class="stats">
+<div class="tile"><small>Thesis alignment</small><strong>{{ studio.portfolio_fit.thesis.alignment|replace('_',' ')|title }}</strong></div>
+<div class="tile"><small>Same vertical pipeline</small><strong>{{ studio.portfolio_fit.same_vertical_pipeline }}</strong></div>
+<div class="tile"><small>Same region pipeline</small><strong>{{ studio.portfolio_fit.same_region_pipeline }}</strong></div>
+<div class="tile"><small>Learning state</small><strong>{{ studio.predicted_actual.learning_state|replace('_',' ')|title }}</strong></div>
+</section>
+
+<section class="panel"><p class="eyebrow">WHY NOT? MODE</p><h2>Attack the thesis before the market does.</h2>
+{% for q in studio.why_not %}<div class="evidence-row"><div><strong>{{ q }}</strong></div></div>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">ACQUISITION TIMELINE SIMULATOR</p><h2>Recorded future obligations</h2>
+{% for x in studio.timeline %}<div class="evidence-row"><div><strong>{{ x.date }} · {{ x.label }}</strong><small>{{ x.kind|replace('_',' ')|title }}</small></div><span>{{ x.state }}</span></div>
+{% else %}<p class="muted">No dated items have been recorded yet.</p>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">DEAL DNA</p><h2>Similar records in your own acquisition history</h2>
+{% for x in studio.deal_dna %}<div class="evidence-row"><div><strong><a href="{{ url_for('intelligence_deal',oid=x.id) }}">{{ x.name }}</a></strong><small>{{ x.reasons|join(' · ') }}</small></div><span>{{ x.similarity_points }} pts</span></div>
+{% else %}<p class="muted">No similar saved opportunities yet.</p>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">PREDICTED VS ACTUAL</p><h2>Make underwriting teach the next acquisition.</h2>
+<p>Predicted net: {{ '$' ~ studio.predicted_actual.predicted.net if studio.predicted_actual.predicted.net else 'Unavailable' }} · Latest actual net: {{ '$' ~ studio.predicted_actual.latest_actual.actual_net if studio.predicted_actual.latest_actual else 'Not recorded' }}{% if studio.predicted_actual.net_variance %} · Variance {{ studio.predicted_actual.net_variance }}{% endif %}</p>
+<form method="post" action="{{ url_for('intelligence_record',oid=op.id,kind='PERFORMANCE_ACTUAL') }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Period<input name="period" required maxlength="100"></label>
+<label>Actual net<input name="actual_net" type="number" step="0.01" required></label>
+<label>Source / note<input name="note" maxlength="1000" required></label><button type="submit">Record operating actual</button></form></section>
+
+<section class="panel"><p class="eyebrow">INSPECTION & REPAIR INTELLIGENCE</p><h2>CapEx / defect ledger</h2>
+{% for r in records_by_kind.CAPEX_ITEM %}<div class="evidence-row"><div><strong>{{ r.payload.title }}</strong><small>{{ r.payload.severity }} · {{ r.payload.note }}</small></div><span>{{ '$' ~ r.payload.estimated_cost if r.payload.estimated_cost else 'Cost unknown' }}</span></div>{% endfor %}
+<form method="post" action="{{ url_for('intelligence_record',oid=op.id,kind='CAPEX_ITEM') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<label>Item<input name="title" required maxlength="160"></label><label>Severity<select name="severity"><option>LOW</option><option>MEDIUM</option><option>HIGH</option><option>CRITICAL</option></select></label>
+<label>Estimated cost<input name="estimated_cost" type="number" min="0" step="0.01"></label><label>Due/date<input name="date" type="date"></label><label>Source note<textarea name="note" required maxlength="1000"></textarea></label><button type="submit">Add repair / inspection item</button></form></section>
+
+<section class="panel"><p class="eyebrow">SELLER / BROKER RELATIONSHIP HISTORY</p><h2>Counterparties</h2>
+{% for r in records_by_kind.COUNTERPARTY %}<div class="evidence-row"><div><strong>{{ r.payload.name }}</strong><small>{{ r.payload.role }} · {{ r.payload.note }}</small></div></div>{% endfor %}
+<form method="post" action="{{ url_for('intelligence_record',oid=op.id,kind='COUNTERPARTY') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Name<input name="name" required maxlength="160"></label><label>Role<input name="role" required maxlength="80" placeholder="seller, broker, advisor"></label><label>Note<textarea name="note" maxlength="1000"></textarea></label><button type="submit">Record counterparty</button></form></section>
+
+<section class="panel"><p class="eyebrow">MARKET INTELLIGENCE LAYER</p><h2>Source-attributed local observations</h2>
+{% for r in records_by_kind.MARKET_OBSERVATION %}<div class="evidence-row"><div><strong>{{ r.payload.title }}</strong><small>{{ r.payload.source }} · {{ r.payload.note }}</small></div></div>{% endfor %}
+<form method="post" action="{{ url_for('intelligence_record',oid=op.id,kind='MARKET_OBSERVATION') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Observation<input name="title" required maxlength="160"></label><label>Source<input name="source" required maxlength="300"></label><label>Observed on<input name="observed_on" type="date"></label><label>Note<textarea name="note" required maxlength="1000"></textarea></label><button type="submit">Add market observation</button></form></section>
+
+<section class="panel"><p class="eyebrow">COMMUNITY IMPACT LENS</p><h2>Separate from financial underwriting</h2>
+{% for r in records_by_kind.COMMUNITY_IMPACT %}<div class="evidence-row"><div><strong>{{ r.payload.dimension }}</strong><small>{{ r.payload.note }}</small></div></div>{% endfor %}
+<form method="post" action="{{ url_for('intelligence_record',oid=op.id,kind='COMMUNITY_IMPACT') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Dimension<input name="dimension" required maxlength="120" placeholder="local jobs, housing quality, food access, green space…"></label><label>Note<textarea name="note" required maxlength="1000"></textarea></label><button type="submit">Add impact observation</button></form></section>
+
+<section class="panel"><p class="eyebrow">MOBILE CAPTURE / OPPORTUNITY INBOX</p><h2>Drop a field note into the deal</h2>
+{% for r in records_by_kind.QUICK_CAPTURE[:8] %}<div class="evidence-row"><div><strong>{{ r.payload.title }}</strong><small>{{ r.payload.note }}</small></div></div>{% endfor %}
+<form method="post" action="{{ url_for('intelligence_record',oid=op.id,kind='QUICK_CAPTURE') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Title<input name="title" maxlength="160" required></label><label>Field note<textarea name="note" maxlength="2000" required></textarea></label><button type="submit">Capture note</button></form></section>
+
+<section class="panel"><p class="eyebrow">TEAM DEAL ROOM LANES</p><h2>Narrow work assignments, not access grants</h2>
+{% for r in records_by_kind.TEAM_LANE %}<div class="evidence-row"><div><strong>{{ r.payload.role }}</strong><small>{{ r.payload.task }} · {{ r.payload.status }}</small></div></div>{% endfor %}
+<form method="post" action="{{ url_for('intelligence_record',oid=op.id,kind='TEAM_LANE') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Role<input name="role" required maxlength="120" placeholder="Attorney, lender, manager…"></label><label>Work lane<input name="task" required maxlength="300"></label><label>Status<select name="status"><option>PLANNED</option><option>OPEN</option><option>WAITING</option><option>DONE</option></select></label><button type="submit">Add work lane</button></form></section>
+
+<section class="panel"><p class="eyebrow">ACQUISITION AUTOPSY</p><h2>Why did this deal fail, pass, or get lost?</h2>
+{% for r in records_by_kind.AUTOPSY %}<div class="evidence-row"><div><strong>{{ r.payload.outcome }}</strong><small>{{ r.payload.reason }}</small></div></div>{% endfor %}
+<form method="post" action="{{ url_for('intelligence_record',oid=op.id,kind='AUTOPSY') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Outcome<input name="outcome" required maxlength="120" placeholder="Rejected, lost, seller withdrew, acquired…"></label><label>Reason<textarea name="reason" required maxlength="1500"></textarea></label><button type="submit">Record autopsy</button></form></section>
+
+<section class="panel"><p class="eyebrow">DEAL STORY</p><h2>Chronological acquisition narrative</h2>
+{% for x in studio.story[-20:]|reverse %}<div class="event"><strong>{{ x.kind|replace('_',' ')|title }}</strong><small>{{ x.at }} · {{ x.detail }}</small></div>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">KNOWLEDGE GRAPH</p><h2>Who and what this opportunity connects to</h2>
+<p>{{ studio.knowledge_graph.nodes|length }} nodes · {{ studio.knowledge_graph.edges|length }} relationships</p>
+{% for x in studio.knowledge_graph.edges %}<div class="evidence-row"><div><strong>{{ x.relationship|replace('_',' ')|title }}</strong><small>{{ x.from }} → {{ x.to }}</small></div></div>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">VERTICAL PLAYBOOK</p><h2>{{ op.vertical|replace('_',' ')|title }} acquisition sequence</h2>
+{% for x in studio.playbook.steps %}<div class="evidence-row"><div><strong>{{ x }}</strong></div></div>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">IC / OWNER DECISION PACKET</p><h2>Frozen research-ready summary</h2>
+<p>Current analytical judgment: {{ studio.ic_packet.analysis.judgment|replace('_',' ')|title }} · Integration state: {{ studio.ic_packet.integration.source_state|replace('_',' ')|title }}</p>
+<p class="muted">This is an owner research packet only. It does not authorize purchase, closing, funding, or operations.</p></section>
+{% endblock %}
