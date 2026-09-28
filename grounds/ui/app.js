@@ -85,7 +85,7 @@
                       "safety-list","leasing-list","physical-list",
                       "my-home-list","daily-list","property-health-list",
                       "owner-portfolio-list","move-list","move-desk-list",
-                      "delivery-list"]) clear($(id));
+                      "delivery-list","privacy-list"]) clear($(id));
     $("rent-message").textContent = "Current Teller invoice not verified. An unavailable amount is not a zero balance or payment confirmation.";
     $("rent-service-status").textContent = "Awaiting Teller";
     $("soulaana-message").textContent = "Checking the current authorized source context.";
@@ -261,6 +261,28 @@
       $("locked-reason").textContent = error.message;
       message(error.message, true);
     }
+  }
+  function renderPrivacyHistory(data) {
+    const target=$("privacy-list");clear(target);
+    if(data?.source!=="grounds" || data.room!=="resident_privacy_history" ||
+       data.property_ref!==state.property || data.unit_ref!==state.unit ||
+       !Array.isArray(data.events) || data.session_tokens_included!==false ||
+       data.ip_addresses_included!==false) {
+      $("privacy-count").textContent="Unverified";return;
+    }
+    $("privacy-count").textContent=data.total_events_before_current_response+" recorded before this read";
+    if(!data.events.length)
+      target.append(el("p","No earlier successful selected record reads are recorded for this current lease.","footnote"));
+    for(const item of data.events){
+      const entry=el("article",null,"experience-tile");
+      entry.append(el("strong",item.resource_kind.replaceAll("_"," ")),
+        el("p","Recorded resource: "+item.resource_ref),
+        el("span",asDate(item.recorded_at),"meta"));
+      target.append(entry);
+    }
+    if(data.truncated)
+      target.append(el("p","Only the most recent "+data.visible_limit+
+        " events are shown. This is not the complete retained record.","footnote"));
   }
   function renderDeliveryDesk(data) {
     const target=$("delivery-list");clear(target);
@@ -615,6 +637,8 @@
       $("safety-count").textContent = "Checking";
       $("safety-delivery").textContent = "Checking internal triage records. External delivery and dispatch are not confirmed.";
     }
+    $("privacy-panel").classList.toggle("hidden", data.role !== "resident");
+    $("privacy-count").textContent="On demand";
     $("move-panel").classList.toggle("hidden", data.role !== "resident");
     $("move-desk-panel").classList.toggle("hidden",
       !["owner","property_manager"].includes(data.role));
@@ -936,6 +960,23 @@
       $("property-choice").addEventListener("change",refresh);
       $("unit-choice").addEventListener("change",refresh);
       $("refresh").addEventListener("click",refresh);
+      $("privacy-open").addEventListener("click",async()=>{
+        const generation=state.loadGeneration;
+        const property=state.property,unit=state.unit;
+        if(state.me.role!=="resident" || !state.view || !property || !unit)return;
+        try{
+          const result=await request("privacy-history?" +
+            new URLSearchParams({property_ref:property,unit_ref:unit}));
+          if(generation!==state.loadGeneration || property!==state.property ||
+             unit!==state.unit)return;
+          renderPrivacyHistory(result);
+        }catch(error){
+          if(generation!==state.loadGeneration)return;
+          clear($("privacy-list"));
+          $("privacy-count").textContent="Unavailable";
+          message(error.message,true);
+        }
+      });
       $("text-size-toggle").addEventListener("click", () => {
         const applied=document.documentElement.classList.toggle("comfortable-type");
         $("text-size-toggle").setAttribute("aria-pressed",String(applied));
