@@ -61,7 +61,7 @@ def _project_registered_app(app: dict) -> dict:
             "app_id": str(app_id or "unknown")[:80],
             "state": "BLOCKED_UNREVIEWED_APP",
             "launchable": False,
-            "source_branch_is_hosted": False,
+            "separate_product_runtime_activated": False,
             "owner_acceptance_verified": False,
             "required_next": "Owner/security review required.",
         }
@@ -85,7 +85,7 @@ def _project_registered_app(app: dict) -> dict:
         "tower_launch_route": app.get("tower_launch_route")
             if app.get("app_status") == "protected_hosted" else None,
         "launchable": launchable,
-        "source_branch_is_hosted": False if app_id in {
+        "separate_product_runtime_activated": False if app_id in {
             "grounds", "buybox", "vault", "clouds",
         } else None,
         "owner_acceptance_verified": False,
