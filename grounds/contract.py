@@ -78,6 +78,8 @@ def foundation_status() -> dict:
         "local_appointment_negotiation_available": True,
         "human_urgency_review_local_model_available": True,
         "notification_intent_outbox_available": True,
+        "verified_delivery_receipt_ledger_source_available": True,
+        "verified_urgent_human_escalation_receipt_source_available": True,
         "notification_delivery_enabled": False,
         "emergency_dispatch_connected": False,
         "legal_entry_notice_or_consent_certified": False,
