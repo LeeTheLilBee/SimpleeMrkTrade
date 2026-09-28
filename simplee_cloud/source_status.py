@@ -14,8 +14,9 @@ def owner_safe_source_snapshot(journal: SQLiteOperationalJournal) -> dict:
     """Make a bounded action-first summary only from a verified local journal."""
     if not isinstance(journal, SQLiteOperationalJournal):
         raise CloudError("verified Cloud source journal required")
-    health = journal.health()  # verifies full event/payload/incident chain first
-    coverage = journal.source_backup_coverage()  # separately verifies full chain
+    # Both aggregates are verified within ONE local SQLite read transaction;
+    # two separately timed reads could describe different commit positions.
+    health, coverage = journal.source_owner_metrics()
     if health["status"] != "SOURCE_ONLY_NO_GO":
         raise CloudError("source journal supplied unexpected runtime state")
 
@@ -79,6 +80,8 @@ def owner_safe_source_snapshot(journal: SQLiteOperationalJournal) -> dict:
         "external_alert_delivery_certified": False,
         "external_checkpoint_certified": False,
         "independent_recovery_certified": False,
+        "local_storage_point_in_time_consistent": True,
+        "cross_ledger_point_in_time_certified": False,
         "journal_event_count": health["event_count"],
         "primary_write_count": health["write_count"],
         "backup_reservation_count": health["backup_count"],
@@ -107,8 +110,9 @@ def owner_safe_source_markdown(journal: SQLiteOperationalJournal) -> str:
         "",
         "**SOURCE ONLY · NO GO · NOT A LIVE PROVIDER STATUS**",
         "",
-        "The numbers below are from one locally verified source-test journal. "
-        "They are neither an aggregate of hosted services nor a delivered alert.",
+        "The counts and backup coverage below share one verified local SQLite "
+        "read snapshot. The separate Tower-shaped replay ledger is NOT "
+        "transactionally included; these are neither hosted health nor delivered alerts.",
         "",
         "## Safe local counts",
         "",
