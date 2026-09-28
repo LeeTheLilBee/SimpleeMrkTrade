@@ -10,6 +10,7 @@ import sqlite3
 from uuid import uuid4
 
 from .access import AccessDenied, TowerScope
+from .delivery import GroundsDeliveryReceipts
 from .operations import GroundsOperations, GroundsConflict, _now
 from .storage import GroundsStoreBase
 
@@ -20,6 +21,7 @@ class GroundsSafety:
             raise TypeError("transaction-backed Grounds store required")
         self.store=store
         self.ops=GroundsOperations(store)
+        self.receipts=GroundsDeliveryReceipts(store)
 
     def acknowledge_urgency(self,actor:TowerScope,*,work_ref:str,
                             assessed_urgency:str)->dict:
