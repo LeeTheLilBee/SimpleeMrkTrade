@@ -109,6 +109,12 @@ _PROOF_RECORD_FIELDS = frozenset({
     "authorizes_purchase", "authorizes_money", "record_sha256",
 })
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
+# BBX102–106's separately authenticated canonical Vault receiver stores a
+# narrower archival source linkage in addition to the generic proof fields.
+_VAULT_RECEIPT_FIELDS = frozenset({
+    "evidence_id", "source_document_id", "verified_sha256",
+    "vault_document_ref", "vault_version_ref", "decision_snapshot_id",
+})
 
 
 def _valid_stored_proof(proof, op, fingerprint):
@@ -118,17 +124,27 @@ def _valid_stored_proof(proof, op, fingerprint):
     signature. Only record_verified_external_proof's trusted server verifier
     may create authoritative external proof; owner release is separate.
     """
-    if not isinstance(proof, dict) or set(proof) != _PROOF_RECORD_FIELDS:
+    if not isinstance(proof, dict) or not isinstance(proof.get("kind"), str):
         return False
+    if proof["kind"] not in KINDS:
+        return False
+    canonical_vault = (proof["kind"] == "VAULT_CANONICAL_ARCHIVAL"
+                       and set(proof) == _PROOF_RECORD_FIELDS | _VAULT_RECEIPT_FIELDS)
+    if set(proof) != _PROOF_RECORD_FIELDS and not canonical_vault:
+        return False
+    expected_scope = (
+        "TRUSTED_TOWER_VAULT_ADAPTER_ONLY" if canonical_vault
+        else "TRUSTED_SERVER_ADAPTER_ONLY"
+    )
     if (
-        not isinstance(proof["kind"], str) or proof["kind"] not in KINDS
+        proof["kind"] not in KINDS
         or proof["source_opportunity_id"] != op.get("id")
         or type(proof["source_opportunity_revision"]) is not int
         or proof["source_opportunity_revision"] < 1
         or type(op.get("version")) is not int
         or proof["source_opportunity_revision"] > op["version"]
         or proof["deal_fingerprint"] != fingerprint
-        or proof["authentication_scope"] != "TRUSTED_SERVER_ADAPTER_ONLY"
+        or proof["authentication_scope"] != expected_scope
         or proof["browser_supplied_authority"] is not False
         or proof["authorizes_purchase"] is not False
         or proof["authorizes_money"] is not False
@@ -138,6 +154,16 @@ def _valid_stored_proof(proof, op, fingerprint):
         proof["source_snapshot_digest"]
     ):
         return False
+    if canonical_vault:
+        if not isinstance(proof["verified_sha256"], str) or not _HEX64.fullmatch(
+            proof["verified_sha256"]
+        ):
+            return False
+        if not all(
+            isinstance(proof[key], str) and OPAQUE.fullmatch(proof[key])
+            for key in _VAULT_RECEIPT_FIELDS - {"verified_sha256"}
+        ):
+            return False
     if not all(isinstance(proof[key], str) and OPAQUE.fullmatch(proof[key])
                for key in ("issuer", "receipt_ref", "purpose")):
         return False
