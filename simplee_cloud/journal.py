@@ -1053,6 +1053,49 @@ class SQLiteOperationalJournal:
         backend_errors = conn.execute(
             "SELECT COUNT(*) FROM incidents WHERE incident_code LIKE '%_BACKEND_ERROR'"
         ).fetchone()[0]
+
+        # SC031: owner-safe restore attempt metrics are derived from exact
+        # bound restore rows and their already-verified audit/incident history.
+        # These are local source-state counts, NOT physical recovery evidence.
+        restore_tags = {
+            row["request_tag"]
+            for row in conn.execute("SELECT request_tag FROM restore_intents")
+        }
+        completed_restore_tags = {
+            row["request_tag"]
+            for row in conn.execute(
+                "SELECT DISTINCT request_tag FROM events "
+                "WHERE event_type='RESTORE_BOUND_VERIFIED'"
+            )
+            if row["request_tag"] in restore_tags
+        }
+        restore_integrity_tags = set()
+        restore_outage_tags = set()
+        restore_integrity_events = 0
+        restore_outage_events = 0
+        for incident in conn.execute(
+            """SELECT request_tag,incident_code FROM incidents
+               WHERE incident_code IN (
+                 'BACKUP_INTEGRITY_FAILURE','BACKUP_VERIFY_BACKEND_ERROR'
+               )"""
+        ):
+            if incident["request_tag"] not in restore_tags:
+                continue
+            if incident["incident_code"] == "BACKUP_INTEGRITY_FAILURE":
+                restore_integrity_tags.add(incident["request_tag"])
+                restore_integrity_events += 1
+            else:
+                restore_outage_tags.add(incident["request_tag"])
+                restore_outage_events += 1
+        pending_restore_tags = (
+            restore_tags - completed_restore_tags - restore_integrity_tags
+        )
+        retryable_restore_outage_tags = (
+            pending_restore_tags & restore_outage_tags
+        )
+        pending_restore_without_outage = (
+            pending_restore_tags - retryable_restore_outage_tags
+        )
         return {
             "status": "SOURCE_ONLY_NO_GO",
             "event_count": seq, "head_sha256": digest,
@@ -1071,6 +1114,16 @@ class SQLiteOperationalJournal:
             "backup_missing_or_corrupt": backup_states.get("BACKUP_RECONCILE_MISSING", 0) +
                                          backup_states.get("BACKUP_RECONCILE_CORRUPT", 0) +
                                          backup_states.get("BACKUP_REPLAY_INTEGRITY_FAILURE", 0),
+            "restore_request_count": len(restore_tags),
+            "restore_completed_count": len(completed_restore_tags),
+            "restore_integrity_hold_count": len(restore_integrity_tags),
+            "restore_pending_count": len(pending_restore_tags),
+            "restore_pending_without_outage_count": len(pending_restore_without_outage),
+            "restore_retryable_outage_count": len(retryable_restore_outage_tags),
+            "restore_integrity_incident_events": restore_integrity_events,
+            "restore_outage_incident_events": restore_outage_events,
+            "restore_physical_recovery_certified": False,
+            "restore_vault_original_authenticated": False,
             "external_checkpoint_certified": False,
             "hosted_alert_delivery_certified": False,
         }
