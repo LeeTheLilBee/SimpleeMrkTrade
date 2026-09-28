@@ -70,7 +70,7 @@ def foundation_status() -> dict:
         "postgresql_baseline_schema_source_available": True,
         "postgresql_transaction_adapter_source_available": True,
         "postgresql_hosted_connection_certified": False,
-        "real_tower_http_receiver_connected": False,
+        "real_tower_http_receiver_connected": False,\n        "verified_post_close_property_receiver_source_available": True,\n        "verified_teller_rent_runtime_source_available": True,
         "resident_household_local_model_available": True,
         "local_in_app_notice_reads_available": True,
         "local_appointment_negotiation_available": True,
