@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc013-provider-outage-incidents
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-cloud-sc013-provider-outages.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC013_PROVIDER_OUTAGE_INCIDENTS.md'
 
