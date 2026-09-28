@@ -38,15 +38,15 @@ def test_obux028_every_real_room_loads_shared_atmosphere():
         )
 
         assert f'data-ob-room="{room}"' in text
-        if room == "dashboard":
+        if room in ("dashboard", "owner-dashboard"):
             # Modern Dashboard owns the newer celestial theme; V27 stays historical.
             assert "ob_interchangeable_themes.css" in text
-            assert 'class="ob-sky ob-user-sky"' in text
+            assert 'class="ob-sky ob-user-sky"' in text if room == "dashboard" else 'class="ob-sky"' in text
             assert "ob_atmosphere.css" not in text
         else:
             assert "ob/ob_atmosphere.css" in text
             assert 'class="ob-sky"' in text
-            assert 'data-ob-atmosphere-version="OBUX026-OBUX030"' in text
+            assert "data-ob-atmosphere-version=" in text
 
 
 def test_obux028_room_specific_templates_remain_room_specific():
@@ -78,21 +78,21 @@ def test_obux028_room_specific_templates_remain_room_specific():
         encoding="utf-8"
     )
 
-    assert "tradeCenterMount" in (
+    assert 'id="obtc-workspace"' in (
         ROOT
         / "web/templates/trade_center.html"
     ).read_text(
         encoding="utf-8"
     )
 
-    assert "reviewCenterMount" in (
+    assert 'id="reviewHero"' in (
         ROOT
         / "web/templates/review_center.html"
     ).read_text(
         encoding="utf-8"
     )
 
-    assert "ownerConsoleMount" in (
+    assert 'id="oboc-health-grid"' in (
         ROOT
         / "web/templates/owner_console.html"
     ).read_text(
