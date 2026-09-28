@@ -825,8 +825,11 @@ body[data-ob-living-sky] .market-map-star-label {
   font-weight: 650;
 }
 body[data-ob-living-sky] .market-map-focus {
-  position: relative;
+  position: absolute;
   z-index: 5;
+  right: 18px;
+  top: 142px;
+  width: min(340px, calc(100% - 36px));
   margin-top: 12px;
   border-radius: 18px;
   border: 1px solid rgba(156,232,214,.34);
@@ -839,6 +842,12 @@ body[data-ob-living-sky] .market-map-focus p { font-size: 13px; line-height: 1.6
 body[data-ob-living-sky] .market-map-focus-actions { display:flex; gap: 9px; flex-wrap:wrap; }
 body[data-ob-living-sky] .market-map-empty { min-height: 560px; }
 @media (max-width: 760px) {
+  body[data-ob-living-sky] .market-map-focus {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    margin-top: 16px;
+  }
   body[data-ob-living-sky] .market-map-sky-panel { min-height: 0; }
   body[data-ob-living-sky] .market-map-sky-field { display:grid; min-height:0; gap: 12px; }
   body[data-ob-living-sky] .market-map-constellation {
