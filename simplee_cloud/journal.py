@@ -168,6 +168,13 @@ class SQLiteOperationalJournal:
                 object_ref TEXT NOT NULL, ciphertext_sha256 TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS restore_intents (
+                request_tag TEXT PRIMARY KEY, namespace_digest TEXT NOT NULL,
+                backup_ref TEXT NOT NULL, backup_sha256 TEXT NOT NULL,
+                source_object_ref TEXT NOT NULL,
+                source_ciphertext_sha256 TEXT NOT NULL,
+                key_reference TEXT NOT NULL, created_at TEXT NOT NULL
+            )""")
             # A physical ref belongs to one logical request inside ONE opaque
             # namespace. The same random ref may exist in another namespace.
             # Do not silently accept an existing source journal with aliases.
@@ -182,7 +189,10 @@ class SQLiteOperationalJournal:
                 )
             except sqlite3.IntegrityError as exc:
                 raise IntegrityError("existing journal has aliased physical references") from exc
-            for table in ("intents", "events", "incidents", "backup_intents", "read_intents"):
+            for table in (
+                "intents", "events", "incidents", "backup_intents",
+                "read_intents", "restore_intents",
+            ):
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_update
                     BEFORE UPDATE ON {table} BEGIN SELECT RAISE(ABORT, 'append-only record'); END""")
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_delete
@@ -219,6 +229,7 @@ class SQLiteOperationalJournal:
         for table, event_type in (
             ("intents", "WRITE_RESERVED"), ("backup_intents", "BACKUP_RESERVED"),
             ("read_intents", "READ_RESERVED"),
+            ("restore_intents", "RESTORE_RESERVED"),
         ):
             records = conn.execute("SELECT * FROM " + table).fetchall()
             count = conn.execute(
@@ -299,6 +310,74 @@ class SQLiteOperationalJournal:
                 ).fetchone()
                 if prior is None:
                     raise IntegrityError("verified read lacks preceding read intent")
+
+        # SC029: a bound restore verification can only reference an exact
+        # backup that was already durably acknowledged at reservation time.
+        backup_state_names = tuple(sorted(_BACKUP_STATES))
+        backup_state_placeholders = ",".join("?" for _ in backup_state_names)
+        for restore in conn.execute("SELECT * FROM restore_intents").fetchall():
+            backup = conn.execute(
+                """SELECT request_tag,namespace_digest FROM backup_intents
+                   WHERE namespace_digest=? AND backup_ref=? AND backup_sha256=?
+                   AND source_object_ref=? AND source_ciphertext_sha256=?
+                   AND key_reference=?""",
+                (
+                    restore["namespace_digest"], restore["backup_ref"],
+                    restore["backup_sha256"], restore["source_object_ref"],
+                    restore["source_ciphertext_sha256"],
+                    restore["key_reference"],
+                ),
+            ).fetchone()
+            if backup is None:
+                raise IntegrityError(
+                    "restore reservation lacks exact acknowledged backup source"
+                )
+            reserved = conn.execute(
+                """SELECT seq FROM events WHERE event_type='RESTORE_RESERVED'
+                   AND request_tag=? AND namespace_digest=?""",
+                (restore["request_tag"], restore["namespace_digest"]),
+            ).fetchone()
+            if reserved is None:
+                raise IntegrityError("restore reservation lacks audit event")
+            latest = conn.execute(
+                "SELECT event_type FROM events WHERE request_tag=? "
+                "AND namespace_digest=? AND seq<? AND event_type IN (" +
+                backup_state_placeholders + ") ORDER BY seq DESC LIMIT 1",
+                (
+                    backup["request_tag"], backup["namespace_digest"],
+                    reserved["seq"], *backup_state_names,
+                ),
+            ).fetchone()
+            if latest is None or latest["event_type"] not in (
+                "BACKUP_ACKNOWLEDGED", "BACKUP_RECONCILE_PRESENT",
+            ):
+                raise IntegrityError(
+                    "restore reservation lacks earlier acknowledged backup provenance"
+                )
+        for verified in conn.execute(
+            """SELECT seq,request_tag,namespace_digest FROM events
+               WHERE event_type='RESTORE_BOUND_VERIFIED' ORDER BY seq"""
+        ).fetchall():
+            restore = conn.execute(
+                """SELECT 1 FROM restore_intents
+                   WHERE request_tag=? AND namespace_digest=?""",
+                (verified["request_tag"], verified["namespace_digest"]),
+            ).fetchone()
+            if restore is None:
+                raise IntegrityError("bound restore success lacks exact restore reservation")
+            low_level = conn.execute(
+                """SELECT 1 FROM events WHERE event_type='restore_copy_verified'
+                   AND request_tag=? AND namespace_digest=? AND seq<?
+                   ORDER BY seq DESC LIMIT 1""",
+                (
+                    verified["request_tag"], verified["namespace_digest"],
+                    verified["seq"],
+                ),
+            ).fetchone()
+            if low_level is None:
+                raise IntegrityError(
+                    "bound restore success lacks preceding encrypted-copy verification"
+                )
 
         # SC025: prove every historical backup reservation had an EXACT
         # acknowledged primary source at the time it was created. A present
@@ -543,6 +622,114 @@ class SQLiteOperationalJournal:
                 code=_reservation_hash("READ_RESERVED", values),
             )
             return "READ_RESERVED_NEW"
+
+    @staticmethod
+    def _require_acknowledged_backup(
+        conn: sqlite3.Connection, *, namespace: str,
+        backup_ref: str, backup_sha256: str,
+        source_object_ref: str, source_digest: str,
+        key_reference: str,
+    ) -> None:
+        row = conn.execute(
+            """SELECT request_tag FROM backup_intents
+               WHERE namespace_digest=? AND backup_ref=? AND backup_sha256=?
+               AND source_object_ref=? AND source_ciphertext_sha256=?
+               AND key_reference=?""",
+            (
+                namespace, backup_ref, backup_sha256, source_object_ref,
+                source_digest, key_reference,
+            ),
+        ).fetchone()
+        if row is None or SQLiteOperationalJournal._backup_state(
+            conn, row["request_tag"]
+        ) not in ("BACKUP_ACKNOWLEDGED", "BACKUP_RECONCILE_PRESENT"):
+            raise CloudError(
+                "restore verification requires acknowledged exact backup intent"
+            )
+
+    def reserve_restore_verification(
+        self, *, namespace: str, request_id: str,
+        backup_ref: str, backup_sha256: str,
+        source_object_ref: str, source_digest: str,
+        key_reference: str,
+    ) -> str:
+        """Bind one canonical restore request to an exact ACKed backup."""
+        self._scope(namespace)
+        if not (
+            valid_backup_ref(backup_ref) and valid_sha256(backup_sha256) and
+            valid_object_ref(source_object_ref) and valid_sha256(source_digest)
+        ):
+            raise CloudError("invalid bound restore receipt")
+        if not isinstance(key_reference, str) or not re.fullmatch(
+            r"[A-Za-z0-9_.:-]{1,128}", key_reference
+        ):
+            raise CloudError("invalid restore backup key reference")
+        tag = _request_tag(namespace, request_id)
+        with self._tx() as conn:
+            record = conn.execute(
+                "SELECT * FROM restore_intents WHERE request_tag=?", (tag,),
+            ).fetchone()
+            expected = (
+                namespace, backup_ref, backup_sha256, source_object_ref,
+                source_digest, key_reference,
+            )
+            if record is not None and (
+                record["namespace_digest"], record["backup_ref"],
+                record["backup_sha256"], record["source_object_ref"],
+                record["source_ciphertext_sha256"], record["key_reference"],
+            ) != expected:
+                raise CloudError(
+                    "restore idempotency conflict; new request required"
+                )
+            self._require_acknowledged_backup(
+                conn, namespace=namespace, backup_ref=backup_ref,
+                backup_sha256=backup_sha256,
+                source_object_ref=source_object_ref,
+                source_digest=source_digest, key_reference=key_reference,
+            )
+            if record is not None:
+                return "RESTORE_RESERVED_EXISTING"
+            values = (
+                tag, namespace, backup_ref, backup_sha256,
+                source_object_ref, source_digest, key_reference, _now(),
+            )
+            conn.execute(
+                "INSERT INTO restore_intents VALUES(?,?,?,?,?,?,?,?)", values,
+            )
+            self._append(
+                conn, event="RESTORE_RESERVED", tag=tag, scope=namespace,
+                code=_reservation_hash("RESTORE_RESERVED", values),
+            )
+            return "RESTORE_RESERVED_NEW"
+
+    def record_restore_verified(self, *, namespace: str, request_id: str) -> None:
+        self._scope(namespace)
+        tag = _request_tag(namespace, request_id)
+        with self._tx() as conn:
+            row = conn.execute(
+                "SELECT * FROM restore_intents WHERE request_tag=?", (tag,),
+            ).fetchone()
+            if row is None:
+                raise CloudError("restore success requires reserved exact backup")
+            self._require_acknowledged_backup(
+                conn, namespace=row["namespace_digest"],
+                backup_ref=row["backup_ref"],
+                backup_sha256=row["backup_sha256"],
+                source_object_ref=row["source_object_ref"],
+                source_digest=row["source_ciphertext_sha256"],
+                key_reference=row["key_reference"],
+            )
+            if conn.execute(
+                """SELECT 1 FROM events WHERE event_type='restore_copy_verified'
+                   AND request_tag=? AND namespace_digest=?""",
+                (tag, namespace),
+            ).fetchone() is None:
+                raise CloudError(
+                    "restore success requires encrypted-copy verification event"
+                )
+            self._append(
+                conn, event="RESTORE_BOUND_VERIFIED", tag=tag, scope=namespace,
+            )
 
     def reserve_backup(self, *, namespace: str, request_id: str,
                        source_object_ref: str, source_digest: str,

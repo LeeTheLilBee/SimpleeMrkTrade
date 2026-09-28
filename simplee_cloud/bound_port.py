@@ -208,14 +208,29 @@ class SourceOnlyBoundCloudPort:
             )
         ):
             raise AccessDenied("signed backup ref/hash differs from canonical Vault receipt")
+        # A Vault canonical receipt and signed backup ref/hash are necessary
+        # but not enough: Cloud must also prove it durably ACKed THIS exact
+        # backup before any backup provider GET.
+        self._operations.journal.reserve_restore_verification(
+            namespace=receipt.namespace_digest, request_id=request_id,
+            backup_ref=receipt.backup_ref,
+            backup_sha256=receipt.backup_sha256,
+            source_object_ref=receipt.source_object_ref,
+            source_digest=receipt.source_ciphertext_sha256,
+            key_reference=receipt.key_reference,
+        )
         # Isolated SC005 source drill returns only metrics/status. No plaintext,
         # primary overwrite, actual Vault restore/receipt or DR certification.
-        return run_source_restore_drill(
+        evidence = run_source_restore_drill(
             backup=self._backup, journal=self._operations.journal,
             context=invocation.context, receipt=receipt,
             expected_inner_sha256=receipt.source_ciphertext_sha256,
             drill_id=request_id, mode="source_test",
         )
+        self._operations.journal.record_restore_verified(
+            namespace=receipt.namespace_digest, request_id=request_id,
+        )
+        return evidence
 
     def health(self) -> dict:
         status = self._operations.health()
