@@ -58,7 +58,7 @@ def test_obux028_room_specific_templates_remain_room_specific():
         encoding="utf-8"
     )
 
-    assert "skyField" in (
+    assert "marketMapSky" in (
         ROOT
         / "web/templates/market_map.html"
     ).read_text(

@@ -30,7 +30,7 @@ from tower.truth_surface_audit import (
 )
 
 
-REPO = Path("/content/SimpleeMrkTrade")
+REPO = Path(__file__).resolve().parents[1]
 
 
 def test_twr126_no_sample_humans_remain_in_owner_people_truth():
@@ -98,12 +98,13 @@ def test_twr127_owner_dashboard_source_no_longer_routes_to_walkthrough():
     )
 
 
-def test_twr128_access_home_product_cards_only_show_ob():
+def test_twr128_access_home_only_shows_current_protected_products():
     assert [
         card["id"]
         for card in APP_CARDS
     ] == [
         "observatory",
+        "teller",
     ]
 
     source = (
@@ -156,8 +157,10 @@ def test_twr128_rendered_access_home_has_no_product_theater():
     assert "The Observatory" in body
     assert "Additional verification required" in body
 
+    assert "The Teller" in body
+    assert "/tower/launch/teller" in body
+
     for prohibited in (
-        "The Teller",
         "The Grounds",
         "The Clouds",
         "Archive Vault",
@@ -221,7 +224,7 @@ def test_twr129_future_apps_remain_registered_but_not_rendered():
         for app in registered_apps()
     }
 
-    assert apps["teller"]["app_status"] == "registered_future_room"
+    assert apps["teller"]["app_status"] == "protected_hosted"
     assert apps["vault"]["app_status"] == "registered_future_room"
     assert apps["clouds"]["app_status"] == "registered_future_room"
     assert apps["grounds"]["app_status"] == "registered_future_room"
@@ -231,6 +234,7 @@ def test_twr129_future_apps_remain_registered_but_not_rendered():
         for card in APP_CARDS
     ] == [
         "observatory",
+        "teller",
     ]
 
 

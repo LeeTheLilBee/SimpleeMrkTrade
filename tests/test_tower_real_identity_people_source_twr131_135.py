@@ -39,9 +39,7 @@ from tower.truth_contract import (
 )
 
 
-REPO = Path(
-    "/content/SimpleeMrkTrade"
-)
+REPO = Path(__file__).resolve().parents[1]
 
 
 IDENTITY_ENV = (

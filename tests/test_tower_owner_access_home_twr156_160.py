@@ -74,7 +74,7 @@ def test_twr156_access_home_is_explicit_owner_front_door():
     )
 
     assert (
-        "One front door. One real product entry."
+        "One front door. Protected product entries."
         in body
     )
 
@@ -84,13 +84,14 @@ def test_twr156_access_home_is_explicit_owner_front_door():
     )
 
 
-def test_twr157_observatory_remains_only_product_card():
+def test_twr157_only_current_protected_product_cards_are_rendered():
 
     assert [
         card["id"]
         for card in APP_CARDS
     ] == [
         "observatory",
+        "teller",
     ]
 
     card = APP_CARDS[0]
@@ -108,7 +109,7 @@ def test_twr157_observatory_remains_only_product_card():
     body = render_home()
 
     assert (
-        'data-tower-primary-owner-action="observatory"'
+        'data-tower-primary-owner-action="protected-products"'
         in body
     )
 
@@ -127,8 +128,12 @@ def test_twr157_access_home_does_not_publish_fake_products():
 
     body = render_home()
 
+    assert "The Teller" in body
+    assert "/tower/launch/teller" in body
+    assert APP_CARDS[1]["href"] == "/tower/launch/teller"
+    assert APP_CARDS[1]["status"] == "Protected entry"
+
     for prohibited in (
-        "The Teller",
         "The Grounds",
         "The Clouds",
         "Archive Vault",
