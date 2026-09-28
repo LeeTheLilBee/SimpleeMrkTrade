@@ -1,0 +1,29 @@
+name: OBDATA010-020 first-party research scanner tests
+on:
+  push:
+    branches: [obdata010-020-first-party-market-scanner]
+  pull_request:
+    paths:
+      - 'engine/market_scanner/**'
+      - 'tests/test_obdata010_020_market_scanner.py'
+      - 'docs/market_truth/OBDATA010_020_SCANNER.md'
+      - '.github/workflows/obdata010-020-first-party-scanner.yml'
+permissions:
+  contents: read
+jobs:
+  source-bound-scanner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install isolated scanner test runtime
+        run: python -m pip install pytest
+      - name: Parse scanner source without secrets, provider calls, or hosted imports
+        run: python -m compileall -q engine/market_scanner
+      - name: Scanner contracts, validation, negative and provider-context fixtures
+        run: python -m pytest -q tests/test_obdata010_020_market_scanner.py
