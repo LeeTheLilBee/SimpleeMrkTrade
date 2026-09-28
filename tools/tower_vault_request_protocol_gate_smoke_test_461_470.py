@@ -80,6 +80,24 @@ expired_result = module.evaluate_and_prepare_vault_protocol_request(packet, expi
 assert expired_result["tower_decision"]["decision"] == "expired_clearance"
 assert expired_result["vault_protocol_request"] is None
 
+wrong_role_packet = dict(packet)
+wrong_role_packet["requester_role"] = "owner"
+wrong_role = module.evaluate_and_prepare_vault_protocol_request(wrong_role_packet, actor)
+assert wrong_role["tower_decision"]["decision"] == "role_mismatch"
+assert wrong_role["vault_protocol_request"] is None
+
+wrong_entity_packet = dict(packet)
+wrong_entity_packet["requester_entity"] = "OtherEntity"
+wrong_entity = module.evaluate_and_prepare_vault_protocol_request(wrong_entity_packet, actor)
+assert wrong_entity["tower_decision"]["decision"] == "lane_mismatch"
+assert wrong_entity["vault_protocol_request"] is None
+
+substring_lane_packet = dict(packet)
+substring_lane_packet["business_context"] = "FakeSimpleePay / Vendor Payment"
+substring_lane = module.evaluate_and_prepare_vault_protocol_request(substring_lane_packet, actor)
+assert substring_lane["tower_decision"]["decision"] == "lane_mismatch"
+assert substring_lane["vault_protocol_request"] is None
+
 owner_packet = module.build_demo_teller_packet(
     requested_output_type="download",
     sensitivity_level="owner_only",
