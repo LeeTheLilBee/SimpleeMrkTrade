@@ -27,6 +27,7 @@ from .access import AccessDenied, TowerScope
 from .communications import GroundsCommunications
 from .leasing import GroundsLeasing
 from .experience import GroundsExperience
+from .work_thread import GroundsWorkThread
 from .maintenance import MaintenanceIntake
 from .operations import GroundsConflict, GroundsOperations
 from .postgres import PostgresGroundsStore
@@ -61,12 +62,14 @@ _ROUTES={
     ("GET","/grounds/api/daily"),
     ("GET","/grounds/api/property-health"),
     ("GET","/grounds/api/owner-portfolio"),
+    ("GET","/grounds/api/work-thread"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
     ("GET","/grounds/api/entry-preference"),
     ("GET","/grounds/api/technicians"),
     ("POST","/grounds/api/work"),
+    ("POST","/grounds/api/work-message"),
     ("POST","/grounds/api/work/assign"),
     ("POST","/grounds/api/notice-read"),
     ("POST","/grounds/api/appointment/request"),
@@ -235,6 +238,7 @@ class GroundsWebApp:
         self.leasing=GroundsLeasing(store)
         self.stewardship=GroundsStewardship(store)
         self.experience=GroundsExperience(store)
+        self.work_thread=GroundsWorkThread(store)
 
     def _resource_ref(self,actor,kind,key,*refs):
         """Opaque stable identifier; session/subject/target bound, never guessable."""
@@ -244,7 +248,10 @@ class GroundsWebApp:
              kind,key,*refs],ensure_ascii=False,separators=(",",":"),
         ).encode("utf-8")
         digest=hmac.new(self.csrf._secret,message,hashlib.sha256).hexdigest()[:40]
-        return ("work_" if kind=="work" else "appt_")+digest
+        prefixes={"work":"work_","appointment":"appt_","message":"msg_"}
+        if kind not in prefixes:
+            raise GroundsWebConfigurationError("unsupported private create kind")
+        return prefixes[kind]+digest
 
     def _response(self,start_response,status,payload,content_type="application/json; charset=utf-8"):
         raw=(json.dumps(payload,ensure_ascii=False,separators=(",",":"),allow_nan=False).encode("utf-8")
@@ -350,6 +357,11 @@ class GroundsWebApp:
                 return resident_rent_projection(
                     actor,home,document,teller_verifier=self.teller_verifier,
                 )
+            if path=="/grounds/api/work-thread":
+                q=_query(environ,{"work_ref"})
+                return self.work_thread.thread(
+                    actor,work_ref=_ref(q["work_ref"],"work_ref"),
+                )
             if path=="/grounds/api/work":
                 q=_query(environ,{"work_ref"})
                 return self.ops.get_work_order(actor,work_ref=_ref(q["work_ref"],"work_ref"))
@@ -430,6 +442,18 @@ class GroundsWebApp:
                     refs.add(ref)
                     safe.append({"staff_ref":ref,"label":label})
                 return {"connected":True,"technicians":safe}
+        if path=="/grounds/api/work-message":
+            _exact(body,{"work_ref","body","audience"})
+            work_ref=_ref(body["work_ref"],"work_ref")
+            text=_bounded_text(body["body"],"message",1200)
+            audience=_bounded_text(body["audience"],"audience",32)
+            message_ref=self._resource_ref(
+                actor,"message",_idempotency_key(environ),work_ref,
+            )
+            return self.work_thread.post(
+                actor,work_ref=work_ref,message_ref=message_ref,
+                body=text,audience=audience,
+            )
         if path=="/grounds/api/work/assign":
             _exact(body,{"work_ref","technician_ref","expected_revision"})
             actor.require_role("owner","property_manager","maintenance_supervisor")

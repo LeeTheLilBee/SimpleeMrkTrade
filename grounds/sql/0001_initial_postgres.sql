@@ -143,6 +143,20 @@ CREATE TABLE IF NOT EXISTS work_events (
   occurred_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS work_events_order ON work_events(work_ref,revision);
+CREATE TABLE IF NOT EXISTS work_messages (
+  message_ref TEXT PRIMARY KEY,
+  work_ref TEXT NOT NULL REFERENCES work_orders(work_ref),
+  property_ref TEXT NOT NULL REFERENCES properties(property_ref),
+  author_ref TEXT NOT NULL,
+  author_role TEXT NOT NULL CHECK(author_role IN (
+    'resident','owner','property_manager','maintenance_supervisor','maintenance_technician'
+  )),
+  audience TEXT NOT NULL CHECK(audience IN ('shared','staff_internal')),
+  body TEXT NOT NULL CHECK(length(trim(body)) BETWEEN 1 AND 1200),
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS work_messages_scope_idx
+  ON work_messages(work_ref,property_ref,audience,created_at);
 CREATE TABLE IF NOT EXISTS emergency_reviews (
   work_ref TEXT PRIMARY KEY REFERENCES work_orders(work_ref),
   urgency TEXT NOT NULL CHECK(urgency IN ('routine','priority','emergency')),

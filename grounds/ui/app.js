@@ -556,8 +556,14 @@
         el("span", "Updated: " + asDate(work.updated_at), "meta"));
       const actions=el("div", null, "actions");
       actions.append(makeButton("View authorized details", async () => {
+        const generation=state.loadGeneration;
         const detail=await request("work?" + new URLSearchParams({work_ref:work.work_ref}));
+        if (generation!==state.loadGeneration || detail.property_ref!==state.property ||
+            (state.me.role==="resident" && detail.unit_ref!==state.unit)) return;
         message(detail.category + ": " + detail.description);
+      }));
+      actions.append(makeButton("Updates & conversation", async () => {
+        await showWorkConversation(card,work);
       }));
       if (data.role === "resident") {
         actions.append(makeButton("Request an appointment", async () => showAppointmentForm(card,work)));
@@ -592,6 +598,76 @@
       }
       card.append(actions); target.append(card);
     }
+  }
+  async function showWorkConversation(card,work) {
+    const generation=state.loadGeneration;
+    const property=state.property;
+    const unit=state.unit;
+    const data=await request("work-thread?" + new URLSearchParams({work_ref:work.work_ref}));
+    if (generation!==state.loadGeneration || data?.source!=="grounds" ||
+        data.work_ref!==work.work_ref || data.property_ref!==property ||
+        (state.me.role==="resident" && data.unit_ref!==unit)) return;
+    const previous=card.querySelector(".work-conversation");previous?.remove();
+    const panel=el("section",null,"work-conversation stack");
+    panel.setAttribute("aria-label","Maintenance update timeline and private conversation");
+    panel.append(el("h4","Recorded updates and conversation"),
+      el("p","Messages are recorded inside Grounds; no notification, legal notice or emergency dispatch is implied. Historical verified delivery receipts: " +
+        data.verified_historical_delivered_event_count + ". Current provider status is not connected.","footnote"));
+    if (!data.timeline.length)
+      panel.append(el("p","No updates are recorded for this authorized request.","footnote"));
+    for (const item of data.timeline) {
+      const entry=el("article",null,"experience-tile timeline-entry");
+      if(item.kind==="state")
+        entry.append(el("strong","Status · " + item.state.replaceAll("_"," ")),
+          el("p","Recorded action: " + item.action),
+          el("span",asDate(item.occurred_at),"meta"));
+      else
+        entry.append(el("strong",item.role.replaceAll("_"," ") +
+          (item.audience==="staff_internal" ? " · internal staff" : " · shared")),
+          el("p",item.body),el("span",asDate(item.occurred_at),"meta"));
+      panel.append(entry);
+    }
+    if(data.messages_truncated || data.state_events_truncated)
+      panel.append(el("p","The first/last 100 records are displayed. This is not the complete historical archive.","footnote"));
+    if(data.can_post){
+      const form=el("form",null,"mini-form");
+      const label=el("label","Add a plain-text update (no sensitive information)");
+      const body=el("textarea");body.required=true;body.maxLength=1200;body.rows=3;
+      label.append(body);form.append(label);
+      const audience=el("select");
+      for (const [value,caption] of [["shared","Shared with the request's authorized resident and staff"],
+        ["staff_internal","Internal property management only"]]){
+        if(value==="staff_internal" && !data.can_post_staff_internal) continue;
+        const option=el("option",caption);option.value=value;audience.append(option);
+      }
+      const visibilityLabel=el("label","Visibility");visibilityLabel.append(audience);
+      form.append(visibilityLabel);
+      const send=el("button","Record in Grounds · not delivered externally","primary");
+      send.type="submit";form.append(send);
+      let retry=null;
+      form.addEventListener("submit",async event=>{
+        event.preventDefault();
+        if (generation!==state.loadGeneration || property!==state.property ||
+            (state.me.role==="resident" && unit!==state.unit)) return;
+        send.disabled=true;
+        try {
+          const payload={work_ref:work.work_ref,body:body.value,audience:audience.value};
+          const fingerprint=JSON.stringify(payload);
+          if(!retry || retry.fingerprint!==fingerprint)
+            retry={fingerprint,key:newIdempotencyKey()};
+          const recorded=await request("work-message",payload,retry.key);
+          if (generation!==state.loadGeneration) return;
+          retry=null;
+          message("Update recorded inside Grounds" +
+            (recorded.replayed ? " (same request recovered)." : ".") +
+            " No external message delivery or entry permission was established.");
+          await showWorkConversation(card,work);
+        }catch(error){ if(generation===state.loadGeneration)message(error.message,true); }
+        finally{send.disabled=false;}
+      });
+      panel.append(form);
+    }
+    card.append(panel);
   }
   async function showTechnicianForm(card,work) {
     const roster=await request("technicians?" + new URLSearchParams({property_ref:state.property}));
