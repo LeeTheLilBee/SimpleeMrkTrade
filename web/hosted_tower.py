@@ -159,6 +159,22 @@ def hosted_tower_runtime_manifest() -> dict[str, object]:
         _simplee_runtime_route_manifest()
     )
 
+    # Redacted public source/deployment diagnostics, NOT an owner/session test.
+    # Evaluate after all hosted routes are registered; the mere existence of
+    # an endpoint never means that its default-OFF feature is activated.
+    rehearsal = app.extensions.get("ob_hosted_owner_rehearsal_registered", {})
+    if not isinstance(rehearsal, dict):
+        rehearsal = {}
+    registered_paths = {
+        rule.rule for rule in app.url_map.iter_rules()
+    }
+    from tower.ob_hosted_owner_rehearsal import EXACT_PATHS
+    rehearsal_enabled = rehearsal.get("enabled") is True
+    rehearsal_origin_set = rehearsal.get("canonical_origin_configured") is True
+    rehearsal_routes_present = all(
+        path in registered_paths for path in EXACT_PATHS
+    )
+
     return {
         "status": "tower_hosted_tower_runtime_manifest_ready",
         "entrypoint": HOSTED_ENTRYPOINT,
@@ -168,6 +184,22 @@ def hosted_tower_runtime_manifest() -> dict[str, object]:
         "critical_routes_present": all(
             route_manifest.values()
         ),
+        "owner_rehearsal": {
+            "exact_source_routes_registered": rehearsal_routes_present,
+            "explicit_feature_enabled": rehearsal_enabled,
+            "exact_https_origin_configured": rehearsal_origin_set,
+            "source_runtime_activation_preconditions_met": (
+                rehearsal_routes_present and rehearsal_enabled
+                and rehearsal_origin_set
+            ),
+            # These are deliberately independent of registration/feature flag.
+            "actual_owner_login_walkthrough_verified": False,
+            "durable_report_archive": False,
+            "restart_recovery": False,
+            "manual_live_clearance": False,
+            "broker_submission": False,
+            "capital_movement": False,
+        },
         "production_deployment": PRODUCTION_DEPLOYMENT,
         "broker_submission": BROKER_SUBMISSION,
         "capital_movement": CAPITAL_MOVEMENT,
