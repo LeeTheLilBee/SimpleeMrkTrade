@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - tower-ob-mode-py311-syntax-twrtest006-010
+      - tower-py311-canonical-gate-twrtest011-015
+      - tower-hosted-runtime-identity-twr081-085
   pull_request:
     branches:
       - tower-hosted-runtime-identity-twr081-085
