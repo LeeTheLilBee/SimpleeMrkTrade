@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Insurance Desk · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero">
+<p class="eyebrow">ACQUISITION INSURANCE · DOCUMENTED RISK</p>
+<h1>Understand coverage and its real cost.</h1>
+<p>Preserve actual quotes, binders, policies or certificates. BuyBox does not independently confirm insurer coverage, bind a policy, check lender requirements, pay premiums, or approve a closing. A quote or certificate alone is not proof that coverage is in force.</p>
+</section>
+<section class="stats">
+<div class="tile"><small>Current insurance documents</small><strong>{{ report.current_document_count }}</strong></div>
+<div class="tile"><small>Coverage in force</small><strong>Unknown</strong></div>
+<div class="tile"><small>Lender conditions verified</small><strong>No</strong></div>
+<div class="tile"><small>Teller readiness</small><strong>Unknown</strong></div>
+</section>
+<section class="panel">
+<p class="eyebrow">ASSET-SPECIFIC REVIEW PROMPTS · NOT A LEGAL REQUIREMENTS LIST</p>
+<h2>Coverage areas to ask an insurance professional about</h2>
+<div class="chips">{% for code in report.review_prompts %}<span class="pill">{{ code|replace('_',' ')|title }}</span>{% endfor %}</div>
+<p class="muted">Appropriate coverage, limits, endorsements, exclusions, lender clauses, premium timing and insurability depend on the actual asset, location and transaction. A checked category is not certification.</p>
+</section>
+{% if report.records %}
+<section class="panel">
+<p class="eyebrow">SOURCE-BASED INSURANCE REVIEW</p><h2>Current recorded documents</h2>
+<div class="comparison-grid">
+{% for entry in report.records %}{% set rec=entry.record %}{% set a=entry.assessment %}
+<article class="financing-option">
+<p class="eyebrow">{{ rec.document_kind }} · {{ a.status|replace('_',' ')|title }}</p>
+<h3>{{ rec.carrier_label }}</h3>
+<p class="muted">{{ rec.broker_label or 'Broker not recorded' }} · Source {{ rec.source_date }}</p>
+<p><strong>Owner-transcribed categories:</strong> {{ rec.coverage_codes|join(', ')|replace('_',' ') }}</p>
+<div class="evidence-row"><span>Annual premium (document/owner record)</span><strong>{{ ('$' ~ a.annual_premium) if a.annual_premium is not none else 'Not stated' }}</strong></div>
+<div class="evidence-row"><span>Upfront premium (owner-entered timing)</span><strong>{{ ('$' ~ a.upfront_premium_due) if a.upfront_premium_due is not none else 'Not stated' }}</strong></div>
+<div class="evidence-row"><span>Illustrative monthly premium</span><strong>{{ ('$' ~ a.illustrative_monthly_premium) if a.illustrative_monthly_premium is not none else 'Unavailable' }}</strong></div>
+<div class="evidence-row"><span>Proposed coverage period</span><strong>{{ rec.effective_date or 'Unknown' }} → {{ rec.expiration_date or 'Unknown' }}</strong></div>
+<div class="evidence-row"><span>Quote valid until</span><strong>{{ rec.quote_valid_until or 'Not applicable' }}</strong></div>
+<div class="evidence-row"><span>Owner-entered closing date</span><strong>{{ rec.planned_closing_date or 'Not supplied' }}</strong></div>
+<div class="evidence-row"><span>Documentary review</span><strong>{{ 'Owner-recorded' if a.source_documentary_reviewed else 'Not recorded' }}</strong></div>
+<div class="evidence-row"><span>Insurer verified / coverage in force</span><strong>No / Unknown</strong></div>
+{% for flag in a.review_flags %}<p class="notice">{{ flag|replace('_',' ')|title }}</p>{% endfor %}
+<p><strong>Limits:</strong> {{ rec.limits_note or 'Not transcribed' }}</p>
+<p><strong>Deductibles:</strong> {{ rec.deductible_note or 'Not transcribed' }}</p>
+<p><strong>Exclusions / endorsements to clarify:</strong> {{ rec.exclusion_note or 'Not transcribed' }}</p>
+<p class="muted">Source locator: {{ rec.source_locator }} · Record {{ rec.id[:12] }}… · Original digest {{ rec.source_sha256[:16] }}…</p>
+<a class="button" href="{{ url_for('download_document',oid=op.id,artifact_id=rec.source_artifact_id) }}">Retrieve original →</a>
+{% if rec.supersedes %}<p class="muted">Corrects record {{ rec.supersedes[:12] }}…; its earlier revision is preserved.</p>{% endif %}
+{% if entry.financing_overlays %}
+<div class="diligence-task"><h4>Separate illustrative financing overlays</h4>
+<p class="muted">These are combinations for review, NOT selected policies or commitments. The two owner-reported inclusion switches prevent simple double counting; actual accounting must be reconciled.</p>
+{% for overlay in entry.financing_overlays %}
+<p><strong>{{ financing_labels[overlay.financing_option_id] }}</strong></p>
+<div class="evidence-row"><span>Unverified buyer cash gap after additional upfront premium</span><strong>${{ overlay.illustrative_buyer_cash_gap_with_premium }}</strong></div>
+<div class="evidence-row"><span>Extra upfront insurance counted</span><strong>${{ overlay.additional_upfront_premium_if_not_already_counted }}</strong></div>
+<div class="evidence-row"><span>Illustrative annual operating difference after premium</span><strong>{{ ('$' ~ overlay.illustrative_annual_operating_after_premium) if overlay.illustrative_annual_operating_after_premium is not none else 'Unavailable' }}</strong></div>
+{% endfor %}</div>
+{% endif %}
+</article>
+{% endfor %}
+</div></section>
+{% else %}<section class="panel"><h2>No insurance originals recorded yet.</h2><p class="muted">We will not create sample insurers, coverage limits or premiums. Upload an actual document before recording its terms.</p></section>{% endif %}
+<section class="workspace"><div class="main-column">
+<div class="panel"><p class="eyebrow">ORIGINALS</p><h2>Protected insurance documents</h2>
+{% for e in originals %}
+<div class="evidence-row"><div><strong>{{ artifacts[e.artifact_id].name }}</strong><small>{{ e.status|replace('_',' ')|title }} · {{ e.source }} · {{ e.id[:12] }}…</small></div>
+<a href="{{ url_for('download_document',oid=op.id,artifact_id=e.artifact_id) }}">Download original</a></div>
+{% else %}<p class="muted">None recorded.</p>{% endfor %}
+<p><a class="button" href="{{ url_for('opportunity',oid=op.id) }}#doc-upload">Upload insurance original in the dossier →</a></p>
+<p class="muted">Select the supplemental “Insurance quote / binder / policy / certificate” upload category (or the existing property “Insurance Quote” requirement when appropriate). Documents remain encrypted locally; Archive Vault transfer is still a separate Tower-controlled process.</p>
+</div></div><aside class="side-column"><div class="panel">
+<p class="eyebrow">NEW ORIGINAL-SOURCED ENTRY</p><h2>Record what the document actually says</h2>
+{% if originals %}
+<form method="post" action="{{ url_for('insurance_record',oid=op.id) }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<label>Uploaded original<select name="evidence_id" required>{% for e in originals %}<option value="{{ e.id }}">{{ artifacts[e.artifact_id].name }} · {{ e.status|replace('_',' ')|title }} · {{ e.id[:8] }}</option>{% endfor %}</select></label>
+<label>Original's stated document type<select name="document_kind" required>
+<option value="QUOTE">Quote (not bound)</option><option value="BINDER">Binder (not independently verified)</option><option value="POLICY">Policy (not independently verified)</option><option value="CERTIFICATE">Certificate (does not independently establish coverage)</option></select></label>
+<label>Insurer/carrier label<input name="carrier_label" maxlength="120" required></label>
+<label>Broker/source name (optional)<input name="broker_label" maxlength="120"></label>
+<label>Exact page/row locator<input name="source_locator" maxlength="240" required></label>
+<label>Original document date<input type="date" name="source_date" required></label>
+<label>Quote validity date (required for quote only)<input type="date" name="quote_valid_until"></label>
+<label>Proposed effective date (only if stated)<input type="date" name="effective_date"></label>
+<label>Proposed expiration date (only if stated)<input type="date" name="expiration_date"></label>
+<label>Planned closing date (optional, owner-entered)<input type="date" name="planned_closing_date"></label>
+<fieldset><legend>Coverages listed in original (choose one or more)</legend>
+<div class="insurance-checkboxes">{% for code in coverage_codes %}<label><input type="checkbox" name="coverage_codes" value="{{ code }}"> {{ code|replace('_',' ')|title }}</label>{% endfor %}</div>
+</fieldset>
+<label>Annual package premium, USD (leave blank for certificate without pricing)<input type="number" name="annual_premium" min="0.01" step="0.01"></label>
+<label>Owner-recorded premium due upfront, USD (leave blank for unpriced certificate)<input type="number" name="upfront_premium_due" min="0" step="0.01"></label>
+<label>Written limits / sublimits (optional)<textarea name="limits_note" rows="2" maxlength="1000"></textarea></label>
+<label>Written deductibles / retentions (optional)<textarea name="deductible_note" rows="2" maxlength="1000"></textarea></label>
+<label>Written exclusions / endorsements / open questions (optional)<textarea name="exclusion_note" rows="2" maxlength="1000"></textarea></label>
+<label><input type="checkbox" name="upfront_in_financing_costs" value="1"> This exact upfront premium is already included in the Financing Desk's owner-entered closing costs (do not add again).</label>
+<label><input type="checkbox" name="annual_in_operating_expenses" value="1"> This exact annual premium is already included in the reviewed operating expenses (do not subtract again).</label>
+<label>Correct an existing current insurance record (optional)<select name="supersedes"><option value="">Independent document record</option>{% for entry in report.records %}<option value="{{ entry.record.id }}">{{ entry.record.document_kind }} · {{ entry.record.carrier_label }} · {{ entry.record.id[:8] }}</option>{% endfor %}</select></label>
+<label>Documented correction reason (required only when replacing)<textarea name="correction_reason" rows="2" maxlength="1000"></textarea></label>
+<button type="submit" class="primary">Preserve document terms</button>
+<small>Does not purchase insurance, check lender clauses, send an application, mark coverage bound or authorize a transaction.</small>
+</form>
+{% else %}<p class="muted">First upload a source original. A typed insurer name is not an insurance quote.</p>{% endif %}
+</div>
+<div class="panel"><p class="eyebrow">✧ SOULAANA</p><h2>Insurance explanation</h2>
+<p class="muted">She explains recorded premiums, period gaps, quote expiry, original references and cost sensitivity. She cannot confirm a policy is active.</p>
+<a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='insurance') }}">Open insurance context →</a></div>
+</aside></section>
+{% endblock %}
