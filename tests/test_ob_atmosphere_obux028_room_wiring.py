@@ -41,7 +41,10 @@ def test_obux028_every_real_room_loads_shared_atmosphere():
         if room in ("dashboard", "owner-dashboard"):
             # Modern Dashboard owns the newer celestial theme; V27 stays historical.
             assert "ob_interchangeable_themes.css" in text
-            assert 'class="ob-sky ob-user-sky"' in text if room == "dashboard" else 'class="ob-sky"' in text
+            if room == "dashboard":
+                assert 'class="ob-sky ob-user-sky"' in text
+            else:
+                assert 'class="ob-sky"' in text
             assert "ob_atmosphere.css" not in text
         else:
             assert "ob/ob_atmosphere.css" in text
