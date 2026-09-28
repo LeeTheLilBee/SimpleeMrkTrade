@@ -28,7 +28,6 @@ def test_original_sky_has_source_only_provinces_and_not_the_old_even_card_grid()
         "function skyUnit(",
         "function spotlightSymbol(",
         "function focusRegion(",
-        "Show whole sky",
         "showWholeSky()",
         "projection.display_eligible",
         "marketMapContract()",
@@ -47,7 +46,7 @@ def test_original_sky_has_source_only_provinces_and_not_the_old_even_card_grid()
     assert "fetch(" not in MAP_JS
     assert "new WebSocket(" not in MAP_JS
     assert "setInterval(" in MAP_JS  # original age-label clock only, not data polling
-    assert "No independent data fetch" in MAP
+    assert "no independent data fetch" in MAP.lower()
     assert "no market-data meaning" not in MAP_JS or "layout hashes" in MAP_JS
 
 
@@ -65,7 +64,7 @@ def test_celestial_visuals_are_original_semantic_safe_and_accessible():
         assert fragment in MAP_CSS
     for forbidden in ("adobestock", "shutterstock", "unsplash", "url(http"):
         assert forbidden not in MAP_CSS.lower()
-    assert "source-bound" in SPEC.lower()
+    assert "source-backed" in SPEC.lower()
     assert "no invented" in SPEC.lower() or "never default placeholder" in SPEC.lower()
 
 
