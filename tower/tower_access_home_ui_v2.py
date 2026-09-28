@@ -563,6 +563,12 @@ def render_access_home_v2(
                     </a>
 
                     <a
+                        href="/tower/integrations"
+                    >
+                        Integration Desk
+                    </a>
+
+                    <a
                         href="/tower/logout"
                     >
                         Logout
@@ -707,6 +713,16 @@ def render_access_home_v2(
 
                             </article>
 
+
+                            <article class="tower-owner-control-card" data-tower-control="integrations">
+                                <div class="tower-overline">Ecosystem connections</div>
+                                <h3>Integration Desk</h3>
+                                <p>View live launch truth separately from product-source completion,
+                                   and see what Grounds, BuyBox, Teller, Vault and Clouds still need.</p>
+                                <a class="tower-button secondary" href="/tower/integrations">
+                                    Review integrations
+                                </a>
+                            </article>
 
                             <article
                                 class="
