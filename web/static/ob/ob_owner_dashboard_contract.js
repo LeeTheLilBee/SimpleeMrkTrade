@@ -1058,32 +1058,13 @@
 
 
   const capitalLaneSnapshot = () => {
-    const snapshot =
-      window
-        .OB_OWNER_CAPITAL_LANE_SNAPSHOT;
-
-    if (
-      !snapshot
-      || snapshot.verified !== true
-      || !Array.isArray(
-        snapshot.lanes
-      )
-    ) {
-      return {
-        verified:
-          false,
-
-        lanes:
-          []
-      };
-    }
-
+    // A window-supplied "verified: true" flag cannot authenticate capital.
+    // Until the protected server provides an independently verified capital
+    // receipt/contract, source-projected account figures must stay UNKNOWN.
+    // This includes OB_OWNER_CAPITAL_LANE_SNAPSHOT and all self-claimed totals.
     return {
-      verified:
-        true,
-
-      lanes:
-        snapshot.lanes
+      verified: false,
+      lanes: []
     };
   };
 
