@@ -2,6 +2,8 @@ name: Tower OB accepted simulation source compatibility
 on:
   push:
     branches:
+      - tower-hosted-runtime-identity-twr081-085
+      - tower-canonical-full-release-audit-0928
       - tower-ob-obsim-source-unification-0927
       - tower-hermetic-full-suite-diagnostic-twr-test001-005
   pull_request:
