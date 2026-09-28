@@ -389,6 +389,21 @@ CREATE TABLE IF NOT EXISTS move_task_events (
 );
 CREATE INDEX IF NOT EXISTS move_task_lease_subject_idx
  ON move_task_events(lease_ref,subject_ref,phase,task_ref,revision);
+CREATE TABLE IF NOT EXISTS resident_access_events (
+  access_ref TEXT PRIMARY KEY,
+  lease_ref TEXT NOT NULL,
+  property_ref TEXT NOT NULL,
+  unit_ref TEXT NOT NULL,
+  actor_ref TEXT NOT NULL,
+  resource_kind TEXT NOT NULL CHECK(resource_kind IN (
+    'workspace','my_home','rent','work_detail','work_thread','move_concierge','privacy_history'
+  )),
+  resource_ref TEXT NOT NULL,
+  recorded_at TEXT NOT NULL,
+  FOREIGN KEY(lease_ref,unit_ref,property_ref) REFERENCES leases(lease_ref,unit_ref,property_ref)
+);
+CREATE INDEX IF NOT EXISTS resident_access_lease_subject_idx
+ ON resident_access_events(lease_ref,actor_ref,recorded_at);
 CREATE TABLE IF NOT EXISTS leasing_prospects (
   prospect_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),

@@ -31,6 +31,7 @@ from grounds.test_grounds_operations import fixture_scope
 from grounds.work_resources import GroundsWorkResources
 from grounds.work_thread import GroundsWorkThread
 from grounds.move_concierge import GroundsMoveConcierge
+from grounds.privacy_log import GroundsResidentPrivacyLog
 from grounds.web import GroundsWebApp
 
 URL=os.environ.get("GROUNDS_TEST_POSTGRES_URL")
@@ -696,6 +697,45 @@ class PostgresGroundsTests(unittest.TestCase):
         },start))
         self.assertEqual(result["status"],"200 OK")
         self.assertFalse(json.loads(raw)["provider_currently_connected"])
+
+
+    def test_real_postgres_resident_personal_access_history_after_wsgi_read(self):
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda env:env["test.fixture.actor"],
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        def get(path,actor):
+            route,_,query=path.partition("?")
+            res={}
+            def start(status,headers):
+                res["status"]=status
+            raw=b"".join(app({
+                "REQUEST_METHOD":"GET","PATH_INFO":route,"QUERY_STRING":query,
+                "wsgi.input":io.BytesIO(b""),"test.fixture.actor":actor,
+            },start))
+            res["json"]=json.loads(raw)
+            return res
+        self.assertEqual(get(
+            "/grounds/api/my-home?property_ref="+self.id+"&unit_ref="+self.u,
+            self.resident,
+        )["status"],"200 OK")
+        path="/grounds/api/privacy-history?property_ref="+self.id+"&unit_ref="+self.u
+        result=get(path,self.resident)
+        self.assertEqual(result["status"],"200 OK")
+        self.assertEqual(result["json"]["total_events_before_current_response"],1)
+        self.assertEqual(result["json"]["events"][0]["resource_kind"],"my_home")
+        self.assertFalse(result["json"]["session_tokens_included"])
+        self.assertEqual(get(path,self.manager)["status"],"404 Not Found")
+        audit=GroundsResidentPrivacyLog(self.store)
+        self.assertEqual(audit.my_history(
+            self.resident,property_ref=self.id,unit_ref=self.u,
+        )["total_events_before_current_response"],2)
+        with self.store.transaction() as db:
+            row=db.execute(
+                "SELECT COUNT(*) FROM resident_access_events WHERE lease_ref=? AND actor_ref=?",
+                (self.l,"resident"),
+            ).fetchone()
+            self.assertEqual(row[0],2)
 
 
 if __name__=="__main__":
