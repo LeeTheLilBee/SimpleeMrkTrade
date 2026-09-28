@@ -3,7 +3,7 @@
   const root = "/grounds";
   const csrf = document.querySelector('meta[name="grounds-csrf"]').content;
   const $ = id => document.getElementById(id);
-  const state = { me: null, view: null, property: "", unit: "", busy: false, maintenanceRetry: null, loadGeneration: 0 };
+  const state = { me: null, view: null, property: "", unit: "", displayContext: "", busy: false, maintenanceRetry: null, loadGeneration: 0 };
   function el(tag, text, klass) {
     const node = document.createElement(tag);
     if (text !== undefined && text !== null) node.textContent = String(text);
@@ -75,27 +75,65 @@
     state.property = $("property-choice").value || "";
     state.unit = $("unit-choice").value || "";
   }
+  function clearPrivateView() {
+    // The prior lease/property's text must not linger while a new request is
+    // pending, fails, or discovers a revoked Tower grant.
+    state.view = null;
+    $("content").classList.add("hidden");
+    $("locked").classList.add("hidden");
+    for (const id of ["summary","lease-details","work-list","notice-list",
+                      "safety-list","leasing-list","physical-list"]) clear($(id));
+    $("rent-message").textContent = "Current Teller invoice not verified. An unavailable amount is not a zero balance or payment confirmation.";
+    $("rent-service-status").textContent = "Awaiting Teller";
+    $("soulaana-message").textContent = "Checking the current authorized source context.";
+    $("soulaana-next").textContent = "";
+    $("safety-count").textContent = "Checking";
+    $("leasing-count").textContent = "Checking";
+    $("physical-count").textContent = "Checking";
+    $("property-state").textContent = "Checking";
+    $("work-count").textContent = "—";
+  }
+  function verifyWorkspaceContext(data, propertyRef, unitRef) {
+    if (!data || data.source !== "grounds" || data.property_ref !== propertyRef ||
+        data.role !== state.me.role ||
+        (state.me.role === "resident" && data.unit_ref !== unitRef)) {
+      throw new Error("The returned workspace did not match the selected Tower context. No records were displayed.");
+    }
+  }
   async function refresh() {
     selected();
     const generation = ++state.loadGeneration;
-    if (!state.property) return;
-    const qs = new URLSearchParams({ property_ref: state.property });
-    if (state.me.role === "resident") {
-      if (!state.unit) return;
-      qs.set("unit_ref", state.unit);
+    const propertyRef = state.property;
+    const unitRef = state.unit;
+    const nextContext = JSON.stringify([state.me.role, propertyRef,
+      state.me.role === "resident" ? unitRef : null]);
+    if (state.displayContext !== nextContext) {
+      $("alert").textContent = "";
+      $("alert").className = "alert hidden";
+      state.displayContext = nextContext;
     }
+    clearPrivateView();
+    if (!propertyRef || (state.me.role === "resident" && !unitRef)) {
+      $("locked").classList.remove("hidden");
+      $("locked-reason").textContent = "Select an authorized property and, where required, your current unit.";
+      return;
+    }
+    const qs = new URLSearchParams({ property_ref: propertyRef });
+    if (state.me.role === "resident") qs.set("unit_ref", unitRef);
     try {
       const data = await request("workspace?" + qs);
       if (generation !== state.loadGeneration) return;
+      verifyWorkspaceContext(data, propertyRef, unitRef);
       state.view = data; render(data);
       $("property-state").textContent = "Current";
       if (state.me.role === "resident") {
         try {
           const rent = await request("rent?" + qs);
-          if (generation === state.loadGeneration) renderRent(rent);
+          if (generation === state.loadGeneration && state.view === data) renderRent(rent);
         } catch {
           if (generation === state.loadGeneration) {
             $("rent-message").textContent = "A verified Teller invoice is unavailable right now. Do not infer that your balance is zero or that payment was recorded.";
+            $("rent-service-status").textContent = "Unavailable";
           }
         }
       }
@@ -138,7 +176,7 @@
       }
     } catch (error) {
       if (generation !== state.loadGeneration) return;
-      $("content").classList.add("hidden"); $("locked").classList.remove("hidden");
+      clearPrivateView(); $("locked").classList.remove("hidden");
       $("locked-reason").textContent = error.message;
       message(error.message, true);
     }
@@ -252,11 +290,13 @@
         data.amount_due_cents < 0 || data.currency !== "USD" ||
         data.checkout_execution_enabled !== false) {
       target.textContent = "Teller has not supplied a current verified invoice. Grounds cannot determine an amount due or take payment.";
+      $("rent-service-status").textContent = "Unavailable";
       return;
     }
     const amount = (data.amount_due_cents / 100).toLocaleString(undefined, {
       style: "currency", currency: "USD"
     });
+    $("rent-service-status").textContent = "Verified read-only";
     target.textContent = "Verified Teller snapshot: " + amount + " shown as amount due; invoice status " +
       data.invoice_status + "; due date " + data.due_on + ". This is a read-only status, not a payment or checkout confirmation.";
   }
@@ -308,7 +348,8 @@
     if (data.role === "resident") {
       const lease = $("lease-details"); clear(lease);
       lease.append(el("span", "From: " + data.lease.start_on), el("span", "Through: " + data.lease.end_on));
-      $("rent-message").textContent = "Teller has not supplied an authenticated invoice. Grounds cannot display an amount due or accept a payment yet.";
+      $("rent-message").textContent = "Teller has not supplied an authenticated invoice. Grounds cannot determine your balance or accept a payment.";
+      $("rent-service-status").textContent = "Awaiting Teller";
       renderNotices(data.notices || []);
     }
     const soulaana = data.soulaana;
