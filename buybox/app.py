@@ -56,6 +56,8 @@ from .red_team import record_owner_financial_stress, red_team_report, model_fina
 from .closing_review import closing_review_snapshot, record_local_closing_review
 from .offer_lab import offer_lab_snapshot, record_offer_scenario
 from .external_proof_gate import integration_readiness
+from .expansion_store import ensure_schema as ensure_expansion_schema, load_thesis, save_thesis, add_record as add_intelligence_record, records as intelligence_records
+from .intelligence_studio import build_portfolio_studio, build_deal_studio, what_if
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -114,7 +116,7 @@ def create_app(config=None):
         raise RuntimeError("Set BUYBOX_DOCS_DIR and BUYBOX_DOCUMENT_KEY for protected document intake.")
     docstore=PrivateDocumentStore(app.config["BUYBOX_DOCS_DIR"],
                                   app.config["BUYBOX_DOCUMENT_KEY"])
-    db=connect(str(db_path));db.close()
+    db=connect(str(db_path));ensure_expansion_schema(db);db.close()
 
     @app.after_request
     def no_cache(response):
@@ -278,6 +280,118 @@ def create_app(config=None):
         panels=[{"record":op,"analysis":evaluate(op)} for op in selected]
         return render_template("index.html",records=panels,total=len(ops),
                                current_vertical=current_vertical,q=q)
+
+    @app.get("/intelligence")
+    @login_required
+    def intelligence_home():
+        with db() as conn:
+            opportunities=list_opportunities(conn)
+            thesis=load_thesis(conn)
+            studio=build_portfolio_studio(
+                opportunities,thesis,
+                lambda oid:intelligence_records(conn,opportunity_id=oid))
+            radar=[{"definition":saved,"latest":latest_check(conn,saved["id"])}
+                   for saved in saved_searches(conn)]
+        return render_template("intelligence_portfolio.html",
+            opportunities=opportunities,thesis=thesis,studio=studio,radar=radar)
+
+    @app.post("/intelligence/thesis")
+    @login_required
+    def save_intelligence_thesis():
+        lines=lambda name:[x.strip() for x in request.form.get(name,"").splitlines() if x.strip()]
+        with db() as conn:
+            save_thesis(conn,priorities=lines("priorities"),
+                preferred_regions=lines("preferred_regions"),avoid=lines("avoid"),
+                sequence=lines("sequence"),notes=request.form.get("notes",""))
+        return redirect(url_for("intelligence_home"),code=303)
+
+    @app.post("/intelligence/inbox")
+    @login_required
+    def intelligence_inbox():
+        vertical=request.form.get("vertical","")
+        if vertical not in VERTICALS: abort(400,"Invalid category")
+        title=request.form.get("title","").strip()[:160]
+        note=request.form.get("note","").strip()[:4000]
+        if not title or not note: abort(400,"Title and intake note required")
+        url=request.form.get("source_url","").strip()[:500]
+        if url:
+            from .discovery import canonical_url
+            if not canonical_url(url): abort(400,"Source must be HTTP(S)")
+        op=new_opportunity(vertical,title,None,
+            {"url":url,"type":"OWNER_INBOX"} if url else None,{})
+        op["owner_notes"].append({"type":"OPPORTUNITY_INBOX","note":note,
+                                  "recorded_at":datetime.now(timezone.utc).isoformat()})
+        with db() as conn:
+            existing=list_opportunities(conn)
+            candidates=duplicate_candidates(op,existing)
+            if candidates: op["duplicate_candidates"]=candidates
+            op=save(conn,op,"OpportunityInboxCreated",
+                    {"actor":owner_actor(conn),"source_url_present":bool(url)})
+        return redirect(url_for("intelligence_deal",oid=op["id"]),code=303)
+
+    @app.post("/intelligence/what-if")
+    @login_required
+    def intelligence_what_if():
+        ids=request.form.getlist("opportunity_id")
+        if not 1<=len(ids)<=8 or len(set(ids))!=len(ids):
+            abort(400,"Choose one to eight distinct opportunities")
+        with db() as conn:
+            ops=[load(conn,x) for x in ids]
+        if any(x is None for x in ops): abort(404)
+        return render_template("intelligence_what_if.html",ops=ops,report=what_if(ops))
+
+    @app.get("/opportunities/<oid>/intelligence")
+    @login_required
+    def intelligence_deal(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            opportunities=list_opportunities(conn)
+            thesis=load_thesis(conn)
+            records=intelligence_records(conn,opportunity_id=oid)
+            events=activity(conn,oid)
+        by_kind={kind:[] for kind in (
+            "COUNTERPARTY","CAPEX_ITEM","MARKET_OBSERVATION","PERFORMANCE_ACTUAL",
+            "AUTOPSY","QUICK_CAPTURE","TEAM_LANE","COMMUNITY_IMPACT")}
+        for item in records: by_kind[item["kind"]].append(item)
+        return render_template("intelligence_deal.html",op=op,
+            studio=build_deal_studio(op,opportunities,thesis,records,events),
+            records_by_kind=by_kind)
+
+    @app.get("/opportunities/<oid>/decision-packet")
+    @login_required
+    def decision_packet_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            opportunities=list_opportunities(conn)
+            thesis=load_thesis(conn)
+            records=intelligence_records(conn,opportunity_id=oid)
+            events=activity(conn,oid)
+        packet=build_deal_studio(op,opportunities,thesis,records,events)["ic_packet"]
+        return render_template("intelligence_packet.html",op=op,packet=packet)
+
+    @app.post("/opportunities/<oid>/intelligence/<kind>")
+    @login_required
+    def intelligence_record(oid,kind):
+        allowed={
+          "COUNTERPARTY":("name","role","note"),
+          "CAPEX_ITEM":("title","severity","estimated_cost","date","note"),
+          "MARKET_OBSERVATION":("title","source","observed_on","note"),
+          "PERFORMANCE_ACTUAL":("period","actual_net","note"),
+          "AUTOPSY":("outcome","reason"),
+          "QUICK_CAPTURE":("title","note"),
+          "TEAM_LANE":("role","task","status"),
+          "COMMUNITY_IMPACT":("dimension","note"),
+        }
+        if kind not in allowed: abort(400,"Unknown intelligence record")
+        payload={key:request.form.get(key,"").strip()[:2000] for key in allowed[kind]}
+        if not any(payload.values()): abort(400,"Record cannot be empty")
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            add_intelligence_record(conn,oid,kind,payload,actor_ref=owner_actor(conn))
+        return redirect(url_for("intelligence_deal",oid=oid),code=303)
 
     @app.get("/focus")
     @login_required

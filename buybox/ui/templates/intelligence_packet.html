@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Decision Packet · {{ op.name }}{% endblock %}{% block content %}
+<a class="back" href="{{ url_for('intelligence_deal',oid=op.id) }}">← Intelligence Studio</a>
+<section class="hero"><p class="eyebrow">OWNER / IC DECISION PACKET</p><h1>{{ op.name }}</h1><p>Source-bound research packet for human review. Never an approval instrument.</p></section>
+<section class="stats"><div class="tile"><small>Analytical judgment</small><strong>{{ packet.analysis.judgment|replace('_',' ')|title }}</strong></div><div class="tile"><small>Evidence coverage</small><strong>{{ packet.analysis.evidence.confidence_percent }}%</strong></div><div class="tile"><small>Lifecycle</small><strong>{{ op.lifecycle|replace('_',' ')|title }}</strong></div><div class="tile"><small>Integration</small><strong>{{ packet.integration.source_state|replace('_',' ')|title }}</strong></div></section>
+<section class="panel"><h2>Opportunity</h2><p>{{ packet.opportunity }}</p></section>
+<section class="panel"><h2>Portfolio fit</h2><p>{{ packet.portfolio_fit }}</p></section>
+<section class="panel"><h2>Open findings</h2>{% for f in packet.analysis.findings %}<div class="evidence-row"><div><strong>{{ f.rule_id }}</strong><small>{{ f.reason }}</small></div><span>{{ f.level }}</span></div>{% else %}<p class="muted">No rule findings in the current snapshot.</p>{% endfor %}</section>
+<section class="panel"><h2>Why not?</h2>{% for q in packet.why_not %}<div class="evidence-row"><div><strong>{{ q }}</strong></div></div>{% endfor %}</section>
+<section class="panel"><h2>Timeline</h2>{% for x in packet.timeline %}<div class="evidence-row"><div><strong>{{ x.date }} · {{ x.label }}</strong><small>{{ x.kind }}</small></div></div>{% endfor %}</section>
+<section class="panel"><h2>Authority boundary</h2><p>{{ packet.authority }}</p><p class="muted">This packet cannot sign, send, fund, close, or authorize an acquisition.</p></section>
+{% endblock %}
