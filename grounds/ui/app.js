@@ -86,11 +86,35 @@
     try {
       const data = await request("workspace?" + qs);
       state.view = data; render(data);
+      if (state.me.role === "resident") await renderRent();
       $("property-state").textContent = "Current";
     } catch (error) {
       $("content").classList.add("hidden"); $("locked").classList.remove("hidden");
       $("locked-reason").textContent = error.message;
       message(error.message, true);
+    }
+  }
+  function formatUsd(cents) {
+    if (!Number.isInteger(cents) || cents < 0) return "Unavailable";
+    return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(cents / 100);
+  }
+  async function renderRent() {
+    const status = $("rent-state");
+    try {
+      const qs = new URLSearchParams({ property_ref: state.property, unit_ref: state.unit });
+      const rent = await request("rent?" + qs);
+      if (!rent.connected) {
+        status.textContent = "Awaiting Teller";
+        $("rent-message").textContent = "Teller has not supplied an authenticated invoice. Grounds cannot display an amount due or accept a payment yet.";
+        return;
+      }
+      status.textContent = "Teller verified";
+      const due = rent.due_on ? " · due " + rent.due_on : "";
+      const invoice = rent.invoice_status ? " · " + rent.invoice_status.replaceAll("_", " ") : "";
+      $("rent-message").textContent = formatUsd(rent.amount_due_cents) + invoice + due + ". Payment execution remains inside the certified Tower/Teller handoff.";
+    } catch {
+      status.textContent = "Teller unavailable";
+      $("rent-message").textContent = "Verified rent information is temporarily unavailable. No amount is being inferred and no payment was attempted.";
     }
   }
   function render(data) {
