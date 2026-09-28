@@ -153,6 +153,13 @@ class JournaledCiphertextOperations:
         expected_sha256: str,
     ) -> bytes:
         scope = self.source._gate(context, "READ_CIPHERTEXT")
+        # A signed Vault read scope and physically matching object are not
+        # sufficient without the Cloud's own durable primary provenance.
+        # Deny before any provider GET or read audit success; backup recovery
+        # retains its separate canonical receipt/verification path.
+        self.journal.require_acknowledged_primary(
+            namespace=scope, object_ref=object_ref, digest=expected_sha256,
+        )
         self.source._audit(action="read_intent", context=context, namespace=scope)
         try:
             envelope = self.source._read_verified(scope, object_ref, expected_sha256)
