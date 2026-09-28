@@ -498,5 +498,49 @@ class GroundsWebTests(unittest.TestCase):
         self.assertIsNone(view["advertised_rent"])
 
 
+    def test_physical_workboard_http_scope_and_no_provider_fiction(self):
+        from datetime import date,timedelta
+        from grounds.stewardship import GroundsStewardship
+        stewardship=GroundsStewardship(self.store)
+        stewardship.record_asset(
+            self.manager,property_ref="p1",unit_ref="u1",asset_ref="test-asset",
+            label="Synthetic filter",category="heating",
+        )
+        stewardship.create_preventive_plan(
+            self.manager,property_ref="p1",asset_ref="test-asset",
+            plan_ref="test-plan",cadence_days=30,
+            next_due_on=(date.today()-timedelta(days=1)).isoformat(),
+        )
+        self.assertEqual(self.invoke(
+            "/grounds/api/physical-desk?property_ref=p1",
+        )["status"],"401 Unauthorized")
+        self.assertEqual(self.invoke(
+            "/grounds/api/physical-desk?property_ref=p1",actor=self.resident,
+        )["status"],"404 Not Found")
+        self.assertEqual(self.invoke(
+            "/grounds/api/physical-desk?property_ref=p1",actor=self.outsider,
+        )["status"],"404 Not Found")
+        self.assertEqual(self.invoke(
+            "/grounds/api/physical-desk?property_ref=p1&role=owner",actor=self.manager,
+        )["status"],"400 Bad Request")
+        result=self.invoke(
+            "/grounds/api/physical-desk?property_ref=p1",actor=self.manager,
+        )
+        self.assertEqual(result["status"],"200 OK")
+        view=result["json"]
+        self.assertEqual(view["counts"]["assets"],1)
+        self.assertEqual(view["counts"]["due_preventive_plans"],1)
+        self.assertEqual(view["due_preventive_plans"][0]["plan_ref"],"test-plan")
+        self.assertFalse(view["provider_dispatch_confirmed"])
+        self.assertFalse(view["vault_evidence_fetch_connected"])
+        self.assertEqual(result["headers"]["Cache-Control"],"no-store, private, max-age=0")
+        supervisor=fixture_scope("supervisor","maintenance_supervisor",("p1",))
+        scoped=self.invoke(
+            "/grounds/api/physical-desk?property_ref=p1",actor=supervisor,
+        )["json"]
+        self.assertFalse(scoped["turnover_view_authorized"])
+        self.assertIsNone(scoped["counts"]["open_turnovers"])
+
+
 if __name__=="__main__":
     unittest.main()
