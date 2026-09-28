@@ -78,9 +78,15 @@ def register_hosted_ob_market_source_status(app):
     rules = [r for r in app.url_map.iter_rules() if r.rule == FEED_PATH]
     if len(rules) != 1 or rules[0].endpoint != FEED_ENDPOINT or "GET" not in rules[0].methods:
         raise RuntimeError("Expected exact existing protected OB feed endpoint unavailable")
-    if not callable(app.view_functions.get(FEED_ENDPOINT)):
-        raise RuntimeError("Existing OB feed handler unavailable")
-    app.extensions["ob_old_seed_only_feed_handler_preserved_for_audit"] = app.view_functions[FEED_ENDPOINT]
+    old_handler = app.view_functions.get(FEED_ENDPOINT)
+    # Never override a future real provider bridge or a different Flask app.
+    if (
+        not callable(old_handler)
+        or old_handler.__module__ != "web.app"
+        or old_handler.__name__ != FEED_ENDPOINT
+    ):
+        raise RuntimeError("Expected historical seed-only OB handler changed; review provider before overriding")
+    app.extensions["ob_old_seed_only_feed_handler_preserved_for_audit"] = old_handler
 
     def hosted_source_status():
         response = jsonify(pending_provider_document())
