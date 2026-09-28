@@ -70,7 +70,7 @@ def test_owner_access_separate_from_normal_dashboard():
     assert 'data-ob-owner-dashboard="false"' in normal
     assert "ob_owner_dashboard.js" not in normal
     assert "ob_owner_dashboard.js" in owner
-    assert 'data-ob-dashboard-role="owner"' in owner or 'data-ob-owner-dashboard="true"' in owner
+    assert 'data-ob-owner-dashboard-role="owner-only-active"' in owner
 
 def test_referenced_static_room_assets_are_present():
     for name in ROOMS:
