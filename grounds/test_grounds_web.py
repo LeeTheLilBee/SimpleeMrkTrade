@@ -741,7 +741,7 @@ class GroundsWebTests(unittest.TestCase):
                                      "Synthetic resident completion endpoint",False,
                                      "contact_first"),
         )
-        revision=created["revision"]
+        revision=1  # submit_maintenance persists initial revision 1; response omits internals
         for state in ("received","under_review","scheduled"):
             revision=self.ops.advance_work_order(
                 self.manager,work_ref="confirm-web",next_state=state,
