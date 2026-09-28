@@ -46,6 +46,8 @@ def source_completion_status()->dict:
         "certified_external_post_close_or_delivery_provider_connected":False,
         "actual_dispatch_inspection_signoff_vault_and_entry_certified":False,
         "independent_operational_runtime_release_gate_source_available":True,
+        "combined_real_postgres_operational_and_tower_gate_regression_source_available":True,
+        "external_owner_walkthrough_signed_off":False,
         "certified_tower_operational_release_issuer_and_guard_connected":False,
         "real_applicant_intake_and_decisions_certified":False,
         "human_on_call_escalation_or_provider_delivery_certified":False,
