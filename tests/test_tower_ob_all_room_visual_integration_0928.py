@@ -101,3 +101,16 @@ def test_current_owner_cockpit_is_source_guarded_and_does_not_grant_execution():
                   "auto_execution_enabled:\n        false",
                   "live_auto_locked:\n        true"):
         assert exact in contract
+
+
+def test_old_v18_and_v27_chrome_purged_in_owner_console_not_owner_dashboard():
+    cleanup=(STATIC/"ob_beta_surface_cleanup.js").read_text(encoding="utf-8")
+    assert 'currentRoom() === "Owner Console"' in cleanup
+    assert "function shouldPurgeLegacyChrome()" in cleanup
+    assert "!shouldPurgeLegacyChrome()" in cleanup
+    assert '"#obMissionBar"' in cleanup
+    assert '"#obRoomDataPolishPanel"' in cleanup
+    assert "isBetaProductSurface() || currentRoom()" in cleanup
+    owner=content("owner_dashboard.html")
+    assert "ob_owner_dashboard.js" in owner
+    assert "ob_mission_accounts.js" not in owner
