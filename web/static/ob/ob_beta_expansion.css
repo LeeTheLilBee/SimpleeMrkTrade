@@ -1,0 +1,74 @@
+/* OBUX111–135: original celestial experience additions, no photographic dependencies. */
+:root {
+  --obx-void:#030b14; --obx-field:#071b29; --obx-teal:#45c5ba;
+  --obx-mint:#a2e9db; --obx-silver:#e5f1f2; --obx-muted:#b5cbcf;
+  --obx-guard:#ffafb3; --obx-edge:rgba(147,225,212,.28);
+}
+.obx-hub { margin: 22px auto; width: min(100%, 1180px); position:relative; isolation:isolate; color:var(--obx-silver); font-family:inherit; }
+.obx-hub * {box-sizing:border-box;}
+.obx-eyebrow {font-size:11px;letter-spacing:.14em;font-weight:750;color:var(--obx-mint);}
+.obx-card {border:1px solid var(--obx-edge); border-radius:25px; padding:22px; background:
+ radial-gradient(ellipse at 94% 5%,rgba(44,132,140,.19),transparent 54%),
+ linear-gradient(140deg,rgba(6,27,40,.97),rgba(3,13,26,.94)); box-shadow:0 14px 35px rgba(0,0,0,.21);}
+.obx-card h2,.obx-card h3 {color:var(--obx-silver);letter-spacing:-.025em;margin:10px 0;}
+.obx-card p,.obx-card small {color:var(--obx-muted);line-height:1.6;}
+.obx-feature-head {display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:14px;}
+.obx-feature-head h2 {font-size:clamp(23px,3vw,31px);}
+.obx-controls {display:flex; flex-wrap:wrap;gap:9px;}
+.obx-button,.obx-control,.obx-dock button {font:inherit; font-size:12px; font-weight:700; letter-spacing:.01em;
+  padding:9px 14px;min-height:39px;border:1px solid rgba(162,233,219,.48);
+  border-radius:999px;background:rgba(17,66,73,.72);color:var(--obx-silver);cursor:pointer;}
+.obx-button.primary {background:var(--obx-mint);color:#06242c;}
+.obx-control[aria-pressed="true"] {background:var(--obx-mint);color:#06242c;}
+.obx-status {font-size:11px;color:var(--obx-muted);border:1px solid var(--obx-edge);border-radius:999px;padding:6px 10px;}
+.obx-focusline {display:grid;gap:12px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);margin-top:16px;}
+.obx-focusline article {border:1px solid rgba(162,233,219,.18);border-radius:19px;padding:17px;background:rgba(1,12,23,.48);}
+.obx-focusline strong {display:block;margin:7px 0;color:var(--obx-silver);font-size:16px;}
+.obx-focusline p {margin:4px 0 11px;font-size:13px;}
+.obx-focusline a,.obx-card a {color:var(--obx-mint);}
+.obx-quiet {border:1px dashed rgba(162,233,219,.35);padding:17px;border-radius:16px;background:rgba(5,26,36,.5);font-size:13px;line-height:1.6;}
+.obx-rail {display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:18px;}
+.obx-orbit-stage {position:relative;min-height:115px;border:1px solid var(--obx-edge);border-radius:20px;
+ background:radial-gradient(ellipse at 45% 48%,rgba(41,135,141,.24),transparent 60%),rgba(2,10,20,.57);
+ display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;padding:24px 8px;}
+.obx-orbit-stage:before {content:"";height:1px;position:absolute;left:6%;right:6%;top:47%;background:linear-gradient(90deg,transparent,#559c9e,transparent);}
+.obx-orbit-node {z-index:1;display:grid;place-items:center;text-align:center;gap:7px;font-size:10px;color:var(--obx-muted);}
+.obx-orbit-node i {width:13px;height:13px;border:2px solid #a2e9db;border-radius:50%;background:#092a35;box-shadow:0 0 0 3px rgba(3,12,22,.85);}
+.obx-orbit-node[data-state="documented"] i {background:#a2e9db;box-shadow:0 0 14px rgba(140,225,214,.5);}
+.obx-orbit-node small {font-size:10px;word-break:break-word;}
+.obx-stat-rail {display:flex;flex-wrap:wrap;gap:9px;margin-top:12px;}
+.obx-stat {border:1px solid rgba(162,233,219,.21);border-radius:16px;padding:12px;min-width:100px;background:rgba(1,12,23,.48);}
+.obx-stat strong {display:block;font-size:23px;color:var(--obx-silver);}
+.obx-stat span {display:block;font-size:11px;color:var(--obx-muted);}
+.obx-dock {position:fixed;z-index:190;right:14px;bottom:14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;max-width:min(95%,550px);}
+.obx-dock button {background:#072633;box-shadow:0 3px 18px rgba(0,0,0,.45);}
+.obx-cover {position:fixed;inset:0;z-index:8000;display:flex;justify-content:flex-end;background:rgba(0,7,15,.72);backdrop-filter:blur(7px);}
+.obx-drawer {width:min(100%,530px);height:100%;overflow-y:auto;background:linear-gradient(145deg,#06212f,#030d1a 85%);
+  border-left:1px solid rgba(162,233,219,.46);padding:clamp(18px,3vw,33px);color:var(--obx-silver);box-shadow:-24px 0 50px rgba(0,0,0,.4);}
+.obx-drawer h2 {font-size:clamp(24px,4vw,35px);margin:9px 0 17px;}
+.obx-drawer p,.obx-drawer label {color:var(--obx-muted);line-height:1.55;}
+.obx-drawer-head {display:flex;justify-content:space-between;gap:12px;align-items:start;}
+.obx-drawer-list {display:grid;gap:11px;}
+.obx-drawer-item {padding:15px;border:1px solid rgba(162,233,219,.28);border-radius:18px;background:rgba(3,24,34,.68);}
+.obx-drawer-item strong {display:block;color:var(--obx-silver);font-size:15px;margin:6px 0;}
+.obx-drawer-item p {font-size:13px;margin:4px 0 9px;}
+.obx-drawer-item small {color:var(--obx-muted);font-size:11px;}
+.obx-drawer-item [data-severity="safety"] {color:var(--obx-guard);}
+.obx-drawer-item [data-severity="review"] {color:var(--obx-mint);}
+.obx-drawer-actions {display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 5px;}
+.obx-field {display:grid;gap:5px;margin:14px 0;font-size:12px;}
+.obx-field input,.obx-field select,.obx-field textarea {
+  width:100%;font:inherit;color:var(--obx-silver);border:1px solid rgba(162,233,219,.42);border-radius:12px;
+  background:#061623;padding:11px;min-height:42px;}
+.obx-field textarea {min-height:86px;resize:vertical;}
+.obx-setting {display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:11px;border:1px solid var(--obx-edge);border-radius:12px;font-size:13px;}
+.obx-setting input {accent-color:var(--obx-teal);}
+.obx-muted {color:var(--obx-muted);font-size:12px;}
+.obx-drawer [hidden], .obx-hub [hidden] {display:none!important;}
+.obx-hub button:focus-visible,.obx-dock button:focus-visible,.obx-drawer button:focus-visible,.obx-drawer input:focus-visible,.obx-drawer textarea:focus-visible,.obx-drawer select:focus-visible {
+  outline:3px solid #c3fff0;outline-offset:3px;}
+body[data-ob-focus-view="true"] .ob-user-paths,body[data-ob-focus-view="true"] .ob-user-glance,
+body[data-ob-focus-view="true"] .ob-user-more,body[data-ob-focus-view="true"] .obux-review-filters {display:none!important;}
+@media(max-width:700px){.obx-focusline{grid-template-columns:1fr}.obx-orbit-stage {overflow-x:auto;grid-template-columns:repeat(7,minmax(65px,1fr));} .obx-dock{left:9px;right:9px;justify-content:center}.obx-dock button{flex:1;min-width:90px}.obx-hub{padding:0 7px;}}
+@media(prefers-reduced-motion:reduce){.obx-hub *, .obx-drawer *, .obx-dock * {animation:none!important;transition:none!important;}}
+@media(forced-colors:active){.obx-card,.obx-drawer,.obx-drawer-item{border:1px solid CanvasText}.obx-orbit-node i{border:2px solid CanvasText;box-shadow:none;}}
