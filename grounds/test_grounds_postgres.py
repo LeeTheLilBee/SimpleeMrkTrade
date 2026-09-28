@@ -21,6 +21,7 @@ from grounds.delivery import GroundsDeliveryReceipts, SCHEMA_VERSION as DELIVERY
 from grounds.communications import GroundsCommunications
 from grounds.maintenance import MaintenanceIntake
 from grounds.operations import GroundsConflict, GroundsOperations
+from grounds.operational_release import GroundsOperationalReleaseGate
 from grounds.postgres import (
     MIGRATION_ID, PgRow, PostgresGroundsConfigurationError, PostgresGroundsStore,
 )
@@ -424,6 +425,120 @@ class PostgresGroundsTests(unittest.TestCase):
         },start))
         self.assertEqual(result["status"],"200 OK")
         self.assertEqual(json.loads(raw)["due_preventive_plans"][0]["plan_ref"],plan)
+
+
+    def test_full_private_postgres_wsgi_operational_and_tower_gate_integration(self):
+        """Real disposable PG and full actual WSGI stack; auth/issuer are FICTION ONLY."""
+        class SyntheticReceiver:
+            enabled=True
+            def health_check(self):
+                return self.enabled
+            def __call__(self,environ):
+                if not self.enabled:
+                    raise AccessDenied("fiction-only synthetic Tower receiver revoked")
+                return environ["test.fixture.actor"]
+
+        class SyntheticOwnerRelease:
+            healthy=False
+            admitted=False
+            def health_check(self):
+                return self.healthy
+            def __call__(self,environ):
+                return self.admitted
+
+        receiver=SyntheticReceiver()
+        authority=SyntheticOwnerRelease()
+        private_app=GroundsWebApp(
+            self.store,tower_receiver=receiver,
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        app=GroundsOperationalReleaseGate(private_app,authority)
+
+        def call(path,actor=None,*,method="GET",payload=None,csrf=None,key=None):
+            raw=json.dumps(payload).encode("utf-8") if payload is not None else b""
+            route,_,query=path.partition("?")
+            env={
+                "REQUEST_METHOD":method,"PATH_INFO":route,"QUERY_STRING":query,
+                "CONTENT_TYPE":"application/json","CONTENT_LENGTH":str(len(raw)),
+                "wsgi.input":io.BytesIO(raw),
+            }
+            if actor is not None:
+                env["test.fixture.actor"]=actor
+            if csrf is not None:
+                env["HTTP_X_GROUNDS_CSRF"]=csrf
+            if key is not None:
+                env["HTTP_X_GROUNDS_IDEMPOTENCY_KEY"]=key
+            result={}
+            def start(status,headers):
+                result["status"]=status
+                result["headers"]=dict(headers)
+            result["body"]=b"".join(app(env,start))
+            if result["headers"]["Content-Type"].startswith("application/json"):
+                result["json"]=json.loads(result["body"])
+            return result
+
+        workspace=("/grounds/api/workspace?property_ref="+self.id+
+                   "&unit_ref="+self.u)
+        rent="/grounds/api/rent?property_ref="+self.id+"&unit_ref="+self.u
+        # DB/schema + resident fixture alone cannot unlock the protected app.
+        self.assertEqual(call(workspace,self.resident)["status"],"503 Service Unavailable")
+        self.assertEqual(call("/grounds/health/ready")["json"],{"ready":False})
+        self.assertEqual(call("/grounds/health/live")["status"],"200 OK")
+        authority.healthy=True
+        self.assertEqual(call("/grounds/health/ready")["json"],{"ready":True})
+        self.assertEqual(call(workspace,self.resident)["status"],"503 Service Unavailable")
+        self.assertEqual(call("/grounds/app.js",self.resident)["status"],"503 Service Unavailable")
+
+        authority.admitted=True
+        self.assertEqual(call(workspace)["status"],"401 Unauthorized")
+        outsider=fixture_scope("unlisted","resident",(self.id,),(self.u,))
+        self.assertEqual(call(workspace,outsider)["status"],"404 Not Found")
+        current=call(workspace,self.resident)
+        self.assertEqual(current["status"],"200 OK")
+        self.assertEqual(current["json"]["property_ref"],self.id)
+        self.assertEqual(current["json"]["unit_ref"],self.u)
+        self.assertEqual(current["json"]["lease"]["lease_ref"],self.l)
+        unknown=call(rent,self.resident)
+        self.assertEqual(unknown["json"]["status"],"not_connected")
+        self.assertIsNone(unknown["json"]["amount_due_cents"])
+        self.assertFalse(unknown["json"]["checkout_execution_enabled"])
+
+        payload={
+            "property_ref":self.id,"unit_ref":self.u,"category":"plumbing",
+            "description":"Synthetic WSGI revocation test","emergency_flag":False,
+            "entry_permission":"contact_first",
+        }
+        csrf=private_app.csrf.token(self.resident)
+        key=str(uuid4())
+        authority.admitted=False
+        denied=call("/grounds/api/work",self.resident,method="POST",
+                    payload=payload,csrf=csrf,key=key)
+        self.assertEqual(denied["status"],"503 Service Unavailable")
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM work_orders WHERE property_ref=?",
+                (self.id,),
+            ).fetchone()[0],0)
+
+        authority.admitted=True
+        receiver.enabled=False
+        self.assertEqual(call(workspace,self.resident)["status"],"401 Unauthorized")
+        self.assertEqual(call("/grounds/health/ready")["json"],{"ready":False})
+        receiver.enabled=True
+        saved=call("/grounds/api/work",self.resident,method="POST",
+                   payload=payload,csrf=csrf,key=key)
+        self.assertEqual(saved["status"],"201 Created")
+        self.assertEqual(saved["json"]["state"],"submitted")
+        self.assertFalse(saved["json"]["emergency_dispatch_confirmed"])
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM work_orders WHERE property_ref=?",
+                (self.id,),
+            ).fetchone()[0],1)
+        authority.healthy=False  # revoked overall current operating acceptance
+        self.assertEqual(call(workspace,self.resident)["status"],"503 Service Unavailable")
+        self.assertEqual(call("/grounds/health/ready")["json"],{"ready":False})
+
 
 
 if __name__=="__main__":
