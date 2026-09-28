@@ -541,5 +541,41 @@ class PostgresGroundsTests(unittest.TestCase):
 
 
 
+    def test_real_postgres_my_home_daily_and_property_health_wsgi(self):
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda environ:environ["test.fixture.actor"],
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        def get(path,actor):
+            route,_,query=path.partition("?")
+            out={}
+            def start(status,headers):
+                out["status"]=status
+                out["headers"]=dict(headers)
+            raw=b"".join(app({
+                "REQUEST_METHOD":"GET","PATH_INFO":route,"QUERY_STRING":query,
+                "wsgi.input":io.BytesIO(b""),"test.fixture.actor":actor,
+            },start))
+            out["json"]=json.loads(raw)
+            return out
+        home=get("/grounds/api/my-home?property_ref="+self.id+
+                 "&unit_ref="+self.u,self.resident)
+        self.assertEqual(home["status"],"200 OK")
+        self.assertEqual(home["json"]["lease"]["lease_ref"],self.l)
+        self.assertIsNone(home["json"]["rent"]["amount_due_cents"])
+        daily=get("/grounds/api/daily?property_ref="+self.id,self.manager)
+        self.assertEqual(daily["status"],"200 OK")
+        self.assertEqual(daily["json"]["counts"]["unreviewed_urgent"],0)
+        self.assertEqual(get("/grounds/api/daily?property_ref="+self.id,
+                             self.resident)["status"],"404 Not Found")
+        health=get("/grounds/api/property-health?property_ref="+self.id,self.owner)
+        self.assertEqual(health["status"],"200 OK")
+        self.assertIsNone(health["json"]["available_capital"])
+        portfolio=get("/grounds/api/owner-portfolio",self.owner)
+        self.assertEqual(portfolio["status"],"200 OK")
+        self.assertEqual(portfolio["json"]["total_scope_count"],1)
+        self.assertFalse(portfolio["json"]["money_fields_included"])
+
+
 if __name__=="__main__":
     unittest.main()
