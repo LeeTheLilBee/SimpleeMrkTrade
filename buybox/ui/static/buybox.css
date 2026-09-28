@@ -41,3 +41,7 @@
 .source-references{border:1px solid #58617a;border-radius:12px;padding:12px;max-height:220px;overflow-y:auto}
 .source-references legend{color:#c5d0e0}.source-references label{display:flex;gap:10px;align-items:flex-start;font-size:12px;font-weight:500}
 .source-references input[type=checkbox]{width:auto;margin-top:2px;accent-color:#b49aea;flex:none}
+
+/* BBX074 Red Team: recorded owner hypotheses remain visually distinct from original facts. */
+.red-team-card{background:#293349;border:1px solid #66708d;border-radius:15px;padding:18px;margin:15px 0;overflow-wrap:anywhere}
+.red-team-card h3{margin:.4rem 0}.red-team-card .evidence-row{gap:14px}.red-team-card .evidence-row strong{text-align:right}.red-team-card small{display:block;color:#c6d3e3;margin-top:12px}
