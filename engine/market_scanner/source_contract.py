@@ -101,5 +101,8 @@ def macro_envelope(observations: list[Observation], *, status: str, reason: str 
         "candidates": [],
         "manual_live_queue": [],
         "current_market_data_eligible": False,
+        "ai_assistant_input_eligible": False,  # FRED API terms prohibit AI/ML use absent express permission.
+        "persistent_cache_eligible": False,
+        "reuse_scope": "ephemeral_human_reference_only_pending_terms_review",
         "can_authorize_order": False,
     }
