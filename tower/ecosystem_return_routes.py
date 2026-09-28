@@ -96,21 +96,27 @@ def _return_view(app_id: str):
 
 
 def register_ecosystem_return_routes(app: Flask):
+    # An app may already own a separately reviewed reciprocal Tower return
+    # (Clouds does). Never register a competing rule for the same URL.
+    existing_paths = {rule.rule for rule in app.url_map.iter_rules()}
     for app_id, spec in RETURN_APPS.items():
         endpoint = f"tower_return_{app_id}_v1"
         json_endpoint = f"tower_return_{app_id}_json_v1"
-        if endpoint not in app.view_functions:
+        if spec["path"] not in existing_paths and endpoint not in app.view_functions:
             app.add_url_rule(
                 spec["path"],
                 endpoint=endpoint,
                 view_func=require_human_owner(lambda app_id=app_id: _return_view(app_id)),
                 methods=["GET"],
             )
-        if json_endpoint not in app.view_functions:
+            existing_paths.add(spec["path"])
+        json_path = spec["path"] + ".json"
+        if json_path not in existing_paths and json_endpoint not in app.view_functions:
             app.add_url_rule(
-                spec["path"] + ".json",
+                json_path,
                 endpoint=json_endpoint,
                 view_func=require_human_owner(lambda app_id=app_id: _return_view(app_id)),
                 methods=["GET"],
             )
+            existing_paths.add(json_path)
     return app
