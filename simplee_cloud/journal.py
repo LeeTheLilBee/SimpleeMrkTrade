@@ -2,6 +2,8 @@
 
 SQLite writes use BEGIN IMMEDIATE, synchronous=FULL, process-private paths and
 database-level UPDATE/DELETE denial for intent/event/incident records.
+SC007 binds complete primary/backup intent rows to reservation events. Earlier
+source-only journals with unbound reservations are rejected, not silently upgraded.
 A hash chain detects accidental/incomplete history changes, NOT malicious full
 database rewrites; independent signed/offsite checkpoints remain a release gate.
 No file body, plaintext, raw entity ID, Vault receipt or Tower credential is stored.
@@ -52,6 +54,12 @@ def _backup_tag(namespace: str, request_id: str) -> str:
     if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", request_id):
         raise CloudError("invalid backup request identity")
     return hashlib.sha256(("backup:v1:" + namespace + ":" + request_id).encode()).hexdigest()
+
+
+def _reservation_hash(kind: str, values: tuple) -> str:
+    """Bind the COMPLETE immutable reservation row into the event hash chain."""
+    material = json.dumps([kind, *values], separators=(",", ":"), ensure_ascii=True).encode()
+    return "reservation:v2:" + hashlib.sha256(material).hexdigest()
 
 
 def _hash_event(seq: int, kind: str, tag: str, scope: str, code: str, at: str, previous: str) -> str:
@@ -158,27 +166,28 @@ class SQLiteOperationalJournal:
             if row["event_hash"] != expected:
                 raise IntegrityError("operational event integrity mismatch")
             previous = expected
-        orphan = conn.execute("""
-            SELECT COUNT(*) FROM intents i
-            WHERE NOT EXISTS (
-                SELECT 1 FROM events e
-                WHERE e.request_tag=i.request_tag AND
-                      e.namespace_digest=i.namespace_digest AND
-                      e.event_type='WRITE_RESERVED'
-            )
-        """).fetchone()[0]
-        if orphan:
-            raise IntegrityError("orphan write intent without audit reservation")
-        orphan_backup = conn.execute("""
-            SELECT COUNT(*) FROM backup_intents b WHERE NOT EXISTS (
-                SELECT 1 FROM events e
-                WHERE e.request_tag=b.request_tag AND
-                      e.namespace_digest=b.namespace_digest AND
-                      e.event_type='BACKUP_RESERVED'
-            )
-        """).fetchone()[0]
-        if orphan_backup:
-            raise IntegrityError("orphan backup intent without journal reservation")
+        # SC007: reservation metadata is now part of the immutable event
+        # commitment, not merely an opaque request tag. Verify both directions
+        # and demand exactly one reservation event per canonical intent.
+        for table, event_type in (
+            ("intents", "WRITE_RESERVED"), ("backup_intents", "BACKUP_RESERVED"),
+        ):
+            records = conn.execute("SELECT * FROM " + table).fetchall()
+            count = conn.execute(
+                "SELECT COUNT(*) FROM events WHERE event_type=?", (event_type,),
+            ).fetchone()[0]
+            if count != len(records):
+                raise IntegrityError("missing or surplus reservation event/intent")
+            for record in records:
+                matches = conn.execute(
+                    """SELECT code FROM events
+                    WHERE event_type=? AND request_tag=? AND namespace_digest=?""",
+                    (event_type, record["request_tag"], record["namespace_digest"]),
+                ).fetchall()
+                if len(matches) != 1 or matches[0]["code"] != _reservation_hash(
+                    event_type, tuple(record)
+                ):
+                    raise IntegrityError("reserved ciphertext metadata differs from audit commitment")
         return expected_seq, previous
 
     def verify_chain(self) -> dict:
@@ -255,11 +264,12 @@ class SQLiteOperationalJournal:
                 ):
                     raise CloudError("idempotency conflict; new request required")
                 return self._state(conn, tag) or "UNVERIFIED"
-            conn.execute(
-                "INSERT INTO intents VALUES(?,?,?,?,?,?)",
-                (tag, namespace, object_ref, digest, size, _now()),
+            values = (tag, namespace, object_ref, digest, size, _now())
+            conn.execute("INSERT INTO intents VALUES(?,?,?,?,?,?)", values)
+            self._append(
+                conn, event="WRITE_RESERVED", tag=tag, scope=namespace,
+                code=_reservation_hash("WRITE_RESERVED", values),
             )
-            self._append(conn, event="WRITE_RESERVED", tag=tag, scope=namespace)
             return "WRITE_RESERVED_NEW"
 
     def intent(self, *, namespace: str, request_id: str) -> dict:
@@ -316,12 +326,15 @@ class SQLiteOperationalJournal:
                 "SELECT 1 FROM backup_intents WHERE request_tag=?", (tag,)
             ).fetchone() is not None:
                 raise CloudError("backup reservation already exists; reconcile, never re-PUT")
-            conn.execute(
-                "INSERT INTO backup_intents VALUES(?,?,?,?,?,?,?,?,?)",
-                (tag, namespace, source_object_ref, source_digest, backup_ref,
-                 backup_digest, backup_size, key_reference, _now()),
+            values = (
+                tag, namespace, source_object_ref, source_digest, backup_ref,
+                backup_digest, backup_size, key_reference, _now(),
             )
-            self._append(conn, event="BACKUP_RESERVED", tag=tag, scope=namespace)
+            conn.execute("INSERT INTO backup_intents VALUES(?,?,?,?,?,?,?,?,?)", values)
+            self._append(
+                conn, event="BACKUP_RESERVED", tag=tag, scope=namespace,
+                code=_reservation_hash("BACKUP_RESERVED", values),
+            )
 
     def backup_transition(self, *, namespace: str, request_id: str, next_state: str):
         allowed = {
