@@ -66,6 +66,50 @@ class GroundsStewardshipTests(unittest.TestCase):
                 self.manager,work_ref="w1",next_state=state,expected_revision=revision,
             )["revision"]
 
+    def test_physical_workboard_minimized_counts_role_scope_and_no_authority(self):
+        past=(date.today()-timedelta(days=1)).isoformat()
+        self.st.create_preventive_plan(
+            self.manager,property_ref="p1",asset_ref="a1",
+            plan_ref="due-plan",cadence_days=30,next_due_on=past,
+        )
+        self.st.plan_inspection(
+            self.manager,property_ref="p1",unit_ref="u1",
+            inspection_ref="pending-inspection",category="routine",
+            planned_on=date.today().isoformat(),
+        )
+        visible=self.st.physical_workboard(self.manager,property_ref="p1")
+        self.assertEqual(visible["counts"]["assets"],1)
+        self.assertEqual(visible["counts"]["due_preventive_plans"],1)
+        self.assertEqual(visible["counts"]["open_inspections"],1)
+        self.assertEqual(visible["due_preventive_plans"][0]["plan_ref"],"due-plan")
+        self.assertEqual(visible["open_inspections"][0]["inspection_ref"],"pending-inspection")
+        self.assertTrue(visible["turnover_view_authorized"])
+        for name in ("provider_dispatch_confirmed","inspection_signoff_automated",
+                     "vault_evidence_fetch_connected","capital_approval_enabled",
+                     "legal_entry_or_notice_authorized"):
+            self.assertFalse(visible[name])
+        supervisor=self.st.physical_workboard(self.supervisor,property_ref="p1")
+        self.assertFalse(supervisor["turnover_view_authorized"])
+        self.assertIsNone(supervisor["counts"]["open_turnovers"])
+        self.assertEqual(supervisor["open_turnovers"],[])
+        for denied,prop in ((self.resident,"p1"),(self.tech,"p1"),(self.outside,"p1"),
+                            (self.manager,"p2")):
+            with self.subTest(role=denied.role,property_ref=prop):
+                with self.assertRaises(AccessDenied):
+                    self.st.physical_workboard(denied,property_ref=prop)
+        self.ops.end_lease(self.manager,property_ref="p1",lease_ref="l1",
+                           expected_revision=1)
+        self.st.begin_turnover(
+            self.manager,property_ref="p1",unit_ref="u1",
+            lease_ref="l1",turnover_ref="turn-open",
+        )
+        manager_after=self.st.physical_workboard(self.manager,property_ref="p1")
+        self.assertEqual(manager_after["counts"]["open_turnovers"],1)
+        self.assertEqual(manager_after["open_turnovers"][0]["turnover_ref"],"turn-open")
+        supervisor_after=self.st.physical_workboard(self.supervisor,property_ref="p1")
+        self.assertIsNone(supervisor_after["counts"]["open_turnovers"])
+        self.assertEqual(supervisor_after["open_turnovers"],[])
+
     def test_asset_boundary_and_no_inspector_self_grant(self):
         self.assertEqual(self.st.list_assets(self.manager,property_ref="p1")[0]["asset_ref"],"a1")
         with self.assertRaises(AccessDenied):

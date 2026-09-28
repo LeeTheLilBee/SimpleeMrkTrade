@@ -324,5 +324,46 @@ class PostgresGroundsTests(unittest.TestCase):
         self.assertEqual(get(self.resident)["status"],"404 Not Found")
 
 
+    def test_real_postgres_physical_workboard_role_and_backlog(self):
+        from datetime import date
+        from grounds.stewardship import GroundsStewardship
+        stewardship=GroundsStewardship(self.store)
+        asset="asset-"+self.id
+        plan="plan-"+self.id
+        stewardship.record_asset(
+            self.manager,property_ref=self.id,unit_ref=self.u,
+            asset_ref=asset,label="Synthetic equipment",category="heating",
+        )
+        stewardship.create_preventive_plan(
+            self.manager,property_ref=self.id,asset_ref=asset,
+            plan_ref=plan,cadence_days=30,
+            next_due_on=(date.today()-timedelta(days=1)).isoformat(),
+        )
+        item=stewardship.physical_workboard(self.manager,property_ref=self.id)
+        self.assertEqual(item["counts"]["assets"],1)
+        self.assertEqual(item["counts"]["due_preventive_plans"],1)
+        self.assertEqual(item["due_preventive_plans"][0]["plan_ref"],plan)
+        self.assertFalse(item["provider_dispatch_confirmed"])
+        supervisor=fixture_scope("supervisor","maintenance_supervisor",(self.id,))
+        view=stewardship.physical_workboard(supervisor,property_ref=self.id)
+        self.assertIsNone(view["counts"]["open_turnovers"])
+        with self.assertRaises(AccessDenied):
+            stewardship.physical_workboard(self.resident,property_ref=self.id)
+        app=GroundsWebApp(
+            self.store,tower_receiver=lambda environ:environ["test.fixture.actor"],
+            csrf_secret=bytes(range(32)),local_fixture_only=False,
+        )
+        result={}
+        def start(status,headers):
+            result["status"]=status
+        raw=b"".join(app({
+            "REQUEST_METHOD":"GET","PATH_INFO":"/grounds/api/physical-desk",
+            "QUERY_STRING":"property_ref="+self.id,
+            "test.fixture.actor":self.manager,"wsgi.input":io.BytesIO(b""),
+        },start))
+        self.assertEqual(result["status"],"200 OK")
+        self.assertEqual(json.loads(raw)["due_preventive_plans"][0]["plan_ref"],plan)
+
+
 if __name__=="__main__":
     unittest.main()

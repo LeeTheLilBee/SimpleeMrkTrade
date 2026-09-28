@@ -124,11 +124,60 @@
           }
         }
       }
+      if (["owner","property_manager","maintenance_supervisor"].includes(state.me.role)) {
+        try {
+          const physical = await request("physical-desk?" + new URLSearchParams({ property_ref: state.property }));
+          if (generation === state.loadGeneration) renderPhysicalDesk(physical);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("physical-list"));
+            $("physical-count").textContent = "Unavailable";
+            $("physical-status").textContent = "Current physical-operation records could not be retrieved. No inspection, turnover or external dispatch is certified.";
+          }
+        }
+      }
     } catch (error) {
       if (generation !== state.loadGeneration) return;
       $("content").classList.add("hidden"); $("locked").classList.remove("hidden");
       $("locked-reason").textContent = error.message;
       message(error.message, true);
+    }
+  }
+  function renderPhysicalDesk(desk) {
+    const target = $("physical-list"); clear(target);
+    if (desk?.source !== "grounds" || desk.property_ref !== state.property ||
+        !Array.isArray(desk.assets) || !Array.isArray(desk.due_preventive_plans) ||
+        !Array.isArray(desk.open_inspections) || !Array.isArray(desk.open_turnovers)) {
+      $("physical-count").textContent = "Unverified";
+      $("physical-status").textContent = "Current source data could not be verified.";
+      return;
+    }
+    const counts = desk.counts || {};
+    $("physical-count").textContent = (counts.due_preventive_plans ?? "—") + " preventive items due";
+    $("physical-status").textContent = "Recorded: " + (counts.assets ?? "—") + " assets · " +
+      (counts.open_inspections ?? "—") + " open inspections" +
+      (desk.turnover_view_authorized ? " · " + counts.open_turnovers + " open turnovers" : "") +
+      ". No provider dispatch, legal entry, certified inspection sign-off, Vault fetch or capital approval is implied.";
+    if (!desk.due_preventive_plans.length && !desk.open_inspections.length && !desk.open_turnovers.length) {
+      target.append(el("p", "No current due items are visible in this authorized snapshot. This is not a maintenance-completion or compliance certification.", "footnote"));
+    }
+    for (const plan of desk.due_preventive_plans) {
+      const card = el("article", null, "item");
+      card.append(el("h3", "Preventive plan · " + plan.plan_ref),
+        el("p", "Asset " + plan.asset_ref + " · Recorded due date " + plan.next_due_on));
+      target.append(card);
+    }
+    for (const inspection of desk.open_inspections) {
+      const card = el("article", null, "item");
+      card.append(el("h3", "Inspection · " + inspection.inspection_ref),
+        el("p", inspection.category + " · " + inspection.state + " · Planned " + inspection.planned_on));
+      target.append(card);
+    }
+    if (desk.turnover_view_authorized) for (const turnover of desk.open_turnovers) {
+      const card = el("article", null, "item");
+      card.append(el("h3", "Turnover · " + turnover.turnover_ref),
+        el("p", "Unit " + turnover.unit_ref + " · State " + turnover.state));
+      target.append(card);
     }
   }
   function renderLeasingDesk(desk) {
@@ -232,6 +281,13 @@
     $("safety-panel").classList.toggle("hidden", !hasSafetyDesk);
     const hasLeasingDesk = ["owner","property_manager","leasing_agent"].includes(data.role);
     $("leasing-panel").classList.toggle("hidden", !hasLeasingDesk);
+    const hasPhysicalDesk = ["owner","property_manager","maintenance_supervisor"].includes(data.role);
+    $("physical-panel").classList.toggle("hidden", !hasPhysicalDesk);
+    if (hasPhysicalDesk) {
+      clear($("physical-list"));
+      $("physical-count").textContent = "Checking";
+      $("physical-status").textContent = "Checking source-owned physical status. No external dispatch or proof is confirmed.";
+    }
     if (hasLeasingDesk) {
       clear($("leasing-list"));
       $("leasing-count").textContent = "Checking";

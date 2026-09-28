@@ -31,6 +31,7 @@ from .operations import GroundsConflict, GroundsOperations
 from .postgres import PostgresGroundsStore
 from .safety import GroundsSafety
 from .storage import GroundsStore, GroundsStoreBase
+from .stewardship import GroundsStewardship
 from .teller import resident_rent_projection
 from .workspaces import build_workspace
 
@@ -54,6 +55,7 @@ _ROUTES={
     ("GET","/grounds/api/rent"),
     ("GET","/grounds/api/safety-desk"),
     ("GET","/grounds/api/leasing"),
+    ("GET","/grounds/api/physical-desk"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
@@ -226,6 +228,7 @@ class GroundsWebApp:
         self.communications=GroundsCommunications(store)
         self.safety=GroundsSafety(store)
         self.leasing=GroundsLeasing(store)
+        self.stewardship=GroundsStewardship(store)
 
     def _resource_ref(self,actor,kind,key,*refs):
         """Opaque stable identifier; session/subject/target bound, never guessable."""
@@ -355,6 +358,11 @@ class GroundsWebApp:
             if path=="/grounds/api/entry-preference":
                 q=_query(environ,{"work_ref"})
                 return self.safety.entry_preference(actor,work_ref=_ref(q["work_ref"],"work_ref"))
+            if path=="/grounds/api/physical-desk":
+                q=_query(environ,{"property_ref"})
+                return self.stewardship.physical_workboard(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                )
             if path=="/grounds/api/leasing":
                 q=_query(environ,{"property_ref"})
                 property_ref=_ref(q["property_ref"],"property_ref")
