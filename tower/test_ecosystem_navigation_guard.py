@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+import time
 from flask import Flask
 
 from tower.ecosystem_direct_route_guard import (
@@ -94,7 +95,7 @@ def test_invalid_access_receipt_is_removed_and_denied(client):
 def test_server_issued_shape_can_open_only_its_exact_app_path(client):
     login(client)
     with client.session_transaction() as session:
-        now = 1_800_000_000
+        now = int(time.time())
         session[ACCESS_RECEIPT_KEYS["vault"]] = {
             "schema_version": "tower.ecosystem.access-receipt.v1",
             "app_id": "vault",
@@ -107,9 +108,7 @@ def test_server_issued_shape_can_open_only_its_exact_app_path(client):
             "new_entitlement_granted": False,
             "dangerous_action_unlocked": False,
         }
-    import unittest.mock as mock
-    with mock.patch("tower.ecosystem_direct_route_guard.time.time", return_value=1_800_000_010):
-        assert client.get("/vault").status_code == 200
+    assert client.get("/vault").status_code == 200
     assert client.get("/grounds").status_code == 503
 
 
@@ -184,18 +183,17 @@ def test_access_receipt_helper_binds_current_owner_session_and_expires(client):
     # A stale receipt copied from another session must fail even when its app id
     # and booleans look right.
     with client.session_transaction() as session:
+        now = int(time.time())
         session[ACCESS_RECEIPT_KEYS["clouds"]] = {
             "schema_version": "tower.ecosystem.access-receipt.v1",
             "app_id": "clouds",
             "allowed": True,
             "owner_id": session["owner_id"],
             "tower_session_id": "tower_session_from_some_other_browser",
-            "issued_at_epoch": 1_800_000_000,
-            "expires_at_epoch": 1_800_000_300,
+            "issued_at_epoch": now,
+            "expires_at_epoch": now + 300,
             "owner_session_preserved": True,
             "new_entitlement_granted": False,
             "dangerous_action_unlocked": False,
         }
-    import unittest.mock as mock
-    with mock.patch("tower.ecosystem_direct_route_guard.time.time", return_value=1_800_000_010):
-        assert client.get("/clouds/status.json").status_code == 503
+    assert client.get("/clouds/status.json").status_code == 503
