@@ -82,7 +82,9 @@
     $("content").classList.add("hidden");
     $("locked").classList.add("hidden");
     for (const id of ["summary","lease-details","work-list","notice-list",
-                      "safety-list","leasing-list","physical-list"]) clear($(id));
+                      "safety-list","leasing-list","physical-list",
+                      "my-home-list","daily-list","property-health-list",
+                      "owner-portfolio-list"]) clear($(id));
     $("rent-message").textContent = "Current Teller invoice not verified. An unavailable amount is not a zero balance or payment confirmation.";
     $("rent-service-status").textContent = "Awaiting Teller";
     $("soulaana-message").textContent = "Checking the current authorized source context.";
@@ -174,12 +176,151 @@
           }
         }
       }
+      if (state.me.role === "resident") {
+        try {
+          const home = await request("my-home?" + qs);
+          if (generation === state.loadGeneration) renderMyHome(home);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("my-home-list"));
+            $("my-home-count").textContent = "Unavailable";
+          }
+        }
+      }
+      if (["owner","property_manager","maintenance_supervisor"].includes(state.me.role)) {
+        try {
+          const daily = await request("daily?" + new URLSearchParams({ property_ref: state.property }));
+          if (generation === state.loadGeneration) renderDaily(daily);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("daily-list"));
+            $("daily-count").textContent = "Unavailable";
+          }
+        }
+      }
+      if (["owner","property_manager","regional_manager"].includes(state.me.role)) {
+        try {
+          const health = await request("property-health?" + new URLSearchParams({ property_ref: state.property }));
+          if (generation === state.loadGeneration) renderPropertyHealth(health);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("property-health-list"));
+            $("property-health-count").textContent = "Unavailable";
+          }
+        }
+      }
+      if (state.me.role === "owner") {
+        try {
+          const portfolio = await request("owner-portfolio");
+          if (generation === state.loadGeneration) renderOwnerPortfolio(portfolio);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("owner-portfolio-list"));
+            $("owner-portfolio-count").textContent = "Unavailable";
+          }
+        }
+      }
     } catch (error) {
       if (generation !== state.loadGeneration) return;
       clearPrivateView(); $("locked").classList.remove("hidden");
       $("locked-reason").textContent = error.message;
       message(error.message, true);
     }
+  }
+  function experienceTile(target, label, value, detail, urgent = false) {
+    const tile = el("article", null, "experience-tile" + (urgent ? " priority" : ""));
+    tile.append(el("span", label), el("strong", value),
+      el("p", detail || "Current recorded source snapshot"));
+    target.append(tile);
+  }
+  function renderMyHome(home) {
+    const target = $("my-home-list"); clear(target);
+    if (home?.source !== "grounds" || home.room !== "my_home" ||
+        home.property_ref !== state.property || home.unit_ref !== state.unit ||
+        !home.lease || !Array.isArray(home.next_appointments)) {
+      $("my-home-count").textContent = "Unverified"; return;
+    }
+    $("my-home-count").textContent = "Current lease";
+    experienceTile(target,"Your recorded home",home.property_name + " · " + home.unit_label,
+      "Lease dates: " + home.lease.start_on + " through " + home.lease.end_on);
+    experienceTile(target,"Maintenance",home.open_my_request_count + " open",
+      home.my_request_count + " of your recorded requests; no external dispatch implied.");
+    experienceTile(target,"Notices",home.unread_in_app_count + " unread in Grounds",
+      home.visible_notice_count + " visible. In-app read is not proof of delivered legal notice.");
+    experienceTile(target,"Appointments",home.next_appointments.length + " recorded upcoming",
+      home.next_appointments[0] ? asDate(home.next_appointments[0].start_at) + " · " +
+        home.next_appointments[0].state : "No active appointments recorded.");
+    experienceTile(target,"Rent and documents","Sources protected",
+      "Teller invoice must be independently verified. Vault private document retrieval is not connected.");
+  }
+  function renderDaily(daily) {
+    const target = $("daily-list"); clear(target);
+    if (daily?.source !== "grounds" || daily.property_ref !== state.property ||
+        daily.room !== "daily_grounds" || !daily.counts ||
+        !Array.isArray(daily.urgent_work)) {
+      $("daily-count").textContent = "Unverified";return;
+    }
+    const n=daily.counts;
+    $("daily-count").textContent = n.unreviewed_urgent + " urgent to review";
+    experienceTile(target,"Human triage",n.unreviewed_urgent + " waiting",
+      "Source-recorded urgent intake; this card is not on-call acknowledgment or dispatch.",
+      n.unreviewed_urgent > 0);
+    experienceTile(target,"Older open requests",n.open_older_than_three_days,
+      "Requests created more than " + daily.work_age_threshold_days + " days ago, not a certified SLA.");
+    experienceTile(target,"Appointment decisions",n.pending_appointment_decisions,
+      "Requested or proposed, awaiting an in-app decision.");
+    experienceTile(target,"Preventive due",n.due_preventive,
+      "Recorded plans due on or before today.");
+    experienceTile(target,"Inspections",n.open_inspections,"Recorded open inspections.");
+    if (daily.turnovers_authorized)
+      experienceTile(target,"Turnovers",n.open_turnovers,"Recorded unfinished turnover workflow.");
+    experienceTile(target,"Local notification intents",n.pending_local_notification_intents,
+      "An intent is not external message delivery.");
+  }
+  function renderPropertyHealth(health) {
+    const target = $("property-health-list"); clear(target);
+    if (health?.source !== "grounds" || health.room !== "property_health" ||
+        health.property_ref !== state.property || !health.counts) {
+      $("property-health-count").textContent = "Unverified";return;
+    }
+    const n=health.counts;
+    $("property-health-count").textContent = "Physical records only";
+    experienceTile(target,"Occupancy recorded",n.occupied_units + " / " + n.units,
+      "Unit lifecycle records; no lease-finance assumption.");
+    experienceTile(target,"New maintenance · 30 days",n.new_requests_last_30_days,
+      "Prior 30-day interval: " + n.new_requests_previous_30_days + ".");
+    experienceTile(target,"Repeat unit/category patterns",n.repeat_unit_category_groups_last_30_days,
+      "Groups with two or more recorded requests; no cause is established.");
+    experienceTile(target,"Unresolved serious findings",n.unresolved_serious_inspection_findings,
+      "Recorded major/urgent findings without a resolution.",n.unresolved_serious_inspection_findings > 0);
+    experienceTile(target,"First-received response sample",
+      health.first_received_elapsed_minutes_sample_mean === null ? "Unavailable" :
+        health.first_received_elapsed_minutes_sample_mean + " minutes",
+      health.response_sample_count + " eligible records (max " + health.response_sample_row_limit +
+      (health.response_sample_may_be_truncated ? ", truncated" : "") + "). Not a service-level certification.");
+    experienceTile(target,"Rent collections","Teller-only",
+      "Grounds does not calculate collected rent or available investment capital.");
+  }
+  function renderOwnerPortfolio(portfolio) {
+    const target = $("owner-portfolio-list"); clear(target);
+    if (portfolio?.source !== "grounds" || portfolio.room !== "owner_portfolio" ||
+        !Array.isArray(portfolio.properties) || portfolio.money_fields_included !== false) {
+      $("owner-portfolio-count").textContent = "Unverified";return;
+    }
+    $("owner-portfolio-count").textContent = portfolio.total_scope_count + " granted properties";
+    if (!portfolio.properties.length)
+      target.append(el("p","No verified owned property records are in this scope.","footnote"));
+    for (const item of portfolio.properties) {
+      if (!state.me.property_refs.includes(item.property_ref)) continue;
+      const n=item.counts;
+      experienceTile(target,"Property " + item.property_ref,
+        n.occupied_units + " / " + n.units + " recorded occupied",
+        n.open_work + " open work · " + n.unreviewed_urgent + " unreviewed urgent · " +
+          n.open_turnovers + " unfinished turnovers.");
+    }
+    if (portfolio.truncated) target.append(
+      el("p","Only the first " + portfolio.visible_limit +
+        " authorized properties are displayed. This is not a full portfolio roll-up.","footnote"));
   }
   function renderPhysicalDesk(desk) {
     const target = $("physical-list"); clear(target);
@@ -342,6 +483,16 @@
       $("safety-count").textContent = "Checking";
       $("safety-delivery").textContent = "Checking internal triage records. External delivery and dispatch are not confirmed.";
     }
+    $("my-home-panel").classList.toggle("hidden", data.role !== "resident");
+    $("daily-panel").classList.toggle("hidden",
+      !["owner","property_manager","maintenance_supervisor"].includes(data.role));
+    $("property-health-panel").classList.toggle("hidden",
+      !["owner","property_manager","regional_manager"].includes(data.role));
+    $("owner-portfolio-panel").classList.toggle("hidden", data.role !== "owner");
+    $("my-home-count").textContent = "Checking";
+    $("daily-count").textContent = "Checking";
+    $("property-health-count").textContent = "Checking";
+    $("owner-portfolio-count").textContent = "Checking";
     $("rent-panel").classList.toggle("hidden", data.role !== "resident");
     $("request-panel").classList.toggle("hidden", data.role !== "resident");
     $("notices-panel").classList.toggle("hidden", data.role !== "resident");
@@ -572,6 +723,11 @@
       $("property-choice").addEventListener("change",refresh);
       $("unit-choice").addEventListener("change",refresh);
       $("refresh").addEventListener("click",refresh);
+      $("text-size-toggle").addEventListener("click", () => {
+        const applied=document.documentElement.classList.toggle("comfortable-type");
+        $("text-size-toggle").setAttribute("aria-pressed",String(applied));
+        $("text-size-toggle").textContent=applied ? "Standard text" : "Larger text";
+      });
       $("request-form").addEventListener("submit",async event=>{
         event.preventDefault();const button=event.submitter;button.disabled=true;
         try {

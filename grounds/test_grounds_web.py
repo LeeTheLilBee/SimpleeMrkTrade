@@ -542,5 +542,49 @@ class GroundsWebTests(unittest.TestCase):
         self.assertIsNone(scoped["counts"]["open_turnovers"])
 
 
+    def test_new_experience_routes_require_actual_actor_and_exact_property(self):
+        home=self.invoke(
+            "/grounds/api/my-home?property_ref=p1&unit_ref=u1",actor=self.resident,
+        )
+        self.assertEqual(home["status"],"200 OK")
+        self.assertEqual(home["json"]["lease"]["lease_ref"],"l1")
+        self.assertIsNone(home["json"]["rent"]["amount_due_cents"])
+        self.assertEqual(home["headers"]["Cache-Control"],"no-store, private, max-age=0")
+        for path in (
+            "/grounds/api/my-home?property_ref=p1&unit_ref=u1",
+            "/grounds/api/daily?property_ref=p1",
+            "/grounds/api/property-health?property_ref=p1",
+            "/grounds/api/owner-portfolio",
+        ):
+            self.assertEqual(self.invoke(path)["status"],"401 Unauthorized")
+        for actor,path in (
+            (self.other,"/grounds/api/my-home?property_ref=p1&unit_ref=u1"),
+            (self.resident,"/grounds/api/daily?property_ref=p1"),
+            (self.resident,"/grounds/api/property-health?property_ref=p1"),
+            (self.manager,"/grounds/api/owner-portfolio"),
+            (self.outsider,"/grounds/api/daily?property_ref=p1"),
+        ):
+            with self.subTest(role=actor.role,path=path):
+                self.assertEqual(self.invoke(path,actor=actor)["status"],"404 Not Found")
+        self.assertEqual(self.invoke(
+            "/grounds/api/my-home?property_ref=p1&unit_ref=u1&role=owner",
+            actor=self.resident,
+        )["status"],"400 Bad Request")
+        self.assertEqual(self.invoke(
+            "/grounds/api/owner-portfolio?property_ref=p1",actor=self.owner,
+        )["status"],"400 Bad Request")
+        d=self.invoke("/grounds/api/daily?property_ref=p1",actor=self.manager)
+        self.assertEqual(d["status"],"200 OK")
+        self.assertNotIn("description",str(d["json"]))
+        h=self.invoke("/grounds/api/property-health?property_ref=p1",actor=self.owner)
+        self.assertEqual(h["status"],"200 OK")
+        self.assertIsNone(h["json"]["rent_collections"])
+        p=self.invoke("/grounds/api/owner-portfolio",actor=self.owner)
+        self.assertEqual(p["status"],"200 OK")
+        self.assertEqual(p["json"]["total_scope_count"],2)
+        self.assertFalse(p["json"]["money_fields_included"])
+
+
+
 if __name__=="__main__":
     unittest.main()
