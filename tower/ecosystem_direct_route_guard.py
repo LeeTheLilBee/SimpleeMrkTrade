@@ -103,6 +103,24 @@ def _app_registration(app_id: str) -> dict | None:
     return None
 
 
+def _existing_canonical_app_access(app_id: str) -> bool:
+    """Honor separately reviewed app-native Tower handoffs already in production.
+
+    Clouds predates the generic ecosystem receipt helper and has its own
+    Tower-created owner/step-up handoff contract. Do not force it through a
+    second receipt format or weaken its existing checks.
+    """
+    if app_id != "clouds":
+        return False
+    try:
+        from tower.tower_clouds_native_launch import (
+            _tower_clouds_integration_handoff_active,
+        )
+        return _tower_clouds_integration_handoff_active() is True
+    except Exception:
+        return False
+
+
 def _jsonish() -> bool:
     return (
         request.path.endswith(".json")
@@ -158,6 +176,11 @@ def ecosystem_direct_route_guard():
 
         # Even after a future registry promotion, direct product paths remain
         # closed until that app's launch flow writes a server-side receipt.
+        # Clouds already has a separately reviewed native Tower owner handoff.
+        # Preserve that contract instead of creating a competing receipt.
+        if _existing_canonical_app_access(app_id):
+            return None
+
         receipt = session.get(ACCESS_RECEIPT_KEYS[app_id])
         if not isinstance(receipt, dict):
             return _blocked(app_id, "tower_app_access_receipt_required")
