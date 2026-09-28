@@ -55,12 +55,12 @@
 
         <div class="ob-nav-group">
           <div class="ob-nav-group-label">Trade</div>
-          ${navLink(path, "/trade-center", "Trade Center", "trade", false)}
+          ${navLink(path, "/ob/trade-center", "Trade Center", "trade", false)}
         </div>
 
         <div class="ob-nav-group">
           <div class="ob-nav-group-label">Review</div>
-          ${navLink(path, "/review-center", "Review Center", "review", false)}
+          ${navLink(path, "/ob/review-center", "Review Center", "review", false)}
         </div>
 
         <div class="ob-nav-group">
