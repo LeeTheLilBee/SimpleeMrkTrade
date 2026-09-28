@@ -224,6 +224,46 @@ class SQLiteOperationalJournal:
                     event_type, tuple(record)
                 ):
                     raise IntegrityError("reserved ciphertext metadata differs from audit commitment")
+        # SC025: prove every historical backup reservation had an EXACT
+        # acknowledged primary source at the time it was created. A present
+        # primary today cannot retroactively legitimize an older orphaned
+        # backup, and a later damaged primary must not invalidate a genuine
+        # backup created before the damage.
+        state_names = tuple(sorted(_STATES))
+        state_placeholders = ",".join("?" for _ in state_names)
+        for backup in conn.execute("SELECT * FROM backup_intents").fetchall():
+            source = conn.execute(
+                """SELECT request_tag,namespace_digest FROM intents
+                   WHERE namespace_digest=? AND object_ref=? AND ciphertext_sha256=?""",
+                (
+                    backup["namespace_digest"], backup["source_object_ref"],
+                    backup["source_ciphertext_sha256"],
+                ),
+            ).fetchone()
+            if source is None:
+                raise IntegrityError("backup reservation lacks exact primary journal source")
+            reserved = conn.execute(
+                """SELECT seq FROM events WHERE event_type='BACKUP_RESERVED'
+                   AND request_tag=? AND namespace_digest=?""",
+                (backup["request_tag"], backup["namespace_digest"]),
+            ).fetchone()
+            if reserved is None:
+                raise IntegrityError("backup reservation lacks audit event")
+            latest = conn.execute(
+                "SELECT event_type FROM events WHERE request_tag=? "
+                "AND namespace_digest=? AND seq<? AND event_type IN (" +
+                state_placeholders + ") ORDER BY seq DESC LIMIT 1",
+                (
+                    source["request_tag"], source["namespace_digest"],
+                    reserved["seq"], *state_names,
+                ),
+            ).fetchone()
+            if latest is None or latest["event_type"] not in (
+                "WRITE_ACKNOWLEDGED", "RECONCILE_PRESENT",
+            ):
+                raise IntegrityError(
+                    "backup reservation lacks earlier acknowledged primary provenance"
+                )
         # SC007B: event count and immutable incident payloads must match in
         # BOTH directions. Several incidents may share a request tag, so use
         # a multiset rather than accepting a single matching event.
