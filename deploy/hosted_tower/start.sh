@@ -27,7 +27,7 @@ if [[ "${TOWER_OWNER_BETA_OB_PUBLICATION_ENABLED:-0}" == "1" ]]; then
     fi
     export TOWER_APP_PUBLICATION_STATE_PATH="${OBSERVED_PATH}"
     rm -f -- "${OBSERVED_PATH}"
-    "${PYTHON_VALUE}" -u deploy/hosted_tower/ob_publication_observer.py &
+    "${PYTHON_VALUE}" -u -m deploy.hosted_tower.ob_publication_observer &
 fi
 
 exec "${PYTHON_VALUE}" -m gunicorn \
