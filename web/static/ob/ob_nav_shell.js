@@ -19,6 +19,32 @@
     return false;
   }
 
+  // Tower owns the return corridor and validates the current owner session.
+  // last_room is a bounded navigation hint, never an authorization claim.
+  const TOWER_RETURN_PATH = "/tower/return/observatory";
+  const TOWER_RETURN_ROOMS = Object.freeze({
+    "/ob/dashboard": "Dashboard",
+    "/ob/market-map": "Market Map",
+    "/ob/trade-center": "Trade Center",
+    "/ob/review-center": "Review Center",
+    "/ob/owner-console": "Owner Console",
+    "/ob/owner-dashboard": "Owner Dashboard"
+  });
+
+  function towerReturnRoom(path) {
+    if (Object.prototype.hasOwnProperty.call(TOWER_RETURN_ROOMS, path)) {
+      return TOWER_RETURN_ROOMS[path];
+    }
+    if (/^\/ob\/symbol\/[A-Za-z][A-Za-z0-9.-]{0,15}$/.test(path)) {
+      return "Symbol Page";
+    }
+    return "unknown";
+  }
+
+  function towerReturnHref(path) {
+    return TOWER_RETURN_PATH + "?last_room=" + encodeURIComponent(towerReturnRoom(path));
+  }
+
   function navLink(path, href, label, key, locked) {
     const active = isActive(path, key) ? " active" : "";
     const lock = locked ? " locked" : "";
@@ -68,6 +94,14 @@
           ${navLink(path, "/ob/owner-console", "Owner Console", "owner", true)}
         </div>
 
+        <div class="ob-nav-group">
+          <div class="ob-nav-group-label">Tower connection</div>
+          <a class="ob-nav-link ob-return-to-tower" href="${towerReturnHref(path)}" aria-label="Return to Tower Access Home">
+            <span>Return to Tower</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+
         <div class="ob-nav-foot">
           OB shows the signal.<br>
           Tower controls permission.<br>
@@ -102,6 +136,7 @@
       </div>
 
       <div class="ob-route-actions">
+        <a class="ob-route-chip gold ob-return-to-tower" href="${towerReturnHref(path)}" aria-label="Return to Tower Access Home" style="display:inline-flex;align-items:center;text-decoration:none">Tower ↗</a>
         <span class="ob-route-chip gold">Paper Mode</span>
         <span class="ob-route-chip green">Tower Protected</span>
         <span class="ob-route-chip red">Live Auto Locked</span>

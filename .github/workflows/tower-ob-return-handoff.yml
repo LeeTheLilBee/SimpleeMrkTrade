@@ -1,0 +1,44 @@
+name: Tower OB reciprocal owner return
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "web/static/ob/ob_nav_shell.js"
+      - "web/templates/owner_dashboard.html"
+      - "tower/tower_access_home_ui_v2.py"
+      - "tower/test_tower_ob_return_handoff.py"
+      - "tests/ob_return_handoff_node.cjs"
+      - ".github/workflows/tower-ob-return-handoff.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "web/static/ob/ob_nav_shell.js"
+      - "web/templates/owner_dashboard.html"
+      - "tower/tower_access_home_ui_v2.py"
+      - "tower/test_tower_ob_return_handoff.py"
+      - "tests/ob_return_handoff_node.cjs"
+      - ".github/workflows/tower-ob-return-handoff.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  protected-reciprocal-return:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - run: python -m compileall -q tower/tower_access_home_ui_v2.py tower/test_tower_ob_return_handoff.py
+      - run: python -m pytest -q tower/test_tower_ob_return_handoff.py tests/test_ob_canonical_nav_corridors.py
+      - run: node --check web/static/ob/ob_nav_shell.js
+      - run: node tests/ob_return_handoff_node.cjs
