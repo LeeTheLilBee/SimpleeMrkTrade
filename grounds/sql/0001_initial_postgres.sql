@@ -9,6 +9,22 @@ CREATE TABLE IF NOT EXISTS properties (
   owned_on TEXT NOT NULL,
   close_proof_ref TEXT NOT NULL UNIQUE
 );
+CREATE TABLE IF NOT EXISTS property_acquisition_receipts (
+  handoff_ref TEXT PRIMARY KEY,
+  property_ref TEXT NOT NULL UNIQUE REFERENCES properties(property_ref),
+  opportunity_id TEXT NOT NULL,
+  opportunity_revision INTEGER NOT NULL CHECK(opportunity_revision > 0),
+  input_snapshot_digest TEXT NOT NULL CHECK(length(input_snapshot_digest)=64),
+  proposal_fingerprint TEXT NOT NULL CHECK(length(proposal_fingerprint)=64),
+  tower_close_receipt_ref TEXT NOT NULL UNIQUE,
+  title_proof_ref TEXT NOT NULL UNIQUE,
+  encumbrance_review_ref TEXT NOT NULL UNIQUE,
+  receipt_digest TEXT NOT NULL UNIQUE CHECK(length(receipt_digest)=64),
+  accepted_by TEXT NOT NULL,
+  accepted_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS acquisition_receipt_opportunity
+  ON property_acquisition_receipts(opportunity_id,opportunity_revision);
 CREATE TABLE IF NOT EXISTS buildings (
   building_ref TEXT PRIMARY KEY,
   property_ref TEXT NOT NULL REFERENCES properties(property_ref),
