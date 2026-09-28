@@ -66,7 +66,8 @@ class ReadinessStoredProofIntegrityTests(unittest.TestCase):
     def test_changed_stored_receipt_and_local_assertions_are_not_counted(self):
         record = self.add("TOWER_PROTECTED_ACTION")
         for key, value in (
-            ("receipt_ref", "receipt-modified"), ("browser_supplied_authority", True),
+            ("kind", []), ("receipt_ref", "receipt-modified"),
+            ("browser_supplied_authority", True),
             ("authorizes_purchase", True), ("source_opportunity_revision", 999),
             ("authentication_scope", "BROWSER_SUBMITTED"),
             ("record_sha256", "0" * 64),
