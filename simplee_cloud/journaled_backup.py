@@ -88,6 +88,14 @@ class JournaledBackupOperations:
                     next_state="BACKUP_REPLAY_INTEGRITY_FAILURE",
                 )
                 raise IntegrityError("acknowledged backup missing or corrupted") from exc
+            except Exception:
+                # A backend outage is NOT proof that acknowledged backup bytes
+                # are missing. Preserve the ACK; require a new authorized read.
+                self.journal.record_backend_incident(
+                    namespace=scope, request_id=context.request_id,
+                    code="BACKUP_REPLAY_BACKEND_ERROR",
+                )
+                raise
             return self._receipt(existing)
 
         # Source is a bound VLT1; the second SCB1 encryption has its own
@@ -95,9 +103,18 @@ class JournaledBackupOperations:
         self.backup.source._audit(
             action="backup_intent", context=context, namespace=scope,
         )
-        inner = self.backup.source._read_verified(
-            scope, source_object_ref, source_ciphertext_sha256,
-        )
+        try:
+            inner = self.backup.source._read_verified(
+                scope, source_object_ref, source_ciphertext_sha256,
+            )
+        except (ObjectMissing, IntegrityError):
+            raise
+        except Exception:
+            self.journal.record_backend_incident(
+                namespace=scope, request_id=context.request_id,
+                code="BACKUP_SOURCE_BACKEND_ERROR",
+            )
+            raise
         nonce = secrets.token_bytes(12)
         outer = b"SCB1" + nonce + _aesgcm()(self.backup._backup_key).encrypt(
             nonce, inner, _aad(scope, source_object_ref, source_ciphertext_sha256),
@@ -180,7 +197,13 @@ class JournaledBackupOperations:
                 "status": "BACKUP_CORRUPT_HOLD", "backup_receipt": None,
                 "vault_backup_committed": False,
             }
-        # Other provider failures propagate. No terminal state is inferred.
+        except Exception:
+            self.journal.record_backend_incident(
+                namespace=scope, request_id=original_request_id,
+                code="BACKUP_RECONCILE_BACKEND_ERROR",
+            )
+            raise
+        # Other provider failures are reported separately, not terminalized.
         self.journal.backup_transition(
             namespace=scope, request_id=original_request_id,
             next_state="BACKUP_RECONCILE_PRESENT",
@@ -199,5 +222,6 @@ class JournaledBackupOperations:
             "pending_backups": status["pending_backups"],
             "backup_missing_or_corrupt": status["backup_missing_or_corrupt"],
             "incident_count": status["incident_count"],
+            "backend_error_events": status["backend_error_events"],
             "offsite_recovery_certified": False,
         }
