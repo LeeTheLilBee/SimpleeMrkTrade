@@ -358,6 +358,19 @@ def create_app(config=None):
             studio=build_deal_studio(op,opportunities,thesis,records,events),
             records_by_kind=by_kind)
 
+    @app.get("/opportunities/<oid>/decision-packet")
+    @login_required
+    def decision_packet_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            opportunities=list_opportunities(conn)
+            thesis=load_thesis(conn)
+            records=intelligence_records(conn,opportunity_id=oid)
+            events=activity(conn,oid)
+        packet=build_deal_studio(op,opportunities,thesis,records,events)["ic_packet"]
+        return render_template("intelligence_packet.html",op=op,packet=packet)
+
     @app.post("/opportunities/<oid>/intelligence/<kind>")
     @login_required
     def intelligence_record(oid,kind):
