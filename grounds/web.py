@@ -28,6 +28,7 @@ from .communications import GroundsCommunications
 from .leasing import GroundsLeasing
 from .experience import GroundsExperience
 from .work_thread import GroundsWorkThread
+from .move_concierge import GroundsMoveConcierge
 from .maintenance import MaintenanceIntake
 from .operations import GroundsConflict, GroundsOperations
 from .postgres import PostgresGroundsStore
@@ -63,6 +64,8 @@ _ROUTES={
     ("GET","/grounds/api/property-health"),
     ("GET","/grounds/api/owner-portfolio"),
     ("GET","/grounds/api/work-thread"),
+    ("GET","/grounds/api/move-concierge"),
+    ("GET","/grounds/api/move-desk"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
@@ -70,6 +73,7 @@ _ROUTES={
     ("GET","/grounds/api/technicians"),
     ("POST","/grounds/api/work"),
     ("POST","/grounds/api/work-message"),
+    ("POST","/grounds/api/move-task"),
     ("POST","/grounds/api/work/assign"),
     ("POST","/grounds/api/notice-read"),
     ("POST","/grounds/api/appointment/request"),
@@ -239,6 +243,7 @@ class GroundsWebApp:
         self.stewardship=GroundsStewardship(store)
         self.experience=GroundsExperience(store)
         self.work_thread=GroundsWorkThread(store)
+        self.move_concierge=GroundsMoveConcierge(store)
 
     def _resource_ref(self,actor,kind,key,*refs):
         """Opaque stable identifier; session/subject/target bound, never guessable."""
@@ -248,7 +253,7 @@ class GroundsWebApp:
              kind,key,*refs],ensure_ascii=False,separators=(",",":"),
         ).encode("utf-8")
         digest=hmac.new(self.csrf._secret,message,hashlib.sha256).hexdigest()[:40]
-        prefixes={"work":"work_","appointment":"appt_","message":"msg_"}
+        prefixes={"work":"work_","appointment":"appt_","message":"msg_","move_task":"move_"}
         if kind not in prefixes:
             raise GroundsWebConfigurationError("unsupported private create kind")
         return prefixes[kind]+digest
@@ -357,6 +362,17 @@ class GroundsWebApp:
                 return resident_rent_projection(
                     actor,home,document,teller_verifier=self.teller_verifier,
                 )
+            if path=="/grounds/api/move-concierge":
+                q=_query(environ,{"property_ref","unit_ref"})
+                return self.move_concierge.resident_checklist(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                    unit_ref=_ref(q["unit_ref"],"unit_ref"),
+                )
+            if path=="/grounds/api/move-desk":
+                q=_query(environ,{"property_ref"})
+                return self.move_concierge.staff_move_desk(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                )
             if path=="/grounds/api/work-thread":
                 q=_query(environ,{"work_ref"})
                 return self.work_thread.thread(
@@ -442,6 +458,23 @@ class GroundsWebApp:
                     refs.add(ref)
                     safe.append({"staff_ref":ref,"label":label})
                 return {"connected":True,"technicians":safe}
+        if path=="/grounds/api/move-task":
+            _exact(body,{"property_ref","unit_ref","phase","task_ref","status","expected_revision"})
+            property_ref=_ref(body["property_ref"],"property_ref")
+            unit_ref=_ref(body["unit_ref"],"unit_ref")
+            phase=_bounded_text(body["phase"],"phase",24)
+            task_ref=_ref(body["task_ref"],"task_ref")
+            status=_bounded_text(body["status"],"status",32)
+            revision=_revision(body["expected_revision"])
+            event_ref=self._resource_ref(
+                actor,"move_task",_idempotency_key(environ),
+                property_ref,unit_ref,phase,task_ref,
+            )
+            return self.move_concierge.mark_task(
+                actor,property_ref=property_ref,unit_ref=unit_ref,
+                phase=phase,task_ref=task_ref,status=status,
+                expected_revision=revision,event_ref=event_ref,
+            )
         if path=="/grounds/api/work-message":
             _exact(body,{"work_ref","body","audience"})
             work_ref=_ref(body["work_ref"],"work_ref")

@@ -49,6 +49,8 @@ def source_completion_status()->dict:
         "combined_real_postgres_operational_and_tower_gate_regression_source_available":True,
         "role_specific_my_home_daily_and_portfolio_source_available":True,
         "current_lease_scoped_private_maintenance_conversation_source_available":True,
+        "resident_self_reported_move_concierge_source_available":True,
+        "externally_verified_move_completion_and_deposit_authority":False,
         "external_maintenance_message_transport_connected":False,
         "externally_certified_money_and_private_document_actions":False,
         "external_owner_walkthrough_signed_off":False,

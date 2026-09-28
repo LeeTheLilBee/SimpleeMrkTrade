@@ -84,7 +84,7 @@
     for (const id of ["summary","lease-details","work-list","notice-list",
                       "safety-list","leasing-list","physical-list",
                       "my-home-list","daily-list","property-health-list",
-                      "owner-portfolio-list"]) clear($(id));
+                      "owner-portfolio-list","move-list","move-desk-list"]) clear($(id));
     $("rent-message").textContent = "Current Teller invoice not verified. An unavailable amount is not a zero balance or payment confirmation.";
     $("rent-service-status").textContent = "Awaiting Teller";
     $("soulaana-message").textContent = "Checking the current authorized source context.";
@@ -178,6 +178,28 @@
       }
       if (state.me.role === "resident") {
         try {
+          const move = await request("move-concierge?" + qs);
+          if (generation === state.loadGeneration) renderMoveConcierge(move);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("move-list"));
+            $("move-count").textContent = "Unavailable";
+          }
+        }
+      }
+      if (["owner","property_manager"].includes(state.me.role)) {
+        try {
+          const moveDesk = await request("move-desk?" + new URLSearchParams({ property_ref: state.property }));
+          if (generation === state.loadGeneration) renderMoveDesk(moveDesk);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("move-desk-list"));
+            $("move-desk-count").textContent = "Unavailable";
+          }
+        }
+      }
+      if (state.me.role === "resident") {
+        try {
           const home = await request("my-home?" + qs);
           if (generation === state.loadGeneration) renderMyHome(home);
         } catch {
@@ -226,6 +248,67 @@
       $("locked-reason").textContent = error.message;
       message(error.message, true);
     }
+  }
+  function renderMoveConcierge(data) {
+    const target=$("move-list");clear(target);
+    if(data?.source!=="grounds" || data.room!=="move_concierge" ||
+       data.property_ref!==state.property || data.unit_ref!==state.unit ||
+       !Array.isArray(data.phases) || data.deposit_return_approved!==false ||
+       data.keys_received_confirmed!==false) {
+      $("move-count").textContent="Unverified";return;
+    }
+    const generation=state.loadGeneration;
+    $("move-count").textContent="Your planning checklist";
+    for(const phase of data.phases){
+      if(!["move_in","move_out"].includes(phase.phase) || !Array.isArray(phase.tasks)) continue;
+      const panel=el("section",null,"move-phase");
+      panel.append(el("h3",phase.phase==="move_in" ? "Welcome & move-in" : "Planning your move-out"),
+        el("p",phase.self_reported_done_count+" / "+phase.task_count+
+          " self-reported steps recorded; not a staff-approved completion.","footnote"));
+      for(const item of phase.tasks){
+        const tile=el("article",null,"experience-tile");
+        tile.append(el("strong",item.label),el("p",item.hint),
+          el("span",item.status.replaceAll("_"," ")+" · planning revision "+item.revision,"meta"));
+        const next=item.status==="not_started" ? "planned" :
+          item.status==="planned" ? "self_reported_done" : "planned";
+        const label=next==="planned" ? "Record as planned" : "Mark personally reviewed";
+        const payload={
+          property_ref:data.property_ref,unit_ref:data.unit_ref,
+          phase:phase.phase,task_ref:item.task_ref,
+          status:next,expected_revision:item.revision,
+        };
+        const idempotency=newIdempotencyKey();
+        tile.append(makeButton(label,async()=>{
+          if(generation!==state.loadGeneration || state.property!==data.property_ref ||
+             state.unit!==data.unit_ref)return;
+          const result=await request("move-task",payload,idempotency);
+          if(generation!==state.loadGeneration)return;
+          message("Personal planning update recorded" +
+            (result.replayed ? " (same request recovered)." : ".") +
+            " No lease, deposit, key custody or inspection approval was recorded.");
+          await refresh();
+        }));
+        panel.append(tile);
+      }
+      target.append(panel);
+    }
+  }
+  function renderMoveDesk(data) {
+    const target=$("move-desk-list");clear(target);
+    if(data?.source!=="grounds" || data.room!=="move_desk" ||
+       data.property_ref!==state.property || data.resident_identity_included!==false) {
+      $("move-desk-count").textContent="Unverified";return;
+    }
+    $("move-desk-count").textContent="Recorded planning only";
+    experienceTile(target,"Recorded lease end · 60 days",
+      data.active_leases_with_recorded_end_within_60_days,
+      "No automatic renewal or termination conclusion.");
+    experienceTile(target,"Make-ready units",data.units_in_make_ready,
+      "Source lifecycle only, not a certified final inspection.");
+    experienceTile(target,"Unfinished turnovers",data.unfinished_turnovers,
+      "Current recorded turnover workflows.");
+    experienceTile(target,"Open turnover inspections",data.open_recorded_turnover_inspections,
+      "Pending recorded inspections; no self-service sign-off.");
   }
   function experienceTile(target, label, value, detail, urgent = false) {
     const tile = el("article", null, "experience-tile" + (urgent ? " priority" : ""));
@@ -483,6 +566,11 @@
       $("safety-count").textContent = "Checking";
       $("safety-delivery").textContent = "Checking internal triage records. External delivery and dispatch are not confirmed.";
     }
+    $("move-panel").classList.toggle("hidden", data.role !== "resident");
+    $("move-desk-panel").classList.toggle("hidden",
+      !["owner","property_manager"].includes(data.role));
+    $("move-count").textContent="Checking";
+    $("move-desk-count").textContent="Checking";
     $("my-home-panel").classList.toggle("hidden", data.role !== "resident");
     $("daily-panel").classList.toggle("hidden",
       !["owner","property_manager","maintenance_supervisor"].includes(data.role));
