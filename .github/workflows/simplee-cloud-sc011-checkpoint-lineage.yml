@@ -1,0 +1,40 @@
+name: Simplee Cloud SC011 signed external checkpoint lineage source proof
+
+on:
+  push:
+    branches:
+      - simplee-cloud-sc011-checkpoint-lineage
+  pull_request:
+    paths:
+      - 'simplee_cloud/**'
+      - '.github/workflows/simplee-cloud-sc011-checkpoint-lineage.yml'
+      - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC011_CHECKPOINT_LINEAGE.md'
+
+permissions:
+  contents: read
+
+jobs:
+  source-checkpoint-lineage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install synthetic test dependencies only
+        run: python -m pip install 'pytest>=8,<10' 'cryptography>=44,<47'
+      - name: Compile Cloud and Vault envelope sources
+        run: |
+          python -m compileall -q simplee_cloud
+          python -m py_compile vault/real_operations_encrypted_storage.py
+      - name: Run entire Cloud source suite including synthetic lineage faults
+        run: python -m pytest -q simplee_cloud/tests/
+      - name: Publish owner production HOLD evidence report
+        if: always()
+        run: python -m simplee_cloud.owner_preflight >> "$GITHUB_STEP_SUMMARY"

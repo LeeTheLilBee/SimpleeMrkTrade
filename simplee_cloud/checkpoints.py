@@ -111,6 +111,55 @@ def verify_checkpoint(
     return dict(doc)
 
 
+
+def verify_source_checkpoint_sequence(
+    *, checkpoints: list[SignedCheckpoint] | tuple[SignedCheckpoint, ...],
+    pinned_public_keys: Mapping[str, bytes],
+    journal: SQLiteOperationalJournal,
+    mode: str = "disabled",
+) -> dict:
+    """Verify exact contiguous signed history from genesis through claimed tip.
+
+    The caller MUST obtain a COMPLETE history and independently authenticate
+    the offsite custodian's actual latest tip. This function cannot prove that
+    an adversarial sink did not omit an entire newer suffix of valid checkpoints.
+    """
+    if mode != "source_test":
+        raise CloudError("independent checkpoint lineage runtime disabled")
+    if not isinstance(journal, SQLiteOperationalJournal) or not isinstance(
+        checkpoints, (tuple, list)
+    ) or not 1 <= len(checkpoints) <= 256:
+        raise CloudError("bounded signed history and verified local journal required")
+    prior = None
+    prior_event_count = -1
+    seen_refs = set()
+    tip = None
+    for signed in checkpoints:
+        # Validates pinned Ed25519 signer and current local journal prefix.
+        doc = verify_checkpoint(
+            signed, pinned_public_keys=pinned_public_keys, journal=journal,
+        )
+        expected_link = _ZERO if prior is None else prior.sha256
+        if doc["previous_checkpoint_sha256"] != expected_link:
+            raise IntegrityError("external checkpoint lineage gap or fork")
+        if doc["event_count"] <= prior_event_count or doc["checkpoint_ref"] in seen_refs:
+            raise IntegrityError("nonmonotonic or duplicate external checkpoint")
+        seen_refs.add(doc["checkpoint_ref"])
+        prior_event_count = doc["event_count"]
+        prior, tip = signed, doc
+    return {
+        "status": "SOURCE_ONLY_SIGNED_LINEAGE_CHECKED",
+        "checkpoint_count": len(checkpoints),
+        "latest_checkpoint_ref": tip["checkpoint_ref"],
+        "latest_event_count": tip["event_count"],
+        "latest_head_sha256": tip["head_sha256"],
+        "local_prefix_matches": True,
+        "actual_external_latest_attested": False,
+        "independent_offsite_immutability_certified": False,
+        "production_authorized": False,
+    }
+
+
 def seal_source_checkpoint(
     *, journal: SQLiteOperationalJournal,
     key_id: str,
