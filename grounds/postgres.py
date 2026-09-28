@@ -25,6 +25,7 @@ from .storage import GroundsStoreBase
 MIGRATION_ID="grounds-postgres-baseline-0001"
 _REQUIRED_COLUMNS={
     "properties":("property_ref","owned_on","close_proof_ref"),
+    "property_acquisition_receipts":("handoff_ref","property_ref","opportunity_id","opportunity_revision","proposal_fingerprint","tower_close_receipt_ref","receipt_digest"),
     "buildings":("building_ref","property_ref"),
     "units":("unit_ref","property_ref","building_ref","lifecycle"),
     "leases":("lease_ref","property_ref","unit_ref","resident_ref","status","revision"),
@@ -40,7 +41,7 @@ _REQUIRED_COLUMNS={
 _REQUIRED_INDEXES=frozenset((
     "lease_scope_identity","one_active_lease_per_unit",
     "one_active_appointment_per_work","one_unfinished_turnover_per_unit",
-    "resource_event_one_reversal",
+    "resource_event_one_reversal","acquisition_receipt_opportunity",
 ))
 
 class PostgresGroundsConfigurationError(ValueError):
