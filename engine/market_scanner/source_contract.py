@@ -56,7 +56,7 @@ class Observation:
 def iso_period(raw: object, *, annual_allowed: bool = False) -> str:
     value = str(raw or "").strip()
     if annual_allowed and re.fullmatch(r"\d{4}", value):
-        value += "-01-01"
+        return value  # Source annual period is a year, never an invented daily timestamp.
     if not _DATE.fullmatch(value):
         raise ValueError("Source period missing or malformed")
     try:
