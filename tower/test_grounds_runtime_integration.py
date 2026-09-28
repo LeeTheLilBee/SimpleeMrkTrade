@@ -163,9 +163,6 @@ def test_runtime_attestation_revocation_or_staleness_closes_health(monkeypatch):
     install_fake_grounds_access(monkeypatch)
     provider = install_runtime_provider(monkeypatch)
     receiver = runtime.create_certified_grounds_receiver()
-    provider.provider_attestation = lambda: {
-        **provider.provider_attestation(),
-    }
     original = provider.provider_attestation
     stale = original()
     stale["expires_at_epoch"] = int(time.time()) - 1
