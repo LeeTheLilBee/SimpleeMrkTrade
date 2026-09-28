@@ -184,6 +184,12 @@ def hosted_tower_runtime_manifest() -> dict[str, object]:
         "critical_routes_present": all(
             route_manifest.values()
         ),
+        # Set only after the canonical renderer/view/template registration
+        # succeeds at startup (tower.ob_product_landing); route presence
+        # by itself is not functional renderer verification.
+        "ob_product_renderer_verified": (
+            app.extensions.get("tower_ob_product_landing") is True
+        ),
         "owner_rehearsal": {
             "exact_source_routes_registered": rehearsal_routes_present,
             "explicit_feature_enabled": rehearsal_enabled,
