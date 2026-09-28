@@ -52,6 +52,7 @@ def source_completion_status()->dict:
         "resident_self_reported_move_concierge_source_available":True,
         "historical_delivery_exception_desk_source_available":True,
         "resident_minimal_record_access_history_source_available":True,
+        "current_lease_resident_completion_confirmation_source_available":True,
         "real_privacy_retention_and_security_audit_certified":False,
         "source_level_accessibility_regression_available":True,
         "actual_provider_retry_and_human_accessibility_certified":False,
