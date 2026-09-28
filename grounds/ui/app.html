@@ -62,6 +62,12 @@
                 <button type="submit" class="primary">Submit maintenance request</button>
               </form>
             </section>
+            <section id="safety-panel" class="glass panel hidden" aria-labelledby="safety-heading">
+              <div class="section-line"><h2 id="safety-heading">Human safety desk</h2><span id="safety-count" class="pill priority">Checking</span></div>
+              <p class="footnote">This is an internal triage queue, not emergency-service dispatch. Contact emergency services directly when an immediate life-safety threat exists.</p>
+              <div id="safety-list" class="stack" aria-live="polite"></div>
+              <p id="safety-delivery" class="footnote">Provider delivery and after-hours escalation have not been certified.</p>
+            </section>
             <section class="glass panel" aria-labelledby="work-heading">
               <div class="section-line"><h2 id="work-heading">Maintenance</h2><span id="work-count" class="pill muted">—</span></div>
               <div id="work-list" class="stack"><p class="footnote">Loading authorized work…</p></div>
