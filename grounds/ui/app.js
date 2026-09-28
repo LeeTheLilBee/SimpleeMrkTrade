@@ -84,7 +84,8 @@
     for (const id of ["summary","lease-details","work-list","notice-list",
                       "safety-list","leasing-list","physical-list",
                       "my-home-list","daily-list","property-health-list",
-                      "owner-portfolio-list","move-list","move-desk-list"]) clear($(id));
+                      "owner-portfolio-list","move-list","move-desk-list",
+                      "delivery-list"]) clear($(id));
     $("rent-message").textContent = "Current Teller invoice not verified. An unavailable amount is not a zero balance or payment confirmation.";
     $("rent-service-status").textContent = "Awaiting Teller";
     $("soulaana-message").textContent = "Checking the current authorized source context.";
@@ -149,6 +150,18 @@
             $("safety-count").textContent = "Unavailable";
             $("safety-delivery").textContent =
               "Current human triage status could not be retrieved. Do not assume this property is clear or that anyone has been contacted.";
+          }
+        }
+      }
+      if (["owner","property_manager","maintenance_supervisor"].includes(state.me.role)) {
+        try {
+          const desk = await request("delivery-desk?" + new URLSearchParams({ property_ref: state.property }));
+          if (generation === state.loadGeneration) renderDeliveryDesk(desk);
+        } catch {
+          if (generation === state.loadGeneration) {
+            clear($("delivery-list"));
+            $("delivery-count").textContent = "Unavailable";
+            $("delivery-status").textContent = "Delivery evidence could not be retrieved. Do not infer that any event was externally delivered.";
           }
         }
       }
@@ -248,6 +261,39 @@
       $("locked-reason").textContent = error.message;
       message(error.message, true);
     }
+  }
+  function renderDeliveryDesk(data) {
+    const target=$("delivery-list");clear(target);
+    if(data?.source!=="grounds" || data.room!=="delivery_desk" ||
+       data.property_ref!==state.property || !Array.isArray(data.visible_items) ||
+       data.provider_currently_connected!==false || data.retry_dispatch_connected!==false){
+      $("delivery-count").textContent="Unverified";return;
+    }
+    $("delivery-count").textContent=data.visible_provider_review_count+" of "+
+      data.visible_count+" shown need provider review";
+    $("delivery-status").textContent=
+      data.total_local_intents+" historical local event intents; "+
+      data.not_historically_proven_delivered+
+      " have no independently verified historical notification-delivered receipt. "+
+      "No current provider, external retry, legal service or emergency dispatch is connected.";
+    if(!data.visible_items.length)
+      target.append(el("p","No local communication intent is recorded for this property.","footnote"));
+    for(const item of data.visible_items){
+      const tile=el("article",null,"experience-tile"+(item.requires_provider_review?" priority":""));
+      tile.append(el("strong",item.event_kind.replaceAll("_"," ")),
+        el("p","Resource "+item.resource_ref+" · revision "+item.source_revision),
+        el("span","Latest verified historical notification: "+
+          item.latest_verified_historical_notification_state.replaceAll("_"," ")+" · "+
+          "Human escalation: "+
+          item.latest_verified_historical_human_escalation_state.replaceAll("_"," "),"meta"),
+        el("p",item.requires_provider_review ?
+          "Provider review needed. Grounds cannot retry or confirm delivery here." :
+          "Historical provider state recorded; current connectivity is still unverified.","footnote"));
+      target.append(tile);
+    }
+    if(data.truncated)
+      target.append(el("p","Only the most recent "+data.visible_limit+
+        " local intents are shown; this is not the complete provider ledger.","footnote"));
   }
   function renderMoveConcierge(data) {
     const target=$("move-list");clear(target);
@@ -547,6 +593,9 @@
     } else if (data.units) { summary.append(stat("RECORDED UNITS", data.units.length)); }
     const hasSafetyDesk = ["owner","property_manager","maintenance_supervisor"].includes(data.role);
     $("safety-panel").classList.toggle("hidden", !hasSafetyDesk);
+    $("delivery-panel").classList.toggle("hidden", !hasSafetyDesk);
+    $("delivery-count").textContent="Checking";
+    $("delivery-status").textContent="Checking verified historical receipts. Current delivery remains unconfirmed.";
     const hasLeasingDesk = ["owner","property_manager","leasing_agent"].includes(data.role);
     $("leasing-panel").classList.toggle("hidden", !hasLeasingDesk);
     const hasPhysicalDesk = ["owner","property_manager","maintenance_supervisor"].includes(data.role);
