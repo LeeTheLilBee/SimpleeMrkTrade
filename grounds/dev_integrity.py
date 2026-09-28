@@ -19,7 +19,7 @@ REQUIRED_TABLES=frozenset((
     "event_outbox","inspections","inspection_findings","inspection_resolutions",
     "turnovers","turnover_inspections","turnover_events",
     "property_notices","notice_reads","appointment_events","emergency_reviews",
-    "work_entry_preferences","lease_member_events","work_evidence_refs",
+    "work_entry_preferences","lease_member_events","work_evidence_refs",\n    "property_acquisition_receipts","event_delivery_receipts",
 ))
 
 # Detect old local developer schemas without treating CREATE TABLE IF NOT EXISTS
@@ -37,7 +37,7 @@ REQUIRED_COLUMNS={
                             "reverses_event_ref"),
     "emergency_reviews":("work_ref","reviewed_by","urgency"),
     "turnovers":("turnover_ref","property_ref","unit_ref","lease_ref","state"),
-    "turnover_inspections":("turnover_ref","inspection_ref"),
+    "turnover_inspections":("turnover_ref","inspection_ref"),\n    "property_acquisition_receipts":("handoff_ref","property_ref","opportunity_id",\n                                     "opportunity_revision","receipt_digest"),\n    "event_delivery_receipts":("receipt_ref","event_ref","property_ref",\n                               "receipt_kind","delivery_state","receipt_digest"),
 }
 
 
