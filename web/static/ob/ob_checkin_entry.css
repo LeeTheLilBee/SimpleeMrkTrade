@@ -1,0 +1,78 @@
+/* OBUX106–110 · check-in-first entrance, no separate OB landing route */
+html.ob-entry-pending body[data-ob-room="dashboard"] #ob-app {
+  filter: blur(15px);
+  pointer-events: none;
+  user-select: none;
+}
+body[data-ob-room="dashboard"] #obArrivalRoot:empty { display: none; }
+.ob-entry-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+  background: rgba(1, 9, 17, .86);
+  backdrop-filter: blur(18px);
+  color: #e5edf4;
+}
+.ob-entry-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 25% 68%, rgba(32, 151, 144, .17), transparent 51%),
+    radial-gradient(ellipse at 77% 18%, rgba(42, 87, 134, .28), transparent 52%),
+    radial-gradient(circle at 58% 45%, rgba(105, 202, 198, .13), transparent 32%);
+}
+.ob-entry-dialog {
+  position: relative;
+  width: min(100%, 630px);
+  max-height: min(90vh, 880px);
+  overflow-y: auto;
+  border: 1px solid rgba(154, 226, 214, .33);
+  border-radius: 32px;
+  background: linear-gradient(145deg, rgba(4, 22, 33, .97), rgba(5, 13, 26, .98));
+  box-shadow: 0 28px 95px rgba(0,0,0,.65), inset 0 1px rgba(222,255,245,.07);
+  padding: clamp(22px, 5vw, 43px);
+}
+.ob-entry-kicker { font-size: 11px; letter-spacing: .16em; color: #9ce8d6; font-weight: 750; }
+.ob-entry-orbit {
+  display: grid; place-items: center;
+  margin: 24px 0 20px; width: 80px; height: 80px;
+  border: 1px solid rgba(156,232,214,.54); border-radius: 50%;
+  box-shadow: inset 0 0 28px rgba(47, 173, 168, .15), 0 0 50px rgba(44, 139, 146, .22);
+  font-size: 34px; color: #9ce8d6;
+}
+.ob-entry-dialog h2 { margin: 0 0 12px; max-width: 550px; font-size: clamp(29px, 6vw, 45px); letter-spacing: -.045em; line-height: 1.08; }
+.ob-entry-dialog p { max-width: 550px; color: #c6dadc; line-height: 1.6; }
+.ob-entry-options { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0; border: 0; padding: 0; }
+.ob-entry-options legend { width: 100%; margin-bottom: 10px; font-size: 13px; color: #e5edf4; font-weight: 750; }
+.ob-entry-options label { display: inline-flex; align-items: center; gap: 7px; padding: 11px 14px; border: 1px solid rgba(156,232,214,.28); border-radius: 999px; background: rgba(10, 52, 61, .58); cursor: pointer; font-size: 13px; }
+.ob-entry-options label:has(input:checked) { background: rgba(45,140,132,.42); border-color: #9ce8d6; }
+.ob-entry-options input { accent-color: #73c5bc; }
+.ob-entry-check { display: flex; align-items: start; gap: 9px; margin: 20px 0; color: #e5edf4; font-size: 13px; line-height: 1.5; }
+.ob-entry-check input { margin-top: 3px; accent-color: #73c5bc; }
+.ob-entry-progress { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: 26px 0 19px; }
+.ob-entry-progress span { width: 22px; height: 5px; border-radius: 999px; background: rgba(183,219,216,.27); }
+.ob-entry-progress span[aria-current="step"] { background: #9ce8d6; width: 38px; }
+.ob-entry-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ob-entry-actions button {
+  min-height: 42px; border: 1px solid rgba(156,232,214,.5); border-radius: 999px;
+  padding: 10px 17px; background: rgba(28,105,105,.36); color: #e5edf4; cursor: pointer;
+  font: inherit; font-size: 13px; font-weight: 700;
+}
+.ob-entry-actions button[data-next] { background: #a8e4d5; color: #08262b; }
+.ob-entry-actions button:disabled { opacity: .5; cursor: not-allowed; }
+.ob-entry-actions button:focus-visible, .ob-entry-options input:focus-visible, .ob-entry-check input:focus-visible { outline: 3px solid #c5fff0; outline-offset: 4px; }
+.ob-entry-meta { margin-left: auto; color: #b6d1d2; font-size: 11px; }
+.ob-entry-error { color: #ffc9cd !important; font-weight: 700; }
+@media (max-width: 520px) {
+  .ob-entry-dialog { border-radius: 24px; padding: 23px 18px; }
+  .ob-entry-meta { width: 100%; margin: 3px 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ob-entry-screen, .ob-entry-screen * { animation: none !important; transition: none !important; }
+}
+@media (forced-colors: active) { .ob-entry-dialog { border: 2px solid CanvasText; } }
