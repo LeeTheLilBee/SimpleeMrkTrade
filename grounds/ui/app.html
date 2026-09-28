@@ -39,7 +39,7 @@
           <div class="main-column">
             <section id="rent-panel" class="glass panel hidden" aria-labelledby="rent-heading">
               <div class="section-line"><h2 id="rent-heading">Rent &amp; your lease</h2><span class="pill muted">Teller source</span></div>
-              <p id="rent-message">Verified rent information is not yet connected. Nothing is due based on this screen.</p>
+              <p id="rent-message">Teller has not supplied a current verified invoice. An unavailable amount is not a zero balance or proof that a payment was made.</p>
               <div class="lease-fields" id="lease-details"></div>
               <p class="footnote">A checkout button will appear only after Tower and Teller certify the invoice and payment handoff.</p>
             </section>
@@ -99,7 +99,7 @@
             <section class="glass panel" aria-labelledby="status-heading">
               <h2 id="status-heading">Connected services</h2>
               <div class="service"><span>Property records</span><span id="property-state" class="pill muted">Checking</span></div>
-              <div class="service"><span>Rent &amp; payments</span><span class="pill muted">Awaiting Teller</span></div>
+              <div class="service"><span>Rent &amp; payments</span><span id="rent-service-status" class="pill muted">Awaiting Teller</span></div>
               <div class="service"><span>File uploads</span><span class="pill muted">Awaiting Vault</span></div>
               <div class="service"><span>Messages and dispatch</span><span class="pill muted">Not connected</span></div>
               <p class="footnote">Grounds will never represent a draft action as a delivered message, payment or emergency response.</p>
