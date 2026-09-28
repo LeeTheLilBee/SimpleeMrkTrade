@@ -30,6 +30,7 @@ from .experience import GroundsExperience
 from .work_thread import GroundsWorkThread
 from .move_concierge import GroundsMoveConcierge
 from .delivery_desk import GroundsDeliveryDesk
+from .privacy_log import GroundsResidentPrivacyLog
 from .maintenance import MaintenanceIntake
 from .operations import GroundsConflict, GroundsOperations
 from .postgres import PostgresGroundsStore
@@ -68,6 +69,7 @@ _ROUTES={
     ("GET","/grounds/api/move-concierge"),
     ("GET","/grounds/api/move-desk"),
     ("GET","/grounds/api/delivery-desk"),
+    ("GET","/grounds/api/privacy-history"),
     ("GET","/grounds/api/work"),
     ("GET","/grounds/api/appointment"),
     ("GET","/grounds/api/appointments"),
@@ -247,6 +249,7 @@ class GroundsWebApp:
         self.work_thread=GroundsWorkThread(store)
         self.move_concierge=GroundsMoveConcierge(store)
         self.delivery_desk=GroundsDeliveryDesk(store)
+        self.privacy=GroundsResidentPrivacyLog(store)
 
     def _resource_ref(self,actor,kind,key,*refs):
         """Opaque stable identifier; session/subject/target bound, never guessable."""
@@ -267,6 +270,41 @@ class GroundsWebApp:
         start_response(status,_NO_CACHE+[("Content-Type",content_type),
                                          ("Content-Length",str(len(raw)))])
         return [raw]
+
+    def _record_private_access(self,actor,method,path,environ,result):
+        # The server, not the client, selects what it audits. Every audit
+        # write independently rechecks CURRENT active original lease/member.
+        # If private audit persistence fails, do not release the private read.
+        if method!="GET" or actor.role!="resident":
+            return
+        kinds={
+            "/grounds/api/workspace":"workspace",
+            "/grounds/api/my-home":"my_home",
+            "/grounds/api/rent":"rent",
+            "/grounds/api/work":"work_detail",
+            "/grounds/api/work-thread":"work_thread",
+            "/grounds/api/move-concierge":"move_concierge",
+            "/grounds/api/privacy-history":"privacy_history",
+        }
+        kind=kinds.get(path)
+        if not kind:return
+        if path in ("/grounds/api/work","/grounds/api/work-thread"):
+            property_ref=result["property_ref"]
+            unit_ref=result["unit_ref"]
+            resource_ref=result["work_ref"]
+        elif path=="/grounds/api/privacy-history":
+            property_ref=result["property_ref"]
+            unit_ref=result["unit_ref"]
+            resource_ref=unit_ref
+        else:
+            q=_query(environ,{"property_ref","unit_ref"})
+            property_ref=_ref(q["property_ref"],"property_ref")
+            unit_ref=_ref(q["unit_ref"],"unit_ref")
+            resource_ref=unit_ref
+        self.privacy.record_read(
+            actor,property_ref=property_ref,unit_ref=unit_ref,
+            resource_kind=kind,resource_ref=resource_ref,
+        )
 
     def __call__(self,environ,start_response):
         method=environ.get("REQUEST_METHOD","")
@@ -312,6 +350,7 @@ class GroundsWebApp:
             else:
                 body=None
             result=self.dispatch(method,path,actor,environ,body)
+            self._record_private_access(actor,method,path,environ,result)
             if path=="/grounds":
                 raw=(_UI/"app.html").read_text(encoding="utf-8")
                 raw=raw.replace("__GROUNDS_CSRF__",html.escape(self.csrf.token(actor),quote=True))
@@ -364,6 +403,12 @@ class GroundsWebApp:
                 document=self.teller_document_source(actor,home)
                 return resident_rent_projection(
                     actor,home,document,teller_verifier=self.teller_verifier,
+                )
+            if path=="/grounds/api/privacy-history":
+                q=_query(environ,{"property_ref","unit_ref"})
+                return self.privacy.my_history(
+                    actor,property_ref=_ref(q["property_ref"],"property_ref"),
+                    unit_ref=_ref(q["unit_ref"],"unit_ref"),
                 )
             if path=="/grounds/api/move-concierge":
                 q=_query(environ,{"property_ref","unit_ref"})
