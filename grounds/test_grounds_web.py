@@ -418,5 +418,51 @@ class GroundsWebTests(unittest.TestCase):
         self.assertEqual(self.invoke("/grounds/api/unknown",actor=self.resident)["status"],"404 Not Found")
 
 
+    def test_staff_safety_desk_requires_exact_current_tower_property_and_never_dispatches(self):
+        unknown=self.invoke("/grounds/api/safety-desk?property_ref=p1")
+        self.assertEqual(unknown["status"],"401 Unauthorized")
+        self.assertEqual(self.invoke(
+            "/grounds/api/safety-desk?property_ref=p1",actor=self.resident,
+        )["status"],"404 Not Found")
+        self.assertEqual(self.invoke(
+            "/grounds/api/safety-desk?property_ref=p1",actor=self.outsider,
+        )["status"],"404 Not Found")
+        self.assertEqual(self.invoke(
+            "/grounds/api/safety-desk?property_ref=p1&staff_ref=bad",actor=self.manager,
+        )["status"],"400 Bad Request")
+        self.assertEqual(self.invoke(
+            "/grounds/api/safety-desk?property_ref=p1&property_ref=p2",actor=self.manager,
+        )["status"],"400 Bad Request")
+        self.ops.submit_maintenance(
+            self.resident,work_ref="urgent-for-safety-desk",
+            intake=MaintenanceIntake(
+                "p1","u1","safety","Synthetic urgent incident",True,"contact_first",
+            ),
+        )
+        result=self.invoke(
+            "/grounds/api/safety-desk?property_ref=p1",actor=self.manager,
+        )
+        self.assertEqual(result["status"],"200 OK")
+        desk=result["json"]
+        self.assertEqual(desk["property_ref"],"p1")
+        self.assertEqual(desk["unreviewed_urgent_count"],1)
+        self.assertEqual(desk["queue"][0]["work_ref"],"urgent-for-safety-desk")
+        self.assertNotIn("description",str(desk))
+        self.assertFalse(desk["recipient_delivery_proven"])
+        self.assertFalse(desk["human_on_call_escalation_confirmed"])
+        self.assertEqual(result["headers"]["Cache-Control"],"no-store, private, max-age=0")
+        reviewed=self.post(
+            "/grounds/api/urgency/review",self.manager,
+            {"work_ref":"urgent-for-safety-desk","assessed_urgency":"priority"},
+        )
+        self.assertEqual(reviewed["status"],"201 Created")
+        after=self.invoke(
+            "/grounds/api/safety-desk?property_ref=p1",actor=self.manager,
+        )["json"]
+        self.assertEqual(after["unreviewed_urgent_count"],0)
+        self.assertGreaterEqual(after["pending_local_event_intents"],2)
+        self.assertFalse(after["recipient_delivery_proven"])
+
+
 if __name__=="__main__":
     unittest.main()
