@@ -35,6 +35,7 @@ _REQUIRED_COLUMNS={
     "notice_reads":("notice_ref","subject_ref","property_ref","unit_ref","lease_ref"),
     "work_appointments":("appointment_ref","work_ref","requested_by","state","revision"),
     "event_outbox":("event_ref","property_ref","event_kind","source_revision"),
+    "event_delivery_receipts":("receipt_ref","event_ref","property_ref","receipt_kind","delivery_state","provider_receipt_ref","receipt_digest"),
     "work_resource_events":("event_ref","work_ref","action","resource_type"),
     "grounds_schema_migrations":("version","migration_id"),
 }
@@ -42,6 +43,7 @@ _REQUIRED_INDEXES=frozenset((
     "lease_scope_identity","one_active_lease_per_unit",
     "one_active_appointment_per_work","one_unfinished_turnover_per_unit",
     "resource_event_one_reversal","acquisition_receipt_opportunity",
+    "delivery_receipts_property","delivery_receipts_event",
 ))
 
 class PostgresGroundsConfigurationError(ValueError):
