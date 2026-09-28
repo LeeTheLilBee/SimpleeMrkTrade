@@ -91,6 +91,10 @@ def closing_review_snapshot(op, *, today=None):
         "TITLE_OWNERSHIP_LIEN_AND_TRANSFER_NOT_INDEPENDENTLY_VERIFIED",
         "SETTLEMENT_AND_CLOSING_AGENT_COMPLETION_NOT_VERIFIED",
     ]
+    reviews=[]
+    for review in reversed(deepcopy(op.get("closing_reviews",[]))):
+        review["display_state"]=("CURRENT_RECORDED_REVIEW" if review.get("recorded_opportunity_revision")==op["version"] else "HISTORICAL_OPPORTUNITY_VERSION")
+        reviews.append(review)
     return {
         "opportunity_id":op["id"],"opportunity_revision":op["version"],
         "vertical":op["vertical"],"lifecycle":op["lifecycle"],
@@ -104,7 +108,7 @@ def closing_review_snapshot(op, *, today=None):
         "financial_status":evaluation["financials"]["status"],
         "financing_options":financing_rows,
         "insurance_records":insurance_rows,
-        "historical_reviews":list(reversed(deepcopy(op.get("closing_reviews",[])))),
+        "historical_reviews":reviews,
         "teller_money_ready":"UNKNOWN","teller_management_ready":"UNKNOWN",
         "tower_closing_authorized":False,"title_transfer_verified":False,
         "bank_commitment_verified":False,"insurance_in_force":"UNKNOWN",
