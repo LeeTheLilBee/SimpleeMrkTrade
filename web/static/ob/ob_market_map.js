@@ -22,6 +22,9 @@
   let previousSnapshot =
     null;
 
+  let focusedRegion = null;
+  let selectedSymbol = null;
+
 
   let latestFeedEventAt =
     null;
@@ -821,81 +824,43 @@
   }
 
 
-  function positionPoint(
-    index,
-    total,
-    seed
-  ) {
-    const safeTotal =
-      Math.max(
-        1,
-        total
-      );
+  // Stable layout hashes have NO market-data meaning.
+  function skyUnit(value) {
+    let hash = 2166136261;
+    const raw = String(value || "");
+    for (let i = 0; i < raw.length; i += 1) {
+      hash ^= raw.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0) / 4294967295;
+  }
 
-
-    const angle =
-      (
-        (
-          360
-          /
-          safeTotal
-        )
-        *
-        index
-        +
-        seed * 29
-        -
-        90
-      )
-      *
-      Math.PI
-      /
-      180;
-
-
-    const ring =
-      (
-        index % 3 === 0
-      )
-        ? 25
-        : (
-            index % 3 === 1
-              ? 34
-              : 42
-          );
-
-
+  function positionPoint(index, total, seed, symbol) {
+    const key = seed + ":" + symbol;
+    const angle = (index * 137.507764 + skyUnit(key) * 115 + seed * 41)
+      * Math.PI / 180;
+    const radius = 11 + Math.sqrt((index + 1) / (Math.max(total, 1) + 1))
+      * 27 + skyUnit(key + ":distance") * 7;
     return {
-      x:
-        Math.max(
-          7,
-          Math.min(
-            93,
-            50
-            +
-            Math.cos(angle)
-            *
-            ring
-          )
-        ),
-
-      y:
-        Math.max(
-          10,
-          Math.min(
-            90,
-            50
-            +
-            Math.sin(angle)
-            *
-            ring
-            *
-            0.72
-          )
-        ),
+      x: Math.max(9, Math.min(91, 50 + Math.cos(angle) * radius)),
+      y: Math.max(12, Math.min(88, 50 + Math.sin(angle) * radius * 0.72)),
     };
   }
 
+  function regionPlacement(index, total, key) {
+    const columns = Math.max(1, Math.min(4, Math.ceil(Math.sqrt(total * 1.6))));
+    const rows = Math.ceil(total / columns);
+    const cellW = 100 / columns;
+    const cellH = 100 / rows;
+    const dx = (skyUnit(key + ":x") - 0.5) * cellW * 0.12;
+    const dy = (skyUnit(key + ":y") - 0.5) * cellH * 0.12;
+    return {
+      x: Math.max(0, (index % columns) * cellW + dx + cellW * 0.035),
+      y: Math.max(0, Math.floor(index / columns) * cellH + dy + cellH * 0.025),
+      width: cellW * 0.93,
+      height: cellH * 0.95,
+    };
+  }
 
   function flagsFor(
     symbol,
@@ -948,7 +913,9 @@
     index,
     total,
     seed,
-    sets
+    sets,
+    sectorIndex,
+    regionName
   ) {
     const symbol =
       symbolFrom(
@@ -960,7 +927,8 @@
       positionPoint(
         index,
         total,
-        seed
+        seed,
+        symbol
       );
 
 
@@ -1025,7 +993,7 @@
       (
         symbol
         +
-        " · open source-backed Symbol Page"
+        " · select source-backed star for spotlight"
       )
     );
 
@@ -1033,9 +1001,7 @@
     button.addEventListener(
       "click",
       function () {
-        openSymbol(
-          symbol
-        );
+        spotlightSymbol(symbol, sectorIndex, regionName, flags);
       }
     );
 
@@ -1118,7 +1084,8 @@
   function createConstellation(
     sector,
     sectorIndex,
-    sets
+    sets,
+    sectorTotal
   ) {
     const safe =
       safeObject(
@@ -1136,8 +1103,15 @@
         "article"
       );
 
-    card.className =
-      "market-map-constellation";
+    card.className = "market-map-constellation";
+    card.dataset.regionIndex = String(sectorIndex);
+    const name = text(safe.name || safe.sector, "Unnamed source sector");
+    const placement = regionPlacement(sectorIndex, sectorTotal, name);
+    card.style.setProperty("--region-x", placement.x + "%");
+    card.style.setProperty("--region-y", placement.y + "%");
+    card.style.setProperty("--region-width", placement.width + "%");
+    card.style.setProperty("--region-height", placement.height + "%");
+    card.style.setProperty("--nebula-hue", String(177 + Math.round(skyUnit(name) * 32)));
 
 
     const head =
@@ -1229,6 +1203,16 @@
     );
 
 
+    const explore = document.createElement("button");
+    explore.type = "button";
+    explore.className = "market-map-region-button";
+    explore.textContent = "Explore region";
+    explore.setAttribute("aria-label", "Explore source sector " + name);
+    explore.setAttribute("aria-pressed", "false");
+    explore.addEventListener("click", function () {
+      focusRegion(sectorIndex, name, symbols.length, safe);
+    });
+    title.appendChild(explore);
     head.appendChild(
       title
     );
@@ -1258,7 +1242,9 @@
             index,
             symbols.length,
             sectorIndex + 1,
-            sets
+            sets,
+            sectorIndex,
+            name
           );
 
         field.appendChild(
