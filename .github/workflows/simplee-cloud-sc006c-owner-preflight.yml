@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc006c-owner-preflight-report
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-cloud-sc006c-owner-preflight.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC006C_OWNER_PREFLIGHT.md'
 

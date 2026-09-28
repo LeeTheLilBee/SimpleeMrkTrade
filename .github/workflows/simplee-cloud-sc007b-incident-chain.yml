@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc007b-incident-chain-binding
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-cloud-sc007b-incident-chain.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC007B_INCIDENT_CHAIN.md'
 

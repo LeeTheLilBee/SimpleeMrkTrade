@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc004b-bound-invocation-source
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-sovereign-cloud-sc004b.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC004B_BOUND_PORT.md'
 

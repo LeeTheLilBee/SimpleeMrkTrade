@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc004-signed-grant-contract
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-sovereign-cloud-sc004.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC004_SIGNED_GRANT_HANDOFF.md'
 

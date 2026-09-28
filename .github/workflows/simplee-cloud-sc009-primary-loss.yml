@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc009-primary-loss-restore-source
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-cloud-sc009-primary-loss.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC009_PRIMARY_LOSS_REHEARSAL.md'
       - 'vault/real_operations_encrypted_storage.py'

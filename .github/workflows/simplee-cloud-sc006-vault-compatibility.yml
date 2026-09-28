@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - simplee-cloud-sc006-vault-compatibility-readiness
+  # Historical specialist check: full package PR regression is consolidated.
   pull_request:
     paths:
-      - 'simplee_cloud/**'
       - '.github/workflows/simplee-cloud-sc006-vault-compatibility.yml'
       - 'docs/SIMPLEE_SOVEREIGN_CLOUD_SC006_MERGED_SOURCE_READINESS.md'
       - 'vault/real_operations_encrypted_storage.py'
