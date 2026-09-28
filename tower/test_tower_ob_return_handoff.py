@@ -71,7 +71,7 @@ def test_owner_return_preserves_session_with_bounded_receipt(client, room):
         assert session["tower_authenticated"] is True
     home = client.get(ACCESS_HOME_PATH)
     assert home.status_code == 200
-    assert "Returned from The Observatory" in home.get_data(as_text=True)
+    assert "Verified return receipt" in home.get_data(as_text=True)
 
 
 @pytest.mark.parametrize("unsafe", [
