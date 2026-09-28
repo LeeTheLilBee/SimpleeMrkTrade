@@ -678,5 +678,23 @@ class GroundsWebTests(unittest.TestCase):
         )["status"],"404 Not Found")
 
 
+    def test_delivery_desk_requires_current_property_staff_and_never_claims_dispatch(self):
+        path="/grounds/api/delivery-desk?property_ref=p1"
+        self.assertEqual(self.invoke(path)["status"],"401 Unauthorized")
+        self.assertEqual(self.invoke(path,actor=self.resident)["status"],"404 Not Found")
+        self.assertEqual(self.invoke(path,actor=self.outsider)["status"],"404 Not Found")
+        self.assertEqual(self.invoke(path+"&role=owner",actor=self.manager)["status"],"400 Bad Request")
+        result=self.invoke(path,actor=self.manager)
+        self.assertEqual(result["status"],"200 OK")
+        self.assertEqual(result["headers"]["Cache-Control"],"no-store, private, max-age=0")
+        view=result["json"]
+        self.assertFalse(view["provider_currently_connected"])
+        self.assertFalse(view["retry_dispatch_connected"])
+        self.assertFalse(view["emergency_dispatch_confirmed"])
+        self.assertEqual(view["source"],"grounds")
+        self.assertEqual(view["room"],"delivery_desk")
+        self.assertNotIn("resident_ref",str(view))
+
+
 if __name__=="__main__":
     unittest.main()
