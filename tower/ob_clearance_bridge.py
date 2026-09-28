@@ -228,7 +228,7 @@ def evaluate_ob_route_clearance(
             'risk_score': max(current_risk_score, 70),
             'required_actions': ['upgrade_clearance', 'owner_review'],
             'human_reason': 'User clearance is not high enough for this OB route/action.',
-            'soulaana_translation': f'Soulaana: {route.get('label')} needs {required_level} clearance. This user only has {user_clearance_level}.',
+            'soulaana_translation': f"Soulaana: {route.get('label')} needs {required_level} clearance. This user only has {user_clearance_level}.",
             'metadata': {
                 'user_id': user_id,
                 'route_key': route_key,
@@ -248,7 +248,7 @@ def evaluate_ob_route_clearance(
         'risk_score': current_risk_score,
         'required_actions': [],
         'human_reason': 'The Tower allowed this OB route/action.',
-        'soulaana_translation': f'Soulaana: {route.get('label')} is cleared for {action}. Keep moving, but stay inside the mapped corridor.',
+        'soulaana_translation': f"Soulaana: {route.get('label')} is cleared for {action}. Keep moving, but stay inside the mapped corridor.",
         'metadata': {
             'user_id': user_id,
             'role': role,
