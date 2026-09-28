@@ -61,6 +61,12 @@ def _backup_tag(namespace: str, request_id: str) -> str:
     return hashlib.sha256(("backup:v1:" + namespace + ":" + request_id).encode()).hexdigest()
 
 
+def _read_tag(namespace: str, request_id: str) -> str:
+    if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", request_id):
+        raise CloudError("invalid read request identity")
+    return hashlib.sha256(("read:v1:" + namespace + ":" + request_id).encode()).hexdigest()
+
+
 def _reservation_hash(kind: str, values: tuple) -> str:
     """Bind the COMPLETE immutable reservation row into the event hash chain."""
     material = json.dumps([kind, *values], separators=(",", ":"), ensure_ascii=True).encode()
@@ -157,6 +163,11 @@ class SQLiteOperationalJournal:
                 backup_size INTEGER NOT NULL, key_reference TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS read_intents (
+                request_tag TEXT PRIMARY KEY, namespace_digest TEXT NOT NULL,
+                object_ref TEXT NOT NULL, ciphertext_sha256 TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )""")
             # A physical ref belongs to one logical request inside ONE opaque
             # namespace. The same random ref may exist in another namespace.
             # Do not silently accept an existing source journal with aliases.
@@ -171,7 +182,7 @@ class SQLiteOperationalJournal:
                 )
             except sqlite3.IntegrityError as exc:
                 raise IntegrityError("existing journal has aliased physical references") from exc
-            for table in ("intents", "events", "incidents", "backup_intents"):
+            for table in ("intents", "events", "incidents", "backup_intents", "read_intents"):
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_update
                     BEFORE UPDATE ON {table} BEGIN SELECT RAISE(ABORT, 'append-only record'); END""")
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_delete
@@ -207,6 +218,7 @@ class SQLiteOperationalJournal:
         # and demand exactly one reservation event per canonical intent.
         for table, event_type in (
             ("intents", "WRITE_RESERVED"), ("backup_intents", "BACKUP_RESERVED"),
+            ("read_intents", "READ_RESERVED"),
         ):
             records = conn.execute("SELECT * FROM " + table).fetchall()
             count = conn.execute(
@@ -224,6 +236,70 @@ class SQLiteOperationalJournal:
                     event_type, tuple(record)
                 ):
                     raise IntegrityError("reserved ciphertext metadata differs from audit commitment")
+        # SC028: every historical read reservation must also bind an EXACT
+        # acknowledged primary source at the moment the read was reserved.
+        # Later primary damage does not rewrite a past verified read, but a
+        # physical object or later ACK cannot retroactively legitimize one.
+        state_names = tuple(sorted(_STATES))
+        state_placeholders = ",".join("?" for _ in state_names)
+        for read in conn.execute("SELECT * FROM read_intents").fetchall():
+            source = conn.execute(
+                """SELECT request_tag,namespace_digest FROM intents
+                   WHERE namespace_digest=? AND object_ref=? AND ciphertext_sha256=?""",
+                (
+                    read["namespace_digest"], read["object_ref"],
+                    read["ciphertext_sha256"],
+                ),
+            ).fetchone()
+            if source is None:
+                raise IntegrityError("read reservation lacks exact primary journal source")
+            reserved = conn.execute(
+                """SELECT seq FROM events WHERE event_type='READ_RESERVED'
+                   AND request_tag=? AND namespace_digest=?""",
+                (read["request_tag"], read["namespace_digest"]),
+            ).fetchone()
+            if reserved is None:
+                raise IntegrityError("read reservation lacks audit event")
+            latest = conn.execute(
+                "SELECT event_type FROM events WHERE request_tag=? "
+                "AND namespace_digest=? AND seq<? AND event_type IN (" +
+                state_placeholders + ") ORDER BY seq DESC LIMIT 1",
+                (
+                    source["request_tag"], source["namespace_digest"],
+                    reserved["seq"], *state_names,
+                ),
+            ).fetchone()
+            if latest is None or latest["event_type"] not in (
+                "WRITE_ACKNOWLEDGED", "RECONCILE_PRESENT",
+            ):
+                raise IntegrityError(
+                    "read reservation lacks earlier acknowledged primary provenance"
+                )
+        for event in conn.execute(
+            """SELECT seq,event_type,request_tag,namespace_digest FROM events
+               WHERE event_type IN ('read_intent','read_verified')
+               ORDER BY seq"""
+        ).fetchall():
+            read = conn.execute(
+                """SELECT 1 FROM read_intents
+                   WHERE request_tag=? AND namespace_digest=?""",
+                (event["request_tag"], event["namespace_digest"]),
+            ).fetchone()
+            if read is None:
+                raise IntegrityError("read audit event lacks exact reserved read scope")
+            if event["event_type"] == "read_verified":
+                prior = conn.execute(
+                    """SELECT 1 FROM events WHERE event_type='read_intent'
+                       AND request_tag=? AND namespace_digest=? AND seq<?
+                       ORDER BY seq DESC LIMIT 1""",
+                    (
+                        event["request_tag"], event["namespace_digest"],
+                        event["seq"],
+                    ),
+                ).fetchone()
+                if prior is None:
+                    raise IntegrityError("verified read lacks preceding read intent")
+
         # SC025: prove every historical backup reservation had an EXACT
         # acknowledged primary source at the time it was created. A present
         # primary today cannot retroactively legitimize an older orphaned
@@ -434,6 +510,37 @@ class SQLiteOperationalJournal:
             self._verify(conn)
             self._require_acknowledged_primary(conn, namespace, object_ref, digest)
 
+    def reserve_read(self, *, namespace: str, request_id: str,
+                     object_ref: str, digest: str) -> str:
+        """Durably bind one logical read ID to one exact acknowledged source."""
+        self._scope(namespace)
+        if not valid_object_ref(object_ref) or not valid_sha256(digest):
+            raise CloudError("invalid bound read ref/digest")
+        tag = _read_tag(namespace, request_id)
+        with self._tx() as conn:
+            # Close the SC027 preflight/read race inside the same write lock
+            # that creates the immutable read reservation.
+            self._require_acknowledged_primary(
+                conn, namespace, object_ref, digest,
+            )
+            record = conn.execute(
+                "SELECT * FROM read_intents WHERE request_tag=?", (tag,),
+            ).fetchone()
+            if record is not None:
+                if (
+                    record["namespace_digest"], record["object_ref"],
+                    record["ciphertext_sha256"],
+                ) != (namespace, object_ref, digest):
+                    raise CloudError("read idempotency conflict; new request required")
+                return "READ_RESERVED_EXISTING"
+            values = (tag, namespace, object_ref, digest, _now())
+            conn.execute("INSERT INTO read_intents VALUES(?,?,?,?,?)", values)
+            self._append(
+                conn, event="READ_RESERVED", tag=tag, scope=namespace,
+                code=_reservation_hash("READ_RESERVED", values),
+            )
+            return "READ_RESERVED_NEW"
+
     def reserve_backup(self, *, namespace: str, request_id: str,
                        source_object_ref: str, source_digest: str,
                        backup_ref: str, backup_digest: str, backup_size: int,
@@ -556,8 +663,12 @@ class SQLiteOperationalJournal:
 
     def record_read_incident(self, *, namespace: str, request_id: str):
         self._scope(namespace)
-        tag = _request_tag(namespace, request_id)
+        tag = _read_tag(namespace, request_id)
         with self._tx() as conn:
+            if conn.execute(
+                "SELECT 1 FROM read_intents WHERE request_tag=?", (tag,),
+            ).fetchone() is None:
+                raise CloudError("read incident requires reserved read scope")
             self._incident(conn, tag=tag, scope=namespace, code="READ_INTEGRITY_FAILURE")
 
     def record_backend_incident(self, *, namespace: str, request_id: str,
@@ -572,8 +683,16 @@ class SQLiteOperationalJournal:
         if code not in allowed:
             raise CloudError("unexpected backend incident classification")
         self._scope(namespace)
-        tag = _request_tag(namespace, request_id)
+        tag = (
+            _read_tag(namespace, request_id)
+            if code == "PRIMARY_READ_BACKEND_ERROR"
+            else _request_tag(namespace, request_id)
+        )
         with self._tx() as conn:
+            if code == "PRIMARY_READ_BACKEND_ERROR" and conn.execute(
+                "SELECT 1 FROM read_intents WHERE request_tag=?", (tag,),
+            ).fetchone() is None:
+                raise CloudError("read backend incident requires reserved read scope")
             self._incident(conn, tag=tag, scope=namespace, code=code)
 
     def record_backup_incident(self, *, namespace: str, request_id: str):
@@ -593,8 +712,24 @@ class SQLiteOperationalJournal:
         ref = event["tower_decision_ref"]
         if not isinstance(ref, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,128}", ref):
             raise CloudError("invalid decision reference")
-        tag = _request_tag(scope, event["request_id"])
+        tag = (
+            _read_tag(scope, event["request_id"])
+            if event["event"] in ("read_intent", "read_verified")
+            else _request_tag(scope, event["request_id"])
+        )
         with self._tx() as conn:
+            if event["event"] in ("read_intent", "read_verified") and conn.execute(
+                """SELECT 1 FROM read_intents
+                   WHERE request_tag=? AND namespace_digest=?""",
+                (tag, scope),
+            ).fetchone() is None:
+                raise CloudError("read audit event requires reserved exact read scope")
+            if event["event"] == "read_verified" and conn.execute(
+                """SELECT 1 FROM events WHERE event_type='read_intent'
+                   AND request_tag=? AND namespace_digest=?""",
+                (tag, scope),
+            ).fetchone() is None:
+                raise CloudError("read verified requires earlier read intent")
             self._append(conn, event=event["event"], tag=tag, scope=scope)
 
     @staticmethod
