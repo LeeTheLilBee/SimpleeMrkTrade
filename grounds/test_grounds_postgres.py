@@ -16,7 +16,9 @@ from pathlib import Path
 from uuid import uuid4
 
 from grounds.access import AccessDenied
+from grounds.acquisition_handoff import GroundsAcquisitionHandoff, SCHEMA_VERSION as CLOSE_SCHEMA
 from grounds.communications import GroundsCommunications
+from grounds.delivery import GroundsDeliveryReceipts, SCHEMA_VERSION as DELIVERY_SCHEMA
 from grounds.maintenance import MaintenanceIntake
 from grounds.operations import GroundsConflict, GroundsOperations
 from grounds.postgres import (
@@ -162,6 +164,65 @@ class PostgresGroundsTests(unittest.TestCase):
                          "404 Not Found")
         self.assertEqual(call("/grounds/api/appointments?work_ref="+work,self.resident)["status"],
                          "404 Not Found")
+
+    def test_post_close_and_delivery_receipt_ledgers_execute_on_real_postgres(self):
+        close_property="pc"+uuid4().hex[:16]
+        close_owner=fixture_scope("owner","owner",(close_property,))
+        close=GroundsAcquisitionHandoff(self.store)
+        payload={
+            "schema_version":CLOSE_SCHEMA,"source":"tower","audience":"grounds",
+            "kind":"multifamily_post_close","handoff_ref":"h-"+uuid4().hex,
+            "owner_ref":"owner","property_ref":close_property,
+            "property_name":"Synthetic Closed Property","owned_on":"2026-09-28",
+            "opportunity_id":"opp-"+uuid4().hex[:12],"opportunity_revision":3,
+            "input_snapshot_digest":"a"*64,"proposal_fingerprint":"b"*64,
+            "vertical_id":"multifamily","proposed_recipient":"grounds",
+            "closing_status":"completed","ownership_status":"verified_owner",
+            "encumbrance_status":"verified_recorded",
+            "tower_close_receipt_ref":"close-"+uuid4().hex,
+            "title_proof_ref":"title-"+uuid4().hex,
+            "encumbrance_review_ref":"enc-"+uuid4().hex,
+            "issued_at":990,"expires_at":1100,
+        }
+        accepted=close.accept_multifamily_close(
+            close_owner,signed_handoff=payload,tower_verifier=lambda doc:doc,now=1000,
+        )
+        self.assertTrue(accepted["accepted"])
+        self.assertTrue(close.accept_multifamily_close(
+            close_owner,signed_handoff=payload,tower_verifier=lambda doc:doc,now=1000,
+        )["replayed"])
+
+        work="delivery-"+uuid4().hex
+        self.ops.submit_maintenance(
+            self.resident,work_ref=work,
+            intake=MaintenanceIntake(
+                self.id,self.u,"plumbing","PG delivery receipt check",False,"contact_first",
+            ),
+        )
+        event=next(
+            item for item in self.safety.pending_event_intents(
+                self.manager,property_ref=self.id,
+            )
+            if item["resource_ref"]==work and item["event_kind"]=="work_changed"
+        )
+        delivery=GroundsDeliveryReceipts(self.store)
+        receipt={
+            "schema_version":DELIVERY_SCHEMA,"source":"tower_delivery_gateway",
+            "audience":"grounds","kind":"notification_delivery",
+            "receipt_ref":"receipt-"+uuid4().hex,
+            "event_ref":event["event_ref"],"property_ref":self.id,
+            "event_kind":event["event_kind"],"resource_ref":work,
+            "source_revision":event["source_revision"],
+            "provider_receipt_ref":"provider-"+uuid4().hex,
+            "delivery_state":"delivered","observed_at":990,"expires_at":1100,
+        }
+        saved=delivery.record(
+            receipt,receipt_verifier=lambda doc:doc,now=1000,
+        )
+        self.assertEqual(saved["delivery_state"],"delivered")
+        self.assertEqual(
+            delivery.property_status(self.manager,property_ref=self.id)["delivered_event_count"],1,
+        )
 
     def test_readiness_checks_actual_postgres_and_explicit_receiver_health(self):
         class SyntheticTowerReceiver:
