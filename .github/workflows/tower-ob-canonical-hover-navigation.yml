@@ -1,0 +1,39 @@
+name: Tower OB canonical hover navigation
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "web/static/ob/ob_nav_shell.js"
+      - "tower/ob_route_guard.py"
+      - "tests/test_ob_canonical_nav_corridors.py"
+      - ".github/workflows/tower-ob-canonical-hover-navigation.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "web/static/ob/ob_nav_shell.js"
+      - "tower/ob_route_guard.py"
+      - "tests/test_ob_canonical_nav_corridors.py"
+      - ".github/workflows/tower-ob-canonical-hover-navigation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  mapped-and-private:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Check exact menu destinations and default-deny guard
+        run: python -m unittest discover -s tests -p 'test_ob_canonical_nav_corridors.py' -v
+      - name: Parse hover navigation JavaScript
+        run: node --check web/static/ob/ob_nav_shell.js
