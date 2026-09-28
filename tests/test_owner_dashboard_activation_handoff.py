@@ -1,3 +1,5 @@
+# Historical OBUX21–25 source expectations use the exact archived pre-redesign files.
+# Current owner-only product source, routes and security are checked separately.
 from pathlib import Path
 
 from tower.app_registry import (
@@ -21,11 +23,11 @@ OWNER_CONSOLE_TEMPLATE = (
 ).read_text(encoding="utf-8")
 
 OWNER_CONTRACT = (
-    ROOT / "web/static/ob/ob_owner_dashboard_contract.js"
+    ROOT / "docs/historical/obux_v25_ob_owner_dashboard_contract.js"
 ).read_text(encoding="utf-8")
 
 SOULAANA = (
-    ROOT / "web/static/ob/ob_owner_dashboard_soulaana.js"
+    ROOT / "docs/historical/obux_v25_ob_owner_dashboard_soulaana.js"
 ).read_text(encoding="utf-8")
 
 TOWER_OWNER_WEB = (

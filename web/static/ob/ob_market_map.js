@@ -22,6 +22,10 @@
   let previousSnapshot =
     null;
 
+  let focusedRegion = null;
+  let focusedRegionKey = null;
+  let selectedSymbol = null;
+
 
   let latestFeedEventAt =
     null;
@@ -821,81 +825,115 @@
   }
 
 
-  function positionPoint(
-    index,
-    total,
-    seed
-  ) {
-    const safeTotal =
-      Math.max(
-        1,
-        total
-      );
+  // Stable layout hashes have NO market-data meaning.
+  function skyUnit(value) {
+    let hash = 2166136261;
+    const raw = String(value || "");
+    for (let i = 0; i < raw.length; i += 1) {
+      hash ^= raw.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0) / 4294967295;
+  }
 
-
-    const angle =
-      (
-        (
-          360
-          /
-          safeTotal
-        )
-        *
-        index
-        +
-        seed * 29
-        -
-        90
-      )
-      *
-      Math.PI
-      /
-      180;
-
-
-    const ring =
-      (
-        index % 3 === 0
-      )
-        ? 25
-        : (
-            index % 3 === 1
-              ? 34
-              : 42
-          );
-
-
+  function positionPoint(index, total, seed, symbol) {
+    const key = seed + ":" + symbol;
+    const angle = (index * 137.507764 + skyUnit(key) * 115 + seed * 41)
+      * Math.PI / 180;
+    const radius = 11 + Math.sqrt((index + 1) / (Math.max(total, 1) + 1))
+      * 27 + skyUnit(key + ":distance") * 7;
     return {
-      x:
-        Math.max(
-          7,
-          Math.min(
-            93,
-            50
-            +
-            Math.cos(angle)
-            *
-            ring
-          )
-        ),
-
-      y:
-        Math.max(
-          10,
-          Math.min(
-            90,
-            50
-            +
-            Math.sin(angle)
-            *
-            ring
-            *
-            0.72
-          )
-        ),
+      x: Math.max(9, Math.min(91, 50 + Math.cos(angle) * radius)),
+      y: Math.max(12, Math.min(88, 50 + Math.sin(angle) * radius * 0.72)),
     };
   }
 
+  function regionPlacement(index, total, key) {
+    const columns = Math.max(1, Math.min(4, Math.ceil(Math.sqrt(total * 1.6))));
+    const rows = Math.ceil(total / columns);
+    const cellW = 100 / columns;
+    const cellH = 100 / rows;
+    const dx = (skyUnit(key + ":x") - 0.5) * cellW * 0.12;
+    const dy = (skyUnit(key + ":y") - 0.5) * cellH * 0.12;
+    return {
+      x: Math.max(0, (index % columns) * cellW + dx + cellW * 0.035),
+      y: Math.max(0, Math.floor(index / columns) * cellH + dy + cellH * 0.025),
+      width: cellW * 0.93,
+      height: cellH * 0.95,
+    };
+  }
+
+  // This spotlight only interprets existing marketMapContract membership.
+  function showWholeSky() {
+    focusedRegion = null;
+    focusedRegionKey = null;
+    selectedSymbol = null;
+    applySkyFocus();
+    const drawer = byId("marketMapFocus");
+    if (drawer) drawer.hidden = true;
+    const open = byId("marketMapFocusOpen");
+    if (open) open.hidden = true;
+  }
+
+  function applySkyFocus() {
+    const mount = byId("marketMapSky");
+    if (!mount) return;
+    mount.querySelectorAll(".market-map-constellation").forEach(function (card) {
+      const match = focusedRegion !== null
+        && Number(card.dataset.regionIndex) === focusedRegion;
+      card.classList.toggle("is-focused", match);
+      card.classList.toggle("is-muted", focusedRegion !== null && !match);
+      const btn = card.querySelector(".market-map-region-button");
+      if (btn) btn.setAttribute("aria-pressed", match ? "true" : "false");
+    });
+    const reset = byId("marketMapReset");
+    if (reset) reset.hidden = focusedRegion === null;
+  }
+
+  function focusRegion(index, name, count, sector) {
+    focusedRegion = index;
+    focusedRegionKey = name;
+    selectedSymbol = null;
+    applySkyFocus();
+    const drawer = byId("marketMapFocus");
+    if (!drawer) return;
+    drawer.hidden = false;
+    const projected = safeObject(sector);
+    const meta = [projected.strength, projected.mood, projected.crowding]
+      .filter(value => value !== null && value !== undefined && value !== "")
+      .map(String);
+    setText("marketMapFocusTitle", name, "Source sector");
+    setText("marketMapFocusDescription",
+      count + " source-backed symbols. "
+      + (meta.length ? "Projected context: " + meta.join(" · ") + ". " : "")
+      + "Location and nebula color are presentation, not performance.");
+    const open = byId("marketMapFocusOpen");
+    if (open) open.hidden = true;
+  }
+
+  function spotlightSymbol(symbol, index, regionName, flags) {
+    focusedRegion = index;
+    focusedRegionKey = regionName;
+    selectedSymbol = symbol;
+    applySkyFocus();
+    const drawer = byId("marketMapFocus");
+    if (!drawer) return;
+    drawer.hidden = false;
+    const labels = [
+      flags.position && "Position",
+      flags.signal && "Signal",
+      flags.candidate && "Candidate",
+      flags.watch && "Saved",
+    ].filter(Boolean);
+    setText("marketMapFocusTitle", symbol, "Symbol");
+    setText("marketMapFocusDescription",
+      "Source region: " + regionName + ". "
+      + (labels.length ? "Explicit membership: " + labels.join(" · ") + ". "
+        : "No special membership asserted. ")
+      + "Choose Open Symbol Page for canonical details. No trade happens here.");
+    const open = byId("marketMapFocusOpen");
+    if (open) open.hidden = false;
+  }
 
   function flagsFor(
     symbol,
@@ -948,7 +986,9 @@
     index,
     total,
     seed,
-    sets
+    sets,
+    sectorIndex,
+    regionName
   ) {
     const symbol =
       symbolFrom(
@@ -960,7 +1000,8 @@
       positionPoint(
         index,
         total,
-        seed
+        seed,
+        symbol
       );
 
 
@@ -1025,7 +1066,7 @@
       (
         symbol
         +
-        " · open source-backed Symbol Page"
+        " · select source-backed star for spotlight"
       )
     );
 
@@ -1033,9 +1074,7 @@
     button.addEventListener(
       "click",
       function () {
-        openSymbol(
-          symbol
-        );
+        spotlightSymbol(symbol, sectorIndex, regionName, flags);
       }
     );
 
@@ -1118,7 +1157,8 @@
   function createConstellation(
     sector,
     sectorIndex,
-    sets
+    sets,
+    sectorTotal
   ) {
     const safe =
       safeObject(
@@ -1136,8 +1176,15 @@
         "article"
       );
 
-    card.className =
-      "market-map-constellation";
+    card.className = "market-map-constellation";
+    card.dataset.regionIndex = String(sectorIndex);
+    const name = text(safe.name || safe.sector, "Unnamed source sector");
+    const placement = regionPlacement(sectorIndex, sectorTotal, name);
+    card.style.setProperty("--region-x", placement.x + "%");
+    card.style.setProperty("--region-y", placement.y + "%");
+    card.style.setProperty("--region-width", placement.width + "%");
+    card.style.setProperty("--region-height", placement.height + "%");
+    card.style.setProperty("--nebula-hue", String(177 + Math.round(skyUnit(name) * 32)));
 
 
     const head =
@@ -1229,6 +1276,16 @@
     );
 
 
+    const explore = document.createElement("button");
+    explore.type = "button";
+    explore.className = "market-map-region-button";
+    explore.textContent = "Explore region";
+    explore.setAttribute("aria-label", "Explore source sector " + name);
+    explore.setAttribute("aria-pressed", "false");
+    explore.addEventListener("click", function () {
+      focusRegion(sectorIndex, name, symbols.length, safe);
+    });
+    title.appendChild(explore);
     head.appendChild(
       title
     );
@@ -1258,7 +1315,9 @@
             index,
             symbols.length,
             sectorIndex + 1,
-            sets
+            sets,
+            sectorIndex,
+            name
           );
 
         field.appendChild(
@@ -1397,6 +1456,7 @@
       ||
       !sectors.length
     ) {
+      showWholeSky();
       renderEmptySky(
         mount,
         projection
@@ -1406,20 +1466,31 @@
     }
 
 
-    sectors.forEach(
-      function (
-        sector,
-        index
-      ) {
-        mount.appendChild(
-          createConstellation(
-            sector,
-            index,
-            sets
-          )
-        );
-      }
-    );
+    // Retain the same *named* region across canonical reorder; never focus the wrong sector.
+    if (focusedRegionKey !== null) {
+      const actual = sectors.findIndex(function (sector) {
+        const source = safeObject(sector);
+        return text(source.name || source.sector, "Unnamed source sector") === focusedRegionKey;
+      });
+      if (actual < 0) showWholeSky();
+      else focusedRegion = actual;
+    }
+    const columns = Math.max(1, Math.min(4, Math.ceil(Math.sqrt(sectors.length * 1.6))));
+    const rows = Math.ceil(sectors.length / columns);
+    mount.style.setProperty("--sky-height", Math.max(760, rows * 276) + "px");
+    sectors.forEach(function (sector, index) {
+      mount.appendChild(createConstellation(sector, index, sets, sectors.length));
+    });
+    if (focusedRegion !== null && focusedRegion >= sectors.length) {
+      showWholeSky();
+    } else if (focusedRegion !== null) {
+      const sector = safeObject(sectors[focusedRegion]);
+      const name = text(sector.name || sector.sector, "Unnamed source sector");
+      const objects = sectorSymbols(sector);
+      const found = selectedSymbol && objects.some(item => symbolFrom(item) === selectedSymbol);
+      if (found) spotlightSymbol(selectedSymbol, focusedRegion, name, flagsFor(selectedSymbol, sets));
+      else focusRegion(focusedRegion, name, objects.length, sector);
+    }
   }
 
 
@@ -1673,6 +1744,17 @@
 
 
   function boot() {
+    const reset = byId("marketMapReset");
+    const drawerReset = byId("marketMapFocusReset");
+    const open = byId("marketMapFocusOpen");
+    if (reset) reset.addEventListener("click", showWholeSky);
+    if (drawerReset) drawerReset.addEventListener("click", showWholeSky);
+    if (open) open.addEventListener("click", function () {
+      if (selectedSymbol) openSymbol(selectedSymbol);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && focusedRegion !== null) showWholeSky();
+    });
     render(
       "initial-load"
     );

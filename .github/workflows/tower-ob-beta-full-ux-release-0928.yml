@@ -1,0 +1,115 @@
+name: Tower OB beta full UX release acceptance
+on:
+  push:
+    branches:
+      - tower-ob-beta-full-ux-release-0928
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - 'web/templates/*.html'
+      - 'web/static/ob/ob_market_map.*'
+      - 'web/static/ob/ob_trade_center.*'
+      - 'web/static/ob/ob_trade_center_modes.js'
+      - 'web/static/ob/ob_review_center.*'
+      - 'web/static/ob/ob_review_center_obux.css'
+      - 'web/static/ob/ob_owner_console.*'
+      - 'web/static/ob/ob_owner_console_obux.css'
+      - 'web/static/ob/ob_owner_dashboard.*'
+      - 'web/static/ob/ob_owner_dashboard_contract.js'
+      - 'web/static/ob/ob_owner_dashboard_soulaana.js'
+      - 'tests/test_tower_ob_all_room_visual_integration_0928.py'
+      - '.github/workflows/tower-ob-beta-full-ux-release-0928.yml'
+permissions:
+  contents: read
+jobs:
+  source-parity-and-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout independently sealed BuyBox receiver for existing Tower full suite
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 3e265c79f61c02ba149c53734757d8d9fd501608
+          path: receiver-source
+          persist-credentials: false
+      - name: Checkout exact Grounds role contract for full diagnostic
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: ec4919ad1a35503c54d2fb907c8bf08ed573583d
+          path: grounds-source
+          persist-credentials: false
+      - name: Checkout exact Observatory account namespace exporter
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: d3383a0e81ce94b484420b860d7f16e9ef96d98f
+          path: obai-source
+          persist-credentials: false
+      - name: Checkout exact OB Manual Live request fixture
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: badef7fab30f93be6878d89b28f4863cfa6fc202
+          path: obml-request-source
+          persist-credentials: false
+      - name: Checkout exact independent BuyBox readiness producer
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 728219b4fe1175dbbdb6387c578fc798e1262ef0
+          path: source-buybox-pinned
+          persist-credentials: false
+      - name: Checkout exact independent OB Manual Live phase contract
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: cced86992fabdb6a91de3fb3e48a1f1f4aaf0478
+          path: pinned-obml-phase-source
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test and existing runtime dependencies
+        run: |
+          python -m pip install pytest tzdata flask requests yfinance
+          python -m pip install -r source-buybox-pinned/buybox/requirements.txt
+      - name: Syntax of local source / no hosted alias
+        run: |
+          python -m py_compile web/ob_observation_temporal_validity.py web/ob_market_time_authority.py web/ob_multi_simulation_harness.py web/ob_capital_simulation_authority.py web/ob_multi_simulation_replay.py web/ob_on_demand_simulation_session.py web/ob_explicit_owner_rehearsal_input.py web/ob_local_owner_rehearsal_ui.py scripts/ob_local_owner_rehearsal.py scripts/ob_local_owner_rehearsal_web.py
+          node --check web/static/ob/ob_local_owner_rehearsal.js
+          python -m json.tool examples/obsim_owner_synthetic_hold_example.json >/dev/null
+      - name: Canonical original local rehearsal and Tower guarded source regressions
+        run: |
+          python -m pytest -q tests/test_obsim016_020_on_demand_session.py tests/test_obsim021_025_local_report_no_clobber.py tests/test_obsim026_030_source_freshness_and_owner_due.py tests/test_obsim031_035_private_archive_read_verification.py tests/test_obsim036_040_explicit_owner_rehearsal_input.py tests/test_obsim041_045_local_terminal_owner_rehearsal.py tests/test_obsim046_050_loopback_owner_rehearsal_ui.py tests/test_obsim051_055_source_release_isolation.py tests/test_tower_ob_web_route_enforcement.py
+      - name: Canonical release gate and hosted owner authority audit
+        run: python -m pytest -q tests/test_tower_canonical_full_gate_audit.py
+      - name: JS syntax and modern source surface, plus guarded Tower routing
+        run: |
+          node --check web/static/ob/ob_checkin_entry.js
+          node --check web/static/ob/ob_dashboard.js
+          node --check web/static/ob/ob_dashboard_projection.js
+          node --check web/static/ob/ob_session_state.js
+          node --check web/static/ob/ob_global_session_shell.js
+          python -m pytest -q tests/test_tower_ob_modern_dashboard_retirement_0928.py tests/test_tower_ob_web_route_enforcement.py
+      - name: All six room + separate owner Dashboard visual source integrity
+        run: |
+          node --check web/static/ob/ob_market_map.js
+          node --check web/static/ob/ob_trade_center.js
+          node --check web/static/ob/ob_trade_center_modes.js
+          node --check web/static/ob/ob_review_center.js
+          node --check web/static/ob/ob_review_center_projection.js
+          node --check web/static/ob/ob_owner_console.js
+          node --check web/static/ob/ob_owner_console_projection.js
+          node --check web/static/ob/ob_owner_dashboard.js
+          node --check web/static/ob/ob_owner_dashboard_contract.js
+          node --check web/static/ob/ob_owner_dashboard_soulaana.js
+          python -m pytest -q tests/test_tower_ob_all_room_visual_integration_0928.py tests/test_market_map_obux031_surface.py tests/test_market_map_obux034_interaction.py
+      # A full-suite failure is now a real failed CI check, not green by masking.
+      - name: Full Tower test suite (blocking)
+        run: python -m pytest -q tests

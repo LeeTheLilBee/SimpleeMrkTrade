@@ -1,657 +1,1633 @@
-// OBUX021_OWNER_DASHBOARD_INTELLIGENCE_CONTRACT
+
+// OBUX091–095 — OWNER INTELLIGENCE COCKPIT CONTRACT
+//
+// OWNER ONLY.
+//
+// Existing canonical engine projection is the market-truth authority.
+// This contract interprets; it does not create a second engine.
+//
+// Critical:
+//   ranking evidence may be displayed.
+//   source-provided candidate status may be displayed.
+//   OB does NOT silently select an option contract for execution.
+//
 (() => {
   "use strict";
 
-  const VERSION = "OBUX021_OWNER_DASHBOARD_INTELLIGENCE_CONTRACT";
+  const VERSION =
+    "OBUX091_095_OWNER_INTELLIGENCE_CONTRACT";
 
-  const ENDPOINTS = Object.freeze({
-    account_experience: "/ob/account-experience.json",
-    engine_trust: "/ob/engine-feed-trust-labels.json",
-    manual_live_readiness: "/ob/manual-live-operator-confidence-readiness-checkpoint.json",
-    private_beta: "/ob/private-beta-launch-control.json"
-  });
+  const ENDPOINTS =
+    Object.freeze({
+      engine_trust:
+        "/ob/engine-feed-trust-labels.json",
 
-  const BOUNDARIES = Object.freeze({
-    owner_only: true,
-    read_only_intelligence: true,
-    owner_dashboard_route_registered: false,
-    tower_permission_mutation_enabled: false,
-    broker_api_enabled: false,
-    broker_order_submission_enabled: false,
-    real_capital_movement_enabled: false,
-    auto_execution_enabled: false,
-    live_auto_locked: true,
-    gp066_advanced: false
-  });
+      manual_live_readiness:
+        "/ob/manual-live-operator-confidence-readiness-checkpoint.json",
 
-  const POLICY_MISSIONS = Object.freeze([
-    {
-      account_id: "ob_acct_trust",
-      mission_id: "trust",
-      label: "Trust",
-      display_label: "Trust OB",
-      purpose: "Protect and grow trust capital without treating protected money like ordinary trading capital.",
-      risk_profile: "Protected / conservative",
-      capital_goal: "Protected family capital and future mission dispersal.",
-      current_status: "Policy defined",
-      next_action: "Preserve the protected floor and wait for verified capital data."
-    },
-    {
-      account_id: "ob_acct_personal",
-      mission_id: "personal",
-      label: "Personal",
-      display_label: "Personal OB",
-      purpose: "Owner learning, personal capital growth, and controlled Manual Live review.",
-      risk_profile: "Moderate / capped",
-      capital_goal: "Owner liquidity and skill-building without borrowing from mission lanes.",
-      current_status: "Policy defined",
-      next_action: "Keep personal capital separate from protected and business missions."
-    },
-    {
-      account_id: "ob_acct_simplee_world",
-      mission_id: "simplee_world",
-      label: "Simplee World",
-      display_label: "Simplee World OB",
-      purpose: "Build parent-company capital for the wider Simplee ecosystem.",
-      risk_profile: "Growth / controlled",
-      capital_goal: "Business operating and expansion capital.",
-      current_status: "Policy defined",
-      next_action: "Keep business purpose and receipts explicit."
-    },
-    {
-      account_id: "ob_acct_atm",
-      mission_id: "atm",
-      label: "ATM",
-      display_label: "SimpleeOnTheGo OB",
-      purpose: "Build capital for ATM route acquisition, vault cash, repair, and expansion.",
-      risk_profile: "Moderate becoming conservative near deployment",
-      capital_goal: "ATM acquisition and operating reserve.",
-      current_status: "Policy defined",
-      next_action: "Do not claim milestone progress until verified account data is available."
-    },
-    {
-      account_id: "ob_acct_apartment",
-      mission_id: "apartment",
-      label: "The Grounds",
-      display_label: "Apartment / Grounds OB",
-      purpose: "Build and protect future property acquisition reserves.",
-      risk_profile: "Protected / conservative",
-      capital_goal: "Acquisition, inspection, closing, repair, and reserve readiness.",
-      current_status: "Policy defined",
-      next_action: "Keep capital preservation ahead of aggressive growth."
-    },
-    {
-      account_id: "ob_acct_proof_demo",
-      mission_id: "proof_demo",
-      label: "Proof / Demo",
-      display_label: "Proof / Demo OB",
-      purpose: "Demonstrate OB safely without exposing private capital or identities.",
-      risk_profile: "Zero real-capital risk",
-      capital_goal: "No real capital.",
-      current_status: "Demo only",
-      next_action: "Use for safe private proof and beta demonstration only."
-    }
-  ]);
+      private_beta:
+        "/ob/private-beta-launch-control.json"
+    });
+
+
+  const BOUNDARIES =
+    Object.freeze({
+      owner_only:
+        true,
+
+      owner_research_only:
+        true,
+
+      capital_lanes_owner_dashboard_only:
+        true,
+
+      non_owner_capital_lane_delivery:
+        false,
+
+      non_owner_candidate_delivery:
+        false,
+
+      read_only_intelligence:
+        true,
+
+      lane_selection_changes_context_only:
+        true,
+
+      candidate_display_does_not_authorize_trade:
+        true,
+
+      ranked_contract_is_not_selected_contract:
+        true,
+
+      selection_authority:
+        "OWNER",
+
+      broker_api_enabled:
+        false,
+
+      broker_order_submission_enabled:
+        false,
+
+      real_capital_movement_enabled:
+        false,
+
+      automatic_contract_selection_enabled:
+        false,
+
+      auto_execution_enabled:
+        false,
+
+      live_auto_locked:
+        true
+    });
+
+
+  const POLICY_CAPITAL_LANES =
+    Object.freeze([
+      {
+        lane_id:
+          "trust",
+
+        account_id:
+          "ob_acct_trust",
+
+        label:
+          "Trust",
+
+        display_label:
+          "Trust",
+
+        purpose:
+          "Protect and grow trust capital without treating protected money like ordinary trading capital.",
+
+        risk_profile:
+          "Protected / conservative",
+
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only"
+        ],
+
+        capital_goal:
+          "Protected family capital and future mission dispersal.",
+
+        current_status:
+          "Policy defined",
+
+        next_action:
+          "Protect the floor first. Use verified capital truth only."
+      },
+
+      {
+        lane_id:
+          "personal",
+
+        account_id:
+          "ob_acct_personal",
+
+        label:
+          "Personal",
+
+        display_label:
+          "Personal",
+
+        purpose:
+          "Owner learning, personal capital growth, and controlled owner trading review.",
+
+        risk_profile:
+          "Moderate / capped",
+
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only"
+        ],
+
+        capital_goal:
+          "Owner liquidity and skill-building without borrowing from protected lanes.",
+
+        current_status:
+          "Policy defined",
+
+        next_action:
+          "Keep personal capital separate from protected and business capital."
+      },
+
+      {
+        lane_id:
+          "simplee_world",
+
+        account_id:
+          "ob_acct_simplee_world",
+
+        label:
+          "Simplee World",
+
+        display_label:
+          "Simplee World",
+
+        purpose:
+          "Build parent-company capital for the wider Simplee ecosystem.",
+
+        risk_profile:
+          "Growth / controlled",
+
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only"
+        ],
+
+        capital_goal:
+          "Business operating and expansion capital.",
+
+        current_status:
+          "Policy defined",
+
+        next_action:
+          "Keep business purpose and receipts explicit."
+      },
+
+      {
+        lane_id:
+          "atm",
+
+        account_id:
+          "ob_acct_atm",
+
+        label:
+          "ATM",
+
+        display_label:
+          "SimpleeOnTheGo / ATM",
+
+        purpose:
+          "Build capital for ATM route acquisition, vault cash, repair, and expansion.",
+
+        risk_profile:
+          "Moderate → conservative near deployment",
+
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only"
+        ],
+
+        capital_goal:
+          "ATM acquisition and operating reserve.",
+
+        current_status:
+          "Policy defined",
+
+        next_action:
+          "Do not call a milestone reached until verified capital says it is."
+      },
+
+      {
+        lane_id:
+          "apartment",
+
+        account_id:
+          "ob_acct_apartment",
+
+        label:
+          "The Grounds",
+
+        display_label:
+          "The Grounds / Apartment",
+
+        purpose:
+          "Build and protect future property acquisition reserves.",
+
+        risk_profile:
+          "Protected / conservative",
+
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Manual Live Level 1 · owner only when intentionally enabled"
+        ],
+
+        capital_goal:
+          "Acquisition, inspection, closing, repair, and reserve readiness.",
+
+        current_status:
+          "Policy defined",
+
+        next_action:
+          "Keep preservation ahead of aggressive growth."
+      },
+
+      {
+        lane_id:
+          "proof_demo",
+
+        account_id:
+          "ob_acct_proof_demo",
+
+        label:
+          "Proof / Demo",
+
+        display_label:
+          "Proof / Demo",
+
+        purpose:
+          "Demonstrate OB safely without exposing private capital or identities.",
+
+        risk_profile:
+          "Zero real-capital risk",
+
+        allowed_modes: [
+          "Survey",
+          "Paper",
+          "Demo"
+        ],
+
+        capital_goal:
+          "No real capital.",
+
+        current_status:
+          "Demo only",
+
+        next_action:
+          "Use only for safe private proof and beta demonstration."
+      }
+    ]);
+
 
   const state = {
-    status: "guarded_local_policy",
-    hydrated: false,
-    hydrated_at: null,
-    sources: {},
-    errors: [],
-    contract: null
+    sources:
+      {},
+
+    errors:
+      [],
+
+    contract:
+      null
   };
 
-  const safeText = (value, fallback = "") => {
-    if (value === undefined || value === null || value === "") return fallback;
-    return String(value);
+
+  const safeArray = (
+    value
+  ) => (
+    Array.isArray(
+      value
+    )
+      ? value
+      : []
+  );
+
+
+  const safeObject = (
+    value
+  ) => (
+    value
+    && typeof value === "object"
+    && !Array.isArray(value)
+      ? value
+      : {}
+  );
+
+
+  const safeText = (
+    value,
+    fallback = ""
+  ) => {
+    if (
+      value === undefined
+      || value === null
+      || value === ""
+    ) {
+      return fallback;
+    }
+
+    return String(
+      value
+    );
   };
 
-  const safeArray = (value) => Array.isArray(value) ? value : [];
 
-  const sourceLooksVerified = (payload) => {
-    // Keep the public method name for backward compatibility, but NEVER
-    // treat an HTTP 200 or a JSON body's own "verified" as trusted proof.
-    // There is no independently authenticated owner/provider receipt here.
+  const num = (
+    value
+  ) => {
+    const parsed =
+      Number(
+        value
+      );
+
+    return Number.isFinite(
+      parsed
+    )
+      ? parsed
+      : null;
+  };
+
+
+  const sourceLooksVerified = (
+    payload
+  ) => {
+    // HTTP success and self-reported verification do not authenticate source
+    // provenance. No trusted server-side proof is consumed by this browser
+    // contract; labels must remain independently unverified.
     void payload;
     return false;
   };
 
-  const fetchSource = async (name, url) => {
+
+  const fetchSource = async (
+    name,
+    url
+  ) => {
     try {
-      const response = await fetch(url, {
-        credentials: "same-origin",
-        headers: { "Accept": "application/json" }
-      });
+      const response =
+        await fetch(
+          url,
+          {
+            credentials:
+              "same-origin",
+
+            headers: {
+              "Accept":
+                "application/json"
+            }
+          }
+        );
 
       let payload = {};
+
       try {
-        payload = await response.json();
-      } catch (_error) {
+        payload =
+          await response.json();
+      } catch (_) {
         payload = {};
       }
 
-      if (!response.ok) {
-        return {
-          name,
-          url,
-          status: "guarded",
-          http_status: response.status,
-          verified: false,
-          source_observed: false,
-          independent_provenance_authenticated: false,
-          payload: null,
-          error: `HTTP ${response.status}`
-        };
-      }
+      const usable =
+        Boolean(
+          response.ok
+          && payload
+          && typeof payload === "object"
+          && !Array.isArray(payload)
+          && Object.keys(payload).length > 0
+        );
 
-      const observed = Boolean(
-        payload && typeof payload === "object" && !Array.isArray(payload) &&
-        Object.keys(payload).length > 0
-      );
       return {
         name,
         url,
-        status: observed ? "available" : "guarded",
-        http_status: response.status,
-        source_observed: observed,
-        verified: observed && sourceLooksVerified(payload),
-        independent_provenance_authenticated: false,
-        payload: observed ? payload : null,
-        error: observed ? null : "Empty or invalid source declaration"
+
+        status:
+          usable
+            ? "available"
+            : "guarded",
+
+        source_observed:
+          usable,
+
+        verified:
+          (
+            usable
+            && sourceLooksVerified(
+              payload
+            )
+          ),
+
+        independent_provenance_authenticated:
+          false,
+
+        payload:
+          usable
+            ? payload
+            : null
       };
-    } catch (error) {
+
+    } catch (
+      error
+    ) {
       return {
         name,
         url,
-        status: "unavailable",
-        http_status: null,
-        verified: false,
-        source_observed: false,
-        independent_provenance_authenticated: false,
-        payload: null,
-        error: error && error.message ? error.message : "fetch failed"
+
+        status:
+          "unavailable",
+
+        verified:
+          false,
+
+        source_observed:
+          false,
+
+        independent_provenance_authenticated:
+          false,
+
+        payload:
+          null,
+
+        error:
+          (
+            error
+            && error.message
+              ? error.message
+              : "fetch failed"
+          )
       };
     }
   };
 
-  const missionIdFromItem = (item, index) => {
-    const raw = safeText(
-      item.mission_id ||
-      item.account_id ||
-      item.lane ||
-      item.label,
-      `mission_${index + 1}`
-    ).toLowerCase();
 
-    if (raw.includes("trust")) return "trust";
-    if (raw.includes("personal")) return "personal";
-    if (raw.includes("world") || raw.includes("business")) return "simplee_world";
-    if (raw.includes("atm") || raw.includes("onthego")) return "atm";
-    if (
-      raw.includes("apartment") ||
-      raw.includes("property") ||
-      raw.includes("grounds")
-    ) return "apartment";
-    if (raw.includes("proof") || raw.includes("demo")) return "proof_demo";
+  const canonicalProjection = () => {
+    const server =
+      safeObject(
+        window.OB_SERVER_DATA
+      );
 
-    return raw.replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+    return safeObject(
+      server.canonical_web_projection
+      || server.engine_feed_v25
+      || window.OB_ENGINE_FEED_SNAPSHOT_V25
+    );
   };
 
-  const normalizeMission = (item, index, sourceVerified) => ({
-    account_id: safeText(item.account_id, `owner_mission_${index + 1}`),
-    mission_id: missionIdFromItem(item, index),
-    label: safeText(item.label || item.lane, `Mission ${index + 1}`),
-    display_label: safeText(item.display_label || item.label, `Mission ${index + 1}`),
-    purpose: safeText(item.purpose, "Mission purpose is not available."),
-    risk_profile: safeText(item.risk_profile || item.risk, "Risk policy unavailable."),
-    allowed_modes: safeArray(item.allowed_modes),
-    capital_goal: safeText(item.capital_goal || item.goal, "Capital goal not available."),
-    deployment_rules: safeText(item.deployment_rules || item.blocked, ""),
-    current_status: safeText(item.current_status, "Policy status unknown."),
-    next_action: safeText(item.next_action, "No verified next action."),
-    policy_source_verified: !!sourceVerified,
 
-    // OBUX021 hard guard:
-    // Policy text is not a balance, P&L, milestone, or verified progress report.
-    actual_capital_known: false,
-    actual_capital_value: null,
-    capital_progress_known: false,
-    capital_progress_percent: null,
-    verified_snapshot: false,
-    needs_attention: false
+  const currentMarketVerified = (
+    projection
+  ) => (
+    projection.current_eligible === true
+    && projection.display_eligible === true
+    && projection.projection_status === "fresh"
+  );
+
+
+  const candidateSourceArray = (
+    projection
+  ) => {
+    const candidates = [
+      projection.candidates_preview,
+      projection.candidates,
+      projection.watched_candidates
+    ];
+
+    for (
+      const value
+      of candidates
+    ) {
+      if (
+        Array.isArray(value)
+        && value.length
+      ) {
+        return value;
+      }
+    }
+
+    return [];
+  };
+
+
+  const optionSourceArray = (
+    projection
+  ) => {
+    const optionsProjection =
+      safeObject(
+        projection.options_projection
+      );
+
+    const ranked =
+      safeArray(
+        optionsProjection.ranked_contracts
+        || projection.ranked_contracts
+      );
+
+    if (
+      ranked.length
+    ) {
+      return ranked;
+    }
+
+    return safeArray(
+      optionsProjection.research_contracts
+      || projection.research_contracts
+      || projection.options
+    );
+  };
+
+
+  const normalizeOption = (
+    raw,
+    sourceVerified,
+    index
+  ) => {
+    const item =
+      safeObject(
+        raw
+      );
+
+    return {
+      source_order:
+        index + 1,
+
+      symbol:
+        safeText(
+          item.symbol
+          || item.underlying
+          || item.ticker,
+          ""
+        ).toUpperCase(),
+
+      contract_symbol:
+        safeText(
+          item.contract_symbol
+          || item.option_symbol
+          || item.occ_symbol,
+          ""
+        ),
+
+      option_type:
+        safeText(
+          item.option_type
+          || item.type
+          || item.right,
+          "Unavailable"
+        ),
+
+      strike:
+        num(
+          item.strike
+        ),
+
+      expiration:
+        safeText(
+          item.expiration
+          || item.expiry
+          || item.expiration_date,
+          "Unavailable"
+        ),
+
+      bid:
+        num(
+          item.bid
+        ),
+
+      ask:
+        num(
+          item.ask
+        ),
+
+      spread:
+        num(
+          item.spread
+        ),
+
+      volume:
+        num(
+          item.volume
+        ),
+
+      open_interest:
+        num(
+          item.open_interest
+          || item.oi
+        ),
+
+      implied_volatility:
+        num(
+          item.implied_volatility
+          || item.iv
+        ),
+
+      delta:
+        num(
+          item.delta
+        ),
+
+      gamma:
+        num(
+          item.gamma
+        ),
+
+      theta:
+        num(
+          item.theta
+        ),
+
+      vega:
+        num(
+          item.vega
+        ),
+
+      source_rank:
+        num(
+          item.rank
+          || item.score_rank
+        ),
+
+      source_verified:
+        sourceVerified === true,
+
+      selection_authority:
+        "OWNER",
+
+      automatically_selected:
+        false
+    };
+  };
+
+
+  const optionContractsBySymbol = (
+    projection
+  ) => {
+    const verified =
+      currentMarketVerified(
+        projection
+      );
+
+    const map =
+      new Map();
+
+    optionSourceArray(
+      projection
+    )
+      .forEach(
+        function (
+          raw,
+          index
+        ) {
+          const contract =
+            normalizeOption(
+              raw,
+              verified,
+              index
+            );
+
+          if (
+            !contract.symbol
+          ) {
+            return;
+          }
+
+          const current =
+            map.get(
+              contract.symbol
+            )
+            || [];
+
+          current.push(
+            contract
+          );
+
+          map.set(
+            contract.symbol,
+            current
+          );
+        }
+      );
+
+    return map;
+  };
+
+
+  const candidateBucket = (
+    raw,
+    verified
+  ) => {
+    const item =
+      safeObject(
+        raw
+      );
+
+    const stateText =
+      [
+        item.status,
+        item.state,
+        item.priority,
+        item.decision,
+        item.recommendation_state,
+        item.candidate_state
+      ]
+        .filter(
+          Boolean
+        )
+        .join(
+          " "
+        )
+        .toLowerCase();
+
+    if (
+      !verified
+      || /(reject|blocked|invalid|guarded|stale|hold|not[_ -]?yet)/i
+        .test(
+          stateText
+        )
+    ) {
+      return "not_yet";
+    }
+
+    if (
+      item.actionable === true
+      || /(approved|ready|qualified|high|top|now)/i
+        .test(
+          stateText
+        )
+    ) {
+      return "now";
+    }
+
+    return "watch";
+  };
+
+
+  const normalizeCandidate = (
+    raw,
+    projection,
+    optionsMap,
+    index
+  ) => {
+    const item =
+      safeObject(
+        raw
+      );
+
+    const verified =
+      currentMarketVerified(
+        projection
+      );
+
+    const symbol =
+      safeText(
+        item.symbol
+        || item.ticker
+        || item.underlying,
+        ""
+      ).toUpperCase();
+
+    const contracts =
+      symbol
+        ? (
+            optionsMap.get(
+              symbol
+            )
+            || []
+          )
+        : [];
+
+    return {
+      source_order:
+        index + 1,
+
+      symbol:
+        symbol
+        || "Unavailable",
+
+      verified,
+
+      freshness:
+        safeText(
+          projection.freshness,
+          "unavailable"
+        ),
+
+      source:
+        safeText(
+          item.source
+          || item.provenance
+          || projection.source,
+          "unavailable"
+        ),
+
+      bucket:
+        candidateBucket(
+          item,
+          verified
+        ),
+
+      direction:
+        safeText(
+          item.direction
+          || item.bias
+          || item.side,
+          "Direction unavailable"
+        ),
+
+      thesis:
+        safeText(
+          item.thesis
+          || item.reason
+          || item.summary
+          || item.setup,
+          "Source did not provide a thesis."
+        ),
+
+      setup:
+        safeText(
+          item.setup
+          || item.pattern
+          || item.signal,
+          "Setup unavailable"
+        ),
+
+      catalyst:
+        safeText(
+          item.catalyst
+          || item.context
+          || item.event,
+          "No verified catalyst supplied."
+        ),
+
+      entry_zone:
+        safeText(
+          item.entry_zone
+          || item.entry
+          || item.entry_range,
+          "Unavailable"
+        ),
+
+      invalidation:
+        safeText(
+          item.invalidation
+          || item.stop
+          || item.stop_loss,
+          "Unavailable"
+        ),
+
+      hold_window:
+        safeText(
+          item.hold_window
+          || item.time_horizon
+          || item.duration,
+          "Unavailable"
+        ),
+
+      risk:
+        safeText(
+          item.risk
+          || item.risk_note
+          || item.risk_summary,
+          "No verified risk note supplied."
+        ),
+
+      score:
+        num(
+          item.score
+          || item.confidence
+          || item.quality_score
+        ),
+
+      option_contracts:
+        contracts.slice(
+          0,
+          3
+        ),
+
+      option_contract_count:
+        contracts.length,
+
+      automatic_contract_selection:
+        false,
+
+      selection_authority:
+        "OWNER"
+    };
+  };
+
+
+  const todayEdge = () => {
+    const projection =
+      canonicalProjection();
+
+    const optionsMap =
+      optionContractsBySymbol(
+        projection
+      );
+
+    const normalized =
+      candidateSourceArray(
+        projection
+      )
+        .map(
+          function (
+            item,
+            index
+          ) {
+            return normalizeCandidate(
+              item,
+              projection,
+              optionsMap,
+              index
+            );
+          }
+        );
+
+    return {
+      now:
+        normalized
+          .filter(
+            item =>
+              item.bucket
+              === "now"
+          )
+          .slice(
+            0,
+            3
+          ),
+
+      watch:
+        normalized
+          .filter(
+            item =>
+              item.bucket
+              === "watch"
+          )
+          .slice(
+            0,
+            3
+          ),
+
+      not_yet:
+        normalized
+          .filter(
+            item =>
+              item.bucket
+              === "not_yet"
+          )
+          .slice(
+            0,
+            3
+          ),
+
+      source_state: {
+        verified_current_market:
+          currentMarketVerified(
+            projection
+          ),
+
+        projection_status:
+          safeText(
+            projection.projection_status,
+            "unavailable"
+          ),
+
+        freshness:
+          safeText(
+            projection.freshness,
+            "unavailable"
+          ),
+
+        source:
+          safeText(
+            projection.source,
+            "unavailable"
+          ),
+
+        as_of:
+          safeText(
+            projection.as_of,
+            "unavailable"
+          )
+      }
+    };
+  };
+
+
+  const normalizeLane = (
+    lane
+  ) => ({
+    ...lane,
+
+    allowed_modes:
+      safeArray(
+        lane.allowed_modes
+      ),
+
+    actual_capital_known:
+      false,
+
+    actual_capital_value:
+      null,
+
+    capital_progress_known:
+      false,
+
+    capital_progress_percent:
+      null,
+
+    verified_snapshot:
+      false,
+
+    needs_attention:
+      false
   });
 
-  const missionSnapshot = () => {
-    // This older dashboard receives a page-global declaration, not an
-    // independently authenticated financial-source receipt. Never convert
-    // a caller-controlled "verified" flag into actual money or milestones.
-    void window.OB_OWNER_MISSION_SNAPSHOT;
+
+  const capitalLaneSnapshot = () => {
+    // A window-supplied "verified: true" flag cannot authenticate capital.
+    // Until the protected server provides an independently verified capital
+    // receipt/contract, source-projected account figures must stay UNKNOWN.
+    // This includes OB_OWNER_CAPITAL_LANE_SNAPSHOT and all self-claimed totals.
     return {
       verified: false,
-      missions: []
+      lanes: []
     };
   };
 
-  const missions = () => {
-    const accountSource = state.sources.account_experience || {};
-    const payload = accountSource.payload || {};
 
-    const sourceItems = safeArray(payload.owner_mission_accounts);
-    const baseItems = sourceItems.length ? sourceItems : POLICY_MISSIONS;
+  const capitalLanes = () => {
+    const base =
+      POLICY_CAPITAL_LANES
+        .map(
+          normalizeLane
+        );
 
-    const normalized = baseItems.map((item, index) =>
-      normalizeMission(item, index, !!accountSource.verified)
-    );
+    const snapshot =
+      capitalLaneSnapshot();
 
-    const snapshot = missionSnapshot();
-
-    if (!snapshot.verified) return normalized;
-
-    const liveById = new Map(
-      snapshot.missions.map((item, index) => [
-        missionIdFromItem(item, index),
-        item
-      ])
-    );
-
-    return normalized.map((mission) => {
-      const live = liveById.get(mission.mission_id);
-      if (!live) return mission;
-
-      const capitalValueIsKnown =
-        live.actual_capital_known === true &&
-        Number.isFinite(Number(live.actual_capital_value));
-
-      const progressIsKnown =
-        live.capital_progress_known === true &&
-        Number.isFinite(Number(live.capital_progress_percent));
-
-      return {
-        ...mission,
-        verified_snapshot: true,
-        actual_capital_known: capitalValueIsKnown,
-        actual_capital_value: capitalValueIsKnown
-          ? Number(live.actual_capital_value)
-          : null,
-        capital_progress_known: progressIsKnown,
-        capital_progress_percent: progressIsKnown
-          ? Number(live.capital_progress_percent)
-          : null,
-        current_status: safeText(live.current_status, mission.current_status),
-        next_action: safeText(live.next_action, mission.next_action),
-        needs_attention: live.needs_attention === true
-      };
-    });
-  };
-
-  const trustSummary = () => {
-    const source = state.sources.engine_trust || {};
-    const payload = source.payload || {};
-    const trust = payload.trust || {};
-
-    const verified = false;
-    const observed = source.source_observed === true;
-
-    const freshness =
-      verified &&
-      Number.isFinite(Number(payload.freshness_score))
-        ? Number(payload.freshness_score)
-        : null;
-
-    const level = verified
-      ? safeText(trust.level, "unknown").toLowerCase()
-      : "guarded";
-
-    return {
-      verified,
-      source_observed: observed,
-      independent_provenance_authenticated: false,
-      label: observed
-        ? "Engine trust declaration received · independently unverified"
-        : "Guarded · trust source unavailable",
-      level,
-      freshness_score: freshness,
-      safe_to_display: verified
-        ? safeText(trust.safeToDisplay, "caution")
-        : "caution",
-      needs_attention:
-        !verified ||
-        ["fallback", "missing", "stale", "guarded"].includes(level),
-      explanation: observed
-        ? "Soulaana received source-declared trust labels; provenance has not been independently authenticated here."
-        : "Soulaana does not have an independently verified owner-wide engine-trust result on this surface yet."
-    };
-  };
-
-  const readinessSummary = () => {
-    const source = state.sources.manual_live_readiness || {};
-    const payload = source.payload || {};
-    const scorecard = payload.readiness_scorecard || {};
-
-    const verified = false;
-    const observed = source.source_observed === true;
-
-    const blockers = observed
-      ? safeArray(payload.remaining_live_blockers).map((item) => ({
-          id: safeText(item.blocker_id, "blocker"),
-          label: safeText(item.label, "Readiness blocker"),
-          reason: safeText(item.reason, "Readiness work remains."),
-          status: safeText(item.status, "blocking")
-        }))
-      : [];
-
-    return {
-      verified,
-      operator_practice_source_observed: observed,
-      independent_provenance_authenticated: false,
-      label: observed
-        ? "Owner rehearsal evidence received · Real Manual Live HOLD"
-        : "Guarded · practice source unavailable · Real Manual Live HOLD",
-      score:
-        observed && Number.isFinite(Number(scorecard.readiness_score))
-          ? Number(scorecard.readiness_score)
-          : null,
-      score_is_practice_only: true,
-      tower_owner_clearance_verified: false,
-      authenticated_broker_source_verified: false,
-      blockers,
-      needs_attention: true,
-
-      // GP035 confidence tooling never creates real execution permission.
-      real_manual_live_ready: false,
-      broker_order_submission_enabled: false,
-      auto_execution_enabled: false,
-      live_auto_locked: true
-    };
-  };
-
-  const betaSummary = () => {
-    const source = state.sources.private_beta || {};
-    const payload = source.payload || {};
-    const verified = false;
-    const observed = source.source_observed === true;
-
-    const rawStatus =
-      payload.owner_go_no_go_status ||
-      payload.owner_decision ||
-      payload.launch_status ||
-      payload.status;
-
-    return {
-      verified,
-      source_observed: observed,
-      actual_hosted_beta_access_verified: false,
-      label: observed
-        ? "Private beta declaration received · hosted clearance unverified"
-        : "Guarded · beta launch evidence unavailable",
-      expansion_recommended: false,
-      private_only: true,
-      public_launch_enabled: false,
-      explanation: "An endpoint declaration is not independently authenticated hosted owner clearance."
-    };
-  };
-
-  const historySummary = () => {
-    // A client/page-global "verified" cannot attest an owner-history issuer.
-    void window.OB_OWNER_CHANGE_HISTORY;
-    return {
-      verified: false,
-      items: [
-        {
-          title: "No verified owner-change history yet",
-          detail:
-            "I will not invent a 'since you were here' story. Owner change-history needs independently authenticated source evidence before I summarize it."
-        }
-      ]
-    };
-  };
-
-  const patternSummary = (missionList) => {
-    const verifiedMissions = missionList.filter(
-      (mission) => mission.verified_snapshot
-    );
-
-    if (!verifiedMissions.length) {
-      return {
-        verified: false,
-        items: [
-          {
-            title: "Cross-mission performance patterns are not verified yet",
-            detail:
-              "Mission policies are defined, but policy text is not enough to claim crowding, repeated wins, repeated mistakes, or capital pressure."
-          }
-        ]
-      };
+    if (
+      !snapshot.verified
+    ) {
+      return base;
     }
 
-    const attentionCount = verifiedMissions.filter(
-      (mission) => mission.needs_attention
-    ).length;
+    const verifiedById =
+      new Map(
+        snapshot.lanes.map(
+          item => [
+            safeText(
+              item.lane_id,
+              ""
+            ),
+            safeObject(
+              item
+            )
+          ]
+        )
+      );
+
+    return base.map(
+      function (
+        lane
+      ) {
+        const live =
+          verifiedById.get(
+            lane.lane_id
+          );
+
+        if (
+          !live
+        ) {
+          return lane;
+        }
+
+        const capitalKnown =
+          (
+            live.actual_capital_known === true
+            && num(
+              live.actual_capital_value
+            ) !== null
+          );
+
+        const progressKnown =
+          (
+            live.capital_progress_known === true
+            && num(
+              live.capital_progress_percent
+            ) !== null
+          );
+
+        return {
+          ...lane,
+
+          verified_snapshot:
+            true,
+
+          actual_capital_known:
+            capitalKnown,
+
+          actual_capital_value:
+            capitalKnown
+              ? num(
+                  live.actual_capital_value
+                )
+              : null,
+
+          capital_progress_known:
+            progressKnown,
+
+          capital_progress_percent:
+            progressKnown
+              ? num(
+                  live.capital_progress_percent
+                )
+              : null,
+
+          current_status:
+            safeText(
+              live.current_status,
+              lane.current_status
+            ),
+
+          next_action:
+            safeText(
+              live.next_action,
+              lane.next_action
+            ),
+
+          needs_attention:
+            live.needs_attention === true
+        };
+      }
+    );
+  };
+
+
+  const trustSummary = () => {
+    const source =
+      state.sources.engine_trust
+      || {};
+
+    const observed =
+      source.status === "available";
 
     return {
-      verified: true,
-      items: [
-        {
-          title:
-            attentionCount > 0
-              ? `${attentionCount} verified mission lane(s) need owner attention`
-              : "No verified mission lane is flagging owner attention",
-          detail:
-            "This statement comes only from the verified owner mission snapshot."
-        }
-      ]
+      verified:
+        false,
+
+      source_observed:
+        observed,
+
+      independent_provenance_authenticated:
+        false,
+
+      label:
+        observed
+          ? "Source trust labels received · independently unverified"
+          : "Guarded · trust source unavailable",
+
+      needs_attention:
+        true
     };
   };
 
+
+  const readinessSummary = () => {
+    const source =
+      state
+        .sources
+        .manual_live_readiness
+      || {};
+
+    const payload =
+      safeObject(
+        source.payload
+      );
+
+    const scorecard =
+      safeObject(
+        payload.readiness_scorecard
+      );
+
+    const blockers =
+      source.status === "available"
+        ? safeArray(
+            payload.remaining_live_blockers
+          )
+        : [];
+
+    return {
+      verified:
+        source.verified === true,
+
+      label:
+        "Owner rehearsal evidence · Real Manual Live HOLD",
+
+      evidence_class:
+        "operator_practice_only_not_tower_or_provider",
+
+      operator_practice_source_observed:
+        source.status === "available",
+
+      score_is_practice_only:
+        true,
+
+      tower_owner_clearance_verified:
+        false,
+
+      authenticated_broker_source_verified:
+        false,
+
+      production_manual_live_permission:
+        false,
+
+      score:
+        source.status === "available"
+          ? num(
+              scorecard.readiness_score
+            )
+          : null,
+
+      blockers,
+
+      needs_attention:
+        (
+          source.status !== "available"
+          || blockers.length > 0
+        ),
+
+      real_manual_live_ready:
+        false,
+
+      broker_order_submission_enabled:
+        false,
+
+      automatic_contract_selection_enabled:
+        false,
+
+      auto_execution_enabled:
+        false,
+
+      live_auto_locked:
+        true
+    };
+  };
+
+
+  const betaSummary = () => {
+    const source =
+      state.sources.private_beta
+      || {};
+
+    const observed =
+      source.status === "available";
+
+    return {
+      verified:
+        false,
+
+      source_observed:
+        observed,
+
+      actual_hosted_beta_access_verified:
+        false,
+
+      label:
+        observed
+          ? "Private beta checklist received · hosted clearance unverified"
+          : "Guarded · beta evidence unavailable",
+
+      private_only:
+        true,
+
+      public_launch_enabled:
+        false
+    };
+  };
+
+
   const ownerAttention = (
-    missionList,
+    edge,
     trust,
-    readiness,
-    beta
+    readiness
   ) => {
     const items = [];
 
-    missionList
-      .filter(
-        (mission) =>
-          mission.verified_snapshot &&
-          mission.needs_attention
-      )
-      .forEach((mission) => {
-        items.push({
-          priority: "high",
-          source: "verified mission snapshot",
-          title: `${mission.display_label} needs you`,
-          detail: mission.next_action
-        });
-      });
-
-    if (trust.needs_attention) {
+    if (
+      edge.now.length
+    ) {
       items.push({
-        priority: "high",
-        source: "engine trust",
-        title: "Verify the picture Soulaana is using",
-        detail: trust.explanation
-      });
-    }
+        priority:
+          "high",
 
-    if (readiness.needs_attention) {
-      items.push({
-        priority: "medium",
-        source: "Manual Live readiness",
-        title: "Manual Live remains a guarded owner-readiness lane",
-        detail: readiness.verified
-          ? (
-              readiness.blockers.length
-                ? `${readiness.blockers.length} verified blocker(s) remain. Real Manual Live and Live Auto stay locked.`
-                : "Confidence evidence is available, but it does not authorize real Manual Live."
-            )
-          : "The readiness evidence on this surface is not verified. Live Auto stays locked."
-      });
-    }
+        title:
+          `${edge.now.length} verified NOW research setup${edge.now.length === 1 ? "" : "s"}`,
 
-    if (!beta.verified) {
-      items.push({
-        priority: "medium",
-        source: "private beta",
-        title: "Do not infer beta expansion readiness",
         detail:
-          "The Owner Dashboard does not currently have verified beta launch-control evidence."
+          "Open Today’s Edge. Review the evidence before making any owner decision.",
+
+        source:
+          "canonical engine projection"
       });
     }
 
-    if (!items.length) {
+    if (
+      readiness.needs_attention
+    ) {
       items.push({
-        priority: "calm",
-        source: "verified owner intelligence",
-        title: "Nothing verified is demanding an owner decision",
+        priority:
+          "medium",
+
+        title:
+          "Owner rehearsal checklist needs review",
+
         detail:
-          "Soulaana can keep watching without manufacturing urgency."
+          readiness.label,
+
+        source:
+          "operator practice checkpoint, not live authorization"
       });
     }
 
-    return items.slice(0, 5);
+    if (
+      trust.needs_attention
+    ) {
+      items.push({
+        priority:
+          "medium",
+
+        title:
+          "Engine trust is guarded",
+
+        detail:
+          trust.label,
+
+        source:
+          "engine trust"
+      });
+    }
+
+    return items.slice(
+      0,
+      3
+    );
   };
 
-  const buildContract = () => {
-    const missionList = missions();
-    const trust = trustSummary();
-    const readiness = readinessSummary();
-    const beta = betaSummary();
-    const history = historySummary();
-    const patterns = patternSummary(missionList);
-    const attention = ownerAttention(
-      missionList,
-      trust,
-      readiness,
-      beta
-    );
 
-    const allCriticalSourcesVerified =
-      trust.verified &&
-      readiness.verified &&
-      beta.verified;
+  const ownerContext = () => {
+    const projection =
+      canonicalProjection();
+
+    const positions =
+      safeArray(
+        projection.positions_preview
+        || projection.positions
+      );
+
+    const queue =
+      safeArray(
+        projection.manual_live_queue
+      );
+
+    const review =
+      safeObject(
+        projection.review_summary
+      );
 
     return {
-      version: VERSION,
-      role: "owner_dashboard",
-      owner_only: true,
-      dormant: true,
-
-      mission_sky: missionList,
-      trust,
-      readiness,
-      beta,
-      owner_attention: attention,
-      patterns,
-      since_you_were_here: history,
-
-      source_state: {
-        account_experience:
-          state.sources.account_experience || null,
-        engine_trust:
-          state.sources.engine_trust || null,
-        manual_live_readiness:
-          state.sources.manual_live_readiness || null,
-        private_beta:
-          state.sources.private_beta || null
-      },
-
-      interpretation_state: {
-        all_critical_sources_verified: allCriticalSourcesVerified,
-        may_claim_cross_mission_performance_patterns:
-          patterns.verified,
-        may_claim_change_history:
-          history.verified,
-        may_claim_capital_progress:
-          missionList.some(
-            (mission) => mission.capital_progress_known
+      market: {
+        label:
+          safeText(
+            safeObject(
+              projection.market_health
+            ).label
+            || safeObject(
+              projection.market_health
+            ).state
+            || projection.projection_status,
+            "Unavailable"
           ),
-        no_action_needed:
-          allCriticalSourcesVerified &&
-          attention.every(
-            (item) =>
-              item.priority !== "high" &&
-              item.priority !== "medium"
+
+        verified:
+          currentMarketVerified(
+            projection
           )
       },
 
-      boundaries: BOUNDARIES
+      positions: {
+        count:
+          positions.length,
+
+        items:
+          positions.slice(
+            0,
+            3
+          )
+      },
+
+      alerts: {
+        count:
+          queue.length,
+
+        items:
+          queue.slice(
+            0,
+            3
+          )
+      },
+
+      review: {
+        label:
+          safeText(
+            review.label
+            || review.summary
+            || review.status,
+            "No verified review summary"
+          )
+      }
     };
   };
 
-  const hydrate = async () => {
-    state.status = "hydrating";
-    state.errors = [];
 
-    const [
-      accountExperience,
-      engineTrust,
-      manualLiveReadiness,
-      privateBeta
-    ] = await Promise.all([
-      fetchSource(
-        "account_experience",
-        ENDPOINTS.account_experience
-      ),
-      fetchSource(
-        "engine_trust",
-        ENDPOINTS.engine_trust
-      ),
-      fetchSource(
-        "manual_live_readiness",
-        ENDPOINTS.manual_live_readiness
-      ),
-      fetchSource(
-        "private_beta",
-        ENDPOINTS.private_beta
-      )
-    ]);
+  const historySummary = () => ({
+    label:
+      "No verified owner-change history yet",
 
-    state.sources = {
-      account_experience: accountExperience,
-      engine_trust: engineTrust,
-      manual_live_readiness: manualLiveReadiness,
-      private_beta: privateBeta
+    pattern_label:
+      "No verified cross-lane pattern yet",
+
+    may_claim_change_history:
+      false,
+
+    may_claim_cross_lane_performance_patterns:
+      false
+  });
+
+
+  const buildContract = () => {
+    const edge =
+      todayEdge();
+
+    const trust =
+      trustSummary();
+
+    const readiness =
+      readinessSummary();
+
+    const beta =
+      betaSummary();
+
+    const lanes =
+      capitalLanes();
+
+    const attention =
+      ownerAttention(
+        edge,
+        trust,
+        readiness
+      );
+
+    return {
+      version:
+        VERSION,
+
+      status:
+        (
+          edge
+            .source_state
+            .verified_current_market
+            ? "verified_owner_research"
+            : "guarded_owner_research"
+        ),
+
+      today_edge:
+        edge,
+
+      owner_attention:
+        attention,
+
+      owner_context:
+        ownerContext(),
+
+      capital_lanes:
+        lanes,
+
+      trust,
+
+      readiness,
+
+      beta,
+
+      history:
+        historySummary(),
+
+      source_state: {
+        engine:
+          edge.source_state,
+
+        trust:
+          state.sources.engine_trust
+          || null,
+
+        readiness:
+          state.sources.manual_live_readiness
+          || null,
+
+        private_beta:
+          state.sources.private_beta
+          || null
+      },
+
+      interpretation_state: {
+        no_action_needed:
+          (
+            !attention.length
+            && !edge.now.length
+          )
+      },
+
+      policy_notes: {
+        capital_truth:
+          "Policy text is not a balance.",
+
+        option_truth:
+          (
+            "A ranked contract is research evidence, "
+            + "not an automatically selected contract."
+          )
+      },
+
+      boundaries:
+        BOUNDARIES
     };
+  };
 
-    Object.values(state.sources).forEach((source) => {
-      if (source && source.error) {
-        state.errors.push(
-          `${source.name}: ${source.error}`
-        );
+
+  const hydrate = async () => {
+    const results =
+      await Promise.all([
+        fetchSource(
+          "engine_trust",
+          ENDPOINTS.engine_trust
+        ),
+
+        fetchSource(
+          "manual_live_readiness",
+          ENDPOINTS.manual_live_readiness
+        ),
+
+        fetchSource(
+          "private_beta",
+          ENDPOINTS.private_beta
+        )
+      ]);
+
+    results.forEach(
+      function (
+        result
+      ) {
+        state.sources[
+          result.name
+        ] =
+          result;
       }
-    });
-
-    state.hydrated = true;
-    state.hydrated_at = new Date().toISOString();
-    state.status = state.errors.length
-      ? "hydrated_guarded"
-      : "hydrated";
-    state.contract = buildContract();
-
-    window.dispatchEvent(
-      new CustomEvent(
-        "ob:owner-dashboard-contract-ready",
-        {
-          detail: state.contract
-        }
-      )
     );
+
+    state.contract =
+      buildContract();
 
     return state.contract;
   };
 
-  state.contract = buildContract();
 
-  window.OB_OWNER_DASHBOARD_CONTRACT_V21 = Object.freeze({
-    version: VERSION,
-    endpoints: ENDPOINTS,
-    boundaries: BOUNDARIES,
-    getState: () => state,
-    getContract: () => state.contract || buildContract(),
-    buildContract,
-    hydrate
-  });
+  window.OB_OWNER_DASHBOARD_CONTRACT_V21 =
+    Object.freeze({
+      version:
+        VERSION,
+
+      endpoints:
+        ENDPOINTS,
+
+      boundaries:
+        BOUNDARIES,
+
+      buildContract,
+
+      hydrate
+    });
+
 })();

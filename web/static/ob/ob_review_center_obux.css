@@ -1,0 +1,1057 @@
+/* =================================================================================================
+   THE OBSERVATORY — REVIEW CENTER / OBUX046–050
+   ================================================================================================= */
+
+.obux-review-room {
+  position: relative;
+  z-index: 4;
+
+  max-width: 1680px;
+
+  margin: 0 auto;
+  padding: 34px 34px 80px;
+
+  color: var(--ob-text, #f6f3ff);
+}
+
+
+.obux-review-room-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 26px;
+
+  margin-bottom: 22px;
+}
+
+
+.obux-review-room-path,
+.obux-eyebrow {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--ob-gold, #e8c66a);
+
+  font-size: .72rem;
+  font-weight: 760;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+
+.obux-review-room-header h1 {
+  margin: 0;
+
+  font-size: clamp(2.2rem, 4.5vw, 4.6rem);
+  font-weight: 760;
+  letter-spacing: -.055em;
+  line-height: .98;
+}
+
+
+.obux-review-room-header p {
+  margin: 12px 0 0;
+
+  color: rgba(244, 240, 255, .66);
+
+  font-size: .98rem;
+}
+
+
+.obux-review-room-state {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+
+.obux-review-room-state span,
+.obux-review-source,
+.obux-contract-pill,
+.obux-muted-chip,
+.obux-danger-chip {
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.04);
+
+  padding: 7px 11px;
+
+  color: rgba(255,255,255,.72);
+
+  font-size: .66rem;
+  font-weight: 740;
+  letter-spacing: .08em;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   SUMMARY
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+
+.obux-review-stat {
+  min-height: 82px;
+
+  border: 1px solid rgba(255,255,255,.085);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.052),
+      rgba(255,255,255,.018)
+    );
+
+  padding: 15px 17px;
+}
+
+
+.obux-review-stat span {
+  display: block;
+
+  color: rgba(255,255,255,.54);
+
+  font-size: .72rem;
+}
+
+
+.obux-review-stat strong {
+  display: block;
+
+  margin-top: 8px;
+
+  font-size: 1.42rem;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   FILTERS
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-filters {
+  display: flex;
+  gap: 7px;
+
+  overflow-x: auto;
+
+  margin-bottom: 15px;
+  padding: 3px;
+}
+
+
+.obux-review-filters button {
+  flex: 0 0 auto;
+
+  border: 1px solid rgba(255,255,255,.085);
+  border-radius: 999px;
+
+  background: rgba(0,0,0,.16);
+
+  padding: 9px 13px;
+
+  color: rgba(255,255,255,.62);
+
+  cursor: pointer;
+
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+
+  transition:
+    border-color .15s ease,
+    background .15s ease,
+    color .15s ease,
+    transform .15s ease;
+}
+
+
+.obux-review-filters button:hover,
+.obux-review-filters button.active {
+  border-color: rgba(232,198,106,.38);
+
+  background: rgba(232,198,106,.095);
+
+  color: #fff;
+}
+
+
+.obux-review-filters button:hover {
+  transform: translateY(-1px);
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   WORKSPACE
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-workspace {
+  display: grid;
+  grid-template-columns: minmax(260px, .36fr) minmax(0, 1fr);
+  gap: 15px;
+}
+
+
+.obux-review-queue-panel,
+.obux-review-hero-card {
+  border: 1px solid rgba(255,255,255,.085);
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      155deg,
+      rgba(14, 10, 27, .86),
+      rgba(7, 5, 16, .76)
+    );
+
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.025);
+
+  backdrop-filter: blur(24px);
+}
+
+
+.obux-review-queue-panel {
+  position: sticky;
+  top: 16px;
+
+  align-self: start;
+
+  max-height: calc(100vh - 32px);
+
+  padding: 15px;
+
+  overflow: hidden;
+}
+
+
+.obux-review-panel-title {
+  padding: 5px 4px 15px;
+}
+
+
+.obux-review-panel-title span {
+  display: block;
+
+  color: rgba(255,255,255,.48);
+
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+
+.obux-review-panel-title strong {
+  display: block;
+
+  margin-top: 5px;
+
+  font-size: 1.18rem;
+}
+
+
+.obux-review-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  max-height: calc(100vh - 140px);
+
+  overflow-y: auto;
+  padding-right: 3px;
+}
+
+
+.obux-review-queue-card {
+  width: 100%;
+
+  border: 1px solid rgba(255,255,255,.075);
+  border-radius: 16px;
+
+  background: rgba(255,255,255,.025);
+
+  padding: 13px;
+
+  color: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    transform .15s ease,
+    border-color .15s ease,
+    background .15s ease;
+}
+
+
+.obux-review-queue-card:hover {
+  transform: translateY(-1px);
+
+  background: rgba(255,255,255,.045);
+}
+
+
+.obux-review-queue-card.active {
+  border-color: rgba(232,198,106,.42);
+
+  background: rgba(232,198,106,.075);
+}
+
+
+.obux-review-queue-card.danger {
+  box-shadow:
+    inset 3px 0 0 rgba(255,99,115,.58);
+}
+
+
+.obux-review-queue-card.warn {
+  box-shadow:
+    inset 3px 0 0 rgba(232,198,106,.64);
+}
+
+
+.obux-review-queue-card.clean {
+  box-shadow:
+    inset 3px 0 0 rgba(112,225,180,.58);
+}
+
+
+.obux-review-card-top,
+.obux-review-card-bottom,
+.obux-review-kickers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+
+.obux-review-truth,
+.obux-review-process {
+  border-radius: 999px;
+
+  padding: 4px 7px;
+
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .065em;
+}
+
+
+.obux-review-truth.manual_live {
+  background: rgba(117,186,255,.12);
+  color: #b9dcff;
+}
+
+
+.obux-review-truth.paper {
+  background: rgba(112,225,180,.1);
+  color: #a9f2d5;
+}
+
+
+.obux-review-truth.rehearsal,
+.obux-review-truth.proof {
+  background: rgba(193,153,255,.1);
+  color: #d7baff;
+}
+
+
+.obux-review-truth.quarantined {
+  background: rgba(255,99,115,.11);
+  color: #ffadb7;
+}
+
+
+.obux-review-process.danger,
+.obux-result-stack strong.danger {
+  color: #ff8d99;
+}
+
+
+.obux-review-process.warn,
+.obux-result-stack strong.warn {
+  color: #ecd17a;
+}
+
+
+.obux-review-process.clean,
+.obux-result-stack strong.clean {
+  color: #85e7c0;
+}
+
+
+.obux-review-symbol {
+  display: block;
+
+  margin-top: 11px;
+
+  color: #fff;
+
+  font-size: 1rem;
+}
+
+
+.obux-review-account {
+  display: block;
+
+  margin-top: 4px;
+
+  color: rgba(255,255,255,.46);
+
+  font-size: .69rem;
+}
+
+
+.obux-review-card-bottom {
+  margin-top: 12px;
+
+  color: rgba(255,255,255,.66);
+
+  font-size: .72rem;
+  font-weight: 720;
+}
+
+
+.obux-review-queue-alert {
+  display: inline-block;
+
+  margin-top: 9px;
+
+  color: #ff9da7;
+
+  font-size: .65rem;
+  font-weight: 760;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   HERO
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-hero {
+  min-width: 0;
+}
+
+
+.obux-review-hero-card {
+  overflow: hidden;
+}
+
+
+.obux-review-hero-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 24px 26px 21px;
+
+  border-bottom: 1px solid rgba(255,255,255,.065);
+}
+
+
+.obux-review-hero-header h2 {
+  margin: 11px 0 0;
+
+  font-size: clamp(1.65rem, 3vw, 2.65rem);
+  letter-spacing: -.035em;
+}
+
+
+.obux-review-hero-header p {
+  margin: 7px 0 0;
+
+  color: rgba(255,255,255,.54);
+
+  font-size: .8rem;
+}
+
+
+.obux-result-stack {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 16px;
+}
+
+
+.obux-result-stack > div {
+  min-width: 86px;
+}
+
+
+.obux-result-stack span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: rgba(255,255,255,.4);
+
+  font-size: .61rem;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+}
+
+
+.obux-result-stack strong {
+  font-size: .92rem;
+}
+
+
+.obux-result-stack strong.win {
+  color: #8ee8c5;
+}
+
+
+.obux-result-stack strong.loss {
+  color: #ff9ba5;
+}
+
+
+.obux-result-stack strong.flat {
+  color: #e5d49c;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   SOULAANA
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-soulaana-review {
+  display: flex;
+  gap: 13px;
+
+  margin: 18px 20px 0;
+
+  border: 1px solid rgba(232,198,106,.18);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(232,198,106,.075),
+      rgba(129,88,206,.05)
+    );
+
+  padding: 16px;
+}
+
+
+.obux-soulaana-mark {
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 32px;
+  height: 32px;
+
+  border: 1px solid rgba(232,198,106,.32);
+  border-radius: 50%;
+
+  color: #eed487;
+
+  font-family: Georgia, serif;
+  font-weight: 800;
+}
+
+
+.obux-soulaana-review span {
+  color: #edd184;
+
+  font-size: .67rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+
+.obux-soulaana-review p {
+  max-width: 940px;
+
+  margin: 6px 0 0;
+
+  color: rgba(255,255,255,.77);
+
+  font-size: .82rem;
+  line-height: 1.62;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   SECTIONS
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-section {
+  margin: 18px 20px 0;
+
+  border: 1px solid rgba(255,255,255,.065);
+  border-radius: 19px;
+
+  background: rgba(255,255,255,.021);
+
+  padding: 18px;
+}
+
+
+.obux-review-section h3 {
+  margin: 0;
+
+  font-size: 1.13rem;
+}
+
+
+.obux-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+
+  margin-bottom: 13px;
+}
+
+
+.obux-danger-chip {
+  border-color: rgba(255,99,115,.28);
+
+  background: rgba(255,99,115,.085);
+
+  color: #ffabb4;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   METRICS
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-metrics-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(135px, 1fr)
+    );
+  gap: 8px;
+}
+
+
+.obux-review-metric {
+  min-height: 69px;
+
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 13px;
+
+  background: rgba(0,0,0,.15);
+
+  padding: 11px 12px;
+}
+
+
+.obux-review-metric.danger {
+  border-color: rgba(255,99,115,.19);
+
+  background: rgba(255,99,115,.045);
+}
+
+
+.obux-review-metric span {
+  display: block;
+
+  color: rgba(255,255,255,.4);
+
+  font-size: .63rem;
+}
+
+
+.obux-review-metric strong {
+  display: block;
+
+  margin-top: 8px;
+
+  overflow-wrap: anywhere;
+
+  font-size: .82rem;
+}
+
+
+.obux-review-truth-note {
+  margin-top: 10px;
+
+  color: rgba(255,255,255,.4);
+
+  font-size: .66rem;
+  line-height: 1.5;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   TIMELINE
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-timeline {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(125px, 1fr)
+    );
+  gap: 8px;
+}
+
+
+.obux-timeline-node {
+  display: flex;
+  gap: 8px;
+
+  min-height: 82px;
+
+  border-radius: 13px;
+
+  background: rgba(255,255,255,.026);
+
+  padding: 10px;
+}
+
+
+.obux-timeline-number {
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 23px;
+  height: 23px;
+
+  border: 1px solid rgba(232,198,106,.24);
+  border-radius: 50%;
+
+  color: #e8c66a;
+
+  font-size: .64rem;
+  font-weight: 800;
+}
+
+
+.obux-timeline-node strong,
+.obux-timeline-node span {
+  display: block;
+}
+
+
+.obux-timeline-node strong {
+  font-size: .73rem;
+}
+
+
+.obux-timeline-node span {
+  margin-top: 4px;
+
+  color: rgba(255,255,255,.38);
+
+  font-size: .59rem;
+}
+
+
+.obux-timeline-node p {
+  margin: 6px 0 0;
+
+  color: rgba(255,255,255,.62);
+
+  font-size: .65rem;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   CAUSES
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-cause-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  margin-top: 13px;
+}
+
+
+.obux-cause-chip {
+  border: 1px solid rgba(255,99,115,.17);
+  border-radius: 999px;
+
+  background: rgba(255,99,115,.055);
+
+  padding: 8px 10px;
+
+  color: #ffadb6;
+
+  font-size: .68rem;
+  font-weight: 720;
+}
+
+
+.obux-cause-chip span {
+  margin-right: 4px;
+}
+
+
+.obux-violation-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  margin-top: 13px;
+
+  border-top: 1px solid rgba(255,255,255,.055);
+
+  padding-top: 13px;
+}
+
+
+.obux-violation-box strong {
+  width: 100%;
+
+  color: rgba(255,255,255,.55);
+
+  font-size: .67rem;
+}
+
+
+.obux-violation-box span {
+  border-radius: 8px;
+
+  background: rgba(255,255,255,.035);
+
+  padding: 6px 8px;
+
+  font-size: .65rem;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   LESSON
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+
+  margin-top: 13px;
+}
+
+
+.obux-lesson-row {
+  border-radius: 13px;
+
+  background: rgba(0,0,0,.14);
+
+  padding: 11px;
+}
+
+
+.obux-lesson-row span,
+.obux-owner-note > span {
+  display: block;
+
+  color: rgba(255,255,255,.37);
+
+  font-size: .61rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+
+.obux-lesson-row strong {
+  display: block;
+
+  margin-top: 7px;
+
+  color: rgba(255,255,255,.77);
+
+  font-size: .75rem;
+  line-height: 1.46;
+}
+
+
+.obux-owner-note {
+  margin-top: 9px;
+
+  border-radius: 13px;
+
+  background: rgba(232,198,106,.045);
+
+  padding: 12px;
+}
+
+
+.obux-owner-note p {
+  margin: 7px 0 0;
+
+  color: rgba(255,255,255,.7);
+
+  font-size: .76rem;
+  line-height: 1.5;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   EMPTY
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  border: 1px dashed rgba(255,255,255,.1);
+  border-radius: 16px;
+
+  padding: 20px;
+
+  color: rgba(255,255,255,.46);
+
+  font-size: .74rem;
+  line-height: 1.5;
+}
+
+
+.obux-review-empty strong {
+  color: rgba(255,255,255,.76);
+}
+
+
+.obux-review-empty.compact {
+  margin-top: 12px;
+  padding: 12px;
+}
+
+
+.obux-review-empty.hero {
+  min-height: 320px;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   FOOTER
+   ------------------------------------------------------------------------------------------------- */
+
+.obux-review-footer {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 12px;
+
+  margin-top: 20px;
+
+  border-top: 1px solid rgba(255,255,255,.065);
+
+  padding: 17px 20px 20px;
+}
+
+
+.obux-review-footer span {
+  display: block;
+
+  color: rgba(255,255,255,.34);
+
+  font-size: .58rem;
+  letter-spacing: .09em;
+}
+
+
+.obux-review-footer strong {
+  display: block;
+
+  margin-top: 5px;
+
+  overflow-wrap: anywhere;
+
+  color: rgba(255,255,255,.67);
+
+  font-size: .67rem;
+}
+
+
+/* -------------------------------------------------------------------------------------------------
+   RESPONSIVE
+   ------------------------------------------------------------------------------------------------- */
+
+@media (max-width: 1050px) {
+
+  .obux-review-summary {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .obux-review-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .obux-review-queue-panel {
+    position: static;
+
+    max-height: none;
+  }
+
+  .obux-review-queue {
+    display: grid;
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(210px, 1fr)
+      );
+
+    max-height: none;
+  }
+}
+
+
+@media (max-width: 760px) {
+
+  .obux-review-room {
+    padding:
+      21px 14px
+      60px;
+  }
+
+  .obux-review-room-header,
+  .obux-review-hero-header,
+  .obux-section-heading {
+    flex-direction: column;
+  }
+
+  .obux-review-room-state {
+    justify-content: flex-start;
+  }
+
+  .obux-review-summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .obux-result-stack {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .obux-lesson-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .obux-review-footer {
+    grid-template-columns: 1fr;
+  }
+}
