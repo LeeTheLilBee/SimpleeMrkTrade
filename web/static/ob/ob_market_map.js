@@ -862,6 +862,75 @@
     };
   }
 
+  // This spotlight only interprets existing marketMapContract membership.
+  function showWholeSky() {
+    focusedRegion = null;
+    selectedSymbol = null;
+    applySkyFocus();
+    const drawer = byId("marketMapFocus");
+    if (drawer) drawer.hidden = true;
+    const open = byId("marketMapFocusOpen");
+    if (open) open.hidden = true;
+  }
+
+  function applySkyFocus() {
+    const mount = byId("marketMapSky");
+    if (!mount) return;
+    mount.querySelectorAll(".market-map-constellation").forEach(function (card) {
+      const match = focusedRegion !== null
+        && Number(card.dataset.regionIndex) === focusedRegion;
+      card.classList.toggle("is-focused", match);
+      card.classList.toggle("is-muted", focusedRegion !== null && !match);
+      const btn = card.querySelector(".market-map-region-button");
+      if (btn) btn.setAttribute("aria-pressed", match ? "true" : "false");
+    });
+    const reset = byId("marketMapReset");
+    if (reset) reset.hidden = focusedRegion === null;
+  }
+
+  function focusRegion(index, name, count, sector) {
+    focusedRegion = index;
+    selectedSymbol = null;
+    applySkyFocus();
+    const drawer = byId("marketMapFocus");
+    if (!drawer) return;
+    drawer.hidden = false;
+    const projected = safeObject(sector);
+    const meta = [projected.strength, projected.mood, projected.crowding]
+      .filter(value => value !== null && value !== undefined && value !== "")
+      .map(String);
+    setText("marketMapFocusTitle", name, "Source sector");
+    setText("marketMapFocusDescription",
+      count + " source-backed symbols. "
+      + (meta.length ? "Projected context: " + meta.join(" · ") + ". " : "")
+      + "Location and nebula color are presentation, not performance.");
+    const open = byId("marketMapFocusOpen");
+    if (open) open.hidden = true;
+  }
+
+  function spotlightSymbol(symbol, index, regionName, flags) {
+    focusedRegion = index;
+    selectedSymbol = symbol;
+    applySkyFocus();
+    const drawer = byId("marketMapFocus");
+    if (!drawer) return;
+    drawer.hidden = false;
+    const labels = [
+      flags.position && "Position",
+      flags.signal && "Signal",
+      flags.candidate && "Candidate",
+      flags.watch && "Saved",
+    ].filter(Boolean);
+    setText("marketMapFocusTitle", symbol, "Symbol");
+    setText("marketMapFocusDescription",
+      "Source region: " + regionName + ". "
+      + (labels.length ? "Explicit membership: " + labels.join(" · ") + ". "
+        : "No special membership asserted. ")
+      + "Choose Open Symbol Page for canonical details. No trade happens here.");
+    const open = byId("marketMapFocusOpen");
+    if (open) open.hidden = false;
+  }
+
   function flagsFor(
     symbol,
     sets
@@ -1383,6 +1452,7 @@
       ||
       !sectors.length
     ) {
+      showWholeSky();
       renderEmptySky(
         mount,
         projection
@@ -1392,20 +1462,22 @@
     }
 
 
-    sectors.forEach(
-      function (
-        sector,
-        index
-      ) {
-        mount.appendChild(
-          createConstellation(
-            sector,
-            index,
-            sets
-          )
-        );
-      }
-    );
+    const columns = Math.max(1, Math.min(4, Math.ceil(Math.sqrt(sectors.length * 1.6))));
+    const rows = Math.ceil(sectors.length / columns);
+    mount.style.setProperty("--sky-height", Math.max(760, rows * 276) + "px");
+    sectors.forEach(function (sector, index) {
+      mount.appendChild(createConstellation(sector, index, sets, sectors.length));
+    });
+    if (focusedRegion !== null && focusedRegion >= sectors.length) {
+      showWholeSky();
+    } else if (focusedRegion !== null) {
+      const sector = safeObject(sectors[focusedRegion]);
+      const name = text(sector.name || sector.sector, "Unnamed source sector");
+      const objects = sectorSymbols(sector);
+      const found = selectedSymbol && objects.some(item => symbolFrom(item) === selectedSymbol);
+      if (found) spotlightSymbol(selectedSymbol, focusedRegion, name, flagsFor(selectedSymbol, sets));
+      else focusRegion(focusedRegion, name, objects.length, sector);
+    }
   }
 
 
@@ -1659,6 +1731,17 @@
 
 
   function boot() {
+    const reset = byId("marketMapReset");
+    const drawerReset = byId("marketMapFocusReset");
+    const open = byId("marketMapFocusOpen");
+    if (reset) reset.addEventListener("click", showWholeSky);
+    if (drawerReset) drawerReset.addEventListener("click", showWholeSky);
+    if (open) open.addEventListener("click", function () {
+      if (selectedSymbol) openSymbol(selectedSymbol);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && focusedRegion !== null) showWholeSky();
+    });
     render(
       "initial-load"
     );
