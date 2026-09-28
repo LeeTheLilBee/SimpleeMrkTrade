@@ -1,0 +1,51 @@
+name: Tower systems integration source contracts
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/grounds_runtime_receiver.py"
+      - "tower/grounds_operational_release.py"
+      - "tower/buybox_owner_handoff_issuer.py"
+      - "tower/test_grounds_runtime_integration.py"
+      - "tower/test_buybox_owner_handoff_issuer.py"
+      - "docs/TOWER_SYSTEM_INTEGRATIONS_20260928.md"
+      - ".github/workflows/tower-system-integrations.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/grounds_runtime_receiver.py"
+      - "tower/grounds_operational_release.py"
+      - "tower/buybox_owner_handoff_issuer.py"
+      - "tower/test_grounds_runtime_integration.py"
+      - "tower/test_buybox_owner_handoff_issuer.py"
+      - "docs/TOWER_SYSTEM_INTEGRATIONS_20260928.md"
+      - ".github/workflows/tower-system-integrations.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  fail-closed-crossings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "pytest>=8,<10"
+      - run: python -m compileall -q tower/grounds_runtime_receiver.py tower/grounds_operational_release.py tower/buybox_owner_handoff_issuer.py tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py
+      - run: python -m pytest -q tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py
+      - name: Preserve non-launchable registry truth
+        run: |
+          python - <<'PY'
+          from tower.app_registry import TOWER_APP_REGISTRY
+          for app_id in ("grounds", "buybox"):
+              app = next(x for x in TOWER_APP_REGISTRY if x.app_id == app_id)
+              assert app.app_status == "registered_future_room"
+              assert app.tower_launch_route == "/tower/app-registry"
+          print("Grounds and BuyBox remain non-live registry entries.")
+          PY
