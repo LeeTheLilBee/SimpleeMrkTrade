@@ -354,6 +354,12 @@ class SQLiteOperationalJournal:
                 raise IntegrityError(
                     "restore reservation lacks earlier acknowledged backup provenance"
                 )
+        duplicate_restore_success = conn.execute(
+            """SELECT 1 FROM events WHERE event_type='RESTORE_BOUND_VERIFIED'
+               GROUP BY request_tag,namespace_digest HAVING COUNT(*)>1 LIMIT 1"""
+        ).fetchone()
+        if duplicate_restore_success is not None:
+            raise IntegrityError("restore request has duplicate bound success")
         for verified in conn.execute(
             """SELECT seq,request_tag,namespace_digest FROM events
                WHERE event_type='RESTORE_BOUND_VERIFIED' ORDER BY seq"""
@@ -378,6 +384,26 @@ class SQLiteOperationalJournal:
                 raise IntegrityError(
                     "bound restore success lacks preceding encrypted-copy verification"
                 )
+            # An integrity/missing failure permanently closes THIS logical
+            # restore request. A later physical repair needs a fresh Tower/Vault
+            # restore ID; provider outage incidents are intentionally retryable.
+            for incident in conn.execute(
+                """SELECT * FROM incidents WHERE request_tag=?
+                   AND incident_code='BACKUP_INTEGRITY_FAILURE'""",
+                (verified["request_tag"],),
+            ).fetchall():
+                incident_event = conn.execute(
+                    """SELECT seq FROM events WHERE event_type='INCIDENT_RECORDED'
+                       AND request_tag=? AND namespace_digest=? AND code=?""",
+                    (
+                        verified["request_tag"], verified["namespace_digest"],
+                        _incident_hash(tuple(incident)),
+                    ),
+                ).fetchone()
+                if incident_event is not None and incident_event["seq"] < verified["seq"]:
+                    raise IntegrityError(
+                        "bound restore success follows prior integrity hold"
+                    )
 
         # SC025: prove every historical backup reservation had an EXACT
         # acknowledged primary source at the time it was created. A present
@@ -647,6 +673,16 @@ class SQLiteOperationalJournal:
                 "restore verification requires acknowledged exact backup intent"
             )
 
+    @staticmethod
+    def _restore_request_has_integrity_hold(
+        conn: sqlite3.Connection, tag: str,
+    ) -> bool:
+        return conn.execute(
+            """SELECT 1 FROM incidents WHERE request_tag=?
+               AND incident_code='BACKUP_INTEGRITY_FAILURE' LIMIT 1""",
+            (tag,),
+        ).fetchone() is not None
+
     def reserve_restore_verification(
         self, *, namespace: str, request_id: str,
         backup_ref: str, backup_sha256: str,
@@ -681,6 +717,20 @@ class SQLiteOperationalJournal:
                 raise CloudError(
                     "restore idempotency conflict; new request required"
                 )
+            if record is not None and conn.execute(
+                """SELECT 1 FROM events WHERE event_type='RESTORE_BOUND_VERIFIED'
+                   AND request_tag=? AND namespace_digest=?""",
+                (tag, namespace),
+            ).fetchone() is not None:
+                raise CloudError(
+                    "restore request already completed; new request required"
+                )
+            if record is not None and self._restore_request_has_integrity_hold(
+                conn, tag
+            ):
+                raise CloudError(
+                    "restore request integrity hold; fresh authorization required"
+                )
             self._require_acknowledged_backup(
                 conn, namespace=namespace, backup_ref=backup_ref,
                 backup_sha256=backup_sha256,
@@ -711,6 +761,18 @@ class SQLiteOperationalJournal:
             ).fetchone()
             if row is None:
                 raise CloudError("restore success requires reserved exact backup")
+            if self._restore_request_has_integrity_hold(conn, tag):
+                raise IntegrityError(
+                    "restore request integrity hold forbids bound success"
+                )
+            if conn.execute(
+                """SELECT 1 FROM events WHERE event_type='RESTORE_BOUND_VERIFIED'
+                   AND request_tag=? AND namespace_digest=?""",
+                (tag, namespace),
+            ).fetchone() is not None:
+                raise CloudError(
+                    "restore request already completed; new request required"
+                )
             self._require_acknowledged_backup(
                 conn, namespace=row["namespace_digest"],
                 backup_ref=row["backup_ref"],
