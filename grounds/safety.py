@@ -111,6 +111,56 @@ class GroundsSafety:
                     "staff_entry_authorized":False,
                     "legal_entry_notice_proven":False}
 
+    def staff_safety_desk(self,actor:TowerScope,*,property_ref:str)->dict:
+        """Exact-property read-only human triage queue, NEVER dispatch or delivery.
+
+        Work metadata is minimized: no description, resident identity, contact,
+        appointment, payment or source document is exposed through this desk.
+        An incident remains actionable until recorded by a human; a local
+        notification-intent is not evidence that anyone was contacted.
+        """
+        actor=self.ops._scope(actor)
+        actor.require_role("owner","property_manager","maintenance_supervisor")
+        actor.require_property(property_ref)
+        with self.store.transaction() as db:
+            backlog=db.execute(
+                """SELECT COUNT(*) FROM work_orders w
+                   LEFT JOIN emergency_reviews r ON r.work_ref=w.work_ref
+                   WHERE w.property_ref=? AND w.emergency_flag=1
+                     AND w.state='submitted' AND r.work_ref IS NULL""",
+                (property_ref,),
+            ).fetchone()[0]
+            rows=db.execute(
+                """SELECT w.work_ref,w.unit_ref,w.category,w.created_at,w.updated_at
+                   FROM work_orders w
+                   LEFT JOIN emergency_reviews r ON r.work_ref=w.work_ref
+                   WHERE w.property_ref=? AND w.emergency_flag=1
+                     AND w.state='submitted' AND r.work_ref IS NULL
+                   ORDER BY w.created_at ASC,w.work_ref ASC LIMIT 50""",
+                (property_ref,),
+            ).fetchall()
+            pending=db.execute(
+                """SELECT COUNT(*) FROM event_outbox
+                   WHERE property_ref=? AND status='pending'""",
+                (property_ref,),
+            ).fetchone()[0]
+        return {
+            "source":"grounds","property_ref":property_ref,
+            "unreviewed_urgent_count":backlog,
+            "visible_queue_limit":50,
+            "queue":[{
+                "work_ref":row["work_ref"],"unit_ref":row["unit_ref"],
+                "category":row["category"],"created_at":row["created_at"],
+                "updated_at":row["updated_at"],"human_review_recorded":False,
+                "external_dispatch_confirmed":False,
+            } for row in rows],
+            "pending_local_event_intents":pending,
+            "provider_connected":False,"recipient_delivery_proven":False,
+            "human_on_call_escalation_confirmed":False,
+            "emergency_services_contacted":False,"legal_notice_proven":False,
+            "review_action":"record_separate_human_urgency_review",
+        }
+
     def pending_event_intents(self,actor:TowerScope,*,property_ref:str)->list[dict]:
         actor=self.ops._scope(actor)
         actor.require_role("owner","property_manager","maintenance_supervisor")
