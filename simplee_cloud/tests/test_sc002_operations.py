@@ -112,12 +112,14 @@ def test_idempotency_conflict_and_cross_entity_not_reused(tmp_path):
     first = write(ops, data, digest, ref)
     with pytest.raises(CloudError, match="idempotency conflict"):
         write(ops, data, digest, ops.source.new_object_ref())
-    with pytest.raises(ObjectMissing):
+    with pytest.raises(CloudError, match="acknowledged matching primary"):
         ops.get(
             context=context("READ_CIPHERTEXT", "r2", "other-entity"),
             object_ref=ref, expected_sha256=digest,
         )
-    assert journal.health()["incident_count"] == 1
+    # Wrong entity lacks Cloud journal provenance; deny before provider GET
+    # instead of classifying it as physical data corruption.
+    assert journal.health()["incident_count"] == 0
     with pytest.raises(AccessDenied):
         write(ops, data, digest, ops.source.new_object_ref(),
               replace(context("WRITE_CIPHERTEXT", "req-denied"),
