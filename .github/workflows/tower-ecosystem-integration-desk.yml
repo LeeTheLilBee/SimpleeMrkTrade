@@ -1,0 +1,37 @@
+name: Tower owner ecosystem integration desk
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ecosystem_integration_desk.py"
+      - "tower/tower_access_home_ui_v2.py"
+      - "web/hosted_tower.py"
+      - "tower/test_ecosystem_integration_desk.py"
+      - ".github/workflows/tower-ecosystem-integration-desk.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ecosystem_integration_desk.py"
+      - "tower/tower_access_home_ui_v2.py"
+      - "web/hosted_tower.py"
+      - "tower/test_ecosystem_integration_desk.py"
+      - ".github/workflows/tower-ecosystem-integration-desk.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  owner-only-fail-closed-integration-view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - run: python -m compileall -q tower/ecosystem_integration_desk.py tower/tower_access_home_ui_v2.py web/hosted_tower.py
+      - run: python -m pytest -q tower/test_ecosystem_integration_desk.py
