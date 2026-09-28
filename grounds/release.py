@@ -37,7 +37,7 @@ def source_completion_status()->dict:
         ),
         "real_postgres_ci_workflow_available":True,
         "real_postgres_ci_result_must_be_checked_externally":True,
-        "retry_safe_work_and_appointment_source_available":True,
+        "retry_safe_work_and_appointment_source_available":True,\n        "verified_post_close_property_receiver_source_available":True,\n        "verified_teller_rent_runtime_source_available":True,\n        "verified_delivery_receipt_ledger_source_available":True,
         "tower_staff_directory_and_assignment_receiver_certified":False,
         "developer_demo_command":"python -m grounds.dev_demo --fictional-only",
         "domain_tests_required":True,"latest_github_ci_must_be_confirmed_externally":True,
