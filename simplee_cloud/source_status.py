@@ -15,6 +15,7 @@ def owner_safe_source_snapshot(journal: SQLiteOperationalJournal) -> dict:
     if not isinstance(journal, SQLiteOperationalJournal):
         raise CloudError("verified Cloud source journal required")
     health = journal.health()  # verifies full event/payload/incident chain first
+    coverage = journal.source_backup_coverage()  # separately verifies full chain
     if health["status"] != "SOURCE_ONLY_NO_GO":
         raise CloudError("source journal supplied unexpected runtime state")
 
@@ -22,11 +23,15 @@ def owner_safe_source_snapshot(journal: SQLiteOperationalJournal) -> dict:
     pending_backup = health["pending_backups"]
     integrity_primary = health["missing_or_corrupt"]
     integrity_backup = health["backup_missing_or_corrupt"]
+    uncovered = coverage["uncovered_primary_object_count"]
+    uncovered_pending = coverage["uncovered_with_pending_backup_count"]
+    uncovered_without_pending = coverage["uncovered_without_pending_backup_count"]
     backend_events = health["backend_error_events"]
     other_incident_events = health["incident_count"] - backend_events
     values = (
         pending_primary, pending_backup, integrity_primary, integrity_backup,
         backend_events, other_incident_events, health["event_count"],
+        uncovered, uncovered_pending, uncovered_without_pending,
     )
     if any(type(n) is not int or n < 0 for n in values):
         raise CloudError("invalid verified journal metric")
@@ -39,6 +44,8 @@ def owner_safe_source_snapshot(journal: SQLiteOperationalJournal) -> dict:
          "Do not release or auto-rewrite. Review the original signed Vault receipt, physical hash and incident."),
         ("backup_integrity", "Backup integrity holds", integrity_backup,
          "Do not declare recovery. Verify the original Vault backup receipt, encrypted copy and independent key."),
+        ("backup_coverage", "Acknowledged primary objects without matched backup ACK", uncovered,
+         "Review exact Vault-owned source/backup receipt and authorized backup intent. Pending or failed backups cannot count as protected. Physical backup restoration and independent site proof remain unverified."),
         ("primary_reconciliation", "Pending primary reconciliations", pending_primary,
          "Use a fresh Tower-authorized reconciliation of the ORIGINAL write ID. Never retry physical PUT automatically."),
         ("backup_reconciliation", "Pending backup reconciliations", pending_backup,
@@ -75,6 +82,13 @@ def owner_safe_source_snapshot(journal: SQLiteOperationalJournal) -> dict:
         "journal_event_count": health["event_count"],
         "primary_write_count": health["write_count"],
         "backup_reservation_count": health["backup_count"],
+        "acknowledged_primary_object_count": coverage["acknowledged_primary_object_count"],
+        "matched_backup_ack_count": coverage["matched_backup_ack_count"],
+        "uncovered_primary_object_count": uncovered,
+        "uncovered_with_pending_backup_count": uncovered_pending,
+        "uncovered_without_pending_backup_count": uncovered_without_pending,
+        "actual_backup_bytes_reverified": False,
+        "independent_failure_domain_certified": False,
         "pending_primary_count": pending_primary,
         "pending_backup_count": pending_backup,
         "primary_integrity_hold_count": integrity_primary,
@@ -102,6 +116,10 @@ def owner_safe_source_markdown(journal: SQLiteOperationalJournal) -> str:
         "| --- | ---: |",
         f"| Primary write reservations | {snapshot['primary_write_count']} |",
         f"| Backup reservations | {snapshot['backup_reservation_count']} |",
+        f"| Acknowledged primary objects | {snapshot['acknowledged_primary_object_count']} |",
+        f"| Objects with matched backup ACK (journal only) | {snapshot['matched_backup_ack_count']} |",
+        f"| Objects without backup ACK | {snapshot['uncovered_primary_object_count']} |",
+        f"| Of those, pending backup | {snapshot['uncovered_with_pending_backup_count']} |",
         f"| Pending primary reconciliation | {snapshot['pending_primary_count']} |",
         f"| Pending backup reconciliation | {snapshot['pending_backup_count']} |",
         f"| Primary integrity holds | {snapshot['primary_integrity_hold_count']} |",
