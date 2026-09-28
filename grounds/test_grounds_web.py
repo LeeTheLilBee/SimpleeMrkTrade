@@ -696,5 +696,41 @@ class GroundsWebTests(unittest.TestCase):
         self.assertNotIn("resident_ref",str(view))
 
 
+    def test_resident_own_sensitive_reads_are_audited_before_disclosure(self):
+        workspace=self.invoke(
+            "/grounds/api/workspace?property_ref=p1&unit_ref=u1",actor=self.resident,
+        )
+        self.assertEqual(workspace["status"],"200 OK")
+        self.assertEqual(self.invoke(
+            "/grounds/api/privacy-history?property_ref=p1&unit_ref=u1",
+            actor=self.other,
+        )["status"],"404 Not Found")
+        history=self.invoke(
+            "/grounds/api/privacy-history?property_ref=p1&unit_ref=u1",actor=self.resident,
+        )
+        self.assertEqual(history["status"],"200 OK")
+        self.assertEqual(history["json"]["total_events_before_current_response"],1)
+        self.assertEqual(history["json"]["events"][0]["resource_kind"],"workspace")
+        self.assertFalse(history["json"]["ip_addresses_included"])
+        self.assertNotIn("actor_ref",str(history["json"]))
+        after=self.invoke(
+            "/grounds/api/privacy-history?property_ref=p1&unit_ref=u1",actor=self.resident,
+        )
+        self.assertEqual(after["json"]["total_events_before_current_response"],2)
+        self.assertEqual(after["json"]["events"][0]["resource_kind"],"privacy_history")
+        self.assertEqual(self.invoke(
+            "/grounds/api/privacy-history?property_ref=p1&unit_ref=u1",actor=self.manager,
+        )["status"],"404 Not Found")
+        self.assertEqual(self.invoke(
+            "/grounds/api/privacy-history?property_ref=p1&unit_ref=u1&owner=true",
+            actor=self.resident,
+        )["status"],"400 Bad Request")
+        self.ops.end_lease(self.manager,property_ref="p1",lease_ref="l1",expected_revision=1)
+        denied=self.invoke(
+            "/grounds/api/privacy-history?property_ref=p1&unit_ref=u1",actor=self.resident,
+        )
+        self.assertEqual(denied["status"],"404 Not Found")
+
+
 if __name__=="__main__":
     unittest.main()
