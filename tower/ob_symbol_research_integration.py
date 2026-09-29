@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from datetime import datetime, timezone
+from math import isfinite
 import re
 
 from flask import Flask, abort, request
@@ -37,6 +38,76 @@ _EXTENSION = "tower_ob_symbol_research_context_v1"
 def _trusted_owner() -> bool:
     return (owner_session_active() is True and step_up_active() is True
             and operational_ob_access_active() is True)
+
+
+
+def _reviewed_sec_examination(snapshot: dict) -> dict:
+    """Turn only the independently AI-reviewed SEC facts into an owner explanation.
+
+    Reuse the authoritative Soulaana rights projection; do not infer permission
+    from the owner's display view. This is deterministic research, not an LLM
+    call, an unreviewed filing-body handoff or market/trading authority.
+    """
+    view = project_research(snapshot, "soulaana")
+    facts = view["fundamentals"]
+    state = facts.get("state")
+    findings = []
+    comparisons = []
+    if state == "SOURCE_BOUND":
+        for fact in facts.get("reported_concepts", [])[:6]:
+            if not isinstance(fact, dict):
+                continue
+            value = fact.get("value")
+            reference = fact.get("reference")
+            if (type(value) not in (int, float) or not isfinite(value)
+                    or not isinstance(reference, str)
+                    or not reference.startswith("https://www.sec.gov/Archives/edgar/data/")
+                    or len(reference) > 500):
+                continue
+            findings.append({
+                "concept": str(fact.get("concept", ""))[:90],
+                "value": value,
+                "unit": str(fact.get("units", ""))[:25],
+                "fiscal_end": str(fact.get("fiscal_end", ""))[:32],
+                "accepted_at": str(fact.get("accepted_at", ""))[:40],
+                "filing_form": str(fact.get("form", ""))[:20],
+                "source_reference": reference,
+                "meaning": "A historical issuer-reported SEC financial concept, not a current market price.",
+            })
+        for item in facts.get("year_end_balance_sheet_comparisons", [])[:3]:
+            if not isinstance(item, dict):
+                continue
+            earlier, later = item.get("earlier_source"), item.get("later_source")
+            if (not all(isinstance(x, str) and
+                    x.startswith("https://www.sec.gov/Archives/edgar/data/")
+                    and len(x) <= 500 for x in (earlier, later))):
+                continue
+            comparisons.append({
+                "concept": str(item.get("concept", ""))[:90],
+                "earlier_period": str(item.get("earlier_fiscal_end", ""))[:32],
+                "later_period": str(item.get("later_fiscal_end", ""))[:32],
+                "reported_change_pct": item.get("reported_change_pct"),
+                "unit": str(item.get("unit", ""))[:25],
+                "earlier_source": earlier,
+                "later_source": later,
+                "meaning": "Retrospective issuer-filing comparison only; it cannot establish a live quote or causality.",
+            })
+    return {
+        "schema": "OB_SOULAANA_REVIEWED_SEC_EXAMINATION_V1",
+        "state": "SOURCE_BOUND" if findings else (
+            "AI_RIGHTS_HOLD" if state == "EXPLANATION_RIGHTS_HOLD" else "NO_VERIFIED_REVIEWED_FACTS"
+        ),
+        "symbol": view["symbol"],
+        "as_of": view["as_of"],
+        "findings": findings,
+        "comparisons": comparisons,
+        "issuer_events_in_ai_content": False,
+        "external_model_called": False,
+        "source_only": True,
+        "live_quote_verified": False,
+        "candidate_admitted": False,
+        "broker_execution_authorized": False,
+    }
 
 
 def register_protected_symbol_research_context(
@@ -101,6 +172,7 @@ def register_protected_symbol_research_context(
             # is not promoted to a current quote through UI projection.
             snapshot = symbol_research_snapshot(inputs, as_of=inputs.captured_at)
             context = project_research(snapshot, room)
+            context["soulaana_sec_examination"] = _reviewed_sec_examination(snapshot)
             if (context.get("symbol") != symbol or context.get("room") != room
                     or context.get("may_authorize_order") is not False
                     or context.get("may_authorize_candidate") is not False):

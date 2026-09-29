@@ -35,7 +35,10 @@ class EDGARPublicClient:
     """One sequential SEC request at a time and <= 2 requests/sec per process.
 
     This is intentionally below SEC's published 10 requests/sec aggregate limit.
-    Multiple deployed instances must use a shared throttle before activation.
+    The currently bounded deployment topology is two Free Tower services with
+    exactly one worker each: combined maximum collector traffic is below four
+    requests/sec. Any scale-out or additional shared-identity SEC consumers
+    require independent aggregate budgeting/shared throttling first.
     """
 
     def __init__(self, contact_email: str, *, opener=None, clock=monotonic,
