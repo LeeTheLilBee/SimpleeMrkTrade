@@ -70,6 +70,8 @@ def connection_status_projection(*, sid: str, key_reader: Callable,
         raise ValueError("Public session status unavailable")
     if public["account_linked"] and not public["authentication_temporarily_present"]:
         raise ValueError("Public linkage cannot outlive its temporary auth")
+    if public["owner_selection_required"] and not public["authentication_temporarily_present"]:
+        raise ValueError("Public owner account choice cannot outlive temporary auth")
     if public["account_linked"] and public["owner_selection_required"]:
         raise ValueError("Public owner selection/linkage contradiction")
     entries["public"] = {
