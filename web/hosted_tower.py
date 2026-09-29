@@ -547,8 +547,12 @@ from tower.ob_market_data_desk_integration import register_protected_ob_market_d
 register_protected_ob_market_data_desk(app)
 
 
-# OBINTEL/Tower: optional, exact-room source-bound research presentation.
-# No resolver is attached in this source-only hosted build; the panels remain
-# absent until real reviewed backend evidence and owner/session rights exist.
+# OBINTEL/Tower + OBSEC: exact-room source-bound public SEC company research.
+# Default OFF. Resolver exists only after server-side source-use/owner-display
+# review and monitored contact are supplied; existing Tower guard and separate
+# equity/options quote path remain authoritative. No new browser routes or orders.
+from engine.market_intake.sec_public_research import sec_owner_resolver_from_environment
 from tower.ob_symbol_research_integration import register_protected_symbol_research_context
-register_protected_symbol_research_context(app)
+register_protected_symbol_research_context(
+    app, research_resolver=sec_owner_resolver_from_environment()
+)
