@@ -1,0 +1,61 @@
+name: Tower OB EDGAR official source research integration
+on:
+  push:
+    branches:
+      - tower-ob-edgar-integrated-0929
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "engine/market_intake/**"
+      - "scripts/obscan_public_edgar_fetch.py"
+      - "scripts/ob_edgar_research.py"
+      - "web/templates/ob_research_context_partial.html"
+      - "web/static/ob/ob_market_data_desk.js"
+      - "tests/test_obscan_public_edgar_fetch.py"
+      - "docs/market_data/OBEDGAR001_020_SOURCE_INTAKE.md"
+      - ".github/workflows/tower-ob-edgar-integrated.yml"
+permissions:
+  contents: read
+jobs:
+  source-identity-and-rights:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install hosted/test requirements
+        run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - name: Compile SEC adapter, offline collector, and existing research
+        run: |
+          python -m compileall -q engine/market_intake scripts/obscan_public_edgar_fetch.py scripts/ob_edgar_research.py
+      - name: Official EDGAR, scanner and symbol regression tests
+        run: |
+          python -m pytest -q \
+            tests/test_obscan_public_edgar_fetch.py \
+            tests/test_obscan001_025_sovereign_intake.py \
+            tests/test_obscan026_040_universal_gateway.py \
+            tests/test_obscan041_055_market_data_desk.py \
+            tests/test_obintel001_030_symbol_research.py \
+            tests/test_tower_ob_market_data_desk_selective.py \
+            tests/test_tower_ob_symbol_research_selective.py
+      - name: Market Data Desk JS remains valid
+        run: node --check web/static/ob/ob_market_data_desk.js
+      - name: Source-only dry run (no identifying contact or request)
+        run: |
+          python scripts/obscan_public_edgar_fetch.py --output /tmp/ob-edgar-ci-plan --ciks 0000320193
+      - name: No orders, browser credentials or independently crawled quotes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          content="\n".join((Path("engine/market_intake")/p).read_text()
+              for p in ("edgar_research.py","edgar_cache.py"))
+          for disallowed in ("urlopen(","requests.get(","place_order(","submit_order(",
+                            "WebSocket(","yfinance"):
+              assert disallowed not in content,disallowed
+          print("EDGAR parsing and research join are offline, quote-free and execution-free")
+          PY

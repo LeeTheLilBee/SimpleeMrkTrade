@@ -57,7 +57,7 @@ _PRODUCTS = (
                     "reference", False, "https://www.nasdaqtrader.com/Trader.aspx?id=SymbolDirDefs"),
     ProviderProduct("occ-reports", "OCC", "Series/volume/open-interest research; not streaming quotes", "metadata",
                     "reference", False, "https://www.theocc.com/market-data/market-data-reports"),
-    ProviderProduct("sec-edgar", "SEC", "Issuer filings and event discovery; never a quote", "event",
+    ProviderProduct("sec-edgar", "SEC", "Issuer filings, submission history and structured companyfacts; research only, never a quote", "event",
                     "reference", False, "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"),
 )
 CATALOG: dict[str, ProviderProduct] = {p.key: p for p in _PRODUCTS}
