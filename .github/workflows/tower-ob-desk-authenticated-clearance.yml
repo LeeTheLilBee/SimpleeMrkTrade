@@ -1,0 +1,50 @@
+name: Tower Desk authenticated owner clearance handoff
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - 'tower/ob_route_guard.py'
+      - 'tests/test_tower_ob_desk_owner_identity_runtime.py'
+      - '.github/workflows/tower-ob-desk-authenticated-clearance.yml'
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - 'tower/ob_route_guard.py'
+      - 'tests/test_tower_ob_desk_owner_identity_runtime.py'
+      - '.github/workflows/tower-ob-desk-authenticated-clearance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  signed-tower-owner-not-browser-claims:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - run: python -m compileall -q tower/ob_route_guard.py tests/test_tower_ob_desk_owner_identity_runtime.py
+      - name: Legacy PACK046 owner session, exact Desk guard and Public security regressions
+        run: |
+          python -m pytest -q \
+            tests/test_tower_ob_desk_owner_identity_runtime.py \
+            tests/test_tower_ob_public_clearance_policy.py \
+            tests/test_ob_public_owner_connection.py \
+            tests/test_tower_ob_market_data_desk_selective.py \
+            tests/test_tower_ob_web_route_enforcement.py \
+            tests/test_ob_canonical_nav_corridors.py \
+            tests/test_ob_dashboard_practice_corridors.py
+      - name: Hosted app import and anonymous connection denial
+        run: |
+          python - <<'PY'
+          from web.hosted_tower import app
+          for path in ("/ob/data-desk", "/ob/data-desk/public"):
+              assert app.test_client().get(path).status_code != 200
+          print("Both exact Desk corridors remain protected on hosted Tower.")
+          PY
