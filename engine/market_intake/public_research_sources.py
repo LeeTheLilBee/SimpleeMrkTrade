@@ -159,7 +159,11 @@ class PublicReferenceClient:
         try:
             if payload["status"] != "REQUEST_SUCCEEDED":
                 raise ValueError()
-            series = payload["Results"]["series"]
+            results = payload["Results"]
+            # Published unregistered v1 shape: Results is a one-element list.
+            if not isinstance(results, list) or len(results) != 1 or not isinstance(results[0], dict):
+                raise ValueError()
+            series = results[0]["series"]
             if len(series) != 1 or series[0]["seriesID"] != series_id:
                 raise ValueError()
             rows = series[0]["data"]
