@@ -8,7 +8,7 @@ import tempfile
 import pytest
 
 from engine.market_intake import (
-    BOUNDARIES, DiscoveryEvent, EquityQuote, Gate, Observation, OptionQuote,
+    BOUNDARIES, FeedAdapter, IngressRegistry, DiscoveryEvent, EquityQuote, Gate, Observation, OptionQuote,
     ProviderBudget, ScanContext, ScanPolicy, SourceRights, TrafficPlanner,
     assess, diff_directory, directory_snapshot, inspect_symbol,
     parse_nasdaq_directory, parse_sec_ticker_exchange, reconcile_symbol_universe,
@@ -251,3 +251,29 @@ def test_stream_is_one_bounded_selection_and_no_client_open():
                               watchlist=["XYZ"])==()
     assert not BOUNDARIES["provider_fetch_enabled"] and not BOUNDARIES["broker_order_submission"]
     assert not BOUNDARIES["synthetic_quote_fallback"]
+
+def test_provider_adapter_requires_installed_rights_and_explicit_timestamp():
+    with pytest.raises(ValueError):
+        FeedAdapter(SourceRights("unknown","upstream"),{},feed_label="realtime")
+    with pytest.raises(ValueError):
+        FeedAdapter(replace(A,real_time_entitled=False),{},feed_label="realtime")
+    mapping={x:x for x in ("observation_id","symbol","observed_at","provenance_reference",
+                           "last","bid","ask","previous_close","volume","average_volume")}
+    adapter=FeedAdapter(A,mapping,feed_label="realtime")
+    registry=IngressRegistry()
+    registry.register(adapter)
+    raw={"observation_id":"q1","symbol":"XYZ","observed_at":"2026-09-28T14:59:59Z",
+         "provenance_reference":"signed-source-event-1","last":100.0,
+         "bid":99.9,"ask":100.1,"previous_close":98.0,"volume":1000,"average_volume":500,
+         "source_id":"fraudulent-vendor","real_time_entitled":True}
+    quote=registry.normalize("vendor-a","equity",raw,received_at=NOW)
+    assert quote.evidence.source_id=="vendor-a"
+    assert quote.evidence.upstream_family=="SIP"
+    assert assess(quote.evidence,A,CONTEXT).gate==Gate.CURRENT_RESEARCH
+    assert not registry.capability_snapshot()["network_enabled"]
+    with pytest.raises(ValueError):
+        registry.register(adapter)
+    with pytest.raises(ValueError):
+        adapter.normalize({**raw,"observed_at":"2026-09-28T14:59:59"},received_at=NOW)
+    with pytest.raises(ValueError):
+        adapter.normalize({k:v for k,v in raw.items() if k!="observed_at"},received_at=NOW)
