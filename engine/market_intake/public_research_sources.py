@@ -141,7 +141,7 @@ class PublicReferenceClient:
             if len(series) != 1 or series[0]["seriesID"] != series_id:
                 raise ValueError()
             rows = series[0]["data"]
-            valid = [r for r in rows if re.fullmatch(r"(?:M(?:0[1-9]|1[0-2])|Q0[1-4]|A01)",
+            valid = [r for r in rows if isinstance(r, dict) and re.fullmatch(r"(?:M(?:0[1-9]|1[0-2])|Q0[1-4]|A01)",
                      str(r.get("period", ""))) and re.fullmatch(r"\d{4}", str(r.get("year", "")))]
             latest = max(valid, key=lambda r: (r["year"], r["period"]))
             number = self._number(latest["value"])
@@ -172,7 +172,7 @@ class PublicReferenceClient:
         try:
             results = payload["BEAAPI"]["Results"]
             rows = results["Data"]
-            matching = [r for r in rows if str(r.get("LineNumber")) == line_number and
+            matching = [r for r in rows if isinstance(r, dict) and str(r.get("LineNumber")) == line_number and
                         re.fullmatch(r"\d{4}(?:Q[1-4])?", str(r.get("TimePeriod", "")))]
             latest = max(matching, key=lambda r: r["TimePeriod"])
             number = self._number(latest["DataValue"])
@@ -200,7 +200,9 @@ class PublicReferenceClient:
         payload, fetched = self._json(_FIGI, method="POST", body=body, headers=headers)
         if not isinstance(payload, list) or len(payload) != 1 or not isinstance(payload[0], dict):
             raise PublicResearchUnavailable("FIGI_SOURCE_SHAPE_HOLD")
-        matches = payload[0].get("data", [])
+        if "error" in payload[0] or "data" not in payload[0]:
+            raise PublicResearchUnavailable("FIGI_SOURCE_SHAPE_HOLD")
+        matches = payload[0]["data"]
         if not isinstance(matches, list):
             raise PublicResearchUnavailable("FIGI_SOURCE_SHAPE_HOLD")
         eligible = [r["figi"] for r in matches if isinstance(r, dict) and
