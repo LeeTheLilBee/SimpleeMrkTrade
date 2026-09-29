@@ -30,6 +30,14 @@ if [[ "${TOWER_OWNER_BETA_OB_PUBLICATION_ENABLED:-0}" == "1" ]]; then
     "${PYTHON_VALUE}" -u -m deploy.hosted_tower.ob_publication_observer &
 fi
 
+# Owner-requested one-shot live no-key source proof. Explicitly opt-in,
+# provider-reviewed, no raw values or login credentials in logs. Runs once per
+# opted-in startup, independently of normal owner-only route authorization.
+# Never blocks availability and is OFF during ordinary deployments.
+if [[ "${OB_KEYLESS_ONE_SHOT_SOURCE_PROBE:-0}" == "1" ]]; then
+    "${PYTHON_VALUE}" -u -m deploy.hosted_tower.keyless_one_shot_source_probe &
+fi
+
 exec "${PYTHON_VALUE}" -m gunicorn \
     --bind "0.0.0.0:${PORT_VALUE}" \
     --workers "${WORKERS_VALUE}" \
