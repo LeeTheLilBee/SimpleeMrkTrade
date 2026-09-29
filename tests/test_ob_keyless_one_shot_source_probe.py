@@ -116,7 +116,7 @@ def test_bls_trace_does_not_make_extra_requests_or_emit_response_body():
         client._opener(Request(
             "https://api.bls.gov/publicAPI/v1/timeseries/data/" + series
         ), 8)
-    client = SimpleNamespace(_opener=held, bls_v1=reader)
+    client = SimpleNamespace(_opener=held, _json=lambda *_a, **_k: None, bls_v1=reader)
     capture_bls_diagnostic(SimpleNamespace(reference=client), state)
     with pytest.raises(HTTPError):
         client.bls_v1("CUUR0000SA0")
@@ -132,9 +132,38 @@ def test_bls_trace_only_emits_our_own_hold_codes():
     state = {}
     client = SimpleNamespace(
         _opener=lambda *_: None,
+        _json=lambda *_a, **_k: None,
         bls_v1=lambda *_: (_ for _ in ()).throw(
             PublicResearchUnavailable("VENDOR_EMBEDDED_SENSITIVE_DETAIL")))
     capture_bls_diagnostic(SimpleNamespace(reference=client), state)
     with pytest.raises(PublicResearchUnavailable):
         client.bls_v1("CUUR0000SA0")
     assert state == {"bls_failure_kind": "OTHER_HOLD"}
+
+
+def test_bls_http_200_shape_probe_exposes_envelope_only_not_values():
+    from types import SimpleNamespace
+    from deploy.hosted_tower.keyless_one_shot_source_probe import capture_bls_diagnostic
+    state = {}
+    synthetic = {
+        "status": "REQUEST_SUCCEEDED",
+        "Results": {"series": [{
+            "seriesID": "CUUR0000SA0",
+            "data": [{"year":"2026","period":"M08","value":"SENSITIVE_INDEX"}]
+        }]}
+    }
+    client = SimpleNamespace(
+        _opener=lambda *_: None,
+        _json=lambda *_a, **_k: (synthetic, None),
+        bls_v1=lambda *_: None,
+    )
+    capture_bls_diagnostic(SimpleNamespace(reference=client), state)
+    payload, _ = client._json("https://api.bls.gov/publicAPI/v1/timeseries/data/CUUR0000SA0", source="bls")
+    assert payload is synthetic
+    assert state["bls_status_success"] is True
+    assert state["bls_results_shape"] == "OBJECT"
+    assert state["bls_series_shape"] == "LIST"
+    assert state["bls_series_count_bucket"] == "ONE"
+    assert state["bls_series_matched"] is True
+    assert state["bls_data_nonempty"] is True
+    assert "SENSITIVE_INDEX" not in json.dumps(state)
