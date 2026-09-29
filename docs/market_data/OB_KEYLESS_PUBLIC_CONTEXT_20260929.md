@@ -65,3 +65,18 @@ Public's future authenticated stock and option quotes will travel through
 their own reviewed gateway and freshness/entitlement gates. They are not
 inferred from this keyless source register and remain blocked by the unresolved
 Public account discovery issue.
+
+
+## Owner-authorized Soulaana source-evidence feed (separate reviewed lane)
+
+The owner specifically authorized Soulaana to receive the public research after the basic source-status-only integration. The content-bearing handoff is a **separate, bounded and non-executing** artifact named OB_SOULAANA_KEYLESS_EVIDENCE_V1, produced alongside the existing status-only register within the same exact Tower-protected source snapshot. It is rendered on every shared keyless owner-room card. It is a deterministic verified explanatory payload, **not proof an external language model was invoked**; an external model adapter would require its own reviewed destination and consent. It cannot enter Soulaana's trading decision-engine context by accident.
+
+- Three independently controlled AI-use grants for BLS CPI index, US Treasury reported Debt to the Penny and the public-domain FIGI identifier. Each must already have source use and owner display enabled, plus OB_KEYLESS_SOULAANA_CONTENT_ENABLED=1 and its own OB_KEYLESS_<SOURCE>_AI_USE_REVIEWED=1. An enabled source does not inherit another source's rights, and missing permission returns status/hold with no value.
+- Retain exact source period, retrieval timestamp, fixed official reference and precise unit. Never call CPI an inflation percentage, debt a Treasury bond yield, or a ticker/FIGI mapping tradability proof.
+- BLS attribution is shown with its retrieved date and required statement: "BLS.gov cannot vouch for the data or analyses derived from these data after the data have been retrieved from BLS.gov."
+- OpenFIGI payload is only the public-domain FIGI and requested ticker, not unrelated proprietary Bloomberg data, raw provider records, AI training permission or an options chain.
+- SEC remains a **delegated** issuer route: keyless status alone does not contain an SEC filing; its separate existing SEC-specific content and AI permissions are left unchanged. Public authentication/quotes are still blocked on actual account linkage and independently reviewed current equity/options data rights.
+- The global envelope's ai_input_approved=False is intentional: it prevents blanket forwarding of all four source rows. Only entries in the nested source-specific evidence brief are approved. Each nested observation and wrapper again denies live quote, candidate, order, capital and execution authority. No raw API response, vendor secret or third-party credential is forwarded.
+- Owner can disable the single content flag or any individual review grant and redeploy: the reader then returns no newly authorized fact for that source; old in-process observations are filtered from content whenever a source is revoked. This does not install or call a third-party LLM endpoint.
+
+Reviewed official terms (Sept 29, 2026): https://www.bls.gov/developers/termsOfService.htm (secondary use permitted, attribution and retrieval date required); https://treasurydirect.gov/legal-information/developers/web-api-terms/ (API search/display/analysis permitted without implying government endorsement); https://www.openfigi.com/docs/terms-of-service (FIGI identifiers dedicated to public domain). Business deployment beyond owner-only internal research, model-service transmission, redistributing derived reports or ingesting unrelated source fields requires separate review.
