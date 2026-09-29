@@ -426,6 +426,15 @@ OB_ROUTE_GUARD_MAP.update({
         purpose="Approved real Observatory Dashboard surface.",
         soulaana_translation="Soulaana: This is the Observatory Dashboard. I can open it through Tower clearance.",
     ),
+    "/ob/engine-feed-snapshot.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="engine_feed_source_status",
+        action="view",
+        clearance="owner",
+        risk_floor=20,
+        room="Canonical Market Source Status",
+        purpose="Exact protected GET/HEAD source-status read. No licensed quote, provider, position or execution authority is implied.",
+        soulaana_translation="Soulaana: This is a protected market-source status corridor, not proof that a feed is connected.",
+    ),
     "/ob/data-desk": _tower_ob_real_surface_policy_2593_2602(
         route_key="data_desk",
         action="view",
