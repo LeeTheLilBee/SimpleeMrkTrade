@@ -140,6 +140,22 @@ def test_equity_rights_do_not_authorize_option_data_or_adapters():
         FeedAdapter(equities_only,mapping,feed_label="realtime",instrument="option")
 
 
+def test_entitlement_expiry_and_future_verification_are_fail_closed():
+    expired=replace(A,expires_at=NOW-timedelta(seconds=1),
+                    verified_at=NOW-timedelta(days=2))
+    assert assess(obs(),expired,CONTEXT).gate==Gate.RIGHTS_HOLD
+    future=replace(A,verified_at=NOW+timedelta(seconds=1))
+    assert assess(obs(),future,CONTEXT).gate==Gate.RIGHTS_HOLD
+    with pytest.raises(ValueError):
+        replace(A,expires_at=NOW)
+    entitlement=replace(A,entitled_instruments=frozenset({"equity"}))
+    planner=TrafficPlanner(ProviderBudget("vendor-a",3,2,supports_options=True,
+                           research_entitlement_confirmed=True),entitlement)
+    assert planner.propose(context=CONTEXT,option_underlyings=["XYZ"])==[]
+    assert TrafficPlanner(ProviderBudget("vendor-a",3,2,research_entitlement_confirmed=True),
+                          expired).propose(context=CONTEXT,watchlist=["XYZ"])==[]
+
+
 def test_bad_time_and_no_schedule_fail_closed():
     assert assess(obs(age=60),A,CONTEXT).gate==Gate.TEMPORAL_HOLD
     assert assess(obs(age=-30),A,CONTEXT).gate==Gate.TEMPORAL_HOLD
@@ -158,6 +174,7 @@ def test_equity_invalid_malformed_and_option_contract_identity_validation():
     with pytest.raises(ValueError):replace(opt(),right="put")
     with pytest.raises(ValueError):replace(opt(),expiry="2026-10-03")
     with pytest.raises(ValueError):replace(opt(),underlying="DEF")
+    with pytest.raises(ValueError):replace(opt(),strike=105.0)
 
 
 def test_events_wake_research_without_promoting_price():
@@ -295,6 +312,8 @@ def test_provider_adapter_requires_installed_rights_and_explicit_timestamp():
         adapter.normalize({**raw,"observed_at":"2026-09-28T14:59:59"},received_at=NOW)
     with pytest.raises(ValueError):
         adapter.normalize({k:v for k,v in raw.items() if k!="observed_at"},received_at=NOW)
+    with pytest.raises(ValueError):
+        adapter.normalize({**raw,"volume":1.5},received_at=NOW)
 
 def test_offline_sec_submissions_have_real_acceptance_time_not_download_time():
     payload=json.dumps({
