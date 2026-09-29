@@ -242,3 +242,50 @@ def test_no_network_route_order_or_generated_fake_prices_in_edgar_sources():
     assert not any(q in code for q in (
         "urlopen(","requests.get(","submit_order(","place_order(","WebSocket(","yfinance"))
     assert "current_equity_quote" in code and "candidate_admitted" in code
+
+
+def test_offline_operator_bridge_requires_independent_symbol_and_explicit_review(tmp_path):
+    from scripts.ob_edgar_research import run
+    collector(tmp_path)
+    nasdaq=tmp_path/"nasdaqlisted.txt"
+    other=tmp_path/"otherlisted.txt"
+    nasdaq.write_text("Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares\\nXYZ|Synthetic Issuer|Q|N|N|100|N|N\\n")
+    other.write_text("ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol\\n")
+    rights=tmp_path/"review.json"
+    review={
+        "scope":"owner_internal",
+        "event":{"permission_reference":"owner-reviewed-public-SEC-terms",
+                 "verified_at":RIGHTS_VERIFIED.isoformat(),
+                 "internal_research":True,"automated_non_display":True,"owner_display":True},
+        "fundamentals":{"reference":"owner-reviewed-public-SEC-financial-terms",
+                 "reviewed_at":RIGHTS_VERIFIED.isoformat(),
+                 "internal_research":True,"owner_display":True,
+                 "ai_explanation":False,"long_term_retention":False}}
+    rights.write_text(json.dumps(review))
+    kwargs=dict(nasdaq=nasdaq,other=other,
+                crossref=tmp_path/"company_tickers_exchange.json",
+                cache=tmp_path,symbol="XYZ",rights_record=rights)
+    view=run(**kwargs)
+    assert view["edgar_status"]["financial_facts_selected"]==1
+    assert view["symbol_research"]["fundamentals"]["state"]=="SOURCE_BOUND"
+    assert view["manual_live_authorized"] is False
+    assert set(view["edgar_status"]["cache_receipts"])=={"submissions","companyfacts"}
+    review["event"]["owner_display"]=False
+    rights.write_text(json.dumps(review))
+    with pytest.raises(ValueError):run(**kwargs)
+
+
+def test_protected_research_partial_renders_sec_concepts_but_no_fake_feed():
+    from flask import Flask,render_template
+    from engine.market_intake.edgar_research import build_edgar_research
+    b=build_edgar_research(identity=row(),submissions=submission(),companyfacts=facts(),
+        received_at=NOW,event_rights=event_rights(),
+        fundamental_rights=financial_rights(ai=True))
+    view=project_research(b.owner_snapshot(),"symbol_page")
+    app=Flask("edgar_template_test",template_folder=str(Path("web/templates").resolve()))
+    with app.test_request_context():
+        page=render_template("ob_research_context_partial.html",ob_research_context=view)
+    assert "SEC EDGAR" in page and "Assets" in page
+    assert "250000000" in page and ACC in page
+    assert "live equity or option price" in page
+    assert "submit_order" not in page
