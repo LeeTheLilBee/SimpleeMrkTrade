@@ -67,7 +67,7 @@ def build_soulaana_provider_status(packet: Mapping) -> dict:
             SEC_STATES if key == "sec" else REFERENCE_STATES
         )
         if (
-            state not in allowed
+            not isinstance(state, str) or state not in allowed
             or row.get("quote_feed_activated") is not False
             or (key in {"public", "finnhub", "alpha_vantage"} and (
                 row.get("source_use_rights_verified") is not False
