@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 from urllib.error import HTTPError, URLError
+from urllib.request import Request
 
 SOURCES = ("bls", "treasury", "openfigi")
 ORDER = ("sec",) + SOURCES
@@ -153,6 +154,41 @@ def capture_bls_diagnostic(service, state: dict) -> None:
     service.reference.bls_v1 = traced_reader
 
 
+
+def probe_official_bls_release(state: dict, *, opener=None) -> None:
+    """One fixed official release-page GET; only response class in diagnostic."""
+    from engine.market_intake.public_research_sources import _default_open
+    url = "https://www.bls.gov/news.release/cpi.t01.htm"
+    open_response = opener or _default_open
+    req = Request(url, method="GET", headers={
+        "Accept": "text/html", "Accept-Encoding": "identity",
+        "User-Agent": "Simplee Observatory internal source availability check",
+    })
+    try:
+        with open_response(req, timeout=8) as response:
+            status = int(getattr(response, "status", 200))
+            if (status != 200 or
+                    getattr(response, "geturl", lambda: url)() != url):
+                state["bls_release_http"] = "RESPONSE_HOLD"
+                return
+            content = response.read(600_001)
+        state["bls_release_http"] = "HTTP_200"
+        state["bls_release_bounded_html"] = (
+            len(content) <= 600_000
+            and b"All items" in content
+            and b"Unadjusted indexes" in content
+            and b"Consumer Price Index" in content
+        )
+    except HTTPError as exc:
+        status = int(exc.code)
+        state["bls_release_http"] = (
+            "HTTP_" + str(status) if 300 <= status <= 599 else "HTTP_HOLD"
+        )
+    except (URLError, OSError, TimeoutError):
+        state["bls_release_http"] = "TRANSPORT_HOLD"
+
+
+
 def main() -> int:
     safe_diagnostic = {}
     try:
@@ -163,6 +199,8 @@ def main() -> int:
         service = from_environment()
         capture_bls_diagnostic(service, safe_diagnostic)
         report = summarize_snapshot(service.snapshot(symbol="MSFT"))
+        if report["source_states"]["bls"] != "SOURCE_BOUND":
+            probe_official_bls_release(safe_diagnostic)
         report.update(safe_diagnostic)
     except Exception:
         # Exception messages may contain provider-supplied text. Never log them.
