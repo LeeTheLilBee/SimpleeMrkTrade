@@ -59,6 +59,12 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
     ))
     from tower.ob_public_owner_connection import register_public_owner_connection
     register_public_owner_connection(app, owner_authorize=_tower_authorize_data_desk)
+    from engine.market_intake.keyless_public_context import from_environment
+    from web.ob_keyless_context_route import create_keyless_context_blueprint
+    app.register_blueprint(create_keyless_context_blueprint(
+        owner_authorize=_tower_authorize_data_desk,
+        context_service=from_environment(),
+    ))
     app.extensions["tower_ob_market_data_desk_source_only_v1"] = {
         "path": MARKET_DATA_DESK_PATH,
         "source_only": True,
