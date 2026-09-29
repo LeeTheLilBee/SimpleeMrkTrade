@@ -198,8 +198,11 @@ def test_options_only_source_has_separate_budget_and_verified_underlying_queue()
     assert len(proposals) == 1 and proposals[0].lane == "options"
     assert proposals[0].symbols == ("XYZ", "DEF")
     assert not proposals[0].network_called and not proposals[0].order_placed
+    contracts = ["XYZ   261002C00100000", "DEF   261002P00095000", "AAA   261002C00100000"]
     assert gateway.stream_selection("options-1", context=CONTEXT,
-                                    symbols=["XYZ", "DEF", "AAA"]) == ("XYZ", "DEF")
+                                    symbols=["XYZ", *contracts]) == tuple(contracts[:2])
+    assert gateway.stream_selection("options-1", context=CONTEXT,
+                                    symbols=["XYZ", "NOT_A_CONTRACT"]) == ()
     assert gateway.plan_requests(context=CONTEXT,
                                  verified_option_underlyings=["XYZ"]) == ()
 
