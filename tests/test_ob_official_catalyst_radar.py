@@ -27,7 +27,9 @@ FR = {"results": [
      "html_url": "https://www.federalregister.gov/d/2025-12345"},
 ]}
 COT = [{"report_date_as_yyyy_mm_dd": "2025-08-19T00:00:00.000",
-        "market_and_exchange_names": "SYNTHETIC TREASURY FUTURES - EXCHANGE"}]
+        "market_and_exchange_names": "SYNTHETIC TREASURY FUTURES - EXCHANGE",
+        "lev_money_positions_long": "20100",
+        "lev_money_positions_short": "13200"}]
 NWS_PACKET = {"features": [{
     "properties": {"status": "Actual", "event": "Synthetic wind warning",
                    "effective": "2025-08-19T16:00:00+00:00",
@@ -126,6 +128,7 @@ def test_five_official_source_parsers_and_source_specific_translations():
     assert all(rows[key]["state"] == "SOURCE_BOUND" for key in SOURCES)
     assert rows["federal_register"]["facts"][0]["stage"] == "Proposed Rule"
     assert rows["cftc"]["facts"][0]["category"] == "TFF_FUTURES_ONLY"
+    assert rows["cftc"]["facts"][0]["leveraged_net"] == "6900"
     assert rows["eia"]["facts"][0]["value"] == "420000"
     assert rows["world_bank"]["facts"][0]["category"] == "ANNUAL_GDP_USD"
     assert rows["nws"]["facts"][0]["title"] == "Synthetic wind warning"
@@ -137,6 +140,7 @@ def test_five_official_source_parsers_and_source_specific_translations():
     assert soulaana["broker_execution_authorized"] is False
     assert "A proposed rule is not a final rule" in soulaana["observations"][0]["how_to_interpret"]
     assert "NOT a live options chain" in soulaana["observations"][1]["how_to_interpret"]
+    assert "net 6900 contracts" in soulaana["observations"][1]["factual_findings"][0]
     assert "not CPI" in soulaana["observations"][3]["how_to_interpret"]
     assert len(transport.requests) == 6  # World Bank metadata is separately checked.
     assert all(request[1] == "GET" and request[2] == 8 for request in transport.requests)
