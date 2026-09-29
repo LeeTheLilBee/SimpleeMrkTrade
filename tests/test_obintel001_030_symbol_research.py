@@ -427,7 +427,7 @@ def test_direct_owner_history_and_fundamentals_projections_recheck_display_terms
     "https://example.invalid/daily?api_key=private-token",
     "source:authorization=private-token",
     "source:safe-ref#signed-fragment",
-    "source-ref\\nInjected header",
+    "source-ref\nInjected header",
 ])
 def test_transient_source_reference_memory_rejects_credential_or_signed_url(reference):
     original=inputs()
