@@ -61,10 +61,10 @@ class TrafficPlanner:
         if self._backoff_until is None or until > self._backoff_until:
             self._backoff_until = until
 
-    def _authorized(self, context: ScanContext) -> bool:
+    def _authorized(self, context: ScanContext, instrument: str = "equity") -> bool:
         return (self.budget.research_entitlement_confirmed and self.rights is not None
                 and self.rights.source_id == self.budget.source_id and self.rights.reviewed_for_scan()
-                and self.rights.real_time_entitled and "equity" in self.rights.entitled_instruments
+                and self.rights.real_time_entitled and instrument in self.rights.entitled_instruments
                 and (self.rights.verified_at is None or self.rights.verified_at <= context.now)
                 and (self.rights.expires_at is None or context.now < self.rights.expires_at)
                 and context.verified_market_time
@@ -89,7 +89,9 @@ class TrafficPlanner:
         never assumes that being listed, newsworthy or on a watchlist means optionable.
         """
         now = context.now
-        if (not self._authorized(context) or not self.budget.requests_per_minute
+        equity_allowed = self._authorized(context, "equity")
+        option_allowed = self.budget.supports_options and self._authorized(context, "option")
+        if (not (equity_allowed or option_allowed) or not self.budget.requests_per_minute
                 or not self.budget.max_symbols_per_request
                 or self._backoff_until is not None and now < self._backoff_until):
             return []
@@ -125,18 +127,22 @@ class TrafficPlanner:
                 if reason == "rotating-broad-discovery":
                     covered_cold += len(subset)
         # One narrow event batch cannot starve the explicit watchlist.
-        offer("equity", hot, "owner-watchlist")
-        offer("equity", warm, "event-followup-not-price-proof")
-        offer("equity", cold, "rotating-broad-discovery")
-        if self.budget.supports_options and self.rights is not None and "option" in self.rights.entitled_instruments:
+        if equity_allowed:
+            offer("equity", hot, "owner-watchlist")
+            offer("equity", warm, "event-followup-not-price-proof")
+            offer("equity", cold, "rotating-broad-discovery")
+        if option_allowed:
             offer("options", self._symbols(option_underlyings), "separately-verified-underlying")
         self._round_robin_cursor += covered_cold
         return proposals
 
     def stream_selection(self, *, context: ScanContext, watchlist: Iterable[str] = (),
-                         event_symbols: Iterable[str] = ()) -> tuple[str, ...]:
+                         event_symbols: Iterable[str] = (),
+                         instrument: str = "equity") -> tuple[str, ...]:
         """Single existing provider session; no stream open/close or invented full-exchange subscription."""
-        if not self._authorized(context) or not self.budget.supports_streaming:
+        if instrument not in {"equity", "option"} or (instrument == "option" and not self.budget.supports_options):
+            return ()
+        if not self._authorized(context, instrument) or not self.budget.supports_streaming:
             return ()
         merged = self._symbols([*watchlist, *event_symbols])
         return tuple(merged[:self.budget.max_stream_symbols])
