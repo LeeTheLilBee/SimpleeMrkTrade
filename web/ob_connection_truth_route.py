@@ -16,6 +16,7 @@ from engine.market_intake.keyless_public_context import (
     edgar_delegated_from_environment, enabled_sources_from_environment,
 )
 from tower.ob_public_owner_connection import _owner_sid
+from tower.ob_provider_soulaana_status import build_soulaana_provider_status
 
 PATH = "/ob/data-desk/connections.json"
 KEY_PROVIDER_IDS = ("finnhub", "alpha_vantage")
@@ -104,7 +105,7 @@ def connection_status_projection(*, sid: str, key_reader: Callable,
         "current_data_accepted": False, "quote_feed_activated": False,
         "ai_use_authorized": False,
     }
-    return {
+    result = {
         "schema": "OB_TOWER_PROVIDER_CONNECTION_TRUTH_V1",
         "as_of": datetime.now(timezone.utc).isoformat(),
         "owner_session_checked": True,
@@ -122,6 +123,8 @@ def connection_status_projection(*, sid: str, key_reader: Callable,
         "may_change_trading_mode": False,
         "dissemination_contract": "OWNER_STATUS_ONLY",
     }
+    result["soulaana_provider_status"] = build_soulaana_provider_status(result)
+    return result
 
 
 def create_connection_truth_blueprint(*, owner_authorize, key_reader, public_reader):
