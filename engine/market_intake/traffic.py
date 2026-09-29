@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Iterable
 
-from .contracts import ScanContext, SourceRights, _aware, clean_symbol
+from .contracts import OCC, ScanContext, SourceRights, _aware, clean_symbol
 
 
 @dataclass(frozen=True)
@@ -80,6 +80,19 @@ class TrafficPlanner:
                 continue
         return list(unique)
 
+    @staticmethod
+    def _option_series(values: Iterable[str]) -> list[str]:
+        # Streaming options requires exact OCC contract identity, not an
+        # underlying ticker. Chain-request proposals still use underlyings.
+        unique: dict[str, None] = {}
+        for value in values:
+            if not isinstance(value, str):
+                continue
+            contract = value.upper().strip()
+            if OCC.fullmatch(contract):
+                unique[contract] = None
+        return list(unique)
+
     def propose(self, *, context: ScanContext, watchlist: Iterable[str] = (),
                 event_symbols: Iterable[str] = (), cold_universe: Iterable[str] = (),
                 option_underlyings: Iterable[str] = ()) -> list[FetchProposal]:
@@ -144,7 +157,8 @@ class TrafficPlanner:
             return ()
         if not self._authorized(context, instrument) or not self.budget.supports_streaming:
             return ()
-        merged = self._symbols([*watchlist, *event_symbols])
+        merged = (self._option_series([*watchlist, *event_symbols]) if instrument == "option"
+                  else self._symbols([*watchlist, *event_symbols]))
         return tuple(merged[:self.budget.max_stream_symbols])
 
     def status(self) -> dict[str, object]:
