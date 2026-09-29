@@ -42,9 +42,33 @@ def _valid(snapshot: object) -> bool:
         "manual_live_unlocked": False, "invitee_prices_visible": False,
     }:
         return False
-    for field in ("summary", "traffic", "soulaana"):
-        if not isinstance(snapshot.get(field), dict):
-            return False
+    summary, traffic, soulaana = (snapshot.get("summary"), snapshot.get("traffic"),
+                                  snapshot.get("soulaana"))
+    if not all(isinstance(x, dict) for x in (summary, traffic, soulaana)):
+        return False
+    if set(summary) != {"catalog_products", "onboarding_cases", "actions_needing_review",
+                        "live_feeds_verified", "api_requests_remaining", "live_option_feeds_verified"}:
+        return False
+    if any(summary[key] is not None for key in ("live_feeds_verified", "api_requests_remaining",
+                                               "live_option_feeds_verified")):
+        return False
+    if set(traffic) != {"state", "verified_usage", "provider_quotas", "streams"} or (
+            traffic["state"] != "NOT_CONNECTED" or any(traffic[key] is not None for key in (
+                "verified_usage", "provider_quotas", "streams"))):
+        return False
+    if set(soulaana) != {"headline", "meaning", "needs_owner", "next_step"} or any(
+            not isinstance(value, str) or len(value) > 500 for value in soulaana.values()):
+        return False
+    if any(type(summary[key]) is not int or summary[key] < 0 for key in (
+            "catalog_products", "onboarding_cases", "actions_needing_review")):
+        return False
+    if any(not isinstance(p["product_key"], str) or len(p["product_key"]) > 100 or
+           not isinstance(p["company"], str) or len(p["company"]) > 100 for p in providers):
+        return False
+    if any(not isinstance(c["reason"], str) or len(c["reason"]) > 200 or
+           c["trading_authorized"] is not False or c["live_data_connected"] is not False
+           for c in cases):
+        return False
     return True
 
 
