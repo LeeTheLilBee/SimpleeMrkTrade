@@ -262,7 +262,7 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
             raise ValueError("SOULAANA_COMPARISON_SHAPE_HOLD")
         observations.append({
             "source": key,
-            "source_reference": _REFERENCES[key],
+            "source_reference": row["source_reference"],
             "source_period": period,
             "retrieved_at": fetched.isoformat(),
             "value": value,
