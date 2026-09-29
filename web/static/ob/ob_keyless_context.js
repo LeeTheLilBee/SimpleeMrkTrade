@@ -62,7 +62,11 @@
   const providerSoulaana = el("section", "ob-keyless-soulaana");
   providerSoulaana.setAttribute("aria-label", "Soulaana provider-connection status");
   providerSoulaana.append(el("p", "ob-keyless-status", "Checking Tower provider connection states…"));
-  root.append(heading, lookup, status, grid, soulaana, providerSoulaana, footer);
+  const keyedProviderResearch = el("section", "ob-keyless-soulaana");
+  keyedProviderResearch.setAttribute("aria-label", "Connected provider research");
+  keyedProviderResearch.append(el("p", "ob-keyless-status",
+    "Enter a ticker and choose View reference to request approved Finnhub/Alpha research through Tower."));
+  root.append(heading, lookup, status, grid, soulaana, providerSoulaana, keyedProviderResearch, footer);
   let inFlight = 0;
   let currentSymbol = locationSymbol();
   if (currentSymbol) input.value = currentSymbol;
@@ -304,6 +308,74 @@
     }
   }
 
+  function validKeyedProviderResearch(packet, symbol) {
+    if (!packet || packet.schema !== "OB_KEYED_PROVIDER_RESEARCH_V1" ||
+        packet.symbol !== symbol || packet.owner_session_checked !== true ||
+        packet.source_only !== true || packet.live_prices_attached !== false ||
+        packet.positions_attached !== false || packet.orders_attached !== false ||
+        packet.may_authorize_order !== false || packet.may_authorize_capital !== false ||
+        packet.may_change_trading_mode !== false ||
+        !Array.isArray(packet.provider_research) || packet.provider_research.length !== 2)
+      return false;
+    const ids = ["finnhub", "alpha_vantage"];
+    if (!packet.provider_research.every((row, index) =>
+      row && row.provider === ids[index] &&
+      ["NOT_CONNECTED", "RIGHTS_OR_FETCH_HOLD", "SOURCE_HOLD", "SOURCE_BOUND"].includes(row.state)))
+      return false;
+    const brief = packet.soulaana_research;
+    return brief && brief.schema === "OB_SOULAANA_KEYED_PROVIDER_RESEARCH_V1" &&
+      brief.channel === "SOULAANA_REVIEWED_PROVIDER_RESEARCH" &&
+      brief.raw_credentials_included === false &&
+      brief.account_identifiers_included === false &&
+      brief.live_quote_verified === false &&
+      brief.candidate_admitted === false &&
+      brief.broker_execution_authorized === false &&
+      brief.capital_authorized === false &&
+      brief.may_change_trading_mode === false &&
+      Array.isArray(brief.observations) && brief.observations.length <= 2;
+  }
+
+  async function readKeyedProviderResearch(symbol) {
+    keyedProviderResearch.replaceChildren(el("p", "ob-keyless-status",
+      "Reading approved temporary-key research through Tower…"));
+    try {
+      const response = await fetch("/ob/research/providers.json?symbol=" + encodeURIComponent(symbol), {
+        credentials: "same-origin", cache: "no-store",
+        headers: {"Accept": "application/json"}
+      });
+      if (!response.ok) throw Error("keyed research hold");
+      const packet = await response.json();
+      if (!validKeyedProviderResearch(packet, symbol)) throw Error("invalid keyed research");
+      const title = el("h3", "", "Connected provider research");
+      const rows = el("div", "ob-keyless-soulaana-register");
+      packet.provider_research.forEach(row => {
+        const line = el("p", "");
+        let detail = row.state.replaceAll("_", " ");
+        if (row.state === "SOURCE_BOUND" && row.provider === "finnhub") {
+          detail += " · " + (row.security_name || symbol) +
+            (row.industry ? " · " + row.industry : "");
+        } else if (row.state === "SOURCE_BOUND" && row.provider === "alpha_vantage") {
+          detail += " · " + (Array.isArray(row.bars) ? row.bars.length : 0) +
+            " completed daily sessions";
+        }
+        line.append(el("strong", "", row.provider.replace("_", " ").toUpperCase() + " · "),
+          el("span", "", detail));
+        rows.append(line);
+      });
+      const brief = packet.soulaana_research;
+      const ai = el("p", "ob-keyless-soulaana-hold",
+        brief.observations.length
+          ? "Soulaana can read only the provider research explicitly covered by separate AI-use review."
+          : "Provider AI-use rights are not approved or no source-bound keyed research is available.");
+      keyedProviderResearch.replaceChildren(title, rows, ai,
+        el("p", "ob-keyless-footer",
+          "Historical/reference research only. This corridor does not supply a live quote, candidate, broker action or trading-mode change."));
+    } catch (_) {
+      keyedProviderResearch.replaceChildren(el("p", "ob-keyless-soulaana-hold",
+        "Keyed provider research is unavailable or held. No provider data is assumed."));
+    }
+  }
+
   lookup.addEventListener("submit", function (event) {
     event.preventDefault();
     const symbol = String(input.value || "").trim().toUpperCase();
@@ -314,6 +386,7 @@
     currentSymbol = symbol;
     input.value = symbol;
     read(currentSymbol);
+    readKeyedProviderResearch(currentSymbol);
   });
   read(currentSymbol);
   readProviderSoulaana();
