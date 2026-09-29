@@ -1,0 +1,57 @@
+name: OB official Catalyst Radar and Soulaana source seals
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "engine/market_intake/official_catalyst_sources.py"
+      - "engine/market_intake/official_catalyst_radar.py"
+      - "web/ob_official_catalyst_route.py"
+      - "deploy/hosted_tower/official_catalyst_one_shot.py"
+      - "deploy/hosted_tower/start.sh"
+      - "web/static/ob/ob_official_catalyst_radar.js"
+      - "web/templates/**"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_route_guard.py"
+      - "tower/ob_web_route_enforcement.py"
+      - "tests/test_ob_official_catalyst_radar.py"
+      - ".github/workflows/ob-official-catalyst-radar.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "engine/market_intake/official_catalyst_sources.py"
+      - "engine/market_intake/official_catalyst_radar.py"
+      - "web/ob_official_catalyst_route.py"
+      - "deploy/hosted_tower/official_catalyst_one_shot.py"
+      - "deploy/hosted_tower/start.sh"
+      - "web/static/ob/ob_official_catalyst_radar.js"
+      - "tower/**"
+      - "tests/test_ob_official_catalyst_radar.py"
+      - ".github/workflows/ob-official-catalyst-radar.yml"
+permissions:
+  contents: read
+jobs:
+  synthetic-source-and-rights:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "pytest>=8,<10" flask
+      - name: Source syntax and typed owner UI
+        run: |
+          python -m compileall -q engine/market_intake/official_catalyst_sources.py engine/market_intake/official_catalyst_radar.py web/ob_official_catalyst_route.py deploy/hosted_tower/official_catalyst_one_shot.py
+          bash -n deploy/hosted_tower/start.sh
+          node --check web/static/ob/ob_official_catalyst_radar.js
+      - name: Synthetic source, attribution, rights, Soulaana and Tower enforcement
+        run: |
+          python -m pytest -q tests/test_ob_official_catalyst_radar.py tests/test_ob_keyless_public_context.py tests/test_tower_ob_market_data_desk_selective.py tests/test_tower_ob_web_route_enforcement.py
+      - name: No direct browser data calls or order transport
+        run: |
+          ! grep -Ei 'place_order|submit_order|innerHTML|api\.eia\.gov|api\.weather\.gov/alerts/active' web/static/ob/ob_official_catalyst_radar.js
