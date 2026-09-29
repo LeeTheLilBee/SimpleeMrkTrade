@@ -93,7 +93,12 @@ def create_market_data_desk_blueprint(
         # decision must be literal True, not a truthy user-supplied object.
         if tower_owner_authorize() is not True:
             abort(403)
-        snapshot = protected_snapshot()
+        try:
+            snapshot = protected_snapshot()
+        except Exception:
+            # Provider failures must never leak credentials or convert the
+            # protected Desk into an unverified browser/catalog fallback.
+            abort(503)
         if not _valid(snapshot):
             abort(503)
         response = make_response(render_template(
