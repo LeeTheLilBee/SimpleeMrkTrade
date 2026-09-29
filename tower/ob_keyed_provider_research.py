@@ -13,6 +13,8 @@ projection for the current Tower owner session.
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
+from math import isfinite
 import json
 import os
 import re
@@ -131,6 +133,8 @@ def _alpha_vantage(symbol: str, secret: str, *, opener=None) -> dict:
             volume_v = int(float(row["5. volume"]))
         except (KeyError, TypeError, ValueError, OverflowError):
             continue
+        if not all(isfinite(n) for n in (open_v, high_v, low_v, close_v)):
+            continue
         if min(open_v, high_v, low_v, close_v) <= 0 or volume_v < 0:
             continue
         if low_v > min(open_v, close_v) or high_v < max(open_v, close_v):
@@ -154,6 +158,12 @@ def _alpha_vantage(symbol: str, secret: str, *, opener=None) -> dict:
 
 
 def _soulaana(rows: list[dict]) -> dict:
+    """Examine only independently AI-reviewed bounded provider evidence.
+
+    This is source-backed, deterministic interpretation of research facts,
+    not an LLM call, streaming price, scanner signal or trade instruction.
+    Revoking a provider's AI-use review removes its findings even on a cache hit.
+    """
     readable = []
     for row in rows:
         provider = row.get("provider")
@@ -168,23 +178,63 @@ def _soulaana(rows: list[dict]) -> dict:
             "live_quote": False,
         }
         if provider == "finnhub":
+            name = row.get("security_name")
+            exchange = row.get("exchange")
+            industry = row.get("industry")
             item["summary"] = {
-                "security_name": row.get("security_name"),
-                "exchange": row.get("exchange"),
-                "industry": row.get("industry"),
-                "ipo_date": row.get("ipo_date"),
+                "security_name": name, "exchange": exchange,
+                "industry": industry, "ipo_date": row.get("ipo_date"),
             }
+            item["finding"] = (
+                f"Finnhub's company profile identifies {row['symbol']} as {name or 'unnamed'}"
+                + (f"; reported industry: {industry}" if industry else "")
+                + (f"; reported exchange: {exchange}" if exchange else "")
+                + ". This is provider reference metadata, not independent issuer corroboration."
+            )
+            item["what_is_missing"] = (
+                "Confirm issuer identity and material events in the separate SEC research corridor. "
+                "This profile establishes neither a current stock/option quote nor an investment signal."
+            )
         else:
+            bars = row.get("bars", [])
+            latest = bars[0]
             item["summary"] = {
-                "completed_sessions": len(row.get("bars", [])),
-                "latest_session": row.get("bars", [{}])[0].get("session_date") if row.get("bars") else None,
+                "completed_sessions": len(bars),
+                "latest_session": latest["session_date"],
             }
+            item["finding"] = (
+                f"Alpha Vantage reports a completed historical daily close for {row['symbol']} "
+                f"on {latest['session_date']}: {latest['close']:.2f}. "
+            )
+            if len(bars) >= 2:
+                prior = bars[1]
+                current_close = Decimal(str(latest["close"]))
+                prior_close = Decimal(str(prior["close"]))
+                difference = current_close - prior_close
+                percent = (difference / prior_close) * Decimal("100")
+                item["finding"] += (
+                    f"Compared with {prior['session_date']} ({prior_close:.2f}), "
+                    f"the close changed {difference:+.2f} ({percent:+.3f}%). "
+                )
+                item["summary"]["prior_session"] = prior["session_date"]
+                item["summary"]["close_change"] = str(difference)
+                item["summary"]["close_change_percent"] = f"{percent:+.3f}"
+            else:
+                item["finding"] += "No second validated daily session is available for comparison. "
+            item["finding"] += (
+                "This is a comparison of source-reported completed daily records, not a live quote or forecast."
+            )
+            item["what_is_missing"] = (
+                "The latest intraday market, options chain, data entitlement and issuer-event "
+                "cross-check remain separate; do not extrapolate a current price or trade signal."
+            )
         readable.append(item)
     return {
         "schema": "OB_SOULAANA_KEYED_PROVIDER_RESEARCH_V1",
         "channel": "SOULAANA_REVIEWED_PROVIDER_RESEARCH",
         "observations": readable,
         "source_specific_ai_use_approved": bool(readable),
+        "external_model_called": False,
         "raw_credentials_included": False,
         "account_identifiers_included": False,
         "live_quote_verified": False,
@@ -193,7 +243,6 @@ def _soulaana(rows: list[dict]) -> dict:
         "capital_authorized": False,
         "may_change_trading_mode": False,
     }
-
 
 class ProviderResearchCache:
     def __init__(self):
