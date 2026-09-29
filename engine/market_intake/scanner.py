@@ -158,9 +158,12 @@ def inspect_symbol(symbol: str, *, universe: Mapping[str, SymbolRow],
         reasons.append("Option research partial: " + "; ".join(sorted(set(option_reasons))[:2]))
     if not reasons:
         reasons.append("Current underlying is observed; no configured research trigger crossed.")
+    watch_triggered = bool(discovery) or any(
+        not message.startswith("Current underlying is observed;")
+        for message in reasons
+    )
     return ResearchLead(
-        symbol, "RESEARCH_WATCH" if discovery or len(reasons) > (1 if reasons[0].startswith("Current underlying") else 0)
-            and not reasons[0].startswith("Current underlying") else "OBSERVATION",
+        symbol, "RESEARCH_WATCH" if watch_triggered else "OBSERVATION",
         tuple(reasons), tuple(q.evidence.source_id for q in independent),
         tuple(q.evidence.source_id for q in option_ok), event_ids,
         tuple(q.evidence.observed_at.isoformat() for q in independent) +
