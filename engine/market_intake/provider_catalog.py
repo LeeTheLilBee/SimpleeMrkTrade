@@ -59,6 +59,16 @@ _PRODUCTS = (
                     "reference", False, "https://www.theocc.com/market-data/market-data-reports"),
     ProviderProduct("sec-edgar", "SEC", "Issuer filings, submission history and structured companyfacts; research only, never a quote", "event",
                     "reference", False, "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"),
+    ProviderProduct("bls-public-v1", "U.S. Bureau of Labor Statistics", "Public economic series, historical release context; no quotes", "event",
+                    "reference", False, "https://www.bls.gov/developers/"),
+    ProviderProduct("bea-nipa", "U.S. Bureau of Economic Analysis", "NIPA historical economic data; free registered key required", "event",
+                    "reference", False, "https://apps.bea.gov/api/signup/"),
+    ProviderProduct("openfigi-identifier", "OpenFIGI", "Ticker / instrument FIGI mapping; no issuer or quote verification", "metadata",
+                    "reference", False, "https://www.openfigi.com/api/documentation"),
+    ProviderProduct("fred-macro-review-only", "Federal Reserve Bank of St. Louis", "FRED policy HOLD: AI, storage and use restrictions; no runtime transport", "event",
+                    "reference", False, "https://fred.stlouisfed.org/legal/terms/"),
+    ProviderProduct("public-business-review-only", "Public", "Business API candidate; account and data/display rights review required", "metadata",
+                    "reference", False, "https://public.com/api/docs"),
 )
 CATALOG: dict[str, ProviderProduct] = {p.key: p for p in _PRODUCTS}
 if len(CATALOG) != len(_PRODUCTS):
