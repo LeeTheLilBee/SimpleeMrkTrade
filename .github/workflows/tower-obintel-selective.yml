@@ -1,0 +1,89 @@
+name: Tower OBINTEL selective source research
+
+on:
+  pull_request:
+    branches:
+      - tower-ob-market-data-desk-selective-20260928
+    paths:
+      - "engine/market_intake/**"
+      - "engine_v2/research_context_adapter.py"
+      - "engine_v2/symbol_page_integration.py"
+      - "web/templates/ob_research_context_partial.html"
+      - "web/templates/market_map.html"
+      - "web/templates/symbol_page.html"
+      - "web/templates/trade_center.html"
+      - "web/templates/review_center.html"
+      - "web/static/ob/ob_research_context.css"
+      - "tests/test_obintel001_030_symbol_research.py"
+      - "tests/test_tower_obintel_selective.py"
+      - ".github/workflows/tower-obintel-selective.yml"
+  push:
+    branches:
+      - tower-ob-market-data-desk-selective-20260928
+    paths:
+      - "engine/market_intake/**"
+      - "engine_v2/research_context_adapter.py"
+      - "engine_v2/symbol_page_integration.py"
+      - "web/templates/ob_research_context_partial.html"
+      - "web/templates/market_map.html"
+      - "web/templates/symbol_page.html"
+      - "web/templates/trade_center.html"
+      - "web/templates/review_center.html"
+      - "web/static/ob/ob_research_context.css"
+      - "tests/test_obintel001_030_symbol_research.py"
+      - "tests/test_tower_obintel_selective.py"
+      - ".github/workflows/tower-obintel-selective.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  source-only-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - name: Compile additive research/adapter modules
+        run: python -m compileall -q engine/market_intake engine_v2/research_context_adapter.py engine_v2/symbol_page_integration.py
+      - name: Run real source-only research and exact hosted-UI seam regressions
+        run: |
+          python -m pytest -q \
+            tests/test_obscan001_025_sovereign_intake.py \
+            tests/test_obscan026_040_universal_gateway.py \
+            tests/test_obscan041_055_market_data_desk.py \
+            tests/test_obintel001_030_symbol_research.py \
+            tests/test_tower_obintel_selective.py \
+            tests/test_tower_ob_market_data_desk_selective.py \
+            tests/test_ob_canonical_nav_corridors.py
+      - name: Prevent independently scraped market prices or order transport
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          base=Path("engine/market_intake")
+          code="\n".join(x.read_text() for x in base.glob("*.py"))
+          forbidden=("import yfinance", "import requests", "import aiohttp",
+                     "from urllib.request", "from ib_insync",
+                     "place_order(", "submit_order(", "requests.get(")
+          assert not [item for item in forbidden if item in code]
+          print("No independently fetched live quote or broker transport in source research.")
+          PY
+      - name: Verify default absence of room projection in hosted route handlers
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from web.hosted_tower import app
+          from tower.ob_route_guard import match_ob_guard_policy
+          for rule in app.url_map.iter_rules():
+              if rule.rule.startswith("/ob/research/"):
+                  raise SystemExit("Unapproved hosted research route mounted")
+          for path in ("/ob/research/feed", "/ob/research/approve"):
+              assert match_ob_guard_policy(path)["match_type"]=="unmapped_default_deny"
+          assert "ob_research_context" not in Path("tower/ob_product_landing.py").read_text()
+          print("No user research projection injected or separate research route activated.")
+          PY
