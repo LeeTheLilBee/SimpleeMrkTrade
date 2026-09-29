@@ -9,6 +9,9 @@ on:
     paths:
       - "engine/market_intake/**"
       - "scripts/obscan_public_edgar_fetch.py"
+      - "scripts/ob_edgar_research.py"
+      - "web/templates/ob_research_context_partial.html"
+      - "web/static/ob/ob_market_data_desk.js"
       - "tests/test_obscan_public_edgar_fetch.py"
       - "docs/market_data/OBEDGAR001_020_SOURCE_INTAKE.md"
       - ".github/workflows/tower-ob-edgar-integrated.yml"
@@ -29,7 +32,7 @@ jobs:
         run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
       - name: Compile SEC adapter, offline collector, and existing research
         run: |
-          python -m compileall -q engine/market_intake scripts/obscan_public_edgar_fetch.py
+          python -m compileall -q engine/market_intake scripts/obscan_public_edgar_fetch.py scripts/ob_edgar_research.py
       - name: Official EDGAR, scanner and symbol regression tests
         run: |
           python -m pytest -q \
@@ -40,6 +43,8 @@ jobs:
             tests/test_obintel001_030_symbol_research.py \
             tests/test_tower_ob_market_data_desk_selective.py \
             tests/test_tower_ob_symbol_research_selective.py
+      - name: Market Data Desk JS remains valid
+        run: node --check web/static/ob/ob_market_data_desk.js
       - name: Source-only dry run (no identifying contact or request)
         run: |
           python scripts/obscan_public_edgar_fetch.py --output /tmp/ob-edgar-ci-plan --ciks 0000320193
