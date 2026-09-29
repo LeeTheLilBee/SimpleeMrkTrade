@@ -245,15 +245,20 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
                 abort(400)
             return _headers(redirect(PATH, code=303))
         item = vault.get(sid)
+        rights = _quote_policy()
+        visible_quote = (
+            item.last_quote if item and item.last_quote
+            and rights.permits({item.last_quote["kind"]}) else None
+        )
         response = make_response(render_template(
             "ob_public_owner_connection.html",
             csrf=_csrf(),
             connect_enabled=_flag("OB_PUBLIC_OWNER_CONNECT_ENABLED"),
             is_connected=item is not None,
             expires_at=item.expires_at.isoformat() if item else None,
-            equity_ready=_quote_policy().permits({"EQUITY"}),
-            option_ready=_quote_policy().permits({"OPTION"}),
-            quote=item.last_quote if item else None,
+            equity_ready=rights.permits({"EQUITY"}),
+            option_ready=rights.permits({"OPTION"}),
+            quote=visible_quote,
             notice=session.pop("ob_public_owner_notice", ""),
         ))
         return _headers(response)
