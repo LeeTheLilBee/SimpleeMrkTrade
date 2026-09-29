@@ -3,6 +3,7 @@
 (function () {
   function currentRoom(path) {
     if (path.includes("/symbol/")) return "Symbol Page";
+    if (path.includes("/ob/data-desk")) return "Market Data Desk";
     if (path.includes("market-map")) return "Market Map";
     if (path.includes("trade")) return "Trade Center";
     if (path.includes("review")) return "Review Center";
@@ -13,6 +14,7 @@
   function isActive(path, key) {
     if (key === "dashboard") return currentRoom(path) === "Dashboard";
     if (key === "market") return path.includes("market-map");
+    if (key === "data") return path === "/ob/data-desk";
     if (key === "trade") return path.includes("trade");
     if (key === "review") return path.includes("review");
     if (key === "owner") return path.includes("owner") || path.includes("admin");
@@ -25,6 +27,7 @@
   const TOWER_RETURN_ROOMS = Object.freeze({
     "/ob/dashboard": "Dashboard",
     "/ob/market-map": "Market Map",
+    "/ob/data-desk": "Market Data Desk",
     "/ob/trade-center": "Trade Center",
     "/ob/review-center": "Review Center",
     "/ob/owner-console": "Owner Console",
@@ -77,6 +80,9 @@
           <div class="ob-nav-group-label">Observe</div>
           ${navLink(path, "/ob/dashboard", "Dashboard", "dashboard", false)}
           ${navLink(path, "/ob/market-map", "Market Map", "market", false)}
+          ${document.body.dataset.obDataDeskRouteEnabled === "true"
+            ? navLink(path, "/ob/data-desk", "Market Data Desk", "data", true)
+            : ""}
         </div>
 
         <div class="ob-nav-group">
