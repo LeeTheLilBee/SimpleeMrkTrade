@@ -141,8 +141,53 @@ def test_synthetic_evidence_reaches_owner_symbol_without_trade_or_price_promotio
     assert "25 completed sessions" in html
     assert "Not a live quote, signal or permission" in html
     assert "Assets · 2500.0 USD" in html # explicitly labeled, source-reported historical financial fact
+    assert "What I found in reviewed issuer records" in html
+    assert 'data-soulaana-sec-examination="SOURCE_BOUND"' in html
+    assert "Fiscal end" in html
+    assert "historical issuer-reported SEC financial concept" in html
+    assert "external model call" in html
     assert "live equity or option price" in html
     assert 'href="/ob/data-desk/connect"' not in html
+
+
+
+def test_soulaana_sec_examination_stays_empty_without_independent_ai_review(monkeypatch):
+    original=synthetic_inputs()
+    without_ai=replace(original, financial_rights=replace(
+        original.financial_rights, ai_explanation=False))
+    app,state=source_app(monkeypatch,resolver=lambda room,symbol:without_ai)
+    grant_owner(state)
+    response=app.test_client().get("/ob/symbol/XYZ")
+    assert response.status_code==200
+    html=response.get_data(as_text=True)
+    assert "Assets · 2500.0 USD" in html  # owner display grant remains separate
+    assert 'data-soulaana-sec-examination="AI_RIGHTS_HOLD"' in html
+    assert "I will not read or repeat those amounts." in html
+    assert 'data-soulaana-sec-examination="SOURCE_BOUND"' not in html
+
+
+def test_sec_soulaana_examination_uses_permission_filtered_facts_only():
+    from engine.market_intake.symbol_research import symbol_research_snapshot
+    original=synthetic_inputs()
+    packet=symbol_research_snapshot(original,as_of=original.captured_at)
+    result=integration._reviewed_sec_examination(packet)
+    assert result["schema"]=="OB_SOULAANA_REVIEWED_SEC_EXAMINATION_V1"
+    assert result["state"]=="SOURCE_BOUND"
+    assert result["findings"][0]["concept"]=="Assets"
+    assert result["findings"][0]["value"]==2500.0
+    assert result["findings"][0]["source_reference"].startswith(
+        "https://www.sec.gov/Archives/edgar/data/")
+    assert result["issuer_events_in_ai_content"] is False
+    assert result["external_model_called"] is False
+    assert result["live_quote_verified"] is False
+    assert result["candidate_admitted"] is False
+    assert result["broker_execution_authorized"] is False
+    no_ai=replace(original,financial_rights=replace(
+        original.financial_rights,ai_explanation=False))
+    held_packet=symbol_research_snapshot(no_ai,as_of=no_ai.captured_at)
+    held=integration._reviewed_sec_examination(held_packet)
+    assert held["state"]=="AI_RIGHTS_HOLD"
+    assert held["findings"]==[] and held["comparisons"]==[]
 
 
 def test_exact_symbol_binding_and_unknown_route_fail_closed(monkeypatch):
