@@ -124,46 +124,82 @@ _FORM_HOLDS = {
     "SESSION_GATE_HOLD": "Your Tower login session has changed. Sign in again and open the connection from OB.",
     "BODY_SIZE_HOLD": "The submitted form was missing or exceeded the permitted size. Reopen the connection form.",
     "FORM_TYPE_HOLD": "This action needs the protected browser form. Reopen the connection page.",
-    "ORIGIN_HOLD": "The browser's HTTPS origin could not be verified. Reopen the form from the Tower HTTPS address.",
+    "ORIGIN_HOLD": "The request did not match the Tower HTTPS connection address. Your key was not submitted to Public.",
+    "ORIGIN_CONFIG_HOLD": "The Tower service is missing its approved public HTTPS address. Connection is disabled until corrected.",
+    "ORIGIN_OPAQUE_HOLD": "The browser sent an opaque Origin. Open the actual Tower HTTPS page directly, not an embedded preview.",
+    "ORIGIN_SCHEME_HOLD": "The browser did not send a clean HTTPS Origin. Connection is held.",
+    "ORIGIN_EXPECTED_HOST_HOLD": "The browser and Tower service disagreed on the approved site address. Connection is held.",
+    "ORIGIN_META_HOLD": "The browser did not supply enough same-origin navigation evidence. Connection is held.",
     "BROWSER_SITE_HOLD": "This request did not originate from the protected Tower page.",
     "CSRF_HOLD": "Your form security token expired or changed. Reopen the connection page before resubmitting.",
     "CONNECT_DISABLED_HOLD": "The owner connection feature is not enabled for this Tower service.",
 }
 
 
-def _post_hold_reason() -> str | None:
-    """Return only a stable rejection reason. NEVER inspect or echo the secret.
+def _approved_browser_origin() -> str:
+    """A concrete external HTTPS origin. Never rely on Render's internal Host.
 
-    Modern browsers usually send an Origin on a same-origin POST, but privacy
-    configurations may omit it. When absent, require affirmative browser
-    same-origin navigation metadata AND the session-bound CSRF token. Never
-    allow an explicitly mismatched/non-HTTPS Origin or cross-site Fetch metadata.
+    Each existing Tower service configures its own exact public origin in the
+    OB_PUBLIC_OWNER_CANONICAL_ORIGIN environment variable. In local/isolated
+    synthetic tests only, request.host is used when no Render identity exists.
+    """
+    configured = os.environ.get("OB_PUBLIC_OWNER_CANONICAL_ORIGIN", "").strip().lower()
+    if configured:
+        parsed = urlsplit(configured)
+        if (parsed.scheme == "https" and parsed.hostname
+                and parsed.port is None
+                and parsed.username is None and parsed.password is None
+                and not parsed.path and not parsed.query and not parsed.fragment
+                and parsed.netloc == parsed.hostname):
+            return configured
+        return ""
+    # Hosted services must never guess whether a reverse-proxy internal Host
+    # is the public URL.
+    if os.environ.get("RENDER_SERVICE_ID") or os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
+        return ""
+    return "https://" + request.host.lower()
+
+
+def _post_hold_reason() -> str | None:
+    """Form gate: exact service-owned HTTPS origin, Fetch metadata, and CSRF.
+
+    Do not echo or log Origin strings, user tokens, session cookies or the API
+    secret. Render reverse proxies may have an internal request.host: compare
+    the browser against the explicitly configured external HTTPS URL instead.
     """
     if request.content_length is None or request.content_length > _MAX_POST_BYTES:
         return "BODY_SIZE_HOLD"
     if request.mimetype != "application/x-www-form-urlencoded":
         return "FORM_TYPE_HOLD"
-    fetch_site = request.headers.get("Sec-Fetch-Site", "").lower()
+
+    expected = _approved_browser_origin()
+    if not expected:
+        return "ORIGIN_CONFIG_HOLD"
+    fetch_site = request.headers.get("Sec-Fetch-Site", "").strip().lower()
     if fetch_site not in {"", "same-origin", "none"}:
         return "BROWSER_SITE_HOLD"
-    origin = request.headers.get("Origin", "").strip()
+
+    origin = request.headers.get("Origin", "").strip().lower()
     if origin:
-        parsed = urlsplit(origin)
-        approved_hosts = {request.host.lower()}
-        render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").lower().strip()
-        if render_hostname:
-            approved_hosts.add(render_hostname)
-        if (parsed.scheme != "https" or not parsed.netloc
-                or parsed.netloc.lower() not in approved_hosts
-                or parsed.username is not None or parsed.password is not None
-                or parsed.path or parsed.query or parsed.fragment):
-            return "ORIGIN_HOLD"
+        if origin == "null":
+            return "ORIGIN_OPAQUE_HOLD"
+        try:
+            parsed = urlsplit(origin)
+            if (parsed.scheme != "https" or parsed.username is not None
+                    or parsed.password is not None or parsed.path or parsed.query
+                    or parsed.fragment or parsed.port not in {None, 443}):
+                return "ORIGIN_SCHEME_HOLD"
+        except ValueError:
+            return "ORIGIN_SCHEME_HOLD"
+        if parsed.netloc.lower().removesuffix(":443") != urlsplit(expected).netloc:
+            return "ORIGIN_EXPECTED_HOST_HOLD"
     else:
-        # Explicit same-origin browser navigation is required when Origin is
-        # missing. Missing Fetch metadata must not become a permissive fallback.
-        if (fetch_site != "same-origin"
-                or request.headers.get("Sec-Fetch-Mode", "").lower() != "navigate"):
-            return "ORIGIN_HOLD"
+        # A legitimate privacy-filtered browser can omit Origin. Accept ONLY
+        # an affirmative same-origin top-level POST navigation and CSRF.
+        if (fetch_site != "same-origin" or
+                request.headers.get("Sec-Fetch-Mode", "").strip().lower() != "navigate"):
+            return "ORIGIN_META_HOLD"
+
     submitted = request.form.get("csrf", "")
     if not isinstance(submitted, str) or not hmac.compare_digest(_csrf(), submitted):
         return "CSRF_HOLD"
