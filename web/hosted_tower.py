@@ -18,6 +18,12 @@ from __future__ import annotations
 
 from web.app import app as app
 
+# OBDATA009: the existing V25 fixture-derived market response is NOT a feed.
+# The exact Tower-protected read returns provider-not-configured until a
+# separately authorized, timestamped licensed source is attached.
+from tower.ob_market_source_status import register_hosted_ob_market_source_status
+register_hosted_ob_market_source_status(app)
+
 
 HOSTED_ENTRYPOINT = "web.hosted_tower:app"
 PRODUCTION_DEPLOYMENT = False
@@ -532,3 +538,17 @@ if not app.extensions.get(
 # It does not issue Manual Live credentials or activate a mode.
 from tower.obml_monday_owner_readiness import register_obml_monday_readiness
 register_obml_monday_readiness(app)
+
+
+# OBSCAN/TWR-OBDATA-DESK: exact, source-only owner market-data catalog.
+# Existing Tower session/step-up/OB guard remains authoritative. No vendor
+# connection, real-time price, market-data license, browser approval or order.
+from tower.ob_market_data_desk_integration import register_protected_ob_market_data_desk
+register_protected_ob_market_data_desk(app)
+
+
+# OBINTEL/Tower: optional, exact-room source-bound research presentation.
+# No resolver is attached in this source-only hosted build; the panels remain
+# absent until real reviewed backend evidence and owner/session rights exist.
+from tower.ob_symbol_research_integration import register_protected_symbol_research_context
+register_protected_symbol_research_context(app)

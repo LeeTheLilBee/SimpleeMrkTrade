@@ -45,7 +45,7 @@ def test_anonymous_cannot_record_return_receipt(client):
 
 
 @pytest.mark.parametrize("room", [
-    "Dashboard", "Market Map", "Trade Center", "Review Center",
+    "Dashboard", "Market Map", "Market Data Desk", "Trade Center", "Review Center",
     "Owner Console", "Owner Dashboard", "Symbol Page",
 ])
 def test_owner_return_preserves_session_with_bounded_receipt(client, room):

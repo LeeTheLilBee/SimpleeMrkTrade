@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from flask import abort, redirect, request
 
 from tower.tower_human_login_ob_launch import (
@@ -13,6 +15,9 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
     {
         "/ob/dashboard",
         "/ob/market-map",
+        "/ob/data-desk",
+        # OBDATA009: exact private, read-only canonical source-status corridor.
+        "/ob/engine-feed-snapshot.json",
         "/ob/trade-center",
         "/ob/review-center",
         "/ob/owner-console",
@@ -59,8 +64,11 @@ def is_approved_ob_web_room(path: str) -> bool:
         return True
 
     if path.startswith(PROTECTED_SYMBOL_PREFIX):
-        symbol = path[len(PROTECTED_SYMBOL_PREFIX):].strip()
-        return bool(symbol)
+        # Match the exact canonical ticker shape; nonempty alone let nested
+        # /ob/symbol/XYZ/secret enter the protected-room allowlist.
+        symbol = path[len(PROTECTED_SYMBOL_PREFIX):]
+        return bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9.-]{0,15}", symbol)
+                    and ".." not in symbol)
 
     return False
 
@@ -97,6 +105,10 @@ def register_ob_protected_route_enforcement(app):
 
         if not is_approved_ob_web_room(path):
             abort(403)
+
+        # Only the canonical feed URL may be read; no mutation or alias.
+        if path == "/ob/engine-feed-snapshot.json" and request.method not in {"GET", "HEAD"}:
+            abort(405)
 
         if not owner_session_active():
             return redirect("/tower/login")

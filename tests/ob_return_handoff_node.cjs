@@ -14,7 +14,7 @@ function render(roomPath) {
     getElementById(id) { return id === "ob-app" ? {} : null; },
     querySelector(selector) { return selector === ".ob-layer" ? layer : null; },
     createElement(tag) { return { tag, innerHTML: "", setAttribute() {} }; },
-    body: { prepend(element) { rail = element; } },
+    body: { dataset: { obDataDeskRouteEnabled: "true" }, prepend(element) { rail = element; } },
     addEventListener(event, callback) {
       assert.equal(event, "DOMContentLoaded");
       callback();
@@ -32,6 +32,7 @@ function render(roomPath) {
 for (const [pathName, label] of Object.entries({
   "/ob/dashboard": "Dashboard",
   "/ob/market-map": "Market Map",
+  "/ob/data-desk": "Market Data Desk",
   "/ob/trade-center": "Trade Center",
   "/ob/review-center": "Review Center",
   "/ob/owner-console": "Owner Console",

@@ -29,6 +29,10 @@ def build_app(monkeypatch, *, owner, step_up):
     def dashboard():
         return "DASHBOARD"
 
+    @app.route("/ob/engine-feed-snapshot.json", methods=["GET"])
+    def canonical_feed():
+        return {"status": "test_fixture_only", "trades": []}
+
     @app.route("/ob/market-map")
     def market_map():
         return "MARKET MAP"
@@ -70,6 +74,7 @@ def build_app(monkeypatch, *, owner, step_up):
 
 ROOMS = [
     "/ob/dashboard",
+    "/ob/engine-feed-snapshot.json",
     "/ob/market-map",
     "/ob/symbol/AMD",
     "/ob/trade-center",
@@ -81,6 +86,7 @@ ROOMS = [
 
 NORMAL_ROOMS = [
     "/ob/dashboard",
+    "/ob/engine-feed-snapshot.json",
     "/ob/market-map",
     "/ob/symbol/AMD",
     "/ob/trade-center",
@@ -199,3 +205,26 @@ def test_unknown_ob_route_is_default_denied_even_for_valid_owner(monkeypatch):
     )
 
     assert response.status_code == 403
+
+
+def test_feed_is_explicit_read_only_and_unknown_feeds_remain_denied(monkeypatch):
+    app = build_app(monkeypatch, owner=True, step_up=True)
+    client = app.test_client()
+    assert client.get("/ob/engine-feed-snapshot.json").status_code == 200
+    assert client.head("/ob/engine-feed-snapshot.json").status_code == 200
+    assert client.post("/ob/engine-feed-snapshot.json").status_code == 405
+    for path in ("/ob/engine-feed-snapshot-evil.json",
+                 "/ob/engine-feed-snapshot.json/extra",
+                 "/ob/other-provider.json"):
+        assert client.get(path).status_code == 403
+
+
+def test_protected_feed_is_session_and_step_up_scoped(monkeypatch):
+    app = build_app(monkeypatch, owner=False, step_up=False)
+    response = app.test_client().get("/ob/engine-feed-snapshot.json")
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/tower/login")
+    app = build_app(monkeypatch, owner=True, step_up=False)
+    response = app.test_client().get("/ob/engine-feed-snapshot.json")
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/tower/access-home")

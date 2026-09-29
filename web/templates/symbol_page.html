@@ -18,9 +18,11 @@
     href="{{ url_for('static', filename='ob/ob_symbol_room.css') }}"
   />
   <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
+  <link rel="stylesheet" href="/static/ob/ob_research_context.css?v=obintel001030" />
 </head>
 
 <body
+  data-ob-data-desk-route-enabled="true"
   data-ob-room="symbol"
   data-ob-symbol="{{ symbol|default('') }}"
 >
@@ -70,6 +72,10 @@
         </span>
       </div>
     </header>
+
+    {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
+    {% include 'ob_research_context_partial.html' %}
+    {% endif %}
 
     <section id="symbolModeBanner" class="ob-mode-banner">
       <div>

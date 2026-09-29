@@ -19,9 +19,11 @@
     href="{{ url_for('static', filename='ob/ob_review_center_obux.css') }}"
   />
   <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
+  <link rel="stylesheet" href="/static/ob/ob_research_context.css?v=obintel001030" />
 </head>
 
 <body
+  data-ob-data-desk-route-enabled="true"
   data-ob-room="review-center"
   data-ob-review-version="OBUX046-OBUX050"
 >
@@ -72,6 +74,9 @@
         </div>
       </header>
 
+      {% if ob_research_context is defined and ob_research_context.get('room') == 'review_center' %}
+      {% include 'ob_research_context_partial.html' %}
+      {% endif %}
 
       <section
         id="reviewSummary"
