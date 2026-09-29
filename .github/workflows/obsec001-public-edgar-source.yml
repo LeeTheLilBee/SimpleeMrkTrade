@@ -1,12 +1,15 @@
 name: OBSEC001 free official EDGAR source acceptance
 on:
   push:
-    branches: [ob-edgar-public-owner-research-20260929]
+    branches: [tower-ob-edgar-live-gated-0929]
   pull_request:
+    branches: [tower-hosted-runtime-identity-twr081-085]
     paths:
       - "engine/market_intake/sec_public_*.py"
       - "scripts/ob_sec_public_research_check.py"
       - "tests/test_obsec_public_edgar_research.py"
+      - "tests/test_obscan_public_edgar_fetch.py"
+      - "engine/market_intake/edgar_*.py"
       - "web/hosted_tower.py"
       - "docs/market_data/OBSEC001_PUBLIC_EDGAR_CONNECTOR.md"
       - ".github/workflows/obsec001-public-edgar-source.yml"
@@ -28,7 +31,15 @@ jobs:
       - name: Compile and run bounded offline transport and existing research tests
         run: |
           python -m py_compile engine/market_intake/sec_public_client.py engine/market_intake/sec_public_research.py scripts/ob_sec_public_research_check.py web/hosted_tower.py
-          python -m pytest -q tests/test_obsec_public_edgar_research.py tests/test_obintel001_030_symbol_research.py tests/test_tower_ob_symbol_research_selective.py tests/test_tower_ob_market_data_desk_selective.py
+          python -m pytest -q \
+            tests/test_obsec_public_edgar_research.py \
+            tests/test_obscan_public_edgar_fetch.py \
+            tests/test_obintel001_030_symbol_research.py \
+            tests/test_tower_ob_symbol_research_selective.py \
+            tests/test_tower_ob_market_data_desk_selective.py \
+            tests/test_obscan001_025_sovereign_intake.py \
+            tests/test_obscan026_040_universal_gateway.py \
+            tests/test_obscan041_055_market_data_desk.py
       - name: Verify no auto activation, live-price feed, or external URL input
         run: |
           python - <<'PY'
@@ -43,4 +54,13 @@ jobs:
           assert "redirect_request" in client and "spacing_seconds: float = 0.6" in client
           assert "order" not in client.lower().replace("no broker or market-price authority", "").replace("no key, no browser requests", "")
           assert "register_hosted_ob_market_source_status(app)" in hosted
+          assert "register_protected_ob_market_data_desk(app)" in hosted
+          assert "register_protected_symbol_research_context(" in hosted
+          assert "OB_SEC_CONTACT_EMAIL" in service
+          from web.hosted_tower import app
+          m=app.extensions["tower_ob_symbol_research_context_v1"]
+          assert m["provider_attached"] is False
+          assert m["runtime_market_feed_attached"] is False
+          assert m["trading_authorized"] is False
+          assert not any("/ob/sec/" in p.rule for p in app.url_map.iter_rules())
           PY
