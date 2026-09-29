@@ -96,7 +96,7 @@ def active_return_receipt() -> Dict[str, Any] | None:
 # Bound it so no caller can inject arbitrary content into the Tower session/UI.
 OB_RETURN_ROOM_LABELS = frozenset({
     "Dashboard", "Market Map", "Trade Center", "Review Center",
-    "Owner Console", "Owner Dashboard", "Symbol Page",
+    "Owner Console", "Owner Dashboard", "Symbol Page", "Market Data Desk",
 })
 
 
