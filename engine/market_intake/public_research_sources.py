@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 import json
+import os
 import re
 from typing import Callable
 from urllib.parse import urlencode
@@ -123,6 +124,12 @@ class PublicReferenceClient:
             source == "bls" and method == "GET" and body is None
             and re.fullmatch(re.escape(_BLS) + r"[A-Z0-9_-]{3,45}", url) is not None
         ) or (
+            # BLS v1's documented JSON POST for one or more series, fixed to
+            # the exact source/series here rather than accepting arbitrary payloads.
+            source == "bls" and method == "POST" and url == _BLS
+            and body == b'{"seriesid":["CUUR0000SA0"]}'
+            and headers == {"Content-Type": "application/json", "Accept": "application/json"}
+        ) or (
             source == "bea" and method == "GET" and body is None
             and url.startswith(_BEA + "?")
         ) or (
@@ -219,19 +226,48 @@ class PublicReferenceClient:
         )
 
     def bls_v1(self, series_id: str) -> PublicObservation:
-        """Unregistered BLS v1: historical publication, not live market time."""
+        """Unregistered BLS v1: historical publication, not live market time.
+
+        Only opt-in exact CPI-U owner research may try the agency's documented
+        unregistered v1 JSON POST after a genuinely unsuccessful GET. Its
+        result undergoes precisely the same validated source-shape path.
+        """
         if not isinstance(series_id, str) or not _SERIES.fullmatch(series_id):
             raise PublicResearchUnavailable("BLS_SERIES_INVALID")
         try:
             payload, fetched = self._json(_BLS + series_id, source="bls")
         except PublicResearchUnavailable as exc:
-            if str(exc) == "SOURCE_TRANSPORT_HOLD" and series_id == "CUUR0000SA0":
-                return self._bls_official_bulk_cpi(series_id)
-            raise
+            if str(exc) != "SOURCE_TRANSPORT_HOLD" or series_id != "CUUR0000SA0":
+                raise
+            payload = {"status": "REQUEST_FAILED"}
+            fetched = datetime.now(timezone.utc)
         if (isinstance(payload, dict) and
                 payload.get("status") in {"REQUEST_NOT_PROCESSED", "REQUEST_FAILED"} and
                 series_id == "CUUR0000SA0"):
-            return self._bls_official_bulk_cpi(series_id)
+            if os.environ.get("OB_KEYLESS_BLS_V1_POST_FALLBACK_ENABLED") == "1":
+                try:
+                    post_payload, post_fetched = self._json(
+                        _BLS, source="bls", method="POST",
+                        body=b'{"seriesid":["CUUR0000SA0"]}',
+                        headers={"Content-Type": "application/json",
+                                 "Accept": "application/json"})
+                except PublicResearchUnavailable as exc:
+                    if str(exc) != "SOURCE_TRANSPORT_HOLD":
+                        raise
+                else:
+                    if (isinstance(post_payload, dict)
+                            and post_payload.get("status") == "REQUEST_SUCCEEDED"):
+                        payload, fetched = post_payload, post_fetched
+                    elif (isinstance(post_payload, dict)
+                          and post_payload.get("status") in {
+                              "REQUEST_NOT_PROCESSED", "REQUEST_FAILED"}):
+                        return self._bls_official_bulk_cpi(series_id)
+                    else:
+                        raise PublicResearchUnavailable("BLS_SOURCE_SHAPE_HOLD")
+                if payload.get("status") != "REQUEST_SUCCEEDED":
+                    return self._bls_official_bulk_cpi(series_id)
+            else:
+                return self._bls_official_bulk_cpi(series_id)
         try:
             if payload["status"] != "REQUEST_SUCCEEDED":
                 raise ValueError()

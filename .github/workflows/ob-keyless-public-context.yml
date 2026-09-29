@@ -15,6 +15,7 @@ on:
       - "tower/ob_route_guard.py"
       - "tower/ob_web_route_enforcement.py"
       - "tests/test_ob_keyless_public_context.py"
+      - "tests/test_ob_bls_v1_post_fallback.py"
       - ".github/workflows/ob-keyless-public-context.yml"
   push:
     branches:
@@ -31,7 +32,7 @@ jobs:
       - run: python -m pip install pytest flask
       - run: python -m compileall -q engine/market_intake/keyless_public_context.py engine/market_intake/keyless_soulaana.py engine/market_intake/treasury_public_context.py web/ob_keyless_context_route.py tower/ob_market_data_desk_integration.py
       - run: node --check web/static/ob/ob_keyless_context.js
-      - run: python -m pytest -q tests/test_ob_keyless_public_context.py tests/test_ob_public_research_sources.py tests/test_tower_ob_market_data_desk_selective.py tests/test_tower_ob_web_route_enforcement.py tests/test_obscan026_040_universal_gateway.py
+      - run: python -m pytest -q tests/test_ob_keyless_public_context.py tests/test_ob_public_research_sources.py tests/test_ob_bls_v1_post_fallback.py tests/test_tower_ob_market_data_desk_selective.py tests/test_tower_ob_web_route_enforcement.py tests/test_obscan026_040_universal_gateway.py
       - name: Reject broker/third-party login and invented quote authority
         run: |
           ! grep -iE 'place_order|submit_order|api.public.com|api.tradier.com|api.alpaca.markets|apikey|api_key' engine/market_intake/keyless_public_context.py engine/market_intake/treasury_public_context.py web/static/ob/ob_keyless_context.js
