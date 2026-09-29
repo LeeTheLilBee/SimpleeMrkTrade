@@ -1,5 +1,6 @@
 /* OB source-only public context: one Tower-authenticated shared read, no browser provider calls.
-   This is not a price feed, signal, portfolio view or input to scanner/scoring/AI. */
+   Soulaana receives a deterministic status-only register, never source payloads,
+   live prices, candidate/scoring authority or unreviewed AI-source content. */
 (function () {
   "use strict";
   const root = document.getElementById("obKeylessContextRoot");
@@ -54,9 +55,11 @@
   const status = el("p", "ob-keyless-status", "Checking protected keyless sources…");
   status.setAttribute("role", "status");
   const grid = el("div", "ob-keyless-grid");
+  const soulaana = el("section", "ob-keyless-soulaana");
+  soulaana.setAttribute("aria-label", "Soulaana source-status explanation");
   const footer = el("p", "ob-keyless-footer",
-    "Retrieval time is not publication or market-event time. SEC filings use their existing protected issuer-research corridor. Public account authentication remains separate. No AI-use, candidate, capital or trading permission is inferred.");
-  root.append(heading, lookup, status, grid, footer);
+    "Retrieval time is not publication or market-event time. SEC filings use their existing protected issuer-research corridor. Public account authentication remains separate. Soulaana's status register is not authorization for source-content AI, candidate, capital or trading use.");
+  root.append(heading, lookup, status, grid, soulaana, footer);
   let inFlight = 0;
   let currentSymbol = locationSymbol();
   if (currentSymbol) input.value = currentSymbol;
@@ -95,10 +98,45 @@
     card.append(link);
     return card;
   }
+  function validSoulaana(packet) {
+    if (!packet || packet.schema !== "OB_SOULAANA_KEYLESS_STATUS_V1" ||
+        packet.channel !== "SOULAANA_SOURCE_STATUS_ONLY" ||
+        packet.raw_source_values_included !== false ||
+        packet.source_content_ai_authorized !== false ||
+        packet.candidate_admitted !== false || packet.quote_verified !== false ||
+        packet.broker_execution_authorized !== false ||
+        !Array.isArray(packet.source_register) || packet.source_register.length !== 4) return false;
+    if (["what_i_see", "what_it_means", "what_is_missing", "next_step"].some(
+        key => typeof packet[key] !== "string" || packet[key].length > 600)) return false;
+    const keys = ["sec", "bls", "treasury", "openfigi"];
+    return packet.source_register.every((row, index) =>
+      row && row.source === keys[index] && typeof row.state === "string" &&
+      typeof row.meaning === "string" && row.meaning.length <= 350 &&
+      typeof row.label === "string" && row.label.length <= 50);
+  }
+  function renderSoulaana(packet) {
+    soulaana.replaceChildren();
+    const eyebrow = el("span", "ob-keyless-eyebrow", "SOULAANA · SOURCE AWARENESS");
+    const title = el("h3", "", "What I can see");
+    const overview = el("p", "", packet.what_i_see);
+    const meaning = el("p", "", packet.what_it_means);
+    const missing = el("p", "ob-keyless-soulaana-hold", packet.what_is_missing);
+    const next = el("p", "", packet.next_step);
+    const register = el("div", "ob-keyless-soulaana-register");
+    packet.source_register.forEach(function (item) {
+      const line = el("p", "");
+      line.append(el("strong", "", item.label + " · "), el("span", "", item.meaning));
+      register.append(line);
+    });
+    const guard = el("p", "ob-keyless-footer",
+      "I see reviewed source availability and limitations, not raw source values or an AI-authorized research corpus. No quote or execution permissions follow.");
+    soulaana.append(eyebrow, title, overview, meaning, register, missing, next, guard);
+  }
   async function read(symbol) {
     const seq = ++inFlight;
     status.textContent = "Reading official references through Tower…";
     grid.replaceChildren();
+    soulaana.replaceChildren();
     const suffix = symbol ? "?symbol=" + encodeURIComponent(symbol) : "";
     try {
       const response = await fetch(ENDPOINT + suffix, {
@@ -121,11 +159,12 @@
         return;
       }
       const safeRows = packet.sources.map(drawSource).filter(Boolean);
-      if (safeRows.length !== 4) {
-        status.textContent = "Keyless response failed provider/authority validation.";
+      if (safeRows.length !== 4 || !validSoulaana(packet.soulaana_source_register)) {
+        status.textContent = "Keyless response failed provider/Soulaana status-only validation.";
         return;
       }
       grid.replaceChildren(...safeRows);
+      renderSoulaana(packet.soulaana_source_register);
       const count = packet.sources.filter(row => row.state === "SOURCE_BOUND").length;
       status.textContent = count + " source-backed reference" + (count === 1 ? "" : "s") +
         " · as of " + packet.as_of + (symbol ? " · ticker " + symbol : "") +
