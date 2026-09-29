@@ -361,8 +361,14 @@
       ["NOT_CONNECTED", "RIGHTS_OR_FETCH_HOLD", "SOURCE_HOLD", "SOURCE_BOUND"].includes(row.state)))
       return false;
     const brief = packet.soulaana_research;
+    const refs = {
+      finnhub: "https://finnhub.io/docs/api/company-profile2",
+      alpha_vantage: "https://www.alphavantage.co/documentation/#daily"
+    };
     return brief && brief.schema === "OB_SOULAANA_KEYED_PROVIDER_RESEARCH_V1" &&
       brief.channel === "SOULAANA_REVIEWED_PROVIDER_RESEARCH" &&
+      brief.source_specific_ai_use_approved === (brief.observations && brief.observations.length > 0) &&
+      brief.external_model_called === false &&
       brief.raw_credentials_included === false &&
       brief.account_identifiers_included === false &&
       brief.live_quote_verified === false &&
@@ -370,7 +376,15 @@
       brief.broker_execution_authorized === false &&
       brief.capital_authorized === false &&
       brief.may_change_trading_mode === false &&
-      Array.isArray(brief.observations) && brief.observations.length <= 2;
+      Array.isArray(brief.observations) && brief.observations.length <= 2 &&
+      brief.observations.every(item =>
+        item && ids.includes(item.provider) &&
+        packet.provider_research.some(row => row.provider === item.provider && row.state === "SOURCE_BOUND") &&
+        item.symbol === symbol && item.source_reference === refs[item.provider] &&
+        item.research_only === true && item.live_quote === false &&
+        typeof item.finding === "string" && item.finding.length > 0 && item.finding.length <= 650 &&
+        typeof item.what_is_missing === "string" && item.what_is_missing.length <= 300 &&
+        item.summary && typeof item.summary === "object");
   }
 
   async function readKeyedProviderResearch(symbol) {
@@ -401,13 +415,28 @@
         rows.append(line);
       });
       const brief = packet.soulaana_research;
-      const ai = el("p", "ob-keyless-soulaana-hold",
-        brief.observations.length
-          ? "Soulaana can read only the provider research explicitly covered by separate AI-use review."
-          : "Provider AI-use rights are not approved or no source-bound keyed research is available.");
-      keyedProviderResearch.replaceChildren(title, rows, ai,
+      const reviewed = el("div", "ob-keyless-soulaana-register");
+      reviewed.append(el("h3", "", "Soulaana · What I actually found"));
+      if (!brief.observations.length) {
+        reviewed.append(el("p", "ob-keyless-soulaana-hold",
+          "No provider content is available under separate AI-use review. Connection status is not evidence."));
+      }
+      brief.observations.forEach(item => {
+        const record = el("article", "ob-keyless-evidence-item");
+        const reference = el("a", "ob-keyless-docs", "Provider source ↗");
+        reference.href = item.provider === "finnhub"
+          ? "https://finnhub.io/docs/api/company-profile2"
+          : "https://www.alphavantage.co/documentation/#daily";
+        reference.target = "_blank"; reference.rel = "noopener noreferrer";
+        record.append(el("strong", "", item.provider.toUpperCase() + " · REVIEWED RESEARCH"),
+          el("p", "", item.finding),
+          el("p", "ob-keyless-soulaana-hold", item.what_is_missing),
+          reference);
+        reviewed.append(record);
+      });
+      keyedProviderResearch.replaceChildren(title, rows, reviewed,
         el("p", "ob-keyless-footer",
-          "Historical/reference research only. This corridor does not supply a live quote, candidate, broker action or trading-mode change."));
+          "Deterministic, source-specific examination; no external AI model call. Historical/reference research only. No live quote, candidate, broker action or trading-mode change."));
     } catch (_) {
       keyedProviderResearch.replaceChildren(el("p", "ob-keyless-soulaana-hold",
         "Keyed provider research is unavailable or held. No provider data is assumed."));
