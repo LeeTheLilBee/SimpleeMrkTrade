@@ -391,3 +391,20 @@ def test_soulaana_history_without_ai_grant_hides_counts_dates_and_references():
     assert brief["historical_source_reference"] is None
     assert brief["source_event_references"]==[]
     assert "verified-snapshot-test-1" not in str(brief)
+
+
+def test_reference_memory_rechecks_expired_history_and_fundamental_terms_at_capture():
+    original=inputs()
+    # A historical series can have been valid when received but no longer
+    # licensed when a later combined research record is captured.
+    later=NOW+timedelta(hours=2)
+    expired_history=replace(original.history,rights=replace(
+        original.history.rights,expires_at=NOW+timedelta(hours=1)))
+    updated=replace(original,history=expired_history,captured_at=later)
+    with pytest.raises(ValueError,match="historical feed retention/rights"):
+        ResearchReferenceLedger().append(updated,receipt_id="expired-hist")
+    expired_fundamentals=replace(original.financial_rights,
+                                 expires_at=NOW-timedelta(minutes=1))
+    revised=replace(original,financial_rights=expired_fundamentals)
+    with pytest.raises(ValueError,match="fundamental record retention/rights"):
+        ResearchReferenceLedger().append(revised,receipt_id="expired-sec")
