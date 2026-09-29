@@ -23,7 +23,7 @@ FIGI_DOCS = "https://www.openfigi.com/api/documentation"
 _BLS = "https://api.bls.gov/publicAPI/v1/timeseries/data/"
 _BEA = "https://apps.bea.gov/api/data/"
 _FIGI = "https://api.openfigi.com/v3/mapping"
-_SERIES = re.compile(r"^[A-Z0-9_#-]{3,45}$")
+_SERIES = re.compile(r"^[A-Z0-9_-]{3,45}$")
 _SYMBOL = re.compile(r"^[A-Z0-9][A-Z0-9.-]{0,15}$")
 _KEY = re.compile(r"^[A-Za-z0-9-]{10,120}$")
 _MAX_BYTES = 1_000_000
@@ -47,9 +47,14 @@ class OwnerResearchPolicy:
     source_use_reviewed: bool = False
     owner_display_reviewed: bool = False
     ai_use_reviewed: bool = False
+    # No global rights inheritance: each provider must be reviewed separately.
+    reviewed_sources: frozenset[str] = frozenset()
 
-    def require(self) -> None:
-        if self.source_use_reviewed is not True or self.owner_display_reviewed is not True:
+    def require(self, source: str) -> None:
+        if (self.source_use_reviewed is not True
+            or self.owner_display_reviewed is not True
+            or type(self.reviewed_sources) is not frozenset
+            or source not in self.reviewed_sources):
             raise PublicResearchUnavailable("OWNER_SOURCE_REVIEW_REQUIRED")
 
 
@@ -96,10 +101,20 @@ class PublicReferenceClient:
         self.policy = policy
         self._opener = opener or _default_open
 
-    def _json(self, url: str, *, method: str = "GET", body: bytes | None = None,
-              headers: dict[str, str] | None = None):
-        self.policy.require()
-        if not (url.startswith(_BLS) or url.startswith(_BEA + "?") or url == _FIGI):
+    def _json(self, url: str, *, source: str, method: str = "GET",
+              body: bytes | None = None, headers: dict[str, str] | None = None):
+        self.policy.require(source)
+        valid = (
+            source == "bls" and method == "GET" and body is None
+            and re.fullmatch(re.escape(_BLS) + r"[A-Z0-9_-]{3,45}", url) is not None
+        ) or (
+            source == "bea" and method == "GET" and body is None
+            and url.startswith(_BEA + "?")
+        ) or (
+            source == "openfigi" and method == "POST" and url == _FIGI
+            and isinstance(body, bytes)
+        )
+        if not valid:
             raise PublicResearchUnavailable("SOURCE_ENDPOINT_NOT_ALLOWED")
         req = Request(url, data=body, headers=headers or {"Accept": "application/json"},
                       method=method)
@@ -133,7 +148,7 @@ class PublicReferenceClient:
         """Unregistered BLS v1: historical publication, not live market time."""
         if not isinstance(series_id, str) or not _SERIES.fullmatch(series_id):
             raise PublicResearchUnavailable("BLS_SERIES_INVALID")
-        payload, fetched = self._json(_BLS + series_id)
+        payload, fetched = self._json(_BLS + series_id, source="bls")
         try:
             if payload["status"] != "REQUEST_SUCCEEDED":
                 raise ValueError()
@@ -161,14 +176,15 @@ class PublicReferenceClient:
         """
         if not isinstance(api_key, str) or not _KEY.fullmatch(api_key):
             raise PublicResearchUnavailable("BEA_KEY_NOT_CONFIGURED")
-        if not re.fullmatch(r"T[0-9]{4,8}", table) or frequency not in {"A", "Q"}:
+        if (not isinstance(table, str) or not re.fullmatch(r"T[0-9]{4,8}", table)
+            or not isinstance(frequency, str) or frequency not in {"A", "Q"}):
             raise PublicResearchUnavailable("BEA_QUERY_INVALID")
-        if not re.fullmatch(r"[1-9][0-9]{0,2}", line_number):
+        if not isinstance(line_number, str) or not re.fullmatch(r"[1-9][0-9]{0,2}", line_number):
             raise PublicResearchUnavailable("BEA_QUERY_INVALID")
         params = urlencode(dict(UserID=api_key, method="GetData", datasetname="NIPA",
                               TableName=table, Frequency=frequency,
                               Year="LAST5", ResultFormat="JSON"))
-        payload, fetched = self._json(_BEA + "?" + params)
+        payload, fetched = self._json(_BEA + "?" + params, source="bea")
         try:
             results = payload["BEAAPI"]["Results"]
             rows = results["Data"]
@@ -197,7 +213,7 @@ class PublicReferenceClient:
         if api_key:
             headers["X-OPENFIGI-APIKEY"] = api_key
         body = json.dumps([{"idType": "TICKER", "idValue": ticker, "exchCode": "US"}]).encode()
-        payload, fetched = self._json(_FIGI, method="POST", body=body, headers=headers)
+        payload, fetched = self._json(_FIGI, source="openfigi", method="POST", body=body, headers=headers)
         if not isinstance(payload, list) or len(payload) != 1 or not isinstance(payload[0], dict):
             raise PublicResearchUnavailable("FIGI_SOURCE_SHAPE_HOLD")
         if "error" in payload[0] or "data" not in payload[0]:
