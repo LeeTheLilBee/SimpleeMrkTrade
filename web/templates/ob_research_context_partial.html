@@ -1,0 +1,66 @@
+{# OBINTEL UI seam: render only a server-supplied, checked OB_RESEARCH_HANDOFF_V1.
+   No client-side market-data fetch, invented source, quote or trading action. #}
+{% if ob_research_context is defined and ob_research_context and
+      ob_research_context.get('schema') == 'OB_RESEARCH_HANDOFF_V1' and
+      ob_research_context.get('context_only') == true and
+      ob_research_context.get('may_authorize_order') == false and
+      ob_research_context.get('may_authorize_candidate') == false %}
+<section class="ob-research-context" aria-labelledby="obResearchContextTitle"
+         data-ob-research-room="{{ ob_research_context.get('room','')|e }}">
+  <div class="ob-research-context-head">
+    <div><span class="ob-research-kicker">SOURCE-BOUND · READ-ONLY</span>
+      <h2 id="obResearchContextTitle">Symbol research context</h2>
+      <p>Original evidence and completed-session history. Not a live quote, signal or permission.</p>
+    </div>
+    <span class="ob-research-badge">{{ ob_research_context.get('state','EVIDENCE_PENDING')|replace('_',' ')|e }}</span>
+  </div>
+  <div class="ob-research-context-grid">
+    <article>
+      <span>Issuer identity</span>
+      <strong>{{ ob_research_context.get('identity',{}).get('security_name') or ob_research_context.get('symbol','Unknown') }}</strong>
+      <small>CIK: {{ ob_research_context.get('identity',{}).get('cik') or 'Not verified' }}</small>
+    </article>
+    <article>
+      <span>Historical source</span>
+      <strong>{{ ob_research_context.get('history',{}).get('state','NOT_AVAILABLE')|replace('_',' ')|e }}</strong>
+      <small>
+        {% if ob_research_context.get('history',{}).get('bars_used') is not none %}
+        {{ ob_research_context.get('history',{}).get('bars_used') }} completed sessions ·
+        {% endif %}
+        {{ ob_research_context.get('history',{}).get('basis') or 'Basis unverified' }} · historical only
+      </small>
+    </article>
+    <article>
+      <span>Current-source research</span>
+      <strong>{{ ob_research_context.get('market_sources',{}).get('scanner_state','NOT_CONNECTED')|replace('_',' ')|e }}</strong>
+      <small>Broker-side quote verification and candidate admission remain separate.</small>
+    </article>
+    <article>
+      <span>Issuer disclosures</span>
+      <strong>{{ ob_research_context.get('fundamentals',{}).get('state','NOT_AVAILABLE')|replace('_',' ')|e }}</strong>
+      <small>{{ ob_research_context.get('issuer_events',[])|length }} cited issuer events in this bounded context.</small>
+    </article>
+  </div>
+  <details class="ob-research-disclosure">
+    <summary>What is verified, what is missing, and original evidence</summary>
+    <div class="ob-research-detail">
+      <p><strong>As of:</strong> {{ ob_research_context.get('as_of')|e }}</p>
+      <p>{{ ob_research_context.get('soulaana_context',{}).get('what_is_missing','Independent source review required.')|e }}</p>
+      <p>{{ ob_research_context.get('soulaana_context',{}).get('next_step','Review original evidence.')|e }}</p>
+      {% if ob_research_context.get('history',{}).get('snapshot_reference') %}
+      <p>Historical snapshot reference: <code>{{ ob_research_context.get('history',{}).get('snapshot_reference')|e }}</code></p>
+      {% endif %}
+      {% for event in ob_research_context.get('issuer_events',[])[:6] %}
+      <div class="ob-research-event">
+        <strong>{{ event.get('headline','Issuer event')|e }}</strong>
+        <small>{{ event.get('accepted_at','Source time unavailable')|e }}</small>
+        <code>{{ event.get('reference','No source reference')|e }}</code>
+      </div>
+      {% endfor %}
+      {% if ob_research_context.get('fundamentals',{}).get('reported_concepts') %}
+      <p>Issuer-reported SEC concepts retain their original fiscal period and units; no cross-concept normalization is inferred.</p>
+      {% endif %}
+    </div>
+  </details>
+</section>
+{% endif %}

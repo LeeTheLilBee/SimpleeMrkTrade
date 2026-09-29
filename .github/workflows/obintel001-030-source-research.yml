@@ -1,0 +1,70 @@
+name: OBINTEL001-030 source-bound symbol research
+on:
+  push:
+    branches:
+      - obintel001-030-source-bound-symbol-research
+  pull_request:
+    branches:
+      - obscan041-055-market-data-desk
+      - main
+    paths:
+      - 'engine/market_intake/**'
+      - 'engine_v2/symbol_page_integration.py'
+      - 'engine_v2/research_context_adapter.py'
+      - 'web/templates/ob_research_context_partial.html'
+      - 'web/templates/symbol_page.html'
+      - 'web/templates/market_map.html'
+      - 'web/templates/trade_center.html'
+      - 'web/templates/review_center.html'
+      - 'web/static/ob/ob_research_context.css'
+      - 'tests/test_obintel001_030_symbol_research.py'
+      - 'docs/market_data/OBINTEL001_030_SOURCE_RESEARCH.md'
+      - '.github/workflows/obintel001-030-source-research.yml'
+permissions:
+  contents: read
+jobs:
+  offline-provenance-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test runner only
+        run: python -m pip install pytest 'Flask>=3.0,<4'
+      - name: Compile source research modules
+        run: python -m compileall -q engine/market_intake engine_v2/symbol_page_integration.py engine_v2/research_context_adapter.py
+      - name: Historical and source-rights negative tests
+        run: |
+          python -m pytest -q \
+            tests/test_obscan001_025_sovereign_intake.py \
+            tests/test_obscan026_040_universal_gateway.py \
+            tests/test_obscan041_055_market_data_desk.py \
+            tests/test_obintel001_030_symbol_research.py \
+            tests/test_obscan_public_edgar_fetch.py
+      - name: Existing Market Map / Symbol / Trade / Review room regressions
+        run: |
+          python -m pytest -q \
+            tests/test_market_map_obux031_surface.py \
+            tests/test_market_map_obux032_live_truth.py \
+            tests/test_market_map_obux033_soulaana.py \
+            tests/test_market_map_obux034_interaction.py \
+            tests/test_ob_symbol_room_obux036_040.py \
+            tests/test_ob_trade_center_obux041_045.py \
+            tests/test_ob_review_center_obux046_050.py
+      - name: No independent free-scraping or trading transport
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("engine/market_intake")
+          content="\n".join(x.read_text() for x in p.glob("*.py"))
+          bad=("import yfinance","import requests","import aiohttp",
+               "from urllib.request","from ib_insync","place_order(",
+               "submit_order(","requests.get(","urllib.request.urlopen(")
+          found=[x for x in bad if x in content]
+          if found:raise SystemExit("Unsafe research dependency: "+repr(found))
+          print("Research is transport-free, broker-free and source-bound")
+          PY
