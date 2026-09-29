@@ -215,7 +215,7 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
             if (prior_period is None) != (prior_value is None):
                 raise ValueError("SOULAANA_COMPARISON_SHAPE_HOLD")
             if prior_period is not None:
-                period_rule = _BLS_PERIOD if key == "bls" else re.compile(r"^20\\d{2}-\\d{2}-\\d{2}$")
+                period_rule = _BLS_PERIOD if key == "bls" else re.compile(r"^20\d{2}-\d{2}-\d{2}$")
                 if (not isinstance(prior_period, str) or not period_rule.fullmatch(prior_period)
                         or prior_period >= period or not isinstance(prior_value, str)
                         or not _NUMBER.fullmatch(prior_value)):
