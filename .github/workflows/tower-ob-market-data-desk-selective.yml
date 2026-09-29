@@ -86,8 +86,11 @@ jobs:
           assert 'POST' not in rules[MARKET_DATA_DESK_PATH].methods
           assert MARKET_DATA_DESK_PATH in PROTECTED_EXACT_OB_ROUTES
           assert MARKET_DATA_DESK_PATH not in OWNER_ONLY_OB_ROUTES
-          for path in ('/ob/data-desk/connect','/ob/data-desk/approve','/trade-center'):
+          for path in ('/ob/data-desk/connect','/ob/data-desk/approve'):
               assert path not in rules
+          # Existing legacy compatibility paths may remain registered, but the
+          # independent Tower default-deny layer must not make them accessible.
+          assert app.test_client().get('/trade-center').status_code == 403
           assert app.extensions['tower_ob_market_data_desk_source_only_v1']['runtime_provider_attached'] is False
           assert app.test_client().get(MARKET_DATA_DESK_PATH).status_code != 200
           print('Exact owner-only read route mounted with no live transport, browser approval or pricing.')
