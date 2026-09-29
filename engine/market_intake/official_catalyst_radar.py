@@ -175,7 +175,36 @@ class OfficialCatalystRadar:
                 not isinstance(item.get("facts"), list) or
                 len(item["facts"]) > 3):
             raise SourceHold("SOURCE_SHAPE_HOLD")
-        return item["state"], item["facts"]
+        state, facts = item["state"], item["facts"]
+        # Validate the owner-facing common contract before any source is
+        # published or cached. A broken backend adapter must not turn an
+        # arbitrary vendor payload into an accepted owner research record.
+        if (state == "NO_PUBLICATION" and facts or
+                state == "SOURCE_BOUND" and not facts and source != "nws"):
+            raise SourceHold("SOURCE_SHAPE_HOLD")
+        for fact in facts:
+            if (not isinstance(fact, dict) or
+                    any(not isinstance(fact.get(k), str) or
+                        not fact[k].strip() or len(fact[k]) > maximum or
+                        any(ord(ch) < 32 or ord(ch) == 127 for ch in fact[k])
+                        for k, maximum in (("title", 250), ("period", 40),
+                                           ("reference", 340)))):
+                raise SourceHold("SOURCE_SHAPE_HOLD")
+            ref = fact["reference"]
+            if source == "federal_register":
+                valid = bool(re.fullmatch(
+                    r"https://www\.federalregister\.gov/(?:d/20[0-9]{2}-[0-9]{4,6}|"
+                    r"documents/20[0-9]{2}/[0-9]{2}/[0-9]{2}/20[0-9]{2}-[0-9]{4,6}/[a-z0-9-]{1,200})",
+                    ref))
+            elif source == "nws":
+                valid = bool(re.fullmatch(
+                    r"https://(?:api|alerts)\.weather\.gov/alerts/[A-Za-z0-9/:._?=%-]{1,220}",
+                    ref))
+            else:
+                valid = ref == REFERENCES[source]
+            if not valid:
+                raise SourceHold("SOURCE_REFERENCE_HOLD")
+        return state, facts
 
     def snapshot(self):
         with self._lock:
@@ -196,7 +225,9 @@ class OfficialCatalystRadar:
                     try:
                         state, facts = self._fetch(source)
                         row = _public_row(source, state, facts, now.isoformat())
-                    except (SourceHold, ValueError, KeyError, TypeError, OverflowError):
+                    except Exception:
+                        # Isolate each fixed source. No provider exception text or
+                        # response is exposed, and another source can still pass.
                         row = _public_row(source, "SOURCE_HOLD")
                     ttl = TTL[source] if row["state"] in {"SOURCE_BOUND", "NO_PUBLICATION"} else 300
                     self._cache[source] = (now + timedelta(seconds=ttl), row)
@@ -215,8 +246,20 @@ class OfficialCatalystRadar:
                 "source_only": True, "quote_eligible": False,
                 "candidate_admitted": False, "execution_authorized": False,
             })
-            reviewed = [translate_for_soulaana(row, approved=True) for row in rows[:-1]
-                        if row["ai_use_approved"]]
+            reviewed = []
+            for index, row in enumerate(rows[:-1]):
+                if not row["ai_use_approved"]:
+                    continue
+                try:
+                    reviewed.append(translate_for_soulaana(row, approved=True))
+                except Exception:
+                    # A malformed source-specific translation must never take
+                    # down other reviewed sources or leave its raw facts marked
+                    # as accepted. Hold this source and purge its success cache.
+                    source = row["source"]
+                    held = _public_row(source, "SOURCE_HOLD")
+                    rows[index] = held
+                    self._cache[source] = (now + timedelta(seconds=300), held)
         return {
             "schema": "OB_OFFICIAL_CATALYST_RADAR_V1",
             "as_of": now.isoformat(), "sources": rows,
