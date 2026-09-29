@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from math import isfinite
 from typing import Mapping
 
 from .contracts import (EquityQuote, Observation, OptionQuote, SourceRights,
@@ -30,6 +31,18 @@ def _field(raw: Mapping[str, object], mapping: Mapping[str, str], name: str) -> 
     if not key or key not in raw or raw[key] is None:
         raise ValueError(f"provider field mapping missing {name}")
     return raw[key]
+
+
+def _count(value: object, name: str) -> int:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be an integer, not a boolean")
+    try:
+        numeric = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{name} must be integer numeric") from exc
+    if not isfinite(numeric) or numeric < 0 or not numeric.is_integer():
+        raise ValueError(f"{name} must be a nonnegative integer")
+    return int(numeric)
 
 
 @dataclass(frozen=True)
@@ -65,13 +78,13 @@ class FeedAdapter:
             return EquityQuote(identity, float(f("last")), float(f("bid")), float(f("ask")),
                 float(f("previous_close")) if self.fields.get("previous_close") in raw and
                 raw.get(self.fields["previous_close"]) is not None else None,
-                int(f("volume")) if self.fields.get("volume") in raw and
+                _count(f("volume"), "volume") if self.fields.get("volume") in raw and
                 raw.get(self.fields["volume"]) is not None else None,
                 float(f("average_volume")) if self.fields.get("average_volume") in raw and
                 raw.get(self.fields["average_volume"]) is not None else None)
         return OptionQuote(identity,str(f("underlying")),str(f("occ_symbol")),
             float(f("bid")),float(f("ask")),float(f("strike")),str(f("expiry")),str(f("right")),
-            int(f("open_interest")) if self.fields.get("open_interest") in raw and
+            _count(f("open_interest"), "open_interest") if self.fields.get("open_interest") in raw and
             raw.get(self.fields["open_interest"]) is not None else None,
             int(f("volume")) if self.fields.get("volume") in raw and
             raw.get(self.fields["volume"]) is not None else None)
