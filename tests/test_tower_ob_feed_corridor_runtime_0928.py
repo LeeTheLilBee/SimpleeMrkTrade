@@ -1,4 +1,5 @@
 """Exact Tower-protected data route and honest provider status on hosted beta."""
+from tower.ob_route_guard import match_ob_guard_policy
 from tower.ob_web_route_enforcement import (
     PROTECTED_EXACT_OB_ROUTES, OWNER_ONLY_OB_ROUTES, is_approved_ob_web_room,
 )
@@ -11,6 +12,9 @@ def test_canonical_feed_route_scope():
     assert FEED_PATH in PROTECTED_EXACT_OB_ROUTES
     assert FEED_PATH not in OWNER_ONLY_OB_ROUTES
     assert is_approved_ob_web_room(FEED_PATH) is True
+    assert match_ob_guard_policy(FEED_PATH)["match_type"] == "exact"
+    for unknown in (FEED_PATH + "/anything", "/ob/other-provider.json"):
+        assert match_ob_guard_policy(unknown)["match_type"] == "unmapped_default_deny"
     assert is_approved_ob_web_room(FEED_PATH + "/anything") is False
     assert is_approved_ob_web_room("/ob/another-feed.json") is False
 
