@@ -137,6 +137,10 @@ def history_asof(series: HistorySeries, *, cutoff: datetime) -> tuple[CompletedD
 
 
 def history_context(series: HistorySeries, *, cutoff: datetime) -> dict[str, object]:
+    # This is an owner-facing numeric/source projection, not just an internal
+    # no-display research calculation.
+    if series.rights.owner_display_allowed is not True:
+        raise ValueError("historical owner-display entitlement required")
     bars=history_asof(series,cutoff=cutoff)
     out={
         "schema":"OB_SOURCE_HISTORY_CONTEXT_V1", "symbol":series.symbol,
