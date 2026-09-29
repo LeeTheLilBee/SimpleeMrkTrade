@@ -82,7 +82,8 @@ class OfficialCatalystClient:
         self._agent = _text(user_agent, 170)
 
     def _json(self, url, *, key=None):
-        if url not in ALLOWED and not (url.startswith(EIA + "?") and key is not None):
+        if url not in ALLOWED and not (
+                key is not None and url == EIA + "?" + urlencode({"api_key": key})):
             raise SourceHold("SOURCE_URL_HOLD")
         headers = {"Accept": "application/json", "User-Agent": self._agent}
         req = Request(url, headers=headers, method="GET")
@@ -112,8 +113,13 @@ class OfficialCatalystClient:
             if not re.fullmatch(r"20\d{2}-\d{4,6}", number):
                 raise SourceHold("SOURCE_ID_HOLD")
             link = x.get("html_url")
-            if link != "https://www.federalregister.gov/d/" + number:
-                # Official canonical URL, never accept vendor-supplied offsite URLs.
+            if not (link == "https://www.federalregister.gov/d/" + number or
+                    (isinstance(link, str) and
+                     re.fullmatch(
+                        r"https://www\.federalregister\.gov/documents/20\d{2}/\d{2}/\d{2}/"
+                        + re.escape(number) + r"/[a-z0-9-]{1,200}", link))):
+                # Official short/long canonical form only. Never follow an arbitrary
+                # link received inside an otherwise official provider payload.
                 raise SourceHold("SOURCE_URL_HOLD")
             facts.append({
                 "title": _text(x.get("title"), 250),
