@@ -5,7 +5,7 @@ import re
 from flask import Flask
 import pytest
 
-from tests.test_ob_public_local_probe import Recorder, SECRET, TOKEN, ACCOUNT_ID
+from test_ob_public_local_probe import Recorder, SECRET, TOKEN, ACCOUNT_ID
 from tower.ob_public_owner_connection import (
     PATH, OwnerConnectionStore, _now, create_public_owner_blueprint,
 )
