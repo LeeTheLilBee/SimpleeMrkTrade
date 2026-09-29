@@ -70,7 +70,7 @@
   function drawSource(row) {
     if (!row || !Object.prototype.hasOwnProperty.call(DOCS, row.source) ||
         typeof row.state !== "string" || row.quote_eligible !== false ||
-        row.trading_authorized !== false || row.ai_use_approved !== false) return null;
+        row.trading_authorized !== false || typeof row.ai_use_approved !== "boolean") return null;
     const card = el("article", "ob-keyless-card");
     const top = el("div", "ob-keyless-cardtop");
     top.append(el("h3", "", row.provider || row.source),
@@ -132,8 +132,56 @@
       register.append(line);
     });
     const guard = el("p", "ob-keyless-footer",
-      "I see reviewed source availability and limitations, not raw source values or an AI-authorized research corpus. No quote or execution permissions follow.");
+      "This source-status register carries no raw observations. Any content I can read appears in a separate, explicitly reviewed source-evidence brief below. No quote or execution permissions follow.");
     soulaana.append(eyebrow, title, overview, meaning, register, missing, next, guard);
+  }
+  const EVIDENCE_SOURCES = new Set(["bls", "treasury", "openfigi"]);
+  function validSoulaanaEvidence(brief, packet) {
+    if (!brief || brief.schema !== "OB_SOULAANA_KEYLESS_EVIDENCE_V1" ||
+        brief.channel !== "SOULAANA_REVIEWED_PUBLIC_RESEARCH" ||
+        brief.blanket_ai_authority !== false || brief.external_model_called !== false ||
+        brief.live_quote_verified !== false || brief.candidate_admitted !== false ||
+        brief.broker_execution_authorized !== false || brief.capital_authorized !== false ||
+        brief.public_brokerage_auth_inferred !== false ||
+        !Array.isArray(brief.observations) || brief.observations.length > 3 ||
+        !Array.isArray(brief.source_register) || brief.source_register.length !== 4 ||
+        brief.observation_count !== brief.observations.length ||
+        brief.source_specific_ai_use_approved !== (brief.observations.length > 0)) return false;
+    const authorized = new Set(packet.sources.filter(row =>
+      EVIDENCE_SOURCES.has(row.source) && row.ai_use_approved === true &&
+      row.state === "SOURCE_BOUND").map(row => row.source));
+    if (authorized.size !== brief.observations.length) return false;
+    const ids = ["sec", "bls", "treasury", "openfigi"];
+    if (!brief.source_register.every((r, index) =>
+      r && r.source === ids[index] && r.state === packet.sources[index].state &&
+      r.content_readable === authorized.has(r.source))) return false;
+    return brief.observations.every(item =>
+      item && authorized.has(item.source) &&
+      item.source_reference === DOCS[item.source] &&
+      item.research_only === true && item.quote_verified === false &&
+      item.execution_authorized === false &&
+      typeof item.value === "string" && item.value.length <= 55 &&
+      typeof item.interpretation === "string" && item.interpretation.length <= 430 &&
+      typeof item.retrieved_at === "string" && item.retrieved_at.length <= 50);
+  }
+  function renderSoulaanaEvidence(brief) {
+    const panel = el("div", "ob-keyless-soulaana-evidence");
+    panel.append(el("h3", "", "The reviewed evidence I can explain"),
+      el("p", "ob-keyless-meta", brief.interpretation));
+    brief.observations.forEach(item => {
+      const record = el("article", "ob-keyless-evidence-item");
+      const link = el("a", "ob-keyless-docs", "Official source ↗");
+      link.href = DOCS[item.source]; link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      record.append(el("strong", "", item.source.toUpperCase()),
+        el("p", "", item.interpretation),
+        el("p", "ob-keyless-meta", "Retrieved: " + item.retrieved_at), link);
+      panel.append(record);
+    });
+    if (brief.bls_attribution) panel.append(el("p", "ob-keyless-footer", brief.bls_attribution));
+    panel.append(el("p", "ob-keyless-footer",
+      "A validated, source-specific explanation—not an external model call. No live pricing, forecasts, signals, broker access or candidate admission."));
+    soulaana.append(panel);
   }
   async function read(symbol) {
     const seq = ++inFlight;
@@ -162,12 +210,14 @@
         return;
       }
       const safeRows = packet.sources.map(drawSource).filter(Boolean);
-      if (safeRows.length !== 4 || !validSoulaana(packet.soulaana_source_register)) {
-        status.textContent = "Keyless response failed provider/Soulaana status-only validation.";
+      if (safeRows.length !== 4 || !validSoulaana(packet.soulaana_source_register) ||
+          !validSoulaanaEvidence(packet.soulaana_evidence_brief, packet)) {
+        status.textContent = "Keyless response failed provider/Soulaana research-evidence validation.";
         return;
       }
       grid.replaceChildren(...safeRows);
       renderSoulaana(packet.soulaana_source_register);
+      renderSoulaanaEvidence(packet.soulaana_evidence_brief);
       const count = packet.sources.filter(row => row.state === "SOURCE_BOUND").length;
       status.textContent = count + " source-backed reference" + (count === 1 ? "" : "s") +
         " · as of " + packet.as_of + (symbol ? " · ticker " + symbol : "") +
