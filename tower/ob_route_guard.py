@@ -353,7 +353,7 @@ def evaluate_ob_request_guard(
     # authenticated Tower session. The independent OB HTTP boundary still
     # requires fresh step-up + consumed OB handoff; Public POST separately
     # enforces origin, CSRF, feature flag and source-specific rights.
-    if path in {"/ob/data-desk", "/ob/data-desk/public"}:
+    if path in {"/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys"}:
         try:
             from flask import has_request_context, session
             if has_request_context():
@@ -459,6 +459,15 @@ OB_ROUTE_GUARD_MAP.update({
         room="Canonical Market Source Status",
         purpose="Exact protected GET/HEAD source-status read. No licensed quote, provider, position or execution authority is implied.",
         soulaana_translation="Soulaana: This is a protected market-source status corridor, not proof that a feed is connected.",
+    ),
+    "/ob/data-desk/api-keys": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=30,
+        room="Research Provider API Key Desk",
+        purpose="Exact owner/step-up only temporary research API credential entry; no quote, broker or trade authority.",
+        soulaana_translation="Soulaana: Keys are temporary and source access is not approval of real-time market data.",
     ),
     "/ob/data-desk/public": _tower_ob_real_surface_policy_2593_2602(
         route_key="data_desk",
