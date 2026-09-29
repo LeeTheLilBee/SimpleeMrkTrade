@@ -1,0 +1,22 @@
+/* Owner-only keyless context rail; never style existing trading truth widgets. */
+.ob-keyless-context{box-sizing:border-box;max-width:1320px;margin:28px auto;padding:22px;border:1px solid rgba(164,189,240,.25);border-radius:19px;background:linear-gradient(135deg,rgba(13,21,46,.95),rgba(11,35,46,.93));color:#e5efff;box-shadow:0 12px 42px rgba(0,0,0,.2);font:inherit}
+.ob-keyless-context *{box-sizing:border-box}
+.ob-keyless-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.ob-keyless-heading h2{font-size:1.4rem;color:#eef6ff;margin:.35rem 0}
+.ob-keyless-eyebrow{font-size:.7rem;letter-spacing:.13em;font-weight:800;color:#8fd8d4}
+.ob-keyless-intro{max-width:500px;color:#b8c6dc;font-size:.9rem;margin:0}
+.ob-keyless-lookup{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.ob-keyless-lookup input{min-width:190px;max-width:240px;padding:9px 12px;border-radius:8px;background:#152341;color:#fff;border:1px solid #7890ac;font:inherit}
+.ob-keyless-lookup button{padding:9px 15px;border:1px solid #6fcac5;background:#164748;color:#eff;color-radius:inherit;border-radius:8px;font:inherit;cursor:pointer}
+.ob-keyless-status,.ob-keyless-footer{color:#b5c9de;font-size:.78rem}
+.ob-keyless-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px;margin-top:14px}
+.ob-keyless-card{min-width:0;padding:14px;border:1px solid rgba(146,180,217,.23);border-radius:12px;background:rgba(22,36,65,.82)}
+.ob-keyless-cardtop{display:flex;align-items:flex-start;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.ob-keyless-card h3{font-size:1rem;margin:0;color:#f4f9ff}
+.ob-keyless-badge{font-size:.67rem;border-radius:12px;padding:4px 7px;background:#38405a;color:#d4def1}
+.ob-keyless-badge.good{background:#164f48;color:#a9f4df}
+.ob-keyless-name,.ob-keyless-meta{font-size:.81rem;line-height:1.5;color:#b9cee5}
+.ob-keyless-value{display:inline-block;max-width:100%;overflow-wrap:anywhere;font-size:1.12rem;color:#fff;margin-right:7px;font-variant-numeric:tabular-nums}
+.ob-keyless-unit{font-size:.7rem;color:#94b6cb}
+.ob-keyless-docs{font-size:.75rem;color:#94e2da;text-decoration:underline}
+@media(max-width:700px){.ob-keyless-context{margin:16px 10px;padding:15px}}
