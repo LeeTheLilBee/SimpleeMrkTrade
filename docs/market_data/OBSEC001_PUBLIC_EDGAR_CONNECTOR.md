@@ -8,9 +8,10 @@ EDGAR filer API. Source documentation:
 https://www.sec.gov/search-filings/edgar-application-programming-interfaces
 and fair access: https://www.sec.gov/about/developer-resources .
 The SEC's published aggregate maximum is 10 requests/second per user; this
-implementation serializes at **at most 2 requests/sec per process**. Multiple
-instances sharing an outbound identity MUST use an independent distributed
-throttle before enablement. It requests at most 3 official JSON documents per
+implementation serializes at **at most 2 requests/sec per process**. When
+the active collector topology cannot be bounded to the explicitly reviewed two
+single-worker owner services below, independent aggregate throttling is
+mandatory before enabling another instance or shared-identity SEC collector. It requests at most 3 official JSON documents per
 symbol investigation, never follows redirects, never takes a URL from a user,
 does not scrape HTML and does not persist the received raw data.
 
