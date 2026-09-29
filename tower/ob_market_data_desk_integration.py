@@ -65,6 +65,12 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
         owner_authorize=_tower_authorize_data_desk,
         context_service=from_environment(),
     ))
+    from engine.market_intake.official_catalyst_radar import from_environment as catalyst_from_environment
+    from web.ob_official_catalyst_route import create_official_catalyst_blueprint
+    app.register_blueprint(create_official_catalyst_blueprint(
+        owner_authorize=_tower_authorize_data_desk,
+        catalyst_service=catalyst_from_environment(),
+    ))
     from tower.ob_provider_key_desk import register_provider_key_desk
     register_provider_key_desk(app, owner_authorize=_tower_authorize_data_desk)
     from tower.ob_keyed_provider_research import create_keyed_provider_research_blueprint
