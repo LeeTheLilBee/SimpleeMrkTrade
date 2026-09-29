@@ -35,3 +35,33 @@ These flags are backend configuration only, cannot be selected by browser/query,
 Offline tests use wholly synthetic responses and test denied Tower roles, malformed ticker/shape/value/date, individual source review, revoked cache, quota hold, absence of browser secrets, fixed endpoint requests, and eight HTML consumers. They do not establish real deployed successful responses or any live price feed. Production verification requires a genuine authenticated owner GET of /ob/research/keyless.json, inspecting displayed source period/retrieval time and sanitized Render response logs. Render network failure remains HOLD; do not silently manufacture a value.
 
 Provider request allowances may be shared across users/instances. The current per-process cache/budgets are suitable for this one-owner test, not a horizontally scaled production ingestion platform; implement shared quota coordination before wider deployment.
+
+## Soulaana explanation registration (separate source-status lane)
+
+The exact protected keyless snapshot now includes a nested `soulaana_source_register` from
+`engine/market_intake/keyless_soulaana.py`. The shared browser component
+renders a source-awareness/Soulaana explanation on every listed OB consumer
+room, using the same one Tower-authorized snapshot and no separate provider
+requests. The register distinguishes BLS CPI context, Treasury debt context,
+OpenFIGI identifier reference and the **delegated** SEC filing corridor.
+It reports current source states, safe meaning/limitations, and what's missing;
+source errors/revocation recompute to HOLD. It does not pretend a delegated
+SEC corridor fetched a filing.
+
+**Critical boundary:** Soulaana's deterministic source-status projection
+contains no source values, FIGI IDs, issuer/fundamental payloads, provider
+publication periods, private Public account values or provider response text.
+It is NOT an invocation of an LLM, an authorization to send provider data into
+model prompts, or a connection to the trading/decision engines. Each output
+explicitly says `raw_source_values_included=false`,
+`source_content_ai_authorized=false`, `quote_verified=false`,
+`candidate_admitted=false` and `broker_execution_authorized=false`.
+The owner still sees the independently reviewed observations in the source
+cards. An actual per-source content-bearing AI integration requires separately
+reviewed AI/non-display terms, Tower authorization and source/rights rechecking.
+Do not reuse the owner-display flags to infer AI-use rights.
+
+Public's future authenticated stock and option quotes will travel through
+their own reviewed gateway and freshness/entitlement gates. They are not
+inferred from this keyless source register and remain blocked by the unresolved
+Public account discovery issue.

@@ -221,3 +221,71 @@ def test_private_room_consumers_share_one_endpoint_without_faux_live_quotes():
     product=CATALOG["treasury-debt-to-penny"]
     assert product.current_quote_eligible is False
     assert product.instrument=="event" and product.quote_kind=="reference"
+
+
+def test_soulaana_receives_checked_status_register_not_raw_unreviewed_content():
+    svc, transport = service()
+    packet = svc.snapshot(symbol="MSFT")
+    brief = packet["soulaana_source_register"]
+    assert brief["schema"] == "OB_SOULAANA_KEYLESS_STATUS_V1"
+    assert brief["channel"] == "SOULAANA_SOURCE_STATUS_ONLY"
+    assert brief["source_observations_verified"] == 3
+    assert brief["sec_issuer_corridor_delegated"] is True
+    assert [item["source"] for item in brief["source_register"]] == [
+        "sec", "bls", "treasury", "openfigi",
+    ]
+    assert all(item["meaning"] and item["label"] for item in brief["source_register"])
+    for flag in ("raw_source_values_included", "source_content_ai_authorized",
+                 "candidate_admitted", "quote_verified", "broker_execution_authorized"):
+        assert brief[flag] is False
+    # The owner-only cards are source-bound, but Soulaana's status projection
+    # cannot smuggle financial values, FIGIs, ticker IDs or vendor payloads.
+    rendered = json.dumps(brief)
+    for forbidden in ("320.10", "38900000000000.12", "BBG000B9XRY4",
+                      "synthetic", "CUUR0000SA0", "MSFT", "2026-M08"):
+        assert forbidden not in rendered
+    assert len(transport.calls) == 3
+
+
+def test_soulaana_default_off_and_revocation_recompute_from_current_source_state():
+    svc,transport=service()
+    svc.snapshot(symbol="MSFT")
+    svc.enabled=frozenset()
+    packet=svc.snapshot(symbol="MSFT")
+    brief=packet["soulaana_source_register"]
+    assert brief["source_observations_verified"]==0
+    assert {item["state"] for item in brief["source_register"][1:]}=={"REVIEW_HOLD"}
+    assert "no keyless observations" in brief["what_i_see"]
+    assert "320.10" not in json.dumps(brief)
+    assert len(transport.calls)==3
+
+
+def test_soulaana_bridge_rejects_faux_prices_ai_grants_or_injected_source_identity():
+    from engine.market_intake.keyless_soulaana import build_soulaana_source_register
+    svc,_=service()
+    good=svc.snapshot(symbol="MSFT")
+    for changed in (
+        {**good,"prices_attached":True},
+        {**good,"ai_input_approved":True},
+        {**good,"sources":good["sources"][:3]},
+        {**good,"sources":[{**good["sources"][0],"source":"public"}]+good["sources"][1:]},
+        {**good,"sources":[{**good["sources"][0],"ai_use_approved":True}]+good["sources"][1:]},
+        {**good,"sources":[{**good["sources"][0],"state":"SOURCE_BOUND"}]+good["sources"][1:]},
+    ):
+        with pytest.raises(ValueError, match="SOULAANA_KEYLESS_SOURCE_CONTRACT_HOLD"):
+            build_soulaana_source_register(changed)
+
+
+def test_shared_soulaana_panel_consumes_same_tower_snapshot_not_vendor_or_llm_api():
+    js=(ROOT/"web/static/ob/ob_keyless_context.js").read_text()
+    assert 'packet.soulaana_source_register' in js
+    assert '"OB_SOULAANA_KEYLESS_STATUS_V1"' in js
+    assert '"SOULAANA_SOURCE_STATUS_ONLY"' in js
+    assert 'source_content_ai_authorized !== false' in js
+    assert 'raw_source_values_included !== false' in js
+    assert 'renderSoulaana(packet.soulaana_source_register)' in js
+    assert 'soulaana.replaceChildren()' in js
+    assert 'el("span", "", item.meaning)' in js
+    assert "innerHTML" not in js
+    assert "openai.com" not in js.lower()
+    assert "api.public.com" not in js

@@ -19,6 +19,7 @@ from .public_research_sources import (
 )
 from .treasury_public_context import TreasuryPublicClient, TREASURY_DOCS
 from .sec_public_client import SEC_API
+from .keyless_soulaana import build_soulaana_source_register
 
 BLS_DOCS = "https://www.bls.gov/developers/api_signature.htm"
 FIGI_DOCS = "https://www.openfigi.com/api/documentation"
@@ -146,7 +147,7 @@ class KeylessPublicContext:
                 symbol=symbol,
             )]
             rows.extend(self._one(key, symbol, now) for key in ("bls", "treasury", "openfigi"))
-        return {
+        result = {
             "schema": "OB_KEYLESS_PUBLIC_CONTEXT_V1",
             "as_of": now.isoformat(),
             "symbol": symbol,
@@ -160,6 +161,10 @@ class KeylessPublicContext:
             "sec_note": "SEC issuer filings use the existing separate reviewed symbol-research corridor; no filing receipt is claimed here.",
             "public_business_auth_independent": True,
         }
+        # Soulaana sees an independent, tightly limited source-status handoff,
+        # never the provider values or raw text and never a trading signal.
+        result["soulaana_source_register"] = build_soulaana_source_register(result)
+        return result
 
 
 def from_environment() -> KeylessPublicContext:
