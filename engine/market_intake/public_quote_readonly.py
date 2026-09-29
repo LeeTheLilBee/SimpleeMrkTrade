@@ -49,11 +49,13 @@ class PublicReadPolicy:
     option_entitled: bool = False
 
     def permits(self, kinds: set[str]) -> bool:
-        return bool(self.account_scope_reviewed and self.non_display_use_reviewed
-                    and self.owner_display_reviewed and self.marketdata_scope_verified
-                    and all(self.equity_entitled if k == "EQUITY"
-                            else self.option_entitled if k == "OPTION" else False
-                            for k in kinds))
+        return (self.account_scope_reviewed is True
+                and self.non_display_use_reviewed is True
+                and self.owner_display_reviewed is True
+                and self.marketdata_scope_verified is True
+                and all(self.equity_entitled is True if k == "EQUITY"
+                        else self.option_entitled is True if k == "OPTION" else False
+                        for k in kinds))
 
 
 @dataclass(frozen=True)
@@ -117,7 +119,13 @@ def _number(value: object, *, allow_zero: bool = False) -> float:
         raise PublicQuoteHold("PUBLIC_PRICE_INVALID") from None
     if not decimal.is_finite() or (decimal < 0 if allow_zero else decimal <= 0):
         raise PublicQuoteHold("PUBLIC_PRICE_INVALID")
-    return float(decimal)
+    try:
+        numeric = float(decimal)
+    except (ValueError, OverflowError):
+        raise PublicQuoteHold("PUBLIC_PRICE_INVALID") from None
+    if not numeric < float("inf"):
+        raise PublicQuoteHold("PUBLIC_PRICE_INVALID")
+    return numeric
 
 
 def _count(value: object) -> int | None:
