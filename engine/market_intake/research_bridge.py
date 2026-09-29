@@ -62,12 +62,20 @@ def _history_summary(item:dict)->dict:
 def _fundamentals_summary(item:dict, *, soulaana:bool)->dict:
     state=item.get("state","NOT_AVAILABLE")
     if soulaana and item.get("ai_explanation_allowed") is not True:
-        return {"state":"EXPLANATION_RIGHTS_HOLD","reported_concepts":[]}
+        return {"state":"EXPLANATION_RIGHTS_HOLD","reported_concepts":[],
+                "year_end_balance_sheet_comparisons":[]}
     rows=item.get("reported_concepts",[])
     allowed=("concept","value","units","fiscal_end","accepted_at","accession","form","reference")
     safe=[{key:row[key] for key in allowed if key in row} for row in rows[:8]
           if isinstance(row,dict)] if isinstance(rows,list) else []
+    comparisons=item.get("year_end_balance_sheet_comparisons",[])
+    comparison_keys=("concept","unit","earlier_fiscal_end","later_fiscal_end",
+                     "earlier_value","later_value","reported_change_pct",
+                     "earlier_source","later_source","retrospective_only")
+    allowed_comparisons=[{k:r[k] for k in comparison_keys if k in r}
+                         for r in comparisons[:4] if isinstance(r,dict)] if isinstance(comparisons,list) else []
     return {"state":state,"reported_concepts":safe,
+            "year_end_balance_sheet_comparisons":allowed_comparisons,
             "raw_concepts_not_normalized":True,"quote_eligible":False}
 
 
@@ -114,6 +122,7 @@ def project_research(packet:dict, room:str)->dict[str,object]:
         # Market sky gets a bounded spotlight, not a shadow live price board.
         result["history"]["observations"]={}
         result["fundamentals"]["reported_concepts"]=[]
+        result["fundamentals"]["year_end_balance_sheet_comparisons"]=[]
     if room=="soulaana":
         # Never pass history numeric content to an assistant absent AI-use rights.
         # HistoryRights AI permission is represented by explicit record field.
