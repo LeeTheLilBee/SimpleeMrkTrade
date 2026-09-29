@@ -56,7 +56,7 @@ def test_bls_unregistered_v1_source_bound_and_never_price_authority():
             {"year": "2026", "period": "M08", "value": "321.7"},
             {"year": "2026", "period": "M07", "value": "320.1"},
             {"year": "2025", "period": "M12", "value": "310"},
-        ]}]}]
+        ]}]}]}
     opener = FixtureOpener(payload)
     row = PublicReferenceClient(POLICY, opener=opener).bls_v1("CUUR0000SA0")
     assert row.value == "321.7" and row.period == "2026-M08"
@@ -68,7 +68,7 @@ def test_bls_unregistered_v1_source_bound_and_never_price_authority():
 
 
 def test_bls_rejects_unknown_or_malformed_records():
-    opener = FixtureOpener({"status": "REQUEST_SUCCEEDED", "Results": {"series": [
+    opener = FixtureOpener({"status": "REQUEST_SUCCEEDED", "Results": [{"series": [
         {"seriesID": "CUUR0000SA0", "data": [{"year": "2026", "period": "M09", "value": "NaN"}]}]}]})
     with pytest.raises(PublicResearchUnavailable):
         PublicReferenceClient(POLICY, opener=opener).bls_v1("CUUR0000SA0")
