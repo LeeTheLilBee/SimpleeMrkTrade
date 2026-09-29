@@ -508,7 +508,7 @@ def test_bls_official_bulk_recovery_reaches_soulaana_with_real_provenance():
     svc = KeylessPublicContext(
         enabled=frozenset({"bls"}), ai_sources=frozenset({"bls"}),
         reference=PublicReferenceClient(reviewed, opener=official),
-        now=lambda: NOW,
+        now=lambda: datetime.now(timezone.utc),
     )
     packet = svc.snapshot()
     bls = packet["sources"][1]
