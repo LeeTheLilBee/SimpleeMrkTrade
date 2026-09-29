@@ -56,6 +56,9 @@ jobs:
             tests/test_obscan026_040_universal_gateway.py \
             tests/test_obscan041_055_market_data_desk.py \
             tests/test_obintel001_030_symbol_research.py \
+            tests/test_tower_obintel_selective.py \
+            tests/test_tower_ob_feed_corridor_runtime_0928.py \
+            tests/test_tower_ob_web_route_enforcement.py \
             tests/test_tower_ob_market_data_desk_selective.py \
             tests/test_tower_ob_symbol_research_selective.py \
             tests/test_ob_canonical_nav_corridors.py \
@@ -69,6 +72,8 @@ jobs:
             tests/test_market_map_obux034_interaction.py \
             tests/test_ob_symbol_room_obux036_040.py
           node tests/ob_return_handoff_node.cjs
+          node --check web/static/ob/ob_engine_feed_adapter.js
+          node tests/ob_feed_provider_pending_0928.test.cjs
       - name: Verify true hosted source-only state and unmapped corridors
         run: |
           python - <<'PY'
@@ -81,6 +86,9 @@ jobs:
           assert MARKET_DATA_DESK_PATH in PROTECTED_EXACT_OB_ROUTES
           assert MARKET_DATA_DESK_PATH in rules
           assert "POST" not in rules[MARKET_DATA_DESK_PATH].methods
+          feed=app.extensions["_tower_ob_provider_pending_status_registered"]
+          assert feed is True
+          assert app.test_client().get("/ob/engine-feed-snapshot.json").status_code != 200
           assert desk["runtime_provider_attached"] is False
           assert desk["quote_data_attached"] is False
           assert research["provider_attached"] is False
