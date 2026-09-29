@@ -149,6 +149,7 @@ def history_context(series: HistorySeries, *, cutoff: datetime) -> dict[str, obj
         "first_session":bars[0].session_date.isoformat() if bars else None,
         "last_session":bars[-1].session_date.isoformat() if bars else None,
         "history_calendar_completeness":"NOT_VERIFIED",
+        "state":"SOURCE_BOUND_HISTORY" if bars else "INSUFFICIENT_HISTORY",
         "historical_only":True, "ai_explanation_allowed":series.rights.ai_explanation_allowed,
         "retention_allowed":series.rights.retention_allowed, "current_quote_eligible":False,
         "option_quote_eligible":False, "capital_truth":False,
