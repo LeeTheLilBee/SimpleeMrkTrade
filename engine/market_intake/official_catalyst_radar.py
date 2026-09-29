@@ -193,12 +193,12 @@ class OfficialCatalystRadar:
             ref = fact["reference"]
             if source == "federal_register":
                 valid = bool(re.fullmatch(
-                    r"https://www\\.federalregister\\.gov/(?:d/20[0-9]{2}-[0-9]{4,6}|"
+                    r"https://www\.federalregister\.gov/(?:d/20[0-9]{2}-[0-9]{4,6}|"
                     r"documents/20[0-9]{2}/[0-9]{2}/[0-9]{2}/20[0-9]{2}-[0-9]{4,6}/[a-z0-9-]{1,200})",
                     ref))
             elif source == "nws":
                 valid = bool(re.fullmatch(
-                    r"https://(?:api|alerts)\\.weather\\.gov/alerts/[A-Za-z0-9/:._?=%-]{1,220}",
+                    r"https://(?:api|alerts)\.weather\.gov/alerts/[A-Za-z0-9/:._?=%-]{1,220}",
                     ref))
             else:
                 valid = ref == REFERENCES[source]
