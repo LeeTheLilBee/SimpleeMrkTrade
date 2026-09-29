@@ -10,7 +10,7 @@ source observations on protected cards, without promoting them to trading truth.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import re
 
 _ORDER = ("sec", "bls", "treasury", "openfigi")
@@ -170,7 +170,7 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
         except ValueError:
             raise ValueError("SOULAANA_EVIDENCE_TIMESTAMP_HOLD") from None
         if (fetched.tzinfo is None or fetched.utcoffset() is None
-                or fetched > now.replace(microsecond=0) + __import__("datetime").timedelta(minutes=2)):
+                or fetched > now + timedelta(minutes=2)):
             raise ValueError("SOULAANA_EVIDENCE_TIMESTAMP_HOLD")
         period = row.get("period")
         if key == "bls":
