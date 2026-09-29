@@ -532,3 +532,10 @@ if not app.extensions.get(
 # It does not issue Manual Live credentials or activate a mode.
 from tower.obml_monday_owner_readiness import register_obml_monday_readiness
 register_obml_monday_readiness(app)
+
+
+# OBSCAN/TWR-OBDATA-DESK: exact, source-only owner market-data catalog.
+# Existing Tower session/step-up/OB guard remains authoritative. No vendor
+# connection, real-time price, market-data license, browser approval or order.
+from tower.ob_market_data_desk_integration import register_protected_ob_market_data_desk
+register_protected_ob_market_data_desk(app)
