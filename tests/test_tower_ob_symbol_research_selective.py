@@ -140,7 +140,8 @@ def test_synthetic_evidence_reaches_owner_symbol_without_trade_or_price_promotio
     assert "SYNTHETIC_SNAPSHOT_NOT_LIVE" in html
     assert "25 completed sessions" in html
     assert "Not a live quote, signal or permission" in html
-    assert "2500.0" not in html # no silent conversion to market quote
+    assert "Assets · 2500.0 USD" in html # explicitly labeled, source-reported historical financial fact
+    assert "live equity or option price" in html
     assert 'href="/ob/data-desk/connect"' not in html
 
 
