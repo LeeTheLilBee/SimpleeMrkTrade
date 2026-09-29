@@ -251,7 +251,8 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
             connect_enabled=_flag("OB_PUBLIC_OWNER_CONNECT_ENABLED"),
             is_connected=item is not None,
             expires_at=item.expires_at.isoformat() if item else None,
-            quote_permissions=_quote_policy(),
+            equity_ready=_quote_policy().permits({"EQUITY"}),
+            option_ready=_quote_policy().permits({"OPTION"}),
             quote=item.last_quote if item else None,
             notice=session.pop("ob_public_owner_notice", ""),
         ))
