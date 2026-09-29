@@ -286,3 +286,17 @@ def test_hosted_one_shot_never_logs_raw_source_values_or_claims_owner_acceptance
     start = (ROOT / "deploy/hosted_tower/start.sh").read_text()
     assert '${OB_CATALYST_ONE_SHOT_SOURCE_PROBE:-0}' in start
     assert start.index("official_catalyst_one_shot") < start.index('exec "${PYTHON_VALUE}" -m gunicorn')
+
+
+def test_official_products_are_cataloged_reference_only_not_equity_or_option_feed():
+    from engine.market_intake.provider_catalog import CATALOG
+    keys = (
+        "official-federal-register-sec", "official-cftc-tff-futures",
+        "official-eia-weekly-inventory", "official-world-bank-wdi-gdp",
+        "official-nws-georgia-alerts",
+    )
+    for key in keys:
+        product = CATALOG[key]
+        assert product.quote_kind == "reference"
+        assert product.current_quote_eligible is False
+        assert product.instrument == "event"
