@@ -65,6 +65,8 @@
           <a href="/ob/data-desk/connections.json" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open sanitized connection status →</a></div>
       </section>
 
+      <div id="mddConnectionStatus" role="status" aria-live="polite" class="mdd-provider-grid">Reading authorized Tower source status…</div>
+
       <section class="mdd-section" aria-labelledby="mddProvidersTitle">
         <div class="mdd-heading"><div><span class="mdd-eyebrow">CONNECTION CONSTELLATION</span><h2 id="mddProvidersTitle">Provider connections</h2><p>Open a card to see the feed's role, status, and the proof required before use.</p></div>
         <div class="mdd-filter" role="group" aria-label="Filter providers">
@@ -123,6 +125,7 @@
 
   <script id="mddSnapshot" type="application/json">{{ (data_desk_snapshot if data_desk_snapshot is defined else none) | tojson }}</script>
   <script src="{{ url_for('static', filename='ob/ob_market_data_desk.js') }}"></script>
+  <script defer src="/static/ob/ob_connection_truth.js?v=truth001"></script>
   <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
 
   <!-- Keyless research is separate from quote/trade truth and follows Tower's exact read corridor. -->
