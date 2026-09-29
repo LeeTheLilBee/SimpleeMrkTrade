@@ -1,0 +1,111 @@
+name: Tower OB Market Desk & Symbol Research final source acceptance
+
+on:
+  push:
+    branches:
+      - tower-ob-market-research-integration-20260929
+  pull_request:
+    branches:
+      - tower-ob-market-data-desk-selective-20260928
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "engine/market_intake/**"
+      - "engine_v2/research_context_adapter.py"
+      - "engine_v2/symbol_page_integration.py"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_symbol_research_integration.py"
+      - "web/hosted_tower.py"
+      - "web/templates/**"
+      - "web/static/ob/ob_market_data_desk.*"
+      - "web/static/ob/ob_research_context.css"
+      - "tests/test_obintel001_030_symbol_research.py"
+      - "tests/test_tower_ob_symbol_research_selective.py"
+      - ".github/workflows/tower-ob-market-research-final-acceptance.yml"
+permissions:
+  contents: read
+jobs:
+  exact-owner-research-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install hosted runtime/test dependencies
+        run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - name: Compile source-bound engines and exact protected room composition
+        run: |
+          python -m compileall -q engine/market_intake \
+            engine_v2/research_context_adapter.py \
+            engine_v2/symbol_page_integration.py \
+            tower/ob_market_data_desk_integration.py \
+            tower/ob_symbol_research_integration.py \
+            web/ob_market_data_desk_route.py web/hosted_tower.py
+          node --check web/static/ob/ob_market_data_desk.js
+          node --check web/static/ob/ob_nav_shell.js
+      - name: Full source, rights and exact Tower acceptance
+        run: |
+          python -m pytest -q \
+            tests/test_obscan001_025_sovereign_intake.py \
+            tests/test_obscan026_040_universal_gateway.py \
+            tests/test_obscan041_055_market_data_desk.py \
+            tests/test_obintel001_030_symbol_research.py \
+            tests/test_tower_ob_market_data_desk_selective.py \
+            tests/test_tower_ob_symbol_research_selective.py \
+            tests/test_ob_canonical_nav_corridors.py \
+            tower/test_tower_ob_return_handoff.py
+      - name: Previously shipped protected room visual regressions
+        run: |
+          python -m pytest -q \
+            tests/test_market_map_obux031_surface.py \
+            tests/test_market_map_obux032_live_truth.py \
+            tests/test_market_map_obux033_soulaana.py \
+            tests/test_market_map_obux034_interaction.py \
+            tests/test_ob_symbol_room_obux036_040.py
+          node tests/ob_return_handoff_node.cjs
+      - name: Verify true hosted source-only state and unmapped corridors
+        run: |
+          python - <<'PY'
+          from web.hosted_tower import app
+          from tower.ob_market_data_desk_integration import MARKET_DATA_DESK_PATH
+          from tower.ob_web_route_enforcement import PROTECTED_EXACT_OB_ROUTES
+          desk=app.extensions["tower_ob_market_data_desk_source_only_v1"]
+          research=app.extensions["tower_ob_symbol_research_context_v1"]
+          rules={x.rule:x for x in app.url_map.iter_rules()}
+          assert MARKET_DATA_DESK_PATH in PROTECTED_EXACT_OB_ROUTES
+          assert MARKET_DATA_DESK_PATH in rules
+          assert "POST" not in rules[MARKET_DATA_DESK_PATH].methods
+          assert desk["runtime_provider_attached"] is False
+          assert desk["quote_data_attached"] is False
+          assert research["provider_attached"] is False
+          assert research["runtime_market_feed_attached"] is False
+          assert research["trading_authorized"] is False
+          assert app.test_client().get(MARKET_DATA_DESK_PATH).status_code != 200
+          assert app.test_client().get("/ob/data-desk/connect").status_code == 403
+          assert app.test_client().get("/trade-center").status_code == 403
+          assert app.test_client().get("/ob/research/approve").status_code == 403
+          print("Tower hosted: source only, no real feed, no browser approval, no unapproved execution.")
+          PY
+      - name: Reject independent data scraping or broker network in new research
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          names=("historical_research.py","fundamental_research.py","symbol_research.py",
+                 "research_bridge.py","research_memory.py")
+          source="\n".join((Path("engine/market_intake")/name).read_text() for name in names)
+          source+=Path("tower/ob_symbol_research_integration.py").read_text()
+          js=Path("web/static/ob/ob_market_data_desk.js").read_text()
+          bad=("import yfinance","import requests","import aiohttp",
+               "from urllib.request","from ib_insync","requests.get(",
+               "urllib.request.urlopen(","submit_order(","place_order(")
+          assert not [x for x in bad if x in source]
+          assert not [x for x in ("fetch(","WebSocket(","localStorage")
+                      if x in js]
+          print("Synthetic tests only; no vendor/broker calls, no trading authority.")
+          PY

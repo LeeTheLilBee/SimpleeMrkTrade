@@ -27,6 +27,7 @@
     href="{{ url_for('static', filename='ob/ob_market_map.css') }}?v=obux096110"
   />
   <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
+  <link rel="stylesheet" href="/static/ob/ob_research_context.css?v=obintel001030" />
 </head>
 
 <body
@@ -185,6 +186,10 @@
 
       </header>
 
+
+      {% if ob_research_context is defined and ob_research_context.get('room') == 'market_map' %}
+      {% include 'ob_research_context_partial.html' %}
+      {% endif %}
 
       <!-- OBUX032_LIVE_CANONICAL_FEED -->
       <section

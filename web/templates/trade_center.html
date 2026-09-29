@@ -19,6 +19,7 @@
   href="{{ url_for('static', filename='ob/ob_trade_center.css') }}"
 />
   <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
+  <link rel="stylesheet" href="/static/ob/ob_research_context.css?v=obintel001030" />
 </head>
 
 <body
@@ -81,6 +82,9 @@
     </div>
   </header>
 
+  {% if ob_research_context is defined and ob_research_context.get('room') == 'trade_center' %}
+  {% include 'ob_research_context_partial.html' %}
+  {% endif %}
 
   <section class="obtc-layout">
 
