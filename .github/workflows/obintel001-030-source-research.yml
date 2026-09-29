@@ -10,6 +10,13 @@ on:
     paths:
       - 'engine/market_intake/**'
       - 'engine_v2/symbol_page_integration.py'
+      - 'engine_v2/research_context_adapter.py'
+      - 'web/templates/ob_research_context_partial.html'
+      - 'web/templates/symbol_page.html'
+      - 'web/templates/market_map.html'
+      - 'web/templates/trade_center.html'
+      - 'web/templates/review_center.html'
+      - 'web/static/ob/ob_research_context.css'
       - 'tests/test_obintel001_030_symbol_research.py'
       - 'docs/market_data/OBINTEL001_030_SOURCE_RESEARCH.md'
       - '.github/workflows/obintel001-030-source-research.yml'
@@ -29,7 +36,7 @@ jobs:
       - name: Install test runner only
         run: python -m pip install pytest 'Flask>=3.0,<4'
       - name: Compile source research modules
-        run: python -m compileall -q engine/market_intake engine_v2/symbol_page_integration.py
+        run: python -m compileall -q engine/market_intake engine_v2/symbol_page_integration.py engine_v2/research_context_adapter.py
       - name: Historical and source-rights negative tests
         run: |
           python -m pytest -q \
