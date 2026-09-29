@@ -1,0 +1,63 @@
+name: OBSCAN041-055 Market Data Desk source-only
+on:
+  push:
+    branches:
+      - obscan041-055-market-data-desk
+  pull_request:
+    branches:
+      - obscan026-040-universal-provider-gateway
+      - main
+    paths:
+      - 'engine/market_intake/**'
+      - 'web/ob_market_data_desk_route.py'
+      - 'web/templates/market_data_desk.html'
+      - 'web/static/ob/ob_market_data_desk.*'
+      - 'web/static/ob/ob_nav_shell.js'
+      - 'tests/test_obscan*.py'
+      - 'docs/market_data/**'
+      - '.github/workflows/obscan041-055-market-data-desk.yml'
+permissions:
+  contents: read
+jobs:
+  offline-owner-desk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install isolated route and test requirements
+        run: python -m pip install 'Flask>=3.0,<4' pytest
+      - name: Compile source-only modules
+        run: python -m compileall -q engine/market_intake web/ob_market_data_desk_route.py
+      - name: Check desk and shared navigation syntax
+        run: |
+          node --check web/static/ob/ob_market_data_desk.js
+          node --check web/static/ob/ob_nav_shell.js
+      - name: Run entitlement, provider gateway, process and protected route tests
+        run: |
+          python -m pytest -q \
+            tests/test_obscan001_025_sovereign_intake.py \
+            tests/test_obscan026_040_universal_gateway.py \
+            tests/test_obscan041_055_market_data_desk.py \
+            tests/test_obscan_public_edgar_fetch.py
+      - name: Assert no live network, browser approval, paid provider or order transport
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          source = "\n".join(p.read_text() for p in Path("engine/market_intake").glob("*.py"))
+          source += Path("web/ob_market_data_desk_route.py").read_text()
+          js = Path("web/static/ob/ob_market_data_desk.js").read_text()
+          forbidden = ["import requests", "import yfinance", "import aiohttp",
+                       "from urllib.request", "from ib_insync", "place_order(",
+                       "submit_order(", "requests.get(", "urllib.request.urlopen("]
+          violations = [value for value in forbidden if value in source]
+          violations += [value for value in ("fetch(", "WebSocket(", "localStorage", "innerHTML")
+                         if value in js]
+          if violations:
+              raise SystemExit(f"Source-only boundary violation: {violations}")
+          print("Read-only market desk / no network / no order path boundary intact")
+          PY
