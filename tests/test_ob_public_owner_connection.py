@@ -27,7 +27,7 @@ def setup(monkeypatch):
     app.register_blueprint(create_public_owner_blueprint(
         owner_authorize=lambda: state["authorized"], opener=recorder, store=store))
     client = app.test_client()
-    with client.session_transaction() as s:
+    with client.session_transaction(base_url="https://tower.test") as s:
         s["tower_session_id"] = "tower_session_" + "x"*30
     return client, state, store, recorder
 
@@ -67,7 +67,7 @@ def test_connection_key_only_in_post_not_cookie_disk_or_html(setup):
     assert "Authenticated" in html
     assert "One brokerage account" in html
     assert SECRET not in html and TOKEN not in html and ACCOUNT_ID not in html
-    with client.session_transaction() as sess:
+    with client.session_transaction(base_url="https://tower.test") as sess:
         assert SECRET not in str(dict(sess))
         assert TOKEN not in str(dict(sess))
         assert ACCOUNT_ID not in str(dict(sess))
