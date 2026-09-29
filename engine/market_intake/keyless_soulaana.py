@@ -1,0 +1,113 @@
+"""Soulaana's bounded explanation/status handoff for keyless public research.
+
+This is a deterministic, non-LLM source-register projection. It deliberately
+does NOT transmit BLS/Treasury values, FIGIs, issuer filings, source-period
+payloads, source body text or retrieved documents into Soulaana's AI/decision
+engines. Source-specific AI-use rights must be reviewed before a separate
+content-bearing integration may be installed. The owner can separately see
+source observations on protected cards, without promoting them to trading truth.
+"""
+from __future__ import annotations
+
+from collections.abc import Mapping
+
+_ORDER = ("sec", "bls", "treasury", "openfigi")
+_STATE = frozenset({
+    "SOURCE_BOUND", "DELEGATED_ISSUER_RESEARCH", "REVIEW_HOLD",
+    "SYMBOL_REQUIRED", "SOURCE_HOLD", "LOCAL_QUOTA_HOLD",
+    "NOT_FOUND", "AMBIGUOUS_HOLD",
+})
+_READY = {
+    "sec": ("SEC EDGAR", "Its separate issuer-research corridor is configured. No filing was fetched by this keyless status read."),
+    "bls": ("BLS", "A dated CPI index reference was retrieved. It is neither an inflation percentage nor a current securities quote."),
+    "treasury": ("US Treasury", "A record-dated public debt reference was retrieved. It is not a Treasury yield or a market price."),
+    "openfigi": ("OpenFIGI", "A ticker-to-identifier reference match was found. It does not independently establish issuer identity or tradability."),
+}
+_GAP = {
+    "REVIEW_HOLD": "Owner use/display source review is not enabled. No observation is available to this corridor.",
+    "SYMBOL_REQUIRED": "An exact ticker is needed before an identifier lookup can be performed.",
+    "SOURCE_HOLD": "The source result was unavailable or failed validation; do not use an old or invented substitute.",
+    "LOCAL_QUOTA_HOLD": "The local source request budget is holding additional lookups.",
+    "NOT_FOUND": "The source did not return a matching identifier.",
+    "AMBIGUOUS_HOLD": "Conflicting or multiple identifier results prevent a unique match.",
+}
+
+
+def build_soulaana_source_register(packet: Mapping) -> dict:
+    """Only receive already-vetted metadata from OB_KEYLESS_PUBLIC_CONTEXT_V1."""
+    if (not isinstance(packet, dict)
+            or packet.get("schema") != "OB_KEYLESS_PUBLIC_CONTEXT_V1"
+            or packet.get("source_only") is not True
+            or packet.get("context_only") is not True
+            or packet.get("prices_attached") is not False
+            or packet.get("options_chain_attached") is not False
+            or packet.get("live_quote_verified") is not False
+            or packet.get("candidate_admitted") is not False
+            or packet.get("broker_execution_authorized") is not False
+            or packet.get("ai_input_approved") is not False):
+        raise ValueError("SOULAANA_KEYLESS_SOURCE_CONTRACT_HOLD")
+    rows = packet.get("sources")
+    if not isinstance(rows, list) or len(rows) != len(_ORDER):
+        raise ValueError("SOULAANA_KEYLESS_SOURCE_CONTRACT_HOLD")
+    status = []
+    for key, row in zip(_ORDER, rows):
+        if (not isinstance(row, dict) or row.get("source") != key
+                or row.get("state") not in _STATE
+                or row.get("quote_eligible") is not False
+                or row.get("trading_authorized") is not False
+                or row.get("ai_use_approved") is not False):
+            raise ValueError("SOULAANA_KEYLESS_SOURCE_CONTRACT_HOLD")
+        state = row["state"]
+        label, ready = _READY[key]
+        if state == "DELEGATED_ISSUER_RESEARCH" and key != "sec":
+            raise ValueError("SOULAANA_KEYLESS_SOURCE_CONTRACT_HOLD")
+        if key == "sec" and state not in {"DELEGATED_ISSUER_RESEARCH", "REVIEW_HOLD"}:
+            raise ValueError("SOULAANA_KEYLESS_SOURCE_CONTRACT_HOLD")
+        if state in {"SOURCE_BOUND", "DELEGATED_ISSUER_RESEARCH"}:
+            note = ready
+        else:
+            note = _GAP.get(state, "This source cannot be treated as a verified observation.")
+        status.append({
+            "source": key,
+            "label": label,
+            "state": state,
+            "meaning": note,
+        })
+    bound = sum(s["state"] == "SOURCE_BOUND" for s in status)
+    delegated = any(s["state"] == "DELEGATED_ISSUER_RESEARCH" for s in status)
+    if bound == 0:
+        what_i_see = "I can see the public-source map, but no keyless observations are verified in this read."
+    else:
+        what_i_see = (
+            f"I can see {bound} independently labeled public reference "
+            + ("source" if bound == 1 else "sources")
+            + "."
+        )
+    what_it_means = (
+        "These are dated economic/fiscal and identifier references. "
+        "They can explain the research landscape, not what a stock or option costs right now."
+    )
+    if delegated:
+        what_it_means += " SEC filings remain in the separately reviewed issuer corridor."
+    return {
+        "schema": "OB_SOULAANA_KEYLESS_STATUS_V1",
+        "channel": "SOULAANA_SOURCE_STATUS_ONLY",
+        "what_i_see": what_i_see,
+        "what_it_means": what_it_means,
+        "what_is_missing": (
+            "Public's authenticated account and licensed price feed are independent. "
+            "Source-content AI rights and an actual current equity/options quote are not established here."
+        ),
+        "next_step": (
+            "Use the source cards to inspect original period and reference. "
+            "Keep unresolved or ambiguous items on HOLD."
+        ),
+        "source_register": status,
+        "source_observations_verified": bound,
+        "sec_issuer_corridor_delegated": delegated,
+        "raw_source_values_included": False,
+        "source_content_ai_authorized": False,
+        "candidate_admitted": False,
+        "quote_verified": False,
+        "broker_execution_authorized": False,
+    }
