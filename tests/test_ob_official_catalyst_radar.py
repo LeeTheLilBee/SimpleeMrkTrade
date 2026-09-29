@@ -300,3 +300,67 @@ def test_official_products_are_cataloged_reference_only_not_equity_or_option_fee
         assert product.quote_kind == "reference"
         assert product.current_quote_eligible is False
         assert product.instrument == "event"
+
+
+def test_malformed_owner_fact_does_not_publish_or_poison_independent_sources():
+    radar, transport = service(key="SYNTHETICKEY1234567")
+    radar.client.federal_register = lambda: {
+        "state": "SOURCE_BOUND",
+        "facts": [{"title": "Example", "period": "2025-08-19",
+                   "reference": "https://evil.invalid/d/2025-12345"}],
+    }
+    packet = radar.snapshot()
+    rows = {item["source"]: item for item in packet["sources"]}
+    assert rows["federal_register"]["state"] == "SOURCE_HOLD"
+    assert rows["federal_register"]["facts"] == []
+    assert rows["federal_register"]["ai_use_approved"] is False
+    assert rows["cftc"]["state"] == "SOURCE_BOUND"
+    assert rows["nws"]["state"] == "SOURCE_BOUND"
+    assert "federal_register" not in [x["source"] for x in packet["soulaana"]["observations"]]
+    assert "https://evil.invalid/" not in json.dumps(packet)
+
+
+def test_failed_source_specific_translation_holds_only_that_source_and_purges_cache():
+    radar, _ = service(key="SYNTHETICKEY1234567")
+    # This breaks only the required CFTC Soulaana contract, not the generic
+    # owner fact fields. It must never bubble into a whole-page 503.
+    radar.client.cftc = lambda: {
+        "state": "SOURCE_BOUND",
+        "facts": [{"title": "SYNTHETIC FUTURES", "period": "2025-08-19",
+                   "reference": REFERENCES["cftc"], "leveraged_long": "100",
+                   "leveraged_short": "40"}],
+    }
+    packet = radar.snapshot()
+    rows = {item["source"]: item for item in packet["sources"]}
+    assert rows["cftc"]["state"] == "SOURCE_HOLD"
+    assert rows["cftc"]["facts"] == []
+    assert "cftc" not in [x["source"] for x in packet["soulaana"]["observations"]]
+    assert len(packet["soulaana"]["observations"]) == 4
+    assert radar._cache["cftc"][1]["state"] == "SOURCE_HOLD"
+
+
+def test_unexpected_one_provider_exception_is_sanitized_and_other_sources_survive():
+    radar, _ = service(key="SYNTHETICKEY1234567")
+    def failing_eia(_key):
+        raise RuntimeError("private-provider-token-must-not-escape")
+    radar.client.eia = failing_eia
+    packet = radar.snapshot()
+    rows = {item["source"]: item for item in packet["sources"]}
+    assert rows["eia"]["state"] == "SOURCE_HOLD"
+    assert rows["eia"]["facts"] == []
+    assert rows["federal_register"]["state"] == "SOURCE_BOUND"
+    assert "private-provider-token-must-not-escape" not in json.dumps(packet)
+    assert packet["broker_execution_authorized"] is False
+
+
+def test_inconsistent_no_publication_with_facts_is_never_accepted():
+    radar, _ = service(enabled=frozenset({"nws"}), ai=frozenset({"nws"}))
+    radar.client.nws = lambda: {
+        "state": "NO_PUBLICATION",
+        "facts": [{"title": "False alert", "period": "2025-08-19",
+                   "reference": "https://api.weather.gov/alerts/urn:oid:false"}],
+    }
+    packet = radar.snapshot()
+    assert packet["sources"][4]["state"] == "SOURCE_HOLD"
+    assert packet["sources"][4]["facts"] == []
+    assert packet["soulaana"]["observations"] == []
