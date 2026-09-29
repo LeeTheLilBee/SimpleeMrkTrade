@@ -51,12 +51,12 @@ def test_no_network_without_explicit_rights_review():
 
 
 def test_bls_unregistered_v1_source_bound_and_never_price_authority():
-    payload = {"status": "REQUEST_SUCCEEDED", "Results": {"series": [
+    payload = {"status": "REQUEST_SUCCEEDED", "Results": [{"series": [
         {"seriesID": "CUUR0000SA0", "data": [
             {"year": "2026", "period": "M08", "value": "321.7"},
             {"year": "2026", "period": "M07", "value": "320.1"},
             {"year": "2025", "period": "M12", "value": "310"},
-        ]}]}}
+        ]}]}]
     opener = FixtureOpener(payload)
     row = PublicReferenceClient(POLICY, opener=opener).bls_v1("CUUR0000SA0")
     assert row.value == "321.7" and row.period == "2026-M08"
@@ -69,7 +69,7 @@ def test_bls_unregistered_v1_source_bound_and_never_price_authority():
 
 def test_bls_rejects_unknown_or_malformed_records():
     opener = FixtureOpener({"status": "REQUEST_SUCCEEDED", "Results": {"series": [
-        {"seriesID": "CUUR0000SA0", "data": [{"year": "2026", "period": "M09", "value": "NaN"}]}]}})
+        {"seriesID": "CUUR0000SA0", "data": [{"year": "2026", "period": "M09", "value": "NaN"}]}]}]})
     with pytest.raises(PublicResearchUnavailable):
         PublicReferenceClient(POLICY, opener=opener).bls_v1("CUUR0000SA0")
     with pytest.raises(PublicResearchUnavailable):
@@ -155,9 +155,9 @@ def test_one_provider_review_never_inherits_use_or_ai_permission_for_another():
     with pytest.raises(PublicResearchUnavailable, match="OWNER_SOURCE_REVIEW_REQUIRED"):
         client.openfigi_ticker("MSFT")
     assert not opener.requests
-    bls_opener = FixtureOpener({"status":"REQUEST_SUCCEEDED", "Results":{"series":[{
+    bls_opener = FixtureOpener({"status":"REQUEST_SUCCEEDED", "Results":[{"series":[{
         "seriesID":"LNS14000000","data":[{"year":"2026","period":"M08","value":"4.2"}]
-    }]}})
+    }]}]})
     result = PublicReferenceClient(bls_only, opener=bls_opener).bls_v1("LNS14000000")
     assert result.ai_use_approved is True
     review_without_ai = OwnerResearchPolicy(
