@@ -126,6 +126,14 @@ _REFERENCES = {
     "treasury": "https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/",
     "openfigi": "https://www.openfigi.com/api/documentation",
 }
+# Only the fixed official BLS API signature and its same-agency bulk file
+# may accompany CPI evidence; a third-party link cannot impersonate BLS.
+_BLS_BULK_REFERENCE = "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems"
+_ALLOWED_REFERENCES = {
+    "bls": frozenset({_REFERENCES["bls"], _BLS_BULK_REFERENCE}),
+    "treasury": frozenset({_REFERENCES["treasury"]}),
+    "openfigi": frozenset({_REFERENCES["openfigi"]}),
+}
 _NUMBER = re.compile(r"^\d{1,43}(?:\.\d{1,9})?$")
 _BLS_PERIOD = re.compile(r"^20\d{2}-M(?:0[1-9]|1[0-2])$")
 _FIGI = re.compile(r"^BBG[A-Z0-9]{9}$")
@@ -161,7 +169,7 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
                          "content_readable": permitted})
         if not permitted:
             continue
-        if row.get("source_reference") != _REFERENCES[key]:
+        if row.get("source_reference") not in _ALLOWED_REFERENCES[key]:
             raise ValueError("SOULAANA_EVIDENCE_REFERENCE_HOLD")
         value = row.get("value")
         fetched_raw = row.get("retrieved_at")
@@ -237,7 +245,7 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
                 )
                 comparisons.append({
                     "source": key,
-                    "source_reference": _REFERENCES[key],
+                    "source_reference": row["source_reference"],
                     "earlier_period": prior_period,
                     "later_period": period,
                     "earlier_value": prior_value,
