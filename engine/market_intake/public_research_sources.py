@@ -194,7 +194,7 @@ class PublicReferenceClient:
                 if len(fields) < 4:
                     raise PublicResearchUnavailable("BLS_BULK_SHAPE_HOLD")
                 year, month, value = fields[1:4]
-                if not re.fullmatch(r"20\d{2}", year) or not re.fullmatch(r"M(?:0[1-9]|1[0-2])", month):
+                if not re.fullmatch(r"(?:19|20)\d{2}", year) or not re.fullmatch(r"M(?:0[1-9]|1[0-2])", month):
                     # Do not treat the separately published annual average M13
                     # or semiannual S## as a monthly CPI point.
                     if month == "M13" or re.fullmatch(r"S0[1-3]", month):
