@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API Key Connections · OB Market Data Desk</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_provider_key_desk.css') }}">
+</head>
+<body>
+<main class="shell">
+  <nav><a href="/ob/data-desk">← Market Data Desk</a><a href="/tower/return/observatory">Tower</a></nav>
+  <div class="eyebrow">THE OBSERVATORY · OWNER-ONLY CONNECTIONS</div>
+  <h1>API Key <em>Desk</em></h1>
+  <p class="intro">One protected place for research-provider credentials. Finnhub and Alpha Vantage are the first supported connectors. More providers can be added after their exact authentication contracts are reviewed; never paste an unknown provider URL here.</p>
+  <div class="notice caution">These are 30-minute temporary backend sessions, <strong>not durable key storage</strong>. Server restart or Tower logout discards them. Verification checks one harmless research endpoint only; it does not prove real-time stock/options access, grant commercial or AI rights, or activate trading.</div>
+  {% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
+  {% if not enabled %}<div class="notice caution">This page is staged but key submission is disabled. Tower must explicitly enable OB_PROVIDER_KEY_DESK_ENABLED=1 after security and deployment review.</div>{% endif %}
+  <section class="grid" aria-label="Research API providers">
+    {% for p in providers %}
+    <article class="card">
+      <div class="card-head"><div><div class="eyebrow">RESEARCH SOURCE</div><h2>{{ p.name }}</h2></div>
+        <span class="status">{{ p.probe.replace('_',' ') }}</span></div>
+      <p>{{ p.purpose }}</p>
+      <p class="fine">{% if p.present %}A key is temporarily held by the server until {{ p.expires_at }}.{% else %}No key is stored for this Tower session.{% endif %}</p>
+      <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="provider" value="{{ p.id }}">
+        <input type="hidden" name="operation" value="save">
+        <label for="key-{{ p.id }}">{{ p.name }} API key</label>
+        <input id="key-{{ p.id }}" name="secret" type="password" inputmode="text"
+               autocomplete="new-password" autocapitalize="off" spellcheck="false"
+               minlength="8" maxlength="4096" required placeholder="Paste key into this private Tower page only"
+               {% if not enabled %}disabled{% endif %}>
+        <button type="submit" {% if not enabled %}disabled{% endif %}>Save temporarily</button>
+      </form>
+      <div class="actions">
+        <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <input type="hidden" name="provider" value="{{ p.id }}">
+          <input type="hidden" name="operation" value="verify">
+          <button class="secondary" type="submit" {% if not enabled or not p.present %}disabled{% endif %}>Test read-only access</button>
+        </form>
+        <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <input type="hidden" name="provider" value="{{ p.id }}">
+          <input type="hidden" name="operation" value="forget">
+          <button class="secondary" type="submit" {% if not enabled or not p.present %}disabled{% endif %}>Forget key</button>
+        </form>
+      </div>
+      <a href="{{ p.docs }}" rel="noopener noreferrer" target="_blank">Official provider documentation ↗</a>
+    </article>
+    {% endfor %}
+    <article class="card muted">
+      <div class="eyebrow">EXISTING BROKERAGE CONNECTOR</div>
+      <h2>Public</h2><p>Public uses its own separate OAuth/account-selection procedure. Do not paste its credential into either research-provider field.</p>
+      <a href="/ob/data-desk/public">Open protected Public connection →</a>
+    </article>
+    <article class="card muted">
+      <div class="eyebrow">NO KEY NECESSARY</div>
+      <h2>SEC EDGAR</h2><p>Company filings and public financial facts use a declared server-side contact identity, not an API key. The EDGAR build remains separate.</p>
+    </article>
+  </section>
+  <footer>No values are placed in HTML, cookies, the URL, a repository or a persistent Tower registry. Provider terms and independent gateway validation still apply. No broker order or capital authority.</footer>
+</main>
+</body>
+</html>
