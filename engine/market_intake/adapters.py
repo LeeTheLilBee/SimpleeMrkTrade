@@ -46,6 +46,8 @@ class FeedAdapter:
             raise ValueError("explicit feed label required")
         if not self.source.reviewed_for_scan():
             raise ValueError("no unreviewed source may be installed as a live research adapter")
+        if self.instrument not in self.source.entitled_instruments:
+            raise ValueError("instrument-specific entitlement is required for adapter installation")
         if self.feed_label == "realtime" and not self.source.real_time_entitled:
             raise ValueError("unknown or delayed entitlement cannot declare live ingress")
 
