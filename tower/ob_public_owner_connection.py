@@ -243,7 +243,11 @@ def _discover_single_brokerage(token: str, opener) -> str:
 def _headers(response):
     response.headers["Cache-Control"] = "no-store, private"
     response.headers["Pragma"] = "no-cache"
-    response.headers["Referrer-Policy"] = "no-referrer"
+    # Important: no-referrer causes browsers to serialize Origin: null on
+    # same-origin HTML form POSTs. Our exact HTTPS Origin gate must see the
+    # real source, not a privacy-policy-induced opaque value. same-origin
+    # sends referrer only within this Tower origin and never cross-site.
+    response.headers["Referrer-Policy"] = "same-origin"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Content-Security-Policy"] = ("default-src 'none'; style-src 'self'; "

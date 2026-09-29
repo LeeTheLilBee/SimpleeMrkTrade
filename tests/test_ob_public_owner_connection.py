@@ -76,6 +76,8 @@ def test_connection_key_only_in_post_not_cookie_disk_or_html(setup):
     assert not hasattr(record,"secret")
     assert len(rec.calls)==2
     assert response.headers["Cache-Control"].startswith("no-store")
+    assert response.headers["Referrer-Policy"]=="same-origin"
+    assert page(client).headers["Referrer-Policy"]=="same-origin"
     assert page(client).headers["X-Frame-Options"]=="DENY"
 
 def test_bad_csrf_bad_origin_and_cross_site_never_read_secret(setup):
@@ -194,6 +196,7 @@ def test_bad_host_config_and_opaque_origin_are_diagnostic_and_fail_closed(setup,
     opaque=post(client,token,origin="null")
     assert opaque.status_code==403
     assert "ORIGIN_OPAQUE_HOLD" in opaque.get_data(as_text=True)
+    assert opaque.headers["Referrer-Policy"]=="same-origin"
     assert SECRET not in opaque.get_data(as_text=True)
     assert not rec.calls
 
@@ -222,3 +225,23 @@ def test_owner_and_disabled_feature_form_holds_are_specific_without_secret(setup
     disabled=post(client,key)
     assert disabled.status_code==403 and "CONNECT_DISABLED_HOLD" in disabled.get_data(as_text=True)
     assert not rec.calls
+
+
+def test_html_form_referrer_policy_preserves_origin_and_is_cross_site_private(setup):
+    client,state,store,rec=setup; state["authorized"]=True
+    first=page(client)
+    assert first.status_code==200
+    assert first.headers["Referrer-Policy"]=="same-origin"
+    # Prior no-referrer page policy made ordinary browser HTML form POSTs send
+    # Origin:null, which the strict Origin checker correctly denied. Preserve
+    # that checker; fix the page's initiating policy, including error screens.
+    token=csrf(first.get_data(as_text=True))
+    malformed=post(client,token,origin="null")
+    assert malformed.status_code==403
+    assert malformed.headers["Referrer-Policy"]=="same-origin"
+    assert "ORIGIN_OPAQUE_HOLD" in malformed.get_data(as_text=True)
+    assert not rec.calls
+    accepted=post(client,token,origin="https://tower.test")
+    assert accepted.status_code==303
+    assert accepted.headers["Referrer-Policy"]=="same-origin"
+    assert len(rec.calls)==2
