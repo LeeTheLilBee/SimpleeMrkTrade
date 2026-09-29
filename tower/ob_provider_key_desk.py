@@ -290,6 +290,10 @@ def register_provider_key_desk(app: Flask, *, owner_authorize):
     # and cannot authorize use of a key by trading or data gateway components.
     # Server-only projection closure exposes safe status, NEVER the stored key.
     app.extensions["ob_provider_key_status_reader_v1"] = store.status
+    # Trusted server-only consumer for normalized research. This closure is not
+    # rendered, serialized, logged or exposed by a route; callers still need
+    # current Tower owner/session authorization and independent source rights.
+    app.extensions["ob_provider_key_secret_reader_v1"] = store.get
     app.extensions["ob_provider_key_desk_v1"] = {
         "path": PATH, "volatile_only": True, "secrets_in_browser": False,
         "api_authority": False, "live_feed_installed": False,
