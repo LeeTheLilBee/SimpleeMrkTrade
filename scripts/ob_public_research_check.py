@@ -30,9 +30,23 @@ def main() -> int:
     )):
         print("HOLD: backend source use/owner display not enabled and reviewed.")
         return 2
+    # Each provider must be reviewed separately, even when global opt-in is on.
+    # No default approval or inference from another provider's consent.
+    provider_prefix = "OB_PUBLIC_RESEARCH_" + args.source.upper()
+    if os.environ.get(provider_prefix + "_USE_REVIEWED") != "1" or os.environ.get(
+        provider_prefix + "_OWNER_DISPLAY_REVIEWED"
+    ) != "1":
+        print("HOLD: selected provider use/display rights are not independently reviewed.")
+        return 2
+    ai_reviewed = (
+        os.environ.get("OB_PUBLIC_RESEARCH_AI_USE_REVIEWED") == "1"
+        and os.environ.get(provider_prefix + "_AI_USE_REVIEWED") == "1"
+    )
     policy = OwnerResearchPolicy(
         source_use_reviewed=True, owner_display_reviewed=True,
-        ai_use_reviewed=os.environ.get("OB_PUBLIC_RESEARCH_AI_USE_REVIEWED") == "1",
+        ai_use_reviewed=ai_reviewed,
+        reviewed_sources=frozenset({args.source}),
+        ai_reviewed_sources=frozenset({args.source}) if ai_reviewed else frozenset(),
     )
     client = PublicReferenceClient(policy)
     try:
