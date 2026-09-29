@@ -17,7 +17,7 @@ Approved exchange directory + SEC identifiers (metadata only)
 The approved directory + filing events can produce EVENT_RESEARCH_ONLY without a price. They never prove a stock moved or is optionable. Two vendors sourcing one SIP are one upstream family, not two independent confirmations.
 
 ## Source modules delivered
-- engine/market_intake/contracts.py: rights registry defaults to deny, explicitly reviewed non-display versus owner/invitee display and redistribution, event/receipt time, quote freshness, market session, equity and OCC series validation; no execution authority.
+- engine/market_intake/contracts.py: rights registry defaults to deny, explicitly reviewed equity versus option versus event rights, optional expiry, non-display versus owner/invitee display and redistribution, event/receipt time, quote freshness, market session, equity and OCC series validation; no execution authority.
 - universe.py: local Nasdaq/otherlisted parser, SEC cross-reference, identity diff, prices and options UNAVAILABLE; absence from a directory does not prove delisting.
 - adapters.py: approved provider-specific field mappings, immutable entitlement/lineage from installed registry (not vendor JSON), rejects timezone-free quote timestamps and missing required fields.
 - scanner.py: issuer-bound filing discovery, bounded dedup, research threshold observations, independent-feed conflict hold, separate options gate, output cannot mark a trade admitted.
@@ -30,6 +30,24 @@ After individually checking source terms and downloading approved snapshots:
     python -m engine.market_intake.local_catalog --nasdaq ./nasdaqlisted.txt --other ./otherlisted.txt --sec ./company_tickers_exchange.json
 
 SEC JSON is optional. No secrets, extra paid Render service, scheduled worker or live trade action.
+
+
+## Free SEC event intake when the owner chooses to run it
+A deliberately opt-in public EDGAR collector is included at scripts/obscan_public_edgar_fetch.py. Dry-run is the default, and --enable-network additionally requires a real contact User-Agent. It fetches the company identifier file and up to 20 explicitly selected CIK submissions, at no more than one request each second, with bounded JSON reads, ETag/Last-Modified revalidation, strict SEC hosts, stop-on-429 and no fake fallback. It creates no hourly task or paid hosting resource.
+
+Review the planned fetch first:
+
+    python scripts/obscan_public_edgar_fetch.py --output ./local-obscan --ciks 0000320193
+
+When you explicitly want public SEC metadata using your real identifying contact, run:
+
+    python scripts/obscan_public_edgar_fetch.py --enable-network --user-agent "Your Research Name contact@yourdomain.com" --output ./local-obscan --ciks 0000320193
+
+Then load separately reviewed Nasdaq directory text files plus the resulting SEC data offline:
+
+    python -m engine.market_intake.local_catalog --nasdaq ./nasdaqlisted.txt --other ./otherlisted.txt --sec ./local-obscan/company_tickers_exchange.json --submissions ./local-obscan/CIK0000320193.json
+
+This extracts exact-CIK SEC acceptance-time filing events and labels them SOURCE_RIGHTS_REVIEW_REQUIRED. It does not imply they are newly published at download time and does not grant a commercial distribution right. Keep local-obscan out of source control if you do not want the snapshots checked in. All quote/option prices remain unavailable without separate authorized feeds.
 
 ## Access/rights audit (verify before using in business application)
 Nasdaq directory: https://www.nasdaqtrader.com/Trader.aspx?id=SymbolDirDefs and https://nasdaqtrader.com/Trader.aspx?id=symbollookup — free lookup/download is not necessarily a commercial non-display or redistribution license.
