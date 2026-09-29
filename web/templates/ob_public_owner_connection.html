@@ -46,7 +46,7 @@
       <h2>Check a quote</h2>
       {% if not is_connected %}
         <p>Connect the account first. No prices or provider stream are inferred from an API key alone.</p>
-      {% elif not quote_permissions.permits({'EQUITY'}) %}
+      {% elif not equity_ready %}
         <span class="tag hold">Market-data rights review required</span>
         <p>Authentication works independently of quote use. Exact business-account internal research, owner-display and stock/options data permissions must be enabled in the backend before quote requests can be made. No trading access is granted.</p>
       {% else %}
@@ -56,7 +56,7 @@
           <label for="kind">Instrument</label>
           <select id="kind" name="kind">
             <option value="EQUITY">Stock</option>
-            {% if quote_permissions.permits({'OPTION'}) %}<option value="OPTION">Option (exact compact OSI symbol)</option>{% endif %}
+            {% if option_ready %}<option value="OPTION">Option (exact compact OSI symbol)</option>{% endif %}
           </select>
           <label for="symbol">Ticker or compact option symbol</label>
           <input id="symbol" name="symbol" type="text" maxlength="26"
