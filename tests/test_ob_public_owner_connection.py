@@ -5,7 +5,8 @@ import re
 from flask import Flask
 import pytest
 
-from test_ob_public_local_probe import Recorder, SECRET, TOKEN, ACCOUNT_ID
+from test_ob_public_local_probe import Recorder, Response, SECRET, TOKEN, ACCOUNT_ID
+from scripts.ob_public_local_probe import _ACCOUNTS
 from tower.ob_public_owner_connection import (
     PATH, OwnerConnectionStore, _now, create_public_owner_blueprint,
 )
@@ -65,7 +66,7 @@ def test_connection_key_only_in_post_not_cookie_disk_or_html(setup):
     assert response.status_code==303
     html=page(client).get_data(as_text=True)
     assert "Authenticated" in html
-    assert "One brokerage account" in html
+    assert "One BROKERAGE account" in html
     assert SECRET not in html and TOKEN not in html and ACCOUNT_ID not in html
     with client.session_transaction(base_url="https://tower.test") as sess:
         assert SECRET not in str(dict(sess))
@@ -244,4 +245,110 @@ def test_html_form_referrer_policy_preserves_origin_and_is_cross_site_private(se
     accepted=post(client,token,origin="https://tower.test")
     assert accepted.status_code==303
     assert accepted.headers["Referrer-Policy"]=="same-origin"
+    assert len(rec.calls)==2
+
+
+def _alternate_account_response(monkeypatch, recorder, accounts):
+    """Synthetic vendor account-list response. No real account data ever used."""
+    original = Recorder.__call__
+    def replacement(self, req, timeout):
+        if req.full_url == _ACCOUNTS:
+            self.calls.append((req, timeout))
+            return Response({"accounts": accounts})
+        return original(self, req, timeout)
+    monkeypatch.setattr(Recorder, "__call__", replacement)
+
+
+def test_unique_entity_account_is_recognized_not_misreported_as_brokerage(setup,monkeypatch):
+    client,state,store,rec=setup; state["authorized"]=True
+    entity_id="synthetic-entity-12345"
+    _alternate_account_response(monkeypatch,rec,[
+        {"accountId":entity_id,"accountType":"ENTITY"}])
+    key=csrf(page(client).get_data(as_text=True))
+    assert post(client,key).status_code==303
+    html=page(client).get_data(as_text=True)
+    assert "Public authenticated" in html
+    assert "One ENTITY account" in html
+    assert entity_id not in html and TOKEN not in html and SECRET not in html
+    item=store.get("tower_session_"+"x"*30)
+    assert item.account_id==entity_id and item.account_kind=="ENTITY"
+    assert len(rec.calls)==2
+
+
+def test_multiple_accounts_require_explicit_owner_selection_and_no_identity_leak(setup,monkeypatch):
+    client,state,store,rec=setup; state["authorized"]=True
+    first="synthetic-broker-123456",second="synthetic-entity-654321"
+    _alternate_account_response(monkeypatch,rec,[
+        {"accountId":first,"accountType":"BROKERAGE"},
+        {"accountId":second,"accountType":"ENTITY"},
+        {"accountId":"synthetic-cash-3333","accountType":"HIGH_YIELD_CASH"}])
+    key=csrf(page(client).get_data(as_text=True))
+    assert post(client,key).status_code==303
+    html=page(client).get_data(as_text=True)
+    assert "Choose one of 2 accounts" in html
+    assert "BROKERAGE" in html and "ENTITY" in html
+    assert first not in html and second not in html and TOKEN not in html and SECRET not in html
+    assert "123456" not in html and "654321" not in html
+    item=store.get("tower_session_"+"x"*30)
+    assert item.account_id=="" and len(item.candidates)==2
+    with client.session_transaction(base_url="https://tower.test") as sess:
+        assert first not in str(dict(sess)) and second not in str(dict(sess))
+        assert TOKEN not in str(dict(sess))
+    # Invalid or arbitrary choices do not silently select first account.
+    assert post(client,key,action="select",extra={"account_index":"0"}).status_code==303
+    assert item.account_id==""
+    assert post(client,key,action="select",extra={"account_index":"2"}).status_code==303
+    html=page(client).get_data(as_text=True)
+    assert "Selected ENTITY account" in html and second not in html
+    assert item.account_id==second and item.account_kind=="ENTITY" and item.candidates==()
+    assert len(rec.calls)==2
+
+
+def test_no_supported_types_are_diagnosed_not_labeled_bad_credentials(setup,monkeypatch):
+    client,state,store,rec=setup;state["authorized"]=True
+    _alternate_account_response(monkeypatch,rec,[
+        {"accountId":"synthetic-cash-3333","accountType":"HIGH_YIELD_CASH"}])
+    key=csrf(page(client).get_data(as_text=True))
+    assert post(client,key).status_code==303
+    html=page(client).get_data(as_text=True)
+    assert "Public accepted authentication and returned accounts" in html
+    assert "Not connected" in html
+    assert store.get("tower_session_"+"x"*30) is None
+    assert len(rec.calls)==2
+
+
+def test_empty_and_duplicate_accounts_fail_closed_with_specific_diagnostic(setup,monkeypatch):
+    client,state,store,rec=setup;state["authorized"]=True
+    original=Recorder.__call__
+    responses=[[],[
+        {"accountId":"synthetic-dup-1111","accountType":"BROKERAGE"},
+        {"accountId":"synthetic-dup-1111","accountType":"ENTITY"}]]
+    def replacement(self,req,timeout):
+        if req.full_url==_ACCOUNTS:
+            self.calls.append((req,timeout))
+            return Response({"accounts":responses.pop(0)})
+        return original(self,req,timeout)
+    monkeypatch.setattr(Recorder,"__call__",replacement)
+    key=csrf(page(client).get_data(as_text=True))
+    assert post(client,key).status_code==303
+    assert "returned no accounts" in page(client).get_data(as_text=True)
+    assert post(client,key).status_code==303
+    assert "unexpected structure" in page(client).get_data(as_text=True)
+    assert store.get("tower_session_"+"x"*30) is None
+    assert len(rec.calls)==4
+
+
+def test_pending_selection_expires_without_exposing_account_or_contacting_vendor(setup,monkeypatch):
+    client,state,store,rec=setup;state["authorized"]=True
+    _alternate_account_response(monkeypatch,rec,[
+        {"accountId":"synthetic-broker-123456","accountType":"BROKERAGE"},
+        {"accountId":"synthetic-entity-654321","accountType":"ENTITY"}])
+    key=csrf(page(client).get_data(as_text=True))
+    post(client,key)
+    item=store.get("tower_session_"+"x"*30)
+    item.expires_at=_now()-timedelta(seconds=1)
+    answer=post(client,key,action="select",extra={"account_index":"1"})
+    assert answer.status_code==303
+    html=page(client).get_data(as_text=True)
+    assert "Account selection expired" in html and "Not connected" in html
     assert len(rec.calls)==2
