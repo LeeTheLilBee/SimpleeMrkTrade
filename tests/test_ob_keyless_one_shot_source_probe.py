@@ -219,3 +219,42 @@ def test_official_release_probe_holds_403_without_raw_provider_details():
     probe_official_bls_release(state, opener=blocked)
     assert state == {"bls_release_http": "HTTP_403"}
     assert "PRIVATE_DETAIL" not in json.dumps(state)
+
+
+def test_dol_one_shot_uses_only_two_fixed_official_urls_and_no_values():
+    from deploy.hosted_tower.keyless_one_shot_source_probe import probe_dol_cpi_availability
+    class Resp:
+        status = 200
+        def __init__(self, url, body): self.url=url; self.body=body
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def geturl(self): return self.url
+        def read(self, n): return self.body[:n]
+    calls=[]
+    def op(req, timeout):
+        calls.append((req.full_url,timeout))
+        if req.full_url.endswith(".pdf"):
+            return Resp(req.full_url,b"%PDF-1.7 SIMULATED_SECRET")
+        return Resp(req.full_url,b"<html>Consumer Price Index SENSITIVE_SAMPLE</html>")
+    state={}
+    probe_dol_cpi_availability(state,opener=op)
+    assert calls == [
+        ("https://www.dol.gov/newsroom/economicdata",8),
+        ("https://www.dol.gov/newsroom/economicdata/cpi_09112026.pdf",8),
+    ]
+    assert state == {
+        "dol_cpi_index":"HTTP_200","dol_cpi_index_marker":True,
+        "dol_cpi_release":"HTTP_200","dol_cpi_release_marker":True,
+    }
+    assert "SENSITIVE_SAMPLE" not in json.dumps(state)
+
+
+def test_dol_one_shot_redacts_official_host_denials():
+    from urllib.error import HTTPError
+    from deploy.hosted_tower.keyless_one_shot_source_probe import probe_dol_cpi_availability
+    def blocked(req, timeout):
+        raise HTTPError(req.full_url,403,"PRIVATE_RESPONSE_TEXT",{},None)
+    state={}
+    probe_dol_cpi_availability(state,opener=blocked)
+    assert state == {"dol_cpi_index":"HTTP_403","dol_cpi_release":"HTTP_403"}
+    assert "PRIVATE_RESPONSE_TEXT" not in json.dumps(state)
