@@ -101,7 +101,9 @@ def soulaana_research_brief(packet:dict)->dict[str,object]:
         sections.append("Issuer financial concepts remain unavailable or under review.")
     if events:
         sections.append(f"{len(events)} source-cited issuer event(s) are available as research leads.")
-    if scanner["scanner_state"]=="CONFLICT_HOLD":
+    if scanner["scanner_state"]=="AI_SOURCE_RIGHTS_HOLD":
+        sections.append("Issuer-event and current-source AI-use rights are not established; source details are withheld.")
+    elif scanner["scanner_state"]=="CONFLICT_HOLD":
         sections.append("Independent price evidence disagrees. Research remains on hold.")
     elif not scanner["equity_sources"]:
         sections.append("No approved current underlying quote is attached to this research brief.")
