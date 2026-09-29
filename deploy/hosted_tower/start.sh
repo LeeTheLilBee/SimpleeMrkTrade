@@ -38,6 +38,12 @@ if [[ "${OB_KEYLESS_ONE_SHOT_SOURCE_PROBE:-0}" == "1" ]]; then
     "${PYTHON_VALUE}" -u -m deploy.hosted_tower.keyless_one_shot_source_probe &
 fi
 
+# Owner-requested opt-in one-shot official research proof; status only and
+# never an owner session, quote, model call or recurring background monitor.
+if [[ "${OB_CATALYST_ONE_SHOT_SOURCE_PROBE:-0}" == "1" ]]; then
+    "${PYTHON_VALUE}" -u -m deploy.hosted_tower.official_catalyst_one_shot &
+fi
+
 exec "${PYTHON_VALUE}" -m gunicorn \
     --bind "0.0.0.0:${PORT_VALUE}" \
     --workers "${WORKERS_VALUE}" \
