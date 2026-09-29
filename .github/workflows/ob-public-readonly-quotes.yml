@@ -1,0 +1,28 @@
+name: OB Public read-only quote adapter (offline)
+on:
+  push:
+    branches:
+      - ob-public-readonly-quotes-0929
+  pull_request:
+    paths:
+      - 'engine/market_intake/public_quote_readonly.py'
+      - 'engine/market_intake/provider_catalog.py'
+      - 'tests/test_public_quote_readonly.py'
+      - 'scripts/ob_public_local_probe.py'
+      - 'tests/test_ob_public_local_probe.py'
+      - '.github/workflows/ob-public-readonly-quotes.yml'
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest flask
+      - run: python -m compileall -q engine/market_intake/public_quote_readonly.py engine/market_intake/public_research_sources.py scripts/ob_public_local_probe.py
+      - run: python -m pytest -q tests/test_public_quote_readonly.py tests/test_ob_public_local_probe.py tests/test_ob_public_research_sources.py tests/test_obscan026_040_universal_gateway.py tests/test_tower_ob_market_data_desk_selective.py
+      - name: Reject execution/auth coupling
+        run: |
+          ! grep -E 'place_order|submit_order|preflight|access-tokens|trading/account' engine/market_intake/public_quote_readonly.py
+          ! grep -E '/order(["\\x27/]|$)|/preflight(["\\x27/]|$)|/place-order(["\\x27/]|$)' scripts/ob_public_local_probe.py

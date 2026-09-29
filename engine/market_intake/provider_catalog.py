@@ -69,6 +69,10 @@ _PRODUCTS = (
                     "reference", False, "https://fred.stlouisfed.org/legal/terms/"),
     ProviderProduct("public-business-review-only", "Public", "Business API candidate; account and data/display rights review required", "metadata",
                     "reference", False, "https://public.com/api/docs"),
+    ProviderProduct("public-account-equity", "Public", "Authenticated account-scoped equity quotes, exact rights required", "equity",
+                    "entitlement_defined", True, "https://public.com/api/docs/resources/market-data/get-quotes"),
+    ProviderProduct("public-account-option", "Public", "Authenticated account-scoped option quotes, separate exact rights required", "option",
+                    "entitlement_defined", True, "https://public.com/api/docs/resources/market-data/get-quotes"),
 
 )
 CATALOG: dict[str, ProviderProduct] = {p.key: p for p in _PRODUCTS}
