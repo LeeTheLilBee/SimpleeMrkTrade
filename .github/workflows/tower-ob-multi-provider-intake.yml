@@ -1,0 +1,93 @@
+name: Tower multi-provider intake and safe status dissemination
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ob_provider_key_desk.py"
+      - "tower/ob_public_owner_connection.py"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_route_guard.py"
+      - "tower/ob_web_route_enforcement.py"
+      - "web/ob_connection_truth_route.py"
+      - "web/templates/market_data_desk.html"
+      - "web/templates/ob_provider_key_desk.html"
+      - "web/templates/ob_provider_key_hold.html"
+      - "web/static/ob/ob_connection_truth.js"
+      - "web/static/ob/ob_provider_key_desk.css"
+      - "tests/test_tower_ob_api_intake_status.py"
+      - "tests/test_tower_ob_provider_key_desk.py"
+      - ".github/workflows/tower-ob-multi-provider-intake.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ob_provider_key_desk.py"
+      - "tower/ob_public_owner_connection.py"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_route_guard.py"
+      - "tower/ob_web_route_enforcement.py"
+      - "web/ob_connection_truth_route.py"
+      - "web/templates/market_data_desk.html"
+      - "web/templates/ob_provider_key_desk.html"
+      - "web/templates/ob_provider_key_hold.html"
+      - "web/static/ob/ob_connection_truth.js"
+      - "web/static/ob/ob_provider_key_desk.css"
+      - "tests/test_tower_ob_api_intake_status.py"
+      - "tests/test_tower_ob_provider_key_desk.py"
+      - ".github/workflows/tower-ob-multi-provider-intake.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  owner-source-status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - name: Compile server modules
+        run: python -m compileall -q tower/ob_provider_key_desk.py tower/ob_public_owner_connection.py web/ob_connection_truth_route.py
+      - name: Test intake, rights separation, keyless data and actual Tower guards
+        run: |
+          python -m pytest -q \
+            tests/test_tower_ob_api_intake_status.py \
+            tests/test_tower_ob_provider_key_desk.py \
+            tests/test_ob_public_owner_connection.py \
+            tests/test_ob_keyless_public_context.py \
+            tests/test_tower_ob_market_data_desk_selective.py \
+            tests/test_tower_ob_web_route_enforcement.py \
+            tests/test_ob_canonical_nav_corridors.py
+      - name: Verify browser status renderer parses without vendor calls
+        run: |
+          node --check web/static/ob/ob_connection_truth.js
+          node --check web/static/ob/ob_keyless_context.js
+      - name: Check hosted composition and anonymous / method denial
+        run: |
+          python - <<'PY'
+          from web.hosted_tower import app
+          from web.ob_connection_truth_route import PATH
+          from tower.ob_web_route_enforcement import PROTECTED_EXACT_OB_ROUTES
+          rules = [r for r in app.url_map.iter_rules() if r.rule == PATH]
+          assert len(rules) == 1
+          assert 'GET' in rules[0].methods and 'POST' not in rules[0].methods
+          for route in (PATH, '/ob/data-desk/api-keys',
+                        '/ob/data-desk/public', '/ob/research/keyless.json'):
+              assert route in PROTECTED_EXACT_OB_ROUTES
+          client=app.test_client()
+          assert client.get(PATH).status_code != 200
+          assert client.get('/ob/data-desk/api-keys').status_code != 200
+          assert client.head(PATH).status_code == 405
+          assert client.get(PATH + '/export').status_code == 403
+          assert app.extensions['ob_provider_key_desk_v1']['live_feed_installed'] is False
+          assert app.extensions['tower_ob_market_data_desk_source_only_v1']['quote_data_attached'] is False
+          print('Protected source status mounted; no quote/provider authority or anonymous data.')
+          PY
