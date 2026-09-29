@@ -87,6 +87,12 @@
       card.append(el("p", "ob-keyless-meta",
         "Source period: " + (row.period || "not provided") +
         " · Retrieved: " + (row.retrieved_at || "unavailable")));
+      if ((row.source === "bls" || row.source === "treasury") &&
+          typeof row.previous_period === "string" && typeof row.previous_value === "string") {
+        card.append(el("p", "ob-keyless-meta",
+          "Earlier source record: " + row.previous_period + " · " + row.previous_value +
+          " " + (row.unit || "")));
+      }
     } else if (row.state === "DELEGATED_ISSUER_RESEARCH") {
       card.append(el("p", "ob-keyless-meta",
         "EDGAR issuer filings and companyfacts are read through the existing source-reviewed Symbol Research corridor; this card has not fetched a filing."));
@@ -150,6 +156,12 @@
         !Array.isArray(brief.observations) || brief.observations.length > 3 ||
         !Array.isArray(brief.source_register) || brief.source_register.length !== 4 ||
         brief.observation_count !== brief.observations.length ||
+        !Array.isArray(brief.comparisons) || brief.comparisons.length > 2 ||
+        brief.comparison_count !== brief.comparisons.length ||
+        brief.cross_source_causality_claimed !== false ||
+        typeof brief.what_changed !== "string" || brief.what_changed.length > 350 ||
+        typeof brief.what_needs_investigation !== "string" ||
+        brief.what_needs_investigation.length > 500 ||
         brief.source_specific_ai_use_approved !== (brief.observations.length > 0)) return false;
     const authorized = new Set(packet.sources.filter(row =>
       EVIDENCE_SOURCES.has(row.source) && row.ai_use_approved === true &&
@@ -166,7 +178,19 @@
       item.execution_authorized === false &&
       typeof item.value === "string" && item.value.length <= 55 &&
       typeof item.interpretation === "string" && item.interpretation.length <= 430 &&
-      typeof item.retrieved_at === "string" && item.retrieved_at.length <= 50);
+      typeof item.retrieved_at === "string" && item.retrieved_at.length <= 50) &&
+      brief.comparisons.every(item =>
+        item && ["bls", "treasury"].includes(item.source) &&
+        authorized.has(item.source) &&
+        item.source_reference === DOCS[item.source] &&
+        item.research_only === true && item.quote_verified === false &&
+        item.causality_claimed === false &&
+        ["UP", "DOWN", "UNCHANGED"].includes(item.direction) &&
+        typeof item.earlier_period === "string" && item.earlier_period.length <= 12 &&
+        typeof item.later_period === "string" && item.later_period.length <= 12 &&
+        typeof item.insight === "string" && item.insight.length <= 610 &&
+        brief.observations.some(obs => obs.source === item.source &&
+          obs.value === item.later_value && obs.source_period === item.later_period));
   }
   function renderSoulaanaEvidence(brief) {
     const panel = el("div", "ob-keyless-soulaana-evidence");
@@ -182,6 +206,20 @@
         el("p", "ob-keyless-meta", "Retrieved: " + item.retrieved_at), link);
       panel.append(record);
     });
+    const digest = el("div", "ob-keyless-soulaana-register");
+    digest.append(el("h3", "", "What I found by examining the source records"),
+      el("p", "", brief.what_changed));
+    brief.comparisons.forEach(item => {
+      const record = el("article", "ob-keyless-evidence-item");
+      const link = el("a", "ob-keyless-docs", "Original source ↗");
+      link.href = DOCS[item.source]; link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      record.append(el("strong", "", item.source.toUpperCase() + " · " + item.direction),
+        el("p", "", item.insight), link);
+      digest.append(record);
+    });
+    digest.append(el("p", "ob-keyless-soulaana-hold", brief.what_needs_investigation));
+    panel.append(digest);
     if (brief.bls_attribution) panel.append(el("p", "ob-keyless-footer", brief.bls_attribution));
     panel.append(el("p", "ob-keyless-footer",
       "A validated, source-specific explanation—not an external model call. No live pricing, forecasts, signals, broker access or candidate admission."));
