@@ -104,6 +104,8 @@ class ProviderDeskProcess:
     def _log(self, item: ProviderCase, next_state: CaseState, receipt: DeskReceipt) -> None:
         if receipt.receipt_id in self._receipts:
             raise ValueError("duplicate audit receipt")
+        if item.history and receipt.occurred_at <= item.history[-1][1].occurred_at:
+            raise ValueError("audit receipt must follow the prior case event")
         previous = item.state
         self._receipts.add(receipt.receipt_id)
         item.state = next_state
