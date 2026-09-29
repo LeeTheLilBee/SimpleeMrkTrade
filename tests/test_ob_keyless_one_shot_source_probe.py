@@ -99,3 +99,42 @@ def test_probe_is_explicitly_off_in_normal_startup():
     assert '${OB_KEYLESS_ONE_SHOT_SOURCE_PROBE:-0}' in script
     assert 'keyless_one_shot_source_probe' in script
     assert script.index('keyless_one_shot_source_probe') < script.index('exec "${PYTHON_VALUE}" -m gunicorn')
+
+
+def test_bls_trace_does_not_make_extra_requests_or_emit_response_body():
+    from types import SimpleNamespace
+    from urllib.request import Request
+    from urllib.error import HTTPError
+    from deploy.hosted_tower.keyless_one_shot_source_probe import capture_bls_diagnostic
+    from engine.market_intake.public_research_sources import PublicResearchUnavailable
+    calls = []
+    state = {}
+    def held(request, timeout):
+        calls.append(request.full_url)
+        raise HTTPError(request.full_url, 403, "SENSITIVE_VENDOR_ERROR", {}, None)
+    def reader(series):
+        client._opener(Request(
+            "https://api.bls.gov/publicAPI/v1/timeseries/data/" + series
+        ), 8)
+    client = SimpleNamespace(_opener=held, bls_v1=reader)
+    capture_bls_diagnostic(SimpleNamespace(reference=client), state)
+    with pytest.raises(HTTPError):
+        client.bls_v1("CUUR0000SA0")
+    assert len(calls) == 1
+    assert state == {"bls_http": "HTTP_403"}
+    assert "SENSITIVE" not in json.dumps(state)
+
+
+def test_bls_trace_only_emits_our_own_hold_codes():
+    from types import SimpleNamespace
+    from deploy.hosted_tower.keyless_one_shot_source_probe import capture_bls_diagnostic
+    from engine.market_intake.public_research_sources import PublicResearchUnavailable
+    state = {}
+    client = SimpleNamespace(
+        _opener=lambda *_: None,
+        bls_v1=lambda *_: (_ for _ in ()).throw(
+            PublicResearchUnavailable("VENDOR_EMBEDDED_SENSITIVE_DETAIL")))
+    capture_bls_diagnostic(SimpleNamespace(reference=client), state)
+    with pytest.raises(PublicResearchUnavailable):
+        client.bls_v1("CUUR0000SA0")
+    assert state == {"bls_failure_kind": "OTHER_HOLD"}
