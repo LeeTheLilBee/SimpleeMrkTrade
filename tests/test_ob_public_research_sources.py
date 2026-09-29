@@ -67,6 +67,40 @@ def test_bls_unregistered_v1_source_bound_and_never_price_authority():
     assert opener.requests[0][1] == 8
 
 
+
+@pytest.mark.parametrize("wrap", [
+    lambda group: [group],
+    lambda group: group,
+])
+def test_bls_accepts_both_documented_v1_result_envelopes(wrap):
+    # v1 signature example uses Results:[{series:...}]; its official Python
+    # example uses Results:{series:...}. Neither requires registration.
+    series = {"series": [{"seriesID": "CUUR0000SA0", "data": [
+        {"year": "2026", "period": "M08", "value": "334.980"},
+        {"year": "2026", "period": "M07", "value": "333.918"},
+    ]}]}
+    opener = FixtureOpener({"status": "REQUEST_SUCCEEDED", "Results": wrap(series)})
+    observation = PublicReferenceClient(POLICY, opener=opener).bls_v1("CUUR0000SA0")
+    assert (observation.period, observation.value) == ("2026-M08", "334.980")
+    assert (observation.previous_period, observation.previous_value) == (
+        "2026-M07", "333.918")
+    assert observation.current_quote_eligible is False
+    assert len(opener.requests) == 1
+
+
+@pytest.mark.parametrize("results", [
+    {}, {"series":[]}, {"series":{}}, {"series":[{"seriesID":"WRONG","data":[]}]},
+    {"series":[{"seriesID":"CUUR0000SA0","data":[]},
+               {"seriesID":"CUUR0000SA0","data":[]}]},
+    [{"series":[]}, {"series":[]}],
+    {"series":[{"seriesID":"CUUR0000SA0","data":{}}]},
+])
+def test_bls_still_holds_bad_or_ambiguous_envelopes(results):
+    opener = FixtureOpener({"status":"REQUEST_SUCCEEDED","Results":results})
+    with pytest.raises(PublicResearchUnavailable, match="BLS_SOURCE_SHAPE_HOLD"):
+        PublicReferenceClient(POLICY, opener=opener).bls_v1("CUUR0000SA0")
+    assert len(opener.requests) == 1
+
 def test_bls_rejects_unknown_or_malformed_records():
     opener = FixtureOpener({"status": "REQUEST_SUCCEEDED", "Results": [{"series": [
         {"seriesID": "CUUR0000SA0", "data": [{"year": "2026", "period": "M09", "value": "NaN"}]}]}]})
