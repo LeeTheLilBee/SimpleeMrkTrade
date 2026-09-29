@@ -143,6 +143,34 @@ def fundamental_context(*, cik: str, facts: tuple[CompanyFact,...],
         old=latest.get(row.concept)
         if old is None or (row.fiscal_end,row.accepted_at) > (old.fiscal_end,old.accepted_at):
             latest[row.concept]=row
+    # Compare only exact year-end, point-in-time balance-sheet concepts. Do NOT
+    # treat reported revenue/earnings values as annual without their start/length
+    # metadata; SEC filings may also report quarterly and year-to-date facts.
+    point_in_time={"Assets","Liabilities","StockholdersEquity",
+                   "CashAndCashEquivalentsAtCarryingValue"}
+    comparisons=[]
+    for concept in sorted(point_in_time):
+        periods={}
+        for row in eligible:
+            if row.concept!=concept or row.form not in {"10-K","10-K/A"}:continue
+            previous=periods.get(row.fiscal_end)
+            if previous is None or row.accepted_at>previous.accepted_at:
+                periods[row.fiscal_end]=row
+        years=sorted(periods.values(),key=lambda row:row.fiscal_end)
+        if len(years)<2:continue
+        older,newer=years[-2:]
+        spacing=(newer.fiscal_end-older.fiscal_end).days
+        if not 300<=spacing<=430 or older.value==0:continue
+        comparisons.append({
+            "concept":concept,"unit":newer.unit,
+            "earlier_fiscal_end":older.fiscal_end.isoformat(),
+            "later_fiscal_end":newer.fiscal_end.isoformat(),
+            "earlier_value":older.value,"later_value":newer.value,
+            "reported_change_pct":(newer.value-older.value)/abs(older.value)*100,
+            "earlier_source":older.provenance_reference,
+            "later_source":newer.provenance_reference,
+            "retrospective_only":True,"revisions_as_of":as_of.isoformat(),
+        })
     # Preserve form, GAAP concept, period and original SEC citation for each fact.
     return {"schema":"OB_SEC_FUNDAMENTALS_CONTEXT_V1","cik":cik,
             "as_of":as_of.isoformat(),"source_id":rights.source_id,
@@ -153,6 +181,8 @@ def fundamental_context(*, cik: str, facts: tuple[CompanyFact,...],
                 "accession":v.accession,"form":v.form,"reference":v.provenance_reference,
             } for v in sorted(latest.values(),key=lambda x:x.concept)],
             "raw_concepts_not_normalized":True,
+            "year_end_balance_sheet_comparisons":comparisons,
+            "comparisons_are_unadjusted_retrospective_facts":True,
             "historical_context_only":True,"quote_eligible":False,
             "signal_eligible":False,"execution_authorized":False,
             "ai_explanation_allowed":rights.ai_explanation,
