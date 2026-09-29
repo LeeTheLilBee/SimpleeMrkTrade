@@ -18,6 +18,7 @@
     href="{{ url_for('static', filename='ob/ob_symbol_room.css') }}"
   />
   <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
+  <link rel="stylesheet" href="/static/ob/ob_research_context.css?v=obintel001030" />
 </head>
 
 <body
@@ -72,7 +73,11 @@
       </div>
     </header>
 
-    <section id="symbolModeBanner" class="ob-mode-banner">
+    {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
+    {% include 'ob_research_context_partial.html' %}
+    {% endif %}
+
+        <section id="symbolModeBanner" class="ob-mode-banner">
       <div>
         <span class="ob-symbol-eyebrow">CURRENT MODE</span>
         <h2 id="symbolModeTitle">Survey · Observe</h2>
