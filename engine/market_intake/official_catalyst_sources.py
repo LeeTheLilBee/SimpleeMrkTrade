@@ -19,7 +19,7 @@ FEDERAL_REGISTER = ("https://www.federalregister.gov/api/v1/documents.json?"
                     "securities-and-exchange-commission")
 CFTC = ("https://publicreporting.cftc.gov/resource/gpe5-46if.json?"
         "%24limit=5&%24order=report_date_as_yyyy_mm_dd%20DESC")
-NWS = "https://api.weather.gov/alerts/active?area=GA"
+NWS = "https://api.weather.gov/alerts?active=true&area=GA"
 WORLD_BANK = ("https://api.worldbank.org/v2/country/US/indicator/"
               "NY.GDP.MKTP.CD?format=json&per_page=4")
 WORLD_BANK_METADATA = ("https://api.worldbank.org/v2/indicator/"
