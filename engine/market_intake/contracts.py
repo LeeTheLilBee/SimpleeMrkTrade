@@ -66,12 +66,15 @@ class SourceRights:
     invitee_display: bool = False
     redistribution: bool = False
     real_time_entitled: bool = False
+    entitled_instruments: frozenset[str] = frozenset()  # independent equity/option/event grants
 
     def __post_init__(self) -> None:
         _text(self.source_id, "source_id")
         _text(self.upstream_family, "upstream_family")
         if self.verified_at is not None:
             _aware(self.verified_at, "verified_at")
+        if not self.entitled_instruments.issubset({"equity", "option", "event"}):
+            raise ValueError("unrecognized instrument entitlement")
 
     def reviewed_for_scan(self) -> bool:
         return bool(self.permission_reference.strip() and self.verified_at is not None
@@ -230,6 +233,8 @@ def assess(evidence: Observation, rights: SourceRights | None, context: ScanCont
         return result(Gate.SOURCE_HOLD, "Missing or mismatched source-rights record.")
     if not rights.reviewed_for_scan():
         return result(Gate.RIGHTS_HOLD, "Automated research entitlement was not verified.")
+    if evidence.instrument not in rights.entitled_instruments:
+        return result(Gate.RIGHTS_HOLD, "Instrument-specific data entitlement is not granted.")
     if quote and (not rights.real_time_entitled or evidence.feed_label != "realtime"):
         return result(Gate.RIGHTS_HOLD, "A current-quote entitlement and real-time feed label are both required.")
     if (evidence.received_at - evidence.observed_at).total_seconds() < -context.clock_skew_seconds:
