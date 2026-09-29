@@ -67,6 +67,12 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
     ))
     from tower.ob_provider_key_desk import register_provider_key_desk
     register_provider_key_desk(app, owner_authorize=_tower_authorize_data_desk)
+    from web.ob_connection_truth_route import create_connection_truth_blueprint
+    app.register_blueprint(create_connection_truth_blueprint(
+        owner_authorize=_tower_authorize_data_desk,
+        key_reader=app.extensions["ob_provider_key_status_reader_v1"],
+        public_reader=app.extensions["ob_public_owner_status_reader_v1"],
+    ))
     app.extensions["tower_ob_market_data_desk_source_only_v1"] = {
         "path": MARKET_DATA_DESK_PATH,
         "source_only": True,
