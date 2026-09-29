@@ -45,6 +45,16 @@ jobs:
             tests/test_obscan041_055_market_data_desk.py \
             tests/test_obintel001_030_symbol_research.py \
             tests/test_obscan_public_edgar_fetch.py
+      - name: Existing Market Map / Symbol / Trade / Review room regressions
+        run: |
+          python -m pytest -q \
+            tests/test_market_map_obux031_surface.py \
+            tests/test_market_map_obux032_live_truth.py \
+            tests/test_market_map_obux033_soulaana.py \
+            tests/test_market_map_obux034_interaction.py \
+            tests/test_ob_symbol_room_obux036_040.py \
+            tests/test_ob_trade_center_obux041_045.py \
+            tests/test_ob_review_center_obux046_050.py
       - name: No independent free-scraping or trading transport
         run: |
           python - <<'PY'
