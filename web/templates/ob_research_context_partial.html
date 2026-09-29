@@ -41,6 +41,41 @@
       <small>{{ ob_research_context.get('issuer_events',[])|length }} cited issuer events in this bounded context.</small>
     </article>
   </div>
+  {% set sec_read = ob_research_context.get('soulaana_sec_examination', {}) %}
+  {% if sec_read.get('schema') == 'OB_SOULAANA_REVIEWED_SEC_EXAMINATION_V1'
+        and sec_read.get('symbol') == ob_research_context.get('symbol')
+        and sec_read.get('source_only') == true
+        and sec_read.get('live_quote_verified') == false
+        and sec_read.get('candidate_admitted') == false
+        and sec_read.get('broker_execution_authorized') == false %}
+  <div class="ob-research-detail" data-soulaana-sec-examination="{{ sec_read.get('state','NO_VERIFIED_REVIEWED_FACTS')|e }}">
+    <span class="ob-research-kicker">SOULAANA · SEC EVIDENCE EXAMINATION</span>
+    <h3>What I found in reviewed issuer records</h3>
+    {% if sec_read.get('state') == 'SOURCE_BOUND' %}
+      <p>These are source-reported filing facts with their periods and references. I cannot treat them as live prices, current trading signals or independently audited conclusions.</p>
+      {% for fact in sec_read.get('findings',[])[:6] %}
+      <article class="ob-research-event">
+        <strong>{{ fact.get('concept','Reported concept')|e }}: {{ fact.get('value')|e }} {{ fact.get('unit','')|e }}</strong>
+        <small>Fiscal end {{ fact.get('fiscal_end','')|e }} · {{ fact.get('filing_form','')|e }} · accepted {{ fact.get('accepted_at','')|e }}</small>
+        <p>{{ fact.get('meaning','')|e }}</p>
+        <code>{{ fact.get('source_reference','')|e }}</code>
+      </article>
+      {% endfor %}
+      {% for comp in sec_read.get('comparisons',[])[:3] %}
+      <article class="ob-research-event">
+        <strong>{{ comp.get('concept','Reported concept')|e }} · {{ comp.get('earlier_period','')|e }} → {{ comp.get('later_period','')|e }}</strong>
+        <p>Reported period-relative change: {{ comp.get('reported_change_pct')|e }}%. {{ comp.get('meaning','')|e }}</p>
+        <code>{{ comp.get('earlier_source','')|e }} · {{ comp.get('later_source','')|e }}</code>
+      </article>
+      {% endfor %}
+    {% elif sec_read.get('state') == 'AI_RIGHTS_HOLD' %}
+      <p>Issuer evidence may be available to the owner, but separate SEC AI-explanation review is not active. I will not read or repeat those amounts.</p>
+    {% else %}
+      <p>No independently reviewed SEC financial facts are available to explain for this ticker.</p>
+    {% endif %}
+    <small>Source-specific deterministic explanation; no external model call, issuer-event AI-content inference, live quote or execution authority.</small>
+  </div>
+  {% endif %}
   <details class="ob-research-disclosure">
     <summary>What is verified, what is missing, and original evidence</summary>
     <div class="ob-research-detail">
