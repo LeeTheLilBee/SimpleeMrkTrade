@@ -21,6 +21,10 @@ BLS_DOCS = "https://www.bls.gov/developers/"
 BEA_DOCS = "https://apps.bea.gov/api/signup/"
 FIGI_DOCS = "https://www.openfigi.com/api/documentation"
 _BLS = "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+# Official no-key download for the same exact all-items CPI-U series; never a
+# third-party relabel or stale bundled fixture.
+BLS_BULK_CPI = "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems"
+_BLS_BULK_MAX_BYTES = 5_000_000
 _BEA = "https://apps.bea.gov/api/data/"
 _FIGI = "https://api.openfigi.com/v3/mapping"
 _SERIES = re.compile(r"^[A-Z0-9_-]{3,45}$")
@@ -155,11 +159,79 @@ class PublicReferenceClient:
             raise PublicResearchUnavailable("SOURCE_VALUE_INVALID")
         return str(number)
 
+    def _bls_official_bulk_cpi(self, series_id: str) -> PublicObservation:
+        """Independent official BLS flat-file fallback for exact CPI-U all-items.
+
+        API REQUEST_NOT_PROCESSED is not a valid observation. Use only this
+        fixed official endpoint, no redirects, no provider login, bounded bytes,
+        exact series, two date-ordered monthly values, honest source URL.
+        """
+        self.policy.require("bls")
+        if series_id != "CUUR0000SA0":
+            raise PublicResearchUnavailable("BLS_BULK_SERIES_NOT_SUPPORTED")
+        request = Request(BLS_BULK_CPI, method="GET", headers={
+            "Accept": "text/plain", "Accept-Encoding": "identity",
+        })
+        try:
+            with self._opener(request, timeout=12) as response:
+                if (getattr(response, "status", 200) != 200 or
+                        getattr(response, "geturl", lambda: BLS_BULK_CPI)() != BLS_BULK_CPI):
+                    raise PublicResearchUnavailable("BLS_BULK_TRANSPORT_HOLD")
+                raw = response.read(_BLS_BULK_MAX_BYTES + 1)
+            if len(raw) > _BLS_BULK_MAX_BYTES:
+                raise PublicResearchUnavailable("BLS_BULK_TOO_LARGE")
+            lines = raw.decode("utf-8-sig").splitlines()
+            if not lines or [s.strip() for s in lines[0].split("\t")][:4] != [
+                "series_id", "year", "period", "value"
+            ]:
+                raise PublicResearchUnavailable("BLS_BULK_SHAPE_HOLD")
+            selected = {}
+            now = datetime.now(timezone.utc)
+            for line in lines[1:]:
+                fields = [s.strip() for s in line.split("\t")]
+                if not fields or fields[0] != series_id:
+                    continue
+                if len(fields) < 4:
+                    raise PublicResearchUnavailable("BLS_BULK_SHAPE_HOLD")
+                year, month, value = fields[1:4]
+                if not re.fullmatch(r"20\d{2}", year) or not re.fullmatch(r"M(?:0[1-9]|1[0-2])", month):
+                    # Do not treat the separately published annual average M13
+                    # or semiannual S## as a monthly CPI point.
+                    if month == "M13" or re.fullmatch(r"S0[1-3]", month):
+                        continue
+                    raise PublicResearchUnavailable("BLS_BULK_SHAPE_HOLD")
+                if (int(year), int(month[1:])) > (now.year, now.month):
+                    raise PublicResearchUnavailable("BLS_BULK_FUTURE_HOLD")
+                number = self._number(value)
+                if Decimal(number) <= 0 or (year, month) in selected:
+                    raise PublicResearchUnavailable("BLS_BULK_SHAPE_HOLD")
+                selected[(year, month)] = number
+            if len(selected) < 2:
+                raise PublicResearchUnavailable("BLS_BULK_SHAPE_HOLD")
+            latest, previous = sorted(selected, reverse=True)[:2]
+        except (HTTPError, URLError, TimeoutError, OSError, UnicodeError):
+            raise PublicResearchUnavailable("BLS_BULK_TRANSPORT_HOLD") from None
+        return PublicObservation(
+            "BLS", "OFFICIAL_BULK_CPI", series_id,
+            "-".join(latest), selected[latest], now, BLS_BULK_CPI,
+            ai_use_approved=self.policy.ai_allowed("bls"),
+            previous_period="-".join(previous), previous_value=selected[previous],
+        )
+
     def bls_v1(self, series_id: str) -> PublicObservation:
         """Unregistered BLS v1: historical publication, not live market time."""
         if not isinstance(series_id, str) or not _SERIES.fullmatch(series_id):
             raise PublicResearchUnavailable("BLS_SERIES_INVALID")
-        payload, fetched = self._json(_BLS + series_id, source="bls")
+        try:
+            payload, fetched = self._json(_BLS + series_id, source="bls")
+        except PublicResearchUnavailable as exc:
+            if str(exc) == "SOURCE_TRANSPORT_HOLD" and series_id == "CUUR0000SA0":
+                return self._bls_official_bulk_cpi(series_id)
+            raise
+        if (isinstance(payload, dict) and
+                payload.get("status") in {"REQUEST_NOT_PROCESSED", "REQUEST_FAILED"} and
+                series_id == "CUUR0000SA0"):
+            return self._bls_official_bulk_cpi(series_id)
         try:
             if payload["status"] != "REQUEST_SUCCEEDED":
                 raise ValueError()
