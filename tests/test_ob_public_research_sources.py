@@ -112,7 +112,7 @@ class DualBlsOfficialOpener:
     def __call__(self, request, *, timeout):
         from engine.market_intake.public_research_sources import BLS_BULK_CPI
         self.requests.append((request.full_url, timeout))
-        if request.full_url.endswith("/publicAPI/v1/timeseries/data/CUUR0000SA0"):
+        if request.full_url.startswith("https://api.bls.gov/publicAPI/v1/timeseries/data/"):
             return Response({"status": self.primary_status, "Results": {}})
         if request.full_url == BLS_BULK_CPI:
             return Response(self.bulk)
