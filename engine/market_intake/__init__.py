@@ -3,6 +3,7 @@ from .contracts import (
     BOUNDARIES, VERSION, DiscoveryEvent, EquityQuote, Gate, Observation,
     OptionQuote, ScanContext, SourceRights, assess,
 )
+from .adapters import FeedAdapter, IngressRegistry
 from .scanner import ResearchLead, ScanPolicy, inspect_symbol, research_packet
 from .traffic import FetchProposal, ProviderBudget, TrafficPlanner
 from .universe import (
@@ -10,7 +11,7 @@ from .universe import (
     parse_sec_ticker_exchange, reconcile_symbol_universe,
 )
 __all__ = (
-    "BOUNDARIES", "VERSION", "DiscoveryEvent", "EquityQuote", "Gate", "Observation",
+    "FeedAdapter", "IngressRegistry", "BOUNDARIES", "VERSION", "DiscoveryEvent", "EquityQuote", "Gate", "Observation",
     "OptionQuote", "ScanContext", "SourceRights", "assess", "ResearchLead",
     "ScanPolicy", "inspect_symbol", "research_packet", "FetchProposal",
     "ProviderBudget", "TrafficPlanner", "SymbolRow", "diff_directory",
