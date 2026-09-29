@@ -23,6 +23,17 @@ def _safe_int(value: Any, default: int = 0) -> int:
 
 
 OB_ROUTE_CLEARANCE_CATALOG: Dict[str, Dict[str, Any]] = {
+    # Source-only Market Data Desk and exact protected owner Public connection
+    # share a narrow VIEW clearance policy. This does not authorize the POST:
+    # HTTP owner/step-up/OB admission, CSRF/origin and the separately default-off
+    # Public connection/quote rights gates remain mandatory at the web layer.
+    'data_desk': {
+        'route_id': '/ob/data-desk',
+        'label': 'Market Data Desk and Public owner connection',
+        'required_clearance_level': 'critical',
+        'allowed_actions': ['view'],
+        'plain': 'Owner view of the exact protected market-data corridor. No provider credential, market feed, order or capital authority is granted.',
+    },
     'dashboard': {
         'route_id': '/dashboard',
         'label': 'OB Dashboard',
