@@ -46,7 +46,10 @@ class FakeOfficialSources:
             "Results":[{"series":[{"seriesID":"CUUR0000SA0", "data":[
                 {"year":"2026","period":"M08","value":"320.10"},
                 {"year":"2026","period":"M07","value":"318.7"}]}]}]}
-        self.treasury={"data":[{"record_date":"2026-09-26","tot_pub_debt_out_amt":"38900000000000.12"}]}
+        self.treasury={"data":[
+            {"record_date":"2026-09-26","tot_pub_debt_out_amt":"38900000000000.12"},
+            {"record_date":"2026-09-25","tot_pub_debt_out_amt":"38890000000000.12"}
+        ]}
         self.figi=[{"data":[{"ticker":"MSFT","figi":"BBG000B9XRY4"}]}]
     def __call__(self,req,timeout):
         self.calls.append((req.full_url,req.get_method(),dict(req.header_items()),timeout))
@@ -85,6 +88,10 @@ def test_four_source_context_is_dated_public_reference_only_and_cached():
     assert rows["bls"]["value"]=="320.10" and rows["bls"]["period"]=="2026-M08"
     assert rows["treasury"]["value"]=="38900000000000.12"
     assert rows["treasury"]["period"]=="2026-09-26"
+    assert rows["treasury"]["previous_period"]=="2026-09-25"
+    assert rows["treasury"]["previous_value"]=="38890000000000.12"
+    assert rows["bls"]["previous_period"]=="2026-M07"
+    assert rows["bls"]["previous_value"]=="318.7"
     assert rows["openfigi"]["value"]=="BBG000B9XRY4" and rows["openfigi"]["symbol"]=="MSFT"
     assert all(x["quote_eligible"] is False and x["trading_authorized"] is False
                and x["ai_use_approved"] is False for x in result["sources"])
@@ -403,3 +410,71 @@ def test_all_room_soulaana_ui_has_typed_content_lane_and_no_unreviewed_model_req
     assert "external_model_called !== false" in js
     assert 'packet.ai_input_approved !== false' in js
     assert "innerHTML" not in js and "api.openai.com" not in js
+
+
+def test_soulaana_examines_same_source_prior_records_not_just_static_descriptions():
+    svc,opened=reviewed_content_service()
+    packet=svc.snapshot(symbol="MSFT")
+    brief=packet["soulaana_evidence_brief"]
+    assert brief["comparison_count"]==2
+    rows={item["source"]:item for item in brief["comparisons"]}
+    assert rows["bls"]["earlier_period"]=="2026-M07"
+    assert rows["bls"]["later_period"]=="2026-M08"
+    assert rows["bls"]["direction"]=="UP"
+    assert "318.7" in rows["bls"]["insight"] and "320.10" in rows["bls"]["insight"]
+    assert rows["treasury"]["earlier_period"]=="2026-09-25"
+    assert rows["treasury"]["later_period"]=="2026-09-26"
+    assert rows["treasury"]["difference"]=="10000000000.00"
+    assert rows["treasury"]["direction"]=="UP"
+    assert "different measures" in brief["what_needs_investigation"]
+    assert brief["cross_source_causality_claimed"] is False
+    assert all(x["research_only"] and not x["causality_claimed"] and not x["quote_verified"]
+               for x in brief["comparisons"])
+    assert brief["external_model_called"] is False
+    assert len(opened.calls)==3   # same official GET, no second network request
+
+
+def test_comparison_without_explicit_ai_use_is_not_in_soulaana_brief():
+    svc,opened=reviewed_content_service(frozenset())
+    brief=svc.snapshot(symbol="MSFT")["soulaana_evidence_brief"]
+    assert brief["observations"]==[] and brief["comparisons"]==[]
+    assert brief["comparison_count"]==0
+    assert "No validated two-period comparison" in brief["what_changed"]
+    assert len(opened.calls)==3
+
+
+def test_one_source_ai_review_limits_comparison_to_that_source():
+    svc,_=reviewed_content_service(frozenset({"bls"}))
+    brief=svc.snapshot(symbol="MSFT")["soulaana_evidence_brief"]
+    assert [c["source"] for c in brief["comparisons"]]==["bls"]
+    assert [x["source"] for x in brief["observations"]]==["bls"]
+    assert "treasury" not in str(brief["comparisons"]).lower()
+
+
+def test_malformed_or_reverse_chronology_cannot_reach_soulaana():
+    from engine.market_intake.keyless_soulaana import build_soulaana_evidence_brief
+    svc,_=reviewed_content_service(frozenset({"treasury"}))
+    valid=svc.snapshot(symbol="MSFT")
+    for previous_period,previous_value in (
+        ("2026-09-27","38890000000000.12"),
+        ("2026-09-25","NaN"),
+        ("2026-09-25",None),
+        ("http://bad.example/","1")
+    ):
+        changed={**valid,"sources":[dict(row) for row in valid["sources"]]}
+        changed["sources"][2]["previous_period"]=previous_period
+        changed["sources"][2]["previous_value"]=previous_value
+        with pytest.raises(ValueError,match="SOULAANA_COMPARISON_SHAPE_HOLD"):
+            build_soulaana_evidence_brief(
+                changed,approved_sources=frozenset({"treasury"}))
+
+
+def test_shared_soulaana_read_displays_insights_not_unreviewed_source_copy():
+    js=(ROOT/"web/static/ob/ob_keyless_context.js").read_text()
+    assert 'brief.comparisons.forEach' in js
+    assert 'brief.what_changed' in js
+    assert 'brief.what_needs_investigation' in js
+    assert 'brief.cross_source_causality_claimed !== false' in js
+    assert 'item.causality_claimed === false' in js
+    assert 'panel.append(digest)' in js
+    assert "innerHTML" not in js and "api.public.com" not in js

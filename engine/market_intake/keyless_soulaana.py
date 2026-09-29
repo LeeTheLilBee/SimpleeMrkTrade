@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 import re
 
 _ORDER = ("sec", "bls", "treasury", "openfigi")
@@ -150,6 +151,7 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
     rows = packet["sources"]
     observations = []
     statuses = []
+    comparisons = []
     for row in rows:
         key, state = row["source"], row["state"]
         permitted = (key in approved_sources and state == "SOURCE_BOUND")
@@ -204,6 +206,52 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
                 "OpenFIGI maps the requested ticker " + symbol + " to FIGI " + value
                 + " in this unique filtered result. It does not independently prove issuer identity or tradability."
             )
+        # Soulaana compares two actual observations from the SAME approved
+        # source response. A period comparison is research, never a quote or
+        # a claim that the change caused any move in a stock or option.
+        prior_period = row.get("previous_period")
+        prior_value = row.get("previous_value")
+        if key in {"bls", "treasury"}:
+            if (prior_period is None) != (prior_value is None):
+                raise ValueError("SOULAANA_COMPARISON_SHAPE_HOLD")
+            if prior_period is not None:
+                period_rule = _BLS_PERIOD if key == "bls" else re.compile(r"^20\d{2}-\d{2}-\d{2}$")
+                if (not isinstance(prior_period, str) or not period_rule.fullmatch(prior_period)
+                        or prior_period >= period or not isinstance(prior_value, str)
+                        or not _NUMBER.fullmatch(prior_value)):
+                    raise ValueError("SOULAANA_COMPARISON_SHAPE_HOLD")
+                current_amount, earlier_amount = Decimal(value), Decimal(prior_value)
+                if current_amount <= 0 or earlier_amount <= 0:
+                    raise ValueError("SOULAANA_COMPARISON_SHAPE_HOLD")
+                delta = current_amount - earlier_amount
+                pct = delta / earlier_amount * Decimal("100")
+                movement = "increased" if delta > 0 else "decreased" if delta < 0 else "was unchanged"
+                label = "CPI-U index" if key == "bls" else "Total public debt"
+                unit_label = "index points" if key == "bls" else "USD"
+                insight = (
+                    f"{label} {movement} between {prior_period} ({prior_value}) and "
+                    f"{period} ({value}): difference {delta:+,.2f} {unit_label}; "
+                    f"relative change {pct:+.3f}%. This compares two source-reported "
+                    "observations; it does not establish a release time, an "
+                    "investment signal, or a causal relationship."
+                )
+                comparisons.append({
+                    "source": key,
+                    "source_reference": _REFERENCES[key],
+                    "earlier_period": prior_period,
+                    "later_period": period,
+                    "earlier_value": prior_value,
+                    "later_value": value,
+                    "difference": str(delta),
+                    "relative_change_percent": f"{pct:+.3f}",
+                    "direction": "UP" if delta > 0 else "DOWN" if delta < 0 else "UNCHANGED",
+                    "insight": insight,
+                    "research_only": True,
+                    "causality_claimed": False,
+                    "quote_verified": False,
+                })
+        elif prior_period is not None or prior_value is not None:
+            raise ValueError("SOULAANA_COMPARISON_SHAPE_HOLD")
         observations.append({
             "source": key,
             "source_reference": _REFERENCES[key],
@@ -223,6 +271,23 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
         "source_register": statuses,
         "observations": observations,
         "observation_count": len(observations),
+        # This is a calculated, source-bound examination of period changes,
+        # not merely a static source-register sentence or an LLM-generated fact.
+        "comparisons": comparisons,
+        "comparison_count": len(comparisons),
+        "what_changed": (
+            f"I compared {len(comparisons)} approved source series against their "
+            "earlier published observations. Read each source period and difference below."
+            if comparisons else
+            "No validated two-period comparison is available under current source AI-use reviews."
+        ),
+        "what_needs_investigation": (
+            "The CPI index and federal debt are different measures at different "
+            "source periods; a correlation or cause cannot be inferred here. "
+            "For a specific ticker, inspect the separate SEC issuer evidence and "
+            "wait for independently licensed stock/options quote truth."
+        ),
+        "cross_source_causality_claimed": False,
         "interpretation": (
             "Source-cited, period-bound official reference observations are available."
             if observations else

@@ -23,7 +23,7 @@ TREASURY_URL = (
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/"
     "v2/accounting/od/debt_to_penny"
     "?fields=record_date,tot_pub_debt_out_amt"
-    "&sort=-record_date&format=json&page[number]=1&page[size]=1"
+    "&sort=-record_date&format=json&page[number]=1&page[size]=2"
 )
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _MAX_RESPONSE_BYTES = 80_000
@@ -52,26 +52,34 @@ class TreasuryPublicClient:
         try:
             payload = json.loads(raw)
             rows = payload["data"]
-            if not isinstance(rows, list) or len(rows) != 1:
+            if not isinstance(rows, list) or not 1 <= len(rows) <= 2:
                 raise ValueError()
-            row = rows[0]
-            if not isinstance(row, dict):
-                raise ValueError()
-            period, amount = row["record_date"], row["tot_pub_debt_out_amt"]
-            if not isinstance(period, str) or not _DATE.fullmatch(period):
-                raise ValueError()
-            measured = date.fromisoformat(period)
-            if measured > datetime.now(timezone.utc).date() + timedelta(days=1):
-                raise ValueError()
-            if not isinstance(amount, str):
-                raise ValueError()
-            value = Decimal(amount.replace(",", ""))
-            if not value.is_finite() or value <= 0:
-                raise ValueError()
+            def valid_record(row):
+                if not isinstance(row, dict):
+                    raise ValueError()
+                period, amount = row["record_date"], row["tot_pub_debt_out_amt"]
+                if not isinstance(period, str) or not _DATE.fullmatch(period):
+                    raise ValueError()
+                measured = date.fromisoformat(period)
+                if measured > datetime.now(timezone.utc).date() + timedelta(days=1):
+                    raise ValueError()
+                if not isinstance(amount, str):
+                    raise ValueError()
+                value = Decimal(amount.replace(",", ""))
+                if not value.is_finite() or value <= 0:
+                    raise ValueError()
+                return period, str(value)
+            period, value = valid_record(rows[0])
+            previous_period = previous_value = None
+            if len(rows) == 2:
+                previous_period, previous_value = valid_record(rows[1])
+                if previous_period >= period:
+                    raise ValueError()
         except (KeyError, IndexError, TypeError, ValueError, InvalidOperation, UnicodeError):
             raise PublicResearchUnavailable("TREASURY_SOURCE_SHAPE_HOLD") from None
         return PublicObservation(
             "US Treasury", "DEBT_TO_THE_PENNY", "tot_pub_debt_out_amt",
-            period, str(value), datetime.now(timezone.utc), TREASURY_DOCS,
+            period, value, datetime.now(timezone.utc), TREASURY_DOCS,
             ai_use_approved=False,
+            previous_period=previous_period, previous_value=previous_value,
         )

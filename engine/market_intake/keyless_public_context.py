@@ -96,11 +96,14 @@ class KeylessPublicContext:
         self._figi_attempts = deque(maxlen=5)
 
     def _row(self, key: str, state: str, *, value=None, period=None,
-             fetched_at=None, symbol=None) -> dict:
+             fetched_at=None, symbol=None, previous_period=None,
+             previous_value=None) -> dict:
         provider, label, unit, reference = LABELS[key]
         return {
             "source": key, "provider": provider, "label": label,
             "state": state, "value": value, "period": period,
+            # These fields remain separate from publication/release times.
+            "previous_period": previous_period, "previous_value": previous_value,
             "unit": unit, "retrieved_at": fetched_at,
             "symbol": symbol if key == "openfigi" else None,
             "source_reference": reference,
@@ -113,11 +116,15 @@ class KeylessPublicContext:
         if key == "bls":
             obs = self.reference.bls_v1("CUUR0000SA0")
             return self._row(key, "SOURCE_BOUND", value=obs.value,
-                             period=obs.period, fetched_at=obs.fetched_at.isoformat())
+                             period=obs.period, fetched_at=obs.fetched_at.isoformat(),
+                             previous_period=obs.previous_period,
+                             previous_value=obs.previous_value)
         if key == "treasury":
             obs = self.treasury.latest_public_debt()
             return self._row(key, "SOURCE_BOUND", value=obs.value,
-                             period=obs.period, fetched_at=obs.fetched_at.isoformat())
+                             period=obs.period, fetched_at=obs.fetched_at.isoformat(),
+                             previous_period=obs.previous_period,
+                             previous_value=obs.previous_value)
         if key == "openfigi" and symbol is not None:
             while self._figi_attempts and (now - self._figi_attempts[0]).total_seconds() >= 60:
                 self._figi_attempts.popleft()
