@@ -249,8 +249,8 @@ def test_offline_operator_bridge_requires_independent_symbol_and_explicit_review
     collector(tmp_path)
     nasdaq=tmp_path/"nasdaqlisted.txt"
     other=tmp_path/"otherlisted.txt"
-    nasdaq.write_text("Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares\\nXYZ|Synthetic Issuer|Q|N|N|100|N|N\\n")
-    other.write_text("ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol\\n")
+    nasdaq.write_text("Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares\nXYZ|Synthetic Issuer|Q|N|N|100|N|N\n")
+    other.write_text("ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol\n")
     rights=tmp_path/"review.json"
     review={
         "scope":"owner_internal",
