@@ -118,21 +118,66 @@ def _csrf() -> str:
     return val
 
 
-def _post_request_valid() -> bool:
-    """Protect credential/form POST against CSRF and foreign-page requests."""
+# Only fixed, non-sensitive reason codes may be returned to the browser.
+_FORM_HOLDS = {
+    "OWNER_GATE_HOLD": "Tower could not verify the current owner access. Return to Tower, sign in and relaunch OB.",
+    "SESSION_GATE_HOLD": "Your Tower login session has changed. Sign in again and open the connection from OB.",
+    "BODY_SIZE_HOLD": "The submitted form was missing or exceeded the permitted size. Reopen the connection form.",
+    "FORM_TYPE_HOLD": "This action needs the protected browser form. Reopen the connection page.",
+    "ORIGIN_HOLD": "The browser's HTTPS origin could not be verified. Reopen the form from the Tower HTTPS address.",
+    "BROWSER_SITE_HOLD": "This request did not originate from the protected Tower page.",
+    "CSRF_HOLD": "Your form security token expired or changed. Reopen the connection page before resubmitting.",
+    "CONNECT_DISABLED_HOLD": "The owner connection feature is not enabled for this Tower service.",
+}
+
+
+def _post_hold_reason() -> str | None:
+    """Return only a stable rejection reason. NEVER inspect or echo the secret.
+
+    Modern browsers usually send an Origin on a same-origin POST, but privacy
+    configurations may omit it. When absent, require affirmative browser
+    same-origin navigation metadata AND the session-bound CSRF token. Never
+    allow an explicitly mismatched/non-HTTPS Origin or cross-site Fetch metadata.
+    """
     if request.content_length is None or request.content_length > _MAX_POST_BYTES:
-        return False
+        return "BODY_SIZE_HOLD"
     if request.mimetype != "application/x-www-form-urlencoded":
-        return False
-    # Render terminates TLS at its HTTPS proxy. Reject direct/insecure origin.
-    origin = request.headers.get("Origin", "")
-    parsed = urlsplit(origin)
-    if parsed.scheme != "https" or parsed.netloc != request.host:
-        return False
-    if request.headers.get("Sec-Fetch-Site", "same-origin") not in {"same-origin", "none"}:
-        return False
+        return "FORM_TYPE_HOLD"
+    fetch_site = request.headers.get("Sec-Fetch-Site", "").lower()
+    if fetch_site not in {"", "same-origin", "none"}:
+        return "BROWSER_SITE_HOLD"
+    origin = request.headers.get("Origin", "").strip()
+    if origin:
+        parsed = urlsplit(origin)
+        approved_hosts = {request.host.lower()}
+        render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").lower().strip()
+        if render_hostname:
+            approved_hosts.add(render_hostname)
+        if (parsed.scheme != "https" or not parsed.netloc
+                or parsed.netloc.lower() not in approved_hosts
+                or parsed.username is not None or parsed.password is not None
+                or parsed.path or parsed.query or parsed.fragment):
+            return "ORIGIN_HOLD"
+    else:
+        # Explicit same-origin browser navigation is required when Origin is
+        # missing. Missing Fetch metadata must not become a permissive fallback.
+        if (fetch_site != "same-origin"
+                or request.headers.get("Sec-Fetch-Mode", "").lower() != "navigate"):
+            return "ORIGIN_HOLD"
     submitted = request.form.get("csrf", "")
-    return isinstance(submitted, str) and hmac.compare_digest(_csrf(), submitted)
+    if not isinstance(submitted, str) or not hmac.compare_digest(_csrf(), submitted):
+        return "CSRF_HOLD"
+    return None
+
+
+def _post_rejected(code: str):
+    # Fixed status and message, never submitted values, credentials or tokens.
+    response = make_response(render_template(
+        "ob_public_owner_hold.html",
+        hold_code=code,
+        hold_message=_FORM_HOLDS.get(code, "Connection not attempted. Reopen Tower."),
+    ), 403)
+    return _headers(response)
 
 
 def _discover_single_brokerage(token: str, opener) -> str:
@@ -176,15 +221,20 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
     @bp.route(PATH, methods=["GET", "POST"])
     def owner_public_connection():
         if owner_authorize() is not True:
+            if request.method == "POST":
+                return _post_rejected("OWNER_GATE_HOLD")
             abort(403)
         sid = _owner_sid()
         if not sid:
+            if request.method == "POST":
+                return _post_rejected("SESSION_GATE_HOLD")
             abort(403)
         if request.method == "POST":
-            if not _post_request_valid():
-                abort(403)
+            hold_reason = _post_hold_reason()
+            if hold_reason is not None:
+                return _post_rejected(hold_reason)
             if not _flag("OB_PUBLIC_OWNER_CONNECT_ENABLED"):
-                abort(403)
+                return _post_rejected("CONNECT_DISABLED_HOLD")
             operation = request.form.get("operation")
             # No secret included in URL, output, session cookie, flash, DB or logs.
             if operation == "disconnect":
