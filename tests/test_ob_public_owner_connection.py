@@ -115,6 +115,8 @@ def test_quote_after_explicit_independent_rights_stays_source_only(setup,monkeyp
     assert "101.1" in html and "SOURCE RESPONSE" in html
     assert "not installed" in html.lower()
     assert len(rec.calls)==3
+    monkeypatch.delenv("OB_PUBLIC_OWNER_DISPLAY_REVIEWED")
+    assert "101.1" not in page(client).get_data(as_text=True)
     assert all("/orders" not in r.full_url and "/preflight" not in r.full_url for r,t in rec.calls)
     # Option rights cannot be inferred from a stock grant.
     assert "OPTION" not in re.findall(r'<option value="([^"]+)"',html)
