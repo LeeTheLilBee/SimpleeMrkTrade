@@ -17,6 +17,7 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
         "/ob/market-map",
         "/ob/data-desk",
         "/ob/data-desk/public",
+        "/ob/research/keyless.json",
         # OBDATA009: exact private, read-only canonical source-status corridor.
         "/ob/engine-feed-snapshot.json",
         "/ob/trade-center",
