@@ -7,7 +7,7 @@
 .ob-keyless-intro{max-width:500px;color:#b8c6dc;font-size:.9rem;margin:0}
 .ob-keyless-lookup{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
 .ob-keyless-lookup input{min-width:190px;max-width:240px;padding:9px 12px;border-radius:8px;background:#152341;color:#fff;border:1px solid #7890ac;font:inherit}
-.ob-keyless-lookup button{padding:9px 15px;border:1px solid #6fcac5;background:#164748;color:#eff;color-radius:inherit;border-radius:8px;font:inherit;cursor:pointer}
+.ob-keyless-lookup button{padding:9px 15px;border:1px solid #6fcac5;background:#164748;color:#eff;border-radius:8px;font:inherit;cursor:pointer}
 .ob-keyless-status,.ob-keyless-footer{color:#b5c9de;font-size:.78rem}
 .ob-keyless-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px;margin-top:14px}
 .ob-keyless-card{min-width:0;padding:14px;border:1px solid rgba(146,180,217,.23);border-radius:12px;background:rgba(22,36,65,.82)}
