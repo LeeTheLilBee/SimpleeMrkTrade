@@ -164,13 +164,26 @@ class PublicReferenceClient:
             if payload["status"] != "REQUEST_SUCCEEDED":
                 raise ValueError()
             results = payload["Results"]
-            # Published unregistered v1 shape: Results is a one-element list.
-            if not isinstance(results, list) or len(results) != 1 or not isinstance(results[0], dict):
+            # BLS documentation contains BOTH legitimate wrappers: its v1
+            # signature sample shows a singleton Results list, while its
+            # Python v1 example reads Results as an object with "series".
+            # Accept exactly these two documented envelopes, no loose coercion.
+            if isinstance(results, list):
+                if len(results) != 1 or not isinstance(results[0], dict):
+                    raise ValueError()
+                group = results[0]
+            elif isinstance(results, dict):
+                group = results
+            else:
                 raise ValueError()
-            series = results[0]["series"]
-            if len(series) != 1 or series[0]["seriesID"] != series_id:
+            series = group["series"]
+            if (not isinstance(series, list) or len(series) != 1
+                    or not isinstance(series[0], dict)
+                    or series[0].get("seriesID") != series_id):
                 raise ValueError()
             rows = series[0]["data"]
+            if not isinstance(rows, list):
+                raise ValueError()
             valid = [r for r in rows if isinstance(r, dict) and re.fullmatch(r"(?:M(?:0[1-9]|1[0-2])|Q0[1-4]|A01)",
                      str(r.get("period", ""))) and re.fullmatch(r"\d{4}", str(r.get("year", "")))]
             latest = max(valid, key=lambda r: (r["year"], r["period"]))
