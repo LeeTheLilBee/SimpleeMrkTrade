@@ -24,7 +24,7 @@ No check runs until all three operator env flags are exactly 1:
 - OB_PUBLIC_RESEARCH_USE_REVIEWED=1
 - OB_PUBLIC_RESEARCH_OWNER_DISPLAY_REVIEWED=1
 
-Optional OB_PUBLIC_RESEARCH_AI_USE_REVIEWED=1 can only be set after reviewing each source's intended AI use; absent flag means no AI authorization. Set optional OB_BEA_API_KEY / OB_OPENFIGI_API_KEY as backend secrets, not command-line arguments or git files.
+In addition to the global flags, the *selected* provider requires independent backend review flags, e.g. for BLS: `OB_PUBLIC_RESEARCH_BLS_USE_REVIEWED=1` and `OB_PUBLIC_RESEARCH_BLS_OWNER_DISPLAY_REVIEWED=1`. For BEA and OpenFIGI, use the same pattern with `BEA` and `OPENFIGI` respectively. No global reviewed flag silently grants another source. Optional AI use requires **both** `OB_PUBLIC_RESEARCH_AI_USE_REVIEWED=1` and the selected provider's `OB_PUBLIC_RESEARCH_<SOURCE>_AI_USE_REVIEWED=1`; otherwise `ai_use_approved=False`. Set optional OB_BEA_API_KEY / OB_OPENFIGI_API_KEY as backend secrets, not command-line arguments or git files.
 
 Run one explicit command in the approved backend environment:
 - python -m scripts.ob_public_research_check --source bls --series LNS14000000
@@ -41,3 +41,8 @@ These are operator-triggered network checks, not live deployed background connec
 4. Independently connect entitled actual stock/options prices via the established gateway and canonical time/entitlement corridor. Owner-only Manual Live remains a different explicit approval gate. No delayed/synthetic fallback pretending to be current.
 
 Validation: python -m pytest -q tests/test_ob_public_research_sources.py tests/test_obscan026_040_universal_gateway.py tests/test_tower_ob_market_data_desk_selective.py. CI uses synthetic fixtures; successful CI never asserts a real third-party API was reached.
+
+
+## Tower selective integration review
+
+The original #218 was based on the source head of already merged #217. Tower must use a separate current-hosted-branch integration rather than replacing current `web/hosted_tower.py`, auth/step-up or OB UI with old branch content. In the selective integration, no hosted read endpoint is mounted and no provider is started on import: only the reference-only catalog and backend operator-run source modules are present. The staged client additionally enforces source-specific approved-use and AI grants, exact official URL/method matching, type-safe BEA query HOLDs, and regression tests against current Tower Desk and route contracts. CI cannot establish external provider terms, aggregate quota or a real official data receipt; real network checks remain an owner-controlled separate step.

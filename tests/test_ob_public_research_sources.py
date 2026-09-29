@@ -34,7 +34,10 @@ class FixtureOpener:
         return Response(self.response)
 
 
-POLICY = OwnerResearchPolicy(source_use_reviewed=True, owner_display_reviewed=True)
+POLICY = OwnerResearchPolicy(
+    source_use_reviewed=True, owner_display_reviewed=True,
+    reviewed_sources=frozenset({"bls", "bea", "openfigi"}),
+)
 
 
 def test_no_network_without_explicit_rights_review():
@@ -138,3 +141,67 @@ def test_research_sources_cannot_install_as_equity_or_option_quote():
     rows = {p["product_key"]: p for p in gateway.provider_status()["providers"]}
     assert all(rows[key]["state"] == "REFERENCE_ONLY" for key in keys)
     assert gateway.provider_status()["live_transport_connected"] is False
+
+
+def test_one_provider_review_never_inherits_use_or_ai_permission_for_another():
+    bls_only = OwnerResearchPolicy(
+        source_use_reviewed=True, owner_display_reviewed=True, ai_use_reviewed=True,
+        reviewed_sources=frozenset({"bls"}), ai_reviewed_sources=frozenset({"bls"}),
+    )
+    opener = FixtureOpener({"BEAAPI": {"Results": {"Data": []}}})
+    client = PublicReferenceClient(bls_only, opener=opener)
+    with pytest.raises(PublicResearchUnavailable, match="OWNER_SOURCE_REVIEW_REQUIRED"):
+        client.bea_nipa("synthetic-key-12345")
+    with pytest.raises(PublicResearchUnavailable, match="OWNER_SOURCE_REVIEW_REQUIRED"):
+        client.openfigi_ticker("MSFT")
+    assert not opener.requests
+    bls_opener = FixtureOpener({"status":"REQUEST_SUCCEEDED", "Results":{"series":[{
+        "seriesID":"LNS14000000","data":[{"year":"2026","period":"M08","value":"4.2"}]
+    }]}})
+    result = PublicReferenceClient(bls_only, opener=bls_opener).bls_v1("LNS14000000")
+    assert result.ai_use_approved is True
+    review_without_ai = OwnerResearchPolicy(
+        source_use_reviewed=True, owner_display_reviewed=True, ai_use_reviewed=True,
+        reviewed_sources=frozenset({"bls"}), ai_reviewed_sources=frozenset(),
+    )
+    result = PublicReferenceClient(review_without_ai, opener=bls_opener).bls_v1("LNS14000000")
+    assert result.ai_use_approved is False
+
+
+@pytest.mark.parametrize("bad_kwargs", [
+    {"table":None}, {"table":[]}, {"frequency":None}, {"frequency":[]},
+    {"line_number":None}, {"line_number":1}, {"line_number":[]},
+])
+def test_bea_malformed_query_is_redacted_hold_without_network(bad_kwargs):
+    opener=FixtureOpener({})
+    client=PublicReferenceClient(POLICY, opener=opener)
+    with pytest.raises(PublicResearchUnavailable, match="BEA_QUERY_INVALID"):
+        client.bea_nipa("synthetic-key-12345", **bad_kwargs)
+    assert opener.requests==[]
+
+
+def test_fixed_endpoint_and_method_pair_rejects_nonstandard_calls():
+    opener=FixtureOpener({})
+    client=PublicReferenceClient(POLICY, opener=opener)
+    with pytest.raises(PublicResearchUnavailable, match="SOURCE_ENDPOINT_NOT_ALLOWED"):
+        client._json("https://api.bls.gov/publicAPI/v1/timeseries/data/ABC123",
+                     source="bea", method="GET")
+    with pytest.raises(PublicResearchUnavailable, match="SOURCE_ENDPOINT_NOT_ALLOWED"):
+        client._json("https://api.openfigi.com/v3/mapping", source="openfigi",
+                     method="GET")
+    with pytest.raises(PublicResearchUnavailable, match="BLS_SERIES_INVALID"):
+        client.bls_v1("ABC#fragment")
+    assert not opener.requests
+
+
+def test_owner_cli_needs_per_provider_flags_before_constructing_network(monkeypatch, capsys):
+    import scripts.ob_public_research_check as cli
+    import sys
+    monkeypatch.setattr(sys, "argv", ["ob_public_research_check", "--source", "bea"])
+    for key in ("OB_PUBLIC_RESEARCH_ENABLED", "OB_PUBLIC_RESEARCH_USE_REVIEWED",
+                "OB_PUBLIC_RESEARCH_OWNER_DISPLAY_REVIEWED"):
+        monkeypatch.setenv(key,"1")
+    monkeypatch.delenv("OB_PUBLIC_RESEARCH_BEA_USE_REVIEWED",raising=False)
+    monkeypatch.delenv("OB_PUBLIC_RESEARCH_BEA_OWNER_DISPLAY_REVIEWED",raising=False)
+    assert cli.main()==2
+    assert "independently reviewed" in capsys.readouterr().out
