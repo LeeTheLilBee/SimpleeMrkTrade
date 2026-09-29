@@ -1,0 +1,46 @@
+name: OBSEC001 free official EDGAR source acceptance
+on:
+  push:
+    branches: [ob-edgar-public-owner-research-20260929]
+  pull_request:
+    paths:
+      - "engine/market_intake/sec_public_*.py"
+      - "scripts/ob_sec_public_research_check.py"
+      - "tests/test_obsec_public_edgar_research.py"
+      - "web/hosted_tower.py"
+      - "docs/market_data/OBSEC001_PUBLIC_EDGAR_CONNECTOR.md"
+      - ".github/workflows/obsec001-public-edgar-source.yml"
+permissions:
+  contents: read
+jobs:
+  sec-source-boundaries:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install protected hosted test dependencies
+        run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - name: Compile and run bounded offline transport and existing research tests
+        run: |
+          python -m py_compile engine/market_intake/sec_public_client.py engine/market_intake/sec_public_research.py scripts/ob_sec_public_research_check.py web/hosted_tower.py
+          python -m pytest -q tests/test_obsec_public_edgar_research.py tests/test_obintel001_030_symbol_research.py tests/test_tower_ob_symbol_research_selective.py tests/test_tower_ob_market_data_desk_selective.py
+      - name: Verify no auto activation, live-price feed, or external URL input
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          hosted=Path("web/hosted_tower.py").read_text()
+          client=Path("engine/market_intake/sec_public_client.py").read_text()
+          service=Path("engine/market_intake/sec_public_research.py").read_text()
+          assert "sec_owner_resolver_from_environment()" in hosted
+          assert 'OB_SEC_PUBLIC_RESEARCH_ENABLED") != "1"' in service
+          assert "SEC_TICKERS" in client and "data.sec.gov" in client
+          assert "Simplee World Observatory public research" in client
+          assert "redirect_request" in client and "spacing_seconds: float = 0.6" in client
+          assert "order" not in client.lower().replace("no broker or market-price authority", "").replace("no key, no browser requests", "")
+          assert "register_hosted_ob_market_source_status(app)" in hosted
+          PY
