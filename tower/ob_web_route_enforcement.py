@@ -13,6 +13,7 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
     {
         "/ob/dashboard",
         "/ob/market-map",
+        "/ob/data-desk",
         "/ob/trade-center",
         "/ob/review-center",
         "/ob/owner-console",
