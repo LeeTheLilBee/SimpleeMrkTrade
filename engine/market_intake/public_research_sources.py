@@ -80,6 +80,10 @@ class PublicObservation:
     candidate_admitted: bool = False
     broker_execution_authorized: bool = False
     ai_use_approved: bool = False
+    # Optional earlier official observation from the same response. Both
+    # source periods survive; retrieval time is never treated as release time.
+    previous_period: str | None = None
+    previous_value: str | None = None
 
 
 @dataclass(frozen=True)
@@ -171,12 +175,25 @@ class PublicReferenceClient:
                      str(r.get("period", ""))) and re.fullmatch(r"\d{4}", str(r.get("year", "")))]
             latest = max(valid, key=lambda r: (r["year"], r["period"]))
             number = self._number(latest["value"])
+            latest_key = (latest["year"], latest["period"])
+            earlier = sorted((r for r in valid if (r["year"], r["period"]) < latest_key),
+                             key=lambda r: (r["year"], r["period"]), reverse=True)
+            previous_period = previous_value = None
+            for candidate in earlier:
+                try:
+                    candidate_value = self._number(candidate["value"])
+                except (PublicResearchUnavailable, KeyError, TypeError):
+                    continue
+                previous_period = candidate["year"] + "-" + candidate["period"]
+                previous_value = candidate_value
+                break
         except (TypeError, KeyError, IndexError, ValueError) as exc:
             raise PublicResearchUnavailable("BLS_SOURCE_SHAPE_HOLD") from None
         return PublicObservation("BLS", "PUBLIC_V1", series_id,
                                  f'{latest["year"]}-{latest["period"]}', number,
                                  fetched, BLS_DOCS,
-                                 ai_use_approved=self.policy.ai_allowed("bls"))
+                                 ai_use_approved=self.policy.ai_allowed("bls"),
+                                 previous_period=previous_period, previous_value=previous_value)
 
     def bea_nipa(self, api_key: str, *, table: str = "T10105", frequency: str = "Q",
                  line_number: str = "1") -> PublicObservation:
