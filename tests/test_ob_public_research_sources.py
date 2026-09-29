@@ -101,6 +101,78 @@ def test_bls_still_holds_bad_or_ambiguous_envelopes(results):
         PublicReferenceClient(POLICY, opener=opener).bls_v1("CUUR0000SA0")
     assert len(opener.requests) == 1
 
+
+class DualBlsOfficialOpener:
+    """Synthetic primary response and exact official bulk file, no web access."""
+    def __init__(self, bulk, primary_status="REQUEST_NOT_PROCESSED"):
+        self.bulk = bulk.encode() if isinstance(bulk, str) else bulk
+        self.primary_status = primary_status
+        self.requests = []
+
+    def __call__(self, request, *, timeout):
+        from engine.market_intake.public_research_sources import BLS_BULK_CPI
+        self.requests.append((request.full_url, timeout))
+        if request.full_url.endswith("/publicAPI/v1/timeseries/data/CUUR0000SA0"):
+            return Response({"status": self.primary_status, "Results": {}})
+        if request.full_url == BLS_BULK_CPI:
+            return Response(self.bulk)
+        raise AssertionError("unexpected external URL")
+
+
+def _bulk(*records):
+    return ("series_id\tyear\tperiod\tvalue\tfootnote_codes\n" +
+            "".join("\t".join(map(str, row)) + "\n" for row in records))
+
+
+def test_keyless_bls_unsuccessful_api_reads_exact_official_bulk_without_fake_data():
+    from engine.market_intake.public_research_sources import BLS_BULK_CPI
+    op = DualBlsOfficialOpener(_bulk(
+        ("CUSR0000SA0", "2026", "M08", "333.100", ""),
+        ("CUUR0000SA0", "2025", "M12", "321.943", ""),
+        ("CUUR0000SA0", "2026", "M07", "333.918", ""),
+        ("CUUR0000SA0", "2026", "M08", "334.980", ""),
+        ("CUUR0000SA0", "2026", "M13", "333.100", ""),
+    ))
+    result = PublicReferenceClient(POLICY, opener=op).bls_v1("CUUR0000SA0")
+    assert result.product == "OFFICIAL_BULK_CPI"
+    assert result.source_reference == BLS_BULK_CPI
+    assert (result.period, result.value) == ("2026-M08", "334.980")
+    assert (result.previous_period, result.previous_value) == ("2026-M07", "333.918")
+    assert result.current_quote_eligible is False
+    assert result.broker_execution_authorized is False
+    assert [url for url, _ in op.requests] == [
+        "https://api.bls.gov/publicAPI/v1/timeseries/data/CUUR0000SA0",
+        BLS_BULK_CPI,
+    ]
+    assert op.requests[1][1] == 12
+
+
+@pytest.mark.parametrize("bulk", [
+    "not a BLS series file",
+    _bulk(("OTHER", "2026", "M08", "334.980", "")),
+    _bulk(("CUUR0000SA0", "2026", "M08", "NaN", ""),
+          ("CUUR0000SA0", "2026", "M07", "333.918", "")),
+    _bulk(("CUUR0000SA0", "2026", "M08", "334.980", ""),
+          ("CUUR0000SA0", "2026", "M08", "334.980", "")),
+    _bulk(("CUUR0000SA0", "2027", "M08", "334.980", ""),
+          ("CUUR0000SA0", "2026", "M07", "333.918", "")),
+])
+def test_bls_bulk_bad_or_missing_source_fails_closed(bulk):
+    op = DualBlsOfficialOpener(bulk)
+    with pytest.raises(PublicResearchUnavailable):
+        PublicReferenceClient(POLICY, opener=op).bls_v1("CUUR0000SA0")
+    assert len(op.requests) == 2
+
+
+def test_bls_bulk_never_falls_back_to_unrelated_series():
+    op = DualBlsOfficialOpener(_bulk(
+        ("CUUR0000SA0", "2026", "M08", "334.980", ""),
+        ("CUUR0000SA0", "2026", "M07", "333.918", ""),
+    ))
+    with pytest.raises(PublicResearchUnavailable, match="BLS_SOURCE_SHAPE_HOLD"):
+        PublicReferenceClient(POLICY, opener=op).bls_v1("LNS14000000")
+    assert len(op.requests) == 1
+
 def test_bls_rejects_unknown_or_malformed_records():
     opener = FixtureOpener({"status": "REQUEST_SUCCEEDED", "Results": [{"series": [
         {"seriesID": "CUUR0000SA0", "data": [{"year": "2026", "period": "M09", "value": "NaN"}]}]}]})
