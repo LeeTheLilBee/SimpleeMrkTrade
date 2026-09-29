@@ -10,6 +10,8 @@ source observations on protected cards, without promoting them to trading truth.
 from __future__ import annotations
 
 from collections.abc import Mapping
+from datetime import datetime, timedelta, timezone
+import re
 
 _ORDER = ("sec", "bls", "treasury", "openfigi")
 _STATE = frozenset({
@@ -55,7 +57,8 @@ def build_soulaana_source_register(packet: Mapping) -> dict:
                 or row.get("state") not in _STATE
                 or row.get("quote_eligible") is not False
                 or row.get("trading_authorized") is not False
-                or row.get("ai_use_approved") is not False):
+                or type(row.get("ai_use_approved")) is not bool
+                or (row.get("ai_use_approved") is True and row.get("state") != "SOURCE_BOUND")):
             raise ValueError("SOULAANA_KEYLESS_SOURCE_CONTRACT_HOLD")
         state = row["state"]
         label, ready = _READY[key]
@@ -110,4 +113,131 @@ def build_soulaana_source_register(packet: Mapping) -> dict:
         "candidate_admitted": False,
         "quote_verified": False,
         "broker_execution_authorized": False,
+    }
+
+
+
+# A separate, source-specific content handoff. The status register above still
+# contains no provider values and cannot become an implicit AI-use grant.
+_EVIDENCE_SOURCES = frozenset({"bls", "treasury", "openfigi"})
+_REFERENCES = {
+    "bls": "https://www.bls.gov/developers/api_signature.htm",
+    "treasury": "https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/",
+    "openfigi": "https://www.openfigi.com/api/documentation",
+}
+_NUMBER = re.compile(r"^\d{1,43}(?:\.\d{1,9})?$")
+_BLS_PERIOD = re.compile(r"^20\d{2}-M(?:0[1-9]|1[0-2])$")
+_FIGI = re.compile(r"^BBG[A-Z0-9]{9}$")
+_TICKER = re.compile(r"^[A-Z][A-Z0-9.-]{0,15}$")
+
+
+def build_soulaana_evidence_brief(packet: Mapping, *,
+                                  approved_sources: frozenset[str]) -> dict:
+    """Read bounded official facts only after independently approved AI use.
+
+    The narrow artifact is safe for a separate *future* model connector to
+    consume. It is already rendered as a deterministic Soulaana explanation in
+    owner-only rooms. No external AI/model request is performed by this code.
+    """
+    if (type(approved_sources) is not frozenset
+            or not approved_sources <= _EVIDENCE_SOURCES):
+        raise ValueError("SOULAANA_EVIDENCE_RIGHTS_HOLD")
+    # Independent validation of the status/read-only envelope, with exact rows.
+    build_soulaana_source_register(packet)
+    now = datetime.fromisoformat(str(packet["as_of"]).replace("Z", "+00:00"))
+    if now.tzinfo is None or now.utcoffset() is None:
+        raise ValueError("SOULAANA_EVIDENCE_TIMESTAMP_HOLD")
+    rows = packet["sources"]
+    observations = []
+    statuses = []
+    for row in rows:
+        key, state = row["source"], row["state"]
+        permitted = (key in approved_sources and state == "SOURCE_BOUND")
+        if row["ai_use_approved"] is not permitted:
+            raise ValueError("SOULAANA_EVIDENCE_RIGHTS_HOLD")
+        statuses.append({"source": key, "state": state,
+                         "content_readable": permitted})
+        if not permitted:
+            continue
+        if row.get("source_reference") != _REFERENCES[key]:
+            raise ValueError("SOULAANA_EVIDENCE_REFERENCE_HOLD")
+        value = row.get("value")
+        fetched_raw = row.get("retrieved_at")
+        if not isinstance(value, str) or not isinstance(fetched_raw, str):
+            raise ValueError("SOULAANA_EVIDENCE_SHAPE_HOLD")
+        try:
+            fetched = datetime.fromisoformat(fetched_raw.replace("Z", "+00:00"))
+        except ValueError:
+            raise ValueError("SOULAANA_EVIDENCE_TIMESTAMP_HOLD") from None
+        if (fetched.tzinfo is None or fetched.utcoffset() is None
+                or fetched > now + timedelta(minutes=2)):
+            raise ValueError("SOULAANA_EVIDENCE_TIMESTAMP_HOLD")
+        period = row.get("period")
+        if key == "bls":
+            if (not _NUMBER.fullmatch(value)
+                    or not isinstance(period, str)
+                    or not _BLS_PERIOD.fullmatch(period)
+                    or row.get("unit") != "index"):
+                raise ValueError("SOULAANA_EVIDENCE_SHAPE_HOLD")
+            meaning = (
+                "BLS CPI-U all-items NSA index: " + value + " for " + period
+                + ". This is an index observation, not an inflation percentage or a securities price."
+            )
+        elif key == "treasury":
+            if (not _NUMBER.fullmatch(value)
+                    or not isinstance(period, str)
+                    or not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", period)
+                    or row.get("unit") != "USD"):
+                raise ValueError("SOULAANA_EVIDENCE_SHAPE_HOLD")
+            meaning = (
+                "Treasury Debt to the Penny: total public debt outstanding was "
+                + value + " USD on " + period
+                + ". This is neither a Treasury yield nor an intraday market price."
+            )
+        else:
+            symbol = row.get("symbol")
+            if (not _FIGI.fullmatch(value) or not isinstance(symbol, str)
+                    or not _TICKER.fullmatch(symbol) or period is not None
+                    or row.get("unit") != "FIGI"):
+                raise ValueError("SOULAANA_EVIDENCE_SHAPE_HOLD")
+            meaning = (
+                "OpenFIGI maps the requested ticker " + symbol + " to FIGI " + value
+                + " in this unique filtered result. It does not independently prove issuer identity or tradability."
+            )
+        observations.append({
+            "source": key,
+            "source_reference": _REFERENCES[key],
+            "source_period": period,
+            "retrieved_at": fetched.isoformat(),
+            "value": value,
+            "interpretation": meaning,
+            "research_only": True,
+            "quote_verified": False,
+            "execution_authorized": False,
+        })
+    return {
+        "schema": "OB_SOULAANA_KEYLESS_EVIDENCE_V1",
+        "channel": "SOULAANA_REVIEWED_PUBLIC_RESEARCH",
+        "as_of": now.isoformat(),
+        "symbol": packet.get("symbol"),
+        "source_register": statuses,
+        "observations": observations,
+        "observation_count": len(observations),
+        "interpretation": (
+            "Source-cited, period-bound official reference observations are available."
+            if observations else
+            "No keyless source currently has both validated evidence and explicit AI-use review."
+        ),
+        "bls_attribution": (
+            "BLS.gov cannot vouch for the data or analyses derived from these data after the data have been retrieved from BLS.gov."
+            if any(x["source"] == "bls" for x in observations) else None
+        ),
+        "source_specific_ai_use_approved": bool(observations),
+        "blanket_ai_authority": False,
+        "external_model_called": False,
+        "live_quote_verified": False,
+        "candidate_admitted": False,
+        "broker_execution_authorized": False,
+        "capital_authorized": False,
+        "public_brokerage_auth_inferred": False,
     }

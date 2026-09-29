@@ -289,3 +289,117 @@ def test_shared_soulaana_panel_consumes_same_tower_snapshot_not_vendor_or_llm_ap
     assert "innerHTML" not in js
     assert "openai.com" not in js.lower()
     assert "api.public.com" not in js
+
+
+
+def reviewed_content_service(ai_sources=frozenset({"bls", "treasury", "openfigi"})):
+    source=FakeOfficialSources()
+    svc=KeylessPublicContext(
+        enabled=ENABLED, ai_sources=ai_sources, sec_delegated=True,
+        reference=PublicReferenceClient(NO_KEY,opener=source),
+        treasury=TreasuryPublicClient(NO_KEY,opener=source),
+        now=lambda: datetime.now(timezone.utc),
+    )
+    return svc,source
+
+
+def test_soulaana_receives_only_three_reviewed_source_facts_never_sec_or_market_prices():
+    svc,opened=reviewed_content_service()
+    packet=svc.snapshot(symbol="MSFT")
+    register=packet["soulaana_source_register"]
+    brief=packet["soulaana_evidence_brief"]
+    assert register["schema"]=="OB_SOULAANA_KEYLESS_STATUS_V1"
+    assert register["raw_source_values_included"] is False
+    assert register["source_content_ai_authorized"] is False
+    assert "320.10" not in str(register) and "BBG000B9XRY4" not in str(register)
+    assert packet["ai_input_approved"] is False  # never a blanket grant
+    assert brief["schema"]=="OB_SOULAANA_KEYLESS_EVIDENCE_V1"
+    assert brief["channel"]=="SOULAANA_REVIEWED_PUBLIC_RESEARCH"
+    assert brief["source_specific_ai_use_approved"] is True
+    assert brief["observation_count"]==3
+    assert [x["source"] for x in brief["observations"]]==["bls","treasury","openfigi"]
+    assert "320.10" in brief["observations"][0]["interpretation"]
+    assert "2026-M08" in brief["observations"][0]["interpretation"]
+    assert "38900000000000.12" in brief["observations"][1]["interpretation"]
+    assert "BBG000B9XRY4" in brief["observations"][2]["interpretation"]
+    assert all(x["research_only"] and x["quote_verified"] is False
+               and x["execution_authorized"] is False and x["source_reference"].startswith("https://")
+               for x in brief["observations"])
+    assert brief["external_model_called"] is False
+    assert brief["blanket_ai_authority"] is False
+    assert brief["public_brokerage_auth_inferred"] is False
+    assert not any(x["source"]=="sec" for x in brief["observations"])
+    assert "BLS.gov cannot vouch" in brief["bls_attribution"]
+    assert len(opened.calls)==3
+
+
+def test_no_review_no_soulaana_values_even_when_owner_cards_show_data():
+    svc,opened=reviewed_content_service(frozenset())
+    packet=svc.snapshot(symbol="MSFT")
+    assert all(row["ai_use_approved"] is False for row in packet["sources"])
+    brief=packet["soulaana_evidence_brief"]
+    assert brief["observations"]==[]
+    assert brief["source_specific_ai_use_approved"] is False
+    assert brief["bls_attribution"] is None
+    assert all(row["content_readable"] is False for row in brief["source_register"])
+    assert len(opened.calls)==3  # card availability and AI processing distinct
+
+
+def test_one_source_ai_review_does_not_unlock_another_or_sec_content():
+    svc,_=reviewed_content_service(frozenset({"treasury"}))
+    packet=svc.snapshot(symbol="MSFT")
+    brief=packet["soulaana_evidence_brief"]
+    assert [row["source"] for row in brief["observations"]]==["treasury"]
+    assert [row["source"] for row in packet["sources"] if row["ai_use_approved"]]==["treasury"]
+    assert packet["sources"][0]["value"] is None  # SEC is delegated, not fabricated
+
+
+def test_revoked_or_failed_source_cannot_leak_old_soulaana_evidence():
+    svc,_=reviewed_content_service()
+    assert svc.snapshot(symbol="MSFT")["soulaana_evidence_brief"]["observation_count"]==3
+    svc.enabled=frozenset()
+    packet=svc.snapshot(symbol="MSFT")
+    assert packet["soulaana_evidence_brief"]["observations"]==[]
+    assert all(row["state"]=="REVIEW_HOLD" for row in packet["sources"][1:])
+
+
+def test_tampered_provider_ai_or_original_source_provenance_holds_closed():
+    from engine.market_intake.keyless_soulaana import build_soulaana_evidence_brief
+    svc,_=reviewed_content_service(frozenset({"bls"}))
+    packet=svc.snapshot(symbol="MSFT")
+    packet["sources"][1]["source_reference"]="https://attacker.example/"
+    with pytest.raises(ValueError,match="SOULAANA_EVIDENCE_REFERENCE_HOLD"):
+        build_soulaana_evidence_brief(packet,approved_sources=frozenset({"bls"}))
+    packet["sources"][1]["source_reference"]="https://www.bls.gov/developers/api_signature.htm"
+    packet["sources"][2]["ai_use_approved"]=True
+    with pytest.raises(ValueError,match="SOULAANA_EVIDENCE_RIGHTS_HOLD"):
+        build_soulaana_evidence_brief(packet,approved_sources=frozenset({"bls"}))
+    with pytest.raises(ValueError,match="SOULAANA_EVIDENCE_RIGHTS_HOLD"):
+        build_soulaana_evidence_brief(packet,approved_sources=frozenset({"sec"}))
+
+
+def test_env_requires_distinct_ai_use_flag_and_parent_display_grant(monkeypatch):
+    from engine.market_intake.keyless_public_context import soulaana_sources_from_environment
+    for name in ("OB_KEYLESS_SOULAANA_CONTENT_ENABLED","OB_KEYLESS_RESEARCH_ENABLED"):
+        monkeypatch.delenv(name,raising=False)
+    for provider in ("BLS","TREASURY","OPENFIGI"):
+        for suffix in ("USE_REVIEWED","OWNER_DISPLAY_REVIEWED","AI_USE_REVIEWED"):
+            monkeypatch.delenv(f"OB_KEYLESS_{provider}_{suffix}",raising=False)
+    monkeypatch.setenv("OB_KEYLESS_SOULAANA_CONTENT_ENABLED","1")
+    monkeypatch.setenv("OB_KEYLESS_BLS_AI_USE_REVIEWED","1")
+    assert soulaana_sources_from_environment(enabled_sources_from_environment())==frozenset()
+    monkeypatch.setenv("OB_KEYLESS_RESEARCH_ENABLED","1")
+    monkeypatch.setenv("OB_KEYLESS_BLS_USE_REVIEWED","1")
+    monkeypatch.setenv("OB_KEYLESS_BLS_OWNER_DISPLAY_REVIEWED","1")
+    assert soulaana_sources_from_environment(enabled_sources_from_environment())==frozenset({"bls"})
+    monkeypatch.delenv("OB_KEYLESS_SOULAANA_CONTENT_ENABLED")
+    assert soulaana_sources_from_environment(enabled_sources_from_environment())==frozenset()
+
+
+def test_all_room_soulaana_ui_has_typed_content_lane_and_no_unreviewed_model_request():
+    js=(ROOT/"web/static/ob/ob_keyless_context.js").read_text()
+    assert "validSoulaanaEvidence" in js and "renderSoulaanaEvidence" in js
+    assert "SOULAANA_REVIEWED_PUBLIC_RESEARCH" in js
+    assert "external_model_called !== false" in js
+    assert 'packet.ai_input_approved !== false' in js
+    assert "innerHTML" not in js and "api.openai.com" not in js
