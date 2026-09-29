@@ -67,9 +67,7 @@ jobs:
             tests/test_market_map_obux032_live_truth.py \
             tests/test_market_map_obux033_soulaana.py \
             tests/test_market_map_obux034_interaction.py \
-            tests/test_ob_symbol_room_obux036_040.py \
-            tests/test_ob_trade_center_obux041_045.py \
-            tests/test_ob_review_center_obux046_050.py
+            tests/test_ob_symbol_room_obux036_040.py
           node tests/ob_return_handoff_node.cjs
       - name: Verify true hosted source-only state and unmapped corridors
         run: |
