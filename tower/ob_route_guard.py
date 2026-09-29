@@ -346,6 +346,31 @@ def evaluate_ob_request_guard(
     route_key = _safe_str(policy.get('route_key'), 'unmapped')
     action = _safe_str(policy.get('action'), 'view')
 
+    # PACK046's legacy identity reader predates Tower's signed owner session:
+    # it reads stale session aliases and even URL-supplied role/clearance hints.
+    # For these two exact owner-only Desk corridors, never use those hints as
+    # authority in a real HTTP request. Derive owner clearance ONLY from the
+    # authenticated Tower session. The independent OB HTTP boundary still
+    # requires fresh step-up + consumed OB handoff; Public POST separately
+    # enforces origin, CSRF, feature flag and source-specific rights.
+    if path in {"/ob/data-desk", "/ob/data-desk/public"}:
+        try:
+            from flask import has_request_context, session
+            if has_request_context():
+                from tower.tower_human_login_ob_launch import (
+                    SESSION_OWNER_ID, owner_session_active,
+                )
+                if owner_session_active():
+                    user_id = session.get(SESSION_OWNER_ID, "")
+                    role = "owner"
+                    user_clearance_level = "critical"
+                else:
+                    user_id, role, user_clearance_level = "anonymous", "", "internal"
+        except Exception:
+            # A broken/missing Tower session is never permission to honor
+            # user-supplied role, query or clearance values.
+            user_id, role, user_clearance_level = "anonymous", "", "internal"
+
     decision = evaluate_ob_route_clearance(
         user_id=user_id,
         role=role,
