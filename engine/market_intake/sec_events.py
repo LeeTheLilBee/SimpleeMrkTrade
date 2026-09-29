@@ -55,7 +55,7 @@ def parse_sec_submissions(contents: str, *, universe: Mapping[str, SymbolRow],
         if observed.tzinfo is None or observed.utcoffset() is None:
             continue  # Ambiguous timestamps are not filled in from receipt time.
         primary = str(recent["primaryDocument"][i])
-        if not DOCUMENT.fullmatch(primary) or PurePosixPath(primary).name != primary:
+        if primary in {".", ".."} or not DOCUMENT.fullmatch(primary) or PurePosixPath(primary).name != primary:
             primary = accession.replace("-", "") + "-index.html"
         url = (f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/"
                f"{accession.replace('-', '')}/{primary}")
