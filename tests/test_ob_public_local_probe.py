@@ -39,6 +39,8 @@ class Recorder:
         if request.full_url == _ACCOUNTS:
             assert request.get_method() == "GET"
             assert request.get_header("Authorization") == "Bearer " + TOKEN
+            # Keep account lookup aligned with Public's documented quickstart.
+            assert request.get_header("Content-type") == "application/json"
             return Response({"accounts": [
                 {"accountId": ACCOUNT_ID, "accountType": "BROKERAGE"},
                 {"accountId": "another-valid-account-22", "accountType": "RETIREMENT"},
