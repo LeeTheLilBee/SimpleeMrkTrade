@@ -20,7 +20,8 @@ from .universe import (directory_snapshot, parse_nasdaq_directory,
                        parse_sec_ticker_exchange, reconcile_symbol_universe)
 
 
-def run(nasdaq_file: Path, other_file: Path, sec_file: Path | None = None,\n        submission_files: tuple[Path, ...] = ()) -> dict[str, object]:
+def run(nasdaq_file: Path, other_file: Path, sec_file: Path | None = None,
+        submission_files: tuple[Path, ...] = ()) -> dict[str, object]:
     timestamp = datetime.now(timezone.utc)
     first = parse_nasdaq_directory(nasdaq_file.read_text(encoding="utf-8"),
                                    directory="nasdaqlisted.txt", observed_at=timestamp)
@@ -52,7 +53,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--nasdaq", required=True, type=Path)
     parser.add_argument("--other", required=True, type=Path)
-    parser.add_argument("--sec", type=Path)\n    parser.add_argument("--submissions", type=Path, nargs="*", default=[])
+    parser.add_argument("--sec", type=Path)
+    parser.add_argument("--submissions", type=Path, nargs="*", default=[])
     args = parser.parse_args()
     print(json.dumps(run(args.nasdaq, args.other, args.sec, tuple(args.submissions)), indent=2))
 
