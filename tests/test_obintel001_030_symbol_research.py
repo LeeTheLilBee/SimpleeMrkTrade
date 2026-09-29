@@ -2,6 +2,8 @@
 from dataclasses import replace
 from datetime import datetime, date, timedelta, timezone
 from copy import deepcopy
+from pathlib import Path
+from flask import Flask, render_template
 
 import pytest
 
@@ -302,3 +304,32 @@ def test_transient_reference_ledger_requires_retention_and_monotonicity():
         ledger.append(approved,receipt_id="two")
     ledger.forget_runtime()
     assert ledger.get("one") is None
+
+def test_four_protected_room_templates_only_offer_server_bound_context():
+    root=Path("web/templates")
+    app=Flask("source_research_test",template_folder=str(root.resolve()))
+    expected={
+        "symbol_page.html":"symbol_page",
+        "market_map.html":"market_map",
+        "trade_center.html":"trade_center",
+        "review_center.html":"review_center",
+    }
+    for name,room in expected.items():
+        template=(root/name).read_text()
+        app.jinja_env.parse(template)
+        assert "ob_research_context_partial.html" in template
+        assert "ob_research_context.get('room') == '"+room+"'" in template
+        assert "ob_research_context.css" in template
+        assert "fetch(" not in (root/"ob_research_context_partial.html").read_text()
+    with app.test_request_context():
+        blank=render_template("ob_research_context_partial.html")
+        assert "Symbol research context" not in blank
+        view=project_research(packet(),"symbol_page")
+        rendered=render_template("ob_research_context_partial.html",ob_research_context=view)
+        assert "Symbol research context" in rendered and "SOURCE-BOUND" in rendered
+        assert "No broker execution" not in rendered # no new action button
+        malicious=deepcopy(view)
+        malicious["identity"]["security_name"]="<script>alert(1)</script>"
+        safe=render_template("ob_research_context_partial.html",ob_research_context=malicious)
+        assert "<script>alert(1)</script>" not in safe
+        assert "&lt;script&gt;" in safe
