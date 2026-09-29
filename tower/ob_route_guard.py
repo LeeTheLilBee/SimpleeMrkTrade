@@ -353,7 +353,7 @@ def evaluate_ob_request_guard(
     # authenticated Tower session. The independent OB HTTP boundary still
     # requires fresh step-up + consumed OB handoff; Public POST separately
     # enforces origin, CSRF, feature flag and source-specific rights.
-    if path in {"/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/research/keyless.json", "/ob/research/providers.json"}:
+    if path in {"/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json"}:
         try:
             from flask import has_request_context, session
             if has_request_context():
@@ -608,4 +608,14 @@ def match_ob_guard_policy(path: str) -> Dict[str, Any]:
 
     # Everything else remains fail-closed through the original default-deny decision.
     return original_match
+
+
+OB_ROUTE_GUARD_MAP.update({
+    "/ob/research/catalysts.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="analysis_vault", action="view", clearance="owner", risk_floor=20,
+        room="Official Market Catalyst Radar",
+        purpose="Exact protected government-source research and independent Soulaana translation; no quote or trading authority.",
+        soulaana_translation="Soulaana: I examine independently approved official publications; unavailable sources remain held.",
+    ),
+})
 
