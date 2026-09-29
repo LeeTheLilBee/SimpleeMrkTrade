@@ -197,7 +197,9 @@ def test_companyfacts_year_end_comparisons_are_exact_concept_and_retro_only():
     assert trend[0]["retrospective_only"] and not context["execution_authorized"]
     truncated=fundamental_context(cik=CIK,facts=facts,rights=rights,
                                    as_of=NOW-timedelta(days=1))
-    assert truncated["year_end_balance_sheet_comparisons"]==trend
+    earlier_trend=truncated["year_end_balance_sheet_comparisons"]
+    assert len(earlier_trend)==1 and earlier_trend[0]["reported_change_pct"]==25.0
+    assert earlier_trend[0]["revisions_as_of"] != trend[0]["revisions_as_of"]
 
 
 def test_companyfacts_reject_missing_acceptance_future_facts_and_wrong_cik():
