@@ -135,8 +135,8 @@ def parse_companyfacts(payload: Mapping[str,object], *, cik: str,
 def fundamental_context(*, cik: str, facts: tuple[CompanyFact,...],
                         rights: FundamentalRights, as_of: datetime) -> dict[str,object]:
     _aware(as_of,"research cut-off")
-    if not rights.allowed_at(as_of):
-        raise ValueError("fundamental research permission expired or absent")
+    if not rights.allowed_at(as_of) or rights.owner_display is not True:
+        raise ValueError("fundamental research/owner-display permission expired or absent")
     eligible=[x for x in facts if x.cik==cik and x.accepted_at <= as_of]
     latest:dict[str,CompanyFact]={}
     for row in eligible:
