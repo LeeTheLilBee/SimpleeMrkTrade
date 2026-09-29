@@ -86,7 +86,7 @@ class FeedAdapter:
             float(f("bid")),float(f("ask")),float(f("strike")),str(f("expiry")),str(f("right")),
             _count(f("open_interest"), "open_interest") if self.fields.get("open_interest") in raw and
             raw.get(self.fields["open_interest"]) is not None else None,
-            int(f("volume")) if self.fields.get("volume") in raw and
+            _count(f("volume"), "volume") if self.fields.get("volume") in raw and
             raw.get(self.fields["volume"]) is not None else None)
 
 
