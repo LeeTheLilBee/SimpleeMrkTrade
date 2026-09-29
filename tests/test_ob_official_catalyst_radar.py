@@ -269,3 +269,20 @@ def test_eight_rooms_share_one_protected_radar_and_no_browser_source_calls():
     assert "api.weather.gov/alerts/active" not in script
     assert "publicreporting.cftc.gov/resource" not in script
     assert "broker_execution_authorized === false" in script
+
+
+def test_hosted_one_shot_never_logs_raw_source_values_or_claims_owner_acceptance():
+    from deploy.hosted_tower.official_catalyst_one_shot import sanitized_proof
+    packet, _ = service(key="SYNTHETICKEY1234567")
+    payload = sanitized_proof(packet.snapshot())
+    assert payload["soulaana_reviewed_observation_count"] == 5
+    assert payload["owner_browser_session_verified"] is False
+    assert payload["real_time_price_feed_verified"] is False
+    assert payload["raw_values_logged"] is False
+    serial = json.dumps(payload)
+    assert "28800000000000" not in serial
+    assert "SYNTHETICKEY1234567" not in serial
+    assert "Synthetic wind warning" not in serial
+    start = (ROOT / "deploy/hosted_tower/start.sh").read_text()
+    assert '${OB_CATALYST_ONE_SHOT_SOURCE_PROBE:-0}' in start
+    assert start.index("official_catalyst_one_shot") < start.index('exec "${PYTHON_VALUE}" -m gunicorn')
