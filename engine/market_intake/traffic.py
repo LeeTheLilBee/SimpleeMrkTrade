@@ -64,7 +64,10 @@ class TrafficPlanner:
     def _authorized(self, context: ScanContext) -> bool:
         return (self.budget.research_entitlement_confirmed and self.rights is not None
                 and self.rights.source_id == self.budget.source_id and self.rights.reviewed_for_scan()
-                and self.rights.real_time_entitled and context.verified_market_time
+                and self.rights.real_time_entitled and "equity" in self.rights.entitled_instruments
+                and (self.rights.verified_at is None or self.rights.verified_at <= context.now)
+                and (self.rights.expires_at is None or context.now < self.rights.expires_at)
+                and context.verified_market_time
                 and context.market_session == "REGULAR")
 
     @staticmethod
@@ -125,7 +128,7 @@ class TrafficPlanner:
         offer("equity", hot, "owner-watchlist")
         offer("equity", warm, "event-followup-not-price-proof")
         offer("equity", cold, "rotating-broad-discovery")
-        if self.budget.supports_options:
+        if self.budget.supports_options and self.rights is not None and "option" in self.rights.entitled_instruments:
             offer("options", self._symbols(option_underlyings), "separately-verified-underlying")
         self._round_robin_cursor += covered_cold
         return proposals
