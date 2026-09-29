@@ -142,6 +142,60 @@ def test_ai_content_requires_independent_per_provider_grant(rights, monkeypatch)
     assert brief["capital_authorized"] is False
 
 
+
+def test_reviewed_provider_records_are_actually_examined_and_cited(rights, monkeypatch):
+    monkeypatch.setenv("OB_PROVIDER_FINNHUB_AI_USE_REVIEWED", "1")
+    monkeypatch.setenv("OB_PROVIDER_ALPHA_VANTAGE_AI_USE_REVIEWED", "1")
+    packet = provider_research_projection(
+        sid="tower_session_" + "x"*20, symbol="AAPL",
+        secret_reader=secret_reader, opener=Recorder(), cache=ProviderResearchCache())
+    brief = packet["soulaana_research"]
+    assert brief["external_model_called"] is False
+    assert [o["provider"] for o in brief["observations"]] == ["finnhub", "alpha_vantage"]
+    profile, history = brief["observations"]
+    assert "Apple Inc" in profile["finding"]
+    assert "Technology" in profile["finding"]
+    assert profile["source_reference"] == "https://finnhub.io/docs/api/company-profile2"
+    assert "2026-09-28" in history["finding"]
+    assert "2026-09-25" in history["finding"]
+    assert "+3.00" in history["finding"]
+    assert "+3.000%" in history["finding"]
+    assert history["summary"]["close_change"] == "3.0"
+    assert history["summary"]["close_change_percent"] == "+3.000"
+    assert history["source_reference"] == "https://www.alphavantage.co/documentation/#daily"
+    assert "SECRET" not in json.dumps(brief)
+    assert "bars" not in json.dumps(brief)
+    assert brief["live_quote_verified"] is False
+    assert brief["candidate_admitted"] is False
+
+
+def test_revoking_ai_grant_suppresses_findings_even_when_provider_is_cached(rights, monkeypatch):
+    monkeypatch.setenv("OB_PROVIDER_FINNHUB_AI_USE_REVIEWED", "1")
+    monkeypatch.setenv("OB_PROVIDER_ALPHA_VANTAGE_AI_USE_REVIEWED", "1")
+    recorder, cache = Recorder(), ProviderResearchCache()
+    args = dict(sid="tower_session_" + "x"*20, symbol="AAPL",
+                secret_reader=secret_reader, opener=recorder, cache=cache)
+    assert len(provider_research_projection(**args)["soulaana_research"]["observations"]) == 2
+    monkeypatch.delenv("OB_PROVIDER_ALPHA_VANTAGE_AI_USE_REVIEWED")
+    second = provider_research_projection(**args)
+    assert len(recorder.calls) == 2  # no fresh provider call needed
+    assert [o["provider"] for o in second["soulaana_research"]["observations"]] == ["finnhub"]
+    monkeypatch.delenv("OB_PROVIDER_FINNHUB_AI_USE_REVIEWED")
+    third = provider_research_projection(**args)["soulaana_research"]
+    assert third["observations"] == []
+    assert third["source_specific_ai_use_approved"] is False
+
+
+def test_shared_panel_renders_reviewed_examination_not_only_connected_status():
+    from pathlib import Path
+    js = Path("web/static/ob/ob_keyless_context.js").read_text()
+    assert "Soulaana · What I actually found" in js
+    assert 'item.finding' in js and 'item.what_is_missing' in js
+    assert "brief.external_model_called === false" in js
+    assert "item.source_reference === refs[item.provider]" in js
+    assert "record.append" in js and "textContent" in js
+    assert "Soulaana can read only the provider research" not in js
+
 def test_cache_avoids_repeat_provider_call_within_ttl(rights):
     rec = Recorder()
     cache = ProviderResearchCache()
