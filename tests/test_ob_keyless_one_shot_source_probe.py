@@ -40,7 +40,7 @@ def test_one_shot_proof_requires_actual_bound_sources_and_reviewed_examination()
     assert report["owner_browser_session_verified"] is False
     assert report["sec_filing_fetched_by_probe"] is False
     assert "SENSITIVE_SAMPLE" not in json.dumps(report)
-    assert "value" not in json.dumps(report)
+    assert '"value":' not in json.dumps(report)
     assert report["raw_values_logged"] is False
 
 
