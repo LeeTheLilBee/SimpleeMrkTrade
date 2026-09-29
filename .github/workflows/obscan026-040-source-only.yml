@@ -1,0 +1,47 @@
+name: OBSCAN026-040 universal provider gateway source-only
+on:
+  push:
+    branches:
+      - obscan026-040-universal-provider-gateway
+  pull_request:
+    branches:
+      - obscan001-025-sovereign-intake-zero-cost
+      - main
+    paths:
+      - 'engine/market_intake/**'
+      - 'tests/test_obscan*_*.py'
+      - 'docs/market_data/**'
+      - '.github/workflows/obscan026-040-source-only.yml'
+permissions:
+  contents: read
+jobs:
+  offline-multi-provider-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install isolated test runner only
+        run: python -m pip install pytest
+      - name: Compile provider and scanner modules
+        run: python -m compileall -q engine/market_intake
+      - name: Exercise source rights, live quote holds and provider selection
+        run: python -m pytest -q tests/test_obscan001_025_sovereign_intake.py tests/test_obscan026_040_universal_gateway.py tests/test_obscan_public_edgar_fetch.py
+      - name: Verify no quote transport or execution path
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src = "\n".join(p.read_text() for p in Path("engine/market_intake").glob("*.py"))
+          forbidden = ["import requests", "import yfinance", "import aiohttp",
+                       "from urllib.request", "from ib_insync", "place_order(",
+                       "submit_order(", "requests.get(", "urllib.request.urlopen(",
+                       "web.app import", "import alpaca_trade_api"]
+          violations = [token for token in forbidden if token in src]
+          if violations:
+              raise SystemExit(f"Source-only / no-order boundary failed: {violations}")
+          print("No network, live broker or hosted app transport in provider gateway")
+          PY
