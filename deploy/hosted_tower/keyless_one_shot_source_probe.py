@@ -9,6 +9,7 @@ from the running Render environment, not an authenticated browser session.
 from __future__ import annotations
 
 import json
+from urllib.error import HTTPError, URLError
 
 SOURCES = ("bls", "treasury", "openfigi")
 ORDER = ("sec",) + SOURCES
@@ -62,13 +63,69 @@ def summarize_snapshot(packet: dict) -> dict:
     }
 
 
+# These identifiers are defined by our own source adapter. Never log vendor
+# response text, HTTP body, request URL, exception object or host details.
+_SAFE_BLS_HOLDS = frozenset({
+    "OWNER_SOURCE_REVIEW_REQUIRED", "SOURCE_ENDPOINT_NOT_ALLOWED",
+    "SOURCE_RESPONSE_TOO_LARGE", "SOURCE_TRANSPORT_HOLD",
+    "SOURCE_JSON_INVALID", "SOURCE_VALUE_INVALID",
+    "BLS_SERIES_INVALID", "BLS_SOURCE_SHAPE_HOLD",
+})
+
+
+def capture_bls_diagnostic(service, state: dict) -> None:
+    """Attach ephemeral trace at the existing source call, not a second API hit."""
+    from engine.market_intake.public_research_sources import PublicResearchUnavailable
+
+    original_open = service.reference._opener
+    original_reader = service.reference.bls_v1
+
+    def traced_open(request, timeout):
+        if not request.full_url.startswith(
+            "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+        ):
+            return original_open(request, timeout)
+        try:
+            response = original_open(request, timeout)
+            state["bls_http"] = "HTTP_" + str(getattr(response, "status", 200))
+            return response
+        except HTTPError as exc:
+            code = int(exc.code)
+            state["bls_http"] = ("HTTP_" + str(code)
+                                  if 300 <= code <= 599 else "HTTP_HOLD")
+            raise
+        except URLError:
+            state["bls_http"] = "NETWORK_HOLD"
+            raise
+        except (TimeoutError, OSError):
+            state["bls_http"] = "TRANSPORT_HOLD"
+            raise
+
+    def traced_reader(series_id):
+        try:
+            return original_reader(series_id)
+        except PublicResearchUnavailable as exc:
+            identifier = str(exc)
+            state["bls_failure_kind"] = (
+                identifier if identifier in _SAFE_BLS_HOLDS else "OTHER_HOLD"
+            )
+            raise
+
+    service.reference._opener = traced_open
+    service.reference.bls_v1 = traced_reader
+
+
 def main() -> int:
+    safe_diagnostic = {}
     try:
         from engine.market_intake.keyless_public_context import from_environment
         # One fixed, public, illustrative ticker; no user account, no broker,
         # no persistence or scheduled repeat. From_environment uses the
         # existing independent use/display/AI flags.
-        report = summarize_snapshot(from_environment().snapshot(symbol="MSFT"))
+        service = from_environment()
+        capture_bls_diagnostic(service, safe_diagnostic)
+        report = summarize_snapshot(service.snapshot(symbol="MSFT"))
+        report.update(safe_diagnostic)
     except Exception:
         # Exception messages may contain provider-supplied text. Never log them.
         report = {
@@ -76,6 +133,7 @@ def main() -> int:
             "all_verified": False, "status": "SOURCE_OR_CONTRACT_HOLD",
             "owner_browser_session_verified": False,
             "raw_values_logged": False,
+            **safe_diagnostic,
         }
     print("OB_KEYLESS_ONE_SHOT_PROOF " + json.dumps(report, sort_keys=True), flush=True)
     return 0 if report["all_verified"] else 1
