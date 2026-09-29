@@ -20,14 +20,17 @@ NOW = datetime(2026, 9, 28, 15, 0, tzinfo=timezone.utc)
 CONTEXT = ScanContext(NOW, "REGULAR", True)
 A = SourceRights("vendor-a", "SIP", "approved-internal-entitlement-123", NOW,
                  internal_research=True, automated_non_display=True,
-                 owner_display=True, real_time_entitled=True)
+                 owner_display=True, real_time_entitled=True,
+                 entitled_instruments=frozenset({"equity", "option"}))
 B = SourceRights("vendor-b", "DIRECT", "approved-internal-entitlement-456", NOW,
                  internal_research=True, automated_non_display=True,
                  owner_display=True, real_time_entitled=True)
 DUP = SourceRights("vendor-mirror", "SIP", "approved-internal-entitlement-789", NOW,
-                   internal_research=True, automated_non_display=True, real_time_entitled=True)
+                   internal_research=True, automated_non_display=True, real_time_entitled=True,
+                   entitled_instruments=frozenset({"equity", "option"}))
 EVENT_RIGHTS = SourceRights("public-filings", "SEC", "reviewed-terms", NOW,
-                            internal_research=True, automated_non_display=True)
+                            internal_research=True, automated_non_display=True,
+                            entitled_instruments=frozenset({"event"}))
 RIGHTS = {x.source_id: x for x in (A, B, DUP, EVENT_RIGHTS)}
 NAS = "Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares\nXYZ|Example Co|Q|N|N|100|N|N\nTEST|Test Co|Q|Y|N|100|N|N\nFile Creation Time: 092820261100|||\n"
 OTHER = "ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol\nDEF|Example Two|N|DEF|N|100|N|DEF\n"
@@ -120,6 +123,20 @@ def test_data_rights_default_deny_and_two_distinct_entitlements():
     ok=assess(obs(),A,CONTEXT)
     assert ok.gate==Gate.CURRENT_RESEARCH and ok.display_to_owner and not ok.execution_authority
     assert not ok.display_to_invitees
+
+
+def test_equity_rights_do_not_authorize_option_data_or_adapters():
+    equities_only = replace(A, entitled_instruments=frozenset({"equity"}))
+    assert assess(obs(kind="equity"),equities_only,CONTEXT).gate==Gate.CURRENT_RESEARCH
+    assert assess(obs(kind="option"),equities_only,CONTEXT).gate==Gate.RIGHTS_HOLD
+    rights={**RIGHTS,"vendor-a":equities_only}
+    lead=inspect_symbol("XYZ",universe=universe(),equities=[equity()],options=[opt()],
+                        rights=rights,context=CONTEXT)
+    assert lead.option_source_ids==()
+    mapping={x:x for x in ("observation_id","underlying","occ_symbol","observed_at",
+                           "provenance_reference","bid","ask","strike","expiry","right")}
+    with pytest.raises(ValueError):
+        FeedAdapter(equities_only,mapping,feed_label="realtime",instrument="option")
 
 
 def test_bad_time_and_no_schedule_fail_closed():
