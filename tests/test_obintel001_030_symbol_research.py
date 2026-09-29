@@ -131,9 +131,8 @@ def test_historical_complete_adjustment_rights_dates_and_indicators():
     with pytest.raises(ValueError):
         replace(series.rights,basis="split_adjusted",basis_reference="")
     with pytest.raises(ValueError):
-        replace(series.rights,research_allowed=False) if False else HistorySeries(
-            series.symbol,replace(series.rights,research_allowed=False),
-            series.bars,NOW,series.snapshot_reference)
+        HistorySeries(series.symbol,replace(series.rights,research_allowed=False),
+                      series.bars,NOW,series.snapshot_reference)
     with pytest.raises(ValueError):
         CompletedDailyBar("XYZ","test-equity-history",NOW.date(),101,100,99,100,
                           100,"test","raw",True)
@@ -167,11 +166,11 @@ def test_companyfacts_exact_cik_acceptance_and_retrospective_cutoff():
     r,rows,raw=financial()
     assert len(rows)==1 and rows[0].cik==CIK
     assert rows[0].value==100000000
-    early=fundamental_context(cik=CIK,facts=rows,rights=r,
-                              as_of=NOW-timedelta(days=3))
-    # Rights were reviewed one day earlier than NOW, so they cannot be used at
-    # three days earlier; no retroactive rights assertion.
-    assert False if early else True
+    current=fundamental_context(cik=CIK,facts=rows,rights=r,as_of=NOW)
+    assert current["reported_concepts"][0]["accepted_at"]==rows[0].accepted_at.isoformat()
+    assert current["quote_eligible"] is False and current["execution_authorized"] is False
+    with pytest.raises(ValueError):
+        fundamental_context(cik=CIK,facts=rows,rights=r,as_of=NOW-timedelta(days=3))
 
 
 def test_companyfacts_reject_missing_acceptance_future_facts_and_wrong_cik():
