@@ -58,7 +58,7 @@ def build_soulaana_source_register(packet: Mapping) -> dict:
                 or row.get("quote_eligible") is not False
                 or row.get("trading_authorized") is not False
                 or type(row.get("ai_use_approved")) is not bool
-                or (row.get("ai_use_approved") is True and state != "SOURCE_BOUND")):
+                or (row.get("ai_use_approved") is True and row.get("state") != "SOURCE_BOUND")):
             raise ValueError("SOULAANA_KEYLESS_SOURCE_CONTRACT_HOLD")
         state = row["state"]
         label, ready = _READY[key]
