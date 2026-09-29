@@ -43,9 +43,9 @@ class FakeOfficialSources:
         self.calls=[]
         self.bls={
             "status":"REQUEST_SUCCEEDED",
-            "Results":{"series":[{"seriesID":"CUUR0000SA0", "data":[
+            "Results":[{"series":[{"seriesID":"CUUR0000SA0", "data":[
                 {"year":"2026","period":"M08","value":"320.10"},
-                {"year":"2026","period":"M07","value":"318.7"}]}]}}
+                {"year":"2026","period":"M07","value":"318.7"}]}]}]}
         self.treasury={"data":[{"record_date":"2026-09-26","tot_pub_debt_out_amt":"38900000000000.12"}]}
         self.figi=[{"data":[{"ticker":"MSFT","figi":"BBG000B9XRY4"}]}]
     def __call__(self,req,timeout):
