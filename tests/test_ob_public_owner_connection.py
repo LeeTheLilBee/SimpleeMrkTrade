@@ -87,10 +87,11 @@ def test_bad_csrf_bad_origin_and_cross_site_never_read_secret(setup):
 
 def test_default_off_connect_without_provider_traffic(setup,monkeypatch):
     client,state,store,rec=setup;state["authorized"]=True
+    existing_csrf=csrf(page(client).get_data(as_text=True))
     monkeypatch.delenv("OB_PUBLIC_OWNER_CONNECT_ENABLED")
     html=page(client).get_data(as_text=True)
     assert "switched off" in html
-    assert post(client,csrf(html)).status_code==403
+    assert post(client,existing_csrf).status_code==403
     assert not rec.calls
 
 def test_quote_rights_default_hold_without_vendor_call(setup):
