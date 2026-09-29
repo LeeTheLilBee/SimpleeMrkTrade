@@ -72,7 +72,8 @@ def select_account(access_token: str, opener: Callable = _http, *,
     """Display only ordinal/type, never account ID, cash, holdings or key."""
     request = Request(_ACCOUNTS, method="GET",
                       headers={"Authorization": "Bearer " + access_token,
-                               "Accept": "application/json"})
+                               "Accept": "application/json",
+                               "Content-Type": "application/json"})
     payload = _request_json(opener, request)
     if (not isinstance(payload, dict) or not isinstance(payload.get("accounts"), list)
         or not payload["accounts"] or len(payload["accounts"]) > 20):

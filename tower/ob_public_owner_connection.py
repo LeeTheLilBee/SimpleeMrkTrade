@@ -32,7 +32,7 @@ _MAX_POST_BYTES = 8192
 _ACCOUNT_ID = re.compile(r"^[A-Za-z0-9_-]{5,128}$")
 _HOLD_MESSAGES = {
     "ACCOUNT_DISCOVERY_HOLD": "Public's account list had an unexpected structure. No account selected.",
-    "ACCOUNT_LIST_EMPTY_HOLD": "Public accepted authentication but returned no accounts. Check business account approval or contact Public Support.",
+    "ACCOUNT_LIST_EMPTY_HOLD": "Authentication succeeded, but Public returned an empty account list for this access token. Confirm the account is open and approved and that the API key belongs to the correct Public profile. If it is, ask Public Support to check API account linkage. No account was selected.",
     "ACCOUNT_TYPE_HOLD": "Public accepted authentication and returned accounts, but none has a recognized brokerage, entity or joint account type. No account selected.",
     "ACCOUNT_SELECTION_HOLD": "Select one account from the protected list; no account was selected.",
     "ACCOUNT_SELECTION_EXPIRED_HOLD": "Account selection expired. Connect again using the protected Tower form.",
@@ -238,6 +238,7 @@ def _discover_accounts(token: str, opener) -> tuple[tuple[str, str], ...]:
     """
     req = Request(_ACCOUNTS, method="GET",
                   headers={"Accept": "application/json",
+                           "Content-Type": "application/json",
                            "Authorization": "Bearer " + token})
     payload = _request_json(opener, req)
     rows = payload.get("accounts") if isinstance(payload, dict) else None
