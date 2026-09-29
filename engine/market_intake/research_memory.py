@@ -11,6 +11,15 @@ from dataclasses import dataclass
 from datetime import datetime
 from hashlib import sha256
 import json
+import re
+
+# An opaque source reference must not accidentally persist a credential-bearing
+# signed URL or provider key as "safe metadata". Owner/source review remains
+# independently required for actual retention/Archive Vault.
+_SECRET_REF = re.compile(
+    r"(?:api[_-]?key|access[_-]?token|password|secret|authorization|bearer)\\s*[=:]",
+    re.IGNORECASE,
+)
 
 from .contracts import _aware
 from .symbol_research import SymbolResearchInputs
@@ -65,7 +74,12 @@ class ResearchReferenceLedger:
         if inputs.financial_facts:
             refs.extend(row.provenance_reference for row in inputs.financial_facts)
         refs=sorted(set(refs))
-        if any(not isinstance(ref,str) or not ref.strip() or len(ref)>500 for ref in refs):
+        if any(
+            not isinstance(ref,str) or not ref.strip() or len(ref)>500
+            or any(ord(ch)<32 or ord(ch)==127 for ch in ref)
+            or "?" in ref or "#" in ref or _SECRET_REF.search(ref) is not None
+            for ref in refs
+        ):
             raise ValueError("bounded non-secret source references required")
         previous=self._latest.get(inputs.identity.symbol)
         if previous is not None and inputs.captured_at <= previous:
