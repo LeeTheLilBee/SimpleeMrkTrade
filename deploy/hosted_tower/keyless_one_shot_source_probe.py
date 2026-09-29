@@ -88,7 +88,8 @@ def capture_bls_diagnostic(service, state: dict) -> None:
     def traced_open(request, timeout):
         url = request.full_url
         if url.startswith("https://api.bls.gov/publicAPI/v1/timeseries/data/"):
-            field = "bls_http"
+            field = ("bls_post_http" if request.get_method() == "POST"
+                     else "bls_http")
         elif url == "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems":
             field = "bls_bulk_http"
         else:
@@ -115,7 +116,8 @@ def capture_bls_diagnostic(service, state: dict) -> None:
         )
         if source == "bls" and isinstance(payload, dict):
             results = payload.get("Results")
-            state["bls_status_success"] = payload.get("status") == "REQUEST_SUCCEEDED"
+            state["bls_post_status_success" if method == "POST"
+                  else "bls_status_success"] = payload.get("status") == "REQUEST_SUCCEEDED"
             state["bls_results_shape"] = (
                 "LIST" if isinstance(results, list)
                 else "OBJECT" if isinstance(results, dict) else "OTHER"
