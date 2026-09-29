@@ -81,8 +81,11 @@ def test_connection_key_only_in_post_not_cookie_disk_or_html(setup):
 def test_bad_csrf_bad_origin_and_cross_site_never_read_secret(setup):
     client,state,store,rec=setup;state["authorized"]=True
     valid=csrf(page(client).get_data(as_text=True))
-    assert post(client,"wrong").status_code==403
-    assert post(client,valid,origin="https://attacker.example").status_code==403
+    bad_csrf=post(client,"wrong")
+    assert bad_csrf.status_code==403 and "CSRF_HOLD" in bad_csrf.get_data(as_text=True)
+    mismatched=post(client,valid,origin="https://attacker.example")
+    assert mismatched.status_code==403 and "ORIGIN_HOLD" in mismatched.get_data(as_text=True)
+    assert SECRET not in mismatched.get_data(as_text=True)
     assert not rec.calls
 
 def test_default_off_connect_without_provider_traffic(setup,monkeypatch):
@@ -138,3 +141,50 @@ def test_owner_connection_does_not_register_orders_or_live_gateway(setup):
     app=client.application
     assert sorted(str(r.rule) for r in app.url_map.iter_rules() if r.rule.startswith("/ob/")) == [PATH]
     assert not any("order" in r.rule for r in app.url_map.iter_rules())
+
+def test_real_browser_form_without_origin_requires_fetch_metadata_and_csrf(setup):
+    client,state,store,rec=setup; state["authorized"]=True
+    token=csrf(page(client).get_data(as_text=True))
+    data={"csrf":token, "operation":"connect", "secret":SECRET}
+    # Some privacy clients omit Origin on normal form submissions. A verified
+    # same-origin browser navigation + session CSRF remains acceptable.
+    success=client.post(PATH,base_url="https://tower.test",data=data,
+        headers={"Sec-Fetch-Site":"same-origin","Sec-Fetch-Mode":"navigate"})
+    assert success.status_code==303
+    assert len(rec.calls)==2
+    assert "Authenticated" in page(client).get_data(as_text=True)
+
+def test_missing_origin_without_affirmative_browser_metadata_holds(setup):
+    client,state,store,rec=setup; state["authorized"]=True
+    token=csrf(page(client).get_data(as_text=True))
+    data={"csrf":token, "operation":"connect", "secret":SECRET}
+    for headers in ({}, {"Sec-Fetch-Site":"cross-site","Sec-Fetch-Mode":"navigate"},
+                    {"Sec-Fetch-Site":"same-origin","Sec-Fetch-Mode":"cors"}):
+        response=client.post(PATH,base_url="https://tower.test",data=data,headers=headers)
+        assert response.status_code==403
+        assert "HOLD" in response.get_data(as_text=True)
+        assert SECRET not in response.get_data(as_text=True)
+    assert not rec.calls
+
+def test_approved_render_hostname_origin_when_proxy_host_differs(setup,monkeypatch):
+    client,state,store,rec=setup; state["authorized"]=True
+    token=csrf(page(client).get_data(as_text=True))
+    monkeypatch.setenv("RENDER_EXTERNAL_HOSTNAME","simplee-tower-ob-tunv.onrender.com")
+    valid=post(client,token,origin="https://simplee-tower-ob-tunv.onrender.com")
+    assert valid.status_code==303 and len(rec.calls)==2
+    # A different origin remains rejected even if the browser claims same-origin.
+    response=post(client,token,origin="https://attacker.example")
+    assert response.status_code==403 and "ORIGIN_HOLD" in response.get_data(as_text=True)
+
+def test_owner_and_disabled_feature_form_holds_are_specific_without_secret(setup,monkeypatch):
+    client,state,store,rec=setup
+    key=csrf(page(client).get_data(as_text=True)) if state["authorized"] else "synthetic"
+    denied=post(client,key)
+    assert denied.status_code==403 and "OWNER_GATE_HOLD" in denied.get_data(as_text=True)
+    assert SECRET not in denied.get_data(as_text=True)
+    state["authorized"]=True
+    key=csrf(page(client).get_data(as_text=True))
+    monkeypatch.delenv("OB_PUBLIC_OWNER_CONNECT_ENABLED",raising=False)
+    disabled=post(client,key)
+    assert disabled.status_code==403 and "CONNECT_DISABLED_HOLD" in disabled.get_data(as_text=True)
+    assert not rec.calls
