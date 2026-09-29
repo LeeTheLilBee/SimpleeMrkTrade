@@ -186,3 +186,36 @@ def test_bulk_failure_trace_only_emits_safe_official_http_code():
         client._opener(Request(BLS_BULK_CPI), 12)
     assert state == {"bls_bulk_http": "HTTP_403"}
     assert "SENSITIVE" not in json.dumps(state)
+
+
+def test_official_release_probe_is_bounded_and_redacts_response():
+    from deploy.hosted_tower.keyless_one_shot_source_probe import probe_official_bls_release
+    class Response:
+        status = 200
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def geturl(self): return "https://www.bls.gov/news.release/cpi.t01.htm"
+        def read(self, maximum):
+            assert maximum == 600_001
+            return (b"<html>Consumer Price Index Unadjusted indexes All items "
+                    b"SECRET_SAMPLE_VALUE</html>")
+    requests = []
+    def open_source(req, timeout):
+        requests.append((req.full_url, timeout, req.get_method()))
+        return Response()
+    state = {}
+    probe_official_bls_release(state, opener=open_source)
+    assert requests == [("https://www.bls.gov/news.release/cpi.t01.htm", 8, "GET")]
+    assert state == {"bls_release_http": "HTTP_200", "bls_release_bounded_html": True}
+    assert "SECRET_SAMPLE_VALUE" not in json.dumps(state)
+
+
+def test_official_release_probe_holds_403_without_raw_provider_details():
+    from urllib.error import HTTPError
+    from deploy.hosted_tower.keyless_one_shot_source_probe import probe_official_bls_release
+    def blocked(req, timeout):
+        raise HTTPError(req.full_url, 403, "PRIVATE_DETAIL", {}, None)
+    state = {}
+    probe_official_bls_release(state, opener=blocked)
+    assert state == {"bls_release_http": "HTTP_403"}
+    assert "PRIVATE_DETAIL" not in json.dumps(state)
