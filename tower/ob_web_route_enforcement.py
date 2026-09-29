@@ -112,6 +112,11 @@ def register_ob_protected_route_enforcement(app):
         if path == "/ob/engine-feed-snapshot.json" and request.method not in {"GET", "HEAD"}:
             abort(405)
 
+        # Keyless source context only supports a real authenticated GET. A HEAD
+        # must not accidentally execute paid/quota-limited provider fetches.
+        if path == "/ob/research/keyless.json" and request.method != "GET":
+            abort(405)
+
         if not owner_session_active():
             return redirect("/tower/login")
 
