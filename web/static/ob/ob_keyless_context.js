@@ -86,6 +86,10 @@
         "No validated observation is displayed. We do not substitute old or synthetic values.";
       card.append(el("p", "ob-keyless-meta", explain));
     }
+    if (row.source === "bls") {
+      card.append(el("p", "ob-keyless-meta",
+        "BLS.gov cannot vouch for the data or analyses derived from these data after the data have been retrieved from BLS.gov."));
+    }
     const link = el("a", "ob-keyless-docs", "Official source ↗");
     link.href = DOCS[row.source]; link.target = "_blank"; link.rel = "noopener noreferrer";
     card.append(link);
