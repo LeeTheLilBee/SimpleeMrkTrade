@@ -4,6 +4,7 @@ from .contracts import (
     OptionQuote, ScanContext, SourceRights, assess,
 )
 from .adapters import FeedAdapter, IngressRegistry
+from .sec_events import parse_sec_submissions
 from .scanner import ResearchLead, ScanPolicy, inspect_symbol, research_packet
 from .traffic import FetchProposal, ProviderBudget, TrafficPlanner
 from .universe import (
@@ -13,7 +14,7 @@ from .universe import (
 __all__ = (
     "FeedAdapter", "IngressRegistry", "BOUNDARIES", "VERSION", "DiscoveryEvent", "EquityQuote", "Gate", "Observation",
     "OptionQuote", "ScanContext", "SourceRights", "assess", "ResearchLead",
-    "ScanPolicy", "inspect_symbol", "research_packet", "FetchProposal",
+    "ScanPolicy", "parse_sec_submissions", "inspect_symbol", "research_packet", "FetchProposal",
     "ProviderBudget", "TrafficPlanner", "SymbolRow", "diff_directory",
     "directory_snapshot", "parse_nasdaq_directory", "parse_sec_ticker_exchange",
     "reconcile_symbol_universe",
