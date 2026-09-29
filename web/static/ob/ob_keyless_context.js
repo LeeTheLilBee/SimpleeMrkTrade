@@ -12,6 +12,11 @@
     treasury: "https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/",
     openfigi: "https://www.openfigi.com/api/documentation"
   });
+  const BLS_OFFICIAL_BULK = "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems";
+  function validReference(source, url) {
+    return Object.prototype.hasOwnProperty.call(DOCS, source) &&
+      (url === DOCS[source] || (source === "bls" && url === BLS_OFFICIAL_BULK));
+  }
   const LABELS = Object.freeze({
     SOURCE_BOUND: "Source-backed reference",
     DELEGATED_ISSUER_RESEARCH: "Linked protected issuer corridor",
@@ -72,7 +77,7 @@
   if (currentSymbol) input.value = currentSymbol;
 
   function drawSource(row) {
-    if (!row || !Object.prototype.hasOwnProperty.call(DOCS, row.source) ||
+    if (!row || !validReference(row.source, row.source_reference) ||
         typeof row.state !== "string" || row.quote_eligible !== false ||
         row.trading_authorized !== false || typeof row.ai_use_approved !== "boolean") return null;
     const card = el("article", "ob-keyless-card");
@@ -107,7 +112,7 @@
         "BLS.gov cannot vouch for the data or analyses derived from these data after the data have been retrieved from BLS.gov."));
     }
     const link = el("a", "ob-keyless-docs", "Official source ↗");
-    link.href = DOCS[row.source]; link.target = "_blank"; link.rel = "noopener noreferrer";
+    link.href = row.source_reference; link.target = "_blank"; link.rel = "noopener noreferrer";
     card.append(link);
     return card;
   }
@@ -173,7 +178,9 @@
       r.content_readable === authorized.has(r.source))) return false;
     return brief.observations.every(item =>
       item && authorized.has(item.source) &&
-      item.source_reference === DOCS[item.source] &&
+      validReference(item.source, item.source_reference) &&
+      packet.sources.some(r => r.source === item.source &&
+        r.source_reference === item.source_reference) &&
       item.research_only === true && item.quote_verified === false &&
       item.execution_authorized === false &&
       typeof item.value === "string" && item.value.length <= 55 &&
@@ -182,7 +189,9 @@
       brief.comparisons.every(item =>
         item && ["bls", "treasury"].includes(item.source) &&
         authorized.has(item.source) &&
-        item.source_reference === DOCS[item.source] &&
+        validReference(item.source, item.source_reference) &&
+        packet.sources.some(r => r.source === item.source &&
+          r.source_reference === item.source_reference) &&
         item.research_only === true && item.quote_verified === false &&
         item.causality_claimed === false &&
         ["UP", "DOWN", "UNCHANGED"].includes(item.direction) &&
@@ -199,7 +208,7 @@
     brief.observations.forEach(item => {
       const record = el("article", "ob-keyless-evidence-item");
       const link = el("a", "ob-keyless-docs", "Official source ↗");
-      link.href = DOCS[item.source]; link.target = "_blank";
+      link.href = item.source_reference; link.target = "_blank";
       link.rel = "noopener noreferrer";
       record.append(el("strong", "", item.source.toUpperCase()),
         el("p", "", item.interpretation),
@@ -212,7 +221,7 @@
     brief.comparisons.forEach(item => {
       const record = el("article", "ob-keyless-evidence-item");
       const link = el("a", "ob-keyless-docs", "Original source ↗");
-      link.href = DOCS[item.source]; link.target = "_blank";
+      link.href = item.source_reference; link.target = "_blank";
       link.rel = "noopener noreferrer";
       record.append(el("strong", "", item.source.toUpperCase() + " · " + item.direction),
         el("p", "", item.insight), link);
