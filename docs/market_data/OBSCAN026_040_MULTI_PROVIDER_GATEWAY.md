@@ -49,8 +49,10 @@ rights, not a user-visible dropdown or untrusted API payload.
   without separately eligible underlying evidence.
 - `TrafficPlanner` now accommodates options-only subscriptions: exact product
   quotas, batch size, cooldown, backoff and explicitly bounded stream selections.
+  Options chain request proposals use separately verified *underlyings*; options
+  stream selections instead require exact validated OCC contract identities.
   No request is sent by the planner; verified underlying symbols must come from
-  an independent upstream gate before options proposals.
+  an independent upstream gate before options chain proposals.
 - `provider_status()` reports every catalog product as NOT_CONFIGURED,
   REFERENCE_ONLY, SOURCE_ONLY_READY or RIGHTS_HOLD, with no invented live connection.
 - `revoke()` drops installed rights and purges cached quotes. Re-onboarding a
