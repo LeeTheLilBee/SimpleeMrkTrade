@@ -124,11 +124,26 @@ def project_research(packet:dict, room:str)->dict[str,object]:
         result["fundamentals"]["reported_concepts"]=[]
         result["fundamentals"]["year_end_balance_sheet_comparisons"]=[]
     if room=="soulaana":
-        # Never pass history numeric content to an assistant absent AI-use rights.
-        # HistoryRights AI permission is represented by explicit record field.
+        # A human owner-display grant is not an AI-processing grant. History
+        # has a distinct explicit AI bit; do not leak its counts, dates or
+        # source references through this view when that permission is absent.
         if packet["historical"].get("ai_explanation_allowed") is not True:
-            result["history"]["observations"]={}
-            result["history"]["state"]="EXPLANATION_RIGHTS_HOLD"
+            result["history"]={"state":"EXPLANATION_RIGHTS_HOLD",
+                               "historical_only":True,"live_quote":False,
+                               "observations":{}}
+        # SourceRights currently models event/quote *owner display* but has
+        # no separate AI-use permission. Never pass their headlines, source
+        # references or vendor IDs into Soulaana by inferring that missing bit.
+        # A future independently reviewed AI-rights contract can lift this.
+        result["issuer_events"]=[]
+        result["market_sources"]={
+            "scanner_state":"AI_SOURCE_RIGHTS_HOLD",
+            "equity_sources":[],"option_sources":[],
+            "broker_quote_verified":False,
+        }
+        result["soulaana_context"]["what_is_missing"] += (
+            " Issuer-event and current-source AI-use rights are unverified."
+        )
     if room in {"trade_center","review_center","equity_engine_v2",
                 "options_intelligence","candidate_fusion","intelligence_fusion_v2"}:
         result["admission_lane"]="RESEARCH_CONTEXT_ONLY"
