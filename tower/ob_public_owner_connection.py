@@ -145,13 +145,16 @@ def _approved_browser_origin() -> str:
     """
     configured = os.environ.get("OB_PUBLIC_OWNER_CANONICAL_ORIGIN", "").strip().lower()
     if configured:
-        parsed = urlsplit(configured)
-        if (parsed.scheme == "https" and parsed.hostname
-                and parsed.port is None
-                and parsed.username is None and parsed.password is None
-                and not parsed.path and not parsed.query and not parsed.fragment
-                and parsed.netloc == parsed.hostname):
-            return configured
+        try:
+            parsed = urlsplit(configured)
+            if (parsed.scheme == "https" and parsed.hostname
+                    and parsed.port is None
+                    and parsed.username is None and parsed.password is None
+                    and not parsed.path and not parsed.query and not parsed.fragment
+                    and parsed.netloc == parsed.hostname):
+                return configured
+        except ValueError:
+            pass
         return ""
     # Hosted services must never guess whether a reverse-proxy internal Host
     # is the public URL.
@@ -194,10 +197,11 @@ def _post_hold_reason() -> str | None:
         if parsed.netloc.lower().removesuffix(":443") != urlsplit(expected).netloc:
             return "ORIGIN_EXPECTED_HOST_HOLD"
     else:
-        # A legitimate privacy-filtered browser can omit Origin. Accept ONLY
-        # an affirmative same-origin top-level POST navigation and CSRF.
-        if (fetch_site != "same-origin" or
-                request.headers.get("Sec-Fetch-Mode", "").strip().lower() != "navigate"):
+        # A privacy-filtered browser can omit Origin or Sec-Fetch-Mode.
+        # Require affirmative SAME-ORIGIN browser site metadata and the
+        # independent signed Tower-session CSRF token. Missing or same-site
+        # metadata is NOT enough. POST remains an exact protected route.
+        if fetch_site != "same-origin":
             return "ORIGIN_META_HOLD"
 
     submitted = request.form.get("csrf", "")
