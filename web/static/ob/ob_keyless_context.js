@@ -59,7 +59,10 @@
   soulaana.setAttribute("aria-label", "Soulaana source-status explanation");
   const footer = el("p", "ob-keyless-footer",
     "Retrieval time is not publication or market-event time. SEC filings use their existing protected issuer-research corridor. Public account authentication remains separate. Soulaana's status register is not authorization for source-content AI, candidate, capital or trading use.");
-  root.append(heading, lookup, status, grid, soulaana, footer);
+  const providerSoulaana = el("section", "ob-keyless-soulaana");
+  providerSoulaana.setAttribute("aria-label", "Soulaana provider-connection status");
+  providerSoulaana.append(el("p", "ob-keyless-status", "Checking Tower provider connection states…"));
+  root.append(heading, lookup, status, grid, soulaana, providerSoulaana, footer);
   let inFlight = 0;
   let currentSymbol = locationSymbol();
   if (currentSymbol) input.value = currentSymbol;
@@ -173,6 +176,84 @@
       if (seq === inFlight) status.textContent = "Keyless context was not reachable. No data or quote was inferred.";
     }
   }
+  // A second, independent same-origin Tower read shares only sanitized status.
+  // Public account IDs, temporary provider secrets and vendor/source responses
+  // never cross this endpoint or reach Soulaana. Failure is a visible HOLD.
+  const PROVIDER_ORDER = ["public", "finnhub", "alpha_vantage", "sec", "bls", "treasury", "openfigi"];
+  const PROVIDER_STATES = Object.freeze({
+    public: new Set(["TEMPORARY_ACCOUNT_LINK_VERIFIED", "OWNER_SELECTION_REQUIRED", "TEMPORARY_AUTH_ONLY", "NO_VERIFIED_ACCOUNT_LINK"]),
+    finnhub: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
+    alpha_vantage: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
+    sec: new Set(["SEPARATE_ISSUER_RESEARCH_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
+    bls: new Set(["USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
+    treasury: new Set(["USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
+    openfigi: new Set(["USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW_HOLD"])
+  });
+  function validProviderSoulaana(data) {
+    const brief = data && data.soulaana_provider_status;
+    if (!data || data.schema !== "OB_TOWER_PROVIDER_CONNECTION_TRUTH_V1" ||
+        data.owner_session_checked !== true || data.source_only !== true ||
+        data.dissemination_contract !== "OWNER_STATUS_ONLY" ||
+        data.prices_attached !== false || data.positions_attached !== false ||
+        data.real_market_feed_attached_by_this_route !== false ||
+        data.live_feed_count_verified !== null || data.no_browser_provider_credentials !== true ||
+        data.may_authorize_order !== false || data.may_authorize_capital !== false ||
+        data.may_change_trading_mode !== false || !Array.isArray(data.provider_status) ||
+        data.provider_status.length !== 7 || !brief ||
+        brief.schema !== "OB_SOULAANA_PROVIDER_CONNECTION_STATUS_V1" ||
+        brief.channel !== "SOULAANA_CONNECTION_STATUS_ONLY" ||
+        brief.raw_provider_values_included !== false ||
+        brief.account_identifiers_included !== false ||
+        brief.credentials_included !== false ||
+        brief.source_content_ai_authorized !== false ||
+        brief.quote_verified !== false || brief.broker_execution_authorized !== false ||
+        brief.capital_authorized !== false || !Array.isArray(brief.provider_register) ||
+        brief.provider_register.length !== 7) return false;
+    if (["what_i_see", "what_it_means", "what_is_missing", "next_step"].some(
+        key => typeof brief[key] !== "string" || brief[key].length > 650)) return false;
+    return PROVIDER_ORDER.every((provider, index) => {
+      const row = data.provider_status[index];
+      const item = brief.provider_register[index];
+      return row && item && row.provider === provider &&
+        row.quote_feed_activated === false && PROVIDER_STATES[provider].has(row.state) &&
+        item.provider === provider && item.state === row.state &&
+        typeof item.label === "string" && item.label.length <= 50 &&
+        typeof item.meaning === "string" && item.meaning.length <= 360;
+    });
+  }
+  async function readProviderSoulaana() {
+    try {
+      const response = await fetch("/ob/data-desk/connections.json", {
+        credentials: "same-origin", cache: "no-store",
+        headers: { "Accept": "application/json" }
+      });
+      if (!response.ok) throw Error("provider status hold");
+      const packet = await response.json();
+      if (!validProviderSoulaana(packet)) throw Error("provider status contract hold");
+      const brief = packet.soulaana_provider_status;
+      const lines = el("div", "ob-keyless-soulaana-register");
+      brief.provider_register.forEach(item => {
+        const row = el("p");
+        row.append(el("strong", "", item.label + " · "), el("span", "", item.meaning));
+        lines.append(row);
+      });
+      providerSoulaana.replaceChildren(
+        el("span", "ob-keyless-eyebrow", "SOULAANA · TOWER CONNECTION AWARENESS"),
+        el("h3", "", "What my providers can actually do"),
+        el("p", "", brief.what_i_see),
+        el("p", "", brief.what_it_means),
+        lines,
+        el("p", "ob-keyless-soulaana-hold", brief.what_is_missing),
+        el("p", "", brief.next_step),
+        el("p", "ob-keyless-footer",
+          "I see protected connection status, not provider data, an account ID, credentials, AI-use approval, verified prices or trading authority.")
+      );
+    } catch (_) {
+      providerSoulaana.replaceChildren(el("p", "ob-keyless-soulaana-hold",
+        "Tower provider status is unavailable. No connected provider or data rights are assumed."));
+    }
+  }
+
   lookup.addEventListener("submit", function (event) {
     event.preventDefault();
     const symbol = String(input.value || "").trim().toUpperCase();
@@ -185,4 +266,5 @@
     read(currentSymbol);
   });
   read(currentSymbol);
+  readProviderSoulaana();
 })();
