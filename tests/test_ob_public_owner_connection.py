@@ -331,8 +331,9 @@ def test_empty_and_duplicate_accounts_fail_closed_with_specific_diagnostic(setup
     monkeypatch.setattr(Recorder,"__call__",replacement)
     key=csrf(page(client).get_data(as_text=True))
     assert post(client,key).status_code==303
-    assert "empty account list" in page(client).get_data(as_text=True)
-    assert "No account was selected." in page(client).get_data(as_text=True)
+    empty_notice=page(client).get_data(as_text=True)
+    assert "empty account list" in empty_notice
+    assert "No account was selected." in empty_notice
     assert post(client,key).status_code==303
     assert "unexpected structure" in page(client).get_data(as_text=True)
     assert store.get("tower_session_"+"x"*30) is None
