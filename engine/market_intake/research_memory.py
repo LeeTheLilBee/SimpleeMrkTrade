@@ -11,6 +11,15 @@ from dataclasses import dataclass
 from datetime import datetime
 from hashlib import sha256
 import json
+import re
+
+# An opaque source reference must not accidentally persist a credential-bearing
+# signed URL or provider key as "safe metadata". Owner/source review remains
+# independently required for actual retention/Archive Vault.
+_SECRET_REF = re.compile(
+    r"(?:api[_-]?key|access[_-]?token|password|secret|authorization|bearer)\s*[=:]",
+    re.IGNORECASE,
+)
 
 from .contracts import _aware
 from .symbol_research import SymbolResearchInputs
@@ -41,11 +50,21 @@ class ResearchReferenceLedger:
             raise ValueError("nonblank bounded owner audit receipt required")
         if receipt_id in self._receipts:
             raise ValueError("duplicate memory receipt")
-        if inputs.history is not None and not inputs.history.rights.retention_allowed:
-            raise ValueError("historical feed retention was not separately permitted")
+        # A once-reviewed retention boolean does not survive a later source
+        # expiry. Validate the full original source terms at this capture
+        # position; real durable persistence must *also* check current terms,
+        # revocation and a transactional Tower/Vault receipt independently.
+        if inputs.history is not None and (
+            not inputs.history.rights.retention_allowed
+            or not inputs.history.rights.allowed_at(inputs.captured_at)
+        ):
+            raise ValueError("historical feed retention/rights not valid at capture")
         if inputs.financial_facts and (
-            inputs.financial_rights is None or not inputs.financial_rights.retention):
-            raise ValueError("fundamental record retention not reviewed")
+            inputs.financial_rights is None
+            or not inputs.financial_rights.retention
+            or not inputs.financial_rights.allowed_at(inputs.captured_at)
+        ):
+            raise ValueError("fundamental record retention/rights not valid at capture")
         # Event references are intentionally excluded because SourceRights does not
         # grant persistence rights. A real Archive Vault integration must separately
         # assess retention before accepting an issuer-event artifact.
@@ -55,7 +74,12 @@ class ResearchReferenceLedger:
         if inputs.financial_facts:
             refs.extend(row.provenance_reference for row in inputs.financial_facts)
         refs=sorted(set(refs))
-        if any(not isinstance(ref,str) or not ref.strip() or len(ref)>500 for ref in refs):
+        if any(
+            not isinstance(ref,str) or not ref.strip() or len(ref)>500
+            or any(ord(ch)<32 or ord(ch)==127 for ch in ref)
+            or "?" in ref or "#" in ref or _SECRET_REF.search(ref) is not None
+            for ref in refs
+        ):
             raise ValueError("bounded non-secret source references required")
         previous=self._latest.get(inputs.identity.symbol)
         if previous is not None and inputs.captured_at <= previous:
@@ -101,7 +125,9 @@ def soulaana_research_brief(packet:dict)->dict[str,object]:
         sections.append("Issuer financial concepts remain unavailable or under review.")
     if events:
         sections.append(f"{len(events)} source-cited issuer event(s) are available as research leads.")
-    if scanner["scanner_state"]=="CONFLICT_HOLD":
+    if scanner["scanner_state"]=="AI_SOURCE_RIGHTS_HOLD":
+        sections.append("Issuer-event and current-source AI-use rights are not established; source details are withheld.")
+    elif scanner["scanner_state"]=="CONFLICT_HOLD":
         sections.append("Independent price evidence disagrees. Research remains on hold.")
     elif not scanner["equity_sources"]:
         sections.append("No approved current underlying quote is attached to this research brief.")
