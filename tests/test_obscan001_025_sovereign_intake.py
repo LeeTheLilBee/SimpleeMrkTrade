@@ -11,7 +11,7 @@ from engine.market_intake import (
     BOUNDARIES, FeedAdapter, IngressRegistry, DiscoveryEvent, EquityQuote, Gate, Observation, OptionQuote,
     ProviderBudget, ScanContext, ScanPolicy, SourceRights, TrafficPlanner,
     assess, diff_directory, directory_snapshot, inspect_symbol,
-    parse_nasdaq_directory, parse_sec_ticker_exchange, reconcile_symbol_universe,
+    parse_nasdaq_directory, parse_sec_submissions, parse_sec_ticker_exchange, reconcile_symbol_universe,
     research_packet,
 )
 from engine.market_intake.local_catalog import run
@@ -295,3 +295,45 @@ def test_provider_adapter_requires_installed_rights_and_explicit_timestamp():
         adapter.normalize({**raw,"observed_at":"2026-09-28T14:59:59"},received_at=NOW)
     with pytest.raises(ValueError):
         adapter.normalize({k:v for k,v in raw.items() if k!="observed_at"},received_at=NOW)
+
+def test_offline_sec_submissions_have_real_acceptance_time_not_download_time():
+    payload=json.dumps({
+        "cik":234, "filings":{"recent":{
+            "accessionNumber":["0000000234-26-000001"],
+            "form":["8-K"],
+            "acceptanceDateTime":["2026-09-28T14:59:50.000Z"],
+            "primaryDocument":["x8k.htm"]
+        }}})
+    parsed=parse_sec_submissions(payload,universe=universe(),received_at=NOW)
+    assert len(parsed)==1
+    ev=parsed[0]
+    assert ev.evidence.source_id=="sec-edgar"
+    assert ev.issuer_cik=="0000000234"
+    assert ev.evidence.observed_at != ev.evidence.received_at
+    assert "000000023426000001" in ev.reference_url
+    assert ev.category=="filing"
+    sec_right=SourceRights("sec-edgar","SEC-EDGAR","reviewed-internal-event-use",NOW,
+                           internal_research=True,automated_non_display=True,
+                           entitled_instruments=frozenset({"event"}))
+    lead=inspect_symbol("XYZ",universe=universe(),events=parsed,
+                        rights={**RIGHTS,"sec-edgar":sec_right},context=CONTEXT)
+    assert lead.state=="EVENT_RESEARCH_ONLY"
+    assert ev.evidence.observation_id in lead.event_ids
+    assert not lead.execution_ready
+
+
+def test_untrusted_or_ambiguous_sec_events_quarantine_instead_of_making_prices():
+    base={"cik":234,"filings":{"recent":{
+          "accessionNumber":["0000000234-26-000001"],
+          "form":["8-K"],"acceptanceDateTime":["2026-09-28T14:59:50"],
+          "primaryDocument":["../../foo.htm"]}}}
+    assert parse_sec_submissions(json.dumps(base),universe=universe(),received_at=NOW)==[]
+    base["filings"]["recent"]["acceptanceDateTime"]=["2026-09-28T14:59:50Z"]
+    events=parse_sec_submissions(json.dumps(base),universe=universe(),received_at=NOW)
+    assert len(events)==1 and ".." not in events[0].reference_url
+    base["cik"]=987654321
+    assert parse_sec_submissions(json.dumps(base),universe=universe(),received_at=NOW)==[]
+    base["cik"]=234
+    base["filings"]["recent"]["form"]=[]
+    with pytest.raises(ValueError):
+        parse_sec_submissions(json.dumps(base),universe=universe(),received_at=NOW)
