@@ -31,7 +31,11 @@ _MAX_CONNECTIONS = 32
 _MAX_POST_BYTES = 8192
 _ACCOUNT_ID = re.compile(r"^[A-Za-z0-9_-]{5,128}$")
 _HOLD_MESSAGES = {
-    "ACCOUNT_DISCOVERY_HOLD": "No unique eligible brokerage account was returned. No account selected.",
+    "ACCOUNT_DISCOVERY_HOLD": "Public's account list had an unexpected structure. No account selected.",
+    "ACCOUNT_LIST_EMPTY_HOLD": "Public accepted authentication but returned no accounts. Check business account approval or contact Public Support.",
+    "ACCOUNT_TYPE_HOLD": "Public accepted authentication and returned accounts, but none has a recognized brokerage, entity or joint account type. No account selected.",
+    "ACCOUNT_SELECTION_HOLD": "Select one account from the protected list; no account was selected.",
+    "ACCOUNT_SELECTION_EXPIRED_HOLD": "Account selection expired. Connect again using the protected Tower form.",
     "PROBE_NETWORK_OR_AUTH_HOLD": "Public rejected the authentication or network request. Check the key and Public account access.",
     "ACCESS_TOKEN_NOT_RETURNED": "Public did not return the expected access token.",
     "PROBE_INVALID_RESPONSE": "Public returned an unexpected response.",
@@ -68,7 +72,8 @@ class _Connection:
     access_token: str
     account_id: str
     expires_at: datetime
-    account_kind: str = "BROKERAGE"
+    account_kind: str = "UNSELECTED"
+    candidates: tuple[tuple[str, str], ...] = ()
     last_quote: dict | None = None
 
 
@@ -220,7 +225,17 @@ def _post_rejected(code: str):
     return _headers(response)
 
 
-def _discover_single_brokerage(token: str, opener) -> str:
+_SELECTABLE_ACCOUNT_TYPES = frozenset({"BROKERAGE", "ENTITY", "JOINT"})
+
+
+def _discover_accounts(token: str, opener) -> tuple[tuple[str, str], ...]:
+    """Read Public's documented account-list response, never account balances.
+
+    Business entities may be returned as ENTITY, not necessarily BROKERAGE.
+    If multiple eligible accounts exist, return all for an *owner-selected*
+    server-memory ordinal; never pick the first silently. No identifiers or
+    raw provider bodies reach logs, HTML, browser cookies or generic errors.
+    """
     req = Request(_ACCOUNTS, method="GET",
                   headers={"Accept": "application/json",
                            "Authorization": "Bearer " + token})
@@ -228,16 +243,38 @@ def _discover_single_brokerage(token: str, opener) -> str:
     rows = payload.get("accounts") if isinstance(payload, dict) else None
     if not isinstance(rows, list) or len(rows) > 20:
         raise ProbeHold("ACCOUNT_DISCOVERY_HOLD")
-    accounts = [
-        x.get("accountId") for x in rows if isinstance(x, dict)
-        and x.get("accountType") == "BROKERAGE"
-        and isinstance(x.get("accountId"), str)
-        and _ACCOUNT_ID.fullmatch(x["accountId"])
-    ]
-    # No arbitrary first-account choice, and no exposure of account identifiers.
-    if len(accounts) != 1:
-        raise ProbeHold("ACCOUNT_DISCOVERY_HOLD")
-    return accounts[0]
+    if not rows:
+        raise ProbeHold("ACCOUNT_LIST_EMPTY_HOLD")
+    seen = set()
+    candidates = []
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ProbeHold("ACCOUNT_DISCOVERY_HOLD")
+        identifier, kind = row.get("accountId"), row.get("accountType")
+        if not isinstance(identifier, str) or not _ACCOUNT_ID.fullmatch(identifier):
+            raise ProbeHold("ACCOUNT_DISCOVERY_HOLD")
+        if identifier in seen:
+            raise ProbeHold("ACCOUNT_DISCOVERY_HOLD")
+        seen.add(identifier)
+        if not isinstance(kind, str) or len(kind) > 40:
+            raise ProbeHold("ACCOUNT_DISCOVERY_HOLD")
+        if kind in _SELECTABLE_ACCOUNT_TYPES:
+            candidates.append((identifier, kind))
+    if not candidates:
+        raise ProbeHold("ACCOUNT_TYPE_HOLD")
+    return tuple(candidates)
+
+
+def _public_selection_view(record: _Connection | None) -> tuple[dict, ...]:
+    if not record or record.account_id or not record.candidates:
+        return ()
+    return tuple({
+        "index": index,
+        "kind": kind,
+        # A short suffix makes same-type accounts distinguishable without
+        # exposing full accountId or account numbers.
+        "hint": "\u2022\u2022\u2022\u2022" + identifier[-4:],
+    } for index, (identifier, kind) in enumerate(record.candidates, 1))
 
 
 def _headers(response):
@@ -293,16 +330,44 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
                     try:
                         token = get_short_token(raw, opener=request_opener)
                         # Do not hold a long-lived secret in the session store.
-                        account_id = _discover_single_brokerage(token, request_opener)
-                        vault.put(sid, _Connection(token, account_id,
-                                                  _now() + timedelta(seconds=_AUTH_TTL_SECONDS)))
-                        session["ob_public_owner_notice"] = (
-                            "Public authenticated. One brokerage account verified. Temporary connection only."
+                        accounts = _discover_accounts(token, request_opener)
+                        connection = _Connection(
+                            token, "", _now() + timedelta(seconds=_AUTH_TTL_SECONDS),
+                            candidates=accounts,
                         )
+                        if len(accounts) == 1:
+                            connection.account_id, connection.account_kind = accounts[0]
+                            connection.candidates = ()
+                            session["ob_public_owner_notice"] = (
+                                "Public authenticated. One " + connection.account_kind
+                                + " account selected for temporary source-only API checks."
+                            )
+                        else:
+                            session["ob_public_owner_notice"] = (
+                                "Public authenticated. Choose one of " + str(len(accounts))
+                                + " accounts below; nothing has been selected yet."
+                            )
+                        vault.put(sid, connection)
                     except (ProbeHold, PublicQuoteHold) as exc:
                         vault.drop(sid)
                         session["ob_public_owner_notice"] = _HOLD_MESSAGES.get(str(exc),
                                                        "Connection held. Nothing was activated.")
+            elif operation == "select":
+                item = vault.get(sid)
+                selected = request.form.get("account_index", "")
+                if (item is None or item.account_id or not item.candidates
+                        or not isinstance(selected, str)
+                        or not re.fullmatch(r"[1-9][0-9]?", selected)
+                        or int(selected) > len(item.candidates)):
+                    session["ob_public_owner_notice"] = _HOLD_MESSAGES["ACCOUNT_SELECTION_EXPIRED_HOLD"]
+                else:
+                    item.account_id, item.account_kind = item.candidates[int(selected) - 1]
+                    item.candidates = ()
+                    item.last_quote = None
+                    session["ob_public_owner_notice"] = (
+                        "Selected " + item.account_kind
+                        + " account. Temporary authentication established; market-data permissions remain separate."
+                    )
             elif operation == "quote":
                 item = vault.get(sid)
                 kind = request.form.get("kind")
@@ -310,6 +375,8 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
                 policy = _quote_policy()
                 if item is None:
                     session["ob_public_owner_notice"] = "Connection expired; connect again."
+                elif not item.account_id or item.account_kind not in _SELECTABLE_ACCOUNT_TYPES:
+                    session["ob_public_owner_notice"] = "Choose an account before checking quotes."
                 elif not policy.permits({kind}):
                     session["ob_public_owner_notice"] = "Quote held: separate business data-use, display and instrument permissions must be reviewed."
                 else:
@@ -348,7 +415,9 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
             "ob_public_owner_connection.html",
             csrf=_csrf(),
             connect_enabled=_flag("OB_PUBLIC_OWNER_CONNECT_ENABLED"),
-            is_connected=item is not None,
+            is_connected=bool(item and item.account_id),
+            selection_options=_public_selection_view(item),
+            selected_account_kind=item.account_kind if item and item.account_id else None,
             expires_at=item.expires_at.isoformat() if item else None,
             equity_ready=rights.permits({"EQUITY"}),
             option_ready=rights.permits({"OPTION"}),
