@@ -86,7 +86,7 @@ def render_template_string_source(symbol):
     # Deliberately isolate the partial from pre-existing full-page route globals.
     from flask import render_template_string
     return render_template_string(
-        "{{ '{' }}% include 'ob_research_context_partial.html' %{{ '}' }}",
+        "{% include 'ob_research_context_partial.html' %}",
         symbol=symbol,
     )
 
