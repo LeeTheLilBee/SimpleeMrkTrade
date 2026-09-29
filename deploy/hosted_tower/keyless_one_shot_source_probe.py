@@ -79,6 +79,7 @@ def capture_bls_diagnostic(service, state: dict) -> None:
 
     original_open = service.reference._opener
     original_reader = service.reference.bls_v1
+    original_json = service.reference._json
 
     def traced_open(request, timeout):
         if not request.full_url.startswith(
@@ -101,6 +102,36 @@ def capture_bls_diagnostic(service, state: dict) -> None:
             state["bls_http"] = "TRANSPORT_HOLD"
             raise
 
+    def traced_json(url, *, source, method="GET", body=None, headers=None):
+        payload, fetched = original_json(
+            url, source=source, method=method, body=body, headers=headers
+        )
+        if source == "bls" and isinstance(payload, dict):
+            results = payload.get("Results")
+            state["bls_status_success"] = payload.get("status") == "REQUEST_SUCCEEDED"
+            state["bls_results_shape"] = (
+                "LIST" if isinstance(results, list)
+                else "OBJECT" if isinstance(results, dict) else "OTHER"
+            )
+            group = (results[0] if isinstance(results, list) and len(results) == 1
+                     else results if isinstance(results, dict) else None)
+            series = group.get("series") if isinstance(group, dict) else None
+            state["bls_series_shape"] = "LIST" if isinstance(series, list) else "OTHER"
+            state["bls_series_count_bucket"] = (
+                "ONE" if isinstance(series, list) and len(series) == 1
+                else "ZERO" if isinstance(series, list) and not series else "OTHER"
+            )
+            matched = (
+                isinstance(series, list) and len(series) == 1 and
+                isinstance(series[0], dict) and
+                series[0].get("seriesID") == "CUUR0000SA0"
+            )
+            state["bls_series_matched"] = bool(matched)
+            rows = series[0].get("data") if matched else None
+            state["bls_data_shape"] = "LIST" if isinstance(rows, list) else "OTHER"
+            state["bls_data_nonempty"] = bool(rows) if isinstance(rows, list) else False
+        return payload, fetched
+
     def traced_reader(series_id):
         try:
             return original_reader(series_id)
@@ -112,6 +143,7 @@ def capture_bls_diagnostic(service, state: dict) -> None:
             raise
 
     service.reference._opener = traced_open
+    service.reference._json = traced_json
     service.reference.bls_v1 = traced_reader
 
 
