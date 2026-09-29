@@ -360,3 +360,77 @@ def test_four_protected_room_templates_only_offer_server_bound_context():
         safe=render_template("ob_research_context_partial.html",ob_research_context=malicious)
         assert "<script>alert(1)</script>" not in safe
         assert "&lt;script&gt;" in safe
+
+
+def test_soulaana_does_not_infer_ai_rights_from_human_owner_display():
+    # SourceRights currently has owner/invitee display but NO distinct event or
+    # quote-source AI-use grant. The owner packet may be rich while the AI
+    # projection must not inherit its protected issuer text or provider IDs.
+    owner=packet()
+    assert owner["issuer_events"] and owner["scanner"]["equity_sources"]
+    view=project_research(owner,"soulaana")
+    assert view["issuer_events"]==[]
+    assert view["market_sources"]["equity_sources"]==[]
+    assert view["market_sources"]["option_sources"]==[]
+    assert view["market_sources"]["scanner_state"]=="AI_SOURCE_RIGHTS_HOLD"
+    brief=soulaana_research_brief(owner)
+    assert brief["source_event_references"]==[]
+    assert any("AI-use rights" in s for s in brief["statements"])
+    assert not brief["can_authorize_trading"]
+
+
+def test_soulaana_history_without_ai_grant_hides_counts_dates_and_references():
+    owner=packet(history_ai=False)
+    assert owner["historical"]["bars_used"]>0
+    view=project_research(owner,"soulaana")
+    assert view["history"]=={
+        "state":"EXPLANATION_RIGHTS_HOLD","historical_only":True,
+        "live_quote":False,"observations":{},
+    }
+    brief=soulaana_research_brief(owner)
+    assert brief["historical_source_reference"] is None
+    assert brief["source_event_references"]==[]
+    assert "verified-snapshot-test-1" not in str(brief)
+
+
+def test_reference_memory_rechecks_expired_history_and_fundamental_terms_at_capture():
+    original=inputs()
+    # A historical series can have been valid when received but no longer
+    # licensed when a later combined research record is captured.
+    later=NOW+timedelta(hours=2)
+    expired_history=replace(original.history,rights=replace(
+        original.history.rights,expires_at=NOW+timedelta(hours=1)))
+    updated=replace(original,history=expired_history,captured_at=later)
+    with pytest.raises(ValueError,match="historical feed retention/rights"):
+        ResearchReferenceLedger().append(updated,receipt_id="expired-hist")
+    expired_fundamentals=replace(original.financial_rights,
+                                 expires_at=NOW-timedelta(minutes=1))
+    revised=replace(original,financial_rights=expired_fundamentals)
+    with pytest.raises(ValueError,match="fundamental record retention/rights"):
+        ResearchReferenceLedger().append(revised,receipt_id="expired-sec")
+
+
+def test_direct_owner_history_and_fundamentals_projections_recheck_display_terms():
+    series=history()
+    internal_history=replace(series,rights=replace(
+        series.rights,owner_display_allowed=False))
+    with pytest.raises(ValueError,match="owner-display entitlement"):
+        history_context(internal_history,cutoff=NOW)
+    # Internal source ingestion can be permitted even when owner display is not.
+    rights,facts,_=financial()
+    with pytest.raises(ValueError,match="owner-display permission"):
+        fundamental_context(cik=CIK,facts=facts,rights=replace(
+            rights,owner_display=False),as_of=NOW)
+
+
+@pytest.mark.parametrize("reference", [
+    "https://example.invalid/daily?api_key=private-token",
+    "source:authorization=private-token",
+    "source:safe-ref#signed-fragment",
+    "source-ref\nInjected header",
+])
+def test_transient_source_reference_memory_rejects_credential_or_signed_url(reference):
+    original=inputs()
+    candidate=replace(original,identity=replace(original.identity,source_file=reference))
+    with pytest.raises(ValueError,match="non-secret source references"):
+        ResearchReferenceLedger().append(candidate,receipt_id="unsafe-ref")
