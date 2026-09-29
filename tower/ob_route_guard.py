@@ -435,6 +435,15 @@ OB_ROUTE_GUARD_MAP.update({
         purpose="Exact protected GET/HEAD source-status read. No licensed quote, provider, position or execution authority is implied.",
         soulaana_translation="Soulaana: This is a protected market-source status corridor, not proof that a feed is connected.",
     ),
+    "/ob/data-desk/public": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=30,
+        room="Public Owner Source Connection",
+        purpose="Exact Tower owner + step-up Public authentication and one-off source-only quote checks; no order authority.",
+        soulaana_translation="Soulaana: This is an owner-only Public account check, not broker execution or general live feed activation.",
+    ),
     "/ob/data-desk": _tower_ob_real_surface_policy_2593_2602(
         route_key="data_desk",
         action="view",
