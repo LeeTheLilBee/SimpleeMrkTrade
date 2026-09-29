@@ -49,6 +49,13 @@ class OwnerResearchPolicy:
     ai_use_reviewed: bool = False
     # No global rights inheritance: each provider must be reviewed separately.
     reviewed_sources: frozenset[str] = frozenset()
+    ai_reviewed_sources: frozenset[str] = frozenset()
+
+    def ai_allowed(self, source: str) -> bool:
+        return (self.ai_use_reviewed is True
+                and type(self.ai_reviewed_sources) is frozenset
+                and source in self.reviewed_sources
+                and source in self.ai_reviewed_sources)
 
     def require(self, source: str) -> None:
         if (self.source_use_reviewed is not True
@@ -165,7 +172,7 @@ class PublicReferenceClient:
         return PublicObservation("BLS", "PUBLIC_V1", series_id,
                                  f'{latest["year"]}-{latest["period"]}', number,
                                  fetched, BLS_DOCS,
-                                 ai_use_approved=self.policy.ai_use_reviewed)
+                                 ai_use_approved=self.policy.ai_allowed("bls"))
 
     def bea_nipa(self, api_key: str, *, table: str = "T10105", frequency: str = "Q",
                  line_number: str = "1") -> PublicObservation:
@@ -196,7 +203,7 @@ class PublicReferenceClient:
             raise PublicResearchUnavailable("BEA_SOURCE_SHAPE_HOLD") from None
         return PublicObservation("BEA", "NIPA", f"{table}:{frequency}:{line_number}",
                                  latest["TimePeriod"], number, fetched, BEA_DOCS,
-                                 ai_use_approved=self.policy.ai_use_reviewed)
+                                 ai_use_approved=self.policy.ai_allowed("bea"))
 
     def openfigi_ticker(self, ticker: str, *, api_key: str | None = None
                         ) -> IdentifierObservation:
