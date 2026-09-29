@@ -20,3 +20,11 @@
 .ob-keyless-unit{font-size:.7rem;color:#94b6cb}
 .ob-keyless-docs{font-size:.75rem;color:#94e2da;text-decoration:underline}
 @media(max-width:700px){.ob-keyless-context{margin:16px 10px;padding:15px}}
+
+/* Soulaana's independent source-status interpretation. No price/trade promotion. */
+.ob-keyless-soulaana{margin-top:17px;padding:17px;border:1px solid rgba(104,204,185,.36);border-radius:13px;background:rgba(15,42,50,.79)}
+.ob-keyless-soulaana h3{margin:7px 0;font-size:1.08rem;color:#f0fffb}
+.ob-keyless-soulaana p{font-size:.83rem;line-height:1.55;color:#d3e9e6;margin:7px 0}
+.ob-keyless-soulaana-register{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:8px;margin:13px 0}
+.ob-keyless-soulaana-register p{padding:10px;border-radius:9px;background:rgba(13,30,44,.85);border:1px solid rgba(145,206,206,.17)}
+.ob-keyless-soulaana-hold{border-left:3px solid #d6a46b;padding-left:11px}
