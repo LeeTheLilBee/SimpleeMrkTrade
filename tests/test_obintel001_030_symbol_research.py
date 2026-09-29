@@ -175,6 +175,31 @@ def test_companyfacts_exact_cik_acceptance_and_retrospective_cutoff():
         fundamental_context(cik=CIK,facts=rows,rights=r,as_of=NOW-timedelta(days=3))
 
 
+def test_companyfacts_year_end_comparisons_are_exact_concept_and_retro_only():
+    rights,_,_=financial()
+    earlier="0000000234-25-000002"
+    later="0000000234-26-000003"
+    raw={"cik":234,"facts":{"us-gaap":{"Assets":{"units":{"USD":[
+        {"accn":earlier,"form":"10-K","end":"2024-12-31","filed":"2025-02-01","val":80},
+        {"accn":later,"form":"10-K","end":"2025-12-31","filed":"2026-02-02","val":100},
+        {"accn":ACC,"form":"10-Q","end":"2026-06-30","filed":"2026-09-25","val":110},
+    ]}}}}}
+    facts=parse_companyfacts(raw,cik=CIK,accepted_accessions={
+        earlier:datetime(2025,2,2,tzinfo=timezone.utc),
+        later:datetime(2026,2,3,tzinfo=timezone.utc),
+        ACC:NOW-timedelta(days=2)},rights=rights,reviewed_at=NOW)
+    context=fundamental_context(cik=CIK,facts=facts,rights=rights,as_of=NOW)
+    assert context["reported_concepts"][0]["value"]==110.0
+    trend=context["year_end_balance_sheet_comparisons"]
+    assert len(trend)==1 and trend[0]["concept"]=="Assets"
+    assert trend[0]["reported_change_pct"]==25.0
+    assert trend[0]["earlier_source"].startswith("https://www.sec.gov/")
+    assert trend[0]["retrospective_only"] and not context["execution_authorized"]
+    truncated=fundamental_context(cik=CIK,facts=facts,rights=rights,
+                                   as_of=NOW-timedelta(days=1))
+    assert truncated["year_end_balance_sheet_comparisons"]==trend
+
+
 def test_companyfacts_reject_missing_acceptance_future_facts_and_wrong_cik():
     r,rows,raw=financial()
     assert parse_companyfacts(raw,cik=CIK,accepted_accessions={},
