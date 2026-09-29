@@ -61,6 +61,8 @@ _PRODUCTS = (
                     "reference", False, "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"),
     ProviderProduct("bls-public-v1", "U.S. Bureau of Labor Statistics", "Public economic series, historical release context; no quotes", "event",
                     "reference", False, "https://www.bls.gov/developers/"),
+    ProviderProduct("treasury-debt-to-penny", "U.S. Treasury FiscalData", "Public debt-to-the-penny dataset; record-dated fiscal context only, not market yields or quotes", "event",
+                    "reference", False, "https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/"),
     ProviderProduct("bea-nipa", "U.S. Bureau of Economic Analysis", "NIPA historical economic data; free registered key required", "event",
                     "reference", False, "https://apps.bea.gov/api/signup/"),
     ProviderProduct("openfigi-identifier", "OpenFIGI", "Ticker / instrument FIGI mapping; no issuer or quote verification", "metadata",

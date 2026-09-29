@@ -17,6 +17,7 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
         "/ob/market-map",
         "/ob/data-desk",
         "/ob/data-desk/public",
+        "/ob/research/keyless.json",
         # OBDATA009: exact private, read-only canonical source-status corridor.
         "/ob/engine-feed-snapshot.json",
         "/ob/trade-center",
@@ -109,6 +110,11 @@ def register_ob_protected_route_enforcement(app):
 
         # Only the canonical feed URL may be read; no mutation or alias.
         if path == "/ob/engine-feed-snapshot.json" and request.method not in {"GET", "HEAD"}:
+            abort(405)
+
+        # Keyless source context only supports a real authenticated GET. A HEAD
+        # must not accidentally execute paid/quota-limited provider fetches.
+        if path == "/ob/research/keyless.json" and request.method != "GET":
             abort(405)
 
         if not owner_session_active():
