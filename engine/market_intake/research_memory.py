@@ -41,11 +41,21 @@ class ResearchReferenceLedger:
             raise ValueError("nonblank bounded owner audit receipt required")
         if receipt_id in self._receipts:
             raise ValueError("duplicate memory receipt")
-        if inputs.history is not None and not inputs.history.rights.retention_allowed:
-            raise ValueError("historical feed retention was not separately permitted")
+        # A once-reviewed retention boolean does not survive a later source
+        # expiry. Validate the full original source terms at this capture
+        # position; real durable persistence must *also* check current terms,
+        # revocation and a transactional Tower/Vault receipt independently.
+        if inputs.history is not None and (
+            not inputs.history.rights.retention_allowed
+            or not inputs.history.rights.allowed_at(inputs.captured_at)
+        ):
+            raise ValueError("historical feed retention/rights not valid at capture")
         if inputs.financial_facts and (
-            inputs.financial_rights is None or not inputs.financial_rights.retention):
-            raise ValueError("fundamental record retention not reviewed")
+            inputs.financial_rights is None
+            or not inputs.financial_rights.retention
+            or not inputs.financial_rights.allowed_at(inputs.captured_at)
+        ):
+            raise ValueError("fundamental record retention/rights not valid at capture")
         # Event references are intentionally excluded because SourceRights does not
         # grant persistence rights. A real Archive Vault integration must separately
         # assess retention before accepting an issuer-event artifact.
