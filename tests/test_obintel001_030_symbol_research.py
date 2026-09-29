@@ -421,3 +421,16 @@ def test_direct_owner_history_and_fundamentals_projections_recheck_display_terms
     with pytest.raises(ValueError,match="owner-display permission"):
         fundamental_context(cik=CIK,facts=facts,rights=replace(
             rights,owner_display=False),as_of=NOW)
+
+
+@pytest.mark.parametrize("reference", [
+    "https://example.invalid/daily?api_key=private-token",
+    "source:authorization=private-token",
+    "source:safe-ref#signed-fragment",
+    "source-ref\\nInjected header",
+])
+def test_transient_source_reference_memory_rejects_credential_or_signed_url(reference):
+    original=inputs()
+    candidate=replace(original,identity=replace(original.identity,source_file=reference))
+    with pytest.raises(ValueError,match="non-secret source references"):
+        ResearchReferenceLedger().append(candidate,receipt_id="unsafe-ref")
