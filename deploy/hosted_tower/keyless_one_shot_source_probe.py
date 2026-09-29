@@ -9,6 +9,7 @@ from the running Render environment, not an authenticated browser session.
 from __future__ import annotations
 
 import json
+import os
 from urllib.error import HTTPError, URLError
 from urllib.request import Request
 
@@ -189,7 +190,47 @@ def probe_official_bls_release(state: dict, *, opener=None) -> None:
 
 
 
+
+def probe_dol_cpi_availability(state: dict, *, opener=None) -> None:
+    """Separate one-shot probe of two fixed first-party DOL publications."""
+    from engine.market_intake.public_research_sources import _default_open
+    open_response = opener or _default_open
+    endpoints = (
+        ("index", "https://www.dol.gov/newsroom/economicdata", b"Consumer Price Index"),
+        ("release", "https://www.dol.gov/newsroom/economicdata/cpi_09112026.pdf", b"%PDF-"),
+    )
+    for name, url, marker in endpoints:
+        key = "dol_cpi_" + name
+        req = Request(url, method="GET", headers={
+            "Accept": "application/pdf" if name == "release" else "text/html",
+            "Accept-Encoding": "identity",
+            "User-Agent": "Simplee Observatory owner-only government source availability",
+        })
+        try:
+            with open_response(req, timeout=8) as response:
+                status = int(getattr(response, "status", 200))
+                if (status != 200 or
+                        getattr(response, "geturl", lambda: url)() != url):
+                    state[key] = "RESPONSE_HOLD"
+                    continue
+                sample = response.read(150_001 if name == "index" else 8)
+            state[key] = "HTTP_200"
+            state[key + "_marker"] = bool(marker in sample and len(sample) <= 150_000)
+        except HTTPError as exc:
+            status = int(exc.code)
+            state[key] = "HTTP_" + str(status) if 300 <= status <= 599 else "HTTP_HOLD"
+        except (URLError, OSError, TimeoutError):
+            state[key] = "TRANSPORT_HOLD"
+
+
+
 def main() -> int:
+    if os.environ.get("OB_KEYLESS_DOL_ONLY_PROBE") == "1":
+        report = {"schema": "OB_DOL_CPI_ONE_SHOT_V1", "raw_values_logged": False}
+        probe_dol_cpi_availability(report)
+        print("OB_DOL_CPI_ONE_SHOT " + json.dumps(report, sort_keys=True), flush=True)
+        return 0 if (report.get("dol_cpi_index_marker") is True and
+                     report.get("dol_cpi_release_marker") is True) else 1
     safe_diagnostic = {}
     try:
         from engine.market_intake.keyless_public_context import from_environment
