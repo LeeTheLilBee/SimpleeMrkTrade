@@ -11,6 +11,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from threading import RLock
 import os
+import re
 
 from .official_catalyst_sources import OfficialCatalystClient, SourceHold, REFERENCES
 
@@ -80,7 +81,9 @@ def _public_row(source, state, facts=None, retrieved_at=None):
 def translate_for_soulaana(row, *, approved):
     """Derive bounded, factual source explanations only from a permitted row."""
     source = row["source"]
-    if source not in SOURCES or not approved or row["state"] != "SOURCE_BOUND":
+    if source not in SOURCES or row.get("source_reference") != REFERENCES.get(source):
+        raise ValueError("SOULAANA_REFERENCE_HOLD")
+    if not approved or row["state"] != "SOURCE_BOUND":
         return None
     facts = row["facts"]
     if not isinstance(facts, list) or len(facts) > 3:
@@ -96,13 +99,36 @@ def translate_for_soulaana(row, *, approved):
                 or not isinstance(fact.get("reference"), str)
                 or len(fact["title"]) > 250 or len(fact["period"]) > 40):
             raise ValueError("SOULAANA_SOURCE_HOLD")
+        if source == "federal_register":
+            valid_fact_reference = (fact["reference"].startswith(
+                "https://www.federalregister.gov/d/") or fact["reference"].startswith(
+                "https://www.federalregister.gov/documents/"))
+        elif source == "nws":
+            valid_fact_reference = (fact["reference"].startswith(
+                "https://api.weather.gov/alerts/") or fact["reference"].startswith(
+                "https://alerts.weather.gov/"))
+        else:
+            valid_fact_reference = fact["reference"] == REFERENCES[source]
+        if not valid_fact_reference or len(fact["reference"]) > 340:
+            raise ValueError("SOULAANA_REFERENCE_HOLD")
         if source in ("federal_register", "cftc", "nws"):
             if source == "federal_register":
                 explanations.append(fact["stage"] + " published " +
                                     fact["period"] + ": " + fact["title"] + ".")
             elif source == "cftc":
-                explanations.append("TFF futures-only market in the " + fact["period"] +
-                                    " report: " + fact["title"] + ".")
+                # These counts belong to a CFTC reporting category; a positive
+                # net is arithmetic, NOT a prediction of the next price move.
+                long_count, short_count, net_count = (
+                    fact.get("leveraged_long"), fact.get("leveraged_short"),
+                    fact.get("leveraged_net"))
+                if not all(isinstance(x, str) and len(x) <= 55 for x in (
+                        long_count, short_count, net_count)):
+                    raise ValueError("SOULAANA_SOURCE_HOLD")
+                explanations.append(
+                    "TFF futures-only report " + fact["period"] + ": " +
+                    fact["title"] + ". Leveraged money long " + long_count +
+                    ", short " + short_count + ", net " + net_count +
+                    " contracts (long minus short).")
             else:
                 explanations.append("NWS actual alert effective " + fact["period"] +
                                     ": " + fact["title"] + ".")
