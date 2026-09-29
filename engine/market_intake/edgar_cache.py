@@ -7,6 +7,7 @@ designed for backend owner-authorized integration, not a public query endpoint.
 from __future__ import annotations
 
 from datetime import datetime, timezone, timedelta
+from dataclasses import replace
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -75,9 +76,11 @@ def checked_cached_research(*,identity:SymbolRow,root:Path,
     # Snapshot timestamps stay separately inspectable in source-cache metadata.
     # Rights reviewed *after* a download may apply to the later, explicitly
     # bounded owner inspection, never retroactively at the filing's event time.
-    return build_edgar_research(identity=identity,submissions=submissions,
+    bundle=build_edgar_research(identity=identity,submissions=submissions,
         companyfacts=facts,received_at=evaluated_at,event_rights=event_rights,
         fundamental_rights=fundamental_rights)
+    return replace(bundle,source_receipts=(("submissions",sub_at.isoformat()),
+                                          ("companyfacts",facts_at.isoformat())))
 
 
 def make_owner_edgar_resolver(*,identities:Mapping[str,SymbolRow],root:Path,
