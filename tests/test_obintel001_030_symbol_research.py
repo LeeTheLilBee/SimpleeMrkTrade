@@ -236,6 +236,31 @@ def test_all_engine_room_adapters_preserve_original_decisions():
         attach_research_context({"research_context":{}},raw,room="symbol_page")
 
 
+def test_existing_v2_symbol_and_universe_adapters_are_optional_and_nonpromoting():
+    from engine_v2.symbol_page_integration import build_symbol_page_payload
+    from engine_v2.research_context_adapter import attach_to_engine_output, attach_to_v2_universe
+    research=packet()
+    original={"summary":{"verdict":"Review only","score":12,"action":"wait"}}
+    plain=build_symbol_page_payload("XYZ",original)
+    enhanced=build_symbol_page_payload("XYZ",original,research_record=research)
+    assert "research_context" not in plain
+    assert enhanced["hero_score"]==plain["hero_score"]
+    assert enhanced["research_context"]["may_authorize_order"] is False
+    with pytest.raises(ValueError):
+        build_symbol_page_payload("ABC",original,research_record=research)
+    base={"symbol":"XYZ","score":88,"execution":{"eligible":False}}
+    overlay=attach_to_engine_output(base,research,lane="equity",symbol="XYZ")
+    assert overlay["score"]==88 and overlay["execution"]==base["execution"]
+    assert "research_context" not in base
+    old={"selected":[base],"spotlight":[base],"rejected":[],"meta":{"selected_count":1}}
+    new=attach_to_v2_universe(old,{"XYZ":research},lane="equity")
+    assert new["selected"][0]["research_context"]["room"]=="equity_engine_v2"
+    assert new["meta"]==old["meta"] and old["selected"][0]==base
+    assert not new["research_overlay"]["changes_selection"]
+    with pytest.raises(ValueError):
+        attach_to_engine_output({"symbol":"BAD"},research,lane="equity",symbol="XYZ")
+
+
 def test_market_map_and_soulaana_cannot_take_unlicensed_numeric_evidence():
     p=packet(history_ai=False,facts_ai=False)
     sky=project_research(p,"market_map")
