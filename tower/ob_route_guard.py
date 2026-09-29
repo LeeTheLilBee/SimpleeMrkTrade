@@ -426,6 +426,15 @@ OB_ROUTE_GUARD_MAP.update({
         purpose="Approved real Observatory Dashboard surface.",
         soulaana_translation="Soulaana: This is the Observatory Dashboard. I can open it through Tower clearance.",
     ),
+    "/ob/data-desk": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=20,
+        room="Market Data Desk",
+        purpose="Protected read-only owner connector catalog and source status; never live-price authority.",
+        soulaana_translation="Soulaana: The Market Data Desk is mapped for owner review. A listed provider does not mean a live feed is connected.",
+    ),
     "/ob/market-map": _tower_ob_real_surface_policy_2593_2602(
         route_key="dashboard",
         action="view",
