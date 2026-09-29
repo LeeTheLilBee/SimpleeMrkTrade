@@ -34,3 +34,10 @@ data/test_logs/
 data/ob_manual_live_dry_run.sqlite3
 data/ob_manual_live_dry_run.sqlite3-*
 data/ob_manual_live_receipt_packets/
+
+# Owner-local SEC EDGAR snapshots, response metadata and explicit rights evidence.
+# Never commit SEC contact information or local cache receipts.
+local-obscan/
+local-obscan-*/
+data/edgar-cache/
+private-reviewed-edgar-rights.json
