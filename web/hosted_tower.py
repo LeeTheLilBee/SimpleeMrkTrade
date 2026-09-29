@@ -539,3 +539,10 @@ register_obml_monday_readiness(app)
 # connection, real-time price, market-data license, browser approval or order.
 from tower.ob_market_data_desk_integration import register_protected_ob_market_data_desk
 register_protected_ob_market_data_desk(app)
+
+
+# OBINTEL/Tower: optional, exact-room source-bound research presentation.
+# No resolver is attached in this source-only hosted build; the panels remain
+# absent until real reviewed backend evidence and owner/session rights exist.
+from tower.ob_symbol_research_integration import register_protected_symbol_research_context
+register_protected_symbol_research_context(app)
