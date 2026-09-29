@@ -2,8 +2,10 @@ name: OB public reference research adapters (offline)
 on:
   push:
     branches:
-      - ob-public-free-research-adapters-0929
+      - tower-ob-public-reference-rights-hardening-20260929
   pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
     paths:
       - 'engine/market_intake/public_research_sources.py'
       - 'engine/market_intake/provider_catalog.py'
@@ -20,7 +22,7 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install pytest flask
       - run: python -m compileall -q engine/market_intake/public_research_sources.py scripts/ob_public_research_check.py
-      - run: python -m pytest -q tests/test_ob_public_research_sources.py tests/test_obscan026_040_universal_gateway.py tests/test_tower_ob_market_data_desk_selective.py
+      - run: python -m pytest -q tests/test_ob_public_research_sources.py tests/test_obscan026_040_universal_gateway.py tests/test_tower_ob_market_data_desk_selective.py tests/test_obscan041_055_market_data_desk.py tests/test_tower_ob_web_route_enforcement.py
       - name: Check no price or execution transport was added
         run: |
           ! grep -E 'broker\.place|place_order|submit_order|yfinance' engine/market_intake/public_research_sources.py
