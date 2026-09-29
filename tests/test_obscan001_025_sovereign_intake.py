@@ -24,7 +24,8 @@ A = SourceRights("vendor-a", "SIP", "approved-internal-entitlement-123", NOW,
                  entitled_instruments=frozenset({"equity", "option"}))
 B = SourceRights("vendor-b", "DIRECT", "approved-internal-entitlement-456", NOW,
                  internal_research=True, automated_non_display=True,
-                 owner_display=True, real_time_entitled=True)
+                 owner_display=True, real_time_entitled=True,
+                 entitled_instruments=frozenset({"equity", "option"}))
 DUP = SourceRights("vendor-mirror", "SIP", "approved-internal-entitlement-789", NOW,
                    internal_research=True, automated_non_display=True, real_time_entitled=True,
                    entitled_instruments=frozenset({"equity", "option"}))
