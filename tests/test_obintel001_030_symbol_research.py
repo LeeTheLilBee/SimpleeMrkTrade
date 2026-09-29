@@ -408,3 +408,16 @@ def test_reference_memory_rechecks_expired_history_and_fundamental_terms_at_capt
     revised=replace(original,financial_rights=expired_fundamentals)
     with pytest.raises(ValueError,match="fundamental record retention/rights"):
         ResearchReferenceLedger().append(revised,receipt_id="expired-sec")
+
+
+def test_direct_owner_history_and_fundamentals_projections_recheck_display_terms():
+    series=history()
+    internal_history=replace(series,rights=replace(
+        series.rights,owner_display_allowed=False))
+    with pytest.raises(ValueError,match="owner-display entitlement"):
+        history_context(internal_history,cutoff=NOW)
+    # Internal source ingestion can be permitted even when owner display is not.
+    rights,facts,_=financial()
+    with pytest.raises(ValueError,match="owner-display permission"):
+        fundamental_context(cik=CIK,facts=facts,rights=replace(
+            rights,owner_display=False),as_of=NOW)
