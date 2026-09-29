@@ -353,7 +353,7 @@ def evaluate_ob_request_guard(
     # authenticated Tower session. The independent OB HTTP boundary still
     # requires fresh step-up + consumed OB handoff; Public POST separately
     # enforces origin, CSRF, feature flag and source-specific rights.
-    if path in {"/ob/data-desk", "/ob/data-desk/public", "/ob/research/keyless.json"}:
+    if path in {"/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/research/keyless.json"}:
         try:
             from flask import has_request_context, session
             if has_request_context():
