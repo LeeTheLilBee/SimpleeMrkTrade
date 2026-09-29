@@ -70,6 +70,9 @@ _SAFE_BLS_HOLDS = frozenset({
     "SOURCE_RESPONSE_TOO_LARGE", "SOURCE_TRANSPORT_HOLD",
     "SOURCE_JSON_INVALID", "SOURCE_VALUE_INVALID",
     "BLS_SERIES_INVALID", "BLS_SOURCE_SHAPE_HOLD",
+    "BLS_BULK_TRANSPORT_HOLD", "BLS_BULK_TOO_LARGE",
+    "BLS_BULK_SHAPE_HOLD", "BLS_BULK_FUTURE_HOLD",
+    "BLS_BULK_SERIES_NOT_SUPPORTED",
 })
 
 
@@ -82,24 +85,27 @@ def capture_bls_diagnostic(service, state: dict) -> None:
     original_json = service.reference._json
 
     def traced_open(request, timeout):
-        if not request.full_url.startswith(
-            "https://api.bls.gov/publicAPI/v1/timeseries/data/"
-        ):
+        url = request.full_url
+        if url.startswith("https://api.bls.gov/publicAPI/v1/timeseries/data/"):
+            field = "bls_http"
+        elif url == "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems":
+            field = "bls_bulk_http"
+        else:
             return original_open(request, timeout)
         try:
             response = original_open(request, timeout)
-            state["bls_http"] = "HTTP_" + str(getattr(response, "status", 200))
+            state[field] = "HTTP_" + str(getattr(response, "status", 200))
             return response
         except HTTPError as exc:
             code = int(exc.code)
-            state["bls_http"] = ("HTTP_" + str(code)
-                                  if 300 <= code <= 599 else "HTTP_HOLD")
+            state[field] = ("HTTP_" + str(code)
+                            if 300 <= code <= 599 else "HTTP_HOLD")
             raise
         except URLError:
-            state["bls_http"] = "NETWORK_HOLD"
+            state[field] = "NETWORK_HOLD"
             raise
         except (TimeoutError, OSError):
-            state["bls_http"] = "TRANSPORT_HOLD"
+            state[field] = "TRANSPORT_HOLD"
             raise
 
     def traced_json(url, *, source, method="GET", body=None, headers=None):
