@@ -58,6 +58,18 @@ def _form_hold():
         return "FORM_SIZE_HOLD"
     if request.mimetype != "application/x-www-form-urlencoded":
         return "FORM_TYPE_HOLD"
+    # Duplicate/conflicting form fields must not allow different parser/proxy
+    # interpretations of the same credential operation.
+    required = {"csrf", "provider", "operation"}
+    allowed = required | {"secret"}
+    if not required <= set(request.form) or set(request.form) - allowed:
+        return "FORM_FIELDS_HOLD"
+    if any(len(request.form.getlist(key)) != 1 for key in request.form):
+        return "FORM_FIELDS_HOLD"
+    if request.form.get("operation") == "save" and "secret" not in request.form:
+        return "FORM_FIELDS_HOLD"
+    if request.form.get("operation") != "save" and "secret" in request.form:
+        return "FORM_FIELDS_HOLD"
     expected = _approved_browser_origin()
     if not expected:
         return "ORIGIN_CONFIG_HOLD"
