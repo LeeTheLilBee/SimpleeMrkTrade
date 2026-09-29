@@ -1,0 +1,74 @@
+name: Tower keyed provider research dissemination
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ob_keyed_provider_research.py"
+      - "tower/ob_provider_key_desk.py"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_route_guard.py"
+      - "tower/ob_web_route_enforcement.py"
+      - "web/static/ob/ob_keyless_context.js"
+      - "tests/test_tower_ob_keyed_provider_research.py"
+      - ".github/workflows/tower-ob-keyed-provider-research.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ob_keyed_provider_research.py"
+      - "tower/ob_provider_key_desk.py"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_route_guard.py"
+      - "tower/ob_web_route_enforcement.py"
+      - "web/static/ob/ob_keyless_context.js"
+      - "tests/test_tower_ob_keyed_provider_research.py"
+      - ".github/workflows/tower-ob-keyed-provider-research.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  authenticated-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - name: Compile server-only provider research
+        run: python -m compileall -q tower/ob_keyed_provider_research.py tower/ob_provider_key_desk.py tower/ob_market_data_desk_integration.py
+      - name: Focused authenticated provider dissemination tests
+        run: |
+          python -m pytest -q \
+            tests/test_tower_ob_keyed_provider_research.py \
+            tests/test_tower_ob_provider_key_desk.py \
+            tests/test_tower_ob_api_intake_status.py \
+            tests/test_tower_ob_web_route_enforcement.py \
+            tests/test_ob_keyless_public_context.py
+      - name: Current OB navigation and shared source panel syntax
+        run: |
+          node --check web/static/ob/ob_keyless_context.js
+          python -m pytest -q \
+            tests/test_ob_dashboard_practice_corridors.py \
+            tests/test_ob_canonical_nav_corridors.py \
+            tower/test_tower_ob_return_handoff.py
+      - name: No broker/order or background provider polling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          code = Path("tower/ob_keyed_provider_research.py").read_text()
+          for forbidden in ("place_order", "submit_order", "broker_order", "threading.Timer", "schedule.", "while True"):
+              assert forbidden not in code
+          assert "TIME_SERIES_INTRADAY" not in code
+          assert "/quote" not in code
+          print("Keyed dissemination stays research-only, user-triggered and nonexecuting.")
+          PY
