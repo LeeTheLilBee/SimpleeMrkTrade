@@ -18,6 +18,12 @@ from __future__ import annotations
 
 from web.app import app as app
 
+# OBDATA009: the existing V25 fixture-derived market response is NOT a feed.
+# The exact Tower-protected read returns provider-not-configured until a
+# separately authorized, timestamped licensed source is attached.
+from tower.ob_market_source_status import register_hosted_ob_market_source_status
+register_hosted_ob_market_source_status(app)
+
 
 HOSTED_ENTRYPOINT = "web.hosted_tower:app"
 PRODUCTION_DEPLOYMENT = False
