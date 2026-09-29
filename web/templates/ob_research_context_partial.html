@@ -64,7 +64,7 @@
       {% for comp in sec_read.get('comparisons',[])[:3] %}
       <article class="ob-research-event">
         <strong>{{ comp.get('concept','Reported concept')|e }} · {{ comp.get('earlier_period','')|e }} → {{ comp.get('later_period','')|e }}</strong>
-        <p>Reported period-relative change: {{ comp.get('reported_change_pct')|e }}%. {{ comp.get('meaning','')|e }}</p>
+        <p>{% if comp.get('reported_change_pct') is not none %}Reported period-relative change: {{ comp.get('reported_change_pct')|e }}%. {% else %}A numeric comparison was not available. {% endif %}{{ comp.get('meaning','')|e }}</p>
         <code>{{ comp.get('earlier_source','')|e }} · {{ comp.get('later_source','')|e }}</code>
       </article>
       {% endfor %}
