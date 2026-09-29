@@ -214,7 +214,7 @@ def test_private_room_consumers_share_one_endpoint_without_faux_live_quotes():
     assert 'credentials: "same-origin"' in js
     assert "innerHTML" not in js
     assert "api.public.com" not in js and "api.openfigi.com" not in js
-    assert "trade" in js.lower()
+    assert "trading" in js.lower()
     assert 'packet.prices_attached !== false' in js
     assert 'packet.broker_execution_authorized !== false' in js
     from engine.market_intake.provider_catalog import CATALOG
