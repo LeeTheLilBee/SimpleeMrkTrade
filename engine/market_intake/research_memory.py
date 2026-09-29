@@ -17,7 +17,7 @@ import re
 # signed URL or provider key as "safe metadata". Owner/source review remains
 # independently required for actual retention/Archive Vault.
 _SECRET_REF = re.compile(
-    r"(?:api[_-]?key|access[_-]?token|password|secret|authorization|bearer)\\s*[=:]",
+    r"(?:api[_-]?key|access[_-]?token|password|secret|authorization|bearer)\s*[=:]",
     re.IGNORECASE,
 )
 
