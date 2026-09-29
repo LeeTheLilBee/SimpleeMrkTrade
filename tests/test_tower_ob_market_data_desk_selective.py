@@ -119,4 +119,10 @@ def test_map_exact_and_return_navigation_preserved():
     for page in ("dashboard", "market_map", "symbol_page", "trade_center",
                  "review_center", "owner_console", "owner_dashboard", "market_data_desk"):
         html = (ROOT / "web/templates" / (page + ".html")).read_text()
-        assert 'data-ob-data-desk-route-enabled="true"' in html, page
+        if page == "market_data_desk":
+            # The Desk template binds the marker from the trusted server at
+            # render time; literal source contains a guarded Jinja expression.
+            assert "data-ob-data-desk-route-enabled=" in html
+            assert "data_desk_route_enabled" in html
+        else:
+            assert 'data-ob-data-desk-route-enabled="true"' in html, page
