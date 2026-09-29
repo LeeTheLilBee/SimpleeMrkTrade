@@ -116,7 +116,7 @@ def register_ob_protected_route_enforcement(app):
 
         # Keyless source context only supports a real authenticated GET. A HEAD
         # must not accidentally execute paid/quota-limited provider fetches.
-        if path == "/ob/research/keyless.json" and request.method != "GET":
+        if path in {"/ob/research/keyless.json", "/ob/data-desk/connections.json"} and request.method != "GET":
             abort(405)
 
         if not owner_session_active():
