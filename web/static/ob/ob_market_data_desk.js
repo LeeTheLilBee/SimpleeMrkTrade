@@ -1,5 +1,5 @@
 /* OBSCAN049: accessible, READ ONLY Market Data Desk view.
-   No vendor fetch, API key, browser approval, market quote synthesis or localStorage.
+   No vendor network access, API key, browser approval, synthetic quotes or browser persistence.
    Future protected Tower handler may inject OB_MARKET_DATA_DESK_V1 only after owner access.
 */
 (function () {
