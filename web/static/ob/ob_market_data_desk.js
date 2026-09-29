@@ -17,7 +17,7 @@
     ["direct-opra-options","Direct OPRA","option","consolidated","Future contractual options feed."],
     ["nasdaq-directory","Nasdaq Trader","metadata","reference","Security reference and identity only, not quotes."],
     ["occ-reports","OCC","metadata","reference","Listed series, historical reports and interest context only."],
-    ["sec-edgar","SEC EDGAR","event","reference","Issuer filings and disclosures; research events only."]
+    ["sec-edgar","SEC EDGAR","event","reference","Official SEC submissions, filing evidence and structured financial facts. No live stock/options quotes; review source receipt and permissions."]
   ].map(function (p) {
     return { product_key:p[0],company:p[1],instrument:p[2],quote_kind:p[3],
              state:p[3]==="reference"?"REFERENCE_ONLY":"NOT_CONFIGURED",
