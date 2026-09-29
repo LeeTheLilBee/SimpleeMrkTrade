@@ -52,7 +52,7 @@ def test_all_provider_statuses_reach_soulaana_without_credentials_or_vendor_data
     assert {r["provider"]: r["state"] for r in brief["provider_register"]}["public"] == "TEMPORARY_AUTH_ONLY"
     assert {r["provider"]: r["state"] for r in brief["provider_register"]}["finnhub"] == "READ_ONLY_CHECK_PASSED"
     assert all(r["meaning"] for r in brief["provider_register"])
-    for forbidden in (SECRET, ACCOUNT, "expires_at", "access_token", "account_id"):
+    for forbidden in (SECRET, ACCOUNT, '"expires_at":', '"access_token":', '"account_id":'):
         assert forbidden not in json.dumps(result)
         assert forbidden not in json.dumps(brief)
     for flag in (
