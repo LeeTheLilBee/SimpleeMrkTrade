@@ -68,12 +68,15 @@ def checked_cached_research(*,identity:SymbolRow,root:Path,
     submissions,sub_at=read_sec_cache(root=root,cik=identity.sec_cik,kind="submissions")
     facts,facts_at=read_sec_cache(root=root,cik=identity.sec_cik,kind="companyfacts")
     captured=max(sub_at,facts_at)
-    # A snapshot must not be silently recast as newer at request time.
-    if at is not None:
-        _aware(at,"owner research time")
-        if at<captured:raise ValueError("research time precedes source evidence")
+    evaluated_at=at or datetime.now(timezone.utc)
+    _aware(evaluated_at,"owner research time")
+    if evaluated_at<captured or identity.directory_observed_at>evaluated_at:
+        raise ValueError("research time precedes reviewed evidence")
+    # Snapshot timestamps stay separately inspectable in source-cache metadata.
+    # Rights reviewed *after* a download may apply to the later, explicitly
+    # bounded owner inspection, never retroactively at the filing's event time.
     return build_edgar_research(identity=identity,submissions=submissions,
-        companyfacts=facts,received_at=captured,event_rights=event_rights,
+        companyfacts=facts,received_at=evaluated_at,event_rights=event_rights,
         fundamental_rights=fundamental_rights)
 
 
