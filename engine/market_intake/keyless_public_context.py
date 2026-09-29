@@ -19,7 +19,7 @@ from .public_research_sources import (
 )
 from .treasury_public_context import TreasuryPublicClient, TREASURY_DOCS
 from .sec_public_client import SEC_API
-from .keyless_soulaana import build_soulaana_source_register
+from .keyless_soulaana import build_soulaana_source_register, build_soulaana_evidence_brief
 
 BLS_DOCS = "https://www.bls.gov/developers/api_signature.htm"
 FIGI_DOCS = "https://www.openfigi.com/api/documentation"
@@ -43,6 +43,18 @@ def enabled_sources_from_environment() -> frozenset[str]:
                      and os.environ.get(f"OB_KEYLESS_{k.upper()}_OWNER_DISPLAY_REVIEWED") == "1")
 
 
+def soulaana_sources_from_environment(enabled: frozenset[str]) -> frozenset[str]:
+    """Explicit AI/content review; owner-display flags alone never authorize it."""
+    if os.environ.get("OB_KEYLESS_SOULAANA_CONTENT_ENABLED") != "1":
+        return frozenset()
+    return frozenset(
+        key for key in ("bls", "treasury", "openfigi")
+        if key in enabled and os.environ.get(
+            f"OB_KEYLESS_{key.upper()}_AI_USE_REVIEWED"
+        ) == "1"
+    )
+
+
 def edgar_delegated_from_environment() -> bool:
     return (os.environ.get("OB_SEC_PUBLIC_RESEARCH_ENABLED") == "1"
             and os.environ.get("OB_SEC_PUBLIC_USE_REVIEWED") == "1"
@@ -58,17 +70,23 @@ class KeylessPublicContext:
     Caches are process-local and not a data warehouse, signal or live feed.
     """
     def __init__(self, *, enabled: frozenset[str] = frozenset(),
-                 sec_delegated: bool = False, reference=None, treasury=None,
-                 now=None):
+                 sec_delegated: bool = False, ai_sources: frozenset[str] = frozenset(),
+                 reference=None, treasury=None, now=None):
         if not isinstance(enabled, frozenset) or not enabled <= frozenset(SOURCES):
             raise ValueError("Exact server-controlled keyless source allowlist required")
+        if (type(ai_sources) is not frozenset
+                or not ai_sources <= frozenset({"bls", "treasury", "openfigi"})
+                or not ai_sources <= enabled):
+            raise ValueError("independently reviewed source/content grants required")
         self.enabled = enabled
+        self.ai_sources = ai_sources
         self.sec_delegated = sec_delegated is True
         policy = OwnerResearchPolicy(
             source_use_reviewed=bool(enabled),
             owner_display_reviewed=bool(enabled),
-            ai_use_reviewed=False,
+            ai_use_reviewed=bool(ai_sources),
             reviewed_sources=enabled,
+            ai_reviewed_sources=ai_sources,
         )
         self.reference = reference or PublicReferenceClient(policy)
         self.treasury = treasury or TreasuryPublicClient(policy)
@@ -77,8 +95,7 @@ class KeylessPublicContext:
         self._cache = {}
         self._figi_attempts = deque(maxlen=5)
 
-    @staticmethod
-    def _row(key: str, state: str, *, value=None, period=None,
+    def _row(self, key: str, state: str, *, value=None, period=None,
              fetched_at=None, symbol=None) -> dict:
         provider, label, unit, reference = LABELS[key]
         return {
@@ -89,7 +106,7 @@ class KeylessPublicContext:
             "source_reference": reference,
             "historical_or_reference_only": True,
             "quote_eligible": False, "trading_authorized": False,
-            "ai_use_approved": False,
+            "ai_use_approved": (key in self.ai_sources and state == "SOURCE_BOUND"),
         }
 
     def _load(self, key: str, symbol: str | None, now: datetime) -> dict:
@@ -164,11 +181,18 @@ class KeylessPublicContext:
         # Soulaana sees an independent, tightly limited source-status handoff,
         # never the provider values or raw text and never a trading signal.
         result["soulaana_source_register"] = build_soulaana_source_register(result)
+        # Independent evidence handoff: only reviewed BLS/Treasury/FIGI
+        # observations. No automatic model call, SEC content or broker feed.
+        result["soulaana_evidence_brief"] = build_soulaana_evidence_brief(
+            result, approved_sources=self.ai_sources,
+        )
         return result
 
 
 def from_environment() -> KeylessPublicContext:
+    enabled = enabled_sources_from_environment()
     return KeylessPublicContext(
-        enabled=enabled_sources_from_environment(),
+        enabled=enabled,
+        ai_sources=soulaana_sources_from_environment(enabled),
         sec_delegated=edgar_delegated_from_environment(),
     )
