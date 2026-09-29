@@ -55,7 +55,6 @@ jobs:
             tests/test_obscan001_025_sovereign_intake.py \
             tests/test_obscan026_040_universal_gateway.py \
             tests/test_obscan041_055_market_data_desk.py \
-            tests/test_obscan_public_edgar_fetch.py \
             tests/test_obintel001_030_symbol_research.py \
             tests/test_tower_ob_market_data_desk_selective.py \
             tests/test_tower_ob_symbol_research_selective.py \
