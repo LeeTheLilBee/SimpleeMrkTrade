@@ -102,6 +102,8 @@ def test_receipt_replay_wrong_product_and_bad_verification_denied():
     desk=start()
     with pytest.raises(ValueError):
         desk.begin_review("case1",receipt(1))
+    with pytest.raises(ValueError):
+        desk.begin_review("case1",receipt(0)) # replayed/retroactive case event
     desk.begin_review("case1",receipt(2));desk.record_rights("case1",rights(),receipt(3))
     desk.configuration_verified("case1",backend_secret_reference_verified=True,receipt=receipt(4))
     for changed in ({"product_key":"alpaca-iex-equity"},{"source_id":"other"},
@@ -184,7 +186,10 @@ def test_malformed_snapshot_fails_closed_without_fallback():
     for bad in ({**good,"prices_attached":True},
                 {**good,"secret_value":"NEVER_EMBED"},
                 {**good,"safety":{**good["safety"],"can_execute":True}},
-                {**good,"providers":[{"product_key":"tradier","price":99}]}):
+                {**good,"providers":[{"product_key":"tradier","price":99}]},
+                {**good,"summary":{**good["summary"],"access_token":"LEAK"}},
+                {**good,"traffic":{**good["traffic"],"verified_usage":999}},
+                {**good,"soulaana":{**good["soulaana"],"private_account":"LEAK"}}):
         assert not _valid(bad)
         assert app_for(lambda:True,lambda:bad).test_client().get("/ob/data-desk").status_code==503
 
