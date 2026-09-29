@@ -1,0 +1,280 @@
+"""OBINTEL001-030 offline synthetic-only tests. No market network, API keys or broker."""
+from dataclasses import replace
+from datetime import datetime, date, timedelta, timezone
+from copy import deepcopy
+
+import pytest
+
+from engine.market_intake.contracts import (
+    DiscoveryEvent, Observation, ScanContext, SourceRights,
+)
+from engine.market_intake.adapters import FeedAdapter
+from engine.market_intake.gateway import UniversalMarketGateway
+from engine.market_intake.historical_research import (
+    HistoryRights, CompletedDailyBar, HistorySeries, history_context,
+    replay_historical_horizon,
+)
+from engine.market_intake.fundamental_research import (
+    FundamentalRights, parse_companyfacts, fundamental_context,
+)
+from engine.market_intake.universe import (
+    parse_nasdaq_directory, parse_sec_ticker_exchange, reconcile_symbol_universe,
+)
+from engine.market_intake.symbol_research import (
+    SymbolResearchInputs, symbol_research_snapshot,
+)
+from engine.market_intake.research_bridge import (
+    attach_research_context, project_research, ROOMS,
+)
+from engine.market_intake.research_memory import (
+    ResearchReferenceLedger, soulaana_research_brief,
+)
+
+NOW=datetime(2026,9,28,15,0,tzinfo=timezone.utc)
+CIK="0000000234"
+ACC="0000000234-26-000001"
+
+
+def identity():
+    nas=("Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares\n"
+         "XYZ|Synthetic Example Co|Q|N|N|100|N|N\n")
+    rows=parse_nasdaq_directory(nas,directory="nasdaqlisted.txt",
+                                observed_at=NOW)
+    sec='{"fields":["cik","name","ticker","exchange"],"data":[[234,"Synthetic Example Co","XYZ","Nasdaq"]]}'
+    return reconcile_symbol_universe(rows,[],parse_sec_ticker_exchange(sec))["XYZ"]
+
+
+def history(*, ai=True, retention=True, basis="raw"):
+    rights=HistoryRights("test-equity-history","TEST_COMMITTED_DAILY","TEST-HISTORY",
+                         "reviewed-license-fixture",NOW-timedelta(days=1),
+                         research_allowed=True,automated_analysis_allowed=True,
+                         owner_display_allowed=True,ai_explanation_allowed=ai,
+                         retention_allowed=retention,basis=basis,
+                         basis_reference="adjustment-method-proof" if basis!="raw" else "")
+    bars=tuple(CompletedDailyBar(
+        "XYZ","test-equity-history",NOW.date()-timedelta(days=225-i),
+        90+i*.1,92+i*.1,89+i*.1,91+i*.1,1000+i,
+        "test-source-completed-bar-"+str(i),basis,True,
+    ) for i in range(225))
+    return HistorySeries("XYZ",rights,bars,NOW,"verified-snapshot-test-1")
+
+
+def financial(*, ai=True, retention=True):
+    rights=FundamentalRights("sec-edgar","reviewed-test-terms",NOW-timedelta(days=1),
+                              internal_research=True,owner_display=True,
+                              ai_explanation=ai,retention=retention)
+    accepted=NOW-timedelta(days=2)
+    raw={"cik":234,"facts":{"us-gaap":{"Assets":{"units":{"USD":[
+        {"accn":ACC,"form":"10-Q","end":"2026-06-30","filed":"2026-09-25",
+         "val":100000000}
+    ]}}}}}
+    parsed=parse_companyfacts(raw,cik=CIK,accepted_accessions={ACC:accepted},
+                               rights=rights,reviewed_at=NOW)
+    return rights,parsed,raw
+
+
+def issuer_event():
+    ev=Observation("SEC:"+ACC,"sec-edgar","SEC-EDGAR","XYZ",
+                   NOW-timedelta(minutes=5),NOW-timedelta(minutes=4),
+                   "https://www.sec.gov/Archives/edgar/data/234/x",
+                   "unknown","event")
+    rights=SourceRights("sec-edgar","SEC-EDGAR","reviewed-internal-event-right",
+                        NOW-timedelta(hours=1),internal_research=True,
+                        automated_non_display=True,owner_display=True,
+                        entitled_instruments=frozenset({"event"}))
+    return DiscoveryEvent(ev,"filing","SEC 8-K accepted","https://www.sec.gov/test",CIK),rights
+
+
+def gateway():
+    g=UniversalMarketGateway()
+    r=SourceRights("test-live-equity","TEST-SIP","test-approved-owner-right",
+                   NOW-timedelta(hours=1),internal_research=True,
+                   automated_non_display=True,owner_display=True,
+                   real_time_entitled=True,entitled_instruments=frozenset({"equity"}))
+    fields={k:k for k in ("observation_id","symbol","observed_at",
+                         "provenance_reference","last","bid","ask","previous_close",
+                         "volume","average_volume")}
+    g.install("tradier-equity",rights=r,
+              adapter=FeedAdapter(r,fields,"realtime","equity"))
+    decision=g.ingest("test-live-equity",{
+        "observation_id":"synthetic-1","symbol":"XYZ",
+        "observed_at":(NOW-timedelta(seconds=2)).isoformat(),
+        "provenance_reference":"synthetic-source-proof",
+        "last":100.,"bid":99.8,"ask":100.2,"previous_close":96.,
+        "volume":1000,"average_volume":500.},
+        received_at=NOW,context=ScanContext(NOW,"REGULAR",True))
+    assert decision.stored
+    return g
+
+
+def inputs(*,history_ai=True,facts_ai=True,hist_retention=True):
+    hr=history(ai=history_ai,retention=hist_retention)
+    fr,facts,_=financial(ai=facts_ai)
+    ev,er=issuer_event()
+    return SymbolResearchInputs(identity(),NOW,hr,facts,fr,(ev,),{"sec-edgar":er})
+
+
+def packet(**kwargs):
+    return symbol_research_snapshot(inputs(**kwargs),as_of=NOW,gateway=gateway(),
+                                    market_context=ScanContext(NOW,"REGULAR",True))
+
+
+def test_historical_complete_adjustment_rights_dates_and_indicators():
+    series=history()
+    out=history_context(series,cutoff=NOW)
+    assert out["bars_used"]==225
+    assert out["observations"]["close_sma_200_sessions"] is not None
+    assert out["last_session"]==(NOW.date()-timedelta(days=1)).isoformat()
+    assert out["historical_only"] and not out["current_quote_eligible"]
+    assert out["history_calendar_completeness"]=="NOT_VERIFIED"
+    assert out["ai_explanation_allowed"]
+    with pytest.raises(ValueError):
+        replace(series.rights,basis="split_adjusted",basis_reference="")
+    with pytest.raises(ValueError):
+        replace(series.rights,research_allowed=False) if False else HistorySeries(
+            series.symbol,replace(series.rights,research_allowed=False),
+            series.bars,NOW,series.snapshot_reference)
+    with pytest.raises(ValueError):
+        CompletedDailyBar("XYZ","test-equity-history",NOW.date(),101,100,99,100,
+                          100,"test","raw",True)
+    with pytest.raises(ValueError):
+        HistorySeries("XYZ",series.rights,series.bars+(series.bars[-1],),NOW,"test")
+    with pytest.raises(ValueError):
+        HistorySeries("XYZ",series.rights,tuple(reversed(series.bars)),NOW,"test")
+
+
+def test_historical_replay_separates_formation_and_future_outcome():
+    series=history()
+    cutoff=NOW.date()-timedelta(days=8)
+    out=replay_historical_horizon(series,as_of_session=cutoff,horizon_sessions=5)
+    assert out["state"]=="RETROSPECTIVE_OBSERVATION"
+    assert out["formation"]["last_session"]==cutoff.isoformat()
+    assert out["outcome"]["last_session"]>cutoff.isoformat()
+    assert out["trade_count"] is None and out["strategy_pnl"] is None
+    assert out["live_signal"] is False and out["options_backtest"] is False
+    changed=list(series.bars)
+    # Editing only the later outcome must not change the earlier formation.
+    idx=next(i for i,b in enumerate(changed) if b.session_date>cutoff)
+    changed[idx]=replace(changed[idx],close=changed[idx].close+1)
+    revised=replace(series,bars=tuple(changed))
+    altered=replay_historical_horizon(revised,as_of_session=cutoff,horizon_sessions=5)
+    assert altered["formation"]==out["formation"]
+    assert replay_historical_horizon(series,as_of_session=NOW.date(),
+                                     horizon_sessions=5)["state"]=="INSUFFICIENT_HISTORY"
+
+
+def test_companyfacts_exact_cik_acceptance_and_retrospective_cutoff():
+    r,rows,raw=financial()
+    assert len(rows)==1 and rows[0].cik==CIK
+    assert rows[0].value==100000000
+    early=fundamental_context(cik=CIK,facts=rows,rights=r,
+                              as_of=NOW-timedelta(days=3))
+    # Rights were reviewed one day earlier than NOW, so they cannot be used at
+    # three days earlier; no retroactive rights assertion.
+    assert False if early else True
+
+
+def test_companyfacts_reject_missing_acceptance_future_facts_and_wrong_cik():
+    r,rows,raw=financial()
+    assert parse_companyfacts(raw,cik=CIK,accepted_accessions={},
+                              rights=r,reviewed_at=NOW)==()
+    assert parse_companyfacts(raw,cik=CIK,accepted_accessions={
+        ACC:NOW+timedelta(hours=1)},rights=r,reviewed_at=NOW)==()
+    with pytest.raises(ValueError):
+        parse_companyfacts(raw,cik="0000000235",accepted_accessions={ACC:NOW},
+                           rights=r,reviewed_at=NOW)
+    with pytest.raises(ValueError):
+        parse_companyfacts(raw,cik=CIK,accepted_accessions={ACC:NOW},
+                           rights=replace(r,internal_research=False),reviewed_at=NOW)
+
+
+def test_record_carries_independent_evidence_and_zero_authority():
+    view=packet()
+    assert view["identity"]["cik"]==CIK
+    assert view["historical"]["bars_used"]==225
+    assert view["fundamentals"]["reported_concepts"][0]["concept"]=="Assets"
+    assert len(view["issuer_events"])==1
+    assert view["scanner"]["equity_sources"]==["test-live-equity"]
+    assert not view["manual_live_authorized"] and not view["execution_authorized"]
+    assert not view["candidate_admitted"] and not view["broker_quote_verified"]
+    assert "market_quotes" not in view
+
+
+def test_future_identity_and_history_not_recast_as_old_live_truth():
+    raw=inputs()
+    old=NOW-timedelta(days=5)
+    view=symbol_research_snapshot(raw,as_of=old,gateway=gateway(),
+                                  market_context=ScanContext(old,"REGULAR",True))
+    assert view["state"]=="IDENTITY_HOLD"
+    assert view["historical"]["state"]=="NOT_AVAILABLE"
+    assert view["scanner"]["state"]=="NOT_CONNECTED"
+    with pytest.raises(ValueError):
+        symbol_research_snapshot(raw,as_of=NOW+timedelta(minutes=1))
+
+
+def test_record_mismatched_cik_and_future_event_fail_closed():
+    raw=inputs()
+    with pytest.raises(ValueError):
+        replace(raw,financial_facts=(replace(raw.financial_facts[0],cik="0000000555"),))
+    with pytest.raises(ValueError):
+        replace(raw,issuer_events=(replace(raw.issuer_events[0],
+            evidence=replace(raw.issuer_events[0].evidence,
+                              observed_at=NOW+timedelta(hours=1))),))
+
+
+def test_all_engine_room_adapters_preserve_original_decisions():
+    raw=packet()
+    original={"score":88,"decision":{"action":"hold"},"execution":{"eligible":False}}
+    for room in ROOMS:
+        enriched=attach_research_context(original,raw,room=room)
+        assert enriched["research_context"]["room"]==room
+        assert enriched["score"]==88 and enriched["decision"]["action"]=="hold"
+        assert enriched["research_context"]["may_authorize_candidate"] is False
+        assert enriched["research_context"]["may_authorize_order"] is False
+        assert enriched["research_context"]["may_change_existing_engine_scores"] is False
+    assert "research_context" not in original
+    with pytest.raises(ValueError):
+        attach_research_context({"research_context":{}},raw,room="symbol_page")
+
+
+def test_market_map_and_soulaana_cannot_take_unlicensed_numeric_evidence():
+    p=packet(history_ai=False,facts_ai=False)
+    sky=project_research(p,"market_map")
+    assert sky["history"]["observations"]=={}
+    assert sky["fundamentals"]["reported_concepts"]==[]
+    soulaana=project_research(p,"soulaana")
+    assert soulaana["history"]["observations"]=={}
+    assert soulaana["fundamentals"]["reported_concepts"]==[]
+    brief=soulaana_research_brief(p)
+    assert "AI-use" in " ".join(brief["statements"])
+    assert not brief["can_authorize_trading"]
+
+
+def test_tampered_input_rejected_without_lifting_mode_gates():
+    raw=packet()
+    for key,value in (("execution_authorized",True),("broker_quote_verified",True),
+                      ("history_is_not_a_live_quote",False)):
+        with pytest.raises(ValueError):
+            project_research({**raw,key:value},"symbol_page")
+    with pytest.raises(ValueError):
+        project_research({**raw,"current_price":102.},"symbol_page")
+    with pytest.raises(ValueError):
+        project_research(raw,"invented-room")
+
+
+def test_transient_reference_ledger_requires_retention_and_monotonicity():
+    ledger=ResearchReferenceLedger()
+    no=inputs(hist_retention=False)
+    with pytest.raises(ValueError):
+        ledger.append(no,receipt_id="one")
+    approved=inputs()
+    item=ledger.append(approved,receipt_id="one")
+    assert item.can_authorize_order is False
+    assert "test-equity-history" not in str(item)
+    assert item.evidence_digest and ledger.get("one")==item
+    with pytest.raises(ValueError):
+        ledger.append(approved,receipt_id="one")
+    with pytest.raises(ValueError):
+        ledger.append(approved,receipt_id="two")
+    ledger.forget_runtime()
+    assert ledger.get("one") is None
