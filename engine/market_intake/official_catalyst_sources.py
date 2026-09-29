@@ -142,8 +142,20 @@ class OfficialCatalystClient:
             market = _text(x.get("market_and_exchange_names"), 160)
             if not re.fullmatch(r"[\w ,.&()/'-]{1,160}", market):
                 raise SourceHold("SOURCE_SHAPE_HOLD")
+            # Exact published TFF leveraged-money fields. No exchange-listed
+            # options chain or inferred directional signal.
+            long_count = _number(x.get("lev_money_positions_long"))
+            short_count = _number(x.get("lev_money_positions_short"))
+            if (Decimal(long_count) < 0 or Decimal(short_count) < 0 or
+                    Decimal(long_count) != Decimal(long_count).to_integral_value() or
+                    Decimal(short_count) != Decimal(short_count).to_integral_value()):
+                raise SourceHold("SOURCE_VALUE_HOLD")
+            net_count = str(Decimal(long_count) - Decimal(short_count))
             facts.append({"title": market, "period": _date(report),
-                          "category": "TFF_FUTURES_ONLY", "reference": REFERENCES["cftc"]})
+                          "category": "TFF_FUTURES_ONLY", "reference": REFERENCES["cftc"],
+                          "leveraged_long": long_count,
+                          "leveraged_short": short_count, "leveraged_net": net_count,
+                          "value": "Leveraged money net " + net_count + " contracts"})
         if not facts:
             return {"state": "NO_PUBLICATION", "facts": []}
         return {"state": "SOURCE_BOUND", "facts": facts[:3]}
