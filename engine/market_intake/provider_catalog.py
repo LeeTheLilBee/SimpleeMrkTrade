@@ -67,6 +67,18 @@ _PRODUCTS = (
                     "reference", False, "https://apps.bea.gov/api/signup/"),
     ProviderProduct("openfigi-identifier", "OpenFIGI", "Ticker / instrument FIGI mapping; no issuer or quote verification", "metadata",
                     "reference", False, "https://www.openfigi.com/api/documentation"),
+    # Official Catalyst Radar: commercial-source-reviewed only on the separate
+    # protected research corridor. Catalog presence never grants use or AI rights.
+    ProviderProduct("official-federal-register-sec", "Federal Register", "SEC rulemaking publication metadata; no quote or effective-rule inference", "event",
+                    "reference", False, "https://www.federalregister.gov/developers/documentation/api/v1"),
+    ProviderProduct("official-cftc-tff-futures", "CFTC", "Weekly TFF futures-only leveraged money positioning; not listed options market data", "event",
+                    "reference", False, "https://publicreporting.cftc.gov/stories/s/r4w3-av2u"),
+    ProviderProduct("official-eia-weekly-inventory", "US EIA", "Official weekly crude inventories; free key required, exact rights and series verification", "event",
+                    "reference", False, "https://www.eia.gov/opendata/"),
+    ProviderProduct("official-world-bank-wdi-gdp", "World Bank", "US annual WDI nominal GDP; individual indicator CC BY review required", "event",
+                    "reference", False, "https://data.worldbank.org/indicator/NY.GDP.MKTP.CD"),
+    ProviderProduct("official-nws-georgia-alerts", "NOAA NWS", "Actual Georgia alert publications; no weather safety or market quote authority", "event",
+                    "reference", False, "https://www.weather.gov/documentation/services-web-api"),
     ProviderProduct("fred-macro-review-only", "Federal Reserve Bank of St. Louis", "FRED policy HOLD: AI, storage and use restrictions; no runtime transport", "event",
                     "reference", False, "https://fred.stlouisfed.org/legal/terms/"),
     ProviderProduct("public-business-review-only", "Public", "Business API candidate; account and data/display rights review required", "metadata",
