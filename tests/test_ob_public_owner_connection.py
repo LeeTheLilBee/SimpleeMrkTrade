@@ -84,7 +84,7 @@ def test_bad_csrf_bad_origin_and_cross_site_never_read_secret(setup):
     bad_csrf=post(client,"wrong")
     assert bad_csrf.status_code==403 and "CSRF_HOLD" in bad_csrf.get_data(as_text=True)
     mismatched=post(client,valid,origin="https://attacker.example")
-    assert mismatched.status_code==403 and "ORIGIN_HOLD" in mismatched.get_data(as_text=True)
+    assert mismatched.status_code==403 and "ORIGIN_EXPECTED_HOST_HOLD" in mismatched.get_data(as_text=True)
     assert SECRET not in mismatched.get_data(as_text=True)
     assert not rec.calls
 
@@ -159,22 +159,56 @@ def test_missing_origin_without_affirmative_browser_metadata_holds(setup):
     token=csrf(page(client).get_data(as_text=True))
     data={"csrf":token, "operation":"connect", "secret":SECRET}
     for headers in ({}, {"Sec-Fetch-Site":"cross-site","Sec-Fetch-Mode":"navigate"},
-                    {"Sec-Fetch-Site":"same-origin","Sec-Fetch-Mode":"cors"}):
+                    {"Sec-Fetch-Site":"same-site","Sec-Fetch-Mode":"navigate"}):
         response=client.post(PATH,base_url="https://tower.test",data=data,headers=headers)
         assert response.status_code==403
         assert "HOLD" in response.get_data(as_text=True)
         assert SECRET not in response.get_data(as_text=True)
     assert not rec.calls
 
-def test_approved_render_hostname_origin_when_proxy_host_differs(setup,monkeypatch):
+def test_exact_configured_render_public_origin_when_proxy_host_differs(setup,monkeypatch):
     client,state,store,rec=setup; state["authorized"]=True
     token=csrf(page(client).get_data(as_text=True))
-    monkeypatch.setenv("RENDER_EXTERNAL_HOSTNAME","simplee-tower-ob-tunv.onrender.com")
-    valid=post(client,token,origin="https://simplee-tower-ob-tunv.onrender.com")
-    assert valid.status_code==303 and len(rec.calls)==2
-    # A different origin remains rejected even if the browser claims same-origin.
+    # Flask sees the proxy-facing tower.test Host but the browser Origin is
+    # the actual approved Render HTTPS address, configured per service.
+    monkeypatch.setenv("RENDER_SERVICE_ID","srv-synthetic")
+    monkeypatch.setenv("OB_PUBLIC_OWNER_CANONICAL_ORIGIN","https://simplee-tower-ob-tunv.onrender.com")
+    good=post(client,token,origin="https://simplee-tower-ob-tunv.onrender.com")
+    assert good.status_code==303 and len(rec.calls)==2
     response=post(client,token,origin="https://attacker.example")
-    assert response.status_code==403 and "ORIGIN_HOLD" in response.get_data(as_text=True)
+    assert response.status_code==403 and "ORIGIN_EXPECTED_HOST_HOLD" in response.get_data(as_text=True)
+    assert len(rec.calls)==2
+
+def test_bad_host_config_and_opaque_origin_are_diagnostic_and_fail_closed(setup,monkeypatch):
+    client,state,store,rec=setup;state["authorized"]=True
+    token=csrf(page(client).get_data(as_text=True))
+    monkeypatch.setenv("RENDER_SERVICE_ID","srv-synthetic")
+    config_missing=post(client,token)
+    assert config_missing.status_code==403
+    assert "ORIGIN_CONFIG_HOLD" in config_missing.get_data(as_text=True)
+    monkeypatch.setenv("OB_PUBLIC_OWNER_CANONICAL_ORIGIN","https://bad.invalid:abc")
+    config_bad=post(client,token)
+    assert config_bad.status_code==403
+    assert "ORIGIN_CONFIG_HOLD" in config_bad.get_data(as_text=True)
+    monkeypatch.setenv("OB_PUBLIC_OWNER_CANONICAL_ORIGIN","https://tower.test")
+    opaque=post(client,token,origin="null")
+    assert opaque.status_code==403
+    assert "ORIGIN_OPAQUE_HOLD" in opaque.get_data(as_text=True)
+    assert SECRET not in opaque.get_data(as_text=True)
+    assert not rec.calls
+
+def test_configured_origin_absent_privacy_browser_same_origin_csrf_succeeds(setup,monkeypatch):
+    client,state,store,rec=setup;state["authorized"]=True
+    token=csrf(page(client).get_data(as_text=True))
+    monkeypatch.setenv("RENDER_SERVICE_ID","srv-synthetic")
+    monkeypatch.setenv("OB_PUBLIC_OWNER_CANONICAL_ORIGIN","https://tower.test")
+    data={"csrf":token, "operation":"connect", "secret":SECRET}
+    result=client.post(PATH,base_url="https://tower.test",data=data,
+                       headers={"Sec-Fetch-Site":"same-origin"})
+    assert result.status_code==303 and len(rec.calls)==2
+    wrong=client.post(PATH,base_url="https://tower.test",data=data,
+                      headers={"Sec-Fetch-Site":"same-site"})
+    assert wrong.status_code==403 and len(rec.calls)==2
 
 def test_owner_and_disabled_feature_form_holds_are_specific_without_secret(setup,monkeypatch):
     client,state,store,rec=setup
