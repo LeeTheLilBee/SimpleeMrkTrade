@@ -129,15 +129,16 @@ def fetch_public_sec(*,ciks:list[str],output:Path,user_agent:str,
                 _validate_payload(filename,payload)
                 # Atomic bounded cache replacement; no partially written approved data.
                 tmp=output/f"{filename}.partial"
+                normalized=json.dumps(payload,sort_keys=True)
                 try:
-                    tmp.write_text(json.dumps(payload,sort_keys=True),encoding="utf-8")
+                    tmp.write_text(normalized,encoding="utf-8")
                     tmp.replace(output/filename)
                 finally:
                     tmp.unlink(missing_ok=True)
                 metadata={"etag":response.headers.get("ETag",""),
                           "last_modified":response.headers.get("Last-Modified",""),
                           "retrieved_at":datetime.now(timezone.utc).isoformat(),
-                          "url":url,"sha256":sha256(raw).hexdigest(),
+                          "url":url,"sha256":sha256(normalized.encode("utf-8")).hexdigest(),
                           "source_type":"PUBLIC_SEC_REFERENCE_NOT_QUOTE"}
                 headtmp=output/f"{filename}.http-metadata.json.partial"
                 try:
@@ -151,6 +152,10 @@ def fetch_public_sec(*,ciks:list[str],output:Path,user_agent:str,
                 try:
                     cached=json.loads((output/filename).read_text(encoding="utf-8"))
                     _validate_payload(filename,cached)
+                    metadata=json.loads(_head_path(output,filename).read_text(encoding="utf-8"))
+                    if (metadata.get("url")!=url or
+                        metadata.get("sha256")!=sha256((output/filename).read_bytes()).hexdigest()):
+                        raise ValueError("cached SEC source identity or digest mismatch")
                     results.append({"file":filename,"state":"NOT_MODIFIED_VALID_CACHE"})
                 except (OSError,ValueError,TypeError):
                     results.append({"file":filename,"state":"CACHE_HOLD"});break
