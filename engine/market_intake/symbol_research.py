@@ -75,13 +75,13 @@ def symbol_research_snapshot(inputs: SymbolResearchInputs, *, as_of: datetime,
                   "price_asserted_by_directory":False,"optionability_verified_by_directory":False}
 
     historical={"state":"NOT_AVAILABLE","historical_only":True,
-                "current_quote_eligible":False,"option_quote_eligible":False}
+                "ai_explanation_allowed":False,"current_quote_eligible":False,"option_quote_eligible":False}
     if inputs.history is not None and inputs.history.received_at<=as_of:
         if inputs.history.rights.owner_display_allowed and inputs.history.rights.allowed_at(as_of):
             historical=history_context(inputs.history,cutoff=as_of)
         else:
             historical={"state":"RIGHTS_HOLD","historical_only":True,
-                        "current_quote_eligible":False,"option_quote_eligible":False}
+                        "ai_explanation_allowed":False,"current_quote_eligible":False,"option_quote_eligible":False}
 
     fundamentals={"state":"NOT_AVAILABLE","quote_eligible":False,"signal_eligible":False}
     if inputs.financial_facts and inputs.financial_rights is not None:
