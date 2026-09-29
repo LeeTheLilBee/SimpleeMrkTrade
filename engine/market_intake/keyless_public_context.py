@@ -97,7 +97,7 @@ class KeylessPublicContext:
 
     def _row(self, key: str, state: str, *, value=None, period=None,
              fetched_at=None, symbol=None, previous_period=None,
-             previous_value=None) -> dict:
+             previous_value=None, source_reference=None) -> dict:
         provider, label, unit, reference = LABELS[key]
         return {
             "source": key, "provider": provider, "label": label,
@@ -106,7 +106,7 @@ class KeylessPublicContext:
             "previous_period": previous_period, "previous_value": previous_value,
             "unit": unit, "retrieved_at": fetched_at,
             "symbol": symbol if key == "openfigi" else None,
-            "source_reference": reference,
+            "source_reference": source_reference or reference,
             "historical_or_reference_only": True,
             "quote_eligible": False, "trading_authorized": False,
             "ai_use_approved": (key in self.ai_sources and state == "SOURCE_BOUND"),
@@ -118,7 +118,9 @@ class KeylessPublicContext:
             return self._row(key, "SOURCE_BOUND", value=obs.value,
                              period=obs.period, fetched_at=obs.fetched_at.isoformat(),
                              previous_period=obs.previous_period,
-                             previous_value=obs.previous_value)
+                             previous_value=obs.previous_value,
+                             source_reference=(obs.source_reference if
+                                 obs.product == "OFFICIAL_BULK_CPI" else None))
         if key == "treasury":
             obs = self.treasury.latest_public_debt()
             return self._row(key, "SOURCE_BOUND", value=obs.value,

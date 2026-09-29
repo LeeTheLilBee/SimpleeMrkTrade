@@ -478,3 +478,50 @@ def test_shared_soulaana_read_displays_insights_not_unreviewed_source_copy():
     assert 'item.causality_claimed === false' in js
     assert 'panel.append(digest)' in js
     assert "innerHTML" not in js and "api.public.com" not in js
+
+
+def test_bls_official_bulk_recovery_reaches_soulaana_with_real_provenance():
+    from engine.market_intake.public_research_sources import BLS_BULK_CPI
+    class Raw:
+        status = 200
+        def __enter__(self): return self
+        def __exit__(self, *_): return False
+        def geturl(self): return BLS_BULK_CPI
+        def read(self, n): return self.body[:n]
+        def __init__(self, body): self.body=body
+    rows = ("series_id\tyear\tperiod\tvalue\tfootnote_codes\n"
+            "CUUR0000SA0\t2026\tM07\t333.918\t\n"
+            "CUUR0000SA0\t2026\tM08\t334.980\t\n").encode()
+    calls = []
+    def official(request, timeout):
+        calls.append(request.full_url)
+        if request.full_url.endswith("/publicAPI/v1/timeseries/data/CUUR0000SA0"):
+            return Response({"status":"REQUEST_NOT_PROCESSED","Results":{}})
+        if request.full_url == BLS_BULK_CPI:
+            return Raw(rows)
+        raise AssertionError("Unexpected official host")
+    reviewed = OwnerResearchPolicy(
+        source_use_reviewed=True, owner_display_reviewed=True,
+        ai_use_reviewed=True, reviewed_sources=frozenset({"bls"}),
+        ai_reviewed_sources=frozenset({"bls"}),
+    )
+    svc = KeylessPublicContext(
+        enabled=frozenset({"bls"}), ai_sources=frozenset({"bls"}),
+        reference=PublicReferenceClient(reviewed, opener=official),
+        now=lambda: datetime.now(timezone.utc),
+    )
+    packet = svc.snapshot()
+    bls = packet["sources"][1]
+    brief = packet["soulaana_evidence_brief"]
+    assert bls["state"] == "SOURCE_BOUND"
+    assert bls["source_reference"] == BLS_BULK_CPI
+    assert bls["value"] == "334.980" and bls["previous_value"] == "333.918"
+    assert brief["observations"][0]["source_reference"] == BLS_BULK_CPI
+    assert brief["comparisons"][0]["source_reference"] == BLS_BULK_CPI
+    assert brief["comparison_count"] == 1
+    assert brief["external_model_called"] is False
+    assert len(calls) == 2
+    js = (ROOT/"web/static/ob/ob_keyless_context.js").read_text()
+    assert BLS_BULK_CPI in js
+    assert "validReference(item.source, item.source_reference)" in js
+    assert "link.href = item.source_reference" in js

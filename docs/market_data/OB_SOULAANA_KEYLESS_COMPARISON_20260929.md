@@ -16,3 +16,32 @@ The common owner-only keyless rail in Market Data Desk, Dashboard, Market Map, S
 
 ## Technical verification
 Synthetic tests cover: previous source observation retained in the same BLS/Treasury request, no added HTTP call, strict ordering, invalid/missing prior values, source-specific AI reviews, no unreviewed comparisons, source revocation, HTML/JS safe rendering and already existing owner/Tower no-login routes. Reconfirm deployment states separately from CI; CI fixtures do not constitute a real BLS/Treasury/OpenFIGI response.
+
+
+## BLS no-key recovery verified design
+
+A hosted real one-shot on the primary Tower revealed BLS HTTP 200 with non-success
+application status and no source series, while Treasury and OpenFIGI returned
+source-bound observations. A 200 alone never establishes usable economic data.
+
+The CPI-U reader first uses the fixed unregistered BLS v1 exact series GET.
+If the official API returns documented non-success request status
+(REQUEST_NOT_PROCESSED / REQUEST_FAILED), or an HTTP/network transport hold,
+it attempts one independent fixed, official BLS flat-file download:
+https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems . This is
+BLS's own publication, not a third-party price feed or an invented cached
+value. Its full exact source URL replaces the API-documentation citation on
+the resulting owner card and reviewed Soulaana fact/comparison. The fallback
+is exact-series-only for CUUR0000SA0, 5 MB maximum, no redirects, two valid
+distinct monthly observations, decimal/future-date/duplicate validation,
+and same owner-use and per-source AI permissions. Unknown provider failures,
+bad sources and stale snapshots remain HOLD. The original CPI index period and
+retrieval time remain distinct; no live securities quote, brokerage order,
+model API call, commercial credential or source-rights inheritance.
+
+BLS's published v1 signature and Python example show both singleton-list
+and object Results wrappers, so both are strictly normalized on successful
+API responses; a non-success envelope is NEVER reinterpreted as successful.
+No extra recurring worker, cron, paid Render service or provider login is
+introduced. This repair still requires an actual hosted source receipt after
+deployment before being called operationally verified.
