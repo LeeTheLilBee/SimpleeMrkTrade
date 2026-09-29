@@ -167,3 +167,22 @@ def test_bls_http_200_shape_probe_exposes_envelope_only_not_values():
     assert state["bls_series_matched"] is True
     assert state["bls_data_nonempty"] is True
     assert "SENSITIVE_INDEX" not in json.dumps(state)
+
+
+def test_bulk_failure_trace_only_emits_safe_official_http_code():
+    from types import SimpleNamespace
+    from urllib.error import HTTPError
+    from urllib.request import Request
+    from deploy.hosted_tower.keyless_one_shot_source_probe import capture_bls_diagnostic
+    from engine.market_intake.public_research_sources import BLS_BULK_CPI
+    state = {}
+    def blocked(request, timeout):
+        raise HTTPError(request.full_url, 403, "SENSITIVE_VENDOR_TEXT", {}, None)
+    client = SimpleNamespace(_opener=blocked,
+                             _json=lambda *_a, **_k: None,
+                             bls_v1=lambda *_: None)
+    capture_bls_diagnostic(SimpleNamespace(reference=client), state)
+    with pytest.raises(HTTPError):
+        client._opener(Request(BLS_BULK_CPI), 12)
+    assert state == {"bls_bulk_http": "HTTP_403"}
+    assert "SENSITIVE" not in json.dumps(state)
