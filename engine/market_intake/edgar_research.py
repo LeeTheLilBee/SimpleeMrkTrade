@@ -101,6 +101,7 @@ class EdgarResearchBundle:
     source_reference: str
     historical_filing_coverage: str
     timestamp_assurance: str = "SEC_JSON_REPORTED_NOT_RAW_HEADER_VERIFIED"
+    source_receipts: tuple[tuple[str,str], ...] = ()
     source_is_equity_quote: bool = False
     source_is_option_quote: bool = False
     candidate_admitted: bool = False
@@ -120,6 +121,8 @@ class EdgarResearchBundle:
                 "financial_facts_selected":self.selected_facts,
                 "coverage":self.historical_filing_coverage,
                 "timestamp_assurance":self.timestamp_assurance,
+                "cache_receipts":dict(self.source_receipts),
+                "cache_receipts_not_live_feed":True,
                 "current_equity_quote":False,
                 "current_option_quote":False,
                 "execution_authorized":False}
