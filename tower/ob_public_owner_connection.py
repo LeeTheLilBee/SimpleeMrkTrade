@@ -269,7 +269,17 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
 def register_public_owner_connection(app: Flask, *, owner_authorize):
     if app.extensions.get("ob_public_owner_connection_v1"):
         return app
-    app.register_blueprint(create_public_owner_blueprint(owner_authorize=owner_authorize))
+    store = OwnerConnectionStore()
+    app.register_blueprint(create_public_owner_blueprint(
+        owner_authorize=owner_authorize, store=store,
+    ))
+
+    @app.before_request
+    def _public_owner_drop_token_on_tower_logout():
+        # Runs before the canonical Tower logout view clears its session.
+        if request.path == "/tower/logout":
+            store.drop(_owner_sid())
+
     app.extensions["ob_public_owner_connection_v1"] = {
         "path": PATH, "api_key_persisted": False, "bearer_in_cookie": False,
         "in_process_token_seconds": _AUTH_TTL_SECONDS, "broker_execution": False,
