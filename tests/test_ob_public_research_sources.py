@@ -109,6 +109,13 @@ def test_openfigi_single_mapping_and_ambiguous_hold():
     assert len(opener.requests) == 1
 
 
+def test_openfigi_vendor_errors_and_incomplete_shapes_fail_closed():
+    for response in ([{"error": "simulated upstream failure"}], [{"warning": "not mapped"}]):
+        opener = FixtureOpener(response)
+        with pytest.raises(PublicResearchUnavailable, match="FIGI_SOURCE_SHAPE_HOLD"):
+            PublicReferenceClient(POLICY, opener=opener).openfigi_ticker("MSFT")
+
+
 def test_network_error_response_ceiling_and_no_price_promotion():
     failing = FixtureOpener(URLError("synthetic-sensitive-error"))
     with pytest.raises(PublicResearchUnavailable, match="SOURCE_TRANSPORT_HOLD") as error:
