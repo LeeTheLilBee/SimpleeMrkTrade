@@ -276,6 +276,8 @@ def register_provider_key_desk(app: Flask, *, owner_authorize):
             store.forget(_owner_sid())
     # The application marker reports capabilities only; it contains NO secret
     # and cannot authorize use of a key by trading or data gateway components.
+    # Server-only projection closure exposes safe status, NEVER the stored key.
+    app.extensions["ob_provider_key_status_reader_v1"] = store.status
     app.extensions["ob_provider_key_desk_v1"] = {
         "path": PATH, "volatile_only": True, "secrets_in_browser": False,
         "api_authority": False, "live_feed_installed": False,
