@@ -67,12 +67,17 @@ class SourceRights:
     redistribution: bool = False
     real_time_entitled: bool = False
     entitled_instruments: frozenset[str] = frozenset()  # independent equity/option/event grants
+    expires_at: datetime | None = None
 
     def __post_init__(self) -> None:
         _text(self.source_id, "source_id")
         _text(self.upstream_family, "upstream_family")
         if self.verified_at is not None:
             _aware(self.verified_at, "verified_at")
+        if self.expires_at is not None:
+            _aware(self.expires_at, "expires_at")
+            if self.verified_at is None or self.expires_at <= self.verified_at:
+                raise ValueError("entitlement expiry must follow verified time")
         if not self.entitled_instruments.issubset({"equity", "option", "event"}):
             raise ValueError("unrecognized instrument entitlement")
 
@@ -162,6 +167,8 @@ class OptionQuote:
             raise ValueError("valid option expiry required") from exc
         if parsed.date() != embedded_expiry.date():
             raise ValueError("expiry conflicts with OCC identity")
+        if abs(int(self.occ_symbol[-8:]) / 1000.0 - self.strike) > 0.000001:
+            raise ValueError("strike conflicts with OCC identity")
         _positive(self.bid, "option bid", zero=True)
         _positive(self.ask, "option ask", zero=True)
         _positive(self.strike, "strike")
@@ -233,6 +240,10 @@ def assess(evidence: Observation, rights: SourceRights | None, context: ScanCont
         return result(Gate.SOURCE_HOLD, "Missing or mismatched source-rights record.")
     if not rights.reviewed_for_scan():
         return result(Gate.RIGHTS_HOLD, "Automated research entitlement was not verified.")
+    if rights.verified_at is not None and rights.verified_at > context.now:
+        return result(Gate.RIGHTS_HOLD, "Future-dated entitlement evidence cannot authorize a quote.")
+    if rights.expires_at is not None and context.now >= rights.expires_at:
+        return result(Gate.RIGHTS_HOLD, "Source entitlement expired.")
     if evidence.instrument not in rights.entitled_instruments:
         return result(Gate.RIGHTS_HOLD, "Instrument-specific data entitlement is not granted.")
     if quote and (not rights.real_time_entitled or evidence.feed_label != "realtime"):
