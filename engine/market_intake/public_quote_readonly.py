@@ -123,7 +123,7 @@ def _number(value: object, *, allow_zero: bool = False) -> float:
         numeric = float(decimal)
     except (ValueError, OverflowError):
         raise PublicQuoteHold("PUBLIC_PRICE_INVALID") from None
-    if not numeric < float("inf"):
+    if (not numeric < float("inf") or (numeric < 0 if allow_zero else numeric <= 0)):
         raise PublicQuoteHold("PUBLIC_PRICE_INVALID")
     return numeric
 
