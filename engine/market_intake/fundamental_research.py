@@ -122,8 +122,11 @@ def parse_companyfacts(payload: Mapping[str,object], *, cik: str,
             unique=(accession,concept,unit,end)
             if unique in seen:continue
             seen.add(unique)
+            # Refer to the official accession package directory. The primary
+            # document filename belongs to the submissions receipt; do not
+            # invent a document/index filename for a companyfacts cell.
             url=(f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/"
-                 f"{accession.replace('-','')}/{accession.replace('-','')}-index.html")
+                 f"{accession.replace('-','')}/")
             try:
                 facts.append(CompanyFact(cik,accession,concept,unit,float(value),end,
                                          accepted,item["form"],url))
