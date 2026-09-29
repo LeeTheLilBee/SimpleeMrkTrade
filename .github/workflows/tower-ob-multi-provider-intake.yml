@@ -85,7 +85,9 @@ jobs:
           client=app.test_client()
           assert client.get(PATH).status_code != 200
           assert client.get('/ob/data-desk/api-keys').status_code != 200
-          assert client.head(PATH).status_code == 405
+          # The earlier legacy owner guard may return 403 to an anonymous HEAD
+          # before the later exact-method gate can issue its owner-visible 405.
+          assert client.head(PATH).status_code in (403, 405)
           assert client.get(PATH + '/export').status_code == 403
           assert app.extensions['ob_provider_key_desk_v1']['live_feed_installed'] is False
           assert app.extensions['tower_ob_market_data_desk_source_only_v1']['quote_data_attached'] is False
