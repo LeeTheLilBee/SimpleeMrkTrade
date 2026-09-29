@@ -14,6 +14,8 @@ from .symbol_research import SymbolResearchInputs, symbol_research_snapshot
 from .research_bridge import project_research, attach_research_context
 from .research_memory import ResearchReferenceLedger, soulaana_research_brief
 from .sec_events import parse_sec_submissions
+from .edgar_research import (EdgarResearchBundle, acceptance_evidence, build_edgar_research)
+from .edgar_cache import (read_sec_cache, checked_cached_research, make_owner_edgar_resolver)
 from .scanner import ResearchLead, ScanPolicy, inspect_symbol, research_packet
 from .traffic import FetchProposal, ProviderBudget, TrafficPlanner
 from .universe import (
@@ -26,7 +28,9 @@ __all__ = (
     "history_context", "replay_historical_horizon", "CompanyFact",
     "FundamentalRights", "parse_companyfacts", "fundamental_context",
     "SymbolResearchInputs", "symbol_research_snapshot", "project_research",
-    "attach_research_context", "ResearchReferenceLedger",
+    "attach_research_context", "EdgarResearchBundle", "acceptance_evidence",
+    "build_edgar_research", "read_sec_cache", "checked_cached_research",
+    "make_owner_edgar_resolver", "ResearchReferenceLedger",
     "soulaana_research_brief", "BOUNDARIES", "VERSION", "DiscoveryEvent", "EquityQuote", "Gate", "Observation",
     "OptionQuote", "ScanContext", "SourceRights", "assess", "ResearchLead",
     "ScanPolicy", "parse_sec_submissions", "inspect_symbol", "research_packet", "FetchProposal",
