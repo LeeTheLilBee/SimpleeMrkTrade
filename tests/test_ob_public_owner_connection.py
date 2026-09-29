@@ -277,7 +277,7 @@ def test_unique_entity_account_is_recognized_not_misreported_as_brokerage(setup,
 
 def test_multiple_accounts_require_explicit_owner_selection_and_no_identity_leak(setup,monkeypatch):
     client,state,store,rec=setup; state["authorized"]=True
-    first="synthetic-broker-123456",second="synthetic-entity-654321"
+    first,second="synthetic-broker-123456","synthetic-entity-654321"
     _alternate_account_response(monkeypatch,rec,[
         {"accountId":first,"accountType":"BROKERAGE"},
         {"accountId":second,"accountType":"ENTITY"},
