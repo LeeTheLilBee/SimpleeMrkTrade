@@ -444,6 +444,17 @@ def register_public_owner_connection(app: Flask, *, owner_authorize):
         if request.path == "/tower/logout":
             store.drop(_owner_sid())
 
+    # No credential or account ID is included in this read-only owner status.
+    # Empty account discovery cannot be mistaken for a connected account.
+    def _safe_owner_connection_status(sid):
+        item = store.get(sid)
+        return {
+            "authentication_temporarily_present": item is not None,
+            "account_linked": bool(item is not None and item.account_id),
+            "owner_selection_required": bool(item is not None and item.candidates and not item.account_id),
+        }
+
+    app.extensions["ob_public_owner_status_reader_v1"] = _safe_owner_connection_status
     app.extensions["ob_public_owner_connection_v1"] = {
         "path": PATH, "api_key_persisted": False, "bearer_in_cookie": False,
         "in_process_token_seconds": _AUTH_TTL_SECONDS, "broker_execution": False,
