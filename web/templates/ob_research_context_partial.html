@@ -58,7 +58,17 @@
       </div>
       {% endfor %}
       {% if ob_research_context.get('fundamentals',{}).get('reported_concepts') %}
-      <p>Issuer-reported SEC concepts retain their original fiscal period and units; no cross-concept normalization is inferred.</p>
+      <details class="ob-research-edgar" aria-label="Official EDGAR reported financial facts">
+        <summary>SEC EDGAR · reported financial facts</summary>
+        <p>Original issuer-reported concepts, fiscal periods, units and filing accessions. These are historical disclosures, never a live equity or option price.</p>
+        {% for fact in ob_research_context.get('fundamentals',{}).get('reported_concepts',[])[:8] %}
+        <div class="ob-research-event">
+          <strong>{{ fact.get('concept','Reported item')|e }} · {{ fact.get('value','—')|e }} {{ fact.get('units','')|e }}</strong>
+          <small>Period ending {{ fact.get('fiscal_end','Unknown')|e }} · {{ fact.get('form','SEC filing')|e }} · acceptance {{ fact.get('accepted_at','Unknown')|e }}</small>
+          <code>Accession: {{ fact.get('accession','Unavailable')|e }} · {{ fact.get('reference','Source reference unavailable')|e }}</code>
+        </div>
+        {% endfor %}
+      </details>
       {% endif %}
     </div>
   </details>
