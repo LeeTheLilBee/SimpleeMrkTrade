@@ -284,3 +284,31 @@ def test_finazon_and_bea_require_independent_ai_grants(rights, monkeypatch):
     assert "not SIP/NBBO" in observations[0]["finding"]
     assert "macroeconomic context" in observations[1]["finding"]
     assert packet["soulaana_research"]["live_quote_verified"] is False
+
+
+def test_finazon_free_trial_noneligible_symbol_never_calls_finazon(rights):
+    rec = Recorder()
+    packet = provider_research_projection(
+        sid="tower_session_" + "x"*20, symbol="MSFT",
+        secret_reader=secret_reader, opener=rec, cache=ProviderResearchCache())
+    finazon = next(row for row in packet["provider_research"] if row["provider"] == "finazon")
+    assert finazon["state"] == "FREE_TRIAL_SYMBOL_HOLD"
+    assert finazon["trial_access_state"] == "SYMBOL_NOT_IN_FREE_TRIAL"
+    assert finazon["eligible_trial_symbols"] == ["AAPL", "GOOG", "TSLA"]
+    assert not any("finazon.io" in call[0].full_url for call in rec.calls)
+
+
+def test_finazon_and_bea_soulaana_require_independent_ai_grants(rights, monkeypatch):
+    monkeypatch.setenv("OB_PROVIDER_FINAZON_AI_USE_REVIEWED", "1")
+    monkeypatch.setenv("OB_PROVIDER_BEA_AI_USE_REVIEWED", "1")
+    packet = provider_research_projection(
+        sid="tower_session_" + "x"*20, symbol="AAPL",
+        secret_reader=secret_reader, opener=Recorder(), cache=ProviderResearchCache())
+    observations = packet["soulaana_research"]["observations"]
+    assert [row["provider"] for row in observations] == ["finazon", "bea"]
+    finazon, bea = observations
+    assert "not SIP/NBBO" in finazon["finding"]
+    assert "macroeconomic context" in bea["finding"]
+    assert finazon["live_quote"] is False
+    assert bea["live_quote"] is False
+    assert packet["soulaana_research"]["candidate_admitted"] is False
