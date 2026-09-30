@@ -143,7 +143,9 @@ def test_source_bound_owner_projection_is_bounded_and_not_live(rights):
     assert finazon["real_time_market_context"] is True
     assert finazon["consolidated_quote"] is False
     assert bea["state"] == "SOURCE_BOUND"
-    assert bea["kind"] == "OFFICIAL_US_QUARTERLY_GDP_CONTEXT"
+    assert bea["kind"] == "OFFICIAL_US_QUARTERLY_NOMINAL_GDP_CONTEXT"
+    assert bea["unit"] == "BILLIONS_USD_SAAR"
+    assert bea["observations"][0] == {"period": "2026Q2", "value": "31000.0"}
     assert "SECRET" not in json.dumps(packet)
     assert packet["soulaana_research"]["observations"] == []
 
