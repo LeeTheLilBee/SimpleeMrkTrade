@@ -14,6 +14,7 @@ import os
 import re
 
 from .official_catalyst_sources import OfficialCatalystClient, SourceHold, REFERENCES
+from .official_catalyst_intelligence import RevisionLedger, build_intelligence
 
 SOURCES = ("federal_register", "cftc", "eia", "world_bank", "nws")
 TTL = {"federal_register": 3600, "cftc": 21600, "eia": 21600,
@@ -65,7 +66,8 @@ def reviewed_soulaana_sources(enabled, environ=None):
                              "_SOULAANA_CONTENT_REVIEWED") == "1")
 
 
-def _public_row(source, state, facts=None, retrieved_at=None):
+def _public_row(source, state, facts=None, retrieved_at=None,
+                change_markers=None, cache_hit=False):
     if source not in SOURCES:
         raise ValueError("Unknown official source")
     return {
@@ -75,6 +77,8 @@ def _public_row(source, state, facts=None, retrieved_at=None):
         "quote_eligible": False, "option_chain": False,
         "candidate_admitted": False, "execution_authorized": False,
         "ai_use_approved": False,
+        "change_markers": list(change_markers or ()),
+        "cache_hit": cache_hit is True,
     }
 
 
@@ -162,6 +166,9 @@ class OfficialCatalystRadar:
         self._clock = now or (lambda: datetime.now(timezone.utc))
         self._lock = RLock()
         self._cache = {}
+        # Per-process source fingerprints only: no long-term raw-source
+        # warehouse, no background workers, no historical license inference.
+        self._revision_ledger = RevisionLedger()
 
     def _fetch(self, source):
         if source == "eia":
@@ -215,16 +222,23 @@ class OfficialCatalystRadar:
             for source in SOURCES:
                 if source not in self.enabled:
                     self._cache.pop(source, None)
+                    self._revision_ledger.clear(source)
                     rows.append(_public_row(source, "REVIEW_HOLD"))
                     continue
                 cached = self._cache.get(source)
                 if cached and cached[0] > now:
                     row = dict(cached[1])
                     row["facts"] = [dict(x) for x in row["facts"]]
+                    row["cache_hit"] = True
                 else:
                     try:
                         state, facts = self._fetch(source)
-                        row = _public_row(source, state, facts, now.isoformat())
+                        # Record only independently validated successful
+                        # receipts; hold/failure cannot reuse prior raw facts.
+                        markers = (self._revision_ledger.record(source, facts)
+                                   if state == "SOURCE_BOUND" else [])
+                        row = _public_row(source, state, facts, now.isoformat(),
+                                          change_markers=markers)
                     except Exception:
                         # Isolate each fixed source. No provider exception text or
                         # response is exposed, and another source can still pass.
@@ -260,9 +274,13 @@ class OfficialCatalystRadar:
                     held = _public_row(source, "SOURCE_HOLD")
                     rows[index] = held
                     self._cache[source] = (now + timedelta(seconds=300), held)
+        provenance_triage = build_intelligence(
+            rows, approved_sources=self.ai_sources, as_of=now,
+        )
         return {
             "schema": "OB_OFFICIAL_CATALYST_RADAR_V1",
             "as_of": now.isoformat(), "sources": rows,
+            "soulaana_provenance_triage": provenance_triage,
             "soulaana": {
                 "schema": "OB_SOULAANA_OFFICIAL_CATALYST_V1",
                 "channel": "OFFICIAL_REVIEWED_CATALYSTS",

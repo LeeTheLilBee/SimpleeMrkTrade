@@ -364,3 +364,147 @@ def test_inconsistent_no_publication_with_facts_is_never_accepted():
     assert packet["sources"][4]["state"] == "SOURCE_HOLD"
     assert packet["sources"][4]["facts"] == []
     assert packet["soulaana"]["observations"] == []
+
+
+def test_soulaana_provenance_health_timeline_and_candidate_hold_are_source_bound():
+    radar, transport = service(key="SYNTHETICKEY1234567")
+    p = radar.snapshot()
+    brief = p["soulaana_provenance_triage"]
+    assert brief["schema"] == "OB_SOULAANA_PROVENANCE_TRIAGE_V1"
+    assert brief["research_state"] == "REVIEWED_CONTEXT_AVAILABLE"
+    assert brief["source_families_with_reviewed_content"] == 5
+    assert brief["timeline_count"] == 7
+    assert brief["comparison_count"] == 2
+    assert brief["source_health"][0]["period_kind"] == "document_publication_date"
+    assert brief["source_health"][1]["period_kind"] == "report_as_of_date"
+    assert brief["source_health"][3]["period_kind"] == "annual_observation_year"
+    assert brief["source_health"][4]["period_kind"] == "alert_effective_time"
+    assert brief["source_health"][5]["state"] == "EXISTING_PROTECTED_CORRIDOR"
+    assert brief["source_health"][5]["validated_record_count"] == 0
+    assert all(x["change_since_last_verified_fetch"] == "FIRST_OBSERVED_IN_PROCESS"
+               for x in brief["event_timeline"])
+    assert all(x["issuer_identity_proven"] is False and x["quote_verified"] is False
+               for x in brief["event_timeline"])
+    comparisons = {x["source"]: x for x in brief["series_comparisons"]}
+    assert comparisons["eia"]["difference_in_source_units"] == "1000"
+    assert comparisons["world_bank"]["direction"] == "UP"
+    assert all(x["causality_claimed"] is False for x in brief["series_comparisons"])
+    ready = brief["selection_readiness"]
+    assert ready["state"] == "SOURCE_CONTEXT_ONLY"
+    assert ready["official_context_present"] is True
+    assert ready["candidate_shortlist_authorized"] is False
+    assert ready["licensed_option_chain_verified_in_this_corridor"] is False
+    assert ready["owner_review_required"] is True
+    assert brief["ranking_performed"] is False
+    assert brief["cross_source_causality_claimed"] is False
+    assert brief["external_model_called"] is False
+    assert len(transport.requests) == 6
+    cached = radar.snapshot()
+    assert len(transport.requests) == 6
+    assert all(x["cache_hit"] for x in cached["soulaana_provenance_triage"]["source_health"][:5])
+
+
+def test_soulaana_provenance_hides_all_content_when_ai_review_is_withheld():
+    radar, transport = service(ai=frozenset(), key="SYNTHETICKEY1234567")
+    p = radar.snapshot()
+    triage = p["soulaana_provenance_triage"]
+    assert triage["research_state"] == "NO_AI_REVIEWED_CONTEXT"
+    assert triage["event_timeline"] == []
+    assert triage["series_comparisons"] == []
+    assert triage["source_families_with_reviewed_content"] == 0
+    assert triage["selection_readiness"]["candidate_shortlist_authorized"] is False
+    # Owner data and AI evidence rights are separate.
+    assert p["sources"][0]["state"] == "SOURCE_BOUND"
+    assert p["sources"][0]["facts"]
+    assert triage["source_health"][0]["validated_record_count"] == 1
+
+
+def test_revision_markers_are_same_exact_record_id_not_cache_or_unrelated_source():
+    from datetime import timedelta
+    radar, transport = service(key="SYNTHETICKEY1234567")
+    original = radar.snapshot()
+    assert original["sources"][1]["change_markers"] == ["FIRST_OBSERVED_IN_PROCESS"]
+    transport.responses[CFTC] = [{
+        **COT[0], "lev_money_positions_long": "20900",
+    }]
+    radar._clock = lambda: NOW + timedelta(hours=7)
+    changed = radar.snapshot()
+    rows = {x["source"]: x for x in changed["sources"]}
+    assert rows["cftc"]["state"] == "SOURCE_BOUND"
+    assert rows["cftc"]["change_markers"] == ["CHANGED_SINCE_LAST_VERIFIED_FETCH"]
+    assert rows["federal_register"]["change_markers"] == [
+        "UNCHANGED_SINCE_LAST_VERIFIED_FETCH"]
+    assert rows["world_bank"]["cache_hit"] is True
+    assert any(x["source"] == "cftc" and
+               x["change_since_last_verified_fetch"] == "CHANGED_SINCE_LAST_VERIFIED_FETCH"
+               for x in changed["soulaana_provenance_triage"]["event_timeline"])
+    # Another cached read cannot assert a new fetch or new formal revision.
+    again = radar.snapshot()
+    assert again["sources"][1]["cache_hit"] is True
+    assert "does not prove" in again["soulaana_provenance_triage"]["revision_note"]
+
+
+def test_revoking_source_purges_fingerprints_and_never_replays_old_evidence():
+    radar, transport = service(key="SYNTHETICKEY1234567")
+    radar.snapshot()
+    radar.enabled = frozenset({"federal_register"})
+    radar.ai_sources = frozenset({"federal_register"})
+    restricted = radar.snapshot()
+    assert restricted["soulaana_provenance_triage"]["timeline_count"] == 1
+    assert all(x["state"] == "REVIEW_HOLD"
+               for x in restricted["sources"][1:5])
+    assert all(x["source"] == "federal_register"
+               for x in restricted["soulaana_provenance_triage"]["event_timeline"])
+    radar.enabled = frozenset(SOURCES)
+    radar.ai_sources = frozenset(SOURCES)
+    returned = radar.snapshot()
+    assert returned["sources"][1]["change_markers"] == ["FIRST_OBSERVED_IN_PROCESS"]
+    assert returned["sources"][1]["cache_hit"] is False
+
+
+def test_duplicate_or_forged_cftc_record_is_held_without_stale_timeline():
+    radar, transport = service(key="SYNTHETICKEY1234567")
+    transport.responses[CFTC] = [COT[0], dict(COT[0])]
+    p = radar.snapshot()
+    assert p["sources"][1]["state"] == "SOURCE_HOLD"
+    assert p["sources"][1]["facts"] == []
+    assert p["sources"][1]["change_markers"] == []
+    assert all(x["source"] != "cftc"
+               for x in p["soulaana_provenance_triage"]["event_timeline"])
+    assert p["sources"][0]["state"] == "SOURCE_BOUND"
+    assert p["sources"][4]["state"] == "SOURCE_BOUND"
+
+
+def test_provenance_projection_rejects_rights_tampering_and_quote_inference():
+    from engine.market_intake.official_catalyst_intelligence import (
+        build_intelligence, RevisionLedger,
+    )
+    radar, _ = service(key="SYNTHETICKEY1234567")
+    p = radar.snapshot()
+    rows = p["sources"]
+    rows[0]["ai_use_approved"] = False
+    with pytest.raises(ValueError, match="INTELLIGENCE_AI_RIGHTS_HOLD"):
+        build_intelligence(rows, approved_sources=frozenset(SOURCES), as_of=NOW)
+    rows[0]["ai_use_approved"] = True
+    rows[0]["facts"][0]["reference"] = "https://not-official.example"
+    with pytest.raises(ValueError, match="PROVENANCE_REFERENCE_HOLD"):
+        build_intelligence(rows, approved_sources=frozenset(SOURCES), as_of=NOW)
+    ledger = RevisionLedger()
+    with pytest.raises(ValueError, match="PROVENANCE_DUPLICATE_HOLD"):
+        ledger.record("cftc", [
+            {"title": COT[0]["market_and_exchange_names"],
+             "period": "2025-08-19", "category": "TFF_FUTURES_ONLY",
+             "reference": REFERENCES["cftc"],
+             "leveraged_long": "20100", "leveraged_short": "13200",
+             "leveraged_net": "6900"},
+        ] * 2)
+    assert len(ledger._known) == 0
+
+
+def test_provenance_ui_is_same_protected_packet_not_new_vendor_endpoint():
+    script = (ROOT / "web/static/ob/ob_official_catalyst_radar.js").read_text()
+    assert "soulaana_provenance_triage" in script
+    assert "OB_SOULAANA_PROVENANCE_TRIAGE_V1" in script
+    assert "candidate_shortlist_authorized" in script
+    assert '"/ob/research/catalysts.json"' in script
+    assert "innerHTML" not in script

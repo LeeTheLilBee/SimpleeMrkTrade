@@ -7,6 +7,7 @@ on:
     paths:
       - "engine/market_intake/official_catalyst_sources.py"
       - "engine/market_intake/official_catalyst_radar.py"
+      - "engine/market_intake/official_catalyst_intelligence.py"
       - "web/ob_official_catalyst_route.py"
       - "deploy/hosted_tower/official_catalyst_one_shot.py"
       - "deploy/hosted_tower/start.sh"
@@ -23,6 +24,7 @@ on:
     paths:
       - "engine/market_intake/official_catalyst_sources.py"
       - "engine/market_intake/official_catalyst_radar.py"
+      - "engine/market_intake/official_catalyst_intelligence.py"
       - "web/ob_official_catalyst_route.py"
       - "deploy/hosted_tower/official_catalyst_one_shot.py"
       - "deploy/hosted_tower/start.sh"
@@ -46,7 +48,7 @@ jobs:
       - run: python -m pip install "pytest>=8,<10" flask
       - name: Source syntax and typed owner UI
         run: |
-          python -m compileall -q engine/market_intake/official_catalyst_sources.py engine/market_intake/official_catalyst_radar.py web/ob_official_catalyst_route.py deploy/hosted_tower/official_catalyst_one_shot.py
+          python -m compileall -q engine/market_intake/official_catalyst_sources.py engine/market_intake/official_catalyst_radar.py engine/market_intake/official_catalyst_intelligence.py web/ob_official_catalyst_route.py deploy/hosted_tower/official_catalyst_one_shot.py
           bash -n deploy/hosted_tower/start.sh
           node --check web/static/ob/ob_official_catalyst_radar.js
       - name: Synthetic source, attribution, rights, Soulaana and Tower enforcement
