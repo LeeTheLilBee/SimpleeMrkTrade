@@ -231,53 +231,81 @@ def _finazon(symbol: str, secret: str, *, opener=None) -> dict:
 
 
 def _bea(symbol: str, secret: str, *, opener=None) -> dict:
-    """Official quarterly nominal GDP context from BEA NIPA table 1.1.5.
+    """Official quarterly BEA growth, price and GDP-level context.
 
-    The macro observation applies to the whole U.S. economy; symbol is retained
-    only to keep this route's per-symbol research packet self-contained.
+    NIPA tables are deliberately fixed:
+      T10105 = current-dollar GDP level,
+      T10106 = real GDP chained-dollar level,
+      T10101 = percent change in real GDP from the preceding period,
+      T10107 = percent change in GDP prices from the preceding period.
+    No table may be selected by browser input.
     """
     year = _now().year
-    url = "https://apps.bea.gov/api/data?" + urlencode({
-        "UserID": secret,
-        "method": "GetData",
-        "DataSetName": "NIPA",
-        "TableName": "T10105",
-        "Frequency": "Q",
-        "Year": f"{year-1},{year}",
-        "ResultFormat": "JSON",
-    })
-    doc = _read_json(Request(url, headers={"Accept": "application/json"}, method="GET"),
-                     opener=opener)
-    bea = doc.get("BEAAPI")
-    results = bea.get("Results") if isinstance(bea, dict) else None
-    rows = results.get("Data") if isinstance(results, dict) else None
-    if not isinstance(rows, list):
-        raise ValueError("provider response hold")
-    observations = []
-    for row in rows:
-        if not isinstance(row, dict) or str(row.get("LineNumber")) != "1":
-            continue
-        period = row.get("TimePeriod")
-        raw = row.get("DataValue")
-        if not isinstance(period, str) or not re.fullmatch(r"20\d{2}Q[1-4]", period):
-            continue
-        try:
-            value = Decimal(str(raw).replace(",", ""))
-        except Exception:
-            continue
-        if not value.is_finite() or value <= 0:
-            continue
-        observations.append({"period": period, "value": str(value)})
-    observations.sort(key=lambda x: x["period"], reverse=True)
-    observations = observations[:4]
-    if not observations:
-        raise ValueError("provider response hold")
+    specs = (
+        ("nominal_gdp", "T10105", "Nominal GDP",
+         "BILLIONS_OF_CURRENT_DOLLARS_SAAR"),
+        ("real_gdp", "T10106", "Real GDP",
+         "BILLIONS_OF_CHAINED_DOLLARS_SAAR"),
+        ("real_gdp_growth", "T10101", "Real GDP growth",
+         "PERCENT_CHANGE_PRECEDING_PERIOD_ANNUAL_RATE"),
+        ("gdp_price_change", "T10107", "GDP price change",
+         "PERCENT_CHANGE_PRECEDING_PERIOD_ANNUAL_RATE"),
+    )
+    macro_series = []
+    for series_id, table, label, unit in specs:
+        url = "https://apps.bea.gov/api/data?" + urlencode({
+            "UserID": secret,
+            "method": "GetData",
+            "DataSetName": "NIPA",
+            "TableName": table,
+            "Frequency": "Q",
+            "Year": f"{year-1},{year}",
+            "ResultFormat": "JSON",
+        })
+        doc = _read_json(Request(
+            url, headers={"Accept": "application/json"}, method="GET"
+        ), opener=opener)
+        bea = doc.get("BEAAPI")
+        results = bea.get("Results") if isinstance(bea, dict) else None
+        rows = results.get("Data") if isinstance(results, dict) else None
+        if not isinstance(rows, list):
+            raise ValueError("provider response hold")
+        observations = []
+        for row in rows:
+            if not isinstance(row, dict) or str(row.get("LineNumber")) != "1":
+                continue
+            period = row.get("TimePeriod")
+            raw = row.get("DataValue")
+            if not isinstance(period, str) or not re.fullmatch(r"20\d{2}Q[1-4]", period):
+                continue
+            try:
+                value = Decimal(str(raw).replace(",", ""))
+            except Exception:
+                continue
+            if not value.is_finite():
+                continue
+            if series_id in {"nominal_gdp", "real_gdp"} and value <= 0:
+                continue
+            observations.append({"period": period, "value": str(value)})
+        observations.sort(key=lambda x: x["period"], reverse=True)
+        observations = observations[:4]
+        if len(observations) < 2:
+            raise ValueError("provider response hold")
+        macro_series.append({
+            "series_id": series_id,
+            "table": table,
+            "label": label,
+            "unit": unit,
+            "observations": observations,
+        })
+    nominal = macro_series[0]
     return {
         "provider": "bea",
-        "kind": "OFFICIAL_US_QUARTERLY_NOMINAL_GDP_CONTEXT",
+        "kind": "OFFICIAL_US_QUARTERLY_MACRO_CONTEXT",
         "symbol": symbol,
-        "observations": observations,
-        "unit": "BILLIONS_OF_CURRENT_DOLLARS_SAAR",
+        "observations": nominal["observations"],
+        "unit": nominal["unit"],
+        "macro_series": macro_series,
         "source_reference": "https://apps.bea.gov/api/",
         "historical_only": True,
         "live_quote": False,
@@ -377,26 +405,79 @@ def _soulaana(rows: list[dict]) -> dict:
                 "context remain separate. Treat this as one corroborating market-data source."
             )
         else:
-            observations = row["observations"]
-            latest = observations[0]
+            macro = row.get("macro_series")
+            if (not isinstance(macro, list) or
+                    [x.get("series_id") for x in macro] != [
+                        "nominal_gdp", "real_gdp", "real_gdp_growth", "gdp_price_change"]):
+                raise ValueError("SOULAANA_BEA_MACRO_HOLD")
+            summary_series = []
+            for series in macro:
+                observations = series.get("observations")
+                if not isinstance(observations, list) or len(observations) < 2:
+                    raise ValueError("SOULAANA_BEA_MACRO_HOLD")
+                latest, prior = observations[0], observations[1]
+                latest_value = Decimal(latest["value"])
+                prior_value = Decimal(prior["value"])
+                direction = "UP" if latest_value > prior_value else (
+                    "DOWN" if latest_value < prior_value else "UNCHANGED")
+                summary_series.append({
+                    "series_id": series["series_id"], "label": series["label"],
+                    "unit": series["unit"], "latest_period": latest["period"],
+                    "latest_value": latest["value"], "prior_period": prior["period"],
+                    "prior_value": prior["value"], "direction": direction,
+                })
+            by_id = {x["series_id"]: x for x in summary_series}
+            growth = by_id["real_gdp_growth"]
+            prices = by_id["gdp_price_change"]
+            growth_change = Decimal(growth["latest_value"]) - Decimal(growth["prior_value"])
+            price_change = Decimal(prices["latest_value"]) - Decimal(prices["prior_value"])
+            growth_word = "accelerated" if growth_change > 0 else (
+                "slowed" if growth_change < 0 else "was unchanged")
+            price_word = "accelerated" if price_change > 0 else (
+                "slowed" if price_change < 0 else "was unchanged")
             item["summary"] = {
-                "latest_period": latest["period"], "latest_value": latest["value"],
-                "observation_count": len(observations),
+                "macro_series": summary_series,
+                "latest_period": growth["latest_period"],
+                "real_gdp_growth_percent_annual_rate": growth["latest_value"],
+                "gdp_price_change_percent_annual_rate": prices["latest_value"],
             }
             item["finding"] = (
-                f"BEA's official NIPA data reports the latest available quarterly GDP observation "
-                f"as {latest['value']} for {latest['period']}. This is U.S. macroeconomic context, "
-                "not security-specific price evidence."
+                f"BEA reports real GDP growth of {growth['latest_value']}% at an annual rate "
+                f"for {growth['latest_period']}; compared with {growth['prior_period']} "
+                f"({growth['prior_value']}%), growth {growth_word}. "
+                f"BEA's GDP price change is {prices['latest_value']}% at an annual rate "
+                f"for {prices['latest_period']}; compared with {prices['prior_period']} "
+                f"({prices['prior_value']}%), price pressure {price_word}. "
+                "Nominal and real GDP levels are retained beside those rates for context."
             )
+            item["why_it_matters"] = (
+                "Real growth helps describe demand/output momentum while the GDP price measure "
+                "describes economy-wide domestic price pressure. Together they help distinguish "
+                "growth from inflation instead of treating a larger dollar GDP number as stronger real activity."
+            )
+            item["what_would_confirm"] = [
+                "BLS labor data moving in a direction consistent with the growth picture.",
+                "BLS CPI/PPI direction broadly consistent with the GDP-price picture.",
+                "A newer BEA release preserving the same acceleration or cooling pattern.",
+            ]
+            item["what_would_conflict"] = [
+                "Labor data materially weakening while BEA growth accelerates.",
+                "Consumer/producer price measures cooling while GDP-price change accelerates, or the reverse.",
+            ]
             item["what_is_missing"] = (
-                "Market reaction, current security pricing and causality must be established separately; "
-                "a GDP observation alone does not create a trade candidate."
+                "Market reaction, current security pricing, options liquidity and issuer-specific exposure remain separate. "
+                "Macro agreement raises context confidence; it does not create a trade candidate."
             )
         readable.append(item)
     return {
         "schema": "OB_SOULAANA_KEYED_PROVIDER_RESEARCH_V1",
         "channel": "SOULAANA_REVIEWED_PROVIDER_RESEARCH",
         "observations": readable,
+        "explanation_contract": {
+            "sequence": ["what_changed", "what_it_means", "why_it_matters", "what_confirms_or_conflicts", "what_is_missing"],
+            "cross_source_causality_claimed": False,
+            "trade_signal_created": False,
+        },
         "source_specific_ai_use_approved": bool(readable),
         "external_model_called": False,
         "raw_credentials_included": False,

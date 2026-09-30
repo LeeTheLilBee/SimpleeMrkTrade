@@ -26,8 +26,14 @@ FIGI_DOCS = "https://www.openfigi.com/api/documentation"
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,15}$")
 SOURCES = ("sec", "bls", "treasury", "openfigi")
 TL_SECONDS = {"bls": 86400, "treasury": 21600, "openfigi": 3600}
+BLS_SERIES_META = {
+    "CUUR0000SA0": ("CPI-U all items, not seasonally adjusted", "index"),
+    "LNS14000000": ("Civilian unemployment rate, seasonally adjusted", "percent"),
+    "CES0000000001": ("Total nonfarm payroll employment, seasonally adjusted", "thousands"),
+    "WPUFD4": ("Producer Price Index, final demand, not seasonally adjusted", "index"),
+}
 LABELS = {
-    "bls": ("BLS", "CPI-U, all items (not seasonally adjusted)", "index", BLS_DOCS),
+    "bls": ("BLS", "Macro panel · CPI / unemployment / payrolls / PPI", "index", BLS_DOCS),
     "treasury": ("US Treasury", "Total public debt outstanding", "USD", TREASURY_DOCS),
     "openfigi": ("OpenFIGI", "US ticker-to-FIGI reference", "FIGI", FIGI_DOCS),
     "sec": ("SEC EDGAR", "Company filings and companyfacts", "research", SEC_API),
@@ -97,7 +103,7 @@ class KeylessPublicContext:
 
     def _row(self, key: str, state: str, *, value=None, period=None,
              fetched_at=None, symbol=None, previous_period=None,
-             previous_value=None, source_reference=None) -> dict:
+             previous_value=None, source_reference=None, series=None) -> dict:
         provider, label, unit, reference = LABELS[key]
         return {
             "source": key, "provider": provider, "label": label,
@@ -107,6 +113,7 @@ class KeylessPublicContext:
             "unit": unit, "retrieved_at": fetched_at,
             "symbol": symbol if key == "openfigi" else None,
             "source_reference": source_reference or reference,
+            "series": series if key == "bls" else None,
             "historical_or_reference_only": True,
             "quote_eligible": False, "trading_authorized": False,
             "ai_use_approved": (key in self.ai_sources and state == "SOURCE_BOUND"),
@@ -114,13 +121,40 @@ class KeylessPublicContext:
 
     def _load(self, key: str, symbol: str | None, now: datetime) -> dict:
         if key == "bls":
-            obs = self.reference.bls_v1("CUUR0000SA0")
-            return self._row(key, "SOURCE_BOUND", value=obs.value,
-                             period=obs.period, fetched_at=obs.fetched_at.isoformat(),
-                             previous_period=obs.previous_period,
-                             previous_value=obs.previous_value,
-                             source_reference=(obs.source_reference if
-                                 obs.product == "OFFICIAL_BULK_CPI" else None))
+            cpi = self.reference.bls_v1("CUUR0000SA0")
+            panel = []
+            for series_id, (label, unit) in BLS_SERIES_META.items():
+                try:
+                    obs = cpi if series_id == "CUUR0000SA0" else self.reference.bls_v2(series_id)
+                except PublicResearchUnavailable:
+                    panel.append({
+                        "series_id": series_id, "label": label, "unit": unit,
+                        "state": "SOURCE_HOLD", "value": None, "period": None,
+                        "previous_period": None, "previous_value": None,
+                        "source_reference": (
+                            cpi.source_reference if series_id == "CUUR0000SA0"
+                            else "https://www.bls.gov/developers/api_signature_v2.htm"
+                        ),
+                    })
+                    continue
+                panel.append({
+                    "series_id": series_id, "label": label, "unit": unit,
+                    "state": "SOURCE_BOUND", "value": obs.value, "period": obs.period,
+                    "previous_period": obs.previous_period,
+                    "previous_value": obs.previous_value,
+                    "source_reference": (
+                        obs.source_reference
+                        if series_id != "CUUR0000SA0" or obs.product == "OFFICIAL_BULK_CPI"
+                        else BLS_DOCS
+                    ),
+                })
+            return self._row(key, "SOURCE_BOUND", value=cpi.value,
+                             period=cpi.period, fetched_at=cpi.fetched_at.isoformat(),
+                             previous_period=cpi.previous_period,
+                             previous_value=cpi.previous_value,
+                             source_reference=(cpi.source_reference if
+                                 cpi.product == "OFFICIAL_BULK_CPI" else None),
+                             series=panel)
         if key == "treasury":
             obs = self.treasury.latest_public_debt()
             return self._row(key, "SOURCE_BOUND", value=obs.value,

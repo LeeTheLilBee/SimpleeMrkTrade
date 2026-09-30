@@ -13,9 +13,18 @@
     openfigi: "https://www.openfigi.com/api/documentation"
   });
   const BLS_OFFICIAL_BULK = "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems";
+  const BLS_V2 = "https://www.bls.gov/developers/api_signature_v2.htm";
   function validReference(source, url) {
     return Object.prototype.hasOwnProperty.call(DOCS, source) &&
-      (url === DOCS[source] || (source === "bls" && url === BLS_OFFICIAL_BULK));
+      (url === DOCS[source] || (source === "bls" &&
+        (url === BLS_OFFICIAL_BULK || url === BLS_V2)));
+  }
+  function packetOwnsReference(packet, source, url) {
+    const row = packet.sources.find(item => item.source === source);
+    if (!row || !validReference(source, url)) return false;
+    if (row.source_reference === url) return true;
+    return source === "bls" && Array.isArray(row.series) &&
+      row.series.some(item => item && item.source_reference === url);
   }
   const LABELS = Object.freeze({
     SOURCE_BOUND: "Source-backed reference",
@@ -108,6 +117,19 @@
       card.append(el("p", "ob-keyless-meta", explain));
     }
     if (row.source === "bls") {
+      if (Array.isArray(row.series)) {
+        const panel = el("div", "ob-keyless-soulaana-register");
+        panel.append(el("strong", "", "BLS macro panel"));
+        row.series.forEach(item => {
+          if (!item || typeof item.label !== "string" || typeof item.state !== "string") return;
+          const value = item.state === "SOURCE_BOUND" && typeof item.value === "string"
+            ? item.value + " " + (item.unit || "")
+            : "held";
+          panel.append(el("p", "ob-keyless-meta",
+            item.label + " · " + value + (item.period ? " · " + item.period : "")));
+        });
+        card.append(panel);
+      }
       card.append(el("p", "ob-keyless-meta",
         "BLS.gov cannot vouch for the data or analyses derived from these data after the data have been retrieved from BLS.gov."));
     }
@@ -158,20 +180,36 @@
         brief.live_quote_verified !== false || brief.candidate_admitted !== false ||
         brief.broker_execution_authorized !== false || brief.capital_authorized !== false ||
         brief.public_brokerage_auth_inferred !== false ||
-        !Array.isArray(brief.observations) || brief.observations.length > 3 ||
+        !Array.isArray(brief.observations) || brief.observations.length > 6 ||
         !Array.isArray(brief.source_register) || brief.source_register.length !== 4 ||
         brief.observation_count !== brief.observations.length ||
-        !Array.isArray(brief.comparisons) || brief.comparisons.length > 2 ||
+        !Array.isArray(brief.comparisons) || brief.comparisons.length > 5 ||
         brief.comparison_count !== brief.comparisons.length ||
         brief.cross_source_causality_claimed !== false ||
         typeof brief.what_changed !== "string" || brief.what_changed.length > 350 ||
         typeof brief.what_needs_investigation !== "string" ||
         brief.what_needs_investigation.length > 500 ||
+        !brief.macro_explanation || typeof brief.macro_explanation !== "object" ||
+        !["SOURCE_BOUND_DIRECTIONAL_CONTEXT_ONLY", "INSUFFICIENT_COMPARISONS"].includes(
+          brief.macro_explanation.state) ||
+        typeof brief.macro_explanation.inflation !== "string" ||
+        brief.macro_explanation.inflation.length > 520 ||
+        typeof brief.macro_explanation.labor !== "string" ||
+        brief.macro_explanation.labor.length > 520 ||
+        typeof brief.macro_explanation.why_it_matters !== "string" ||
+        brief.macro_explanation.why_it_matters.length > 520 ||
+        !Array.isArray(brief.macro_explanation.tensions) ||
+        brief.macro_explanation.tensions.length > 4 ||
+        !Array.isArray(brief.macro_explanation.what_would_change_my_read) ||
+        brief.macro_explanation.what_would_change_my_read.length > 6 ||
+        brief.macro_explanation.causality_claimed !== false ||
+        brief.macro_explanation.trade_signal_created !== false ||
         brief.source_specific_ai_use_approved !== (brief.observations.length > 0)) return false;
     const authorized = new Set(packet.sources.filter(row =>
       EVIDENCE_SOURCES.has(row.source) && row.ai_use_approved === true &&
       row.state === "SOURCE_BOUND").map(row => row.source));
-    if (authorized.size !== brief.observations.length) return false;
+    if (![...authorized].every(source =>
+        brief.observations.some(item => item && item.source === source))) return false;
     const ids = ["sec", "bls", "treasury", "openfigi"];
     if (!brief.source_register.every((r, index) =>
       r && r.source === ids[index] && r.state === packet.sources[index].state &&
@@ -179,8 +217,7 @@
     return brief.observations.every(item =>
       item && authorized.has(item.source) &&
       validReference(item.source, item.source_reference) &&
-      packet.sources.some(r => r.source === item.source &&
-        r.source_reference === item.source_reference) &&
+      packetOwnsReference(packet, item.source, item.source_reference) &&
       item.research_only === true && item.quote_verified === false &&
       item.execution_authorized === false &&
       typeof item.value === "string" && item.value.length <= 55 &&
@@ -210,11 +247,31 @@
       const link = el("a", "ob-keyless-docs", "Official source ↗");
       link.href = item.source_reference; link.target = "_blank";
       link.rel = "noopener noreferrer";
-      record.append(el("strong", "", item.source.toUpperCase()),
+      const evidenceLabel = item.metric
+        ? item.source.toUpperCase() + " · " + item.metric
+        : item.source.toUpperCase();
+      record.append(el("strong", "", evidenceLabel),
         el("p", "", item.interpretation),
         el("p", "ob-keyless-meta", "Retrieved: " + item.retrieved_at), link);
       panel.append(record);
     });
+    const macro = brief.macro_explanation;
+    const macroPanel = el("div", "ob-keyless-soulaana-register");
+    macroPanel.append(
+      el("h3", "", "How I read the macro picture"),
+      el("p", "", "Inflation · " + macro.inflation),
+      el("p", "", "Labor · " + macro.labor),
+      el("p", "", "Why it matters · " + macro.why_it_matters)
+    );
+    if (macro.tensions.length) {
+      macroPanel.append(el("strong", "", "What does not line up cleanly"));
+      macro.tensions.forEach(item => macroPanel.append(el("p", "ob-keyless-meta", item)));
+    }
+    macroPanel.append(el("strong", "", "What would change my read"));
+    macro.what_would_change_my_read.forEach(item =>
+      macroPanel.append(el("p", "ob-keyless-meta", item)));
+    panel.append(macroPanel);
+
     const digest = el("div", "ob-keyless-soulaana-register");
     digest.append(el("h3", "", "What I found by examining the source records"),
       el("p", "", brief.what_changed));
@@ -401,6 +458,11 @@
       brief.broker_execution_authorized === false &&
       brief.capital_authorized === false &&
       brief.may_change_trading_mode === false &&
+      brief.explanation_contract &&
+      brief.explanation_contract.cross_source_causality_claimed === false &&
+      brief.explanation_contract.trade_signal_created === false &&
+      Array.isArray(brief.explanation_contract.sequence) &&
+      brief.explanation_contract.sequence.length === 5 &&
       Array.isArray(brief.observations) && brief.observations.length <= 4 &&
       brief.observations.every(item =>
         item && ids.includes(item.provider) &&
@@ -408,8 +470,13 @@
         item.symbol === symbol && item.source_reference === refs[item.provider] &&
         item.research_only === true && item.live_quote === false &&
         typeof item.finding === "string" && item.finding.length > 0 && item.finding.length <= 700 &&
-        typeof item.what_is_missing === "string" && item.what_is_missing.length <= 360 &&
-        item.summary && typeof item.summary === "object");
+        typeof item.what_is_missing === "string" && item.what_is_missing.length <= 420 &&
+        item.summary && typeof item.summary === "object" &&
+        (item.provider !== "bea" || (
+          typeof item.why_it_matters === "string" && item.why_it_matters.length <= 650 &&
+          Array.isArray(item.what_would_confirm) && item.what_would_confirm.length <= 5 &&
+          Array.isArray(item.what_would_conflict) && item.what_would_conflict.length <= 5
+        )));
   }
 
   async function readKeyedProviderResearch(symbol) {
@@ -464,9 +531,21 @@
         reference.href = refs[item.provider];
         reference.target = "_blank"; reference.rel = "noopener noreferrer";
         record.append(el("strong", "", item.provider.toUpperCase() + " · REVIEWED RESEARCH"),
-          el("p", "", item.finding),
-          el("p", "ob-keyless-soulaana-hold", item.what_is_missing),
-          reference);
+          el("p", "", item.finding));
+        if (item.why_it_matters) {
+          record.append(el("p", "", "Why it matters · " + item.why_it_matters));
+        }
+        if (Array.isArray(item.what_would_confirm) && item.what_would_confirm.length) {
+          record.append(el("strong", "", "What would confirm this read"));
+          item.what_would_confirm.forEach(line =>
+            record.append(el("p", "ob-keyless-meta", line)));
+        }
+        if (Array.isArray(item.what_would_conflict) && item.what_would_conflict.length) {
+          record.append(el("strong", "", "What would conflict with it"));
+          item.what_would_conflict.forEach(line =>
+            record.append(el("p", "ob-keyless-meta", line)));
+        }
+        record.append(el("p", "ob-keyless-soulaana-hold", item.what_is_missing), reference);
         reviewed.append(record);
       });
       keyedProviderResearch.replaceChildren(title, rows, reviewed,

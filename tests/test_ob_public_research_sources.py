@@ -183,6 +183,38 @@ def test_bls_rejects_unknown_or_malformed_records():
     assert len(opener.requests) == 1
 
 
+
+
+@pytest.mark.parametrize("series_id,latest,prior", [
+    ("CUUR0000SA0", "334.980", "333.918"),
+    ("LNS14000000", "4.3", "4.2"),
+    ("CES0000000001", "159500", "159300"),
+    ("WPUFD4", "157.604", "157.155"),
+])
+def test_bls_v2_exact_macro_series_are_bounded_reference_only(series_id, latest, prior):
+    payload = {"status":"REQUEST_SUCCEEDED","Results":{"series":[{
+        "seriesID":series_id,"data":[
+            {"year":"2026","period":"M08","value":latest},
+            {"year":"2026","period":"M07","value":prior},
+        ]}]}}
+    opener = FixtureOpener(payload)
+    row = PublicReferenceClient(POLICY, opener=opener).bls_v2(series_id)
+    assert row.series_id == series_id
+    assert (row.period, row.value) == ("2026-M08", latest)
+    assert (row.previous_period, row.previous_value) == ("2026-M07", prior)
+    assert row.source_reference == "https://www.bls.gov/developers/api_signature_v2.htm"
+    assert row.current_quote_eligible is False
+    assert row.broker_execution_authorized is False
+    assert opener.requests[0][0].full_url.endswith("/publicAPI/v2/timeseries/data/" + series_id)
+
+
+def test_bls_v2_refuses_unapproved_series_before_network():
+    opener = FixtureOpener({})
+    with pytest.raises(PublicResearchUnavailable, match="BLS_SERIES_NOT_APPROVED"):
+        PublicReferenceClient(POLICY, opener=opener).bls_v2("LNS12000000")
+    assert opener.requests == []
+
+
 def test_bea_uses_backend_key_and_never_exposes_it_in_reference():
     payload = {"BEAAPI": {"Results": {"Data": [
         {"LineNumber": "1", "TimePeriod": "2026Q1", "DataValue": "30,001.2"},
