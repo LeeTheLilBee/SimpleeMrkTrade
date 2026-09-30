@@ -16,6 +16,10 @@ from engine.market_intake.commercial_free_market import (
     normalize_twelve_data_quote,
     parse_finazon_ws_bar,
     parse_twelve_data_ws_price,
+    twelve_ws_subscribe,
+    twelve_ws_heartbeat,
+    finazon_ws_subscribe,
+    finazon_ws_heartbeat,
     stream_plan,
 )
 import tower.ob_commercial_free_market as runtime
@@ -156,6 +160,31 @@ def test_websocket_parsers_are_content_lanes_not_quote_authority():
         packet = record.internal_projection()
         assert packet["execution_grade_quote"] is False
         assert packet["bid_ask_attached"] is False
+
+
+def test_exact_websocket_protocol_messages_are_bounded():
+    assert twelve_ws_subscribe(["AAPL", "TSLA"]) == {
+        "action": "subscribe", "params": {"symbols": "AAPL,TSLA"}
+    }
+    assert twelve_ws_heartbeat() == {"action": "heartbeat"}
+    assert finazon_ws_subscribe(["AAPL"], request_id=106) == {
+        "event": "subscribe",
+        "dataset": "us_stocks_essential",
+        "tickers": ["AAPL"],
+        "channel": "bars",
+        "frequency": "1s",
+        "aggregation": "1m",
+        "request_id": 106,
+    }
+    assert finazon_ws_heartbeat(request_id=108) == {
+        "event": "heartbeat", "request_id": 108
+    }
+    with pytest.raises(ValueError):
+        finazon_ws_subscribe(["MSFT"], request_id=1)
+    with pytest.raises(ValueError):
+        finazon_ws_subscribe(["AAPL", "TSLA"], request_id=1)
+    with pytest.raises(ValueError):
+        twelve_ws_subscribe([])
 
 
 def test_free_stream_plan_respects_trial_symbol_entitlements_and_slot_limits():
