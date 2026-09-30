@@ -6,6 +6,10 @@ on:
       - tower-hosted-runtime-identity-twr081-085
     paths:
       - "tower/ob_provider_key_desk.py"
+      - "tower/ob_commercial_free_market.py"
+      - "engine/market_intake/commercial_free_market.py"
+      - "tower/ob_commercial_free_market.py"
+      - "engine/market_intake/commercial_free_market.py"
       - "tower/ob_provider_soulaana_status.py"
       - "tower/ob_public_owner_connection.py"
       - "tower/ob_market_data_desk_integration.py"
@@ -21,6 +25,8 @@ on:
       - "tests/test_tower_ob_api_intake_status.py"
       - "tests/test_tower_ob_provider_soulaana_status.py"
       - "tests/test_tower_ob_provider_key_desk.py"
+      - "tests/test_ob_commercial_free_market.py"
+      - "tests/test_ob_commercial_free_market.py"
       - ".github/workflows/tower-ob-multi-provider-intake.yml"
   push:
     branches:
@@ -61,7 +67,7 @@ jobs:
           node-version: "24"
       - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
       - name: Compile server modules
-        run: python -m compileall -q tower/ob_provider_key_desk.py tower/ob_public_owner_connection.py web/ob_connection_truth_route.py tower/ob_provider_soulaana_status.py
+        run: python -m compileall -q tower/ob_provider_key_desk.py tower/ob_commercial_free_market.py engine/market_intake/commercial_free_market.py tower/ob_public_owner_connection.py web/ob_connection_truth_route.py tower/ob_provider_soulaana_status.py
       - name: Test intake, rights separation, keyless data and actual Tower guards
         run: |
           python -m pytest -q \
@@ -86,7 +92,7 @@ jobs:
           rules = [r for r in app.url_map.iter_rules() if r.rule == PATH]
           assert len(rules) == 1
           assert 'GET' in rules[0].methods and 'POST' not in rules[0].methods
-          for route in (PATH, '/ob/data-desk/api-keys',
+          for route in (PATH, '/ob/data-desk/api-keys', '/ob/data-desk/commercial-free.json',
                         '/ob/data-desk/public', '/ob/research/keyless.json'):
               assert route in PROTECTED_EXACT_OB_ROUTES
           client=app.test_client()
@@ -98,5 +104,7 @@ jobs:
           assert client.get(PATH + '/export').status_code == 403
           assert app.extensions['ob_provider_key_desk_v1']['live_feed_installed'] is False
           assert app.extensions['tower_ob_market_data_desk_source_only_v1']['quote_data_attached'] is False
+          assert app.extensions['tower_ob_market_data_desk_source_only_v1']['commercial_free_market_adapter_registered'] is True
+          assert 'ob_commercial_free_market_reader_v1' in app.extensions
           print('Protected source status mounted; no quote/provider authority or anonymous data.')
           PY
