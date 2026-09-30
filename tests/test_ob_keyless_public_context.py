@@ -285,7 +285,7 @@ def test_soulaana_default_off_and_revocation_recompute_from_current_source_state
     assert {item["state"] for item in brief["source_register"][1:]}=={"REVIEW_HOLD"}
     assert "no keyless observations" in brief["what_i_see"]
     assert "320.10" not in json.dumps(brief)
-    assert len(transport.calls)==3
+    assert len(transport.calls)==6
 
 
 def test_soulaana_bridge_rejects_faux_prices_ai_grants_or_injected_source_identity():
