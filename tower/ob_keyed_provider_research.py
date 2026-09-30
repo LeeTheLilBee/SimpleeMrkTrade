@@ -405,26 +405,79 @@ def _soulaana(rows: list[dict]) -> dict:
                 "context remain separate. Treat this as one corroborating market-data source."
             )
         else:
-            observations = row["observations"]
-            latest = observations[0]
+            macro = row.get("macro_series")
+            if (not isinstance(macro, list) or
+                    [x.get("series_id") for x in macro] != [
+                        "nominal_gdp", "real_gdp", "real_gdp_growth", "gdp_price_change"]):
+                raise ValueError("SOULAANA_BEA_MACRO_HOLD")
+            summary_series = []
+            for series in macro:
+                observations = series.get("observations")
+                if not isinstance(observations, list) or len(observations) < 2:
+                    raise ValueError("SOULAANA_BEA_MACRO_HOLD")
+                latest, prior = observations[0], observations[1]
+                latest_value = Decimal(latest["value"])
+                prior_value = Decimal(prior["value"])
+                direction = "UP" if latest_value > prior_value else (
+                    "DOWN" if latest_value < prior_value else "UNCHANGED")
+                summary_series.append({
+                    "series_id": series["series_id"], "label": series["label"],
+                    "unit": series["unit"], "latest_period": latest["period"],
+                    "latest_value": latest["value"], "prior_period": prior["period"],
+                    "prior_value": prior["value"], "direction": direction,
+                })
+            by_id = {x["series_id"]: x for x in summary_series}
+            growth = by_id["real_gdp_growth"]
+            prices = by_id["gdp_price_change"]
+            growth_change = Decimal(growth["latest_value"]) - Decimal(growth["prior_value"])
+            price_change = Decimal(prices["latest_value"]) - Decimal(prices["prior_value"])
+            growth_word = "accelerated" if growth_change > 0 else (
+                "slowed" if growth_change < 0 else "was unchanged")
+            price_word = "accelerated" if price_change > 0 else (
+                "slowed" if price_change < 0 else "was unchanged")
             item["summary"] = {
-                "latest_period": latest["period"], "latest_value": latest["value"],
-                "observation_count": len(observations),
+                "macro_series": summary_series,
+                "latest_period": growth["latest_period"],
+                "real_gdp_growth_percent_annual_rate": growth["latest_value"],
+                "gdp_price_change_percent_annual_rate": prices["latest_value"],
             }
             item["finding"] = (
-                f"BEA's official NIPA data reports the latest available quarterly GDP observation "
-                f"as {latest['value']} for {latest['period']}. This is U.S. macroeconomic context, "
-                "not security-specific price evidence."
+                f"BEA reports real GDP growth of {growth['latest_value']}% at an annual rate "
+                f"for {growth['latest_period']}; compared with {growth['prior_period']} "
+                f"({growth['prior_value']}%), growth {growth_word}. "
+                f"BEA's GDP price change is {prices['latest_value']}% at an annual rate "
+                f"for {prices['latest_period']}; compared with {prices['prior_period']} "
+                f"({prices['prior_value']}%), price pressure {price_word}. "
+                "Nominal and real GDP levels are retained beside those rates for context."
             )
+            item["why_it_matters"] = (
+                "Real growth helps describe demand/output momentum while the GDP price measure "
+                "describes economy-wide domestic price pressure. Together they help distinguish "
+                "growth from inflation instead of treating a larger dollar GDP number as stronger real activity."
+            )
+            item["what_would_confirm"] = [
+                "BLS labor data moving in a direction consistent with the growth picture.",
+                "BLS CPI/PPI direction broadly consistent with the GDP-price picture.",
+                "A newer BEA release preserving the same acceleration or cooling pattern.",
+            ]
+            item["what_would_conflict"] = [
+                "Labor data materially weakening while BEA growth accelerates.",
+                "Consumer/producer price measures cooling while GDP-price change accelerates, or the reverse.",
+            ]
             item["what_is_missing"] = (
-                "Market reaction, current security pricing and causality must be established separately; "
-                "a GDP observation alone does not create a trade candidate."
+                "Market reaction, current security pricing, options liquidity and issuer-specific exposure remain separate. "
+                "Macro agreement raises context confidence; it does not create a trade candidate."
             )
         readable.append(item)
     return {
         "schema": "OB_SOULAANA_KEYED_PROVIDER_RESEARCH_V1",
         "channel": "SOULAANA_REVIEWED_PROVIDER_RESEARCH",
         "observations": readable,
+        "explanation_contract": {
+            "sequence": ["what_changed", "what_it_means", "why_it_matters", "what_confirms_or_conflicts", "what_is_missing"],
+            "cross_source_causality_claimed": False,
+            "trade_signal_created": False,
+        },
         "source_specific_ai_use_approved": bool(readable),
         "external_model_called": False,
         "raw_credentials_included": False,
