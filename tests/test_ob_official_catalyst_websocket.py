@@ -246,3 +246,40 @@ def test_staged_single_worker_and_ui_recovers_through_same_protected_get():
     assert "innerHTML" not in script
     assert "api.eia.gov" not in script
     assert "api.public.com" not in script
+
+
+def test_old_signed_cookie_loses_websocket_and_research_get_after_tower_logout(monkeypatch):
+    from flask import session
+    from tower.tower_human_login_ob_launch import SESSION_ID, _revoke_previous_catalyst_stream_session
+    import tower.ob_market_data_desk_integration as desk
+
+    class Service:
+        def snapshot(self): return verified_packet()
+
+    app = Flask(__name__)
+    app.secret_key = "synthetic-only"
+    hub = OfficialCatalystEventHub()
+    app.extensions["ob_official_catalyst_event_hub"] = hub
+    app.register_blueprint(create_official_catalyst_blueprint(
+        owner_authorize=lambda: session.get("synthetic_owner") is True,
+        catalyst_service=Service(), event_hub=hub,
+    ))
+    with app.test_client() as client:
+        with client.session_transaction() as owner:
+            owner["synthetic_owner"] = True
+            owner[SESSION_ID] = "tower_session_synthetic_random_id"
+        signed_cookie = client.get_cookie("session")
+        assert signed_cookie
+        raw = "session=" + signed_cookie.value
+        assert client.get("/ob/research/catalysts.json").status_code == 200
+    monkeypatch.setattr(desk, "_tower_authorize_data_desk",
+                        lambda: session.get("synthetic_owner") is True)
+    assert websocket._authorize_owner(app, raw) is True
+    with app.test_request_context("/tower/logout", headers={"Cookie": raw}):
+        _revoke_previous_catalyst_stream_session()
+        session.clear()
+    assert hub.session_revoked("tower_session_synthetic_random_id") is True
+    assert websocket._authorize_owner(app, raw) is False
+    with app.test_client() as client:
+        client.set_cookie("session", signed_cookie.value)
+        assert client.get("/ob/research/catalysts.json").status_code == 403
