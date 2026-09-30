@@ -14,6 +14,7 @@
   });
   const BLS_OFFICIAL_BULK = "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems";
   const BLS_V2 = "https://www.bls.gov/developers/api_signature_v2.htm";
+  const TREASURY_RATES = "https://home.treasury.gov/treasury-daily-interest-rate-xml-feed";
   function validReference(source, url) {
     return Object.prototype.hasOwnProperty.call(DOCS, source) &&
       (url === DOCS[source] || (source === "bls" &&
@@ -116,6 +117,40 @@
         "No validated observation is displayed. We do not substitute old or synthetic values.";
       card.append(el("p", "ob-keyless-meta", explain));
     }
+    if (row.source === "treasury" && row.rates) {
+      const rates = row.rates;
+      if (rates.state === "SOURCE_BOUND" && rates.source_reference === TREASURY_RATES &&
+          rates.nominal && rates.real && rates.derived &&
+          rates.intraday === false && rates.executable_quote === false &&
+          rates.broker_execution_authorized === false) {
+        const ratePanel = el("div", "ob-keyless-soulaana-register");
+        ratePanel.append(el("strong", "", "Treasury rates context"));
+        ratePanel.append(
+          el("p", "ob-keyless-meta",
+            "Official close " + rates.nominal.date +
+            " · 2Y " + rates.nominal.yields_percent["2Y"] + "%" +
+            " · 10Y " + rates.nominal.yields_percent["10Y"] + "%" +
+            " · 30Y " + rates.nominal.yields_percent["30Y"] + "%"),
+          el("p", "ob-keyless-meta",
+            "2s10s " + rates.derived.two_ten_spread_bp + " bp" +
+            " · " + rates.derived.curve_shape.replaceAll("_", " ").toLowerCase() +
+            " · " + rates.derived.curve_change.replaceAll("_", " ").toLowerCase()),
+          el("p", "ob-keyless-meta",
+            "10Y real " + rates.real.yields_percent["10Y"] + "%" +
+            (rates.derived.ten_year_breakeven_percent !== null
+              ? " · simple 10Y breakeven " + rates.derived.ten_year_breakeven_percent + "%"
+              : " · breakeven held (dates not matched)"))
+        );
+        const ratesLink = el("a", "ob-keyless-docs", "Treasury rate feed ↗");
+        ratesLink.href = TREASURY_RATES; ratesLink.target = "_blank";
+        ratesLink.rel = "noopener noreferrer";
+        ratePanel.append(ratesLink);
+        card.append(ratePanel);
+      } else if (rates.state === "SOURCE_HOLD") {
+        card.append(el("p", "ob-keyless-meta",
+          "Treasury daily yield-curve context is currently held; fiscal debt context remains independently available."));
+      }
+    }
     if (row.source === "bls") {
       if (Array.isArray(row.series)) {
         const panel = el("div", "ob-keyless-soulaana-register");
@@ -196,6 +231,17 @@
         brief.macro_explanation.inflation.length > 520 ||
         typeof brief.macro_explanation.labor !== "string" ||
         brief.macro_explanation.labor.length > 520 ||
+        !brief.macro_explanation.rates || typeof brief.macro_explanation.rates !== "object" ||
+        !["SOURCE_BOUND", "SOURCE_HOLD", "NOT_AVAILABLE"].includes(
+          brief.macro_explanation.rates.state) ||
+        typeof brief.macro_explanation.rates.rates_story !== "string" ||
+        brief.macro_explanation.rates.rates_story.length > 900 ||
+        typeof brief.macro_explanation.rates.real_yield_story !== "string" ||
+        brief.macro_explanation.rates.real_yield_story.length > 650 ||
+        typeof brief.macro_explanation.rates.inflation_compensation_story !== "string" ||
+        brief.macro_explanation.rates.inflation_compensation_story.length > 750 ||
+        brief.macro_explanation.rates.causality_claimed !== false ||
+        brief.macro_explanation.rates.trade_signal_created !== false ||
         typeof brief.macro_explanation.why_it_matters !== "string" ||
         brief.macro_explanation.why_it_matters.length > 520 ||
         !Array.isArray(brief.macro_explanation.tensions) ||
@@ -205,6 +251,21 @@
         brief.macro_explanation.causality_claimed !== false ||
         brief.macro_explanation.trade_signal_created !== false ||
         brief.source_specific_ai_use_approved !== (brief.observations.length > 0)) return false;
+    const rateRead = brief.macro_explanation.rates;
+    if (rateRead.state === "SOURCE_BOUND") {
+      const treasury = packet.sources.find(row => row.source === "treasury");
+      if (!treasury || treasury.ai_use_approved !== true || !treasury.rates ||
+          treasury.rates.state !== "SOURCE_BOUND" ||
+          treasury.rates.source_reference !== TREASURY_RATES ||
+          rateRead.source_reference !== TREASURY_RATES ||
+          typeof rateRead.two_year_percent !== "string" ||
+          typeof rateRead.ten_year_percent !== "string" ||
+          typeof rateRead.real_ten_year_percent !== "string" ||
+          typeof rateRead.two_ten_spread_bp !== "string" ||
+          !["INVERTED", "POSITIVE", "NEAR_FLAT"].includes(rateRead.curve_shape) ||
+          !["STEEPENED", "FLATTENED", "LITTLE_CHANGED"].includes(rateRead.curve_change) ||
+          rateRead.breakeven_is_simple_approximation !== true) return false;
+    }
     const authorized = new Set(packet.sources.filter(row =>
       EVIDENCE_SOURCES.has(row.source) && row.ai_use_approved === true &&
       row.state === "SOURCE_BOUND").map(row => row.source));
@@ -261,6 +322,9 @@
       el("h3", "", "How I read the macro picture"),
       el("p", "", "Inflation · " + macro.inflation),
       el("p", "", "Labor · " + macro.labor),
+      el("p", "", "Rates · " + macro.rates.rates_story),
+      el("p", "", "Real yields · " + macro.rates.real_yield_story),
+      el("p", "", "Inflation compensation · " + macro.rates.inflation_compensation_story),
       el("p", "", "Why it matters · " + macro.why_it_matters)
     );
     if (macro.tensions.length) {
