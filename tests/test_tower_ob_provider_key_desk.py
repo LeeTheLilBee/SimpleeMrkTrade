@@ -73,8 +73,7 @@ def test_save_verify_forget_no_key_in_html_or_cookie(env):
     assert raw.encode() not in result.data
     page = client.get(desk.PATH)
     assert raw.encode() not in page.data
-    assert b"NOT TESTED" in page.data
-    with client.session_transaction() as sess:
+    assert b"NOT TESTED" in page.data\n    assert b"Diagnostic:" in page.data\n    assert b"Credential is present but has not been verified yet." in page.data\n    with client.session_transaction() as sess:
         assert raw not in str(dict(sess))
     result = send(client, operation="verify")
     assert result.status_code == 303
@@ -180,7 +179,5 @@ def test_fixed_official_probe_endpoints_and_sanitized_response():
     assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=alpha) == "READ_ONLY_CHECK_PASSED"
     assert alpha.requests[0].full_url.startswith("https://www.alphavantage.co/query?")
     assert "outputsize=compact" in alpha.requests[0].full_url
-    limited = _FakeOpener({"Information": "rate limit"})
-    assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=limited) == "VERIFY_HOLD"
-    with pytest.raises(ValueError):
+    limited = _FakeOpener({"Information": "Thank you. Standard API rate limit is 25 requests per day."})\n    assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=limited) == "RATE_LIMITED"\n    rejected = _FakeOpener({"Information": "Invalid API key. Please check your API key."})\n    assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=rejected) == "ACCESS_REJECTED"\n    provider_message = _FakeOpener({"Information": "Scheduled maintenance notice"})\n    assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=provider_message) == "PROVIDER_MESSAGE"\n    malformed = _FakeOpener({"unexpected": True})\n    assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=malformed) == "RESPONSE_SHAPE_HOLD"\n    with pytest.raises(ValueError):
         desk.probe_one("custom-url", "PRIVATE_ALPHA_TEST", opener=alpha)
