@@ -68,11 +68,21 @@ class Recorder:
                 "ch": {"dap": 1.0066},
             })
         if "apps.bea.gov/api/data" in request.full_url:
+            values = {
+                "T10105": ("31,250.0", "30,900.0"),
+                "T10106": ("23,000.0", "22,800.0"),
+                "T10101": ("3.8", "2.9"),
+                "T10107": ("2.6", "3.1"),
+            }
+            table = next((name for name in values if "TableName=" + name in request.full_url), None)
+            if table is None:
+                raise AssertionError("unexpected BEA table")
+            latest, prior = values[table]
             return Response(request.full_url, {
                 "BEAAPI": {"Results": {"Data": [
-                    {"LineNumber": "1", "TimePeriod": "2026Q2", "DataValue": "31,250.0"},
-                    {"LineNumber": "1", "TimePeriod": "2026Q1", "DataValue": "30,900.0"},
-                    {"LineNumber": "2", "TimePeriod": "2026Q2", "DataValue": "2.7"},
+                    {"LineNumber": "1", "TimePeriod": "2026Q2", "DataValue": latest},
+                    {"LineNumber": "1", "TimePeriod": "2026Q1", "DataValue": prior},
+                    {"LineNumber": "2", "TimePeriod": "2026Q2", "DataValue": "999"},
                 ]}}
             })
         raise AssertionError("unexpected URL")
@@ -126,7 +136,7 @@ def test_source_bound_owner_projection_is_bounded_and_not_live(rights):
     packet = provider_research_projection(
         sid="tower_session_" + "x"*20, symbol="AAPL",
         secret_reader=secret_reader, opener=rec, cache=ProviderResearchCache())
-    assert len(rec.calls) == 4
+    assert len(rec.calls) == 7
     assert packet["schema"] == "OB_KEYED_PROVIDER_RESEARCH_V1"
     assert packet["live_prices_attached"] is True
     assert packet["orders_attached"] is False
@@ -143,9 +153,15 @@ def test_source_bound_owner_projection_is_bounded_and_not_live(rights):
     assert finazon["real_time_market_context"] is True
     assert finazon["consolidated_quote"] is False
     assert bea["state"] == "SOURCE_BOUND"
-    assert bea["kind"] == "OFFICIAL_US_QUARTERLY_NOMINAL_GDP_CONTEXT"
+    assert bea["kind"] == "OFFICIAL_US_QUARTERLY_MACRO_CONTEXT"
     assert bea["unit"] == "BILLIONS_OF_CURRENT_DOLLARS_SAAR"
     assert bea["observations"][0] == {"period": "2026Q2", "value": "31250.0"}
+    assert [x["series_id"] for x in bea["macro_series"]] == [
+        "nominal_gdp", "real_gdp", "real_gdp_growth", "gdp_price_change"]
+    growth = next(x for x in bea["macro_series"] if x["series_id"] == "real_gdp_growth")
+    prices = next(x for x in bea["macro_series"] if x["series_id"] == "gdp_price_change")
+    assert growth["observations"][0]["value"] == "3.8"
+    assert prices["observations"][0]["value"] == "2.6"
     assert "SECRET" not in json.dumps(packet)
     assert packet["soulaana_research"]["observations"] == []
 
@@ -201,7 +217,7 @@ def test_revoking_ai_grant_suppresses_findings_even_when_provider_is_cached(righ
     assert len(provider_research_projection(**args)["soulaana_research"]["observations"]) == 2
     monkeypatch.delenv("OB_PROVIDER_ALPHA_VANTAGE_AI_USE_REVIEWED")
     second = provider_research_projection(**args)
-    assert len(recorder.calls) == 4  # no fresh provider call needed
+    assert len(recorder.calls) == 7  # no fresh provider call needed
     assert [o["provider"] for o in second["soulaana_research"]["observations"]] == ["finnhub"]
     monkeypatch.delenv("OB_PROVIDER_FINNHUB_AI_USE_REVIEWED")
     third = provider_research_projection(**args)["soulaana_research"]
@@ -226,7 +242,7 @@ def test_cache_avoids_repeat_provider_call_within_ttl(rights):
                 secret_reader=secret_reader, opener=rec, cache=cache)
     first = provider_research_projection(**args)
     second = provider_research_projection(**args)
-    assert len(rec.calls) == 4
+    assert len(rec.calls) == 7
     assert first["provider_research"] == second["provider_research"]
 
 
@@ -284,7 +300,10 @@ def test_finazon_and_bea_require_independent_ai_grants(rights, monkeypatch):
     observations = packet["soulaana_research"]["observations"]
     assert [x["provider"] for x in observations] == ["finazon", "bea"]
     assert "not SIP/NBBO" in observations[0]["finding"]
-    assert "macroeconomic context" in observations[1]["finding"]
+    assert "real GDP growth" in observations[1]["finding"]
+    assert observations[1]["why_it_matters"]
+    assert observations[1]["what_would_confirm"]
+    assert observations[1]["what_would_conflict"]
     assert packet["soulaana_research"]["live_quote_verified"] is False
 
 
@@ -310,7 +329,8 @@ def test_finazon_and_bea_soulaana_require_independent_ai_grants(rights, monkeypa
     assert [row["provider"] for row in observations] == ["finazon", "bea"]
     finazon, bea = observations
     assert "not SIP/NBBO" in finazon["finding"]
-    assert "macroeconomic context" in bea["finding"]
+    assert "real GDP growth" in bea["finding"]
+    assert "growth" in bea["why_it_matters"].lower()
     assert finazon["live_quote"] is False
     assert bea["live_quote"] is False
     assert packet["soulaana_research"]["candidate_admitted"] is False
