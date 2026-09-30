@@ -19,9 +19,12 @@ from urllib.error import HTTPError, URLError
 
 
 BLS_DOCS = "https://www.bls.gov/developers/"
+BLS_V2_DOCS = "https://www.bls.gov/developers/api_signature_v2.htm"
 BEA_DOCS = "https://apps.bea.gov/api/signup/"
 FIGI_DOCS = "https://www.openfigi.com/api/documentation"
 _BLS = "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+_BLS_V2 = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+BLS_EXPLAIN_SERIES = ("CUUR0000SA0", "LNS14000000", "CES0000000001", "WPUFD4")
 # Official no-key download for the same exact all-items CPI-U series; never a
 # third-party relabel or stale bundled fixture.
 BLS_BULK_CPI = "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems"
@@ -123,6 +126,9 @@ class PublicReferenceClient:
         valid = (
             source == "bls" and method == "GET" and body is None
             and re.fullmatch(re.escape(_BLS) + r"[A-Z0-9_-]{3,45}", url) is not None
+        ) or (
+            source == "bls" and method == "GET" and body is None
+            and url in {_BLS_V2 + series_id for series_id in BLS_EXPLAIN_SERIES}
         ) or (
             # BLS v1's documented JSON POST for one or more series, fixed to
             # the exact source/series here rather than accepting arbitrary payloads.
@@ -315,6 +321,65 @@ class PublicReferenceClient:
                                  fetched, BLS_DOCS,
                                  ai_use_approved=self.policy.ai_allowed("bls"),
                                  previous_period=previous_period, previous_value=previous_value)
+
+    def bls_v2(self, series_id: str) -> PublicObservation:
+        """Exact allowlisted BLS v2 macro series for Soulaana explanation context.
+
+        This remains historical/public economic research. The four accepted
+        series are CPI-U all items, unemployment rate, total nonfarm payroll
+        employment, and PPI final demand. It never supplies securities prices.
+        """
+        if series_id not in BLS_EXPLAIN_SERIES:
+            raise PublicResearchUnavailable("BLS_SERIES_NOT_APPROVED")
+        payload, fetched = self._json(_BLS_V2 + series_id, source="bls")
+        try:
+            if payload["status"] != "REQUEST_SUCCEEDED":
+                raise ValueError()
+            results = payload["Results"]
+            if isinstance(results, list):
+                if len(results) != 1 or not isinstance(results[0], dict):
+                    raise ValueError()
+                group = results[0]
+            elif isinstance(results, dict):
+                group = results
+            else:
+                raise ValueError()
+            series = group["series"]
+            if (not isinstance(series, list) or len(series) != 1
+                    or not isinstance(series[0], dict)
+                    or series[0].get("seriesID") != series_id):
+                raise ValueError()
+            rows = series[0]["data"]
+            if not isinstance(rows, list):
+                raise ValueError()
+            valid = [r for r in rows if isinstance(r, dict)
+                     and re.fullmatch(r"M(?:0[1-9]|1[0-2])", str(r.get("period", "")))
+                     and re.fullmatch(r"\d{4}", str(r.get("year", "")))]
+            if not valid:
+                raise ValueError()
+            latest = max(valid, key=lambda r: (r["year"], r["period"]))
+            number = self._number(latest["value"])
+            latest_key = (latest["year"], latest["period"])
+            earlier = sorted(
+                (r for r in valid if (r["year"], r["period"]) < latest_key),
+                key=lambda r: (r["year"], r["period"]), reverse=True,
+            )
+            previous_period = previous_value = None
+            for candidate in earlier:
+                try:
+                    previous_value = self._number(candidate["value"])
+                except (PublicResearchUnavailable, KeyError, TypeError):
+                    continue
+                previous_period = candidate["year"] + "-" + candidate["period"]
+                break
+        except (TypeError, KeyError, IndexError, ValueError):
+            raise PublicResearchUnavailable("BLS_SOURCE_SHAPE_HOLD") from None
+        return PublicObservation(
+            "BLS", "PUBLIC_V2", series_id,
+            f'{latest["year"]}-{latest["period"]}', number, fetched, BLS_V2_DOCS,
+            ai_use_approved=self.policy.ai_allowed("bls"),
+            previous_period=previous_period, previous_value=previous_value,
+        )
 
     def bea_nipa(self, api_key: str, *, table: str = "T10105", frequency: str = "Q",
                  line_number: str = "1") -> PublicObservation:
