@@ -1191,3 +1191,170 @@ body[data-ob-room="dashboard"] .ob-user-glance-card p{display:none}
 body[data-ob-room="dashboard"] .ob-user-glance-card small{margin-top:8px}
 body[data-ob-room="dashboard"] .ob-user-glance-card a{margin-top:auto}
 body[data-ob-room="dashboard"] .ob-guide-prompt{display:none!important}
+
+
+/* OBUX COMMAND-CENTER DASHBOARD
+   Birdseye truth: dense in meaning, light in prose. */
+.ob-command-dashboard{gap:14px}
+.ob-command-top{
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(280px,.8fr);
+  gap:14px;
+}
+.ob-command-brief,
+.ob-command-card,
+.ob-command-strip-item{
+  border:1px solid rgba(167,232,216,.10);
+  background:rgba(8,15,15,.76);
+  box-shadow:0 18px 48px rgba(0,0,0,.18);
+}
+.ob-command-brief{
+  padding:26px;
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 12% 30%,rgba(57,191,165,.12),transparent 30%),
+    linear-gradient(145deg,rgba(18,48,45,.56),rgba(5,8,9,.90));
+}
+.ob-command-brief h2{
+  margin:7px 0 8px;
+  font-size:clamp(1.8rem,3.2vw,3rem);
+  line-height:1.05;
+}
+.ob-command-brief p{
+  max-width:720px;
+  margin:0;
+  color:#B7C8C4;
+  line-height:1.5;
+}
+.ob-command-card{
+  min-width:0;
+  padding:17px;
+  border-radius:18px;
+}
+.ob-command-card>strong{
+  display:block;
+  margin-top:10px;
+  font-size:1.08rem;
+}
+.ob-command-card>p{
+  margin:7px 0 0;
+  color:#A9BBB6;
+  font-size:.84rem;
+  line-height:1.45;
+}
+.ob-command-card>small{
+  display:block;
+  margin-top:12px;
+  color:#78938D;
+  font-size:.72rem;
+  line-height:1.4;
+}
+.ob-command-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.ob-command-mini-facts,
+.ob-command-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+.ob-command-mini-facts span,
+.ob-command-line{
+  padding:7px 9px;
+  border:1px solid rgba(167,232,216,.09);
+  border-radius:10px;
+  background:rgba(18,48,45,.20);
+  color:#B7C8C4;
+  font-size:.74rem;
+  line-height:1.35;
+}
+.ob-command-list{
+  flex-direction:column;
+  align-items:stretch;
+}
+.ob-command-symbol{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:48px;
+  padding:10px 12px;
+  border:1px solid rgba(167,232,216,.09);
+  border-radius:12px;
+  background:rgba(18,48,45,.20);
+  color:var(--ob-theme-text,#D8E2E0);
+  text-decoration:none;
+}
+.ob-command-symbol+ .ob-command-symbol{margin-top:7px}
+.ob-command-symbol span{
+  color:#78938D;
+  font-size:.72rem;
+  text-align:right;
+}
+.ob-command-empty{
+  padding:14px 0;
+  color:#78938D;
+  font-size:.8rem;
+}
+.ob-card-link{
+  display:inline-flex;
+  margin-top:12px;
+  color:var(--ob-theme-accent-soft,#A7E8D8);
+  font-size:.78rem;
+  font-weight:800;
+  text-decoration:none;
+}
+.ob-command-bottom{
+  display:grid;
+  grid-template-columns:1.4fr .7fr 1fr;
+  gap:14px;
+}
+.ob-command-strip-item{
+  padding:14px 16px;
+  border-radius:16px;
+}
+.ob-command-strip-item>span{
+  display:block;
+  margin-bottom:8px;
+  color:#78938D;
+  font-size:.66rem;
+  font-weight:900;
+  letter-spacing:.13em;
+}
+.ob-command-strip-item>strong{
+  display:block;
+  font-size:.98rem;
+}
+.ob-command-strip-item>small{
+  display:block;
+  margin-top:5px;
+  color:#78938D;
+  font-size:.72rem;
+}
+.ob-command-strip-item>a{
+  display:inline-flex;
+  margin-top:8px;
+  color:var(--ob-theme-accent-soft,#A7E8D8);
+  font-size:.76rem;
+  font-weight:800;
+  text-decoration:none;
+}
+.ob-next-action{
+  border-color:rgba(57,191,165,.18);
+  background:linear-gradient(145deg,rgba(18,48,45,.42),rgba(8,15,15,.78));
+}
+body[data-ob-risk-tone="watch"] #obRiskLabel{color:#D98A91}
+body[data-ob-risk-tone="ready"] #obRiskLabel{color:var(--ob-theme-accent-soft,#A7E8D8)}
+
+@media(max-width:960px){
+  .ob-command-top{grid-template-columns:1fr}
+  .ob-command-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ob-command-bottom{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .ob-command-grid{grid-template-columns:1fr}
+  .ob-command-brief{padding:20px}
+}

@@ -430,6 +430,156 @@
   }
 
 
+  function accountHealth(projection) {
+    const account = safeObject(projection.account_snapshot);
+    const keys = Object.keys(account);
+
+    if (!keys.length) {
+      return {
+        tone: "guarded",
+        label: "Account truth unavailable",
+        summary: "No verified account snapshot is attached.",
+        facts: []
+      };
+    }
+
+    const label = safeText(
+      account.health || account.status || account.state,
+      "Account snapshot available"
+    );
+
+    const facts = [];
+    [
+      ["Equity", account.equity || account.net_liquidation || account.net_liquidation_value],
+      ["Cash", account.cash || account.cash_balance || account.available_cash],
+      ["Buying power", account.buying_power || account.available_buying_power],
+      ["Reserve", account.reserve || account.reserve_cash || account.protected_reserve]
+    ].forEach(function (pair) {
+      if (pair[1] !== undefined && pair[1] !== null && pair[1] !== "") {
+        facts.push({label: pair[0], value: String(pair[1])});
+      }
+    });
+
+    return {
+      tone: "ready",
+      label,
+      summary: "Verified account snapshot attached.",
+      facts: facts.slice(0, 3)
+    };
+  }
+
+
+  function riskSummary(projection) {
+    const warnings = safeArray(projection.warnings);
+    const status = safeText(projection.projection_status, "unavailable");
+
+    if (status !== "fresh") {
+      return {
+        tone: "watch",
+        label: "Guarded",
+        summary: "Market truth is not fully current.",
+        count: warnings.length
+      };
+    }
+
+    if (warnings.length) {
+      return {
+        tone: "watch",
+        label: "Watch",
+        summary: warnings[0],
+        count: warnings.length
+      };
+    }
+
+    return {
+      tone: "ready",
+      label: "Calm",
+      summary: "No projection warning is demanding attention.",
+      count: 0
+    };
+  }
+
+
+  function positionSummary(projection) {
+    const positions = safeArray(projection.positions_preview);
+    return {
+      count: positions.length,
+      label: positions.length
+        ? `${positions.length} active position${positions.length === 1 ? "" : "s"}`
+        : "No active position needs the front page",
+      items: positions.slice(0, 3).map(function (item) {
+        const obj = safeObject(item);
+        return {
+          symbol: safeText(obj.symbol || obj.ticker, "Position"),
+          state: safeText(
+            obj.status || obj.state || obj.direction,
+            "Open"
+          )
+        };
+      })
+    };
+  }
+
+
+  function attentionSummary(projection) {
+    const warnings = safeArray(projection.warnings);
+    const queue = safeArray(projection.manual_live_queue);
+    const review = safeObject(projection.review_summary);
+    const count = Number(review.count || review.total || review.items_count || 0);
+    const items = [];
+
+    warnings.slice(0, 2).forEach(function (warning) {
+      items.push(safeText(warning, ""));
+    });
+
+    if (queue.length) {
+      items.push(`${queue.length} Manual Live review item${queue.length === 1 ? "" : "s"} waiting.`);
+    }
+
+    if (Number.isFinite(count) && count > 0) {
+      items.push(`${count} Review Center item${count === 1 ? "" : "s"} available.`);
+    }
+
+    return {
+      count: items.length,
+      items: items.filter(Boolean).slice(0, 3)
+    };
+  }
+
+
+  function nextAction(projection, risk, positions, attention) {
+    if (risk.tone === "watch") {
+      return {
+        label: "Review the hold",
+        detail: risk.summary,
+        href: "/ob/review-center"
+      };
+    }
+
+    if (attention.count) {
+      return {
+        label: "Review what changed",
+        detail: attention.items[0],
+        href: "/ob/review-center"
+      };
+    }
+
+    if (positions.count) {
+      return {
+        label: "Check active positions",
+        detail: "Nothing is being auto-managed. Review what is already open.",
+        href: "/ob/trade-center"
+      };
+    }
+
+    return {
+      label: "Scan the market",
+      detail: "Nothing urgent is demanding you.",
+      href: "/ob/market-map"
+    };
+  }
+
+
   function briefing(
     projection,
     mode,
@@ -512,6 +662,26 @@
         glance
       );
 
+    const account =
+      accountHealth(
+        projection
+      );
+
+    const risk =
+      riskSummary(
+        projection
+      );
+
+    const positions =
+      positionSummary(
+        projection
+      );
+
+    const attention =
+      attentionSummary(
+        projection
+      );
+
     return {
       version:
         VERSION,
@@ -527,32 +697,38 @@
       market_glance:
         glance,
 
-      more: [
-        {
-          kind:
-            "market_state",
+      account_health:
+        account,
 
-          ...marketState(
-            projection
-          )
-        },
+      risk:
+        risk,
 
-        {
-          kind:
-            "paper_state",
+      positions:
+        positions,
 
-          ...paperState(
-            mode
-          )
-        },
+      attention:
+        attention,
 
-        {
-          kind:
-            "review",
+      mode_state:
+        paperState(
+          mode
+        ),
 
-          ...recentReview()
-        }
-      ],
+      review:
+        recentReview(),
+
+      next_action:
+        nextAction(
+          projection,
+          risk,
+          positions,
+          attention
+        ),
+
+      market_state:
+        marketState(
+          projection
+        ),
 
       source_state: {
         projection_status:
