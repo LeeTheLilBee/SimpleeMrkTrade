@@ -28,6 +28,12 @@ def _key_rows(_sid):
          "expires_at": "2030-01-01T00:00:00+00:00"},
         {"id": "alpha_vantage", "name": "Alpha Vantage", "present": False,
          "probe": "NOT_CONFIGURED", "value": SECRET},
+        {"id": "finazon", "name": "Finazon", "present": False,
+         "probe": "NOT_CONFIGURED", "secret": SECRET},
+        {"id": "eia", "name": "U.S. EIA", "present": False,
+         "probe": "NOT_CONFIGURED", "secret": SECRET},
+        {"id": "bea", "name": "U.S. BEA", "present": False,
+         "probe": "NOT_CONFIGURED", "secret": SECRET},
     )
 
 
@@ -49,12 +55,15 @@ def test_safe_projection_never_conflates_connection_and_data_license(monkeypatch
     assert result["live_feed_count_verified"] is None
     assert result["prices_attached"] is False
     assert result["may_authorize_order"] is False
-    assert len(result["provider_status"]) == 7
+    assert len(result["provider_status"]) == 10
     states = {x["provider"]: x for x in result["provider_status"]}
     assert states["finnhub"]["state"] == "READ_ONLY_CHECK_PASSED"
     assert states["finnhub"]["source_use_rights_verified"] is False
     assert states["finnhub"]["quote_feed_activated"] is False
     assert states["alpha_vantage"]["state"] == "NOT_CONFIGURED"
+    assert states["finazon"]["state"] == "NOT_CONFIGURED"
+    assert states["eia"]["state"] == "NOT_CONFIGURED"
+    assert states["bea"]["state"] == "NOT_CONFIGURED"
     assert states["public"]["state"] == "TEMPORARY_AUTH_ONLY"
     assert states["public"]["account_linked"] is False
     assert states["bls"]["state"] == "RIGHTS_REVIEW_HOLD"
