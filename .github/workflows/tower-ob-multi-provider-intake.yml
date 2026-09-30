@@ -8,6 +8,28 @@ on:
       - "tower/ob_provider_key_desk.py"
       - "tower/ob_commercial_free_market.py"
       - "engine/market_intake/commercial_free_market.py"
+      - "tower/ob_provider_soulaana_status.py"
+      - "tower/ob_public_owner_connection.py"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_route_guard.py"
+      - "tower/ob_web_route_enforcement.py"
+      - "web/ob_connection_truth_route.py"
+      - "web/templates/market_data_desk.html"
+      - "web/templates/ob_provider_key_desk.html"
+      - "web/templates/ob_provider_key_hold.html"
+      - "web/static/ob/ob_connection_truth.js"
+      - "web/static/ob/ob_keyless_context.js"
+      - "web/static/ob/ob_provider_key_desk.css"
+      - "tests/test_tower_ob_api_intake_status.py"
+      - "tests/test_tower_ob_provider_soulaana_status.py"
+      - "tests/test_tower_ob_provider_key_desk.py"
+      - "tests/test_ob_commercial_free_market.py"
+      - ".github/workflows/tower-ob-multi-provider-intake.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/ob_provider_key_desk.py"
       - "tower/ob_commercial_free_market.py"
       - "engine/market_intake/commercial_free_market.py"
       - "tower/ob_provider_soulaana_status.py"
@@ -26,28 +48,6 @@ on:
       - "tests/test_tower_ob_provider_soulaana_status.py"
       - "tests/test_tower_ob_provider_key_desk.py"
       - "tests/test_ob_commercial_free_market.py"
-      - "tests/test_ob_commercial_free_market.py"
-      - ".github/workflows/tower-ob-multi-provider-intake.yml"
-  push:
-    branches:
-      - tower-hosted-runtime-identity-twr081-085
-    paths:
-      - "tower/ob_provider_key_desk.py"
-      - "tower/ob_provider_soulaana_status.py"
-      - "tower/ob_public_owner_connection.py"
-      - "tower/ob_market_data_desk_integration.py"
-      - "tower/ob_route_guard.py"
-      - "tower/ob_web_route_enforcement.py"
-      - "web/ob_connection_truth_route.py"
-      - "web/templates/market_data_desk.html"
-      - "web/templates/ob_provider_key_desk.html"
-      - "web/templates/ob_provider_key_hold.html"
-      - "web/static/ob/ob_connection_truth.js"
-      - "web/static/ob/ob_keyless_context.js"
-      - "web/static/ob/ob_provider_key_desk.css"
-      - "tests/test_tower_ob_api_intake_status.py"
-      - "tests/test_tower_ob_provider_soulaana_status.py"
-      - "tests/test_tower_ob_provider_key_desk.py"
       - ".github/workflows/tower-ob-multi-provider-intake.yml"
 
 permissions:
@@ -74,6 +74,7 @@ jobs:
             tests/test_tower_ob_api_intake_status.py \
             tests/test_tower_ob_provider_soulaana_status.py \
             tests/test_tower_ob_provider_key_desk.py \
+            tests/test_ob_commercial_free_market.py \
             tests/test_ob_public_owner_connection.py \
             tests/test_ob_keyless_public_context.py \
             tests/test_tower_ob_market_data_desk_selective.py \
