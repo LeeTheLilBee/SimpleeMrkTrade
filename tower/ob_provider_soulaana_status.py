@@ -37,7 +37,7 @@ EXPLANATIONS = {
 
 
 def build_soulaana_provider_status(packet: Mapping) -> dict:
-    """Allow only the exact non-promoting Tower status document and seven lanes."""
+    """Allow only the exact non-promoting Tower status document and ten lanes."""
     if (
         not isinstance(packet, dict)
         or packet.get("schema") != "OB_TOWER_PROVIDER_CONNECTION_TRUTH_V1"
