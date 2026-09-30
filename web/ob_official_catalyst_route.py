@@ -19,6 +19,14 @@ def create_official_catalyst_blueprint(*, owner_authorize, catalyst_service, eve
     def official_catalysts():
         if owner_authorize() is not True:
             abort(403)
+        # A signed cookie copied before Tower logout must not keep reading
+        # this research corridor after that process revoked its session id.
+        if event_hub is not None:
+            from flask import session
+            from tower.tower_human_login_ob_launch import SESSION_ID
+            old_id = session.get(SESSION_ID)
+            if old_id and event_hub.session_revoked(old_id):
+                abort(403)
         if request.args:
             abort(400)
         try:
