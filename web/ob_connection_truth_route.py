@@ -8,6 +8,7 @@ records only. An unavailable worker/status reader fails closed.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import os
 from typing import Callable
 
 from flask import Blueprint, abort, jsonify, make_response
@@ -16,13 +17,13 @@ from engine.market_intake.keyless_public_context import (
     edgar_delegated_from_environment, enabled_sources_from_environment,
 )
 from tower.ob_public_owner_connection import _owner_sid
+from tower.ob_provider_diagnostics import SAFE_PROBE_CODES
 from tower.ob_provider_soulaana_status import build_soulaana_provider_status
 
 PATH = "/ob/data-desk/connections.json"
-KEY_PROVIDER_IDS = ("finnhub", "alpha_vantage")
+KEY_PROVIDER_IDS = ("finnhub", "alpha_vantage", "twelve_data", "finazon")
 KEYLESS_PROVIDER_IDS = ("bls", "treasury", "openfigi")
-SAFE_PROBE = frozenset(("NOT_TESTED", "NOT_CONFIGURED",
-                        "READ_ONLY_CHECK_PASSED", "VERIFY_HOLD"))
+SAFE_PROBE = SAFE_PROBE_CODES
 
 
 def connection_status_projection(*, sid: str, key_reader: Callable,
@@ -48,6 +49,20 @@ def connection_status_projection(*, sid: str, key_reader: Callable,
         present = row["present"]
         if not present and probe != "NOT_CONFIGURED":
             raise ValueError("unlinked provider probe status")
+        source_reviewed = False
+        display_reviewed = False
+        if provider == "twelve_data":
+            source_reviewed = os.environ.get(
+                "OB_PROVIDER_TWELVE_DATA_BUSINESS_BASIC_REVIEWED"
+            ) == "1"
+        elif provider == "finazon":
+            source_reviewed = os.environ.get(
+                "OB_PROVIDER_FINAZON_US_EQUITIES_BASIC_COMMERCIAL_REVIEWED"
+            ) == "1"
+            display_reviewed = (
+                source_reviewed and
+                os.environ.get("OB_PROVIDER_FINAZON_OWNER_DISPLAY_REVIEWED") == "1"
+            )
         entries[provider] = {
             "provider": provider,
             "state": (
@@ -57,8 +72,8 @@ def connection_status_projection(*, sid: str, key_reader: Callable,
             ),
             "read_only_probe": probe,
             "account_linked": None,
-            "source_use_rights_verified": False,
-            "data_display_rights_verified": False,
+            "source_use_rights_verified": source_reviewed,
+            "data_display_rights_verified": display_reviewed,
             "quote_feed_activated": False,
         }
     if set(entries) != set(KEY_PROVIDER_IDS):
@@ -113,7 +128,7 @@ def connection_status_projection(*, sid: str, key_reader: Callable,
         "owner_session_checked": True,
         "source_only": True,
         "provider_status": [entries[k] for k in (
-            "public", "finnhub", "alpha_vantage", "sec", "bls", "treasury", "openfigi"
+            "public", "finnhub", "alpha_vantage", "twelve_data", "finazon", "sec", "bls", "treasury", "openfigi"
         )],
         "real_market_feed_attached_by_this_route": False,
         "prices_attached": False,
