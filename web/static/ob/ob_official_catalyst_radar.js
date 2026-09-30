@@ -206,11 +206,13 @@
   }
 
   function validStream(hint) {
-    return hint && hint.schema === "OB_CATALYST_STREAM_HINT_V1" &&
-      hint.path === "/ob/research/catalysts/stream" &&
-      hint.research_invalidation_only === true &&
+    return hint && hint.schema === "OB_EVENT_STREAM_HINT_V1" &&
+      hint.path === "/ob/events/stream" &&
+      hint.invalidation_only === true &&
+      hint.content_attached === false &&
+      hint.provider_payload_attached === false &&
       hint.provider_stream_attached === false &&
-      hint.live_market_feed === false &&
+      hint.live_quote_payload_attached === false &&
       hint.broker_execution_authorized === false &&
       typeof hint.available === "boolean" &&
       typeof hint.epoch === "string" && /^[a-f0-9]{24}$/.test(hint.epoch) &&
@@ -283,18 +285,24 @@
   let lastPacket = null;
 
   function validEvent(event, expectedEpoch) {
-    return event && event.schema === "OB_CATALYST_STREAM_EVENT_V1" &&
-      ["stream_ready", "snapshot_changed", "resync_required", "heartbeat"].includes(event.type) &&
+    return event && event.schema === "OB_EVENT_STREAM_EVENT_V1" &&
+      ["stream_ready", "research_context_changed", "source_status_changed",
+       "market_snapshot_changed", "scanner_context_changed",
+       "candidate_context_changed", "resync_required", "heartbeat"].includes(event.type) &&
+      ["research", "system", "market", "scanner", "candidate"].includes(event.channel) &&
       event.epoch === expectedEpoch &&
       Number.isSafeInteger(event.cursor) && event.cursor >= 0 &&
-      event.source_only === true && event.live_market_feed === false &&
+      event.content_attached === false &&
+      event.provider_payload_attached === false &&
+      event.provider_stream_attached === false &&
+      event.live_quote_payload_attached === false &&
       event.candidate_admitted === false && event.execution_authorized === false &&
       typeof event.needs_authenticated_snapshot === "boolean";
   }
 
   function scheduleReconnect() {
     if (shutdown || reconnectTask || !lastPacket ||
-        !validStream(lastPacket.stream) || !lastPacket.stream.available) return;
+        !validStream(lastPacket.event_stream) || !lastPacket.event_stream.available) return;
     const delay = Math.min(30000, 1000 * Math.pow(2, Math.min(attempts++, 5)));
     reconnectTask = window.setTimeout(() => {
       reconnectTask = null;
@@ -316,14 +324,16 @@
     ws.onopen = () => {
       if (socket !== ws) return;
       attempts = 0;
-      transport.textContent = "Tower-authenticated WebSocket connected · source-change notifications only; not a live quote feed.";
+      transport.textContent = "Tower-authenticated Observatory event stream connected · notifications only; not a live quote feed.";
     };
     ws.onmessage = message => {
       if (socket !== ws) return;
       let event;
       try { event = JSON.parse(message.data); } catch (_) { ws.close(4400); return; }
       if (!validEvent(event, hint.epoch)) { ws.close(4400); return; }
-      if (event.type === "snapshot_changed" || event.type === "resync_required") {
+      if (event.type === "resync_required" ||
+          (event.type === "research_context_changed" &&
+           event.snapshot_path === "/ob/research/catalysts.json")) {
         loadSnapshot(false);
       }
     };
@@ -350,14 +360,14 @@
       return response.json();
     }).then(packet => {
       if (!valid(packet) || !validProvenance(packet) ||
-          !validStream(packet.stream)) throw new Error("source contract hold");
+          !validStream(packet.event_stream)) throw new Error("source contract hold");
       lastPacket = packet;
       draw(packet);
-      if (!packet.stream.available) {
+      if (!packet.event_stream.available) {
         transport.textContent = "REST delivery active · protected WebSocket deployment not enabled.";
         if (socket) { const previous = socket; socket = null; previous.close(); }
       } else if (!socket && (connectAfter || !reconnectTask)) {
-        connect(packet.stream);
+        connect(packet.event_stream);
       }
     }).catch(() => {
       status.textContent = "Official Catalyst Radar is unavailable or access is held. No data asserted.";
