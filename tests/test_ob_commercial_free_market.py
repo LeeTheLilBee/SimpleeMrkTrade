@@ -148,6 +148,7 @@ def test_websocket_parsers_are_content_lanes_not_quote_authority():
         "day_volume": 1234,
     }, received_at=NOW)
     finazon = parse_finazon_ws_bar({
+        "d": "us_stocks_essential", "ch": "bars", "s": "AAPL",
         "t": int((NOW - timedelta(seconds=2)).timestamp()),
         "o": 250, "h": 254, "l": 249, "c": 253.1, "v": 1234,
     }, symbol="AAPL", received_at=NOW)
@@ -157,8 +158,18 @@ def test_websocket_parsers_are_content_lanes_not_quote_authority():
         assert packet["bid_ask_attached"] is False
 
 
-def test_free_stream_plan_respects_real_free_slot_limits():
-    plan = stream_plan(["MSFT", "AAPL", "TSLA", "NVDA", "GOOG", "META", "AMD", "SPY", "QQQ"])
+def test_free_stream_plan_respects_trial_symbol_entitlements_and_slot_limits():
+    requested = ["MSFT", "AAPL", "TSLA", "NVDA", "GOOG", "META", "AMD", "SPY", "QQQ"]
+    # Twelve Basic does not mean arbitrary 8-symbol streaming. No provider-confirmed
+    # trial-symbol set means no Twelve websocket subscription is authorized.
+    held = stream_plan(requested)
+    assert held[TWELVE_DATA_ID] == ()
+    assert held[FINAZON_ID] == ("AAPL",)
+
+    plan = stream_plan(
+        requested,
+        twelve_trial_symbols=["MSFT", "AAPL", "TSLA", "NVDA", "GOOG", "META", "AMD", "SPY", "QQQ"],
+    )
     assert len(plan[TWELVE_DATA_ID]) == 8
     assert plan[TWELVE_DATA_ID][0] == "MSFT"
     assert len(plan[FINAZON_ID]) == 1
