@@ -353,7 +353,7 @@ def evaluate_ob_request_guard(
     # authenticated Tower session. The independent OB HTTP boundary still
     # requires fresh step-up + consumed OB handoff; Public POST separately
     # enforces origin, CSRF, feature flag and source-specific rights.
-    if path in {"/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json"}:
+    if path in {"/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/data-desk/commercial-free.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json"}:
         try:
             from flask import has_request_context, session
             if has_request_context():
@@ -495,6 +495,15 @@ OB_ROUTE_GUARD_MAP.update({
         room="Provider Connection Truth",
         purpose="Sanitized current-owner credential and source-review status only; no raw keys, prices, positions or market feed.",
         soulaana_translation="Soulaana: I can show which connection checks passed and what is still unverified, without exposing secrets.",
+    ),
+    "/ob/data-desk/commercial-free.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=20,
+        room="Commercial-Free Market Source Status",
+        purpose="Sanitized Twelve Data/Finazon credential, rights and quota status only; raw market values remain server-side.",
+        soulaana_translation="Soulaana: I can show whether the free commercial market-context lanes are ready without exposing restricted market values.",
     ),
     "/ob/data-desk/public": _tower_ob_real_surface_policy_2593_2602(
         route_key="data_desk",
