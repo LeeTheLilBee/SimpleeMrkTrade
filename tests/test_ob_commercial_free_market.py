@@ -229,6 +229,45 @@ def test_finazon_non_trial_symbol_holds_without_finazon_network(reviewed):
     assert sum("twelvedata.com" in req.full_url for req, _ in rec.calls) == 1
 
 
+def test_scanner_context_uses_market_features_without_admission(reviewed):
+    rec = Recorder()
+    service = CommercialFreeMarketService(
+        secret_reader=secret_reader, status_reader=status_reader,
+        opener=rec, clock=lambda: NOW,
+    )
+    context = service.scanner_context(SID, "AAPL")
+    assert context["schema"] == "OB_COMMERCIAL_FREE_SCANNER_CONTEXT_V1"
+    assert context["research_only"] is True
+    assert context["candidate_admitted"] is False
+    assert context["broker_quote_verified"] is False
+    assert context["execution_authorized"] is False
+    assert context["may_change_existing_engine_scores"] is False
+    assert len(context["observations"]) == 2
+    assert all(x["execution_grade_quote"] is False for x in context["observations"])
+
+
+def test_soulaana_context_requires_separate_ai_use_flags(reviewed, monkeypatch):
+    rec = Recorder()
+    service = CommercialFreeMarketService(
+        secret_reader=secret_reader, status_reader=status_reader,
+        opener=rec, clock=lambda: NOW,
+    )
+    held = service.soulaana_context(SID, "AAPL")
+    assert held["observations"] == []
+    assert held["source_specific_ai_use_approved"] is False
+    assert held["internal_non_display"] is True
+
+    monkeypatch.setenv("OB_PROVIDER_TWELVE_DATA_AI_USE_REVIEWED", "1")
+    monkeypatch.setenv("OB_PROVIDER_FINAZON_AI_USE_REVIEWED", "1")
+    allowed = service.soulaana_context(SID, "AAPL")
+    assert {x["provider"] for x in allowed["observations"]} == {TWELVE_DATA_ID, FINAZON_ID}
+    assert allowed["source_specific_ai_use_approved"] is True
+    assert allowed["bid_ask_attached"] is False
+    assert allowed["live_quote_verified"] is False
+    assert allowed["candidate_admitted"] is False
+    assert allowed["external_model_called"] is False
+
+
 def test_status_projection_has_rights_and_limits_but_no_market_values(reviewed, monkeypatch):
     monkeypatch.setenv("OB_PROVIDER_FINAZON_OWNER_DISPLAY_REVIEWED", "1")
     service = CommercialFreeMarketService(
