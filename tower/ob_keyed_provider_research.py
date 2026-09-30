@@ -231,53 +231,81 @@ def _finazon(symbol: str, secret: str, *, opener=None) -> dict:
 
 
 def _bea(symbol: str, secret: str, *, opener=None) -> dict:
-    """Official quarterly nominal GDP context from BEA NIPA table 1.1.5.
+    """Official quarterly BEA growth, price and GDP-level context.
 
-    The macro observation applies to the whole U.S. economy; symbol is retained
-    only to keep this route's per-symbol research packet self-contained.
+    NIPA tables are deliberately fixed:
+      T10105 = current-dollar GDP level,
+      T10106 = real GDP chained-dollar level,
+      T10101 = percent change in real GDP from the preceding period,
+      T10107 = percent change in GDP prices from the preceding period.
+    No table may be selected by browser input.
     """
     year = _now().year
-    url = "https://apps.bea.gov/api/data?" + urlencode({
-        "UserID": secret,
-        "method": "GetData",
-        "DataSetName": "NIPA",
-        "TableName": "T10105",
-        "Frequency": "Q",
-        "Year": f"{year-1},{year}",
-        "ResultFormat": "JSON",
-    })
-    doc = _read_json(Request(url, headers={"Accept": "application/json"}, method="GET"),
-                     opener=opener)
-    bea = doc.get("BEAAPI")
-    results = bea.get("Results") if isinstance(bea, dict) else None
-    rows = results.get("Data") if isinstance(results, dict) else None
-    if not isinstance(rows, list):
-        raise ValueError("provider response hold")
-    observations = []
-    for row in rows:
-        if not isinstance(row, dict) or str(row.get("LineNumber")) != "1":
-            continue
-        period = row.get("TimePeriod")
-        raw = row.get("DataValue")
-        if not isinstance(period, str) or not re.fullmatch(r"20\d{2}Q[1-4]", period):
-            continue
-        try:
-            value = Decimal(str(raw).replace(",", ""))
-        except Exception:
-            continue
-        if not value.is_finite() or value <= 0:
-            continue
-        observations.append({"period": period, "value": str(value)})
-    observations.sort(key=lambda x: x["period"], reverse=True)
-    observations = observations[:4]
-    if not observations:
-        raise ValueError("provider response hold")
+    specs = (
+        ("nominal_gdp", "T10105", "Nominal GDP",
+         "BILLIONS_OF_CURRENT_DOLLARS_SAAR"),
+        ("real_gdp", "T10106", "Real GDP",
+         "BILLIONS_OF_CHAINED_DOLLARS_SAAR"),
+        ("real_gdp_growth", "T10101", "Real GDP growth",
+         "PERCENT_CHANGE_PRECEDING_PERIOD_ANNUAL_RATE"),
+        ("gdp_price_change", "T10107", "GDP price change",
+         "PERCENT_CHANGE_PRECEDING_PERIOD_ANNUAL_RATE"),
+    )
+    macro_series = []
+    for series_id, table, label, unit in specs:
+        url = "https://apps.bea.gov/api/data?" + urlencode({
+            "UserID": secret,
+            "method": "GetData",
+            "DataSetName": "NIPA",
+            "TableName": table,
+            "Frequency": "Q",
+            "Year": f"{year-1},{year}",
+            "ResultFormat": "JSON",
+        })
+        doc = _read_json(Request(
+            url, headers={"Accept": "application/json"}, method="GET"
+        ), opener=opener)
+        bea = doc.get("BEAAPI")
+        results = bea.get("Results") if isinstance(bea, dict) else None
+        rows = results.get("Data") if isinstance(results, dict) else None
+        if not isinstance(rows, list):
+            raise ValueError("provider response hold")
+        observations = []
+        for row in rows:
+            if not isinstance(row, dict) or str(row.get("LineNumber")) != "1":
+                continue
+            period = row.get("TimePeriod")
+            raw = row.get("DataValue")
+            if not isinstance(period, str) or not re.fullmatch(r"20\d{2}Q[1-4]", period):
+                continue
+            try:
+                value = Decimal(str(raw).replace(",", ""))
+            except Exception:
+                continue
+            if not value.is_finite():
+                continue
+            if series_id in {"nominal_gdp", "real_gdp"} and value <= 0:
+                continue
+            observations.append({"period": period, "value": str(value)})
+        observations.sort(key=lambda x: x["period"], reverse=True)
+        observations = observations[:4]
+        if len(observations) < 2:
+            raise ValueError("provider response hold")
+        macro_series.append({
+            "series_id": series_id,
+            "table": table,
+            "label": label,
+            "unit": unit,
+            "observations": observations,
+        })
+    nominal = macro_series[0]
     return {
         "provider": "bea",
-        "kind": "OFFICIAL_US_QUARTERLY_NOMINAL_GDP_CONTEXT",
+        "kind": "OFFICIAL_US_QUARTERLY_MACRO_CONTEXT",
         "symbol": symbol,
-        "observations": observations,
-        "unit": "BILLIONS_OF_CURRENT_DOLLARS_SAAR",
+        "observations": nominal["observations"],
+        "unit": nominal["unit"],
+        "macro_series": macro_series,
         "source_reference": "https://apps.bea.gov/api/",
         "historical_only": True,
         "live_quote": False,
