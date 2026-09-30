@@ -156,6 +156,16 @@ def test_no_free_eia_key_does_not_call_eia_or_leak_into_owner_reply():
     assert all(not x[0].startswith(EIA) for x in transport.requests)
     assert all(o["source"] != "eia" for o in packet["soulaana"]["observations"])
 
+def test_session_eia_key_can_supply_existing_catalyst_lane_without_persistence():
+    radar, transport = service(enabled=frozenset({"eia"}), ai=frozenset({"eia"}))
+    packet = radar.snapshot(eia_key="SESSIONEIAKEY123456")
+    row = next(x for x in packet["sources"] if x["source"] == "eia")
+    assert row["state"] == "SOURCE_BOUND"
+    assert row["facts"][0]["value"] == "420000"
+    assert any(url.startswith(EIA + "?") for url, *_ in transport.requests)
+    assert "SESSIONEIAKEY123456" not in json.dumps(packet)
+    assert [x["source"] for x in packet["soulaana"]["observations"]] == ["eia"]
+
 
 def test_independent_ai_review_and_revocation_remove_evidence_even_if_cached():
     radar, transport = service(ai=frozenset({"cftc", "nws"}))
