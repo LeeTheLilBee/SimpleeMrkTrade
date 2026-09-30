@@ -280,11 +280,13 @@
   // A second, independent same-origin Tower read shares only sanitized status.
   // Public account IDs, temporary provider secrets and vendor/source responses
   // never cross this endpoint or reach Soulaana. Failure is a visible HOLD.
-  const PROVIDER_ORDER = ["public", "finnhub", "alpha_vantage", "sec", "bls", "treasury", "openfigi"];
+  const PROVIDER_ORDER = ["public", "finnhub", "alpha_vantage", "twelve_data", "finazon", "sec", "bls", "treasury", "openfigi"];
   const PROVIDER_STATES = Object.freeze({
     public: new Set(["TEMPORARY_ACCOUNT_LINK_VERIFIED", "OWNER_SELECTION_REQUIRED", "TEMPORARY_AUTH_ONLY", "NO_VERIFIED_ACCOUNT_LINK"]),
     finnhub: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
     alpha_vantage: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
+    twelve_data: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
+    finazon: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
     sec: new Set(["SEPARATE_ISSUER_RESEARCH_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
     bls: new Set(["USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
     treasury: new Set(["USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
@@ -300,7 +302,7 @@
         data.live_feed_count_verified !== null || data.no_browser_provider_credentials !== true ||
         data.may_authorize_order !== false || data.may_authorize_capital !== false ||
         data.may_change_trading_mode !== false || !Array.isArray(data.provider_status) ||
-        data.provider_status.length !== 7 || !brief ||
+        data.provider_status.length !== PROVIDER_ORDER.length || !brief ||
         brief.schema !== "OB_SOULAANA_PROVIDER_CONNECTION_STATUS_V1" ||
         brief.channel !== "SOULAANA_CONNECTION_STATUS_ONLY" ||
         brief.raw_provider_values_included !== false ||
@@ -309,7 +311,7 @@
         brief.source_content_ai_authorized !== false ||
         brief.quote_verified !== false || brief.broker_execution_authorized !== false ||
         brief.capital_authorized !== false || !Array.isArray(brief.provider_register) ||
-        brief.provider_register.length !== 7) return false;
+        brief.provider_register.length !== PROVIDER_ORDER.length) return false;
     if (["what_i_see", "what_it_means", "what_is_missing", "next_step"].some(
         key => typeof brief[key] !== "string" || brief[key].length > 650)) return false;
     return PROVIDER_ORDER.every((provider, index) => {
