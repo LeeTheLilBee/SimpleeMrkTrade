@@ -48,9 +48,16 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
     if MARKET_DATA_DESK_PATH in existing:
         raise RuntimeError("Market Data Desk route already has a different owner")
 
+    def _connection_ui_state():
+        return {
+            "public": app.extensions["ob_public_owner_ui_reader_v1"](),
+            "keyed": app.extensions["ob_provider_key_ui_reader_v1"](),
+        }
+
     app.register_blueprint(create_market_data_desk_blueprint(
         tower_owner_authorize=_tower_authorize_data_desk,
         protected_snapshot=_unconnected_catalog_snapshot,
+        connection_ui_state=_connection_ui_state,
     ))
 
     from engine.market_intake.observatory_event_stream import ObservatoryEventHub
