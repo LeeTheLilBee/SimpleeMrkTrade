@@ -1,9 +1,9 @@
-"""Tower composition for the protected, SOURCE-ONLY Observatory Market Data Desk.
+"""Tower composition for the protected Observatory Market Data Desk.
 
-No market transport, entitlement, credential, quote, streaming connection,
-broker access, stateful approval workflow or public app route is created here.
-A fresh disconnected catalog projection is built only after the exact Tower
-owner/session/step-up and OB admission checks pass.
+No provider market transport, entitlement, credential, quote, broker access or
+stateful approval workflow is created here. The internal MarketStreamHub is only
+an authenticated process-local invalidation bus; it never upgrades a research
+source into a live market feed.
 """
 from __future__ import annotations
 
@@ -33,12 +33,7 @@ def _tower_authorize_data_desk() -> bool:
 
 
 def _unconnected_catalog_snapshot() -> dict:
-    """Fresh *catalog* snapshot. No runtime provider status is asserted.
-
-    New uninstalled instances are intentional: the product source is present,
-    but provider accounts, rights, transport and persistent audit are not.
-    Do not bind this to real price authority or show any fabricated live data.
-    """
+    """Fresh catalog snapshot. No runtime provider status is asserted."""
     context = ScanContext(now=datetime.now(timezone.utc))
     return build_desk_snapshot(
         gateway=UniversalMarketGateway(),
@@ -53,46 +48,65 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
     existing = {rule.rule for rule in app.url_map.iter_rules()}
     if MARKET_DATA_DESK_PATH in existing:
         raise RuntimeError("Market Data Desk route already has a different owner")
+
     app.register_blueprint(create_market_data_desk_blueprint(
         tower_owner_authorize=_tower_authorize_data_desk,
         protected_snapshot=_unconnected_catalog_snapshot,
     ))
+
+    # One shared process-local normalized event bus for internal source-change
+    # notifications. Provider payloads and quote values do not enter this hub.
+    from engine.market_intake.market_stream import MarketStreamHub
+    market_event_hub = MarketStreamHub()
+    app.extensions["ob_market_stream_event_hub"] = market_event_hub
+
     from tower.ob_public_owner_connection import register_public_owner_connection
     register_public_owner_connection(app, owner_authorize=_tower_authorize_data_desk)
+
     from engine.market_intake.keyless_public_context import from_environment
     from web.ob_keyless_context_route import create_keyless_context_blueprint
     app.register_blueprint(create_keyless_context_blueprint(
         owner_authorize=_tower_authorize_data_desk,
         context_service=from_environment(),
     ))
-    from engine.market_intake.official_catalyst_radar import from_environment as catalyst_from_environment
+
+    from engine.market_intake.official_catalyst_radar import (
+        from_environment as catalyst_from_environment,
+    )
     from engine.market_intake.official_catalyst_stream import OfficialCatalystEventHub
     from web.ob_official_catalyst_route import create_official_catalyst_blueprint
-    event_hub = OfficialCatalystEventHub()
-    app.extensions["ob_official_catalyst_event_hub"] = event_hub
+    catalyst_event_hub = OfficialCatalystEventHub()
+    app.extensions["ob_official_catalyst_event_hub"] = catalyst_event_hub
     app.register_blueprint(create_official_catalyst_blueprint(
         owner_authorize=_tower_authorize_data_desk,
         catalyst_service=catalyst_from_environment(),
-        event_hub=event_hub,
+        event_hub=catalyst_event_hub,
+        market_event_hub=market_event_hub,
     ))
+
     from tower.ob_provider_key_desk import register_provider_key_desk
     register_provider_key_desk(app, owner_authorize=_tower_authorize_data_desk)
+
     from tower.ob_keyed_provider_research import create_keyed_provider_research_blueprint
     app.register_blueprint(create_keyed_provider_research_blueprint(
         owner_authorize=_tower_authorize_data_desk,
         secret_reader=app.extensions["ob_provider_key_secret_reader_v1"],
     ))
+
     from web.ob_connection_truth_route import create_connection_truth_blueprint
     app.register_blueprint(create_connection_truth_blueprint(
         owner_authorize=_tower_authorize_data_desk,
         key_reader=app.extensions["ob_provider_key_status_reader_v1"],
         public_reader=app.extensions["ob_public_owner_status_reader_v1"],
     ))
+
     app.extensions["tower_ob_market_data_desk_source_only_v1"] = {
         "path": MARKET_DATA_DESK_PATH,
         "source_only": True,
         "runtime_provider_attached": False,
         "quote_data_attached": False,
+        "internal_market_stream_registered": True,
+        "provider_stream_attached": False,
         "browser_approval": False,
         "broker_execution": False,
         "paid_resources": False,
