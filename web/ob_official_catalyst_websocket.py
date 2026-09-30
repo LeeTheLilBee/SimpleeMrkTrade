@@ -66,13 +66,21 @@ def _authorize_owner(flask_app, cookie):
     # a bare session claim. Flask verifies its signed cookie. The canonical
     # Tower checks independently validate actual owner, step-up and consumed
     # OB operational launch receipt in that verified request context.
+    from flask import session
     from tower.ob_market_data_desk_integration import _tower_authorize_data_desk
+    from tower.tower_human_login_ob_launch import SESSION_ID
     if not cookie or len(cookie) > 8192 or "\r" in cookie or "\n" in cookie:
         return False
     with flask_app.test_request_context(
             "/ob/research/catalysts.json",
             method="GET", headers={"Cookie": cookie}):
-        return _tower_authorize_data_desk() is True
+        if _tower_authorize_data_desk() is not True:
+            return False
+        hub = flask_app.extensions.get("ob_official_catalyst_event_hub")
+        tower_session_id = session.get(SESSION_ID)
+        return (hub is not None and isinstance(tower_session_id, str)
+                and bool(tower_session_id)
+                and not hub.session_revoked(tower_session_id))
 
 
 async def _emit(send, packet):
