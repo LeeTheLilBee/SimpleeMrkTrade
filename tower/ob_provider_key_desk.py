@@ -22,6 +22,9 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from flask import Blueprint, Flask, abort, make_response, redirect, render_template, request, session
 
 from tower.ob_public_owner_connection import _approved_browser_origin, _owner_sid
+from tower.ob_provider_diagnostics import (
+    classify_http_status, classify_provider_message, normalize_probe_code, probe_message,
+)
 
 PATH = "/ob/data-desk/api-keys"
 TTL = timedelta(minutes=30)
@@ -163,6 +166,9 @@ class TemporaryProviderKeyStore:
                 "purpose": descriptor["purpose"], "docs": descriptor["docs"],
                 "present": provider in bucket,
                 "probe": bucket[provider].probe if provider in bucket else "NOT_CONFIGURED",
+                "probe_message": probe_message(
+                    bucket[provider].probe if provider in bucket else "NOT_CONFIGURED"
+                ),
                 "expires_at": bucket[provider].expires_at.isoformat() if provider in bucket else None,
             } for provider, descriptor in PROVIDERS.items())
 
@@ -173,11 +179,12 @@ class _NoRedirect(HTTPRedirectHandler):
 
 
 def probe_one(provider: str, secret: str, *, opener=None) -> str:
-    """One bounded official read-only request, never quote-feed installation.
+    """One bounded official read-only request with secret-safe diagnostics.
 
     Alpha Vantage requires its key as an HTTPS query parameter. Never log the
-    URL, request, HTTP exception, response or key. Finnhub uses its key header.
-    This checks only credential reachability, NOT paid data or AI/display rights.
+    URL, request, HTTP exception, response, provider message or key. Finnhub uses
+    its key header. Classification is deliberately coarse enough to avoid leaking
+    upstream content while still distinguishing actionable failure families.
     """
     opener = opener or build_opener(_NoRedirect())
     if provider == "finnhub":
@@ -192,25 +199,41 @@ def probe_one(provider: str, secret: str, *, opener=None) -> str:
         raise ValueError("unrecognized provider")
     try:
         with opener.open(Request(url, headers=headers, method="GET"), timeout=8) as response:
-            if response.status != 200 or response.geturl() != url:
-                return "VERIFY_HOLD"
+            if response.geturl() != url:
+                return "REDIRECT_HOLD"
+            if response.status != 200:
+                return classify_http_status(response.status)
             raw = response.read(800_001)
-    except (HTTPError, URLError, OSError, TimeoutError):
-        return "VERIFY_HOLD"
+    except HTTPError as exc:
+        return classify_http_status(exc.code)
+    except (URLError, OSError, TimeoutError):
+        return "NETWORK_HOLD"
     if len(raw) > 800_000:
-        return "VERIFY_HOLD"
+        return "RESPONSE_TOO_LARGE"
     try:
         document = json.loads(raw.decode("utf-8"))
     except (ValueError, UnicodeError):
-        return "VERIFY_HOLD"
+        return "RESPONSE_PARSE_HOLD"
     if not isinstance(document, dict):
-        return "VERIFY_HOLD"
+        return "RESPONSE_SHAPE_HOLD"
+
     if provider == "finnhub":
+        provider_error = document.get("error")
+        if provider_error is not None:
+            return classify_provider_message(provider_error)
         if document.get("ticker") != "AAPL" or not isinstance(document.get("name"), str):
-            return "VERIFY_HOLD"
+            return "RESPONSE_SHAPE_HOLD"
     else:
+        # Alpha Vantage commonly returns a normal HTTP 200 with a bounded
+        # Information/Note/Error Message object instead of the requested series.
+        # We classify the family, then discard the upstream message itself.
+        for key in ("Information", "Note"):
+            if key in document:
+                return classify_provider_message(document.get(key))
+        if "Error Message" in document:
+            return "REQUEST_REJECTED"
         if not isinstance(document.get("Time Series (Daily)"), dict) or not isinstance(document.get("Meta Data"), dict):
-            return "VERIFY_HOLD"
+            return "RESPONSE_SHAPE_HOLD"
     return "READ_ONLY_CHECK_PASSED"
 
 
@@ -260,13 +283,10 @@ def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
                     # A provider network or parser failure is a generic hold, never
                     # an exception response containing the credential-bearing URL.
                     try:
-                        item.probe = checker(provider, item.value)
+                        item.probe = normalize_probe_code(checker(provider, item.value))
                     except Exception:
                         item.probe = "VERIFY_HOLD"
-                    session["ob_provider_key_notice"] = (
-                        "Read-only request passed; data/use rights remain unverified."
-                        if item.probe == "READ_ONLY_CHECK_PASSED"
-                        else "Provider verification unavailable. No data feed was activated.")
+                    session["ob_provider_key_notice"] = probe_message(item.probe)
             return _headers(redirect(PATH, code=303))
         return _headers(make_response(render_template(
             "ob_provider_key_desk.html", csrf=_csrf(), enabled=_enabled(),

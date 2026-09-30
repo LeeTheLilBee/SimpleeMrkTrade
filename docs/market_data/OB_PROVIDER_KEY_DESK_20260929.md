@@ -38,8 +38,7 @@ could also rate-limit, return no data or require additional product access.
 A successful response means **only** a harmless authenticated research request
 returned the expected shape. It does not prove any license, OPRA, SIP, non-display,
 AI analysis, retention, business/trust eligibility, source freshness or trade
-permission. A refused/limited response gives a fixed \`VERIFY_HOLD\` state.
-
+permission. A refused/limited response is classified through the shared secret-safe provider diagnostic contract. The owner can distinguish rate limiting, access rejection, provider availability, network failure, redirect hold, parse/shape failure and bounded provider-message cases without receiving the raw upstream response.\n
 No automatic scanner registration, historical-series ingestion, market quote
 admission, Live unlock, account selection, purchase, broker order or capital
 action is introduced. Future adapter must reconcile reviewed rights with the
@@ -60,3 +59,11 @@ Run:
 \`\`\`sh
 python -m pytest -q tests/test_tower_ob_provider_key_desk.py tests/test_ob_public_owner_connection.py tests/test_tower_ob_market_data_desk_selective.py tests/test_tower_ob_web_route_enforcement.py
 \`\`\`
+
+
+## 2026-09-30 diagnostic upgrade
+The Key Desk now imports the shared contract in `tower/ob_provider_diagnostics.py`.
+Finnhub and Alpha Vantage are the first migrated connectors. Future provider/plugin
+connection surfaces must reuse the fixed vocabulary rather than emit arbitrary upstream
+text or a single undifferentiated verification failure. See
+`docs/market_data/OB_PROVIDER_PLUGIN_DIAGNOSTIC_CONTRACT_20260930.md`.
