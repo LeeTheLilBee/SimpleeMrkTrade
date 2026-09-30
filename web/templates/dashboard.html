@@ -149,83 +149,93 @@
       </header>
 
       <main
-        class="ob-user-dashboard"
+        class="ob-user-dashboard ob-command-dashboard"
       >
-        <section
-          class="ob-user-focus ob-user-focus-compact"
-          aria-labelledby="obUserBriefingTitle"
-        >
-          <div class="ob-user-focus-copy">
-            <span class="ob-kicker">SOULAANA</span>
+        <section class="ob-command-top">
+          <article class="ob-command-brief">
+            <span class="ob-kicker">SOULAANA · RIGHT NOW</span>
             <h2 id="obUserBriefingTitle">Checking the market.</h2>
-            <p id="obUserBriefingSummary">I’ll surface only what deserves your attention.</p>
+            <p id="obUserBriefingSummary">I’ll surface what deserves your attention.</p>
             <div class="ob-user-focus-actions">
               <a class="ob-primary-action" href="/ob/market-map">Market Map</a>
               <a class="ob-secondary-action" href="/ob/trade-center">Practice</a>
             </div>
-          </div>
+          </article>
+
+          <article class="ob-command-card ob-account-health">
+            <span class="ob-kicker">ACCOUNT HEALTH</span>
+            <strong id="obAccountHealthLabel">Checking account truth…</strong>
+            <p id="obAccountHealthSummary">Waiting for the verified account snapshot.</p>
+            <div id="obAccountHealthFacts" class="ob-command-mini-facts"></div>
+            <small id="obAccountHealthSoulaana">Soulaana: I only show account facts OB actually received.</small>
+          </article>
         </section>
 
-        <section
-          class="ob-user-glance"
-          aria-labelledby="obUserGlanceTitle"
-        >
-          <div
-            class="ob-section-head"
-          >
-            <div>
-              <span
-                class="ob-kicker"
-              >
-                MARKET GLANCE
-              </span>
+        <section class="ob-command-grid">
+          <article class="ob-command-card">
+            <span class="ob-kicker">MARKET GLANCE</span>
+            <div id="obUserMarketGlance" class="ob-user-glance-grid"></div>
+            <a class="ob-card-link" href="/ob/market-map">Open Market Map →</a>
+          </article>
 
-              <h2
-                id="obUserGlanceTitle"
-              >
-                Right now.
-              </h2>
+          <article class="ob-command-card">
+            <span class="ob-kicker">RISK / DANGER</span>
+            <strong id="obRiskLabel">Checking…</strong>
+            <p id="obRiskSummary">Soulaana is checking whether anything needs a hold.</p>
+            <small id="obRiskSoulaana">Soulaana: calm unless verified truth says otherwise.</small>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">WHAT CHANGED</span>
+            <strong id="obChangedLabel">Checking changes…</strong>
+            <p id="obChangedSummary">Looking for new reviewed market context.</p>
+            <small>Soulaana: changes first, history only when you ask.</small>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">WATCH / ATTENTION</span>
+            <strong id="obAttentionLabel">Nothing queued yet.</strong>
+            <div id="obAttentionList" class="ob-command-list"></div>
+            <small>Soulaana: only items that may deserve your eyes.</small>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">ACTIVE TRADES</span>
+            <strong id="obPositionsLabel">Checking positions…</strong>
+            <div id="obPositionsList" class="ob-command-list"></div>
+            <a class="ob-card-link" href="/ob/trade-center">Trade Center →</a>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">UPCOMING CATALYSTS</span>
+            <strong id="obCatalystLabel">Checking catalysts…</strong>
+            <div id="obCatalystList" class="ob-command-list"></div>
+            <small>Soulaana: only reviewed events make this card.</small>
+          </article>
+        </section>
+
+        <section class="ob-command-bottom">
+          <article class="ob-command-strip-item">
+            <span>DATA HEALTH</span>
+            <div id="obDataPulseChips" class="ob-data-pulse-chips" role="status" aria-live="polite">
+              <span class="ob-data-chip">Checking sources…</span>
             </div>
+            <a href="/ob/data-desk">Data Desk →</a>
+          </article>
 
-            <a
-              href="/ob/market-map"
-            >
-              Explore everything →
-            </a>
-          </div>
+          <article class="ob-command-strip-item">
+            <span>MODE</span>
+            <strong id="obModeLabel">Survey</strong>
+            <small id="obModeSummary">Observe first.</small>
+          </article>
 
-          <div
-            id="obUserMarketGlance"
-            class="ob-user-glance-grid"
-          ></div>
+          <article class="ob-command-strip-item ob-next-action">
+            <span>SOULAANA · NEXT</span>
+            <strong id="obNextActionLabel">Checking…</strong>
+            <small id="obNextActionDetail"></small>
+            <a id="obNextActionLink" href="/ob/market-map">Open →</a>
+          </article>
         </section>
-
-        <section
-          class="ob-data-pulse"
-          aria-labelledby="obDataPulseTitle"
-        >
-          <div class="ob-data-pulse-copy">
-            <span class="ob-kicker">DATA PULSE</span>
-            <h2 id="obDataPulseTitle">Sources at a glance.</h2>
-          </div>
-
-          <div
-            id="obDataPulseChips"
-            class="ob-data-pulse-chips"
-            role="status"
-            aria-live="polite"
-          >
-            <span class="ob-data-chip">Checking sources…</span>
-          </div>
-
-          <a
-            class="ob-data-pulse-link"
-            href="/ob/data-desk"
-          >
-            Market Data Desk →
-          </a>
-        </section>
-
       </main>
     </div>
   </div>
