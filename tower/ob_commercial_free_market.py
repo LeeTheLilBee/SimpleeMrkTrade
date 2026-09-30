@@ -115,10 +115,11 @@ def _read_json(request, *, opener=None):
 
 
 class CommercialFreeMarketService:
-    def __init__(self, *, secret_reader, opener=None, clock=None):
-        if not callable(secret_reader):
-            raise ValueError("server-only Key Desk secret reader required")
+    def __init__(self, *, secret_reader, status_reader, opener=None, clock=None):
+        if not callable(secret_reader) or not callable(status_reader):
+            raise ValueError("server-only Key Desk secret/status readers required")
         self.secret_reader = secret_reader
+        self.status_reader = status_reader
         self.opener = opener
         self.clock = clock or _now
         self._lock = RLock()
@@ -248,7 +249,7 @@ class CommercialFreeMarketService:
         if not isinstance(sid, str) or not sid.startswith("tower_session_"):
             raise ValueError("current Tower owner session required")
         rows = []
-        key_status = {row["id"]: row for row in self._safe_key_status(sid)}
+        key_status = {row["id"]: row for row in self.status_reader(sid)}
         for provider in (TWELVE_DATA_ID, FINAZON_ID):
             rights = _rights(provider)
             row = key_status.get(provider, {})
@@ -284,12 +285,6 @@ class CommercialFreeMarketService:
             "may_change_trading_mode": False,
         }
 
-    def _safe_key_status(self, sid):
-        reader = getattr(self.secret_reader, "status_reader", None)
-        if callable(reader):
-            return reader(sid)
-        # The normal app registration injects a closure with this attribute.
-        return ()
 
     def free_stream_plan(self, symbols):
         return stream_plan(symbols)
