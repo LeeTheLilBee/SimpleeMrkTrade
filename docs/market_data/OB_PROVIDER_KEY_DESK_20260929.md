@@ -1,11 +1,13 @@
-# OB owner API Key Desk (Finnhub / Alpha Vantage)
+# OB owner API Key Desk
 
 Source integration branch: tower-ob-general-provider-keys-20260929.
 
 ## Purpose and present scope
 Exact protected GET/POST \`/ob/data-desk/api-keys\` next to existing Public-specific flow.
-It accepts two *reviewed provider IDs*, not arbitrary URLs or unknown authentication
-formats. Finnhub and Alpha Vantage can be entered independently. SEC EDGAR requires
+It accepts four *reviewed provider IDs*, not arbitrary URLs or unknown authentication
+formats. Finnhub, Alpha Vantage, Twelve Data and Finazon can be entered independently.
+Twelve Data and Finazon are commercial-free market-context connectors with separate
+rights gates; a successful key probe does not activate their runtime fetch. SEC EDGAR requires
 no API key and remains on its separate official public research collector.
 
 This is **temporary credential intake**, not a durable API-key vault:
@@ -33,12 +35,16 @@ provider response bodies or raw exceptions.
 
 Finnhub: HTTPS profile2 lookup for AAPL with \`X-Finnhub-Token\` header.
 Alpha Vantage: HTTPS \`TIME_SERIES_DAILY\` compact look-up for IBM with its
-provider-required \`apikey\` query parameter, server-side only. Vendor APIs
+provider-required \`apikey\` query parameter, server-side only.
+Twelve Data: HTTPS \`/quote?symbol=AAPL\` with the key in the server-side Authorization header.
+Finazon: HTTPS US Equities Basic \`/ticker_snapshot?ticker=AAPL\` with the key in the server-side Authorization header.
+Vendor APIs
 could also rate-limit, return no data or require additional product access.
 A successful response means **only** a harmless authenticated research request
 returned the expected shape. It does not prove any license, OPRA, SIP, non-display,
 AI analysis, retention, business/trust eligibility, source freshness or trade
-permission. A refused/limited response is classified through the shared secret-safe provider diagnostic contract. The owner can distinguish rate limiting, access rejection, provider availability, network failure, redirect hold, parse/shape failure and bounded provider-message cases without receiving the raw upstream response.\n
+permission. A refused/limited response is classified through the shared secret-safe provider diagnostic contract. The owner can distinguish rate limiting, access rejection, provider availability, network failure, redirect hold, parse/shape failure and bounded provider-message cases without receiving the raw upstream response.
+
 No automatic scanner registration, historical-series ingestion, market quote
 admission, Live unlock, account selection, purchase, broker order or capital
 action is introduced. Future adapter must reconcile reviewed rights with the
@@ -63,7 +69,7 @@ python -m pytest -q tests/test_tower_ob_provider_key_desk.py tests/test_ob_publi
 
 ## 2026-09-30 diagnostic upgrade
 The Key Desk now imports the shared contract in `tower/ob_provider_diagnostics.py`.
-Finnhub and Alpha Vantage are the first migrated connectors. Future provider/plugin
+Finnhub, Alpha Vantage, Twelve Data and Finazon use the shared connector diagnostic contract. Future provider/plugin
 connection surfaces must reuse the fixed vocabulary rather than emit arbitrary upstream
 text or a single undifferentiated verification failure. See
 `docs/market_data/OB_PROVIDER_PLUGIN_DIAGNOSTIC_CONTRACT_20260930.md`.
