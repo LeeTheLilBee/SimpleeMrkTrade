@@ -44,6 +44,21 @@ if [[ "${OB_CATALYST_ONE_SHOT_SOURCE_PROBE:-0}" == "1" ]]; then
     "${PYTHON_VALUE}" -u -m deploy.hosted_tower.official_catalyst_one_shot &
 fi
 
+# Staged WebSocket transport. Same canonical Flask app through ASGI WSGI
+# adapter; keep legacy WSGI default until integration/hosted acceptance passes.
+# Never infer that a provider itself has a native streaming entitlement.
+if [[ "${OB_CATALYST_WS_ASGI_ENABLED:-0}" == "1" ]]; then
+    exec "${PYTHON_VALUE}" -m uvicorn web.hosted_tower_asgi:application \
+        --host 0.0.0.0 \
+        --port "${PORT_VALUE}" \
+        --workers 1 \
+        --ws-max-size 2048 \
+        --ws-ping-interval 20 \
+        --ws-ping-timeout 20 \
+        --lifespan off \
+        --no-access-log
+fi
+
 exec "${PYTHON_VALUE}" -m gunicorn \
     --bind "0.0.0.0:${PORT_VALUE}" \
     --workers "${WORKERS_VALUE}" \

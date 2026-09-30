@@ -478,12 +478,25 @@ def safe_next_path(
     return candidate
 
 
+def _revoke_previous_catalyst_stream_session() -> None:
+    """Revoke this browser's old source-only notification socket in process.
+
+    No new access path or session authority is created. The existing Tower
+    logout and replacement login still clear the signed Flask session normally.
+    """
+    old_id = session.get(SESSION_ID)
+    hub = current_app.extensions.get("ob_official_catalyst_event_hub")
+    if isinstance(old_id, str) and old_id and hub is not None:
+        hub.revoke_session(old_id)
+
+
 def establish_owner_session(
     *,
     username: str,
 ) -> Dict[str, Any]:
     now = utc_now()
 
+    _revoke_previous_catalyst_stream_session()
     session.clear()
 
     session[
@@ -1531,6 +1544,7 @@ def access_home_v2_contract_json():
     LOGOUT_PATH
 )
 def logout():
+    _revoke_previous_catalyst_stream_session()
     session.clear()
 
     return redirect(
