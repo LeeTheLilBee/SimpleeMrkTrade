@@ -11,6 +11,7 @@ import pytest
 
 from engine.market_intake.keyless_public_context import (
     KeylessPublicContext, from_environment, enabled_sources_from_environment,
+    treasury_rates_enabled_from_environment,
 )
 from engine.market_intake.public_research_sources import OwnerResearchPolicy, PublicReferenceClient
 from engine.market_intake.treasury_public_context import (
@@ -322,6 +323,26 @@ def test_default_off_and_independent_provider_reviews(monkeypatch):
     assert enabled_sources_from_environment()==frozenset({"bls"})
     # BEA, FRED and Public credentials are never attached by this path.
     assert not {"bea","fred","public"} & set(ENABLED)
+
+
+
+
+def test_treasury_rates_require_independent_enable_and_display_review(monkeypatch):
+    enabled = frozenset({"treasury"})
+    for key in (
+        "OB_KEYLESS_TREASURY_RATES_ENABLED",
+        "OB_KEYLESS_TREASURY_RATES_USE_REVIEWED",
+        "OB_KEYLESS_TREASURY_RATES_OWNER_DISPLAY_REVIEWED",
+    ):
+        monkeypatch.delenv(key, raising=False)
+    assert treasury_rates_enabled_from_environment(enabled) is False
+    monkeypatch.setenv("OB_KEYLESS_TREASURY_RATES_ENABLED", "1")
+    assert treasury_rates_enabled_from_environment(enabled) is False
+    monkeypatch.setenv("OB_KEYLESS_TREASURY_RATES_USE_REVIEWED", "1")
+    assert treasury_rates_enabled_from_environment(enabled) is False
+    monkeypatch.setenv("OB_KEYLESS_TREASURY_RATES_OWNER_DISPLAY_REVIEWED", "1")
+    assert treasury_rates_enabled_from_environment(enabled) is True
+    assert treasury_rates_enabled_from_environment(frozenset()) is False
 
 
 def test_tower_exact_route_requires_owner_stepup_admission_before_transport(monkeypatch):
@@ -640,6 +661,12 @@ def test_malformed_or_reverse_chronology_cannot_reach_soulaana():
         with pytest.raises(ValueError,match="SOULAANA_COMPARISON_SHAPE_HOLD"):
             build_soulaana_evidence_brief(
                 changed,approved_sources=frozenset({"treasury"}))
+
+
+def test_browser_uses_nested_source_provenance_for_macro_comparisons():
+    js=(ROOT/"web/static/ob/ob_keyless_context.js").read_text()
+    assert 'packetOwnsReference(packet, item.source, item.source_reference)' in js
+    assert 'packet.sources.some(r => r.source === item.source &&' not in js
 
 
 def test_shared_soulaana_read_displays_insights_not_unreviewed_source_copy():
