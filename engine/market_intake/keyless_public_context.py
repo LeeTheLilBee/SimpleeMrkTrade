@@ -79,15 +79,19 @@ class KeylessPublicContext:
     """
     def __init__(self, *, enabled: frozenset[str] = frozenset(),
                  sec_delegated: bool = False, ai_sources: frozenset[str] = frozenset(),
-                 reference=None, treasury=None, now=None):
+                 reference=None, treasury=None, now=None,
+                 treasury_rates_enabled: bool = False):
         if not isinstance(enabled, frozenset) or not enabled <= frozenset(SOURCES):
             raise ValueError("Exact server-controlled keyless source allowlist required")
         if (type(ai_sources) is not frozenset
                 or not ai_sources <= frozenset({"bls", "treasury", "openfigi"})
                 or not ai_sources <= enabled):
             raise ValueError("independently reviewed source/content grants required")
+        if type(treasury_rates_enabled) is not bool:
+            raise ValueError("Treasury rates gate must be explicit")
         self.enabled = enabled
         self.ai_sources = ai_sources
+        self.treasury_rates_enabled = treasury_rates_enabled and "treasury" in enabled
         self.sec_delegated = sec_delegated is True
         policy = OwnerResearchPolicy(
             source_use_reviewed=bool(enabled),
@@ -160,11 +164,22 @@ class KeylessPublicContext:
                              series=panel)
         if key == "treasury":
             obs = self.treasury.latest_public_debt()
-            try:
-                rates = self.treasury.latest_rates_context()
-            except PublicResearchUnavailable:
+            if self.treasury_rates_enabled:
+                try:
+                    rates = self.treasury.latest_rates_context()
+                except PublicResearchUnavailable:
+                    rates = {
+                        "state": "SOURCE_HOLD",
+                        "source": "US Treasury",
+                        "product": "DAILY_PAR_YIELD_CURVES",
+                        "source_reference": TREASURY_RATE_DOCS,
+                        "nominal": None, "real": None, "derived": None,
+                        "intraday": False, "executable_quote": False,
+                        "broker_execution_authorized": False,
+                    }
+            else:
                 rates = {
-                    "state": "SOURCE_HOLD",
+                    "state": "NOT_ENABLED",
                     "source": "US Treasury",
                     "product": "DAILY_PAR_YIELD_CURVES",
                     "source_reference": TREASURY_RATE_DOCS,
@@ -254,4 +269,8 @@ def from_environment() -> KeylessPublicContext:
         enabled=enabled,
         ai_sources=soulaana_sources_from_environment(enabled),
         sec_delegated=edgar_delegated_from_environment(),
+        treasury_rates_enabled=(
+            "treasury" in enabled
+            and os.environ.get("OB_KEYLESS_TREASURY_RATES_ENABLED") == "1"
+        ),
     )
