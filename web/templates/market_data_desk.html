@@ -19,8 +19,8 @@
         <div>
           <span class="mdd-eyebrow">THE OBSERVATORY · INTELLIGENCE INFRASTRUCTURE</span>
           <h1>Market Data <em>Desk</em></h1>
-          <p>Every authorized feed, one clear place. Our scanner listens across providers; this desk keeps the connections honest.</p>
-          <div class="mdd-chips"><span>Owner-only source design</span><span>Read-only monitoring</span><span class="mdd-warning">No automatic orders</span></div>
+          <p>What OB can see, what it means, and what needs attention.</p>
+          <div class="mdd-chips"><span>Sources</span><span>Soulaana read</span><span class="mdd-warning">Holds</span></div>
         </div>
         <section class="mdd-soulaana" aria-labelledby="mddSoulaanaTitle">
           <span class="mdd-eyebrow">SOULAANA · YOUR CONNECTION GUIDE</span>
@@ -38,10 +38,10 @@
       </section>
 
       <section class="mdd-metrics" aria-label="Connection summary">
-        <article class="mdd-metric"><span>Products cataloged</span><strong id="mddProducts">—</strong><small>Potential integrations, not active feeds</small></article>
-        <article class="mdd-metric"><span>Verified live feeds</span><strong id="mddLive">—</strong><small>Unknown until trusted runtime connects</small></article>
-        <article class="mdd-metric"><span>Needs review</span><strong id="mddAttention">—</strong><small>Rights, evidence and owner decisions</small></article>
-        <article class="mdd-metric"><span>API capacity</span><strong id="mddTraffic">—</strong><small>No invented vendor limits or traffic</small></article>
+        <article class="mdd-metric"><span>Sources</span><strong id="mddProducts">—</strong><small>Known to OB</small></article>
+        <article class="mdd-metric"><span>Live</span><strong id="mddLive">—</strong><small>Verified feeds</small></article>
+        <article class="mdd-metric"><span>Attention</span><strong id="mddAttention">—</strong><small>Needs you</small></article>
+        <article class="mdd-metric"><span>Capacity</span><strong id="mddTraffic">—</strong><small>Available requests</small></article>
       </section>
 
       <section class="mdd-section" aria-labelledby="mddPublicConnectTitle">
@@ -58,14 +58,16 @@
           <a href="/ob/data-desk/api-keys" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open API Key Desk →</a></div>
       </section>
 
-      <section class="mdd-section" aria-labelledby="mddProviderTruthTitle">
-        <div class="mdd-heading"><div><span class="mdd-eyebrow">TOWER · CONNECTION TRUTH</span>
-          <h2 id="mddProviderTruthTitle">One status per source</h2>
-          <p>The status desk distinguishes temporary credential receipt, source review, live transport, and publishable information. It does not reveal keys, tokens, account IDs, quotes or protected records.</p></div>
-          <a href="/ob/data-desk/connections.json" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open sanitized connection status →</a></div>
+      <section class="mdd-section mdd-status-strip" aria-labelledby="mddProviderTruthTitle">
+        <div class="mdd-heading"><div><span class="mdd-eyebrow">CONNECTION STATUS</span>
+          <h2 id="mddProviderTruthTitle">What is actually connected?</h2>
+          <p>Quick status only. Open evidence if you want the receipts.</p></div></div>
+        <div id="mddConnectionStatus" role="status" aria-live="polite" class="mdd-provider-grid">Checking source status…</div>
+        <details class="mdd-evidence-drawer">
+          <summary>Show connection evidence</summary>
+          <a href="/ob/data-desk/connections.json" class="mdd-public-connect-link">Open sanitized source record →</a>
+        </details>
       </section>
-
-      <div id="mddConnectionStatus" role="status" aria-live="polite" class="mdd-provider-grid">Reading authorized Tower source status…</div>
 
       <section class="mdd-section" aria-labelledby="mddProvidersTitle">
         <div class="mdd-heading"><div><span class="mdd-eyebrow">CONNECTION CONSTELLATION</span><h2 id="mddProvidersTitle">Provider connections</h2><p>Open a card to see the feed's role, status, and the proof required before use.</p></div>
@@ -80,18 +82,13 @@
         </div>
       </section>
 
-      <section class="mdd-workflow mdd-section" aria-labelledby="mddWorkflowTitle">
-        <div class="mdd-heading"><div><span class="mdd-eyebrow">THE PROCESS</span><h2 id="mddWorkflowTitle">From discovery to trusted observation</h2></div></div>
-        <ol class="mdd-steps">
-          <li><span>01</span><strong>Discover</strong><small>Find a provider, official directory or research source.</small></li>
-          <li><span>02</span><strong>Review rights</strong><small>Check product, venue, business use, display, redistribution and expiry.</small></li>
-          <li><span>03</span><strong>Configure</strong><small>Server-held credentials and independent source/product mapping.</small></li>
-          <li><span>04</span><strong>Verify</strong><small>Authenticated feed, timestamp, coverage, quotas and canonical market clock.</small></li>
-          <li><span>05</span><strong>Owner approval</strong><small>Fresh Tower step-up and an auditable, narrow read-only decision.</small></li>
-          <li><span>06</span><strong>Observe</strong><small>Check traffic, quote freshness, options identity, and source conflicts.</small></li>
-          <li><span>07</span><strong>Hold or revoke</strong><small>Isolate failing feeds; never silently replace live data with delayed prices.</small></li>
-        </ol>
-      </section>
+      <details class="mdd-section mdd-background-drawer">
+        <summary>How this desk works</summary>
+        <div class="mdd-background-copy">
+          <p><strong>Discover → verify → observe.</strong> OB keeps source rights, connection health, and evidence separate so a provider login never gets mistaken for trusted market truth.</p>
+          <p>If a source is held, stale, unlicensed, or unclear, OB holds that lane instead of silently substituting something else.</p>
+        </div>
+      </details>
 
       <section class="mdd-duo">
         <article class="mdd-section" aria-labelledby="mddQueueTitle"><span class="mdd-eyebrow">OWNER REVIEW</span><h2 id="mddQueueTitle">Connection queue</h2><div id="mddCases" class="mdd-case-list"><p class="mdd-empty">No protected approval cases attached. Nothing can be approved in this browser view.</p></div></article>
@@ -103,7 +100,12 @@
         </div><p class="mdd-notice">The traffic planner proposes bounded requests; it does not open an API session. Outages, disagreements and rights expiry must HOLD the affected feed.</p></article>
       </section>
 
-      <section class="mdd-section mdd-boundary"><span class="mdd-eyebrow">TRUTH BEFORE ACTION</span><h2>One market. Different kinds of evidence.</h2><p>Nasdaq directories, OCC reports and SEC filings help us discover and identify instruments. They are not live quotes. IEX is not consolidated SIP; indicative options are not OPRA. Two resellers of the same upstream data are not independent proof. No data here unlocks Manual Live or automated execution.</p></section>
+      <details class="mdd-section mdd-background-drawer">
+        <summary>Evidence rules</summary>
+        <div class="mdd-background-copy">
+          <p>Reference data is not a live quote. Venue-limited data is not consolidated market truth. No source unlocks trading authority by itself.</p>
+        </div>
+      </details>
       <footer class="mdd-footer"><a href="/ob/dashboard">Return to Dashboard</a><span>Market Data Desk · Proposed protected owner room · no live data presumed</span></footer>
     </main>
   </div>

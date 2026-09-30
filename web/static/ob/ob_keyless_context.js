@@ -70,7 +70,10 @@
   const status = el("p", "ob-keyless-status", "Checking protected keyless sources…");
   status.setAttribute("role", "status");
   const grid = el("div", "ob-keyless-grid");
-  const soulaana = el("section", "ob-keyless-soulaana");
+  const evidenceDetails = el("details", "ob-keyless-evidence-drawer");
+  const evidenceSummary = el("summary", "", "Show source evidence");
+  evidenceDetails.append(evidenceSummary, grid);
+  const soulaana = el("section", "ob-keyless-soulaana ob-keyless-soulaana-primary");
   soulaana.setAttribute("aria-label", "Soulaana source-status explanation");
   const footer = el("p", "ob-keyless-footer",
     "Retrieval time is not publication or market-event time. SEC filings use their existing protected issuer-research corridor. Public account authentication remains separate. Soulaana's status register is not authorization for source-content AI, candidate, capital or trading use.");
@@ -81,7 +84,7 @@
   keyedProviderResearch.setAttribute("aria-label", "Connected provider research");
   keyedProviderResearch.append(el("p", "ob-keyless-status",
     "Enter a ticker and choose View reference to request approved provider research through Tower."));
-  root.append(heading, lookup, status, grid, soulaana, providerSoulaana, keyedProviderResearch, footer);
+  root.append(heading, lookup, status, soulaana, providerSoulaana, keyedProviderResearch, evidenceDetails, footer);
   let inFlight = 0;
   let currentSymbol = locationSymbol();
   if (currentSymbol) input.value = currentSymbol;
@@ -191,21 +194,18 @@
   }
   function renderSoulaana(packet) {
     soulaana.replaceChildren();
-    const eyebrow = el("span", "ob-keyless-eyebrow", "SOULAANA · SOURCE AWARENESS");
-    const title = el("h3", "", "What I can see");
-    const overview = el("p", "", packet.what_i_see);
-    const meaning = el("p", "", packet.what_it_means);
-    const missing = el("p", "ob-keyless-soulaana-hold", packet.what_is_missing);
-    const next = el("p", "", packet.next_step);
-    const register = el("div", "ob-keyless-soulaana-register");
+    const eyebrow = el("span", "ob-keyless-eyebrow", "SOULAANA · PLAIN ENGLISH");
+    const title = el("h3", "", "Here’s the read");
+    const overview = el("p", "ob-keyless-lead", packet.what_i_see);
+    const meaning = el("p", "ob-keyless-meaning", packet.what_it_means);
+    const chips = el("div", "ob-keyless-takeaways");
     packet.source_register.forEach(function (item) {
-      const line = el("p", "");
-      line.append(el("strong", "", item.label + " · "), el("span", "", item.meaning));
-      register.append(line);
+      chips.append(el("span", "ob-keyless-takeaway", item.label + " · " +
+        String(item.state || "").replaceAll("_", " ").toLowerCase()));
     });
-    const guard = el("p", "ob-keyless-footer",
-      "This source-status register carries no raw observations. Any content I can read appears in a separate, explicitly reviewed source-evidence brief below. No quote or execution permissions follow.");
-    soulaana.append(eyebrow, title, overview, meaning, register, missing, next, guard);
+    const missing = el("p", "ob-keyless-soulaana-hold", packet.what_is_missing);
+    const next = el("p", "ob-keyless-next", "Next: " + packet.next_step);
+    soulaana.append(eyebrow, title, overview, meaning, chips, missing, next);
   }
   const EVIDENCE_SOURCES = new Set(["bls", "treasury", "openfigi"]);
   function validSoulaanaEvidence(brief, packet) {
@@ -299,59 +299,49 @@
           obs.value === item.later_value && obs.source_period === item.later_period));
   }
   function renderSoulaanaEvidence(brief) {
-    const panel = el("div", "ob-keyless-soulaana-evidence");
-    panel.append(el("h3", "", "The reviewed evidence I can explain"),
-      el("p", "ob-keyless-meta", brief.interpretation));
+    const macro = brief.macro_explanation;
+    const panel = el("section", "ob-keyless-explanation");
+    panel.append(
+      el("span", "ob-keyless-eyebrow", "SOULAANA · WHAT IT MEANS"),
+      el("h3", "", "Macro read"),
+      el("p", "ob-keyless-lead", brief.interpretation),
+      el("p", "", macro.why_it_matters)
+    );
+
+    const takeaways = el("div", "ob-keyless-takeaways");
+    takeaways.append(
+      el("span", "ob-keyless-takeaway", "Inflation · " + macro.inflation),
+      el("span", "ob-keyless-takeaway", "Labor · " + macro.labor),
+      el("span", "ob-keyless-takeaway", "Rates · " + macro.rates.rates_story)
+    );
+    panel.append(takeaways);
+
+    if (brief.what_needs_investigation) {
+      panel.append(el("p", "ob-keyless-soulaana-hold", brief.what_needs_investigation));
+    }
+
+    const details = el("details", "ob-keyless-evidence-drawer");
+    details.append(el("summary", "", "Show reviewed evidence"));
+
+    const body = el("div", "ob-keyless-evidence-body");
     brief.observations.forEach(item => {
       const record = el("article", "ob-keyless-evidence-item");
       const link = el("a", "ob-keyless-docs", "Official source ↗");
       link.href = item.source_reference; link.target = "_blank";
       link.rel = "noopener noreferrer";
-      const evidenceLabel = item.metric
-        ? item.source.toUpperCase() + " · " + item.metric
-        : item.source.toUpperCase();
-      record.append(el("strong", "", evidenceLabel),
+      record.append(
+        el("strong", "", (item.metric ? item.source.toUpperCase() + " · " + item.metric : item.source.toUpperCase())),
         el("p", "", item.interpretation),
-        el("p", "ob-keyless-meta", "Retrieved: " + item.retrieved_at), link);
-      panel.append(record);
+        el("p", "ob-keyless-meta", "Retrieved: " + item.retrieved_at),
+        link
+      );
+      body.append(record);
     });
-    const macro = brief.macro_explanation;
-    const macroPanel = el("div", "ob-keyless-soulaana-register");
-    macroPanel.append(
-      el("h3", "", "How I read the macro picture"),
-      el("p", "", "Inflation · " + macro.inflation),
-      el("p", "", "Labor · " + macro.labor),
-      el("p", "", "Rates · " + macro.rates.rates_story),
-      el("p", "", "Real yields · " + macro.rates.real_yield_story),
-      el("p", "", "Inflation compensation · " + macro.rates.inflation_compensation_story),
-      el("p", "", "Why it matters · " + macro.why_it_matters)
-    );
-    if (macro.tensions.length) {
-      macroPanel.append(el("strong", "", "What does not line up cleanly"));
-      macro.tensions.forEach(item => macroPanel.append(el("p", "ob-keyless-meta", item)));
-    }
-    macroPanel.append(el("strong", "", "What would change my read"));
-    macro.what_would_change_my_read.forEach(item =>
-      macroPanel.append(el("p", "ob-keyless-meta", item)));
-    panel.append(macroPanel);
-
-    const digest = el("div", "ob-keyless-soulaana-register");
-    digest.append(el("h3", "", "What I found by examining the source records"),
-      el("p", "", brief.what_changed));
     brief.comparisons.forEach(item => {
-      const record = el("article", "ob-keyless-evidence-item");
-      const link = el("a", "ob-keyless-docs", "Original source ↗");
-      link.href = item.source_reference; link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      record.append(el("strong", "", item.source.toUpperCase() + " · " + item.direction),
-        el("p", "", item.insight), link);
-      digest.append(record);
+      body.append(el("p", "ob-keyless-meta", item.insight));
     });
-    digest.append(el("p", "ob-keyless-soulaana-hold", brief.what_needs_investigation));
-    panel.append(digest);
-    if (brief.bls_attribution) panel.append(el("p", "ob-keyless-footer", brief.bls_attribution));
-    panel.append(el("p", "ob-keyless-footer",
-      "A validated, source-specific explanation—not an external model call. No live pricing, forecasts, signals, broker access or candidate admission."));
+    details.append(body);
+    panel.append(details);
     soulaana.append(panel);
   }
   async function read(symbol) {
