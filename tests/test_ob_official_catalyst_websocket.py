@@ -55,8 +55,8 @@ def test_invalidation_is_content_free_idempotent_and_revocation_visible():
     assert hint["available"] is False
     assert hint["provider_stream_attached"] is False
     assert hub.observe(p)["cursor"] == 1
-    assert "Synthetic publication" not in json.dumps(hub._events)
-    assert "2025-12345" not in json.dumps(hub._events)
+    assert "Synthetic publication" not in json.dumps(list(hub._events))
+    assert "2025-12345" not in json.dumps(list(hub._events))
     held = held_packet()
     assert hub.observe(held)["cursor"] == 2
     assert hub.observe(held)["cursor"] == 2
