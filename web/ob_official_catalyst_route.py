@@ -62,7 +62,11 @@ def create_official_catalyst_blueprint(
                     item = eia_secret_reader(sid, "eia")
                     if item is not None:
                         eia_key = item.value
-            packet = catalyst_service.snapshot(eia_key=eia_key)
+            packet = (
+                catalyst_service.snapshot(eia_key=eia_key)
+                if eia_secret_reader is not None
+                else catalyst_service.snapshot()
+            )
             if observatory_event_hub is not None:
                 digest = official_catalyst_fingerprint(packet)
                 try:
