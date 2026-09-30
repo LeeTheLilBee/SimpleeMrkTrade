@@ -20,3 +20,33 @@ button{font:inherit}button:focus-visible,a:focus-visible{outline:3px solid var(-
 @media(max-width:700px){.mdd-shell{width:calc(100% - 26px);padding-top:22px}.mdd-provider-grid,.mdd-duo{grid-template-columns:1fr}.mdd-section{padding:17px}.mdd-hero h1{font-size:3.1rem}.mdd-filter button{flex:1}.mdd-metrics{gap:9px}.mdd-metric{padding:15px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
 @media(forced-colors:active){.mdd-section,.mdd-metric,.mdd-provider-card,.mdd-truth-banner{border:1px solid CanvasText}}
+
+
+/* OBUX explanation-first Market Data Desk */
+.mdd-status-strip{padding-bottom:18px}
+.mdd-evidence-drawer,
+.mdd-background-drawer{
+  overflow:hidden;
+  border:1px solid var(--mdd-border);
+  border-radius:16px;
+  background:rgba(5,10,24,.42);
+}
+.mdd-evidence-drawer{margin-top:14px}
+.mdd-evidence-drawer>summary,
+.mdd-background-drawer>summary{
+  cursor:pointer;
+  list-style:none;
+  padding:14px 16px;
+  color:var(--mdd-aqua);
+  font-size:.82rem;
+  font-weight:850;
+}
+.mdd-evidence-drawer>summary::-webkit-details-marker,
+.mdd-background-drawer>summary::-webkit-details-marker{display:none}
+.mdd-evidence-drawer>summary::after,
+.mdd-background-drawer>summary::after{content:"+";float:right}
+.mdd-evidence-drawer[open]>summary::after,
+.mdd-background-drawer[open]>summary::after{content:"−"}
+.mdd-evidence-drawer>a{display:inline-flex;margin:0 16px 16px;color:var(--mdd-aqua);font-weight:800;text-decoration:none}
+.mdd-background-copy{padding:0 16px 16px;color:var(--mdd-muted);line-height:1.6}
+.mdd-background-copy p{margin:8px 0}
