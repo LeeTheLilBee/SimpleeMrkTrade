@@ -55,6 +55,7 @@ if [[ "${OB_CATALYST_WS_ASGI_ENABLED:-0}" == "1" ]]; then
         --ws-max-size 2048 \
         --ws-ping-interval 20 \
         --ws-ping-timeout 20 \
+        --lifespan off \
         --no-access-log
 fi
 
