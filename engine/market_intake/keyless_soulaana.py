@@ -23,7 +23,7 @@ _STATE = frozenset({
 _READY = {
     "sec": ("SEC EDGAR", "Its separate issuer-research corridor is configured. No filing was fetched by this keyless status read."),
     "bls": ("BLS", "A dated CPI index reference was retrieved. It is neither an inflation percentage nor a current securities quote."),
-    "treasury": ("US Treasury", "A record-dated public debt reference was retrieved. It is not a Treasury yield or a market price."),
+    "treasury": ("US Treasury", "Record-dated fiscal context is available; the same reviewed Treasury lane may also carry official daily par-yield context. Neither is an executable quote."),
     "openfigi": ("OpenFIGI", "A ticker-to-identifier reference match was found. It does not independently establish issuer identity or tradability."),
 }
 _GAP = {
@@ -130,6 +130,7 @@ _REFERENCES = {
 # may accompany CPI evidence; a third-party link cannot impersonate BLS.
 _BLS_BULK_REFERENCE = "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems"
 _BLS_V2_REFERENCE = "https://www.bls.gov/developers/api_signature_v2.htm"
+_TREASURY_RATE_REFERENCE = "https://home.treasury.gov/treasury-daily-interest-rate-xml-feed"
 _BLS_SERIES = {
     "CUUR0000SA0": ("CPI-U all items", "index"),
     "LNS14000000": ("Unemployment rate", "percent"),
@@ -138,10 +139,11 @@ _BLS_SERIES = {
 }
 _ALLOWED_REFERENCES = {
     "bls": frozenset({_REFERENCES["bls"], _BLS_BULK_REFERENCE, _BLS_V2_REFERENCE}),
-    "treasury": frozenset({_REFERENCES["treasury"]}),
+    "treasury": frozenset({_REFERENCES["treasury"], _TREASURY_RATE_REFERENCE}),
     "openfigi": frozenset({_REFERENCES["openfigi"]}),
 }
 _NUMBER = re.compile(r"^\d{1,43}(?:\.\d{1,9})?$")
+_SIGNED_NUMBER = re.compile(r"^-?\d{1,5}(?:\.\d{1,4})?$")
 _BLS_PERIOD = re.compile(r"^20\d{2}-M(?:0[1-9]|1[0-2])$")
 _FIGI = re.compile(r"^BBG[A-Z0-9]{9}$")
 _TICKER = re.compile(r"^[A-Z][A-Z0-9.-]{0,15}$")
@@ -167,6 +169,7 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
     observations = []
     statuses = []
     comparisons = []
+    rates_read = None
     for row in rows:
         key, state = row["source"], row["state"]
         permitted = (key in approved_sources and state == "SOURCE_BOUND")
@@ -290,10 +293,91 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
                     or not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", period)
                     or row.get("unit") != "USD"):
                 raise ValueError("SOULAANA_EVIDENCE_SHAPE_HOLD")
+            rates = row.get("rates")
+            if not isinstance(rates, dict):
+                raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+            if (rates.get("source") != "US Treasury"
+                    or rates.get("product") != "DAILY_PAR_YIELD_CURVES"
+                    or rates.get("source_reference") != _TREASURY_RATE_REFERENCE
+                    or rates.get("intraday") is not False
+                    or rates.get("executable_quote") is not False
+                    or rates.get("broker_execution_authorized") is not False):
+                raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+            if rates.get("state") in {"SOURCE_HOLD", "NOT_ENABLED"}:
+                if any(rates.get(name) is not None for name in ("nominal", "real", "derived")):
+                    raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                rates_read = {"state": rates["state"]}
+            elif rates.get("state") == "SOURCE_BOUND":
+                nominal, real, derived = rates.get("nominal"), rates.get("real"), rates.get("derived")
+                if not all(isinstance(item, dict) for item in (nominal, real, derived)):
+                    raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                date_rule = re.compile(r"^20\d{2}-\d{2}-\d{2}$")
+                if (not date_rule.fullmatch(str(nominal.get("date", "")))
+                        or not date_rule.fullmatch(str(nominal.get("previous_date", "")))
+                        or nominal["previous_date"] >= nominal["date"]
+                        or not date_rule.fullmatch(str(real.get("date", "")))
+                        or not date_rule.fullmatch(str(real.get("previous_date", "")))
+                        or real["previous_date"] >= real["date"]):
+                    raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                expected = (
+                    (nominal.get("yields_percent"), ("2Y", "5Y", "10Y", "30Y")),
+                    (nominal.get("previous_yields_percent"), ("2Y", "5Y", "10Y", "30Y")),
+                    (real.get("yields_percent"), ("5Y", "10Y", "30Y")),
+                    (real.get("previous_yields_percent"), ("5Y", "10Y", "30Y")),
+                )
+                for values, keys in expected:
+                    if not isinstance(values, dict) or tuple(values) != keys:
+                        raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                    for raw_rate in values.values():
+                        if (not isinstance(raw_rate, str) or not _SIGNED_NUMBER.fullmatch(raw_rate)
+                                or not Decimal("-20") < Decimal(raw_rate) < Decimal("30")):
+                            raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                if (derived.get("curve_shape") not in {"INVERTED", "POSITIVE", "NEAR_FLAT"}
+                        or derived.get("curve_change") not in {"STEEPENED", "FLATTENED", "LITTLE_CHANGED"}
+                        or derived.get("breakeven_is_simple_approximation") is not True):
+                    raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                for name in (
+                    "two_year_change_bp", "ten_year_change_bp", "thirty_year_change_bp",
+                    "real_ten_year_change_bp", "two_ten_spread_bp",
+                    "previous_two_ten_spread_bp",
+                ):
+                    if not isinstance(derived.get(name), str) or not _SIGNED_NUMBER.fullmatch(derived[name]):
+                        raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                for name in (
+                    "ten_year_breakeven_percent", "previous_ten_year_breakeven_percent",
+                    "breakeven_change_bp",
+                ):
+                    raw_metric = derived.get(name)
+                    if raw_metric is not None and (
+                            not isinstance(raw_metric, str) or not _SIGNED_NUMBER.fullmatch(raw_metric)):
+                        raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                if (derived.get("ten_year_breakeven_percent") is None) != (
+                        derived.get("breakeven_date") is None):
+                    raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
+                rates_read = {
+                    "state": "SOURCE_BOUND",
+                    "source_reference": _TREASURY_RATE_REFERENCE,
+                    "nominal_date": nominal["date"],
+                    "two_year_percent": nominal["yields_percent"]["2Y"],
+                    "ten_year_percent": nominal["yields_percent"]["10Y"],
+                    "thirty_year_percent": nominal["yields_percent"]["30Y"],
+                    "real_ten_year_percent": real["yields_percent"]["10Y"],
+                    "two_year_change_bp": derived["two_year_change_bp"],
+                    "ten_year_change_bp": derived["ten_year_change_bp"],
+                    "real_ten_year_change_bp": derived["real_ten_year_change_bp"],
+                    "two_ten_spread_bp": derived["two_ten_spread_bp"],
+                    "curve_shape": derived["curve_shape"],
+                    "curve_change": derived["curve_change"],
+                    "ten_year_breakeven_percent": derived.get("ten_year_breakeven_percent"),
+                    "breakeven_change_bp": derived.get("breakeven_change_bp"),
+                    "breakeven_is_simple_approximation": True,
+                }
+            else:
+                raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
             meaning = (
                 "Treasury Debt to the Penny: total public debt outstanding was "
                 + value + " USD on " + period
-                + ". This is neither a Treasury yield nor an intraday market price."
+                + ". The nested rate context is a separate official daily close; neither is an intraday executable price."
             )
         else:
             symbol = row.get("symbol")
@@ -416,19 +500,92 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
     elif unemployment_dir == "DOWN" and payroll_dir == "DOWN":
         tensions.append("Unemployment and payroll employment both fell; that combination needs labor-force participation/context before interpretation.")
 
+    if rates_read and rates_read.get("state") == "SOURCE_BOUND":
+        two_change = Decimal(rates_read["two_year_change_bp"])
+        ten_change = Decimal(rates_read["ten_year_change_bp"])
+        real_change = Decimal(rates_read["real_ten_year_change_bp"])
+        rate_word = lambda number: "rose" if number > 0 else "fell" if number < 0 else "was unchanged"
+        rates_story = (
+            f"At Treasury's {rates_read['nominal_date']} official daily close, the 2-year yield was "
+            f"{rates_read['two_year_percent']}% and the 10-year was {rates_read['ten_year_percent']}%. "
+            f"The 2-year {rate_word(two_change)} {abs(two_change)} bp and the 10-year "
+            f"{rate_word(ten_change)} {abs(ten_change)} bp from the prior publication. "
+            f"The 2s10s spread is {rates_read['two_ten_spread_bp']} bp; the curve is "
+            f"{rates_read['curve_shape'].lower().replace('_', ' ')} and "
+            f"{rates_read['curve_change'].lower().replace('_', ' ')} versus the prior close."
+        )
+        real_yield_story = (
+            f"The 10-year real/TIPS yield is {rates_read['real_ten_year_percent']}%; it "
+            f"{rate_word(real_change)} {abs(real_change)} bp from its prior Treasury publication. "
+            "Real yields are discount-rate context, not an equity or option quote."
+        )
+        if rates_read.get("ten_year_breakeven_percent") is not None:
+            be_change = rates_read.get("breakeven_change_bp")
+            inflation_comp_story = (
+                f"The simple 10-year nominal-minus-real breakeven approximation is "
+                f"{rates_read['ten_year_breakeven_percent']}%."
+            )
+            if be_change is not None:
+                be_delta = Decimal(be_change)
+                inflation_comp_story += (
+                    f" It {rate_word(be_delta)} {abs(be_delta)} bp from the prior matched Treasury close."
+                )
+            inflation_comp_story += (
+                " This is market inflation-compensation context, not CPI and not a literal inflation forecast."
+            )
+        else:
+            inflation_comp_story = (
+                "Nominal and real Treasury observations do not share the same latest date, "
+                "so I am withholding the breakeven approximation."
+            )
+        rates_explanation = {
+            **rates_read,
+            "rates_story": rates_story,
+            "real_yield_story": real_yield_story,
+            "inflation_compensation_story": inflation_comp_story,
+            "causality_claimed": False,
+            "trade_signal_created": False,
+        }
+    else:
+        rates_explanation = {
+            "state": (
+                "SOURCE_HOLD"
+                if rates_read and rates_read.get("state") == "SOURCE_HOLD"
+                else "NOT_AVAILABLE"
+            ),
+            "rates_story": "Official Treasury daily yield-curve context is not available in this read.",
+            "real_yield_story": "Real-yield context is not available in this read.",
+            "inflation_compensation_story": "No breakeven approximation is available without matched official nominal and real Treasury observations.",
+            "causality_claimed": False,
+            "trade_signal_created": False,
+        }
+
+    if rates_explanation.get("state") == "SOURCE_BOUND":
+        be_change_raw = rates_explanation.get("breakeven_change_bp")
+        if cpi_dir == ppi_dir == "UP" and be_change_raw is not None and Decimal(be_change_raw) < 0:
+            tensions.append(
+                "BLS consumer and producer price indexes rose over their source periods while the Treasury breakeven approximation fell at the latest matched daily close; the horizons differ, so I would treat that as a tension to investigate rather than a contradiction."
+            )
+        elif cpi_dir == ppi_dir == "DOWN" and be_change_raw is not None and Decimal(be_change_raw) > 0:
+            tensions.append(
+                "BLS consumer and producer price indexes fell over their source periods while the Treasury breakeven approximation rose at the latest matched daily close; the horizons differ, so I would investigate rather than force one inflation label."
+            )
+
     macro_explanation = {
         "state": "SOURCE_BOUND_DIRECTIONAL_CONTEXT_ONLY" if directions else "INSUFFICIENT_COMPARISONS",
         "inflation": inflation_story,
         "labor": labor_story,
+        "rates": rates_explanation,
         "why_it_matters": (
-            "Inflation and labor conditions can change rate expectations, discount rates and earnings assumptions. "
-            "I can explain that transmission path, but these observations alone do not prove a market move or authorize a trade."
+            "Inflation and labor conditions can change rate expectations; nominal yields, real yields and curve shape show how Treasury markets are pricing parts of that environment at the official daily close. "
+            "I can explain those relationships, but correlation across different source periods does not prove causality or authorize a trade."
         ),
         "tensions": tensions,
         "what_would_change_my_read": [
             "A newer BLS release that reverses one or more series directions.",
             "BEA real-growth and price-index context that confirms or conflicts with the BLS picture.",
-            "Current entitled market prices and options liquidity showing how the market is actually repricing.",
+            "A newer Treasury close reversing the yield, real-yield, curve or breakeven move.",
+            "Current entitled equity/options prices and liquidity showing how the security itself is actually repricing.",
             "Issuer-specific SEC evidence that connects macro context to the company being reviewed.",
         ],
         "causality_claimed": False,

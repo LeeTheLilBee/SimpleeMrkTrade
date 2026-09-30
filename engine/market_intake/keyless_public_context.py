@@ -17,7 +17,9 @@ from threading import RLock
 from .public_research_sources import (
     OwnerResearchPolicy, PublicReferenceClient, PublicResearchUnavailable,
 )
-from .treasury_public_context import TreasuryPublicClient, TREASURY_DOCS
+from .treasury_public_context import (
+    TreasuryPublicClient, TREASURY_DOCS, TREASURY_RATE_DOCS,
+)
 from .sec_public_client import SEC_API
 from .keyless_soulaana import build_soulaana_source_register, build_soulaana_evidence_brief
 
@@ -77,15 +79,19 @@ class KeylessPublicContext:
     """
     def __init__(self, *, enabled: frozenset[str] = frozenset(),
                  sec_delegated: bool = False, ai_sources: frozenset[str] = frozenset(),
-                 reference=None, treasury=None, now=None):
+                 reference=None, treasury=None, now=None,
+                 treasury_rates_enabled: bool = False):
         if not isinstance(enabled, frozenset) or not enabled <= frozenset(SOURCES):
             raise ValueError("Exact server-controlled keyless source allowlist required")
         if (type(ai_sources) is not frozenset
                 or not ai_sources <= frozenset({"bls", "treasury", "openfigi"})
                 or not ai_sources <= enabled):
             raise ValueError("independently reviewed source/content grants required")
+        if type(treasury_rates_enabled) is not bool:
+            raise ValueError("Treasury rates gate must be explicit")
         self.enabled = enabled
         self.ai_sources = ai_sources
+        self.treasury_rates_enabled = treasury_rates_enabled and "treasury" in enabled
         self.sec_delegated = sec_delegated is True
         policy = OwnerResearchPolicy(
             source_use_reviewed=bool(enabled),
@@ -103,7 +109,7 @@ class KeylessPublicContext:
 
     def _row(self, key: str, state: str, *, value=None, period=None,
              fetched_at=None, symbol=None, previous_period=None,
-             previous_value=None, source_reference=None, series=None) -> dict:
+             previous_value=None, source_reference=None, series=None, rates=None) -> dict:
         provider, label, unit, reference = LABELS[key]
         return {
             "source": key, "provider": provider, "label": label,
@@ -114,6 +120,7 @@ class KeylessPublicContext:
             "symbol": symbol if key == "openfigi" else None,
             "source_reference": source_reference or reference,
             "series": series if key == "bls" else None,
+            "rates": rates if key == "treasury" else None,
             "historical_or_reference_only": True,
             "quote_eligible": False, "trading_authorized": False,
             "ai_use_approved": (key in self.ai_sources and state == "SOURCE_BOUND"),
@@ -157,10 +164,34 @@ class KeylessPublicContext:
                              series=panel)
         if key == "treasury":
             obs = self.treasury.latest_public_debt()
+            if self.treasury_rates_enabled:
+                try:
+                    rates = self.treasury.latest_rates_context()
+                except PublicResearchUnavailable:
+                    rates = {
+                        "state": "SOURCE_HOLD",
+                        "source": "US Treasury",
+                        "product": "DAILY_PAR_YIELD_CURVES",
+                        "source_reference": TREASURY_RATE_DOCS,
+                        "nominal": None, "real": None, "derived": None,
+                        "intraday": False, "executable_quote": False,
+                        "broker_execution_authorized": False,
+                    }
+            else:
+                rates = {
+                    "state": "NOT_ENABLED",
+                    "source": "US Treasury",
+                    "product": "DAILY_PAR_YIELD_CURVES",
+                    "source_reference": TREASURY_RATE_DOCS,
+                    "nominal": None, "real": None, "derived": None,
+                    "intraday": False, "executable_quote": False,
+                    "broker_execution_authorized": False,
+                }
             return self._row(key, "SOURCE_BOUND", value=obs.value,
                              period=obs.period, fetched_at=obs.fetched_at.isoformat(),
                              previous_period=obs.previous_period,
-                             previous_value=obs.previous_value)
+                             previous_value=obs.previous_value,
+                             rates=rates)
         if key == "openfigi" and symbol is not None:
             while self._figi_attempts and (now - self._figi_attempts[0]).total_seconds() >= 60:
                 self._figi_attempts.popleft()
@@ -238,4 +269,8 @@ def from_environment() -> KeylessPublicContext:
         enabled=enabled,
         ai_sources=soulaana_sources_from_environment(enabled),
         sec_delegated=edgar_delegated_from_environment(),
+        treasury_rates_enabled=(
+            "treasury" in enabled
+            and os.environ.get("OB_KEYLESS_TREASURY_RATES_ENABLED") == "1"
+        ),
     )

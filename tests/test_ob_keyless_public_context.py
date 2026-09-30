@@ -13,7 +13,9 @@ from engine.market_intake.keyless_public_context import (
     KeylessPublicContext, from_environment, enabled_sources_from_environment,
 )
 from engine.market_intake.public_research_sources import OwnerResearchPolicy, PublicReferenceClient
-from engine.market_intake.treasury_public_context import TreasuryPublicClient, TREASURY_URL
+from engine.market_intake.treasury_public_context import (
+    TreasuryPublicClient, TREASURY_URL, TREASURY_RATE_DOCS,
+)
 from web.ob_keyless_context_route import PATH, create_keyless_context_blueprint
 from tower.ob_route_guard import match_ob_guard_policy
 from tower.ob_web_route_enforcement import (
@@ -36,6 +38,65 @@ class Response:
     def __enter__(self): return self
     def __exit__(self, *_): return False
     def read(self, n): return self.body[:n]
+
+
+class RawResponse:
+    def __init__(self, raw):
+        self.body = raw if isinstance(raw, bytes) else raw.encode()
+    def __enter__(self): return self
+    def __exit__(self, *_): return False
+    def read(self, n): return self.body[:n]
+
+
+def treasury_curve_xml(*, real=False):
+    fields = (
+        [
+            ("TC_5YEAR", "1.55", "1.58"),
+            ("TC_10YEAR", "1.80", "1.82"),
+            ("TC_30YEAR", "2.20", "2.18"),
+        ] if real else [
+            ("BC_2YEAR", "3.50", "3.60"),
+            ("BC_5YEAR", "3.70", "3.68"),
+            ("BC_10YEAR", "4.00", "3.95"),
+            ("BC_30YEAR", "4.55", "4.50"),
+        ]
+    )
+    def entry(day, index):
+        values = "".join(
+            f'<d:{tag} m:type="Edm.Double">{pair[index]}</d:{tag}>'
+            for tag, *pair in fields
+        )
+        return (
+            "<entry><content type=\"application/xml\"><m:properties>"
+            f'<d:NEW_DATE m:type="Edm.DateTime">{day}T00:00:00</d:NEW_DATE>'
+            + values + "</m:properties></content></entry>"
+        )
+    return (
+        '<?xml version="1.0" encoding="utf-8"?>'
+        '<feed xmlns="http://www.w3.org/2005/Atom" '
+        'xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" '
+        'xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices">'
+        + entry("2026-09-26", 1) + entry("2026-09-29", 0) + "</feed>"
+    )
+
+
+class TreasuryRatesSource:
+    def __init__(self, *, malformed=False):
+        self.calls = []
+        self.malformed = malformed
+        self.debt = {"data": [
+            {"record_date":"2026-09-26","tot_pub_debt_out_amt":"38900000000000.12"},
+            {"record_date":"2026-09-25","tot_pub_debt_out_amt":"38890000000000.12"},
+        ]}
+    def __call__(self, req, timeout):
+        self.calls.append(req.full_url)
+        if req.full_url == TREASURY_URL:
+            return Response(self.debt)
+        if "data=daily_treasury_yield_curve" in req.full_url:
+            return RawResponse("<broken" if self.malformed else treasury_curve_xml())
+        if "data=daily_treasury_real_yield_curve" in req.full_url:
+            return RawResponse("<broken" if self.malformed else treasury_curve_xml(real=True))
+        raise AssertionError("Unexpected Treasury URL")
 
 
 class FakeOfficialSources:
@@ -140,6 +201,82 @@ def test_source_absent_or_revoked_exposes_no_cached_value():
     assert all(rows[k]["state"]=="REVIEW_HOLD" and rows[k]["value"] is None
                for k in ENABLED)
     assert len(opener.calls)==6
+
+
+def test_treasury_official_rate_feeds_derive_curve_real_yield_and_breakeven():
+    source = TreasuryRatesSource()
+    policy = OwnerResearchPolicy(
+        source_use_reviewed=True, owner_display_reviewed=True,
+        reviewed_sources=frozenset({"treasury"}), ai_use_reviewed=False,
+    )
+    rates = TreasuryPublicClient(policy, opener=source).latest_rates_context()
+    assert rates["state"] == "SOURCE_BOUND"
+    assert rates["source_reference"] == TREASURY_RATE_DOCS
+    assert rates["nominal"]["date"] == "2026-09-29"
+    assert rates["nominal"]["yields_percent"] == {
+        "2Y":"3.50", "5Y":"3.70", "10Y":"4.00", "30Y":"4.55"}
+    assert rates["real"]["yields_percent"]["10Y"] == "1.80"
+    assert rates["derived"]["two_year_change_bp"] == "-10.0"
+    assert rates["derived"]["ten_year_change_bp"] == "5.0"
+    assert rates["derived"]["two_ten_spread_bp"] == "50.0"
+    assert rates["derived"]["previous_two_ten_spread_bp"] == "35.0"
+    assert rates["derived"]["curve_shape"] == "POSITIVE"
+    assert rates["derived"]["curve_change"] == "STEEPENED"
+    assert rates["derived"]["real_ten_year_change_bp"] == "-2.0"
+    assert rates["derived"]["ten_year_breakeven_percent"] == "2.20"
+    assert rates["derived"]["previous_ten_year_breakeven_percent"] == "2.13"
+    assert rates["derived"]["breakeven_change_bp"] == "7.0"
+    assert rates["intraday"] is False and rates["executable_quote"] is False
+    assert len(source.calls) == 2
+
+
+def test_treasury_rates_reach_soulaana_as_explanation_not_trade_signal():
+    source = TreasuryRatesSource()
+    policy = OwnerResearchPolicy(
+        source_use_reviewed=True, owner_display_reviewed=True,
+        ai_use_reviewed=True, reviewed_sources=frozenset({"treasury"}),
+        ai_reviewed_sources=frozenset({"treasury"}),
+    )
+    svc = KeylessPublicContext(
+        enabled=frozenset({"treasury"}), ai_sources=frozenset({"treasury"}),
+        treasury=TreasuryPublicClient(policy, opener=source),
+        treasury_rates_enabled=True, now=lambda: datetime.now(timezone.utc),
+    )
+    packet = svc.snapshot()
+    rates = packet["sources"][2]["rates"]
+    assert rates["state"] == "SOURCE_BOUND"
+    explain = packet["soulaana_evidence_brief"]["macro_explanation"]["rates"]
+    assert explain["state"] == "SOURCE_BOUND"
+    assert "steepened" in explain["rates_story"]
+    assert "10-year real/TIPS yield" in explain["real_yield_story"]
+    assert "simple 10-year nominal-minus-real breakeven" in explain["inflation_compensation_story"]
+    assert explain["breakeven_is_simple_approximation"] is True
+    assert explain["causality_claimed"] is False
+    assert explain["trade_signal_created"] is False
+    assert packet["soulaana_evidence_brief"]["external_model_called"] is False
+    assert packet["candidate_admitted"] is False
+    assert len(source.calls) == 3  # debt + nominal curve + real curve
+
+
+def test_treasury_rate_failure_does_not_erase_valid_fiscal_context():
+    source = TreasuryRatesSource(malformed=True)
+    policy = OwnerResearchPolicy(
+        source_use_reviewed=True, owner_display_reviewed=True,
+        ai_use_reviewed=True, reviewed_sources=frozenset({"treasury"}),
+        ai_reviewed_sources=frozenset({"treasury"}),
+    )
+    svc = KeylessPublicContext(
+        enabled=frozenset({"treasury"}), ai_sources=frozenset({"treasury"}),
+        treasury=TreasuryPublicClient(policy, opener=source),
+        treasury_rates_enabled=True, now=lambda: datetime.now(timezone.utc),
+    )
+    treasury = svc.snapshot()["sources"][2]
+    assert treasury["state"] == "SOURCE_BOUND"
+    assert treasury["value"] == "38900000000000.12"
+    assert treasury["rates"]["state"] == "SOURCE_HOLD"
+    explain = svc.snapshot()["soulaana_evidence_brief"]["macro_explanation"]["rates"]
+    assert explain["state"] == "SOURCE_HOLD"
+    assert "not available" in explain["rates_story"]
 
 
 def test_treasury_bad_value_or_date_never_promotes_or_reuses_data():
