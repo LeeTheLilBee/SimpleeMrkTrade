@@ -245,6 +245,93 @@ class CommercialFreeMarketService:
             "may_change_trading_mode": False,
         }
 
+    def scanner_context(self, sid, symbol):
+        """Bounded server-side watch context; never a canonical candidate or quote."""
+        packet = self.read_symbol_internal(sid, symbol)
+        findings = []
+        for row in packet["provider_context"]:
+            record = row.get("record")
+            if row.get("state") != "SOURCE_BOUND" or not isinstance(record, dict):
+                continue
+            signals = []
+            change = record.get("daily_change_percent")
+            if isinstance(change, (int, float)) and abs(change) >= 2.0:
+                signals.append(f"daily move {change:+.3f}%")
+            volume = record.get("volume")
+            average = record.get("average_volume")
+            if (isinstance(volume, int) and isinstance(average, (int, float))
+                    and average > 0 and volume / average >= 1.8):
+                signals.append(f"reported volume {volume / average:.3f}x average")
+            last = record.get("last")
+            high = record.get("fifty_two_week_high")
+            low = record.get("fifty_two_week_low")
+            if all(isinstance(x, (int, float)) for x in (last, high, low)) and high > low:
+                position = (last - low) / (high - low)
+                signals.append(f"52-week range position {position:.3f}")
+            findings.append({
+                "provider": row["provider"],
+                "symbol": packet["symbol"],
+                "observed_at": record["observed_at"],
+                "watch_context": signals[:3],
+                "execution_grade_quote": False,
+            })
+        return {
+            "schema": "OB_COMMERCIAL_FREE_SCANNER_CONTEXT_V1",
+            "symbol": packet["symbol"],
+            "as_of": packet["as_of"],
+            "observations": findings,
+            "research_only": True,
+            "candidate_admitted": False,
+            "broker_quote_verified": False,
+            "execution_authorized": False,
+            "may_change_existing_engine_scores": False,
+        }
+
+    def soulaana_context(self, sid, symbol):
+        """Prepare only independently AI-reviewed market context for Soulaana.
+
+        This is a server-only handoff. No browser route calls it, and the provider
+        value itself never implies an AI-use grant.
+        """
+        packet = self.read_symbol_internal(sid, symbol)
+        observations = []
+        for row in packet["provider_context"]:
+            rights = row.get("rights")
+            record = row.get("record")
+            if (row.get("state") != "SOURCE_BOUND" or not isinstance(rights, dict)
+                    or rights.get("ai_use") is not True or not isinstance(record, dict)):
+                continue
+            observations.append({
+                "provider": row["provider"],
+                "symbol": packet["symbol"],
+                "observed_at": record["observed_at"],
+                "last": record.get("last"),
+                "daily_change_percent": record.get("daily_change_percent"),
+                "weekly_change_percent": record.get("weekly_change_percent"),
+                "monthly_change_percent": record.get("monthly_change_percent"),
+                "volume": record.get("volume"),
+                "average_volume": record.get("average_volume"),
+                "fifty_two_week_high": record.get("fifty_two_week_high"),
+                "fifty_two_week_low": record.get("fifty_two_week_low"),
+                "market_open": record.get("market_open"),
+                "execution_grade_quote": False,
+            })
+        return {
+            "schema": "OB_SOULAANA_COMMERCIAL_FREE_MARKET_CONTEXT_V1",
+            "symbol": packet["symbol"],
+            "as_of": packet["as_of"],
+            "observations": observations,
+            "source_specific_ai_use_approved": bool(observations),
+            "internal_non_display": True,
+            "external_model_called": False,
+            "bid_ask_attached": False,
+            "live_quote_verified": False,
+            "candidate_admitted": False,
+            "broker_execution_authorized": False,
+            "capital_authorized": False,
+            "may_change_trading_mode": False,
+        }
+
     def status(self, sid):
         if not isinstance(sid, str) or not sid.startswith("tower_session_"):
             raise ValueError("current Tower owner session required")
