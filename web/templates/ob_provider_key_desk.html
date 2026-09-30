@@ -19,9 +19,7 @@
     <article class="card">
       <div class="card-head"><div><div class="eyebrow">RESEARCH SOURCE</div><h2>{{ p.name }}</h2></div>
         <span class="status">{{ p.probe.replace('_',' ') }}</span></div>
-      <p>{{ p.purpose }}</p>
-      <p class="fine">{% if p.present %}A key is temporarily held by the server until {{ p.expires_at }}.{% else %}No key is stored for this Tower session.{% endif %}</p>
-      <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
+      <p>{{ p.purpose }}</p>\n      <p class="fine"><strong>Diagnostic:</strong> {{ p.probe_message }}</p>\n      <p class="fine">{% if p.present %}A key is temporarily held by the server until {{ p.expires_at }}.{% else %}No key is stored for this Tower session.{% endif %}</p>\n      <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
         <input type="hidden" name="csrf" value="{{ csrf }}">
         <input type="hidden" name="provider" value="{{ p.id }}">
         <input type="hidden" name="operation" value="save">
