@@ -10,16 +10,19 @@
   <nav><a href="/ob/data-desk">← Market Data Desk</a><a href="/tower/return/observatory">Tower</a></nav>
   <div class="eyebrow">THE OBSERVATORY · OWNER-ONLY CONNECTIONS</div>
   <h1>API Key <em>Desk</em></h1>
-  <p class="intro">One protected place for research-provider credentials. Finnhub and Alpha Vantage are the first supported connectors. More providers can be added after their exact authentication contracts are reviewed; never paste an unknown provider URL here.</p>
-  <div class="notice caution">These are 30-minute temporary backend sessions, <strong>not durable key storage</strong>. Server restart or Tower logout discards them. Verification checks one harmless research endpoint only; it does not prove real-time stock/options access, grant commercial or AI rights, or activate trading.</div>
+  <p class="intro">One protected place for reviewed provider credentials. Finnhub and Alpha Vantage cover research; Twelve Data and Finazon cover tightly bounded commercial-free market context. Never paste an unknown provider URL here.</p>
+  <div class="notice caution">These are 30-minute temporary backend sessions, <strong>not durable key storage</strong>. Server restart or Tower logout discards them. Verification checks one fixed read-only endpoint only. It proves credential reachability, not the account's commercial tier, display/AI rights, full-market entitlement, bid/ask authority, or trading permission.</div>
   {% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
   {% if not enabled %}<div class="notice caution">This page is staged but key submission is disabled. Tower must explicitly enable OB_PROVIDER_KEY_DESK_ENABLED=1 after security and deployment review.</div>{% endif %}
-  <section class="grid" aria-label="Research API providers">
+  <section class="grid" aria-label="API providers">
     {% for p in providers %}
     <article class="card">
-      <div class="card-head"><div><div class="eyebrow">RESEARCH SOURCE</div><h2>{{ p.name }}</h2></div>
+      <div class="card-head"><div><div class="eyebrow">PROVIDER SOURCE</div><h2>{{ p.name }}</h2></div>
         <span class="status">{{ p.probe.replace('_',' ') }}</span></div>
-      <p>{{ p.purpose }}</p>\n      <p class="fine"><strong>Diagnostic:</strong> {{ p.probe_message }}</p>\n      <p class="fine">{% if p.present %}A key is temporarily held by the server until {{ p.expires_at }}.{% else %}No key is stored for this Tower session.{% endif %}</p>\n      <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
+      <p>{{ p.purpose }}</p>
+      <p class="fine"><strong>Diagnostic:</strong> {{ p.probe_message }}</p>
+      <p class="fine">{% if p.present %}A key is temporarily held by the server until {{ p.expires_at }}.{% else %}No key is stored for this Tower session.{% endif %}</p>
+      <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
         <input type="hidden" name="csrf" value="{{ csrf }}">
         <input type="hidden" name="provider" value="{{ p.id }}">
         <input type="hidden" name="operation" value="save">
