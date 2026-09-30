@@ -20,3 +20,25 @@ button{font:inherit}button:focus-visible,a:focus-visible{outline:3px solid var(-
 @media(max-width:700px){.mdd-shell{width:calc(100% - 26px);padding-top:22px}.mdd-provider-grid,.mdd-duo{grid-template-columns:1fr}.mdd-section{padding:17px}.mdd-hero h1{font-size:3.1rem}.mdd-filter button{flex:1}.mdd-metrics{gap:9px}.mdd-metric{padding:15px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
 @media(forced-colors:active){.mdd-section,.mdd-metric,.mdd-provider-card,.mdd-truth-banner{border:1px solid CanvasText}}
+
+/* OBUX provider settings consolidation · one Market Data Desk, no provider mini-rooms */
+.mdd-connections{scroll-margin-top:84px}
+.mdd-settings-badge{display:inline-flex;align-items:center;border:1px solid rgba(143,223,234,.32);background:rgba(143,223,234,.07);color:var(--mdd-aqua);border-radius:999px;padding:9px 13px;font-size:.72rem;font-weight:850;letter-spacing:.05em}
+.mdd-inline-notice{margin-top:14px;border:1px solid rgba(236,212,142,.28);background:rgba(236,212,142,.06);border-radius:14px;padding:12px 14px;color:var(--mdd-text);font-size:.84rem;line-height:1.55}
+.mdd-connection-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
+.mdd-connection-card{min-width:0;border:1px solid var(--mdd-border);border-radius:20px;padding:20px;background:radial-gradient(circle at 92% 6%,rgba(157,116,238,.12),transparent 31%),rgba(5,10,24,.76);box-shadow:inset 0 0 30px rgba(255,255,255,.012)}
+.mdd-connection-card h3{font-size:1.25rem;margin:5px 0 8px}.mdd-connection-card p{color:var(--mdd-muted);font-size:.84rem;line-height:1.6}
+.mdd-public-card{grid-column:span 2;background:radial-gradient(circle at 92% 6%,rgba(143,223,234,.12),transparent 31%),radial-gradient(circle at 12% 92%,rgba(193,171,255,.10),transparent 34%),rgba(5,10,24,.78)}
+.mdd-reference-card{background:radial-gradient(circle at 88% 8%,rgba(236,212,142,.10),transparent 30%),rgba(5,10,24,.75)}
+.mdd-connection-card form{display:grid;gap:8px;margin-top:14px}.mdd-connection-card label{font-size:.78rem;font-weight:800;color:var(--mdd-text)}
+.mdd-connection-card input,.mdd-connection-card select{width:100%;font:inherit;color:var(--mdd-text);background:rgba(2,5,15,.74);border:1px solid rgba(201,188,248,.28);border-radius:12px;padding:11px 12px}
+.mdd-connection-card input:focus,.mdd-connection-card select:focus{outline:none;border-color:var(--mdd-aqua);box-shadow:0 0 0 3px rgba(143,223,234,.10)}
+.mdd-connection-card button{border:1px solid rgba(193,171,255,.34);border-radius:999px;padding:10px 14px;background:linear-gradient(110deg,rgba(193,171,255,.94),rgba(236,212,142,.90));color:#120c25;font-weight:850;cursor:pointer}
+.mdd-connection-card button.mdd-secondary{background:rgba(157,137,247,.09);color:var(--mdd-text);border-color:var(--mdd-border)}
+.mdd-connection-card button:disabled{opacity:.38;cursor:not-allowed}.mdd-form-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.mdd-form-actions form{margin:0}
+.mdd-doc-link{display:inline-flex;margin-top:14px;color:#eddcff;text-decoration:none;font-size:.8rem;font-weight:800}.mdd-doc-link:hover{text-decoration:underline}
+.mdd-fine{font-size:.76rem!important}.mdd-subpanel{margin-top:18px;border-top:1px solid var(--mdd-border);padding-top:16px}
+.mdd-quote-result{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;border:1px solid rgba(143,223,234,.22);border-radius:14px;padding:12px;background:rgba(2,8,19,.56)}
+.mdd-quote-result strong{width:100%;color:var(--mdd-text)}.mdd-quote-result span{border:1px solid var(--mdd-border);border-radius:999px;padding:5px 9px;color:var(--mdd-text);font-size:.78rem}.mdd-quote-result small{width:100%;color:var(--mdd-muted)}
+@media(max-width:1050px){.mdd-connection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mdd-public-card{grid-column:span 2}}
+@media(max-width:700px){.mdd-connection-grid{grid-template-columns:1fr}.mdd-public-card{grid-column:auto}}
