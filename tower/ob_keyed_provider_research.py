@@ -274,7 +274,7 @@ def _bea(symbol: str, secret: str, *, opener=None) -> dict:
         raise ValueError("provider response hold")
     return {
         "provider": "bea",
-        "kind": "OFFICIAL_US_QUARTERLY_GDP_CONTEXT",
+        "kind": "OFFICIAL_US_QUARTERLY_NOMINAL_GDP_CONTEXT",
         "symbol": symbol,
         "observations": observations,
         "unit": "BILLIONS_OF_CURRENT_DOLLARS_SAAR",
