@@ -1,22 +1,31 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Connection held · OB Market Data Desk</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_public_owner_connection.css') }}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connection held · OB Market Data Desk</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_public_owner_connection.css') }}?v=obconnect0930">
 </head>
-<body>
-<main class="shell">
-  <nav><a href="/ob/data-desk">← Market Data Desk</a><a href="/tower/start">Tower landing</a></nav>
-  <div class="eyebrow">THE OBSERVATORY · SOULAANA · SAFE HOLD</div>
-  <h1>Connection <em>held.</em></h1>
-  <section class="card" role="alert">
-    <span class="tag hold">No Public authentication attempted</span>
-    <h2>{{ hold_code }}</h2>
-    <p>{{ hold_message }}</p>
-    <p>For your safety the submitted key has not been repeated on this screen. Do not send it through chat or screenshots.</p>
-    <p><a href="/ob/data-desk/public">Return to Public connection ↗</a></p>
-  </section>
-</main>
+<body data-ob-room="market-data-desk" data-ob-subroom="public-connection-hold" data-ob-data-desk-route-enabled="true" data-ob-live-auto-locked="true">
+  <div class="ob-sky" aria-hidden="true"><div class="ob-sky__weather"></div><div class="ob-sky__horizon"></div><div class="ob-sky__grid"></div></div>
+  <div id="ob-app" class="connection-app">
+    <main class="ob-layer connection-shell hold-shell">
+      <header class="connection-hero compact-hero">
+        <div><span class="eyebrow">THE OBSERVATORY · SOULAANA · SAFE HOLD</span><h1>Connection <em>held.</em></h1><p class="intro">The connection stopped before Public authentication could proceed.</p></div>
+      </header>
+      <section class="card hold-card" role="alert">
+        <span class="tag hold">No Public authentication attempted</span>
+        <h2>{{ hold_code }}</h2>
+        <p>{{ hold_message }}</p>
+        <p>For your safety the submitted key has not been repeated on this screen. Do not send it through chat or screenshots.</p>
+        <div class="hold-actions"><a href="/ob/data-desk/public">Return to Public connection →</a><a href="/ob/data-desk">Market Data Desk</a></div>
+      </section>
+    </main>
+  </div>
+  <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
+  <script src="/static/ob/ob_session_state.js"></script>
+  <script src="/static/ob/ob_global_session_shell.js"></script>
 </body>
 </html>
