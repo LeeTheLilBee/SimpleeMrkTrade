@@ -53,6 +53,7 @@ def test_owner_only_get_does_not_create_source_or_make_provider_calls(env):
     page = client.get(desk.PATH)
     assert page.status_code == 200
     assert b"Finnhub" in page.data and b"Alpha Vantage" in page.data
+    assert b"Twelve Data" in page.data and b"Finazon" in page.data
     assert b"SEC EDGAR" in page.data and b"Public" in page.data
     assert calls == []
     assert memory.status("tower_session_synthetic_only_123456789")[0]["present"] is False
@@ -89,6 +90,22 @@ def test_save_verify_forget_no_key_in_html_or_cookie(env):
     assert send(client, operation="forget").status_code == 303
     assert raw.encode() not in client.get(desk.PATH).data
     assert memory.get("tower_session_synthetic_only_123456789", "finnhub") is None
+
+
+def test_all_four_provider_slots_are_independent(env):
+    _, client, gate, memory, _ = env
+    gate["owner"] = True
+    client.get(desk.PATH)
+    providers = ("finnhub", "alpha_vantage", "twelve_data", "finazon")
+    for index, provider in enumerate(providers):
+        secret = f"PRIVATE_SYNTHETIC_KEY_{index}_ABCDEFG"
+        assert send(client, provider=provider, secret=secret).status_code == 303
+        item = memory.get("tower_session_synthetic_only_123456789", provider)
+        assert item is not None and item.value == secret
+    statuses = memory.status("tower_session_synthetic_only_123456789")
+    assert len(statuses) == 4
+    assert all(row["present"] for row in statuses)
+    assert all("value" not in row and "secret" not in row for row in statuses)
 
 
 def test_each_vendor_uses_independent_slot_and_expires(env):
@@ -190,5 +207,26 @@ def test_fixed_official_probe_endpoints_and_sanitized_response():
     assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=provider_message) == "PROVIDER_MESSAGE"
     malformed = _FakeOpener({"unexpected": True})
     assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=malformed) == "RESPONSE_SHAPE_HOLD"
+
+    twelve = _FakeOpener({
+        "symbol": "AAPL", "timestamp": 1780240000, "close": "250.00"
+    })
+    assert desk.probe_one("twelve_data", "PRIVATE_TWELVE_TEST", opener=twelve) == "READ_ONLY_CHECK_PASSED"
+    assert twelve.requests[0].full_url == "https://api.twelvedata.com/quote?symbol=AAPL"
+    assert twelve.requests[0].get_header("Authorization") == "apikey PRIVATE_TWELVE_TEST"
+    assert "PRIVATE_TWELVE_TEST" not in twelve.requests[0].full_url
+
+    finazon = _FakeOpener({
+        "1d": {"c": 250}, "lt": {"p": 250.1, "tm": 1780240000000},
+        "52w": {"h": 260, "l": 170, "av": 1000},
+        "ch": {"dap": 1}, "p1d": {"c": 248}
+    })
+    assert desk.probe_one("finazon", "PRIVATE_FINAZON_TEST", opener=finazon) == "READ_ONLY_CHECK_PASSED"
+    assert finazon.requests[0].full_url == (
+        "https://api.finazon.io/latest/finazon/us_stocks_essential/ticker_snapshot?ticker=AAPL"
+    )
+    assert finazon.requests[0].get_header("Authorization") == "apikey PRIVATE_FINAZON_TEST"
+    assert "PRIVATE_FINAZON_TEST" not in finazon.requests[0].full_url
+
     with pytest.raises(ValueError):
         desk.probe_one("custom-url", "PRIVATE_ALPHA_TEST", opener=alpha)
