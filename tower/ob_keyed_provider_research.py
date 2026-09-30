@@ -1,14 +1,18 @@
-"""Tower owner-only normalized research from temporary Finnhub/Alpha Vantage keys.
+"""Tower owner-only normalized research from temporary provider keys.
 
-This corridor is deliberately NOT a live quote feed, scanner install, broker route
-or durable secret store. It is a user-triggered, bounded read-only research
-projection for the current Tower owner session.
+This corridor is a bounded, user-triggered read-only projection for the current
+Tower owner session. It never grants trading, capital, broker or mode authority.
 
-- Finnhub: company profile reference only (no quote endpoint).
-- Alpha Vantage: raw completed daily history only (TIME_SERIES_DAILY compact).
+- Finnhub: company profile reference only.
+- Alpha Vantage: completed daily history only.
+- Finazon: commercial-license-free US Equities Basic market context; the
+  free-forever trial is restricted to AAPL, TSLA and GOOG.
+- BEA: official public-domain U.S. macroeconomic statistics.
+- EIA uses the separate Official Catalyst Radar so its energy series are not
+  duplicated in this corridor.
 - Every provider requires separate source-use + owner-display review flags.
 - Soulaana content requires a separate provider-specific AI-use review flag.
-- Temporary keys remain in the existing in-memory key desk and never enter JSON.
+- Temporary keys remain in the in-memory Key Desk and never enter JSON.
 """
 from __future__ import annotations
 
@@ -29,7 +33,8 @@ from tower.ob_public_owner_connection import _owner_sid
 
 PATH = "/ob/research/providers.json"
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,15}$")
-PROVIDERS = ("finnhub", "alpha_vantage")
+PROVIDERS = ("finnhub", "alpha_vantage", "finazon", "bea")
+FINAZON_FREE_SYMBOLS = frozenset({"AAPL", "TSLA", "GOOG"})
 MAX_RESPONSE = 900_000
 CACHE_TTL = timedelta(minutes=5)
 
@@ -157,6 +162,128 @@ def _alpha_vantage(symbol: str, secret: str, *, opener=None) -> dict:
     }
 
 
+
+def _finazon(symbol: str, secret: str, *, opener=None) -> dict:
+    """One commercial-license-free, venue-limited real-time snapshot.
+
+    Free-trial access is explicitly restricted by Finazon to AAPL/TSLA/GOOG.
+    This is derived/venue-limited context, never SIP/NBBO or execution authority.
+    """
+    if symbol not in FINAZON_FREE_SYMBOLS:
+        return {
+            "provider": "finazon", "kind": "DERIVED_REALTIME_EQUITY_CONTEXT",
+            "symbol": symbol, "trial_symbol_limited": True,
+            "eligible_trial_symbols": sorted(FINAZON_FREE_SYMBOLS),
+            "source_reference": "https://finazon.io/dataset/us_stocks_essential",
+            "historical_only": False, "live_quote": False,
+            "real_time_market_context": False, "consolidated_quote": False,
+            "trial_access_state": "SYMBOL_NOT_IN_FREE_TRIAL",
+        }
+    url = "https://api.finazon.io/v2.0/finazon/us_stocks_essential/ticker_snapshot?" + urlencode({
+        "ticker": symbol, "apikey": secret})
+    doc = _read_json(Request(url, headers={"Accept": "application/json"}, method="GET"),
+                     opener=opener)
+    last_trade = doc.get("lt")
+    day = doc.get("1d")
+    prior = doc.get("p1d")
+    year = doc.get("52w")
+    change = doc.get("ch")
+    if not all(isinstance(x, dict) for x in (last_trade, day, prior, year, change)):
+        raise ValueError("provider response hold")
+    try:
+        trade_price = float(last_trade["p"])
+        trade_size = int(last_trade["s"])
+        trade_time_ms = int(last_trade["tm"])
+        day_values = {k: float(day[k]) for k in ("o", "h", "l", "c")}
+        day_volume = int(float(day["v"]))
+        prior_close = float(prior["c"])
+        high_52w = float(year["h"])
+        low_52w = float(year["l"])
+        daily_change_pct = float(change["dap"])
+    except (KeyError, TypeError, ValueError, OverflowError):
+        raise ValueError("provider response hold") from None
+    numbers = [trade_price, *day_values.values(), prior_close, high_52w,
+               low_52w, daily_change_pct]
+    if not all(isfinite(x) for x in numbers) or min(trade_price, *day_values.values(),
+                                                    prior_close, high_52w, low_52w) <= 0:
+        raise ValueError("provider response hold")
+    if trade_size < 0 or trade_time_ms <= 0 or day_volume < 0:
+        raise ValueError("provider response hold")
+    if day_values["l"] > min(day_values["o"], day_values["c"]) or             day_values["h"] < max(day_values["o"], day_values["c"]):
+        raise ValueError("provider response hold")
+    return {
+        "provider": "finazon",
+        "kind": "DERIVED_REALTIME_EQUITY_CONTEXT",
+        "symbol": symbol,
+        "last_trade": {"timestamp_ms": trade_time_ms, "price": trade_price, "size": trade_size},
+        "session": {**day_values, "volume": day_volume},
+        "prior_close": prior_close,
+        "high_52w": high_52w, "low_52w": low_52w,
+        "daily_change_percent": daily_change_pct,
+        "source_reference": "https://finazon.io/dataset/us_stocks_essential",
+        "historical_only": False,
+        "live_quote": False,
+        "real_time_market_context": True,
+        "consolidated_quote": False,
+        "coverage": "DERIVED_IEX_AND_LIMITED_US_VENUES",
+        "trial_symbol_limited": True,
+    }
+
+
+def _bea(symbol: str, secret: str, *, opener=None) -> dict:
+    """Official quarterly nominal GDP context from BEA NIPA table 1.1.5.
+
+    The macro observation applies to the whole U.S. economy; symbol is retained
+    only to keep this route's per-symbol research packet self-contained.
+    """
+    year = _now().year
+    url = "https://apps.bea.gov/api/data?" + urlencode({
+        "UserID": secret,
+        "method": "GetData",
+        "DataSetName": "NIPA",
+        "TableName": "T10105",
+        "Frequency": "Q",
+        "Year": f"{year-1},{year}",
+        "ResultFormat": "JSON",
+    })
+    doc = _read_json(Request(url, headers={"Accept": "application/json"}, method="GET"),
+                     opener=opener)
+    bea = doc.get("BEAAPI")
+    results = bea.get("Results") if isinstance(bea, dict) else None
+    rows = results.get("Data") if isinstance(results, dict) else None
+    if not isinstance(rows, list):
+        raise ValueError("provider response hold")
+    observations = []
+    for row in rows:
+        if not isinstance(row, dict) or str(row.get("LineNumber")) != "1":
+            continue
+        period = row.get("TimePeriod")
+        raw = row.get("DataValue")
+        if not isinstance(period, str) or not re.fullmatch(r"20\d{2}Q[1-4]", period):
+            continue
+        try:
+            value = Decimal(str(raw).replace(",", ""))
+        except Exception:
+            continue
+        if not value.is_finite() or value <= 0:
+            continue
+        observations.append({"period": period, "value": str(value)})
+    observations.sort(key=lambda x: x["period"], reverse=True)
+    observations = observations[:4]
+    if not observations:
+        raise ValueError("provider response hold")
+    return {
+        "provider": "bea",
+        "kind": "OFFICIAL_US_QUARTERLY_NOMINAL_GDP_CONTEXT",
+        "symbol": symbol,
+        "observations": observations,
+        "unit": "BILLIONS_OF_CURRENT_DOLLARS_SAAR",
+        "source_reference": "https://apps.bea.gov/api/",
+        "historical_only": True,
+        "live_quote": False,
+        "public_domain_source": True,
+    }
+
 def _soulaana(rows: list[dict]) -> dict:
     """Examine only independently AI-reviewed bounded provider evidence.
 
@@ -195,7 +322,7 @@ def _soulaana(rows: list[dict]) -> dict:
                 "Confirm issuer identity and material events in the separate SEC research corridor. "
                 "This profile establishes neither a current stock/option quote nor an investment signal."
             )
-        else:
+        elif provider == "alpha_vantage":
             bars = row.get("bars", [])
             latest = bars[0]
             item["summary"] = {
@@ -227,6 +354,43 @@ def _soulaana(rows: list[dict]) -> dict:
             item["what_is_missing"] = (
                 "The latest intraday market, options chain, data entitlement and issuer-event "
                 "cross-check remain separate; do not extrapolate a current price or trade signal."
+            )
+        elif provider == "finazon":
+            trade = row["last_trade"]
+            session = row["session"]
+            item["summary"] = {
+                "last_trade_price": trade["price"],
+                "last_trade_timestamp_ms": trade["timestamp_ms"],
+                "session_open": session["o"], "session_high": session["h"],
+                "session_low": session["l"], "session_close": session["c"],
+                "daily_change_percent": row["daily_change_percent"],
+                "high_52w": row["high_52w"], "low_52w": row["low_52w"],
+            }
+            item["finding"] = (
+                f"Finazon US Equities Basic reports venue-limited derived real-time context for "
+                f"{row['symbol']}; latest source trade {trade['price']:.4f}, "
+                f"session range {session['l']:.4f}-{session['h']:.4f}. "
+                "This is not SIP/NBBO or a consolidated execution quote."
+            )
+            item["what_is_missing"] = (
+                "A consolidated market quote, options chain, broker-side entitlement and execution "
+                "context remain separate. Treat this as one corroborating market-data source."
+            )
+        else:
+            observations = row["observations"]
+            latest = observations[0]
+            item["summary"] = {
+                "latest_period": latest["period"], "latest_value": latest["value"],
+                "observation_count": len(observations),
+            }
+            item["finding"] = (
+                f"BEA's official NIPA data reports the latest available quarterly GDP observation "
+                f"as {latest['value']} for {latest['period']}. This is U.S. macroeconomic context, "
+                "not security-specific price evidence."
+            )
+            item["what_is_missing"] = (
+                "Market reaction, current security pricing and causality must be established separately; "
+                "a GDP observation alone does not create a trade candidate."
             )
         readable.append(item)
     return {
@@ -289,11 +453,19 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
             rows.append(cached)
             continue
         try:
-            payload = (
-                _finnhub(symbol, item.value, opener=opener)
-                if provider == "finnhub"
-                else _alpha_vantage(symbol, item.value, opener=opener)
-            )
+            if provider == "finnhub":
+                payload = _finnhub(symbol, item.value, opener=opener)
+            elif provider == "alpha_vantage":
+                payload = _alpha_vantage(symbol, item.value, opener=opener)
+            elif provider == "finazon":
+                payload = _finazon(symbol, item.value, opener=opener)
+                if payload.get("trial_access_state") == "SYMBOL_NOT_IN_FREE_TRIAL":
+                    row = {"state": "FREE_TRIAL_SYMBOL_HOLD", **payload}
+                    cache.put(key, row)
+                    rows.append(row)
+                    continue
+            else:
+                payload = _bea(symbol, item.value, opener=opener)
             row = {"state": "SOURCE_BOUND", **payload}
         except Exception:
             row = {"provider": provider, "state": "SOURCE_HOLD"}
@@ -306,7 +478,11 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
         "owner_session_checked": True,
         "source_only": True,
         "provider_research": rows,
-        "live_prices_attached": False,
+        "live_prices_attached": any(
+            row.get("provider") == "finazon" and row.get("state") == "SOURCE_BOUND"
+            and row.get("real_time_market_context") is True
+            for row in rows
+        ),
         "positions_attached": False,
         "orders_attached": False,
         "may_authorize_order": False,

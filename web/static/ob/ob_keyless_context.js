@@ -70,7 +70,7 @@
   const keyedProviderResearch = el("section", "ob-keyless-soulaana");
   keyedProviderResearch.setAttribute("aria-label", "Connected provider research");
   keyedProviderResearch.append(el("p", "ob-keyless-status",
-    "Enter a ticker and choose View reference to request approved Finnhub/Alpha research through Tower."));
+    "Enter a ticker and choose View reference to request approved provider research through Tower."));
   root.append(heading, lookup, status, grid, soulaana, providerSoulaana, keyedProviderResearch, footer);
   let inFlight = 0;
   let currentSymbol = locationSymbol();
@@ -280,11 +280,14 @@
   // A second, independent same-origin Tower read shares only sanitized status.
   // Public account IDs, temporary provider secrets and vendor/source responses
   // never cross this endpoint or reach Soulaana. Failure is a visible HOLD.
-  const PROVIDER_ORDER = ["public", "finnhub", "alpha_vantage", "sec", "bls", "treasury", "openfigi"];
+  const PROVIDER_ORDER = ["public", "finnhub", "alpha_vantage", "finazon", "eia", "bea", "sec", "bls", "treasury", "openfigi"];
   const PROVIDER_STATES = Object.freeze({
     public: new Set(["TEMPORARY_ACCOUNT_LINK_VERIFIED", "OWNER_SELECTION_REQUIRED", "TEMPORARY_AUTH_ONLY", "NO_VERIFIED_ACCOUNT_LINK"]),
     finnhub: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
     alpha_vantage: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
+    finazon: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
+    eia: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
+    bea: new Set(["READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"]),
     sec: new Set(["SEPARATE_ISSUER_RESEARCH_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
     bls: new Set(["USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
     treasury: new Set(["USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW_HOLD"]),
@@ -300,7 +303,7 @@
         data.live_feed_count_verified !== null || data.no_browser_provider_credentials !== true ||
         data.may_authorize_order !== false || data.may_authorize_capital !== false ||
         data.may_change_trading_mode !== false || !Array.isArray(data.provider_status) ||
-        data.provider_status.length !== 7 || !brief ||
+        data.provider_status.length !== 10 || !brief ||
         brief.schema !== "OB_SOULAANA_PROVIDER_CONNECTION_STATUS_V1" ||
         brief.channel !== "SOULAANA_CONNECTION_STATUS_ONLY" ||
         brief.raw_provider_values_included !== false ||
@@ -309,7 +312,7 @@
         brief.source_content_ai_authorized !== false ||
         brief.quote_verified !== false || brief.broker_execution_authorized !== false ||
         brief.capital_authorized !== false || !Array.isArray(brief.provider_register) ||
-        brief.provider_register.length !== 7) return false;
+        brief.provider_register.length !== 10) return false;
     if (["what_i_see", "what_it_means", "what_is_missing", "next_step"].some(
         key => typeof brief[key] !== "string" || brief[key].length > 650)) return false;
     return PROVIDER_ORDER.every((provider, index) => {
@@ -358,21 +361,34 @@
   function validKeyedProviderResearch(packet, symbol) {
     if (!packet || packet.schema !== "OB_KEYED_PROVIDER_RESEARCH_V1" ||
         packet.symbol !== symbol || packet.owner_session_checked !== true ||
-        packet.source_only !== true || packet.live_prices_attached !== false ||
+        packet.source_only !== true || typeof packet.live_prices_attached !== "boolean" ||
         packet.positions_attached !== false || packet.orders_attached !== false ||
         packet.may_authorize_order !== false || packet.may_authorize_capital !== false ||
         packet.may_change_trading_mode !== false ||
-        !Array.isArray(packet.provider_research) || packet.provider_research.length !== 2)
+        !Array.isArray(packet.provider_research) || packet.provider_research.length !== 4)
       return false;
-    const ids = ["finnhub", "alpha_vantage"];
+    const ids = ["finnhub", "alpha_vantage", "finazon", "bea"];
     if (!packet.provider_research.every((row, index) =>
       row && row.provider === ids[index] &&
-      ["NOT_CONNECTED", "RIGHTS_OR_FETCH_HOLD", "SOURCE_HOLD", "SOURCE_BOUND"].includes(row.state)))
+      ["NOT_CONNECTED", "RIGHTS_OR_FETCH_HOLD", "SOURCE_HOLD", "SOURCE_BOUND", "FREE_TRIAL_SYMBOL_HOLD"].includes(row.state)))
+      return false;
+    const finazon = packet.provider_research[2];
+    const hasFinazonPrice = finazon.state === "SOURCE_BOUND" &&
+      finazon.real_time_market_context === true &&
+      finazon.consolidated_quote === false &&
+      finazon.live_quote === false;
+    if (packet.live_prices_attached !== hasFinazonPrice) return false;
+    if (finazon.state === "FREE_TRIAL_SYMBOL_HOLD" &&
+        (finazon.trial_access_state !== "SYMBOL_NOT_IN_FREE_TRIAL" ||
+         !Array.isArray(finazon.eligible_trial_symbols) ||
+         finazon.eligible_trial_symbols.join(",") !== "AAPL,GOOG,TSLA"))
       return false;
     const brief = packet.soulaana_research;
     const refs = {
       finnhub: "https://finnhub.io/docs/api/company-profile2",
-      alpha_vantage: "https://www.alphavantage.co/documentation/#daily"
+      alpha_vantage: "https://www.alphavantage.co/documentation/#daily",
+      finazon: "https://finazon.io/dataset/us_stocks_essential",
+      bea: "https://apps.bea.gov/api/"
     };
     return brief && brief.schema === "OB_SOULAANA_KEYED_PROVIDER_RESEARCH_V1" &&
       brief.channel === "SOULAANA_REVIEWED_PROVIDER_RESEARCH" &&
@@ -385,14 +401,14 @@
       brief.broker_execution_authorized === false &&
       brief.capital_authorized === false &&
       brief.may_change_trading_mode === false &&
-      Array.isArray(brief.observations) && brief.observations.length <= 2 &&
+      Array.isArray(brief.observations) && brief.observations.length <= 4 &&
       brief.observations.every(item =>
         item && ids.includes(item.provider) &&
         packet.provider_research.some(row => row.provider === item.provider && row.state === "SOURCE_BOUND") &&
         item.symbol === symbol && item.source_reference === refs[item.provider] &&
         item.research_only === true && item.live_quote === false &&
-        typeof item.finding === "string" && item.finding.length > 0 && item.finding.length <= 650 &&
-        typeof item.what_is_missing === "string" && item.what_is_missing.length <= 300 &&
+        typeof item.finding === "string" && item.finding.length > 0 && item.finding.length <= 700 &&
+        typeof item.what_is_missing === "string" && item.what_is_missing.length <= 360 &&
         item.summary && typeof item.summary === "object");
   }
 
@@ -418,6 +434,12 @@
         } else if (row.state === "SOURCE_BOUND" && row.provider === "alpha_vantage") {
           detail += " · " + (Array.isArray(row.bars) ? row.bars.length : 0) +
             " completed daily sessions";
+        } else if (row.state === "SOURCE_BOUND" && row.provider === "finazon") {
+          detail += " · derived real-time US equity context · not SIP/NBBO";
+        } else if (row.provider === "finazon" && row.state === "FREE_TRIAL_SYMBOL_HOLD") {
+          detail += " · free trial supports AAPL / TSLA / GOOG";
+        } else if (row.state === "SOURCE_BOUND" && row.provider === "bea") {
+          detail += " · official US macro context";
         }
         line.append(el("strong", "", row.provider.replace("_", " ").toUpperCase() + " · "),
           el("span", "", detail));
@@ -433,9 +455,13 @@
       brief.observations.forEach(item => {
         const record = el("article", "ob-keyless-evidence-item");
         const reference = el("a", "ob-keyless-docs", "Provider source ↗");
-        reference.href = item.provider === "finnhub"
-          ? "https://finnhub.io/docs/api/company-profile2"
-          : "https://www.alphavantage.co/documentation/#daily";
+        const refs = {
+          finnhub: "https://finnhub.io/docs/api/company-profile2",
+          alpha_vantage: "https://www.alphavantage.co/documentation/#daily",
+          finazon: "https://finazon.io/dataset/us_stocks_essential",
+          bea: "https://apps.bea.gov/api/"
+        };
+        reference.href = refs[item.provider];
         reference.target = "_blank"; reference.rel = "noopener noreferrer";
         record.append(el("strong", "", item.provider.toUpperCase() + " · REVIEWED RESEARCH"),
           el("p", "", item.finding),
@@ -445,7 +471,7 @@
       });
       keyedProviderResearch.replaceChildren(title, rows, reviewed,
         el("p", "ob-keyless-footer",
-          "Deterministic, source-specific examination; no external AI model call. Historical/reference research only. No live quote, candidate, broker action or trading-mode change."));
+          "Deterministic, source-specific examination; no external AI model call. Finazon may supply venue-limited realtime market context, while other rows are historical/reference or macro research. No consolidated quote, candidate, broker action or trading-mode change."));
     } catch (_) {
       keyedProviderResearch.replaceChildren(el("p", "ob-keyless-soulaana-hold",
         "Keyed provider research is unavailable or held. No provider data is assumed."));

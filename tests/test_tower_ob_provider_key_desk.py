@@ -53,6 +53,7 @@ def test_owner_only_get_does_not_create_source_or_make_provider_calls(env):
     page = client.get(desk.PATH)
     assert page.status_code == 200
     assert b"Finnhub" in page.data and b"Alpha Vantage" in page.data
+    assert b"Finazon" in page.data and b"U.S. EIA" in page.data and b"U.S. BEA" in page.data
     assert b"SEC EDGAR" in page.data and b"Public" in page.data
     assert calls == []
     assert memory.status("tower_session_synthetic_only_123456789")[0]["present"] is False
@@ -190,5 +191,15 @@ def test_fixed_official_probe_endpoints_and_sanitized_response():
     assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=provider_message) == "PROVIDER_MESSAGE"
     malformed = _FakeOpener({"unexpected": True})
     assert desk.probe_one("alpha_vantage", "PRIVATE_ALPHA_TEST", opener=malformed) == "RESPONSE_SHAPE_HOLD"
+    finazon = _FakeOpener({"api_calls": {"limit": 1000, "usage": 10}})
+    assert desk.probe_one("finazon", "PRIVATE_FINAZON_TEST", opener=finazon) == "READ_ONLY_CHECK_PASSED"
+    assert "finazon/us_stocks_essential/api_usage" in finazon.requests[0].full_url
+    assert "PRIVATE_FINAZON_TEST" in finazon.requests[0].full_url
+    eia = _FakeOpener({"response": {"routes": [{"id": "retail-sales"}]}})
+    assert desk.probe_one("eia", "PRIVATE_EIA_TEST", opener=eia) == "READ_ONLY_CHECK_PASSED"
+    assert eia.requests[0].full_url.startswith("https://api.eia.gov/v2/electricity?")
+    bea = _FakeOpener({"BEAAPI": {"Results": {"Dataset": [{"DatasetName": "NIPA"}]}}})
+    assert desk.probe_one("bea", "PRIVATE_BEA_TEST", opener=bea) == "READ_ONLY_CHECK_PASSED"
+    assert "method=GETDATASETLIST" in bea.requests[0].full_url
     with pytest.raises(ValueError):
         desk.probe_one("custom-url", "PRIVATE_ALPHA_TEST", opener=alpha)

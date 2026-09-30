@@ -170,11 +170,12 @@ class OfficialCatalystRadar:
         # warehouse, no background workers, no historical license inference.
         self._revision_ledger = RevisionLedger()
 
-    def _fetch(self, source):
+    def _fetch(self, source, *, eia_key=None):
         if source == "eia":
-            if not self.eia_key:
+            resolved_key = eia_key or self.eia_key
+            if not resolved_key:
                 return "KEY_REQUIRED", []
-            item = self.client.eia(self.eia_key)
+            item = self.client.eia(resolved_key)
         else:
             item = getattr(self.client, source)()
         if (not isinstance(item, dict) or
@@ -213,7 +214,7 @@ class OfficialCatalystRadar:
                 raise SourceHold("SOURCE_REFERENCE_HOLD")
         return state, facts
 
-    def snapshot(self):
+    def snapshot(self, *, eia_key=None):
         with self._lock:
             now = self._clock()
             if now.tzinfo is None or now.utcoffset() is None:
@@ -232,7 +233,7 @@ class OfficialCatalystRadar:
                     row["cache_hit"] = True
                 else:
                     try:
-                        state, facts = self._fetch(source)
+                        state, facts = self._fetch(source, eia_key=eia_key)
                         # Record only independently validated successful
                         # receipts; hold/failure cannot reuse prior raw facts.
                         markers = (self._revision_ledger.record(source, facts)

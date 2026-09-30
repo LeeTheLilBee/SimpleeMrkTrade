@@ -1,4 +1,4 @@
-"""Soulaana source-status only handoff for Tower's seven provider lanes.
+"""Soulaana source-status only handoff for Tower provider lanes.
 
 The input is Tower's *already sanitized* same-session connection projection,
 not a vendor response, provider credential, raw account object, or market data.
@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-ORDER = ("public", "finnhub", "alpha_vantage", "sec", "bls", "treasury", "openfigi")
+ORDER = ("public", "finnhub", "alpha_vantage", "finazon", "eia", "bea", "sec", "bls", "treasury", "openfigi")
 KEY_STATES = frozenset({"READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"})
 PUBLIC_STATES = frozenset({
     "TEMPORARY_ACCOUNT_LINK_VERIFIED", "OWNER_SELECTION_REQUIRED",
@@ -19,6 +19,7 @@ REFERENCE_STATES = frozenset({"USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW
 SEC_STATES = frozenset({"SEPARATE_ISSUER_RESEARCH_CONFIGURED", "RIGHTS_REVIEW_HOLD"})
 NAMES = {
     "public": "Public", "finnhub": "Finnhub", "alpha_vantage": "Alpha Vantage",
+    "finazon": "Finazon", "eia": "U.S. EIA", "bea": "U.S. BEA",
     "sec": "SEC EDGAR", "bls": "BLS", "treasury": "U.S. Treasury", "openfigi": "OpenFIGI",
 }
 EXPLANATIONS = {
@@ -36,7 +37,7 @@ EXPLANATIONS = {
 
 
 def build_soulaana_provider_status(packet: Mapping) -> dict:
-    """Allow only the exact non-promoting Tower status document and seven lanes."""
+    """Allow only the exact non-promoting Tower status document and ten lanes."""
     if (
         not isinstance(packet, dict)
         or packet.get("schema") != "OB_TOWER_PROVIDER_CONNECTION_TRUTH_V1"
@@ -63,13 +64,13 @@ def build_soulaana_provider_status(packet: Mapping) -> dict:
         state = row.get("state")
         allowed = (
             PUBLIC_STATES if key == "public" else
-            KEY_STATES if key in {"finnhub", "alpha_vantage"} else
+            KEY_STATES if key in {"finnhub", "alpha_vantage", "finazon", "eia", "bea"} else
             SEC_STATES if key == "sec" else REFERENCE_STATES
         )
         if (
             not isinstance(state, str) or state not in allowed
             or row.get("quote_feed_activated") is not False
-            or (key in {"public", "finnhub", "alpha_vantage"} and (
+            or (key in {"public", "finnhub", "alpha_vantage", "finazon", "eia", "bea"} and (
                 row.get("source_use_rights_verified") is not False
                 or row.get("data_display_rights_verified") is not False
             ))
@@ -95,7 +96,7 @@ def build_soulaana_provider_status(packet: Mapping) -> dict:
     return {
         "schema": "OB_SOULAANA_PROVIDER_CONNECTION_STATUS_V1",
         "channel": "SOULAANA_CONNECTION_STATUS_ONLY",
-        "what_i_see": "I can see seven separately labeled provider connection and rights-review states from Tower.",
+        "what_i_see": "I can see ten separately labeled provider connection and rights-review states from Tower.",
         "what_it_means": "Credential receipt, a read-only probe, source configuration and Public account linkage are different steps; none independently supplies a licensed current market feed.",
         "what_is_missing": "Approved instrument/product data rights, provider provenance, permitted owner display/AI use, verified current prices and execution authority remain separate.",
         "next_step": "Use the protected Market Data Desk for credential checks and source review. Resolve Public's account linkage with Public; do not invent an account ID or substitute historical data for a live quote.",

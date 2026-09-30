@@ -67,6 +67,9 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
         context_service=from_environment(),
     ))
 
+    from tower.ob_provider_key_desk import register_provider_key_desk
+    register_provider_key_desk(app, owner_authorize=_tower_authorize_data_desk)
+
     from engine.market_intake.official_catalyst_radar import (
         from_environment as catalyst_from_environment,
     )
@@ -75,10 +78,8 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
         owner_authorize=_tower_authorize_data_desk,
         catalyst_service=catalyst_from_environment(),
         observatory_event_hub=event_hub,
+        eia_secret_reader=app.extensions["ob_provider_key_secret_reader_v1"],
     ))
-
-    from tower.ob_provider_key_desk import register_provider_key_desk
-    register_provider_key_desk(app, owner_authorize=_tower_authorize_data_desk)
 
     from tower.ob_keyed_provider_research import create_keyed_provider_research_blueprint
     app.register_blueprint(create_keyed_provider_research_blueprint(

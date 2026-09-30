@@ -17,6 +17,7 @@ def create_official_catalyst_blueprint(
     owner_authorize,
     catalyst_service,
     observatory_event_hub=None,
+    eia_secret_reader=None,
 ):
     if not callable(owner_authorize) or not callable(
         getattr(catalyst_service, "snapshot", None)
@@ -26,6 +27,8 @@ def create_official_catalyst_blueprint(
         getattr(observatory_event_hub, "observe_digest", None)
     ):
         raise ValueError("Exact Observatory event hub required")
+    if eia_secret_reader is not None and not callable(eia_secret_reader):
+        raise ValueError("EIA secret reader must be callable")
 
     bp = Blueprint("ob_official_catalyst_radar", __name__)
 
@@ -51,7 +54,19 @@ def create_official_catalyst_blueprint(
         )
 
         try:
-            packet = catalyst_service.snapshot()
+            eia_key = None
+            if eia_secret_reader is not None:
+                from tower.ob_public_owner_connection import _owner_sid
+                sid = _owner_sid()
+                if sid:
+                    item = eia_secret_reader(sid, "eia")
+                    if item is not None:
+                        eia_key = item.value
+            packet = (
+                catalyst_service.snapshot(eia_key=eia_key)
+                if eia_secret_reader is not None
+                else catalyst_service.snapshot()
+            )
             if observatory_event_hub is not None:
                 digest = official_catalyst_fingerprint(packet)
                 try:
