@@ -293,7 +293,7 @@ def _headers(response):
     return response
 
 
-def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
+def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None, desk_return_path=None):
     if not callable(owner_authorize):
         raise ValueError("independent Tower owner/step-up/OB authority required")
     request_opener = opener or _http
@@ -405,7 +405,9 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
                                                        "Quote could not be verified. No fallback used.")
             else:
                 abort(400)
-            return _headers(redirect(PATH, code=303))
+            return _headers(redirect(desk_return_path or PATH, code=303))
+        if desk_return_path:
+            return _headers(redirect(desk_return_path, code=303))
         item = vault.get(sid)
         rights = _quote_policy()
         visible_quote = (
@@ -436,6 +438,7 @@ def register_public_owner_connection(app: Flask, *, owner_authorize):
     store = OwnerConnectionStore()
     app.register_blueprint(create_public_owner_blueprint(
         owner_authorize=owner_authorize, store=store,
+        desk_return_path="/ob/data-desk#provider-connections",
     ))
 
     @app.before_request
@@ -455,6 +458,28 @@ def register_public_owner_connection(app: Flask, *, owner_authorize):
         }
 
     app.extensions["ob_public_owner_status_reader_v1"] = _safe_owner_connection_status
+
+    def _safe_owner_connection_ui():
+        sid = _owner_sid()
+        item = store.get(sid) if sid else None
+        rights = _quote_policy()
+        visible_quote = (
+            item.last_quote if item and item.last_quote
+            and rights.permits({item.last_quote["kind"]}) else None
+        )
+        return {
+            "csrf": _csrf() if sid else "",
+            "connect_enabled": _flag("OB_PUBLIC_OWNER_CONNECT_ENABLED"),
+            "is_connected": bool(item and item.account_id),
+            "selection_options": _public_selection_view(item),
+            "selected_account_kind": item.account_kind if item and item.account_id else None,
+            "expires_at": item.expires_at.isoformat() if item else None,
+            "equity_ready": rights.permits({"EQUITY"}),
+            "option_ready": rights.permits({"OPTION"}),
+            "quote": visible_quote,
+            "notice": session.pop("ob_public_owner_notice", ""),
+        }
+    app.extensions["ob_public_owner_ui_reader_v1"] = _safe_owner_connection_ui
     app.extensions["ob_public_owner_connection_v1"] = {
         "path": PATH, "api_key_persisted": False, "bearer_in_cookie": False,
         "in_process_token_seconds": _AUTH_TTL_SECONDS, "broker_execution": False,
