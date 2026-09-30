@@ -45,11 +45,15 @@
   const status = node("p", "ob-keyless-status", "Checking protected official-source corridor…");
   status.setAttribute("role", "status");
   const cards = node("div", "ob-keyless-grid");
-  const explain = node("div", "ob-keyless-soulaana-register");
-  const transport = node("p", "ob-keyless-meta", "Source-only snapshot delivery; WebSocket not enabled.");
-  const provenance = node("section", "ob-keyless-soulaana");
+  const sourceDetails = node("details", "ob-keyless-evidence-drawer");
+  sourceDetails.append(node("summary", "", "Show source records"), cards);
+  const explain = node("div", "ob-catalyst-explanation");
+  const transport = node("p", "ob-keyless-meta ob-catalyst-transport", "Source snapshot active.");
+  const provenance = node("section", "ob-keyless-evidence-body");
   provenance.setAttribute("aria-label", "Soulaana evidence provenance and research triage");
-  panel.append(status, transport, cards, explain, provenance);
+  const provenanceDetails = node("details", "ob-keyless-evidence-drawer");
+  provenanceDetails.append(node("summary", "", "Show provenance & timeline"), provenance);
+  panel.append(status, explain, sourceDetails, provenanceDetails, transport);
   root.append(panel);
 
   function valid(packet) {
@@ -227,7 +231,36 @@
   }
 
   function draw(packet) {
-    cards.replaceChildren(); explain.replaceChildren();
+    cards.replaceChildren();
+    explain.replaceChildren();
+
+    explain.append(
+      node("span", "ob-keyless-eyebrow", "SOULAANA · CATALYST READ"),
+      node("h3", "", "What matters"),
+      node("p", "ob-keyless-lead", packet.soulaana.interpretation)
+    );
+
+    const takeawayWrap = node("div", "ob-keyless-takeaways");
+    packet.soulaana.observations.slice(0, 4).forEach(e => {
+      const first = Array.isArray(e.factual_findings) && e.factual_findings.length
+        ? e.factual_findings[0]
+        : e.how_to_interpret;
+      takeawayWrap.append(node(
+        "span",
+        "ob-keyless-takeaway",
+        e.source.replaceAll("_", " ").toUpperCase() + " · " + first
+      ));
+    });
+    if (!packet.soulaana.observations.length) {
+      takeawayWrap.append(node("span", "ob-keyless-takeaway", "No reviewed catalyst needs attention right now"));
+    }
+    explain.append(takeawayWrap);
+
+    const readiness = packet.soulaana_provenance_triage.selection_readiness;
+    if (readiness && Array.isArray(readiness.next_evidence) && readiness.next_evidence.length) {
+      explain.append(node("p", "ob-keyless-next", "Next: " + readiness.next_evidence[0]));
+    }
+
     packet.sources.forEach(r => {
       const card = node("article", "ob-keyless-card");
       const top = node("div", "ob-keyless-cardtop");
@@ -235,47 +268,25 @@
         node("span", "ob-keyless-badge " + (r.state === "SOURCE_BOUND" ? "good" : "hold"),
           states[r.state]));
       card.append(top);
+
       if (r.state === "SOURCE_BOUND") {
-        if (!r.facts.length) card.append(node("p", "ob-keyless-meta",
-          "No matching observations in this snapshot; this does not establish overall safety."));
-        r.facts.forEach(f => {
-          if (!f || typeof f.title !== "string" || typeof f.period !== "string" ||
-              f.title.length > 250 || f.period.length > 40) return;
-          const item = node("p", "ob-keyless-meta", f.period + " · " +
-            (f.stage ? f.stage + " · " : "") + f.title +
-            (typeof f.value === "string" ? " · " + f.value : ""));
-          card.append(item);
-          if (reference(r.source, f.reference)) card.append(safeLink(r.source, f.reference, "Original record ↗"));
+        r.facts.slice(0, 3).forEach(f => {
+          if (!f || typeof f.title !== "string" || typeof f.period !== "string") return;
+          card.append(node("p", "ob-keyless-meta", f.period + " · " + f.title +
+            (typeof f.value === "string" ? " · " + f.value : "")));
+          if (reference(r.source, f.reference)) {
+            card.append(safeLink(r.source, f.reference, "Original record ↗"));
+          }
         });
-        card.append(node("p", "ob-keyless-meta", "Retrieved: " + (r.retrieved_at || "unavailable")));
-      } else if (r.source === "sec_edgar") {
-        card.append(node("p", "ob-keyless-meta",
-          "Use existing protected Symbol Research for SEC filings; this radar does not re-fetch EDGAR."));
       } else {
-        card.append(node("p", "ob-keyless-meta",
-          "No approved source observation is present. No placeholder, stale value or substitute feed."));
+        card.append(node("p", "ob-keyless-meta", states[r.state]));
       }
-      card.append(safeLink(r.source, r.source_reference, "Source documentation ↗"));
       cards.append(card);
     });
-    explain.append(node("h3", "", "What Soulaana actually examined"),
-      node("p", "ob-keyless-meta", packet.soulaana.interpretation));
-    if (!packet.soulaana.observations.length) {
-      explain.append(node("p", "ob-keyless-meta",
-        "No source has both validated evidence and an independent Soulaana-content review."));
-    }
-    packet.soulaana.observations.forEach(e => {
-      const item = node("article", "ob-keyless-evidence-item");
-      item.append(node("strong", "", e.source.replaceAll("_", " ").toUpperCase()));
-      e.factual_findings.forEach(t => item.append(node("p", "", t)));
-      item.append(node("p", "ob-keyless-meta", e.how_to_interpret),
-        safeLink(e.source, e.source_reference, "Original source ↗"));
-      explain.append(item);
-    });
-    explain.append(node("p", "ob-keyless-footer",
-      "Source publication time is not retrieval time. Deterministic, reviewed evidence explanations only; no external model call, quote, forecast, causality or execution permission."));
+
     drawProvenance(packet);
-    status.textContent = packet.soulaana.observation_count + " independently reviewed source explanations available.";
+    status.textContent = packet.soulaana.observation_count +
+      " reviewed catalyst explanation" + (packet.soulaana.observation_count === 1 ? "" : "s") + ".";
   }
   let socket = null;
   let reconnectTask = null;
