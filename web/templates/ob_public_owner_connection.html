@@ -1,108 +1,108 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Public Connection · OB Market Data Desk</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_public_owner_connection.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_public_owner_connection.css') }}?v=obconnect0930">
 </head>
-<body>
-<main class="shell">
-  <nav><a href="/ob/data-desk">← Market Data Desk</a><a href="/tower/return/observatory">Tower</a></nav>
-  <div class="eyebrow">THE OBSERVATORY · OWNER CONNECTION</div>
-  <h1>Connect <em>Public</em></h1>
-  <p class="intro">One secure owner connection check. No orders, no broker execution, no automatic trading.</p>
-  {% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
-  <div class="cards">
-    <section class="card">
-      <span class="eyebrow">PUBLIC BUSINESS ACCOUNT</span>
-      <h2>Connection</h2>
-      {% if not connect_enabled %}
-        <span class="tag hold">Owner connection is switched off in this runtime</span>
-        <p>The protected page is ready; Tower must first enable the source-only connect feature. Do not share keys in chat or GitHub.</p>
-      {% elif selection_options %}
-        <span class="tag hold">Public authenticated · select an account</span>
-        <p>Public returned more than one recognized account. Choose the intended account; we will not pick one for you. Only a masked API identifier is shown. This temporary selection expires at {{ expires_at }}. No quote or trade has been requested.</p>
-        <form method="post" action="/ob/data-desk/public" autocomplete="off">
-          <input type="hidden" name="csrf" value="{{ csrf }}">
-          <input type="hidden" name="operation" value="select">
-          <label for="account_index">Choose a Public account</label>
-          <select id="account_index" name="account_index" required>
-            <option value="">Choose an account</option>
-            {% for candidate in selection_options %}
-              <option value="{{ candidate.index }}">Account {{ candidate.index }} · {{ candidate.kind }} · ID ending {{ candidate.hint }}</option>
-            {% endfor %}
-          </select>
-          <button type="submit">Use selected account (read-only connection)</button>
-        </form>
-        <p class="fine">No full account IDs, balances, holdings or trading permissions are displayed or requested.</p>
-        <form method="post" action="/ob/data-desk/public" autocomplete="off">
-          <input type="hidden" name="csrf" value="{{ csrf }}">
-          <input type="hidden" name="operation" value="disconnect">
-          <button type="submit" class="secondary">Cancel and discard temporary token</button>
-        </form>
-      {% elif is_connected %}
-        <span class="tag good">Authenticated · temporary</span>
-        <p>One {{ selected_account_kind }} account was selected for source-only API checks. This account type alone does not establish business status or quote permissions. A temporary access token is held in this server process until {{ expires_at }}. Your long-lived Public key is not kept by this connector.</p>
-        <form method="post" action="/ob/data-desk/public" autocomplete="off">
-          <input type="hidden" name="csrf" value="{{ csrf }}">
-          <input type="hidden" name="operation" value="disconnect">
-          <button type="submit" class="secondary">Disconnect and discard temporary token</button>
-        </form>
-      {% else %}
-        <span class="tag hold">Not connected</span>
-        <p>Enter your existing Public API key in this protected form. It is exchanged for a 15-minute access token; OB does not save the long-lived key. This short-lived session expires in 10 minutes or if this server restarts.</p>
-        <form method="post" action="/ob/data-desk/public" autocomplete="off">
-          <input type="hidden" name="csrf" value="{{ csrf }}">
-          <input type="hidden" name="operation" value="connect">
-          <label for="secret">Public API secret key</label>
-          <input id="secret" name="secret" type="password" autocomplete="new-password"
-                 spellcheck="false" minlength="10" maxlength="4096" required>
-          <button type="submit">Connect Public securely</button>
-        </form>
-        <p class="fine">Only use the HTTPS address of our actual Tower/OB site. Do not enter your key in Colab, chat or an unrelated page.</p>
-      {% endif %}
-    </section>
-    <section class="card">
-      <span class="eyebrow">SOURCE-ONLY RESEARCH</span>
-      <h2>Check a quote</h2>
-      {% if not is_connected %}
-        <p>Connect the account first. No prices or provider stream are inferred from an API key alone.</p>
-      {% elif not equity_ready %}
-        <span class="tag hold">Market-data rights review required</span>
-        <p>Authentication works independently of quote use. Exact business-account internal research, owner-display and stock/options data permissions must be enabled in the backend before quote requests can be made. No trading access is granted.</p>
-      {% else %}
-        <form method="post" action="/ob/data-desk/public" autocomplete="off">
-          <input type="hidden" name="csrf" value="{{ csrf }}">
-          <input type="hidden" name="operation" value="quote">
-          <label for="kind">Instrument</label>
-          <select id="kind" name="kind">
-            <option value="EQUITY">Stock</option>
-            {% if option_ready %}<option value="OPTION">Option (exact compact OSI symbol)</option>{% endif %}
-          </select>
-          <label for="symbol">Ticker or compact option symbol</label>
-          <input id="symbol" name="symbol" type="text" maxlength="26"
-                 pattern="[A-Za-z0-9./-]{1,26}" placeholder="AAPL" required>
-          <button type="submit">Check one read-only quote</button>
-        </form>
-        {% if quote %}
-          <div class="result">
-            <span class="eyebrow">PUBLIC SOURCE RESPONSE · NOT AN OB LIVE FEED</span>
-            <p><strong>{{ quote.symbol }}</strong> · {{ quote.kind }}</p>
-            <div class="price"><span>Bid <b>{{ quote.bid }}</b></span><span>Ask <b>{{ quote.ask }}</b></span>
-              {% if quote.last is not none %}<span>Last <b>{{ quote.last }}</b></span>{% endif %}</div>
-            <p>Oldest provider event: {{ quote.observed_at }} · Age at check: {{ quote.age_seconds }} seconds.</p>
-            <span class="tag {{ 'good' if quote.fresh_within_5_seconds else 'hold' }}">
-              {{ 'Event age under 5 seconds; upstream and session truth still unverified' if quote.fresh_within_5_seconds else 'Not a current five-second quote' }}
-            </span>
-          </div>
-        {% endif %}
-      {% endif %}
-    </section>
+<body data-ob-room="market-data-desk" data-ob-subroom="public-connection" data-ob-data-desk-route-enabled="true" data-ob-live-auto-locked="true">
+  <div class="ob-sky" aria-hidden="true"><div class="ob-sky__weather"></div><div class="ob-sky__horizon"></div><div class="ob-sky__grid"></div></div>
+  <div id="ob-app" class="connection-app">
+    <main class="ob-layer connection-shell">
+      <header class="connection-hero">
+        <div>
+          <span class="eyebrow">THE OBSERVATORY · MARKET DATA DESK</span>
+          <h1>Connect <em>Public</em></h1>
+          <p class="intro">A protected owner corridor for authentication and read-only source checks. Authentication never becomes order authority, market-data rights, or automatic trading.</p>
+          <div class="connection-chips"><span>Tower protected</span><span>Owner only</span><span>Temporary session</span><span class="hold-chip">Live Auto locked</span></div>
+        </div>
+        <aside class="soulaana-card">
+          <span class="eyebrow">SOULAANA · CONNECTION GUIDE</span>
+          <h2>Connection first. Entitlement second.</h2>
+          <p>A successful login tells us Public accepted the session. It does not tell us which market data may be used, displayed, retained, analyzed or promoted into OB truth.</p>
+          <a href="/ob/data-desk">Return to Market Data Desk →</a>
+        </aside>
+      </header>
+
+      {% if notice %}<section class="notice" role="status">{{ notice }}</section>{% endif %}
+
+      <div class="cards">
+        <section class="card">
+          <span class="eyebrow">PUBLIC BUSINESS ACCOUNT</span>
+          <h2>Connection</h2>
+          {% if not connect_enabled %}
+            <span class="tag hold">Owner connection is switched off in this runtime</span>
+            <p>The protected page is ready; Tower must first enable the source-only connect feature. Do not share keys in chat or GitHub.</p>
+          {% elif selection_options %}
+            <span class="tag hold">Public authenticated · select an account</span>
+            <p>Public returned more than one recognized account. Choose the intended account; we will not pick one for you. Only a masked API identifier is shown. This temporary selection expires at {{ expires_at }}. No quote or trade has been requested.</p>
+            <form method="post" action="/ob/data-desk/public" autocomplete="off">
+              <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="operation" value="select">
+              <label for="account_index">Choose a Public account</label>
+              <select id="account_index" name="account_index" required><option value="">Choose an account</option>{% for candidate in selection_options %}<option value="{{ candidate.index }}">Account {{ candidate.index }} · {{ candidate.kind }} · ID ending {{ candidate.hint }}</option>{% endfor %}</select>
+              <button type="submit">Use selected account · read only</button>
+            </form>
+            <p class="fine">No full account IDs, balances, holdings or trading permissions are displayed or requested.</p>
+            <form method="post" action="/ob/data-desk/public" autocomplete="off"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="operation" value="disconnect"><button type="submit" class="secondary">Cancel and discard temporary token</button></form>
+          {% elif is_connected %}
+            <span class="tag good">Authenticated · temporary</span>
+            <p>One {{ selected_account_kind }} account was selected for source-only API checks. This account type alone does not establish business status or quote permissions. A temporary access token is held in this server process until {{ expires_at }}. Your long-lived Public key is not kept by this connector.</p>
+            <form method="post" action="/ob/data-desk/public" autocomplete="off"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="operation" value="disconnect"><button type="submit" class="secondary">Disconnect and discard temporary token</button></form>
+          {% else %}
+            <span class="tag hold">Not connected</span>
+            <p>Enter your existing Public API key in this protected form. It is exchanged for a 15-minute access token; OB does not save the long-lived key. This short-lived session expires in 10 minutes or if this server restarts.</p>
+            <form method="post" action="/ob/data-desk/public" autocomplete="off">
+              <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="operation" value="connect">
+              <label for="secret">Public API secret key</label>
+              <input id="secret" name="secret" type="password" autocomplete="new-password" spellcheck="false" minlength="10" maxlength="4096" required>
+              <button type="submit">Connect Public securely</button>
+            </form>
+            <p class="fine">Only use the HTTPS address of our actual Tower/OB site. Do not enter your key in Colab, chat or an unrelated page.</p>
+          {% endif %}
+        </section>
+
+        <section class="card">
+          <span class="eyebrow">SOURCE-ONLY RESEARCH</span>
+          <h2>Check a quote</h2>
+          {% if not is_connected %}
+            <p>Connect the account first. No prices or provider stream are inferred from an API key alone.</p>
+          {% elif not equity_ready %}
+            <span class="tag hold">Market-data rights review required</span>
+            <p>Authentication works independently of quote use. Exact business-account internal research, owner-display and stock/options data permissions must be enabled in the backend before quote requests can be made. No trading access is granted.</p>
+          {% else %}
+            <form method="post" action="/ob/data-desk/public" autocomplete="off">
+              <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="operation" value="quote">
+              <label for="kind">Instrument</label>
+              <select id="kind" name="kind"><option value="EQUITY">Stock</option>{% if option_ready %}<option value="OPTION">Option · exact compact OSI symbol</option>{% endif %}</select>
+              <label for="symbol">Ticker or compact option symbol</label>
+              <input id="symbol" name="symbol" type="text" maxlength="26" pattern="[A-Za-z0-9./-]{1,26}" placeholder="AAPL" required>
+              <button type="submit">Check one read-only quote</button>
+            </form>
+            {% if quote %}
+              <div class="result">
+                <span class="eyebrow">PUBLIC SOURCE RESPONSE · NOT AN OB LIVE FEED</span>
+                <p><strong>{{ quote.symbol }}</strong> · {{ quote.kind }}</p>
+                <div class="price"><span>Bid <b>{{ quote.bid }}</b></span><span>Ask <b>{{ quote.ask }}</b></span>{% if quote.last is not none %}<span>Last <b>{{ quote.last }}</b></span>{% endif %}</div>
+                <p>Oldest provider event: {{ quote.observed_at }} · Age at check: {{ quote.age_seconds }} seconds.</p>
+                <span class="tag {{ 'good' if quote.fresh_within_5_seconds else 'hold' }}">{{ 'Event age under 5 seconds; upstream and session truth still unverified' if quote.fresh_within_5_seconds else 'Not a current five-second quote' }}</span>
+              </div>
+            {% endif %}
+          {% endif %}
+        </section>
+      </div>
+
+      <section class="safety">
+        <span class="eyebrow">SOULAANA · WHAT THIS MEANS</span>
+        <h2>Authentication is one layer of truth.</h2>
+        <p>Market-data entitlement, exchange coverage, timestamps and usage rights must be checked independently. These values do not enter the trading gateway or unlock Manual Live, capital transfers or automatic execution.</p>
+      </section>
+    </main>
   </div>
-  <section class="safety">
-    <strong>Soulaana · What this means</strong>
-    <p>Successful login proves authentication only. Market-data entitlement, exchange coverage, timestamps and usage rights must be checked independently. These values do not enter the trading gateway or unlock Manual Live, capital transfers or automatic execution.</p>
-  </section>
-</main>
+  <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
+  <script src="/static/ob/ob_session_state.js"></script>
+  <script src="/static/ob/ob_global_session_shell.js"></script>
 </body>
 </html>
