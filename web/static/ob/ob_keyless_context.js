@@ -70,7 +70,7 @@
   const keyedProviderResearch = el("section", "ob-keyless-soulaana");
   keyedProviderResearch.setAttribute("aria-label", "Connected provider research");
   keyedProviderResearch.append(el("p", "ob-keyless-status",
-    "Enter a ticker and choose View reference to request approved Finnhub/Alpha research through Tower."));
+    "Enter a ticker and choose View reference to request approved provider research through Tower."));
   root.append(heading, lookup, status, grid, soulaana, providerSoulaana, keyedProviderResearch, footer);
   let inFlight = 0;
   let currentSymbol = locationSymbol();
@@ -361,7 +361,7 @@
   function validKeyedProviderResearch(packet, symbol) {
     if (!packet || packet.schema !== "OB_KEYED_PROVIDER_RESEARCH_V1" ||
         packet.symbol !== symbol || packet.owner_session_checked !== true ||
-        packet.source_only !== true || packet.live_prices_attached !== false ||
+        packet.source_only !== true || typeof packet.live_prices_attached !== "boolean" ||
         packet.positions_attached !== false || packet.orders_attached !== false ||
         packet.may_authorize_order !== false || packet.may_authorize_capital !== false ||
         packet.may_change_trading_mode !== false ||
@@ -371,6 +371,17 @@
     if (!packet.provider_research.every((row, index) =>
       row && row.provider === ids[index] &&
       ["NOT_CONNECTED", "RIGHTS_OR_FETCH_HOLD", "SOURCE_HOLD", "SOURCE_BOUND", "FREE_TRIAL_SYMBOL_HOLD"].includes(row.state)))
+      return false;
+    const finazon = packet.provider_research[2];
+    const hasFinazonPrice = finazon.state === "SOURCE_BOUND" &&
+      finazon.real_time_market_context === true &&
+      finazon.consolidated_quote === false &&
+      finazon.live_quote === false;
+    if (packet.live_prices_attached !== hasFinazonPrice) return false;
+    if (finazon.state === "FREE_TRIAL_SYMBOL_HOLD" &&
+        (finazon.trial_access_state !== "SYMBOL_NOT_IN_FREE_TRIAL" ||
+         !Array.isArray(finazon.eligible_trial_symbols) ||
+         finazon.eligible_trial_symbols.join(",") !== "AAPL,GOOG,TSLA"))
       return false;
     const brief = packet.soulaana_research;
     const refs = {
@@ -396,8 +407,8 @@
         packet.provider_research.some(row => row.provider === item.provider && row.state === "SOURCE_BOUND") &&
         item.symbol === symbol && item.source_reference === refs[item.provider] &&
         item.research_only === true && item.live_quote === false &&
-        typeof item.finding === "string" && item.finding.length > 0 && item.finding.length <= 650 &&
-        typeof item.what_is_missing === "string" && item.what_is_missing.length <= 300 &&
+        typeof item.finding === "string" && item.finding.length > 0 && item.finding.length <= 700 &&
+        typeof item.what_is_missing === "string" && item.what_is_missing.length <= 360 &&
         item.summary && typeof item.summary === "object");
   }
 
@@ -424,7 +435,7 @@
           detail += " · " + (Array.isArray(row.bars) ? row.bars.length : 0) +
             " completed daily sessions";
         } else if (row.state === "SOURCE_BOUND" && row.provider === "finazon") {
-          detail += " · derived realtime market context";
+          detail += " · derived real-time US equity context · not SIP/NBBO";
         } else if (row.provider === "finazon" && row.state === "FREE_TRIAL_SYMBOL_HOLD") {
           detail += " · free trial supports AAPL / TSLA / GOOG";
         } else if (row.state === "SOURCE_BOUND" && row.provider === "bea") {
