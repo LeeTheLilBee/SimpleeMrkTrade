@@ -388,13 +388,17 @@ def test_tower_exact_route_requires_owner_stepup_admission_before_transport(monk
 
 
 def test_private_room_consumers_share_one_endpoint_without_faux_live_quotes():
-    pages=("market_data_desk","dashboard","market_map","symbol_page",
+    pages=("market_data_desk","market_map","symbol_page",
            "trade_center","review_center","owner_dashboard","owner_console")
     for name in pages:
         source=(ROOT/"web/templates"/(name+".html")).read_text()
         assert 'id="obKeylessContextRoot"' in source,name
         assert "/static/ob/ob_keyless_context.js" in source,name
         assert "/static/ob/ob_keyless_context.css" in source,name
+    dashboard=(ROOT/"web/templates/dashboard.html").read_text()
+    assert 'id="obDataPulseChips"' in dashboard
+    assert "/static/ob/ob_dashboard_data_pulse.js" in dashboard
+    assert 'id="obKeylessContextRoot"' not in dashboard
     js=(ROOT/"web/static/ob/ob_keyless_context.js").read_text()
     assert '"/ob/research/keyless.json"' in js
     assert 'credentials: "same-origin"' in js
