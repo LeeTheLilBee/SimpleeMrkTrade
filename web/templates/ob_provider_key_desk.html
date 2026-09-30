@@ -10,7 +10,7 @@
   <nav><a href="/ob/data-desk">← Market Data Desk</a><a href="/tower/return/observatory">Tower</a></nav>
   <div class="eyebrow">THE OBSERVATORY · OWNER-ONLY CONNECTIONS</div>
   <h1>API Key <em>Desk</em></h1>
-  <p class="intro">One protected place for reviewed provider credentials. Finnhub and Alpha Vantage cover research; Twelve Data and Finazon cover tightly bounded commercial-free market context. Never paste an unknown provider URL here.</p>
+  <p class="intro">One protected place for reviewed provider credentials. Finnhub and Alpha Vantage cover research; Twelve Data and Alpaca cover personal owner-development market context. Finazon remains trial-only. Never paste an unknown provider URL here.</p>
   <div class="notice caution">These are 30-minute temporary backend sessions, <strong>not durable key storage</strong>. Server restart or Tower logout discards them. Verification checks one fixed read-only endpoint only. It proves credential reachability, not the account's commercial tier, display/AI rights, full-market entitlement, bid/ask authority, or trading permission.</div>
   {% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
   {% if not enabled %}<div class="notice caution">This page is staged but key submission is disabled. Tower must explicitly enable OB_PROVIDER_KEY_DESK_ENABLED=1 after security and deployment review.</div>{% endif %}
@@ -26,7 +26,16 @@
         <input type="hidden" name="csrf" value="{{ csrf }}">
         <input type="hidden" name="provider" value="{{ p.id }}">
         <input type="hidden" name="operation" value="save">
+        {% if p.id == "alpaca" %}
+        <label for="keyid-{{ p.id }}">Alpaca API key ID</label>
+        <input id="keyid-{{ p.id }}" name="key_id" type="password" inputmode="text"
+               autocomplete="new-password" autocapitalize="off" spellcheck="false"
+               minlength="8" maxlength="256" required placeholder="Paste Alpaca key ID"
+               {% if not enabled %}disabled{% endif %}>
+        <label for="key-{{ p.id }}">Alpaca API secret</label>
+        {% else %}
         <label for="key-{{ p.id }}">{{ p.name }} API key</label>
+        {% endif %}
         <input id="key-{{ p.id }}" name="secret" type="password" inputmode="text"
                autocomplete="new-password" autocapitalize="off" spellcheck="false"
                minlength="8" maxlength="4096" required placeholder="Paste key into this private Tower page only"
