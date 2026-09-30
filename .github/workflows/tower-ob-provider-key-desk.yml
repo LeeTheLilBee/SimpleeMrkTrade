@@ -13,6 +13,9 @@ on:
       - "web/templates/market_data_desk.html"
       - "web/static/ob/ob_provider_key_desk.css"
       - "tests/test_tower_ob_provider_key_desk.py"
+      - "tests/test_ob_commercial_free_market.py"
+      - "tower/ob_commercial_free_market.py"
+      - "engine/market_intake/commercial_free_market.py"
       - ".github/workflows/tower-ob-provider-key-desk.yml"
 permissions:
   contents: read
@@ -27,7 +30,7 @@ jobs:
       - name: Install hosted requirements and pytest
         run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
       - name: Compile source
-        run: python -m py_compile tower/ob_provider_key_desk.py tower/ob_market_data_desk_integration.py tower/ob_route_guard.py tower/ob_web_route_enforcement.py
+        run: python -m py_compile tower/ob_provider_key_desk.py tower/ob_commercial_free_market.py engine/market_intake/commercial_free_market.py tower/ob_market_data_desk_integration.py tower/ob_route_guard.py tower/ob_web_route_enforcement.py
       - name: Sealed owner key form and existing protected routes
         run: |
           python -m pytest -q \
