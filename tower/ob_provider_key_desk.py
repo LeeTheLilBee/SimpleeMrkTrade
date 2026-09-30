@@ -29,12 +29,18 @@ from tower.ob_provider_diagnostics import (
 PATH = "/ob/data-desk/api-keys"
 TTL = timedelta(minutes=30)
 MAX_BODY = 8192
-MAX_KEYS_PER_SESSION = 2
+MAX_KEYS_PER_SESSION = 5
 PROVIDERS = {
     "finnhub": {"name": "Finnhub", "purpose": "Company and market research; exact endpoint and rights review still required.",
                 "docs": "https://finnhub.io/docs/api"},
     "alpha_vantage": {"name": "Alpha Vantage", "purpose": "Completed historical stock bars and company research; default free quotes are not live.",
                       "docs": "https://www.alphavantage.co/documentation/"},
+    "finazon": {"name": "Finazon", "purpose": "US Equities Basic derived market data; free-forever trial is limited to AAPL, TSLA and GOOG.",
+                "docs": "https://finazon.io/dataset/us_stocks_essential/docs/api/latest"},
+    "eia": {"name": "U.S. EIA", "purpose": "Free official U.S. energy data; used as economic/catalyst context, never a stock or option quote.",
+            "docs": "https://www.eia.gov/opendata/documentation.php"},
+    "bea": {"name": "U.S. BEA", "purpose": "Free official U.S. economic statistics; macro context only, never a security quote.",
+            "docs": "https://apps.bea.gov/api/signup/"},
 }
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,14}$")
 
@@ -195,6 +201,17 @@ def probe_one(provider: str, secret: str, *, opener=None) -> str:
             "function": "TIME_SERIES_DAILY", "symbol": "IBM",
             "outputsize": "compact", "apikey": secret})
         headers = {"Accept": "application/json"}
+    elif provider == "finazon":
+        url = "https://api.finazon.io/v2.0/finazon/us_stocks_essential/api_usage?" + urlencode({
+            "apikey": secret})
+        headers = {"Accept": "application/json"}
+    elif provider == "eia":
+        url = "https://api.eia.gov/v2/electricity?" + urlencode({"api_key": secret})
+        headers = {"Accept": "application/json"}
+    elif provider == "bea":
+        url = "https://apps.bea.gov/api/data?" + urlencode({
+            "UserID": secret, "method": "GETDATASETLIST", "ResultFormat": "JSON"})
+        headers = {"Accept": "application/json"}
     else:
         raise ValueError("unrecognized provider")
     try:
@@ -223,7 +240,7 @@ def probe_one(provider: str, secret: str, *, opener=None) -> str:
             return classify_provider_message(provider_error)
         if document.get("ticker") != "AAPL" or not isinstance(document.get("name"), str):
             return "RESPONSE_SHAPE_HOLD"
-    else:
+    elif provider == "alpha_vantage":
         # Alpha Vantage commonly returns a normal HTTP 200 with a bounded
         # Information/Note/Error Message object instead of the requested series.
         # We classify the family, then discard the upstream message itself.
@@ -233,6 +250,23 @@ def probe_one(provider: str, secret: str, *, opener=None) -> str:
         if "Error Message" in document:
             return "REQUEST_REJECTED"
         if not isinstance(document.get("Time Series (Daily)"), dict) or not isinstance(document.get("Meta Data"), dict):
+            return "RESPONSE_SHAPE_HOLD"
+    elif provider == "finazon":
+        calls = document.get("api_calls")
+        if not isinstance(calls, dict) or not isinstance(calls.get("limit"), int) or not isinstance(calls.get("usage"), int):
+            return "RESPONSE_SHAPE_HOLD"
+    elif provider == "eia":
+        response = document.get("response")
+        if not isinstance(response, dict) or not isinstance(response.get("routes"), list):
+            return "RESPONSE_SHAPE_HOLD"
+    elif provider == "bea":
+        bea = document.get("BEAAPI")
+        results = bea.get("Results") if isinstance(bea, dict) else None
+        datasets = results.get("Dataset") if isinstance(results, dict) else None
+        error = results.get("Error") if isinstance(results, dict) else None
+        if error is not None:
+            return classify_provider_message(str(error)[:400])
+        if not isinstance(datasets, list) or not datasets:
             return "RESPONSE_SHAPE_HOLD"
     return "READ_ONLY_CHECK_PASSED"
 
@@ -285,7 +319,7 @@ def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
                     try:
                         item.probe = normalize_probe_code(checker(provider, item.value))
                     except Exception:
-                        item.probe = "VERIFY_HOLD"
+                        item.probe = "PROVIDER_MESSAGE"
                     session["ob_provider_key_notice"] = probe_message(item.probe)
             return _headers(redirect(PATH, code=303))
         return _headers(make_response(render_template(
