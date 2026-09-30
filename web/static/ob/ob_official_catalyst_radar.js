@@ -46,7 +46,9 @@
   status.setAttribute("role", "status");
   const cards = node("div", "ob-keyless-grid");
   const explain = node("div", "ob-keyless-soulaana-register");
-  panel.append(status, cards, explain);
+  const provenance = node("section", "ob-keyless-soulaana");
+  provenance.setAttribute("aria-label", "Soulaana evidence provenance and research triage");
+  panel.append(status, cards, explain, provenance);
   root.append(panel);
 
   function valid(packet) {
@@ -84,6 +86,122 @@
         e.factual_findings.length <= 3 &&
         e.factual_findings.every(x => typeof x === "string" && x.length <= 550) &&
         typeof e.how_to_interpret === "string" && e.how_to_interpret.length <= 450);
+  }
+
+  const periodKinds = Object.freeze({
+    federal_register: "document_publication_date",
+    cftc: "report_as_of_date", eia: "series_observation_period",
+    world_bank: "annual_observation_year", nws: "alert_effective_time"
+  });
+  const changeStates = Object.freeze({
+    FIRST_OBSERVED_IN_PROCESS: "First observed in this process",
+    UNCHANGED_SINCE_LAST_VERIFIED_FETCH: "Unchanged since last verified fetch",
+    CHANGED_SINCE_LAST_VERIFIED_FETCH: "Changed since last verified fetch"
+  });
+  function validProvenance(packet) {
+    const x = packet.soulaana_provenance_triage;
+    if (!x || x.schema !== "OB_SOULAANA_PROVENANCE_TRIAGE_V1" ||
+        x.external_model_called !== false ||
+        x.cross_source_causality_claimed !== false ||
+        x.price_or_option_data_attached !== false ||
+        x.ranking_performed !== false || x.execution_authorized !== false ||
+        !Array.isArray(x.source_health) || x.source_health.length !== 6 ||
+        !Array.isArray(x.event_timeline) || x.event_timeline.length > 12 ||
+        x.timeline_count !== x.event_timeline.length ||
+        !Array.isArray(x.series_comparisons) || x.series_comparisons.length > 2 ||
+        x.comparison_count !== x.series_comparisons.length ||
+        x.retrieval_not_publication !== true ||
+        x.independent_upstream_families_not_reseller_count !== true) return false;
+    if (!x.source_health.every((h, i) =>
+        h && h.source === names[i] && h.source_reference === docs[h.source] &&
+        h.state === packet.sources[i].state &&
+        h.soulaana_content_approved === packet.sources[i].ai_use_approved &&
+        h.validated_record_count === (h.state === "SOURCE_BOUND" ?
+          packet.sources[i].facts.length : 0) &&
+        typeof h.cache_hit === "boolean" &&
+        (i === 5 ? h.period_kind === null :
+          h.period_kind === periodKinds[h.source]))) return false;
+    if (!x.event_timeline.every(t => t && periodKinds[t.source] &&
+        t.period_kind === periodKinds[t.source] &&
+        packet.sources.some(r => r.source === t.source &&
+          r.ai_use_approved === true && r.state === "SOURCE_BOUND" &&
+          r.facts.some(f => f.title === t.title && f.period === t.source_period &&
+            f.reference === t.original_reference)) &&
+        reference(t.source, t.original_reference) &&
+        typeof t.title === "string" && t.title.length <= 250 &&
+        typeof t.source_period === "string" && t.source_period.length <= 40 &&
+        Object.prototype.hasOwnProperty.call(changeStates, t.change_since_last_verified_fetch) &&
+        t.research_only === true && t.issuer_identity_proven === false &&
+        t.quote_verified === false && t.trade_causality_claimed === false)) return false;
+    if (!x.series_comparisons.every(r =>
+        r && ["eia", "world_bank"].includes(r.source) &&
+        packet.sources.some(s => s.source === r.source && s.ai_use_approved === true) &&
+        r.source_reference === docs[r.source] && r.research_only === true &&
+        r.causality_claimed === false && r.quote_verified === false &&
+        ["UP", "DOWN", "UNCHANGED"].includes(r.direction) &&
+        typeof r.difference_in_source_units === "string" &&
+        r.difference_in_source_units.length <= 75)) return false;
+    const ready = x.selection_readiness;
+    return ready && ready.state === "SOURCE_CONTEXT_ONLY" &&
+      ready.candidate_shortlist_authorized === false &&
+      ready.issuer_identity_verified_in_this_corridor === false &&
+      ready.live_equity_quote_verified_in_this_corridor === false &&
+      ready.licensed_option_chain_verified_in_this_corridor === false &&
+      ready.contract_liquidity_verified_in_this_corridor === false &&
+      ready.capital_and_risk_policy_verified_in_this_corridor === false &&
+      ready.owner_review_required === true &&
+      Array.isArray(ready.next_evidence) && ready.next_evidence.length === 3 &&
+      ready.next_evidence.every(t => typeof t === "string" && t.length <= 180);
+  }
+
+  function drawProvenance(packet) {
+    provenance.replaceChildren();
+    const x = packet.soulaana_provenance_triage;
+    provenance.append(node("span", "ob-keyless-eyebrow", "SOURCE HEALTH · EVIDENCE TIMELINE"),
+      node("h3", "", "What changed—and what is still missing"),
+      node("p", "ob-keyless-meta",
+        "Original source periods stay distinct from retrieval times. Source holds and absent publications cannot be treated as market signals."));
+    const health = node("div", "ob-keyless-grid");
+    x.source_health.forEach(h => {
+      const card = node("article", "ob-keyless-card");
+      card.append(node("strong", "", h.source.replaceAll("_", " ").toUpperCase()),
+        node("p", "ob-keyless-meta", states[h.state] + " · " +
+          h.validated_record_count + " validated records" +
+          (h.cache_hit ? " · cached source receipt" : "")),
+        node("p", "ob-keyless-meta",
+          h.latest_source_period ? h.period_kind.replaceAll("_", " ") +
+            ": " + h.latest_source_period : "No source period in this response"));
+      health.append(card);
+    });
+    provenance.append(health, node("h3", "", "Source-backed event timeline"));
+    if (!x.event_timeline.length) {
+      provenance.append(node("p", "ob-keyless-meta",
+        "No source content is independently approved for Soulaana's timeline."));
+    }
+    x.event_timeline.forEach(t => {
+      const item = node("article", "ob-keyless-evidence-item");
+      item.append(node("strong", "", t.title),
+        node("p", "ob-keyless-meta", t.source.replaceAll("_", " ") + " · " +
+          t.period_kind.replaceAll("_", " ") + ": " + t.source_period),
+        node("p", "ob-keyless-meta", changeStates[t.change_since_last_verified_fetch]),
+        safeLink(t.source, t.original_reference, "Original record ↗"));
+      provenance.append(item);
+    });
+    if (x.series_comparisons.length) {
+      provenance.append(node("h3", "", "Same-series changes"));
+      x.series_comparisons.forEach(change => {
+        provenance.append(node("p", "ob-keyless-meta",
+          change.source.replaceAll("_", " ") + ": " + change.earlier_period +
+          " → " + change.later_period + "; " + change.direction +
+          " by " + change.difference_in_source_units + " source-reported units."));
+      });
+    }
+    provenance.append(node("h3", "", "Shortlist readiness"),
+      node("p", "ob-keyless-meta",
+        "OFFICIAL RESEARCH ONLY · No verified current stock or options quotes, issuer-specific match, liquidity, capital clearance or trade candidate in this corridor."));
+    x.selection_readiness.next_evidence.forEach(t =>
+      provenance.append(node("p", "ob-keyless-meta", "• " + t)));
+    provenance.append(node("p", "ob-keyless-footer", x.revision_note));
   }
 
   function safeLink(source, url, label) {
@@ -141,6 +259,7 @@
     });
     explain.append(node("p", "ob-keyless-footer",
       "Source publication time is not retrieval time. Deterministic, reviewed evidence explanations only; no external model call, quote, forecast, causality or execution permission."));
+    drawProvenance(packet);
     status.textContent = packet.soulaana.observation_count + " independently reviewed source explanations available.";
   }
   fetch("/ob/research/catalysts.json", {
@@ -150,10 +269,10 @@
     if (!response.ok) throw new Error("source held");
     return response.json();
   }).then(packet => {
-    if (!valid(packet)) throw new Error("source contract hold");
+    if (!valid(packet) || !validProvenance(packet)) throw new Error("source contract hold");
     draw(packet);
   }).catch(() => {
     status.textContent = "Official Catalyst Radar is unavailable or access is held. No data asserted.";
-    cards.replaceChildren(); explain.replaceChildren();
+    cards.replaceChildren(); explain.replaceChildren(); provenance.replaceChildren();
   });
 })();
