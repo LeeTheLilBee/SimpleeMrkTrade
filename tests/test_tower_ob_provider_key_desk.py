@@ -53,7 +53,7 @@ def test_owner_only_get_does_not_create_source_or_make_provider_calls(env):
     page = client.get(desk.PATH)
     assert page.status_code == 200
     assert b"Finnhub" in page.data and b"Alpha Vantage" in page.data
-    assert b"Twelve Data" in page.data and b"Finazon" in page.data
+    assert b"Twelve Data" in page.data and b"Finazon" in page.data and b"Alpaca" in page.data
     assert b"SEC EDGAR" in page.data and b"Public" in page.data
     assert calls == []
     assert memory.status("tower_session_synthetic_only_123456789")[0]["present"] is False
@@ -92,7 +92,7 @@ def test_save_verify_forget_no_key_in_html_or_cookie(env):
     assert memory.get("tower_session_synthetic_only_123456789", "finnhub") is None
 
 
-def test_all_four_provider_slots_are_independent(env):
+def test_provider_slots_are_independent(env):
     _, client, gate, memory, _ = env
     gate["owner"] = True
     client.get(desk.PATH)
@@ -103,9 +103,11 @@ def test_all_four_provider_slots_are_independent(env):
         item = memory.get("tower_session_synthetic_only_123456789", provider)
         assert item is not None and item.value == secret
     statuses = memory.status("tower_session_synthetic_only_123456789")
-    assert len(statuses) == 4
-    assert all(row["present"] for row in statuses)
-    assert all("value" not in row and "secret" not in row for row in statuses)
+    assert len(statuses) == 5
+    by_id = {row["id"]: row for row in statuses}
+    assert all(by_id[p]["present"] for p in providers)
+    assert by_id["alpaca"]["present"] is False
+    assert all("value" not in row and "secret" not in row and "key_id" not in row for row in statuses)
 
 
 def test_each_vendor_uses_independent_slot_and_expires(env):
