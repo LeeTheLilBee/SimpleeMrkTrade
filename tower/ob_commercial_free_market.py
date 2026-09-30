@@ -67,7 +67,7 @@ def _rights(provider):
             "product": "Twelve Data Business Basic",
             "permission_reference": "https://twelvedata.com/pricing-business",
             "coverage": "US equities/ETFs; plan-defined real-time context; no bid/ask asserted",
-            "free_limit": "8 API credits/minute, 800/day, 8 trial WebSocket credits",
+            "free_limit": "8 API credits/minute, 800/day, 8 trial WebSocket credits; WS is limited to provider-designated trial symbols",
         }
     if provider == FINAZON_ID:
         reviewed = os.environ.get(
@@ -355,6 +355,7 @@ class CommercialFreeMarketService:
                 "free_limit": rights["free_limit"],
                 "websocket_supported": True,
                 "stream_slots": 8 if provider == TWELVE_DATA_ID else 1,
+                "stream_symbol_scope": ("provider-designated trial symbols only" if provider == TWELVE_DATA_ID else "AAPL/TSLA/GOOG free-trial universe"),
                 "last_internal_success_at": success.isoformat() if success else None,
                 "raw_values_exposed_to_browser": False,
                 "execution_grade_quote": False,
@@ -373,8 +374,8 @@ class CommercialFreeMarketService:
         }
 
 
-    def free_stream_plan(self, symbols):
-        return stream_plan(symbols)
+    def free_stream_plan(self, symbols, *, twelve_trial_symbols=()):
+        return stream_plan(symbols, twelve_trial_symbols=twelve_trial_symbols)
 
 
 def create_commercial_free_market_status_blueprint(*, owner_authorize, service):
