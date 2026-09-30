@@ -111,7 +111,10 @@ def test_map_exact_and_return_navigation_preserved():
     assert match_ob_guard_policy("/trade-center")["match_type"] == "unmapped_default_deny"
     js = (ROOT / "web/static/ob/ob_nav_shell.js").read_text()
     assert 'dataset.obDataDeskRouteEnabled === "true"' in js
-    assert 'navLink(path, "/ob/data-desk", "Market Data Desk"' in js
+    assert 'href="/ob/data-desk"' in js
+    assert '<div class="ob-nav-group-label">Settings</div>' in js
+    assert 'navLink(path, "/ob/data-desk", "Market Data Desk", "data", true)' in js
+    assert '>Settings</a>' in js
     assert 'navLink(path, "/ob/trade-center", "Trade Center"' in js
     assert 'navLink(path, "/ob/review-center", "Review Center"' in js
     assert 'TOWER_RETURN_PATH = "/tower/return/observatory"' in js

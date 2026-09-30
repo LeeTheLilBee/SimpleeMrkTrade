@@ -271,7 +271,7 @@ def probe_one(provider: str, secret: str, *, opener=None) -> str:
     return "READ_ONLY_CHECK_PASSED"
 
 
-def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
+def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None, desk_return_path=None):
     if not callable(owner_authorize):
         raise ValueError("Tower owner authorization required")
     memory = store if store is not None else TemporaryProviderKeyStore()
@@ -321,7 +321,9 @@ def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
                     except Exception:
                         item.probe = "PROVIDER_MESSAGE"
                     session["ob_provider_key_notice"] = probe_message(item.probe)
-            return _headers(redirect(PATH, code=303))
+            return _headers(redirect(desk_return_path or PATH, code=303))
+        if desk_return_path:
+            return _headers(redirect(desk_return_path, code=303))
         return _headers(make_response(render_template(
             "ob_provider_key_desk.html", csrf=_csrf(), enabled=_enabled(),
             providers=memory.status(sid),
@@ -335,7 +337,8 @@ def register_provider_key_desk(app: Flask, *, owner_authorize):
         return app
     store = TemporaryProviderKeyStore()
     app.register_blueprint(create_provider_key_blueprint(
-        owner_authorize=owner_authorize, store=store))
+        owner_authorize=owner_authorize, store=store,
+        desk_return_path="/ob/data-desk#provider-connections"))
     @app.before_request
     def _discard_on_tower_logout():
         if request.path == "/tower/logout":
@@ -344,6 +347,17 @@ def register_provider_key_desk(app: Flask, *, owner_authorize):
     # and cannot authorize use of a key by trading or data gateway components.
     # Server-only projection closure exposes safe status, NEVER the stored key.
     app.extensions["ob_provider_key_status_reader_v1"] = store.status
+    def _safe_provider_ui():
+        sid = _owner_sid()
+        if not sid:
+            return {"enabled": False, "providers": (), "csrf": "", "notice": ""}
+        return {
+            "enabled": _enabled(),
+            "providers": store.status(sid),
+            "csrf": _csrf(),
+            "notice": session.pop("ob_provider_key_notice", ""),
+        }
+    app.extensions["ob_provider_key_ui_reader_v1"] = _safe_provider_ui
     # Trusted server-only consumer for normalized research. This closure is not
     # rendered, serialized, logged or exposed by a route; callers still need
     # current Tower owner/session authorization and independent source rights.

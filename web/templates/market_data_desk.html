@@ -14,7 +14,7 @@
       data-ob-live-auto-locked="true">
   <div class="ob-sky" aria-hidden="true"><div class="ob-sky__weather"></div><div class="ob-sky__horizon"></div><div class="ob-sky__grid"></div></div>
   <div id="ob-app" class="mdd-app">
-    <main class="mdd-shell" id="marketDataDesk">
+    <main class="mdd-shell ob-layer" id="marketDataDesk">
       <header class="mdd-hero">
         <div>
           <span class="mdd-eyebrow">THE OBSERVATORY · INTELLIGENCE INFRASTRUCTURE</span>
@@ -44,18 +44,128 @@
         <article class="mdd-metric"><span>API capacity</span><strong id="mddTraffic">—</strong><small>No invented vendor limits or traffic</small></article>
       </section>
 
-      <section class="mdd-section" aria-labelledby="mddPublicConnectTitle">
-        <div class="mdd-heading"><div><span class="mdd-eyebrow">OWNER CONNECTION · PUBLIC BUSINESS API</span>
-          <h2 id="mddPublicConnectTitle">Connect your Public account</h2>
-          <p>Use your key through a fresh Tower-protected form. A temporary token is held in server memory, never in this page or a browser cookie. This does not authorize trades or activate an OB live feed.</p></div>
-          <a href="/ob/data-desk/public" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open Public connection →</a></div>
-      </section>
+      {% set public_ui = connection_state.get('public', {}) if connection_state is defined else {} %}
+      {% set keyed_ui = connection_state.get('keyed', {}) if connection_state is defined else {} %}
+      <section id="provider-connections" class="mdd-section mdd-connections" aria-labelledby="mddConnectionsTitle">
+        <div class="mdd-heading">
+          <div>
+            <span class="mdd-eyebrow">SETTINGS · PROVIDER CONNECTIONS</span>
+            <h2 id="mddConnectionsTitle">Connect sources here</h2>
+            <p>Public, Finnhub, Alpha Vantage and future provider setup live in this Desk. Provider actions remain separate backend corridors, but there are no separate provider rooms.</p>
+          </div>
+          <span class="mdd-settings-badge">Settings surface</span>
+        </div>
 
-      <section class="mdd-section" aria-labelledby="mddApiKeysTitle">
-        <div class="mdd-heading"><div><span class="mdd-eyebrow">RESEARCH PROVIDERS · PROTECTED OWNER ENTRY</span>
-          <h2 id="mddApiKeysTitle">API Key Desk</h2>
-          <p>Use the Tower-protected page to enter Finnhub or Alpha Vantage keys separately. Temporary key acceptance and a read-only provider test never activate a quote feed, display license, or trading permission.</p></div>
-          <a href="/ob/data-desk/api-keys" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open API Key Desk →</a></div>
+        {% if public_ui.get('notice') %}<div class="mdd-inline-notice" role="status">{{ public_ui.get('notice') }}</div>{% endif %}
+        {% if keyed_ui.get('notice') %}<div class="mdd-inline-notice" role="status">{{ keyed_ui.get('notice') }}</div>{% endif %}
+
+        <div class="mdd-connection-grid">
+          <article class="mdd-connection-card mdd-public-card">
+            <div class="mdd-card-top">
+              <div><span class="mdd-card-lane">BROKERAGE / MARKET DATA</span><h3>Public</h3></div>
+              <span class="mdd-badge {{ 'ready' if public_ui.get('is_connected') else 'hold' }}">{{ 'Authenticated' if public_ui.get('is_connected') else 'Not connected' }}</span>
+            </div>
+            {% if not public_ui.get('connect_enabled') %}
+              <p>Public connection is switched off in this runtime. Tower must explicitly enable the source-only connector.</p>
+            {% elif public_ui.get('selection_options') %}
+              <p>Public accepted authentication and returned more than one recognized account. Choose the intended account; OB will not guess.</p>
+              <form method="post" action="/ob/data-desk/public" autocomplete="off">
+                <input type="hidden" name="csrf" value="{{ public_ui.get('csrf','') }}">
+                <input type="hidden" name="operation" value="select">
+                <label for="mddPublicAccount">Choose a Public account</label>
+                <select id="mddPublicAccount" name="account_index" required>
+                  <option value="">Choose an account</option>
+                  {% for candidate in public_ui.get('selection_options', ()) %}
+                    <option value="{{ candidate.index }}">Account {{ candidate.index }} · {{ candidate.kind }} · ID ending {{ candidate.hint }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit">Use selected account · read only</button>
+              </form>
+            {% elif public_ui.get('is_connected') %}
+              <p>Temporary {{ public_ui.get('selected_account_kind') }} authentication is present until {{ public_ui.get('expires_at') }}. Market-data permissions remain independent.</p>
+              <form method="post" action="/ob/data-desk/public" autocomplete="off">
+                <input type="hidden" name="csrf" value="{{ public_ui.get('csrf','') }}">
+                <input type="hidden" name="operation" value="disconnect">
+                <button class="mdd-secondary" type="submit">Disconnect Public</button>
+              </form>
+            {% else %}
+              <p>Enter your existing Public API key here. OB exchanges it for a short-lived token and does not persist the long-lived key.</p>
+              <form method="post" action="/ob/data-desk/public" autocomplete="off">
+                <input type="hidden" name="csrf" value="{{ public_ui.get('csrf','') }}">
+                <input type="hidden" name="operation" value="connect">
+                <label for="mddPublicSecret">Public API secret key</label>
+                <input id="mddPublicSecret" name="secret" type="password" autocomplete="new-password" spellcheck="false" minlength="10" maxlength="4096" required>
+                <button type="submit">Connect Public securely</button>
+              </form>
+            {% endif %}
+
+            {% if public_ui.get('is_connected') %}
+              <div class="mdd-subpanel">
+                <span class="mdd-eyebrow">READ-ONLY SOURCE CHECK</span>
+                {% if not public_ui.get('equity_ready') %}
+                  <p>Authentication is present, but market-data rights are still held for review. No quote request is available yet.</p>
+                {% else %}
+                  <form method="post" action="/ob/data-desk/public" autocomplete="off">
+                    <input type="hidden" name="csrf" value="{{ public_ui.get('csrf','') }}">
+                    <input type="hidden" name="operation" value="quote">
+                    <label for="mddPublicKind">Instrument</label>
+                    <select id="mddPublicKind" name="kind">
+                      <option value="EQUITY">Stock</option>
+                      {% if public_ui.get('option_ready') %}<option value="OPTION">Option · compact OSI symbol</option>{% endif %}
+                    </select>
+                    <label for="mddPublicSymbol">Ticker or compact option symbol</label>
+                    <input id="mddPublicSymbol" name="symbol" type="text" maxlength="26" pattern="[A-Za-z0-9./-]{1,26}" placeholder="AAPL" required>
+                    <button type="submit">Check one source quote</button>
+                  </form>
+                  {% if public_ui.get('quote') %}
+                    {% set q = public_ui.get('quote') %}
+                    <div class="mdd-quote-result">
+                      <strong>{{ q.symbol }} · {{ q.kind }}</strong>
+                      <span>Bid {{ q.bid }}</span><span>Ask {{ q.ask }}</span>
+                      {% if q.last is not none %}<span>Last {{ q.last }}</span>{% endif %}
+                      <small>Source event age {{ q.age_seconds }}s · not an installed OB live feed.</small>
+                    </div>
+                  {% endif %}
+                {% endif %}
+              </div>
+            {% endif %}
+          </article>
+
+          {% for p in keyed_ui.get('providers', ()) %}
+          <article class="mdd-connection-card">
+            <div class="mdd-card-top">
+              <div><span class="mdd-card-lane">RESEARCH SOURCE</span><h3>{{ p.name }}</h3></div>
+              <span class="mdd-badge {{ 'ready' if p.probe == 'READ_ONLY_CHECK_PASSED' else 'hold' }}">{{ p.probe_message if p.probe_message is defined else p.probe.replace('_',' ') }}</span>
+            </div>
+            <p>{{ p.purpose }}</p>
+            <p class="mdd-fine">{% if p.present %}A key is temporarily held until {{ p.expires_at }}.{% else %}No key is stored for this Tower session.{% endif %}</p>
+            <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
+              <input type="hidden" name="csrf" value="{{ keyed_ui.get('csrf','') }}">
+              <input type="hidden" name="provider" value="{{ p.id }}">
+              <input type="hidden" name="operation" value="save">
+              <label for="mdd-key-{{ p.id }}">{{ p.name }} API key</label>
+              <input id="mdd-key-{{ p.id }}" name="secret" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false" minlength="8" maxlength="4096" required {% if not keyed_ui.get('enabled') %}disabled{% endif %}>
+              <button type="submit" {% if not keyed_ui.get('enabled') %}disabled{% endif %}>Save temporarily</button>
+            </form>
+            <div class="mdd-form-actions">
+              <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
+                <input type="hidden" name="csrf" value="{{ keyed_ui.get('csrf','') }}"><input type="hidden" name="provider" value="{{ p.id }}"><input type="hidden" name="operation" value="verify">
+                <button class="mdd-secondary" type="submit" {% if not keyed_ui.get('enabled') or not p.present %}disabled{% endif %}>Test read-only access</button>
+              </form>
+              <form method="post" action="/ob/data-desk/api-keys" autocomplete="off">
+                <input type="hidden" name="csrf" value="{{ keyed_ui.get('csrf','') }}"><input type="hidden" name="provider" value="{{ p.id }}"><input type="hidden" name="operation" value="forget">
+                <button class="mdd-secondary" type="submit" {% if not keyed_ui.get('enabled') or not p.present %}disabled{% endif %}>Forget key</button>
+              </form>
+            </div>
+            <a class="mdd-doc-link" href="{{ p.docs }}" rel="noopener noreferrer" target="_blank">Official provider documentation ↗</a>
+          </article>
+          {% endfor %}
+
+          <article class="mdd-connection-card mdd-reference-card">
+            <div class="mdd-card-top"><div><span class="mdd-card-lane">OFFICIAL PUBLIC SOURCE</span><h3>SEC EDGAR</h3></div><span class="mdd-badge">No API key</span></div>
+            <p>EDGAR uses the declared server-side contact identity and remains part of the same Market Data Desk source constellation. It does not need its own credential form.</p>
+          </article>
+        </div>
       </section>
 
       <section class="mdd-section" aria-labelledby="mddProviderTruthTitle">
