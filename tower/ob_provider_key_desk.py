@@ -22,7 +22,10 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from flask import Blueprint, Flask, abort, make_response, redirect, render_template, request, session
 
 from tower.ob_public_owner_connection import _approved_browser_origin, _owner_sid
-from tower.ob_provider_diagnostics import (\n    classify_http_status, classify_provider_message, normalize_probe_code, probe_message,\n)\n
+from tower.ob_provider_diagnostics import (
+    classify_http_status, classify_provider_message, normalize_probe_code, probe_message,
+)
+
 PATH = "/ob/data-desk/api-keys"
 TTL = timedelta(minutes=30)
 MAX_BODY = 8192
@@ -162,7 +165,12 @@ class TemporaryProviderKeyStore:
                 "id": provider, "name": descriptor["name"],
                 "purpose": descriptor["purpose"], "docs": descriptor["docs"],
                 "present": provider in bucket,
-                "probe": bucket[provider].probe if provider in bucket else "NOT_CONFIGURED",\n                "probe_message": probe_message(\n                    bucket[provider].probe if provider in bucket else "NOT_CONFIGURED"\n                ),\n                "expires_at": bucket[provider].expires_at.isoformat() if provider in bucket else None,\n            } for provider, descriptor in PROVIDERS.items())
+                "probe": bucket[provider].probe if provider in bucket else "NOT_CONFIGURED",
+                "probe_message": probe_message(
+                    bucket[provider].probe if provider in bucket else "NOT_CONFIGURED"
+                ),
+                "expires_at": bucket[provider].expires_at.isoformat() if provider in bucket else None,
+            } for provider, descriptor in PROVIDERS.items())
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -275,9 +283,11 @@ def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
                     # A provider network or parser failure is a generic hold, never
                     # an exception response containing the credential-bearing URL.
                     try:
-                        item.probe = normalize_probe_code(checker(provider, item.value))\n                    except Exception:
+                        item.probe = normalize_probe_code(checker(provider, item.value))
+                    except Exception:
                         item.probe = "VERIFY_HOLD"
-                    session["ob_provider_key_notice"] = probe_message(item.probe)\n            return _headers(redirect(PATH, code=303))
+                    session["ob_provider_key_notice"] = probe_message(item.probe)
+            return _headers(redirect(PATH, code=303))
         return _headers(make_response(render_template(
             "ob_provider_key_desk.html", csrf=_csrf(), enabled=_enabled(),
             providers=memory.status(sid),
