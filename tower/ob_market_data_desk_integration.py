@@ -96,6 +96,8 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
     # rights/key gates pass. No browser route exposes raw values.
     app.extensions["ob_commercial_free_market_service_v1"] = commercial_free_market
     app.extensions["ob_commercial_free_market_reader_v1"] = commercial_free_market.read_symbol_internal
+    app.extensions["ob_commercial_free_scanner_context_v1"] = commercial_free_market.scanner_context
+    app.extensions["ob_commercial_free_soulaana_context_v1"] = commercial_free_market.soulaana_context
     app.extensions["ob_commercial_free_stream_plan_v1"] = commercial_free_market.free_stream_plan
 
     from tower.ob_keyed_provider_research import create_keyed_provider_research_blueprint
