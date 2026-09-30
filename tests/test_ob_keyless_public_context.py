@@ -46,6 +46,17 @@ class FakeOfficialSources:
             "Results":[{"series":[{"seriesID":"CUUR0000SA0", "data":[
                 {"year":"2026","period":"M08","value":"320.10"},
                 {"year":"2026","period":"M07","value":"318.7"}]}]}]}
+        self.bls_v2={
+            "LNS14000000": [
+                {"year":"2026","period":"M08","value":"4.3"},
+                {"year":"2026","period":"M07","value":"4.2"}],
+            "CES0000000001": [
+                {"year":"2026","period":"M08","value":"159500"},
+                {"year":"2026","period":"M07","value":"159300"}],
+            "WPUFD4": [
+                {"year":"2026","period":"M08","value":"157.604"},
+                {"year":"2026","period":"M07","value":"157.155"}],
+        }
         self.treasury={"data":[
             {"record_date":"2026-09-26","tot_pub_debt_out_amt":"38900000000000.12"},
             {"record_date":"2026-09-25","tot_pub_debt_out_amt":"38890000000000.12"}
@@ -55,6 +66,10 @@ class FakeOfficialSources:
         self.calls.append((req.full_url,req.get_method(),dict(req.header_items()),timeout))
         if req.full_url.endswith("/publicAPI/v1/timeseries/data/CUUR0000SA0"):
             return Response(self.bls)
+        for series_id, rows in self.bls_v2.items():
+            if req.full_url.endswith("/publicAPI/v2/timeseries/data/" + series_id):
+                return Response({"status":"REQUEST_SUCCEEDED","Results":{"series":[
+                    {"seriesID":series_id,"data":rows}]}})
         if req.full_url==TREASURY_URL:
             return Response(self.treasury)
         if req.full_url=="https://api.openfigi.com/v3/mapping":
@@ -86,6 +101,12 @@ def test_four_source_context_is_dated_public_reference_only_and_cached():
     assert rows["sec"]["state"]=="DELEGATED_ISSUER_RESEARCH"
     assert rows["sec"]["value"] is None and rows["sec"]["retrieved_at"] is None
     assert rows["bls"]["value"]=="320.10" and rows["bls"]["period"]=="2026-M08"
+    assert [x["series_id"] for x in rows["bls"]["series"]]==[
+        "CUUR0000SA0","LNS14000000","CES0000000001","WPUFD4"]
+    assert all(x["state"]=="SOURCE_BOUND" for x in rows["bls"]["series"])
+    assert rows["bls"]["series"][1]["value"]=="4.3"
+    assert rows["bls"]["series"][2]["value"]=="159500"
+    assert rows["bls"]["series"][3]["value"]=="157.604"
     assert rows["treasury"]["value"]=="38900000000000.12"
     assert rows["treasury"]["period"]=="2026-09-26"
     assert rows["treasury"]["previous_period"]=="2026-09-25"
@@ -95,10 +116,10 @@ def test_four_source_context_is_dated_public_reference_only_and_cached():
     assert rows["openfigi"]["value"]=="BBG000B9XRY4" and rows["openfigi"]["symbol"]=="MSFT"
     assert all(x["quote_eligible"] is False and x["trading_authorized"] is False
                and x["ai_use_approved"] is False for x in result["sources"])
-    assert len(opener.calls)==3
+    assert len(opener.calls)==6
     again=svc.snapshot(symbol="MSFT")
     assert again["sources"]==result["sources"]
-    assert len(opener.calls)==3
+    assert len(opener.calls)==6
     assert all("x-openfigi-apikey" not in str(entry).lower() for entry in opener.calls)
 
 
@@ -107,7 +128,7 @@ def test_global_context_avoids_guessing_symbol_and_user_does_not_need_provider_l
     rows={x["source"]:x for x in svc.snapshot()["sources"]}
     assert rows["openfigi"]["state"]=="SYMBOL_REQUIRED"
     assert rows["openfigi"]["value"] is None
-    assert len(opener.calls)==2
+    assert len(opener.calls)==5
     assert all("Authorization" not in str(call) for call in opener.calls)
 
 
@@ -118,7 +139,7 @@ def test_source_absent_or_revoked_exposes_no_cached_value():
     rows={x["source"]:x for x in svc.snapshot(symbol="MSFT")["sources"]}
     assert all(rows[k]["state"]=="REVIEW_HOLD" and rows[k]["value"] is None
                for k in ENABLED)
-    assert len(opener.calls)==3
+    assert len(opener.calls)==6
 
 
 def test_treasury_bad_value_or_date_never_promotes_or_reuses_data():
@@ -202,10 +223,10 @@ def test_tower_exact_route_requires_owner_stepup_admission_before_transport(monk
     data=ok.get_json()
     assert data["schema"]=="OB_KEYLESS_PUBLIC_CONTEXT_V1"
     assert data["prices_attached"] is False
-    assert len(fake.calls)==3
+    assert len(fake.calls)==6
     state["admitted"]=False
     assert client.get(PATH).status_code==302
-    assert len(fake.calls)==3
+    assert len(fake.calls)==6
 
 
 def test_private_room_consumers_share_one_endpoint_without_faux_live_quotes():
@@ -251,7 +272,7 @@ def test_soulaana_receives_checked_status_register_not_raw_unreviewed_content():
     for forbidden in ("320.10", "38900000000000.12", "BBG000B9XRY4",
                       "synthetic", "CUUR0000SA0", "MSFT", "2026-M08"):
         assert forbidden not in rendered
-    assert len(transport.calls) == 3
+    assert len(transport.calls) == 6
 
 
 def test_soulaana_default_off_and_revocation_recompute_from_current_source_state():
@@ -323,12 +344,21 @@ def test_soulaana_receives_only_three_reviewed_source_facts_never_sec_or_market_
     assert brief["schema"]=="OB_SOULAANA_KEYLESS_EVIDENCE_V1"
     assert brief["channel"]=="SOULAANA_REVIEWED_PUBLIC_RESEARCH"
     assert brief["source_specific_ai_use_approved"] is True
-    assert brief["observation_count"]==3
-    assert [x["source"] for x in brief["observations"]]==["bls","treasury","openfigi"]
+    assert brief["observation_count"]==6
+    assert [x["source"] for x in brief["observations"]]==[
+        "bls","bls","bls","bls","treasury","openfigi"]
+    assert [x.get("series_id") for x in brief["observations"][:4]]==[
+        "CUUR0000SA0","LNS14000000","CES0000000001","WPUFD4"]
     assert "320.10" in brief["observations"][0]["interpretation"]
-    assert "2026-M08" in brief["observations"][0]["interpretation"]
-    assert "38900000000000.12" in brief["observations"][1]["interpretation"]
-    assert "BBG000B9XRY4" in brief["observations"][2]["interpretation"]
+    assert "4.3%" in brief["observations"][1]["interpretation"]
+    assert "159500" in brief["observations"][2]["interpretation"]
+    assert "157.604" in brief["observations"][3]["interpretation"]
+    assert "38900000000000.12" in brief["observations"][4]["interpretation"]
+    assert "BBG000B9XRY4" in brief["observations"][5]["interpretation"]
+    assert brief["macro_explanation"]["state"]=="SOURCE_BOUND_DIRECTIONAL_CONTEXT_ONLY"
+    assert "price indexes both rose" in brief["macro_explanation"]["inflation"]
+    assert "mixed labor signal" in brief["macro_explanation"]["labor"]
+    assert brief["macro_explanation"]["trade_signal_created"] is False
     assert all(x["research_only"] and x["quote_verified"] is False
                and x["execution_authorized"] is False and x["source_reference"].startswith("https://")
                for x in brief["observations"])
@@ -337,7 +367,7 @@ def test_soulaana_receives_only_three_reviewed_source_facts_never_sec_or_market_
     assert brief["public_brokerage_auth_inferred"] is False
     assert not any(x["source"]=="sec" for x in brief["observations"])
     assert "BLS.gov cannot vouch" in brief["bls_attribution"]
-    assert len(opened.calls)==3
+    assert len(opened.calls)==6
 
 
 def test_no_review_no_soulaana_values_even_when_owner_cards_show_data():
@@ -349,7 +379,7 @@ def test_no_review_no_soulaana_values_even_when_owner_cards_show_data():
     assert brief["source_specific_ai_use_approved"] is False
     assert brief["bls_attribution"] is None
     assert all(row["content_readable"] is False for row in brief["source_register"])
-    assert len(opened.calls)==3  # card availability and AI processing distinct
+    assert len(opened.calls)==6  # card availability and AI processing distinct
 
 
 def test_one_source_ai_review_does_not_unlock_another_or_sec_content():
@@ -363,7 +393,7 @@ def test_one_source_ai_review_does_not_unlock_another_or_sec_content():
 
 def test_revoked_or_failed_source_cannot_leak_old_soulaana_evidence():
     svc,_=reviewed_content_service()
-    assert svc.snapshot(symbol="MSFT")["soulaana_evidence_brief"]["observation_count"]==3
+    assert svc.snapshot(symbol="MSFT")["soulaana_evidence_brief"]["observation_count"]==6
     svc.enabled=frozenset()
     packet=svc.snapshot(symbol="MSFT")
     assert packet["soulaana_evidence_brief"]["observations"]==[]
@@ -416,22 +446,26 @@ def test_soulaana_examines_same_source_prior_records_not_just_static_description
     svc,opened=reviewed_content_service()
     packet=svc.snapshot(symbol="MSFT")
     brief=packet["soulaana_evidence_brief"]
-    assert brief["comparison_count"]==2
-    rows={item["source"]:item for item in brief["comparisons"]}
-    assert rows["bls"]["earlier_period"]=="2026-M07"
-    assert rows["bls"]["later_period"]=="2026-M08"
-    assert rows["bls"]["direction"]=="UP"
-    assert "318.7" in rows["bls"]["insight"] and "320.10" in rows["bls"]["insight"]
-    assert rows["treasury"]["earlier_period"]=="2026-09-25"
-    assert rows["treasury"]["later_period"]=="2026-09-26"
-    assert rows["treasury"]["difference"]=="10000000000.00"
-    assert rows["treasury"]["direction"]=="UP"
+    assert brief["comparison_count"]==5
+    bls={item["series_id"]:item for item in brief["comparisons"] if item["source"]=="bls"}
+    assert bls["CUUR0000SA0"]["earlier_period"]=="2026-M07"
+    assert bls["CUUR0000SA0"]["later_period"]=="2026-M08"
+    assert bls["CUUR0000SA0"]["direction"]=="UP"
+    assert "318.7" in bls["CUUR0000SA0"]["insight"] and "320.10" in bls["CUUR0000SA0"]["insight"]
+    assert bls["LNS14000000"]["direction"]=="UP"
+    assert bls["CES0000000001"]["direction"]=="UP"
+    assert bls["WPUFD4"]["direction"]=="UP"
+    treasury=next(item for item in brief["comparisons"] if item["source"]=="treasury")
+    assert treasury["earlier_period"]=="2026-09-25"
+    assert treasury["later_period"]=="2026-09-26"
+    assert treasury["difference"]=="10000000000.00"
+    assert treasury["direction"]=="UP"
     assert "different measures" in brief["what_needs_investigation"]
     assert brief["cross_source_causality_claimed"] is False
     assert all(x["research_only"] and not x["causality_claimed"] and not x["quote_verified"]
                for x in brief["comparisons"])
     assert brief["external_model_called"] is False
-    assert len(opened.calls)==3   # same official GET, no second network request
+    assert len(opened.calls)==6   # same official GET, no second network request
 
 
 def test_comparison_without_explicit_ai_use_is_not_in_soulaana_brief():
@@ -440,14 +474,16 @@ def test_comparison_without_explicit_ai_use_is_not_in_soulaana_brief():
     assert brief["observations"]==[] and brief["comparisons"]==[]
     assert brief["comparison_count"]==0
     assert "No validated two-period comparison" in brief["what_changed"]
-    assert len(opened.calls)==3
+    assert len(opened.calls)==6
 
 
 def test_one_source_ai_review_limits_comparison_to_that_source():
     svc,_=reviewed_content_service(frozenset({"bls"}))
     brief=svc.snapshot(symbol="MSFT")["soulaana_evidence_brief"]
-    assert [c["source"] for c in brief["comparisons"]]==["bls"]
-    assert [x["source"] for x in brief["observations"]]==["bls"]
+    assert [c["series_id"] for c in brief["comparisons"]]==[
+        "CUUR0000SA0","LNS14000000","CES0000000001","WPUFD4"]
+    assert [x["series_id"] for x in brief["observations"]]==[
+        "CUUR0000SA0","LNS14000000","CES0000000001","WPUFD4"]
     assert "treasury" not in str(brief["comparisons"]).lower()
 
 
@@ -499,6 +535,8 @@ def test_bls_official_bulk_recovery_reaches_soulaana_with_real_provenance():
             return Response({"status":"REQUEST_NOT_PROCESSED","Results":{}})
         if request.full_url == BLS_BULK_CPI:
             return Raw(rows)
+        if "/publicAPI/v2/timeseries/data/" in request.full_url:
+            return Response({"status":"REQUEST_FAILED","Results":{}})
         raise AssertionError("Unexpected official host")
     reviewed = OwnerResearchPolicy(
         source_use_reviewed=True, owner_display_reviewed=True,
@@ -520,7 +558,7 @@ def test_bls_official_bulk_recovery_reaches_soulaana_with_real_provenance():
     assert brief["comparisons"][0]["source_reference"] == BLS_BULK_CPI
     assert brief["comparison_count"] == 1
     assert brief["external_model_called"] is False
-    assert len(calls) == 2
+    assert len(calls) == 5
     js = (ROOT/"web/static/ob/ob_keyless_context.js").read_text()
     assert BLS_BULK_CPI in js
     assert "validReference(item.source, item.source_reference)" in js
