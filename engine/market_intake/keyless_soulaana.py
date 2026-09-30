@@ -303,10 +303,10 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
                     or rates.get("executable_quote") is not False
                     or rates.get("broker_execution_authorized") is not False):
                 raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
-            if rates.get("state") == "SOURCE_HOLD":
+            if rates.get("state") in {"SOURCE_HOLD", "NOT_ENABLED"}:
                 if any(rates.get(name) is not None for name in ("nominal", "real", "derived")):
                     raise ValueError("SOULAANA_TREASURY_RATE_HOLD")
-                rates_read = {"state": "SOURCE_HOLD"}
+                rates_read = {"state": rates["state"]}
             elif rates.get("state") == "SOURCE_BOUND":
                 nominal, real, derived = rates.get("nominal"), rates.get("real"), rates.get("derived")
                 if not all(isinstance(item, dict) for item in (nominal, real, derived)):
@@ -548,7 +548,11 @@ def build_soulaana_evidence_brief(packet: Mapping, *,
         }
     else:
         rates_explanation = {
-            "state": "SOURCE_HOLD" if rates_read else "NOT_AVAILABLE",
+            "state": (
+                "SOURCE_HOLD"
+                if rates_read and rates_read.get("state") == "SOURCE_HOLD"
+                else "NOT_AVAILABLE"
+            ),
             "rates_story": "Official Treasury daily yield-curve context is not available in this read.",
             "real_yield_story": "Real-yield context is not available in this read.",
             "inflation_compensation_story": "No breakeven approximation is available without matched official nominal and real Treasury observations.",
