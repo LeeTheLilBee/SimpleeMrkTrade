@@ -46,9 +46,10 @@
   status.setAttribute("role", "status");
   const cards = node("div", "ob-keyless-grid");
   const explain = node("div", "ob-keyless-soulaana-register");
+  const transport = node("p", "ob-keyless-meta", "Source-only snapshot delivery; WebSocket not enabled.");
   const provenance = node("section", "ob-keyless-soulaana");
   provenance.setAttribute("aria-label", "Soulaana evidence provenance and research triage");
-  panel.append(status, cards, explain, provenance);
+  panel.append(status, transport, cards, explain, provenance);
   root.append(panel);
 
   function valid(packet) {
@@ -204,6 +205,18 @@
     provenance.append(node("p", "ob-keyless-footer", x.revision_note));
   }
 
+  function validStream(hint) {
+    return hint && hint.schema === "OB_CATALYST_STREAM_HINT_V1" &&
+      hint.path === "/ob/research/catalysts/stream" &&
+      hint.research_invalidation_only === true &&
+      hint.provider_stream_attached === false &&
+      hint.live_market_feed === false &&
+      hint.broker_execution_authorized === false &&
+      typeof hint.available === "boolean" &&
+      typeof hint.epoch === "string" && /^[a-f0-9]{24}$/.test(hint.epoch) &&
+      Number.isSafeInteger(hint.cursor) && hint.cursor >= 0;
+  }
+
   function safeLink(source, url, label) {
     if (!reference(source, url)) return node("span", "ob-keyless-meta", "Source link held");
     const a = node("a", "ob-keyless-docs", label);
@@ -262,17 +275,103 @@
     drawProvenance(packet);
     status.textContent = packet.soulaana.observation_count + " independently reviewed source explanations available.";
   }
-  fetch("/ob/research/catalysts.json", {
-    method: "GET", credentials: "same-origin",
-    headers: {"Accept": "application/json"}, cache: "no-store"
-  }).then(response => {
-    if (!response.ok) throw new Error("source held");
-    return response.json();
-  }).then(packet => {
-    if (!valid(packet) || !validProvenance(packet)) throw new Error("source contract hold");
-    draw(packet);
-  }).catch(() => {
-    status.textContent = "Official Catalyst Radar is unavailable or access is held. No data asserted.";
-    cards.replaceChildren(); explain.replaceChildren(); provenance.replaceChildren();
+  let socket = null;
+  let reconnectTask = null;
+  let attempts = 0;
+  let shutdown = false;
+  let reloadInFlight = false;
+  let lastPacket = null;
+
+  function validEvent(event, expectedEpoch) {
+    return event && event.schema === "OB_CATALYST_STREAM_EVENT_V1" &&
+      ["stream_ready", "snapshot_changed", "resync_required", "heartbeat"].includes(event.type) &&
+      event.epoch === expectedEpoch &&
+      Number.isSafeInteger(event.cursor) && event.cursor >= 0 &&
+      event.source_only === true && event.live_market_feed === false &&
+      event.candidate_admitted === false && event.execution_authorized === false &&
+      typeof event.needs_authenticated_snapshot === "boolean";
+  }
+
+  function scheduleReconnect() {
+    if (shutdown || reconnectTask || !lastPacket ||
+        !validStream(lastPacket.stream) || !lastPacket.stream.available) return;
+    const delay = Math.min(30000, 1000 * Math.pow(2, Math.min(attempts++, 5)));
+    reconnectTask = window.setTimeout(() => {
+      reconnectTask = null;
+      // Restore the authoritative snapshot first. A restarted server can have
+      // a different process-local epoch and cursor; old deltas are never used.
+      loadSnapshot(true);
+    }, delay);
+  }
+
+  function connect(hint) {
+    if (shutdown || socket || !validStream(hint) || !hint.available ||
+        typeof window.WebSocket !== "function") return;
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const url = protocol + "//" + window.location.host + hint.path +
+      "?epoch=" + encodeURIComponent(hint.epoch) + "&cursor=" + hint.cursor;
+    const ws = new window.WebSocket(url);
+    socket = ws;
+    transport.textContent = "Protected WebSocket connecting. Official publishers still use their supported REST APIs.";
+    ws.onopen = () => {
+      if (socket !== ws) return;
+      attempts = 0;
+      transport.textContent = "Tower-authenticated WebSocket connected · source-change notifications only; not a live quote feed.";
+    };
+    ws.onmessage = message => {
+      if (socket !== ws) return;
+      let event;
+      try { event = JSON.parse(message.data); } catch (_) { ws.close(4400); return; }
+      if (!validEvent(event, hint.epoch)) { ws.close(4400); return; }
+      if (event.type === "snapshot_changed" || event.type === "resync_required") {
+        loadSnapshot(false);
+      }
+    };
+    ws.onclose = event => {
+      if (socket !== ws) return;
+      socket = null;
+      transport.textContent = "Protected stream disconnected; authoritative REST snapshot remains available.";
+      if (![4400, 4403, 4429].includes(event.code)) scheduleReconnect();
+    };
+    ws.onerror = () => {
+      if (socket === ws) transport.textContent =
+        "WebSocket unavailable; authoritative REST snapshot remains available.";
+    };
+  }
+
+  function loadSnapshot(connectAfter) {
+    if (shutdown || reloadInFlight) return;
+    reloadInFlight = true;
+    fetch("/ob/research/catalysts.json", {
+      method: "GET", credentials: "same-origin",
+      headers: {"Accept": "application/json"}, cache: "no-store"
+    }).then(response => {
+      if (!response.ok) throw new Error("source held");
+      return response.json();
+    }).then(packet => {
+      if (!valid(packet) || !validProvenance(packet) ||
+          !validStream(packet.stream)) throw new Error("source contract hold");
+      lastPacket = packet;
+      draw(packet);
+      if (!packet.stream.available) {
+        transport.textContent = "REST delivery active · protected WebSocket deployment not enabled.";
+        if (socket) { const previous = socket; socket = null; previous.close(); }
+      } else if (!socket && (connectAfter || !reconnectTask)) {
+        connect(packet.stream);
+      }
+    }).catch(() => {
+      status.textContent = "Official Catalyst Radar is unavailable or access is held. No data asserted.";
+      cards.replaceChildren(); explain.replaceChildren(); provenance.replaceChildren();
+      lastPacket = null;
+      transport.textContent = "Source access or schema held. The WebSocket will not bypass Tower's GET.";
+      if (socket) { const previous = socket; socket = null; previous.close(); }
+    }).finally(() => { reloadInFlight = false; });
+  }
+
+  window.addEventListener("pagehide", () => {
+    shutdown = true;
+    if (reconnectTask) window.clearTimeout(reconnectTask);
+    if (socket) { const previous = socket; socket = null; previous.close(); }
   });
+  loadSnapshot(true);
 })();
