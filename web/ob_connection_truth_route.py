@@ -19,10 +19,13 @@ from tower.ob_public_owner_connection import _owner_sid
 from tower.ob_provider_soulaana_status import build_soulaana_provider_status
 
 PATH = "/ob/data-desk/connections.json"
-KEY_PROVIDER_IDS = ("finnhub", "alpha_vantage")
+KEY_PROVIDER_IDS = ("finnhub", "alpha_vantage", "finazon", "eia", "bea")
 KEYLESS_PROVIDER_IDS = ("bls", "treasury", "openfigi")
-SAFE_PROBE = frozenset(("NOT_TESTED", "NOT_CONFIGURED",
-                        "READ_ONLY_CHECK_PASSED", "VERIFY_HOLD"))
+SAFE_PROBE = frozenset(("NOT_TESTED", "NOT_CONFIGURED", "READ_ONLY_CHECK_PASSED",
+                        "RATE_LIMITED", "ACCESS_REJECTED", "REQUEST_REJECTED",
+                        "PROVIDER_UNAVAILABLE", "NETWORK_HOLD", "REDIRECT_HOLD",
+                        "RESPONSE_TOO_LARGE", "RESPONSE_PARSE_HOLD",
+                        "RESPONSE_SHAPE_HOLD", "PROVIDER_MESSAGE"))
 
 
 def connection_status_projection(*, sid: str, key_reader: Callable,
@@ -113,7 +116,8 @@ def connection_status_projection(*, sid: str, key_reader: Callable,
         "owner_session_checked": True,
         "source_only": True,
         "provider_status": [entries[k] for k in (
-            "public", "finnhub", "alpha_vantage", "sec", "bls", "treasury", "openfigi"
+            "public", "finnhub", "alpha_vantage", "finazon", "eia", "bea",
+            "sec", "bls", "treasury", "openfigi"
         )],
         "real_market_feed_attached_by_this_route": False,
         "prices_attached": False,
