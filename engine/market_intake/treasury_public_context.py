@@ -132,6 +132,17 @@ class TreasuryPublicClient:
         prior_spread = (previous_10y - previous_2y) * Decimal("100")
         curve_delta = spread - prior_spread
         derived = {
+            "two_year_change_bp": str(
+                ((latest_2y - previous_2y) * Decimal("100")).quantize(Decimal("0.1"))
+            ),
+            "ten_year_change_bp": str(
+                ((latest_10y - previous_10y) * Decimal("100")).quantize(Decimal("0.1"))
+            ),
+            "thirty_year_change_bp": str(
+                ((Decimal(latest["yields_percent"]["30Y"])
+                  - Decimal(previous["yields_percent"]["30Y"])) * Decimal("100"))
+                .quantize(Decimal("0.1"))
+            ),
             "two_ten_spread_bp": str(spread.quantize(Decimal("0.1"))),
             "previous_two_ten_spread_bp": str(prior_spread.quantize(Decimal("0.1"))),
             "curve_shape": (
@@ -144,7 +155,12 @@ class TreasuryPublicClient:
             ),
             "breakeven_is_simple_approximation": True,
         }
-        real_latest = real[0]
+        real_latest, real_previous = real[0], real[1]
+        derived["real_ten_year_change_bp"] = str(
+            ((Decimal(real_latest["yields_percent"]["10Y"])
+              - Decimal(real_previous["yields_percent"]["10Y"])) * Decimal("100"))
+            .quantize(Decimal("0.1"))
+        )
         if real_latest["date"] == latest["date"]:
             breakeven = (
                 Decimal(latest["yields_percent"]["10Y"])
@@ -157,6 +173,21 @@ class TreasuryPublicClient:
         else:
             derived["ten_year_breakeven_percent"] = None
             derived["breakeven_date"] = None
+        if real_previous["date"] == previous["date"]:
+            prior_breakeven = (
+                Decimal(previous["yields_percent"]["10Y"])
+                - Decimal(real_previous["yields_percent"]["10Y"])
+            )
+            derived["previous_ten_year_breakeven_percent"] = str(
+                prior_breakeven.quantize(Decimal("0.01"))
+            )
+            derived["breakeven_change_bp"] = str(
+                ((breakeven - prior_breakeven) * Decimal("100"))
+                .quantize(Decimal("0.1"))
+            ) if derived["ten_year_breakeven_percent"] is not None else None
+        else:
+            derived["previous_ten_year_breakeven_percent"] = None
+            derived["breakeven_change_bp"] = None
         return {
             "state": "SOURCE_BOUND",
             "source": "US Treasury",
