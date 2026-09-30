@@ -69,7 +69,47 @@
       : chip("Soulaana · " + reviewed + " reviewed", reviewed ? "good" : ""));
 
     mount.replaceChildren(...nodes);
+
+    const catalystLabel = document.getElementById("obCatalystLabel");
+    const catalystList = document.getElementById("obCatalystList");
+    if (catalystLabel) {
+      const observations = catalysts && catalysts.soulaana && Array.isArray(catalysts.soulaana.observations)
+        ? catalysts.soulaana.observations : [];
+      catalystLabel.textContent = observations.length
+        ? observations.length + " reviewed catalyst" + (observations.length === 1 ? "" : "s")
+        : "No reviewed catalyst needs attention.";
+      if (catalystList) {
+        catalystList.replaceChildren(...observations.slice(0,3).map(item => {
+          const row = document.createElement("div");
+          row.className = "ob-command-line";
+          const finding = Array.isArray(item.factual_findings) && item.factual_findings.length
+            ? item.factual_findings[0] : item.how_to_interpret || item.source;
+          row.textContent = String(item.source || "source").replaceAll("_"," ").toUpperCase() + " · " + finding;
+          return row;
+        }));
+      }
+    }
+
+    const changedLabel = document.getElementById("obChangedLabel");
+    const changedSummary = document.getElementById("obChangedSummary");
+    if (changedLabel && changedSummary) {
+      const timeline = catalysts && catalysts.soulaana_provenance_triage &&
+        Array.isArray(catalysts.soulaana_provenance_triage.event_timeline)
+        ? catalysts.soulaana_provenance_triage.event_timeline : [];
+      const changed = timeline.filter(item =>
+        item && item.change_since_last_verified_fetch === "CHANGED_SINCE_LAST_VERIFIED_FETCH");
+      changedLabel.textContent = changed.length
+        ? changed.length + " reviewed change" + (changed.length === 1 ? "" : "s")
+        : "No reviewed change is demanding attention.";
+      changedSummary.textContent = changed.length
+        ? String(changed[0].title || "Reviewed source context changed.")
+        : "Soulaana has no new source-backed change to surface.";
+    }
   }).catch(() => {
     mount.replaceChildren(chip("Data status · held", "hold"));
+    const catalystLabel = document.getElementById("obCatalystLabel");
+    const changedLabel = document.getElementById("obChangedLabel");
+    if (catalystLabel) catalystLabel.textContent = "Catalyst context held.";
+    if (changedLabel) changedLabel.textContent = "Change context held.";
   });
 })();
