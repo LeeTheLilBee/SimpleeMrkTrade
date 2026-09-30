@@ -288,8 +288,7 @@
         item && ["bls", "treasury"].includes(item.source) &&
         authorized.has(item.source) &&
         validReference(item.source, item.source_reference) &&
-        packet.sources.some(r => r.source === item.source &&
-          r.source_reference === item.source_reference) &&
+        packetOwnsReference(packet, item.source, item.source_reference) &&
         item.research_only === true && item.quote_verified === false &&
         item.causality_claimed === false &&
         ["UP", "DOWN", "UNCHANGED"].includes(item.direction) &&
