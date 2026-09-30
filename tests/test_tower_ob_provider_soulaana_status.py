@@ -1,4 +1,4 @@
-"""Seven-provider owner-session status → Soulaana, with no raw source/AI authority."""
+"""Ten-provider owner-session status → Soulaana, with no raw source/AI authority."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SID = "tower_session_fictional_owner_source_status_1234"
 SECRET = "FICTIONAL-TEST-SECRET-DO-NOT-EXPOSE"
 ACCOUNT = "fictional-private-account-1234"
-PROVIDERS = ("public", "finnhub", "alpha_vantage", "sec", "bls", "treasury", "openfigi")
+PROVIDERS = ("public", "finnhub", "alpha_vantage", "finazon", "eia", "bea", "sec", "bls", "treasury", "openfigi")
 
 
 def keys(_sid):
@@ -22,6 +22,12 @@ def keys(_sid):
         {"id": "finnhub", "present": True, "probe": "READ_ONLY_CHECK_PASSED",
          "secret": SECRET, "expires_at": "2030-01-01T00:00:00Z"},
         {"id": "alpha_vantage", "present": False, "probe": "NOT_CONFIGURED",
+         "secret": SECRET},
+        {"id": "finazon", "present": False, "probe": "NOT_CONFIGURED",
+         "secret": SECRET},
+        {"id": "eia", "present": False, "probe": "NOT_CONFIGURED",
+         "secret": SECRET},
+        {"id": "bea", "present": False, "probe": "NOT_CONFIGURED",
          "secret": SECRET},
     )
 
