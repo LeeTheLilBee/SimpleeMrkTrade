@@ -80,9 +80,6 @@
           <div class="ob-nav-group-label">Observe</div>
           ${navLink(path, "/ob/dashboard", "Dashboard", "dashboard", false)}
           ${navLink(path, "/ob/market-map", "Market Map", "market", false)}
-          ${document.body.dataset.obDataDeskRouteEnabled === "true"
-            ? navLink(path, "/ob/data-desk", "Market Data Desk", "data", true)
-            : ""}
         </div>
 
         <div class="ob-nav-group">
@@ -146,7 +143,9 @@
         <span class="ob-route-chip gold">Paper Mode</span>
         <span class="ob-route-chip green">Tower Protected</span>
         <span class="ob-route-chip red">Live Auto Locked</span>
-        <span class="ob-route-chip">Settings</span>
+        ${document.body.dataset.obDataDeskRouteEnabled === "true"
+          ? '<a class="ob-route-chip' + (path === "/ob/data-desk" ? ' gold' : '') + '" href="/ob/data-desk" style="display:inline-flex;align-items:center;text-decoration:none">Settings</a>'
+          : '<span class="ob-route-chip">Settings</span>'}
         <span class="ob-route-chip">Notifications</span>
       </div>
     `;
