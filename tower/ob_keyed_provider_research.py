@@ -231,7 +231,7 @@ def _finazon(symbol: str, secret: str, *, opener=None) -> dict:
 
 
 def _bea(symbol: str, secret: str, *, opener=None) -> dict:
-    """Official quarterly nominal GDP context from BEA NIPA table 1.1.1/1.1.5 family.
+    """Official quarterly nominal GDP context from BEA NIPA table 1.1.5.
 
     The macro observation applies to the whole U.S. economy; symbol is retained
     only to keep this route's per-symbol research packet self-contained.
@@ -241,7 +241,7 @@ def _bea(symbol: str, secret: str, *, opener=None) -> dict:
         "UserID": secret,
         "method": "GetData",
         "DataSetName": "NIPA",
-        "TableName": "T10101",
+        "TableName": "T10105",
         "Frequency": "Q",
         "Year": f"{year-1},{year}",
         "ResultFormat": "JSON",
@@ -277,7 +277,7 @@ def _bea(symbol: str, secret: str, *, opener=None) -> dict:
         "kind": "OFFICIAL_US_QUARTERLY_GDP_CONTEXT",
         "symbol": symbol,
         "observations": observations,
-        "unit": "BEA_SOURCE_UNIT",
+        "unit": "BILLIONS_OF_CURRENT_DOLLARS_SAAR",
         "source_reference": "https://apps.bea.gov/api/",
         "historical_only": True,
         "live_quote": False,
