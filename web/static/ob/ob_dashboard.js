@@ -1,435 +1,100 @@
-
-// OBUX091–095 — CALM USER DASHBOARD
-//
-// ADHD RULE:
-//   one dominant focus
-//   max three market-glance cards
-//   no default list wall
-//   secondary information collapsed
-//
+// OB command-center Dashboard — birdseye, explanation-first, no provider plumbing.
 (function (global) {
   "use strict";
 
-  const VERSION =
-    "OBUX091_095_USER_DASHBOARD";
+  const esc = value => String(value == null ? "" : value)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
+  const byId = id => document.getElementById(id);
 
-  function esc(
-    value
-  ) {
-    return String(
-      value == null
-        ? ""
-        : value
-    )
-      .replace(
-        /&/g,
-        "&amp;"
-      )
-      .replace(
-        /</g,
-        "&lt;"
-      )
-      .replace(
-        />/g,
-        "&gt;"
-      )
-      .replace(
-        /"/g,
-        "&quot;"
-      );
+  function write(id, value) {
+    const el = byId(id);
+    if (el) el.textContent = value == null ? "" : String(value);
   }
 
-
-  function renderGlance(
-    items
-  ) {
-    const mount =
-      document.getElementById(
-        "obUserMarketGlance"
-      );
-
-    if (
-      !mount
-    ) {
+  function renderGlance(items) {
+    const mount = byId("obUserMarketGlance");
+    if (!mount) return;
+    const safe = Array.isArray(items) ? items.slice(0, 3) : [];
+    if (!safe.length) {
+      mount.innerHTML = '<div class="ob-command-empty">Quiet sky · nothing verified needs the front page.</div>';
       return;
     }
-
-    const safe =
-      Array.isArray(items)
-        ? items.slice(
-            0,
-            3
-          )
-        : [];
-
-    if (
-      !safe.length
-    ) {
-      mount.innerHTML = `
-        <article
-          class="ob-user-glance-card empty"
-        >
-          <span>
-            QUIET SKY
-          </span>
-
-          <strong>
-            No verified symbol needs the front page.
-          </strong>
-
-          <p>
-            Market Map remains available
-            whenever you want to explore.
-          </p>
-
-          <a
-            href="/ob/market-map"
-          >
-            Open Market Map →
-          </a>
-        </article>
-      `;
-
-      return;
-    }
-
-    mount.innerHTML =
-      safe
-        .map(
-          function (
-            item,
-            index
-          ) {
-            return `
-              <article
-                class="ob-user-glance-card"
-              >
-                <span>
-                  STUDY ${String(index + 1).padStart(2, "0")}
-                </span>
-
-                <strong>
-                  ${esc(item.symbol)}
-                </strong>
-
-                <small>
-                  ${esc(item.source)}
-                </small>
-
-                <a
-                  href="${esc(item.href)}"
-                >
-                  Study symbol →
-                </a>
-              </article>
-            `;
-          }
-        )
-        .join(
-          ""
-        );
+    mount.innerHTML = safe.map(item => `
+      <a class="ob-command-symbol" href="${esc(item.href)}">
+        <strong>${esc(item.symbol)}</strong>
+        <span>${esc(item.source)}</span>
+      </a>`).join("");
   }
 
-
-  function renderMore(
-    items
-  ) {
-    const mount =
-      document.getElementById(
-        "obUserMoreContent"
-      );
-
-    if (
-      !mount
-    ) {
-      return;
-    }
-
-    const safe =
-      Array.isArray(items)
-        ? items.slice(
-            0,
-            3
-          )
-        : [];
-
-    mount.innerHTML =
-      safe
-        .map(
-          function (
-            item
-          ) {
-            return `
-              <article
-                class="ob-user-more-card"
-              >
-                <span>
-                  ${esc(
-                    String(
-                      item.kind
-                      || "context"
-                    )
-                      .replaceAll(
-                        "_",
-                        " "
-                      )
-                      .toUpperCase()
-                  )}
-                </span>
-
-                <strong>
-                  ${esc(item.label)}
-                </strong>
-
-                <p>
-                  ${esc(item.detail)}
-                </p>
-
-                ${
-                  item.href
-                    ? `
-                        <a
-                          href="${esc(item.href)}"
-                        >
-                          Open →
-                        </a>
-                      `
-                    : ""
-                }
-              </article>
-            `;
-          }
-        )
-        .join(
-          ""
-        );
+  function renderFacts(items) {
+    const mount = byId("obAccountHealthFacts");
+    if (!mount) return;
+    const safe = Array.isArray(items) ? items.slice(0, 3) : [];
+    mount.replaceChildren(...safe.map(item => {
+      const span = document.createElement("span");
+      span.textContent = item.label + " · " + item.value;
+      return span;
+    }));
   }
 
+  function renderLines(id, items, formatter) {
+    const mount = byId(id);
+    if (!mount) return;
+    const safe = Array.isArray(items) ? items.slice(0, 3) : [];
+    mount.replaceChildren(...safe.map(item => {
+      const div = document.createElement("div");
+      div.className = "ob-command-line";
+      div.textContent = formatter(item);
+      return div;
+    }));
+  }
 
   function render() {
-    const api =
-      global
-        .OB_USER_DASHBOARD_PROJECTION;
+    const api = global.OB_USER_DASHBOARD_PROJECTION;
+    if (!api || typeof api.project !== "function") return;
+    const p = api.project();
 
-    if (
-      !api
-      || typeof api.project
-        !== "function"
-    ) {
-      return;
-    }
+    write("obUserBriefingTitle", p.briefing.title);
+    write("obUserBriefingSummary", p.briefing.summary);
 
-    const projection =
-      api.project();
+    write("obAccountHealthLabel", p.account_health.label);
+    write("obAccountHealthSummary", p.account_health.summary);
+    renderFacts(p.account_health.facts);
 
-    const title =
-      document.getElementById(
-        "obUserBriefingTitle"
-      );
+    write("obRiskLabel", p.risk.label);
+    write("obRiskSummary", p.risk.summary);
 
-    const summary =
-      document.getElementById(
-        "obUserBriefingSummary"
-      );
+    write("obAttentionLabel", p.attention.count ? p.attention.count + " thing" + (p.attention.count === 1 ? "" : "s") + " need attention" : "Nothing urgent.");
+    renderLines("obAttentionList", p.attention.items, item => item);
 
-    if (
-      title
-    ) {
-      title.textContent =
-        projection
-          .briefing
-          .title;
-    }
+    write("obPositionsLabel", p.positions.label);
+    renderLines("obPositionsList", p.positions.items, item => item.symbol + " · " + item.state);
 
-    if (
-      summary
-    ) {
-      summary.textContent =
-        projection
-          .briefing
-          .summary;
-    }
+    write("obModeLabel", p.mode_state.label);
+    write("obModeSummary", p.mode_state.detail);
 
-    renderGlance(
-      projection.market_glance
-    );
+    write("obNextActionLabel", p.next_action.label);
+    write("obNextActionDetail", p.next_action.detail);
+    const link = byId("obNextActionLink");
+    if (link) link.href = p.next_action.href;
 
-    document.body.setAttribute(
-      "data-ob-user-mode",
-      projection.mode
-    );
+    renderGlance(p.market_glance);
 
-    document.body.setAttribute(
-      "data-ob-market-projection-state",
-      projection
-        .source_state
-        .projection_status
-    );
+    document.body.setAttribute("data-ob-user-mode", p.mode);
+    document.body.setAttribute("data-ob-market-projection-state", p.source_state.projection_status);
+    document.body.setAttribute("data-ob-risk-tone", p.risk.tone);
   }
 
+  function boot() { render(); }
+  window.addEventListener("obEngineFeedAdapterUpdated", render);
+  window.addEventListener("obSessionStateUpdated", render);
 
-  /*
-    The guide points toward self-directed exploration.
-    No account snapshot. No owner candidate screen.
-  */
-  function showDashboardGuide() {
-    if (
-      !global.OBSessionState
-    ) {
-      return;
-    }
-
-    let enabled = false;
-
-    try {
-      const current =
-        global
-          .OBSessionState
-          .snapshot();
-
-      enabled =
-        Boolean(
-          current
-          && current.ephemeral
-          && current.ephemeral.guidance
-          && current.ephemeral.guidance.enabled
-        );
-
-    } catch (_) {
-      enabled = false;
-    }
-
-    if (
-      !enabled
-    ) {
-      return;
-    }
-
-    if (
-      document.getElementById(
-        "obGuidePrompt"
-      )
-    ) {
-      return;
-    }
-
-    const prompt =
-      document.createElement(
-        "aside"
-      );
-
-    prompt.id =
-      "obGuidePrompt";
-
-    prompt.className =
-      "ob-guide-prompt";
-
-    prompt.innerHTML = `
-      <span
-        class="ob-kicker"
-      >
-        SOULAANA · GUIDE
-      </span>
-
-      <strong>
-        Start with the market,
-        not a wall of information.
-      </strong>
-
-      <p>
-        Read the briefing.
-        Scan the three-item Market Glance.
-        Then choose what you want to study.
-      </p>
-
-      <div>
-        <button
-          type="button"
-          data-guide-stop
-        >
-          Stop guide
-        </button>
-
-        <a
-          href="/ob/market-map"
-        >
-          Take me to Market Map →
-        </a>
-      </div>
-    `;
-
-    document.body.appendChild(
-      prompt
-    );
-
-    const stop =
-      prompt.querySelector(
-        "[data-guide-stop]"
-      );
-
-    if (
-      stop
-    ) {
-      stop.addEventListener(
-        "click",
-        function () {
-          try {
-            global
-              .OBSessionState
-              .setGuidance(
-                false,
-                "complete"
-              );
-          } catch (_) {}
-
-          prompt.remove();
-        }
-      );
-    }
-  }
-
-
-  function boot() {
-    render();
-
-  }
-
-
-  window.addEventListener(
-    "obEngineFeedAdapterUpdated",
-    render
-  );
-
-  window.addEventListener(
-    "obSessionStateUpdated",
-    render
-  );
-
-
-  if (
-    document.readyState
-    === "loading"
-  ) {
-    document.addEventListener(
-      "DOMContentLoaded",
-      boot,
-      {
-        once:
-          true
-      }
-    );
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, {once:true});
   } else {
     boot();
   }
 
-
-  global.OB_USER_DASHBOARD_V91 =
-    Object.freeze({
-      version:
-        VERSION,
-
-      render
-    });
-
+  global.OB_USER_DASHBOARD_V91 = Object.freeze({render});
 })(window);
