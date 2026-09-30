@@ -263,13 +263,16 @@ def test_same_origin_exact_tower_route_blocks_anonymous_methods_and_arguments():
          enforcement.operational_ob_access_active) = original
 
 
-def test_eight_rooms_share_one_protected_radar_and_no_browser_source_calls():
-    rooms = ("market_data_desk", "dashboard", "market_map", "symbol_page",
+def test_private_rooms_share_protected_radar_while_dashboard_stays_compact():
+    rooms = ("market_data_desk", "market_map", "symbol_page",
              "trade_center", "review_center", "owner_dashboard", "owner_console")
     for room in rooms:
         body = (ROOT / "web/templates" / (room + ".html")).read_text()
         assert "/static/ob/ob_official_catalyst_radar.js" in body, room
         assert 'id="obKeylessContextRoot"' in body, room
+    dashboard = (ROOT / "web/templates/dashboard.html").read_text()
+    assert "/static/ob/ob_dashboard_data_pulse.js" in dashboard
+    assert "/static/ob/ob_official_catalyst_radar.js" not in dashboard
     script = (ROOT / "web/static/ob/ob_official_catalyst_radar.js").read_text()
     assert '"/ob/research/catalysts.json"' in script
     assert 'credentials: "same-origin"' in script

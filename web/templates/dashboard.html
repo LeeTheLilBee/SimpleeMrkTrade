@@ -75,7 +75,6 @@
 
   <script src="/static/ob/ob_product_surface_policy.js?v=obux086090"></script>
   <link rel="stylesheet" href="/static/ob/ob_checkin_entry.css?v=obux106110" />
-<link rel="stylesheet" href="/static/ob/ob_keyless_context.css?v=keyless001" />
 </head>
 
 <body
@@ -300,6 +299,32 @@
           ></div>
         </section>
 
+        <section
+          class="ob-data-pulse"
+          aria-labelledby="obDataPulseTitle"
+        >
+          <div class="ob-data-pulse-copy">
+            <span class="ob-kicker">DATA PULSE</span>
+            <h2 id="obDataPulseTitle">Sources at a glance.</h2>
+          </div>
+
+          <div
+            id="obDataPulseChips"
+            class="ob-data-pulse-chips"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="ob-data-chip">Checking sources…</span>
+          </div>
+
+          <a
+            class="ob-data-pulse-link"
+            href="/ob/data-desk"
+          >
+            Market Data Desk →
+          </a>
+        </section>
+
         <details
           class="ob-user-more"
         >
@@ -384,9 +409,6 @@
   <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
   <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
 
-  <!-- Keyless research is separate from quote/trade truth and follows Tower's exact read corridor. -->
-  <section id="obKeylessContextRoot" class="ob-keyless-context" aria-label="Keyless official public research context"></section>
-  <script defer src="/static/ob/ob_keyless_context.js?v=keyless001"></script>
-  <script defer src="/static/ob/ob_official_catalyst_radar.js?v=catalyst001"></script>
+  <script defer src="/static/ob/ob_dashboard_data_pulse.js?v=adhd001"></script>
 </body>
 </html>
