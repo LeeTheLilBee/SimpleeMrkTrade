@@ -98,6 +98,13 @@
         </div>
 
         <div class="ob-nav-group">
+          <div class="ob-nav-group-label">Settings</div>
+          ${document.body.dataset.obDataDeskRouteEnabled === "true"
+            ? navLink(path, "/ob/data-desk", "Market Data Desk", "data", true)
+            : ""}
+        </div>
+
+        <div class="ob-nav-group">
           <div class="ob-nav-group-label">Tower connection</div>
           <a class="ob-nav-link ob-return-to-tower" href="${towerReturnHref(path)}" aria-label="Return to Tower Access Home">
             <span>Return to Tower</span>
