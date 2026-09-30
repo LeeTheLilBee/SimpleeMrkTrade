@@ -142,7 +142,11 @@ class KeylessPublicContext:
                     "state": "SOURCE_BOUND", "value": obs.value, "period": obs.period,
                     "previous_period": obs.previous_period,
                     "previous_value": obs.previous_value,
-                    "source_reference": obs.source_reference,
+                    "source_reference": (
+                        obs.source_reference
+                        if series_id != "CUUR0000SA0" or obs.product == "OFFICIAL_BULK_CPI"
+                        else BLS_DOCS
+                    ),
                 })
             return self._row(key, "SOURCE_BOUND", value=cpi.value,
                              period=cpi.period, fetched_at=cpi.fetched_at.isoformat(),
