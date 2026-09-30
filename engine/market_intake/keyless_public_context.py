@@ -63,6 +63,15 @@ def soulaana_sources_from_environment(enabled: frozenset[str]) -> frozenset[str]
     )
 
 
+def treasury_rates_enabled_from_environment(enabled: frozenset[str]) -> bool:
+    return (
+        "treasury" in enabled
+        and os.environ.get("OB_KEYLESS_TREASURY_RATES_ENABLED") == "1"
+        and os.environ.get("OB_KEYLESS_TREASURY_RATES_USE_REVIEWED") == "1"
+        and os.environ.get("OB_KEYLESS_TREASURY_RATES_OWNER_DISPLAY_REVIEWED") == "1"
+    )
+
+
 def edgar_delegated_from_environment() -> bool:
     return (os.environ.get("OB_SEC_PUBLIC_RESEARCH_ENABLED") == "1"
             and os.environ.get("OB_SEC_PUBLIC_USE_REVIEWED") == "1"
@@ -269,8 +278,5 @@ def from_environment() -> KeylessPublicContext:
         enabled=enabled,
         ai_sources=soulaana_sources_from_environment(enabled),
         sec_delegated=edgar_delegated_from_environment(),
-        treasury_rates_enabled=(
-            "treasury" in enabled
-            and os.environ.get("OB_KEYLESS_TREASURY_RATES_ENABLED") == "1"
-        ),
+        treasury_rates_enabled=treasury_rates_enabled_from_environment(enabled),
     )
