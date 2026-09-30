@@ -6,6 +6,11 @@ from .contracts import (
 from .adapters import FeedAdapter, IngressRegistry
 from .provider_catalog import CATALOG, ProviderProduct
 from .gateway import IngressDecision, UniversalMarketGateway
+from .commercial_free_market import (
+    FINAZON_FREE_TRIAL_SYMBOLS, FINAZON_ID, TWELVE_DATA_ID,
+    MarketContextRecord, normalize_finazon_snapshot, normalize_twelve_data_quote,
+    parse_finazon_ws_bar, parse_twelve_data_ws_price, record_digest, stream_plan,
+)
 from .historical_research import (CompletedDailyBar, HistoryRights, HistorySeries,
                                   history_context, replay_historical_horizon)
 from .fundamental_research import (CompanyFact, FundamentalRights, parse_companyfacts,
@@ -24,7 +29,11 @@ from .universe import (
 )
 __all__ = (
     "FeedAdapter", "IngressRegistry", "CATALOG", "ProviderProduct", "IngressDecision",
-    "UniversalMarketGateway", "CompletedDailyBar", "HistoryRights", "HistorySeries",
+    "UniversalMarketGateway",
+    "MarketContextRecord", "TWELVE_DATA_ID", "FINAZON_ID", "FINAZON_FREE_TRIAL_SYMBOLS",
+    "normalize_twelve_data_quote", "normalize_finazon_snapshot", "parse_twelve_data_ws_price",
+    "parse_finazon_ws_bar", "stream_plan", "record_digest",
+    "CompletedDailyBar", "HistoryRights", "HistorySeries",
     "history_context", "replay_historical_horizon", "CompanyFact",
     "FundamentalRights", "parse_companyfacts", "fundamental_context",
     "SymbolResearchInputs", "symbol_research_snapshot", "project_research",
