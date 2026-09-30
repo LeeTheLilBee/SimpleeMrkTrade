@@ -1,4 +1,4 @@
-"""Seven-provider owner-session status → Soulaana, with no raw source/AI authority."""
+"""Nine-provider owner-session status → Soulaana, with no raw source/AI authority."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SID = "tower_session_fictional_owner_source_status_1234"
 SECRET = "FICTIONAL-TEST-SECRET-DO-NOT-EXPOSE"
 ACCOUNT = "fictional-private-account-1234"
-PROVIDERS = ("public", "finnhub", "alpha_vantage", "sec", "bls", "treasury", "openfigi")
+PROVIDERS = ("public", "finnhub", "alpha_vantage", "twelve_data", "finazon", "sec", "bls", "treasury", "openfigi")
 
 
 def keys(_sid):
@@ -22,6 +22,10 @@ def keys(_sid):
         {"id": "finnhub", "present": True, "probe": "READ_ONLY_CHECK_PASSED",
          "secret": SECRET, "expires_at": "2030-01-01T00:00:00Z"},
         {"id": "alpha_vantage", "present": False, "probe": "NOT_CONFIGURED",
+         "secret": SECRET},
+        {"id": "twelve_data", "present": True, "probe": "RATE_LIMITED",
+         "secret": SECRET},
+        {"id": "finazon", "present": False, "probe": "NOT_CONFIGURED",
          "secret": SECRET},
     )
 
@@ -51,6 +55,9 @@ def test_all_provider_statuses_reach_soulaana_without_credentials_or_vendor_data
     assert [r["provider"] for r in brief["provider_register"]] == list(PROVIDERS)
     assert {r["provider"]: r["state"] for r in brief["provider_register"]}["public"] == "TEMPORARY_AUTH_ONLY"
     assert {r["provider"]: r["state"] for r in brief["provider_register"]}["finnhub"] == "READ_ONLY_CHECK_PASSED"
+    twelve = next(r for r in brief["provider_register"] if r["provider"] == "twelve_data")
+    assert twelve["state"] == "TEMPORARY_KEY_RECEIVED"
+    assert "rate limited" in twelve["meaning"].lower()
     assert all(r["meaning"] for r in brief["provider_register"])
     for forbidden in (SECRET, ACCOUNT, '"expires_at":', '"access_token":', '"account_id":'):
         assert forbidden not in json.dumps(result)
@@ -84,6 +91,8 @@ def test_authority_promotion_or_contract_change_is_rejected(monkeypatch, field, 
     ("finnhub", "state", "LIVE_MARKET_DATA"),
     ("finnhub", "state", []),
     ("alpha_vantage", "quote_feed_activated", True),
+    ("twelve_data", "data_display_rights_verified", True),
+    ("finazon", "source_use_rights_verified", "yes"),
     ("sec", "provider_request_made", True),
     ("bls", "ai_use_authorized", True),
     ("treasury", "reference_only", False),
@@ -98,6 +107,19 @@ def test_provider_state_tampering_or_unreviewed_ai_does_not_reach_soulaana(
             break
     with pytest.raises(ValueError, match="SOULAANA_PROVIDER_CONNECTION_HOLD"):
         build_soulaana_provider_status(packet)
+
+
+def test_commercial_free_rights_meaning_stays_non_promoting(monkeypatch):
+    monkeypatch.setenv("OB_PROVIDER_TWELVE_DATA_BUSINESS_BASIC_REVIEWED", "1")
+    monkeypatch.setenv("OB_PROVIDER_FINAZON_US_EQUITIES_BASIC_COMMERCIAL_REVIEWED", "1")
+    packet = connection_status_projection(sid=SID, key_reader=keys, public_reader=public)
+    register = {x["provider"]: x for x in packet["soulaana_provider_status"]["provider_register"]}
+    assert "internal non-display" in register["twelve_data"]["meaning"].lower()
+    assert "free trial remains aapl/tsla/goog" in register["finazon"]["meaning"].lower()
+    brief = packet["soulaana_provider_status"]
+    assert brief["source_content_ai_authorized"] is False
+    assert brief["quote_verified"] is False
+    assert brief["broker_execution_authorized"] is False
 
 
 def test_default_off_and_revocation_status_are_truthful(monkeypatch):
