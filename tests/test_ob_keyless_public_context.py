@@ -240,7 +240,7 @@ def test_treasury_rates_reach_soulaana_as_explanation_not_trade_signal():
     svc = KeylessPublicContext(
         enabled=frozenset({"treasury"}), ai_sources=frozenset({"treasury"}),
         treasury=TreasuryPublicClient(policy, opener=source),
-        treasury_rates_enabled=True, now=lambda: NOW,
+        treasury_rates_enabled=True, now=lambda: datetime.now(timezone.utc),
     )
     packet = svc.snapshot()
     rates = packet["sources"][2]["rates"]
@@ -268,7 +268,7 @@ def test_treasury_rate_failure_does_not_erase_valid_fiscal_context():
     svc = KeylessPublicContext(
         enabled=frozenset({"treasury"}), ai_sources=frozenset({"treasury"}),
         treasury=TreasuryPublicClient(policy, opener=source),
-        treasury_rates_enabled=True, now=lambda: NOW,
+        treasury_rates_enabled=True, now=lambda: datetime.now(timezone.utc),
     )
     treasury = svc.snapshot()["sources"][2]
     assert treasury["state"] == "SOURCE_BOUND"
