@@ -135,7 +135,7 @@
           <article class="mdd-connection-card">
             <div class="mdd-card-top">
               <div><span class="mdd-card-lane">RESEARCH SOURCE</span><h3>{{ p.name }}</h3></div>
-              <span class="mdd-badge {{ 'ready' if p.probe == 'READ_ONLY_CHECK_PASSED' else 'hold' }}">{{ p.probe.replace('_',' ') }}</span>
+              <span class="mdd-badge {{ 'ready' if p.probe == 'READ_ONLY_CHECK_PASSED' else 'hold' }}">{{ p.probe_message if p.probe_message is defined else p.probe.replace('_',' ') }}</span>
             </div>
             <p>{{ p.purpose }}</p>
             <p class="mdd-fine">{% if p.present %}A key is temporarily held until {{ p.expires_at }}.{% else %}No key is stored for this Tower session.{% endif %}</p>
