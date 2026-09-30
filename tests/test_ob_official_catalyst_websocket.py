@@ -238,7 +238,9 @@ def test_staged_single_worker_and_ui_recovers_through_same_protected_get():
     assert 'web.hosted_tower:app' in start
     assert "asgiref" in req and "uvicorn" in req
     assert 'http_app = WsgiToAsgi(flask_app)' in asgi
-    assert 'if scope.get("path") != PATH:' in asgi
+    assert 'path == CATALYST_PATH' in asgi
+    assert 'path == MARKET_PATH' in asgi
+    assert 'websocket.close' in asgi and '"code": 4403' in asgi
     assert "new window.WebSocket(url)" in script
     assert "loadSnapshot(false)" in script
     assert '"/ob/research/catalysts.json"' in script
