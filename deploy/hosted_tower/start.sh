@@ -44,10 +44,11 @@ if [[ "${OB_CATALYST_ONE_SHOT_SOURCE_PROBE:-0}" == "1" ]]; then
     "${PYTHON_VALUE}" -u -m deploy.hosted_tower.official_catalyst_one_shot &
 fi
 
-# Staged WebSocket transport. Same canonical Flask app through ASGI WSGI
-# adapter; keep legacy WSGI default until integration/hosted acceptance passes.
-# Never infer that a provider itself has a native streaming entitlement.
-if [[ "${OB_CATALYST_WS_ASGI_ENABLED:-0}" == "1" ]]; then
+# Staged WebSocket transport. Both Observatory sockets share the same canonical
+# Flask app through the ASGI adapter and remain single-process until a reviewed
+# shared replay/revocation store exists. Enabling either flag selects ASGI.
+# This does NOT mean an upstream provider has streaming entitlement.
+if [[ "${OB_CATALYST_WS_ASGI_ENABLED:-0}" == "1" || "${OB_MARKET_WS_ASGI_ENABLED:-0}" == "1" ]]; then
     exec "${PYTHON_VALUE}" -m uvicorn web.hosted_tower_asgi:application \
         --host 0.0.0.0 \
         --port "${PORT_VALUE}" \
