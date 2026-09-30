@@ -80,6 +80,24 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
     from tower.ob_provider_key_desk import register_provider_key_desk
     register_provider_key_desk(app, owner_authorize=_tower_authorize_data_desk)
 
+    from tower.ob_commercial_free_market import (
+        CommercialFreeMarketService,
+        create_commercial_free_market_status_blueprint,
+    )
+    commercial_free_market = CommercialFreeMarketService(
+        secret_reader=app.extensions["ob_provider_key_secret_reader_v1"],
+        status_reader=app.extensions["ob_provider_key_status_reader_v1"],
+    )
+    app.register_blueprint(create_commercial_free_market_status_blueprint(
+        owner_authorize=_tower_authorize_data_desk,
+        service=commercial_free_market,
+    ))
+    # Server-only consumers may request normalized market context after exact
+    # rights/key gates pass. No browser route exposes raw values.
+    app.extensions["ob_commercial_free_market_service_v1"] = commercial_free_market
+    app.extensions["ob_commercial_free_market_reader_v1"] = commercial_free_market.read_symbol_internal
+    app.extensions["ob_commercial_free_stream_plan_v1"] = commercial_free_market.free_stream_plan
+
     from tower.ob_keyed_provider_research import create_keyed_provider_research_blueprint
     app.register_blueprint(create_keyed_provider_research_blueprint(
         owner_authorize=_tower_authorize_data_desk,
@@ -100,6 +118,7 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
         "quote_data_attached": False,
         "observatory_event_hub_registered": True,
         "provider_stream_attached": False,
+        "commercial_free_market_adapter_registered": True,
         "browser_approval": False,
         "broker_execution": False,
         "paid_resources": False,
