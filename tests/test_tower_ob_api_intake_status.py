@@ -28,6 +28,10 @@ def _key_rows(_sid):
          "expires_at": "2030-01-01T00:00:00+00:00"},
         {"id": "alpha_vantage", "name": "Alpha Vantage", "present": False,
          "probe": "NOT_CONFIGURED", "value": SECRET},
+        {"id": "twelve_data", "name": "Twelve Data", "present": False,
+         "probe": "NOT_CONFIGURED", "value": SECRET},
+        {"id": "finazon", "name": "Finazon", "present": False,
+         "probe": "NOT_CONFIGURED", "value": SECRET},
     )
 
 
@@ -49,12 +53,16 @@ def test_safe_projection_never_conflates_connection_and_data_license(monkeypatch
     assert result["live_feed_count_verified"] is None
     assert result["prices_attached"] is False
     assert result["may_authorize_order"] is False
-    assert len(result["provider_status"]) == 7
+    assert len(result["provider_status"]) == 9
     states = {x["provider"]: x for x in result["provider_status"]}
     assert states["finnhub"]["state"] == "READ_ONLY_CHECK_PASSED"
     assert states["finnhub"]["source_use_rights_verified"] is False
     assert states["finnhub"]["quote_feed_activated"] is False
     assert states["alpha_vantage"]["state"] == "NOT_CONFIGURED"
+    assert states["twelve_data"]["state"] == "NOT_CONFIGURED"
+    assert states["twelve_data"]["source_use_rights_verified"] is False
+    assert states["finazon"]["state"] == "NOT_CONFIGURED"
+    assert states["finazon"]["data_display_rights_verified"] is False
     assert states["public"]["state"] == "TEMPORARY_AUTH_ONLY"
     assert states["public"]["account_linked"] is False
     assert states["bls"]["state"] == "RIGHTS_REVIEW_HOLD"
@@ -62,6 +70,21 @@ def test_safe_projection_never_conflates_connection_and_data_license(monkeypatch
     assert "private-synthetic-account" not in json.dumps(result)
     assert "expires_at" not in json.dumps(result)
     assert "secret" not in json.dumps(result)
+
+
+def test_commercial_free_rights_are_separate_from_key_probe(monkeypatch):
+    monkeypatch.setenv("OB_PROVIDER_TWELVE_DATA_BUSINESS_BASIC_REVIEWED", "1")
+    monkeypatch.setenv("OB_PROVIDER_FINAZON_US_EQUITIES_BASIC_COMMERCIAL_REVIEWED", "1")
+    monkeypatch.setenv("OB_PROVIDER_FINAZON_OWNER_DISPLAY_REVIEWED", "1")
+    result = connection_status_projection(sid=SID, key_reader=_key_rows, public_reader=_public)
+    states = {x["provider"]: x for x in result["provider_status"]}
+    assert states["twelve_data"]["source_use_rights_verified"] is True
+    assert states["twelve_data"]["data_display_rights_verified"] is False
+    assert states["finazon"]["source_use_rights_verified"] is True
+    assert states["finazon"]["data_display_rights_verified"] is True
+    assert states["twelve_data"]["quote_feed_activated"] is False
+    assert states["finazon"]["quote_feed_activated"] is False
+    assert result["prices_attached"] is False
 
 
 def test_reviewed_keyless_configuration_is_not_a_successful_provider_fetch(monkeypatch):
@@ -147,7 +170,7 @@ def test_source_reader_failure_is_generic_hold_not_secret_error():
 
 
 def test_canonical_tower_routes_and_existing_dissemination_preserved():
-    for path in (PATH, keys.PATH, "/ob/research/keyless.json", "/ob/data-desk/public"):
+    for path in (PATH, keys.PATH, "/ob/data-desk/commercial-free.json", "/ob/research/keyless.json", "/ob/data-desk/public"):
         assert path in PROTECTED_EXACT_OB_ROUTES
         policy = match_ob_guard_policy(path)
         assert policy["match_type"] == "exact"
@@ -159,9 +182,10 @@ def test_canonical_tower_routes_and_existing_dissemination_preserved():
     assert "create_keyless_context_blueprint(" in app_source
     assert "register_provider_key_desk(app," in app_source
     assert "create_connection_truth_blueprint(" in app_source
+    assert "CommercialFreeMarketService(" in app_source
     html = (ROOT / "web/templates/market_data_desk.html").read_text()
     assert "ob_keyless_context.js" in html
-    assert keys.PATH in html and PATH in html
+    assert keys.PATH in html and PATH in html and "/ob/data-desk/commercial-free.json" in html
     assert "ob_connection_truth.js" in html
     nav = (ROOT / "web/static/ob/ob_nav_shell.js").read_text()
     assert 'navLink(path, "/ob/trade-center", "Trade Center"' in nav
