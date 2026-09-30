@@ -75,6 +75,7 @@ def _valid(snapshot: object) -> bool:
 def create_market_data_desk_blueprint(
     *, tower_owner_authorize: Callable[[], bool],
     protected_snapshot: Callable[[], dict],
+    connection_ui_state: Callable[[], dict] | None = None,
 ) -> Blueprint:
     """Default deny; caller must supply exact Tower owner/session/step-up decision.
 
@@ -101,10 +102,14 @@ def create_market_data_desk_blueprint(
             abort(503)
         if not _valid(snapshot):
             abort(503)
+        connection_state = connection_ui_state() if connection_ui_state else {}
+        if not isinstance(connection_state, dict):
+            abort(503)
         response = make_response(render_template(
             "market_data_desk.html",
             data_desk_snapshot=snapshot,
             data_desk_route_enabled=True,
+            connection_state=connection_state,
         ))
         response.headers["Cache-Control"] = "no-store, private"
         response.headers["Pragma"] = "no-cache"
