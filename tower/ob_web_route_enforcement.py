@@ -19,6 +19,7 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
         "/ob/data-desk/public",
         "/ob/data-desk/api-keys",
         "/ob/data-desk/connections.json",
+        "/ob/data-desk/commercial-free.json",
         "/ob/research/keyless.json",
         "/ob/research/providers.json",
         "/ob/research/catalysts.json",
