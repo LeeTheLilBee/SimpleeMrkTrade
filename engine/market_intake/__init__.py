@@ -7,9 +7,12 @@ from .adapters import FeedAdapter, IngressRegistry
 from .provider_catalog import CATALOG, ProviderProduct
 from .gateway import IngressDecision, UniversalMarketGateway
 from .commercial_free_market import (
-    FINAZON_FREE_TRIAL_SYMBOLS, FINAZON_ID, TWELVE_DATA_ID,
-    MarketContextRecord, normalize_finazon_snapshot, normalize_twelve_data_quote,
-    parse_finazon_ws_bar, parse_twelve_data_ws_price, record_digest, stream_plan,
+    FINAZON_FREE_TRIAL_SYMBOLS, FINAZON_ID, FINAZON_WS_ENDPOINT,
+    TWELVE_DATA_ID, TWELVE_WS_ENDPOINT, MarketContextRecord,
+    normalize_finazon_snapshot, normalize_twelve_data_quote,
+    parse_finazon_ws_bar, parse_twelve_data_ws_price,
+    twelve_ws_subscribe, twelve_ws_heartbeat,
+    finazon_ws_subscribe, finazon_ws_heartbeat, record_digest, stream_plan,
 )
 from .historical_research import (CompletedDailyBar, HistoryRights, HistorySeries,
                                   history_context, replay_historical_horizon)
@@ -30,9 +33,11 @@ from .universe import (
 __all__ = (
     "FeedAdapter", "IngressRegistry", "CATALOG", "ProviderProduct", "IngressDecision",
     "UniversalMarketGateway",
-    "MarketContextRecord", "TWELVE_DATA_ID", "FINAZON_ID", "FINAZON_FREE_TRIAL_SYMBOLS",
+    "MarketContextRecord", "TWELVE_DATA_ID", "TWELVE_WS_ENDPOINT",
+    "FINAZON_ID", "FINAZON_WS_ENDPOINT", "FINAZON_FREE_TRIAL_SYMBOLS",
     "normalize_twelve_data_quote", "normalize_finazon_snapshot", "parse_twelve_data_ws_price",
-    "parse_finazon_ws_bar", "stream_plan", "record_digest",
+    "parse_finazon_ws_bar", "twelve_ws_subscribe", "twelve_ws_heartbeat",
+    "finazon_ws_subscribe", "finazon_ws_heartbeat", "stream_plan", "record_digest",
     "CompletedDailyBar", "HistoryRights", "HistorySeries",
     "history_context", "replay_historical_horizon", "CompanyFact",
     "FundamentalRights", "parse_companyfacts", "fundamental_context",
