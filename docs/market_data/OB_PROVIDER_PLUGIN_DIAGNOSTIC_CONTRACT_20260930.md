@@ -55,7 +55,7 @@ must discard the source text. The raw provider wording is never returned to the 
 
 ## Scope
 
-Finnhub and Alpha Vantage are the first adapters migrated to this contract. All future
+Finnhub, Alpha Vantage, Twelve Data and Finazon are the current Key Desk adapters using this contract. All future
 connectors—including REST, WebSocket, MQTT, streaming HTTP, broker and provider-native
 streaming adapters—should import and reuse the shared diagnostic contract rather than invent
 new browser-visible error strings.
