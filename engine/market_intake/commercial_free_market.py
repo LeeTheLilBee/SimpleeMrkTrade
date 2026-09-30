@@ -104,6 +104,8 @@ class MarketContextRecord:
             raise ValueError("timezone-aware observation and receipt required")
         if self.observed_at > self.received_at:
             raise ValueError("provider observation cannot post-date receipt")
+        if self.last is None:
+            raise ValueError("last is required")
         _num(self.last, "last")
         for name in ("open", "high", "low", "previous_close",
                      "average_volume", "fifty_two_week_high", "fifty_two_week_low"):
@@ -242,12 +244,19 @@ def parse_twelve_data_ws_price(document: Mapping, *, received_at: datetime) -> M
 
 def parse_finazon_ws_bar(document: Mapping, *, symbol: str,
                          received_at: datetime) -> MarketContextRecord:
-    """Normalize a Finazon us_stocks_essential time-series bar event."""
+    """Normalize a Finazon us_stocks_essential bars event."""
     if not isinstance(document, Mapping):
         raise ValueError("Finazon websocket bar must be an object")
+    symbol = clean_symbol(symbol)
+    if document.get("d") not in (None, "us_stocks_essential"):
+        raise ValueError("Finazon websocket dataset mismatch")
+    if document.get("ch") not in (None, "bars"):
+        raise ValueError("Finazon websocket channel mismatch")
+    if document.get("s") not in (None, symbol):
+        raise ValueError("Finazon websocket symbol mismatch")
     return MarketContextRecord(
         source_id=FINAZON_ID,
-        symbol=clean_symbol(symbol),
+        symbol=symbol,
         observed_at=_unix(document.get("t")),
         received_at=received_at,
         last=_num(document.get("c"), "close"),
@@ -258,8 +267,16 @@ def parse_finazon_ws_bar(document: Mapping, *, symbol: str,
     )
 
 
-def stream_plan(symbols: Iterable[str]) -> dict[str, tuple[str, ...]]:
-    """Allocate free WebSocket slots deterministically; no network is opened here."""
+def stream_plan(
+    symbols: Iterable[str], *, twelve_trial_symbols: Iterable[str] = ()
+) -> dict[str, tuple[str, ...]]:
+    """Allocate only provider-confirmed free WebSocket symbols.
+
+    Twelve Data Business Basic carries 8 *trial* WS credits, not a blanket grant
+    to stream any eight US symbols. Callers must supply the provider-confirmed
+    current trial-symbol set; default is therefore no Twelve WS subscriptions.
+    Finazon's free-trial symbols are explicitly AAPL/TSLA/GOOG.
+    """
     ordered = []
     seen = set()
     for value in symbols:
@@ -267,8 +284,11 @@ def stream_plan(symbols: Iterable[str]) -> dict[str, tuple[str, ...]]:
         if symbol not in seen:
             seen.add(symbol)
             ordered.append(symbol)
-    twelve = tuple(ordered[:TWELVE_WS_BUDGET])
-    finazon = tuple(x for x in ordered if x in FINAZON_FREE_TRIAL_SYMBOLS)[:FINAZON_FREE_WS_BUDGET]
+    twelve_allowed = {clean_symbol(x) for x in twelve_trial_symbols}
+    twelve = tuple(x for x in ordered if x in twelve_allowed)[:TWELVE_WS_BUDGET]
+    finazon = tuple(
+        x for x in ordered if x in FINAZON_FREE_TRIAL_SYMBOLS
+    )[:FINAZON_FREE_WS_BUDGET]
     return {TWELVE_DATA_ID: twelve, FINAZON_ID: finazon}
 
 
