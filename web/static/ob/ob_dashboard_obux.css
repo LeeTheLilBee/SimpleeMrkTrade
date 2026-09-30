@@ -1150,3 +1150,44 @@ summary:focus-visible {
     gap: 11px;
   }
 }
+
+
+/* OBUX ultra-calm landing page */
+body[data-ob-room="dashboard"] .ob-user-shell{padding-top:24px}
+body[data-ob-room="dashboard"] .ob-user-header{margin-bottom:16px}
+body[data-ob-room="dashboard"] .ob-user-header h1{font-size:clamp(2rem,4vw,3.2rem)}
+body[data-ob-room="dashboard"] .ob-user-dashboard{gap:14px}
+body[data-ob-room="dashboard"] .ob-user-focus-compact{
+  min-height:0;
+  display:block;
+  padding:22px 24px;
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 12% 35%,rgba(57,191,165,.10),transparent 28%),
+    linear-gradient(145deg,rgba(18,48,45,.50),rgba(5,8,9,.88));
+}
+body[data-ob-room="dashboard"] .ob-user-focus-compact h2{
+  margin:6px 0 7px;
+  font-size:clamp(1.45rem,3vw,2.25rem);
+}
+body[data-ob-room="dashboard"] .ob-user-focus-compact p{
+  max-width:620px;
+  font-size:.9rem;
+  line-height:1.45;
+}
+body[data-ob-room="dashboard"] .ob-user-focus-actions{margin-top:14px}
+body[data-ob-room="dashboard"] .ob-user-glance{padding:18px;border-radius:20px}
+body[data-ob-room="dashboard"] .ob-section-head{margin-bottom:12px}
+body[data-ob-room="dashboard"] .ob-section-head h2{font-size:1.15rem}
+body[data-ob-room="dashboard"] .ob-user-glance-card{
+  min-height:116px;
+  padding:14px;
+}
+body[data-ob-room="dashboard"] .ob-user-glance-card strong{
+  margin-top:12px;
+  font-size:1.25rem;
+}
+body[data-ob-room="dashboard"] .ob-user-glance-card p{display:none}
+body[data-ob-room="dashboard"] .ob-user-glance-card small{margin-top:8px}
+body[data-ob-room="dashboard"] .ob-user-glance-card a{margin-top:auto}
+body[data-ob-room="dashboard"] .ob-guide-prompt{display:none!important}

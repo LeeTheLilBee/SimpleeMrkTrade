@@ -113,10 +113,6 @@
                   ${esc(item.symbol)}
                 </strong>
 
-                <p>
-                  ${esc(item.detail)}
-                </p>
-
                 <small>
                   ${esc(item.source)}
                 </small>
@@ -259,10 +255,6 @@
       projection.market_glance
     );
 
-    renderMore(
-      projection.more
-    );
-
     document.body.setAttribute(
       "data-ob-user-mode",
       projection.mode
@@ -401,10 +393,6 @@
   function boot() {
     render();
 
-    window.setTimeout(
-      showDashboardGuide,
-      60
-    );
   }
 
 
