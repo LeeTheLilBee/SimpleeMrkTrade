@@ -66,10 +66,14 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
         context_service=from_environment(),
     ))
     from engine.market_intake.official_catalyst_radar import from_environment as catalyst_from_environment
+    from engine.market_intake.official_catalyst_stream import OfficialCatalystEventHub
     from web.ob_official_catalyst_route import create_official_catalyst_blueprint
+    event_hub = OfficialCatalystEventHub()
+    app.extensions["ob_official_catalyst_event_hub"] = event_hub
     app.register_blueprint(create_official_catalyst_blueprint(
         owner_authorize=_tower_authorize_data_desk,
         catalyst_service=catalyst_from_environment(),
+        event_hub=event_hub,
     ))
     from tower.ob_provider_key_desk import register_provider_key_desk
     register_provider_key_desk(app, owner_authorize=_tower_authorize_data_desk)
