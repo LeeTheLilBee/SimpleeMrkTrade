@@ -28,6 +28,10 @@ class OfficialCatalystEventHub:
         self._latest = 0
         self._digest = None
         self._clients = {}
+        # Local session-id denylist: closing/logout and new login revoke any
+        # older owner research sockets on the same single-worker instance.
+        # A distributed service would need a shared revocation store.
+        self._revoked_sessions = set()
         self.client_budget = client_budget
         self.queue_size = queue_size
 
@@ -149,6 +153,21 @@ class OfficialCatalystEventHub:
             "live_market_feed": False, "candidate_admitted": False,
             "execution_authorized": False,
         }
+
+    def revoke_session(self, tower_session_id):
+        if not isinstance(tower_session_id, str) or not tower_session_id:
+            return
+        # A fixed-size digest, never expose a session identifier on the wire.
+        digest = sha256(tower_session_id.encode("utf-8")).hexdigest()
+        with self._lock:
+            self._revoked_sessions.add(digest)
+
+    def session_revoked(self, tower_session_id):
+        if not isinstance(tower_session_id, str) or not tower_session_id:
+            return True
+        digest = sha256(tower_session_id.encode("utf-8")).hexdigest()
+        with self._lock:
+            return digest in self._revoked_sessions
 
     def unsubscribe(self, key):
         with self._lock:
