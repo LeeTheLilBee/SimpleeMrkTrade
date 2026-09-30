@@ -6,19 +6,11 @@ WORKERS_VALUE="${WEB_CONCURRENCY:-1}"
 TIMEOUT_VALUE="${GUNICORN_TIMEOUT:-120}"
 PYTHON_VALUE="${PYTHON_BIN:-python}"
 
-# TWR198: Teller's one-time handoff store is local to a Python process.
-# Until an explicitly tested shared atomic store is introduced, more than
-# one Gunicorn worker can route issue and consume to different stores.
-# Fail at startup instead of allowing intermittent handoff denial.
 if [[ "${WORKERS_VALUE}" != "1" ]]; then
     printf '%s\n' "Tower hosted startup denied: WEB_CONCURRENCY must be 1 until a shared atomic handoff store is verified." >&2
     exit 64
 fi
 
-# Explicit, primary-service-only owner beta observation. Never use a static
-# self-certified JSON fixture. The separate observer polls the actual hosted
-# HTTP endpoints and writes only short-lived, integrity-checked receipts.
-# The feature is OFF by default and grants no trading/financial permission.
 if [[ "${TOWER_OWNER_BETA_OB_PUBLICATION_ENABLED:-0}" == "1" ]]; then
     OBSERVED_PATH="/tmp/tower-owner-beta-ob-publication.json"
     if [[ -n "${TOWER_APP_PUBLICATION_STATE_PATH:-}" && "${TOWER_APP_PUBLICATION_STATE_PATH}" != "${OBSERVED_PATH}" ]]; then
@@ -30,25 +22,17 @@ if [[ "${TOWER_OWNER_BETA_OB_PUBLICATION_ENABLED:-0}" == "1" ]]; then
     "${PYTHON_VALUE}" -u -m deploy.hosted_tower.ob_publication_observer &
 fi
 
-# Owner-requested one-shot live no-key source proof. Explicitly opt-in,
-# provider-reviewed, no raw values or login credentials in logs. Runs once per
-# opted-in startup, independently of normal owner-only route authorization.
-# Never blocks availability and is OFF during ordinary deployments.
 if [[ "${OB_KEYLESS_ONE_SHOT_SOURCE_PROBE:-0}" == "1" ]]; then
     "${PYTHON_VALUE}" -u -m deploy.hosted_tower.keyless_one_shot_source_probe &
 fi
 
-# Owner-requested opt-in one-shot official research proof; status only and
-# never an owner session, quote, model call or recurring background monitor.
 if [[ "${OB_CATALYST_ONE_SHOT_SOURCE_PROBE:-0}" == "1" ]]; then
     "${PYTHON_VALUE}" -u -m deploy.hosted_tower.official_catalyst_one_shot &
 fi
 
-# Staged WebSocket transport. Both Observatory sockets share the same canonical
-# Flask app through the ASGI adapter and remain single-process until a reviewed
-# shared replay/revocation store exists. Enabling either flag selects ASGI.
-# This does NOT mean an upstream provider has streaming entitlement.
-if [[ "${OB_CATALYST_WS_ASGI_ENABLED:-0}" == "1" || "${OB_MARKET_WS_ASGI_ENABLED:-0}" == "1" ]]; then
+# One internal Observatory event socket. This does not imply any upstream
+# provider has a native WebSocket or streaming market-data entitlement.
+if [[ "${OB_EVENT_WS_ASGI_ENABLED:-0}" == "1" ]]; then
     exec "${PYTHON_VALUE}" -m uvicorn web.hosted_tower_asgi:application \
         --host 0.0.0.0 \
         --port "${PORT_VALUE}" \

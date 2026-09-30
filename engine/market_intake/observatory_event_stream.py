@@ -1,33 +1,24 @@
-"""Normalized internal event bus for Observatory market/intelligence invalidations.
+"""Single process-local event bus for The Observatory.
 
-This is the nervous-system layer, not a market-data entitlement or quote feed.
-Producers publish only that protected authoritative state changed. Consumers must
-re-read the exact Tower-protected snapshot route before using any data.
-
-Native provider WebSockets may be bridged here later only after separate source,
-commercial-use, display, retention and streaming-entitlement review. Until then
-this hub carries no provider payload, quote value, option chain, order or capital
-authority.
+The event socket is a notification/coordination layer only. It never becomes a
+market-data entitlement, source of truth, broker route, scanner authority or
+capital authority. Data-bearing consumers re-read an exact protected Tower
+snapshot after an event.
 """
 from __future__ import annotations
 
 import asyncio
 from collections import deque
+from hashlib import sha256
 import re
 import secrets
 from threading import RLock
 
-PATH = "/ob/market/stream"
-SCHEMA = "OB_MARKET_STREAM_EVENT_V1"
+PATH = "/ob/events/stream"
+EVENT_SCHEMA = "OB_EVENT_STREAM_EVENT_V1"
+HINT_SCHEMA = "OB_EVENT_STREAM_HINT_V1"
 
-_EVENT_TYPES = frozenset({
-    "research_context_changed",
-    "source_status_changed",
-    "market_snapshot_changed",
-    "scanner_context_changed",
-    "candidate_context_changed",
-})
-_CHANNELS = {
+_EVENT_CHANNELS = {
     "research_context_changed": "research",
     "source_status_changed": "system",
     "market_snapshot_changed": "market",
@@ -42,11 +33,13 @@ _SNAPSHOT_PATHS = frozenset({
     "/ob/engine-feed-snapshot.json",
 })
 _SOURCE = re.compile(r"^[a-z0-9][a-z0-9_.-]{0,63}$")
+_OBSERVATION_KEY = re.compile(r"^[a-z0-9][a-z0-9_.:-]{0,95}$")
 _SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,15}$")
+_DIGEST = re.compile(r"^[0-9a-f]{64}$")
 
 
-class MarketStreamHub:
-    """Bounded process-local invalidation bus with cursor/replay semantics."""
+class ObservatoryEventHub:
+    """Bounded single-worker event/replay bus for all OB internal changes."""
 
     def __init__(self, *, history=128, client_budget=8, queue_size=16):
         if (
@@ -54,28 +47,62 @@ class MarketStreamHub:
             or type(client_budget) is not int or not 1 <= client_budget <= 16
             or type(queue_size) is not int or not 2 <= queue_size <= 64
         ):
-            raise ValueError("bounded market stream budgets required")
+            raise ValueError("bounded Observatory event budgets required")
         self.epoch = secrets.token_hex(12)
         self._lock = RLock()
         self._events = deque(maxlen=history)
         self._latest = 0
+        self._observed_digests = {}
         self._clients = {}
+        self._revoked_sessions = set()
         self.client_budget = client_budget
         self.queue_size = queue_size
 
     def hint(self, *, available=False):
         with self._lock:
             return {
-                "schema": "OB_MARKET_STREAM_HINT_V1",
+                "schema": HINT_SCHEMA,
                 "available": available is True,
                 "path": PATH,
                 "epoch": self.epoch,
                 "cursor": self._latest,
-                "normalized_invalidation_only": True,
+                "invalidation_only": True,
+                "content_attached": False,
                 "provider_payload_attached": False,
+                "provider_stream_attached": False,
                 "live_quote_payload_attached": False,
                 "broker_execution_authorized": False,
             }
+
+    def observe_digest(
+        self,
+        *,
+        observation_key,
+        digest,
+        event_type,
+        source,
+        snapshot_path,
+        symbol=None,
+    ):
+        """Publish once when a validated producer's deterministic digest changes."""
+        if (
+            not isinstance(observation_key, str)
+            or not _OBSERVATION_KEY.fullmatch(observation_key)
+            or not isinstance(digest, str)
+            or not _DIGEST.fullmatch(digest)
+        ):
+            raise ValueError("OBSERVATORY_EVENT_OBSERVATION_HOLD")
+        with self._lock:
+            if self._observed_digests.get(observation_key) == digest:
+                return self.hint()
+            self._observed_digests[observation_key] = digest
+        self.publish_invalidation(
+            event_type=event_type,
+            source=source,
+            snapshot_path=snapshot_path,
+            symbol=symbol,
+        )
+        return self.hint()
 
     def publish_invalidation(
         self,
@@ -85,25 +112,25 @@ class MarketStreamHub:
         snapshot_path,
         symbol=None,
     ):
-        if event_type not in _EVENT_TYPES:
-            raise ValueError("MARKET_STREAM_EVENT_TYPE_HOLD")
+        if event_type not in _EVENT_CHANNELS:
+            raise ValueError("OBSERVATORY_EVENT_TYPE_HOLD")
         if not isinstance(source, str) or not _SOURCE.fullmatch(source):
-            raise ValueError("MARKET_STREAM_SOURCE_HOLD")
+            raise ValueError("OBSERVATORY_EVENT_SOURCE_HOLD")
         if snapshot_path not in _SNAPSHOT_PATHS:
-            raise ValueError("MARKET_STREAM_SNAPSHOT_PATH_HOLD")
+            raise ValueError("OBSERVATORY_EVENT_SNAPSHOT_PATH_HOLD")
         if symbol is not None:
             if not isinstance(symbol, str):
-                raise ValueError("MARKET_STREAM_SYMBOL_HOLD")
+                raise ValueError("OBSERVATORY_EVENT_SYMBOL_HOLD")
             symbol = symbol.strip().upper()
             if not _SYMBOL.fullmatch(symbol) or ".." in symbol:
-                raise ValueError("MARKET_STREAM_SYMBOL_HOLD")
+                raise ValueError("OBSERVATORY_EVENT_SYMBOL_HOLD")
 
         with self._lock:
             self._latest += 1
             event = {
-                "schema": SCHEMA,
+                "schema": EVENT_SCHEMA,
                 "type": event_type,
-                "channel": _CHANNELS[event_type],
+                "channel": _EVENT_CHANNELS[event_type],
                 "epoch": self.epoch,
                 "cursor": self._latest,
                 "source": source,
@@ -137,10 +164,10 @@ class MarketStreamHub:
 
     def subscribe(self, *, epoch, cursor, loop):
         if not isinstance(epoch, str) or not isinstance(cursor, int) or cursor < 0:
-            raise ValueError("MARKET_STREAM_CURSOR_HOLD")
+            raise ValueError("OBSERVATORY_EVENT_CURSOR_HOLD")
         with self._lock:
             if len(self._clients) >= self.client_budget:
-                raise ValueError("MARKET_STREAM_CLIENT_BUDGET_HOLD")
+                raise ValueError("OBSERVATORY_EVENT_CLIENT_BUDGET_HOLD")
             queue = asyncio.Queue(maxsize=self.queue_size)
             key = secrets.token_hex(10)
             if epoch != self.epoch or cursor > self._latest:
@@ -158,14 +185,28 @@ class MarketStreamHub:
         with self._lock:
             self._clients.pop(key, None)
 
+    def revoke_session(self, tower_session_id):
+        if not isinstance(tower_session_id, str) or not tower_session_id:
+            return
+        digest = sha256(tower_session_id.encode("utf-8")).hexdigest()
+        with self._lock:
+            self._revoked_sessions.add(digest)
+
+    def session_revoked(self, tower_session_id):
+        if not isinstance(tower_session_id, str) or not tower_session_id:
+            return True
+        digest = sha256(tower_session_id.encode("utf-8")).hexdigest()
+        with self._lock:
+            return digest in self._revoked_sessions
+
     def _resync(self):
         return {
-            "schema": SCHEMA,
+            "schema": EVENT_SCHEMA,
             "type": "resync_required",
             "channel": "system",
             "epoch": self.epoch,
             "cursor": self._latest,
-            "source": "market_stream_hub",
+            "source": "observatory_event_hub",
             "symbol": None,
             "snapshot_path": None,
             "needs_authenticated_snapshot": True,

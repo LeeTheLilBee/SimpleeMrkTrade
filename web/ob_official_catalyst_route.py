@@ -5,6 +5,10 @@ import os
 
 from flask import Blueprint, abort, jsonify, make_response, request
 
+from engine.market_intake.official_catalyst_fingerprint import (
+    official_catalyst_fingerprint,
+)
+
 PATH = "/ob/research/catalysts.json"
 
 
@@ -12,62 +16,58 @@ def create_official_catalyst_blueprint(
     *,
     owner_authorize,
     catalyst_service,
-    event_hub=None,
-    market_event_hub=None,
+    observatory_event_hub=None,
 ):
-    if not callable(owner_authorize) or not callable(getattr(catalyst_service, "snapshot", None)):
-        raise ValueError("Tower authorization and official source service required")
-    if event_hub is not None and not callable(getattr(event_hub, "observe", None)):
-        raise ValueError("Exact bounded source notification hub required")
-    if market_event_hub is not None and not callable(
-        getattr(market_event_hub, "publish_invalidation", None)
+    if not callable(owner_authorize) or not callable(
+        getattr(catalyst_service, "snapshot", None)
     ):
-        raise ValueError("Exact normalized market notification hub required")
+        raise ValueError("Tower authorization and official source service required")
+    if observatory_event_hub is not None and not callable(
+        getattr(observatory_event_hub, "observe_digest", None)
+    ):
+        raise ValueError("Exact Observatory event hub required")
+
     bp = Blueprint("ob_official_catalyst_radar", __name__)
 
     @bp.route(PATH, methods=["GET"])
     def official_catalysts():
         if owner_authorize() is not True:
             abort(403)
-        # A signed cookie copied before Tower logout must not keep reading
-        # this research corridor after that process revoked its session id.
-        if event_hub is not None:
+
+        if observatory_event_hub is not None:
             from flask import session
             from tower.tower_human_login_ob_launch import SESSION_ID
+
             old_id = session.get(SESSION_ID)
-            if old_id and event_hub.session_revoked(old_id):
+            if old_id and observatory_event_hub.session_revoked(old_id):
                 abort(403)
+
         if request.args:
             abort(400)
 
-        market_stream_available = (
-            market_event_hub is not None
-            and os.environ.get("OB_MARKET_WS_ASGI_ENABLED") == "1"
+        stream_available = (
+            observatory_event_hub is not None
+            and os.environ.get("OB_EVENT_WS_ASGI_ENABLED") == "1"
         )
+
         try:
             packet = catalyst_service.snapshot()
-            changed = False
-            if event_hub is not None:
-                before = event_hub.hint()["cursor"]
-                after = event_hub.observe(packet)
-                changed = after["cursor"] != before
-                packet["stream"] = event_hub.hint(
-                    available=os.environ.get("OB_CATALYST_WS_ASGI_ENABLED") == "1"
-                )
-            if market_event_hub is not None and changed:
+            if observatory_event_hub is not None:
+                digest = official_catalyst_fingerprint(packet)
                 try:
-                    market_event_hub.publish_invalidation(
+                    observatory_event_hub.observe_digest(
+                        observation_key="official_catalyst_radar:snapshot",
+                        digest=digest,
                         event_type="research_context_changed",
                         source="official_catalyst_radar",
                         snapshot_path=PATH,
                     )
                 except Exception:
-                    # The authoritative protected snapshot remains usable even
-                    # if the optional delivery bus cannot announce its change.
-                    market_stream_available = False
-            if market_event_hub is not None:
-                packet["market_stream"] = market_event_hub.hint(
-                    available=market_stream_available
+                    # Optional delivery can fail without suppressing the
+                    # authoritative protected snapshot.
+                    stream_available = False
+                packet["event_stream"] = observatory_event_hub.hint(
+                    available=stream_available
                 )
         except Exception:
             abort(503)
