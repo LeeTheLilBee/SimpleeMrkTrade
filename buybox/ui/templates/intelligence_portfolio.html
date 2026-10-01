@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% block title %}Intelligence Studio · BuyBox{% endblock %}{% block content %}
+{% extends "base.html" %}{% block title %}Intelligence Studio · BuyBox{% block content %}
 <section class="hero"><p class="eyebrow">BUYBOX INTELLIGENCE STUDIO</p><h1>See the acquisition universe as a system.</h1>
 <p>Portfolio fit, geography, calendar, lender history, capital-readiness gaps and owner thesis — derived only from BuyBox records.</p></section>
 
@@ -52,3 +52,4 @@
 <section class="panel"><p class="eyebrow">BUYBOX WATCHTOWER</p><h2>Saved acquisition strategies</h2>
 {% for item in radar %}<div class="evidence-row"><div><strong><a href="{{ url_for('saved_search_detail',sid=item.definition.id) }}">{{ item.definition.name }}</a></strong><small>{{ item.definition.filters }}</small></div><span>{{ 'Checked' if item.latest else 'Never checked' }}</span></div>
 {% else %}<p class="muted">No saved searches yet. Opportunity Radar remains manual until an approved external listing feed exists.</p>{% endfor %}</section>
+{% endblock %}
