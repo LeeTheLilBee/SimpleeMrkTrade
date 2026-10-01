@@ -34,6 +34,13 @@ OB_ROUTE_CLEARANCE_CATALOG: Dict[str, Dict[str, Any]] = {
         'allowed_actions': ['view'],
         'plain': 'Owner view of the exact protected market-data corridor. No provider credential, market feed, order or capital authority is granted.',
     },
+    'engine_feed_source_status': {
+        'route_id': '/ob/engine-feed-snapshot.json',
+        'label': 'Canonical OB Market Source Status',
+        'required_clearance_level': 'critical',
+        'allowed_actions': ['view'],
+        'plain': 'Owner-only source-backed market status and research projection. No broker, order, capital, candidate-admission, or mode authority is granted.',
+    },
     'dashboard': {
         'route_id': '/dashboard',
         'label': 'OB Dashboard',
