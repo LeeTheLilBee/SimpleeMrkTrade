@@ -556,3 +556,8 @@ from tower.ob_symbol_research_integration import register_protected_symbol_resea
 register_protected_symbol_research_context(
     app, research_resolver=sec_owner_resolver_from_environment()
 )
+
+
+# Owner OB Settings Control Room
+from tower.ob_settings_control_room import register_ob_settings_control_room
+register_ob_settings_control_room(app)
