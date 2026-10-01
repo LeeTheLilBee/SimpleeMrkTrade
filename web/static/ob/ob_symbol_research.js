@@ -240,6 +240,105 @@
     if (soulaanaNext) soulaanaNext.textContent = watch.length ? watch[0].text : "Wait for the next source-backed update.";
   }
 
+
+  function card(label, value, note) {
+    const item = document.createElement("div");
+    item.className = "ob-symbol-metric";
+    const l = document.createElement("span");
+    l.textContent = label;
+    const v = document.createElement("strong");
+    v.textContent = value == null || value === "" ? "—" : String(value);
+    item.append(l, v);
+    if (note) {
+      const n = document.createElement("small");
+      n.textContent = note;
+      item.append(n);
+    }
+    return item;
+  }
+
+  function fact(label, value) {
+    const item = document.createElement("div");
+    const l = document.createElement("span");
+    l.textContent = label;
+    const v = document.createElement("strong");
+    v.textContent = value == null || value === "" ? "—" : String(value);
+    item.append(l, v);
+    return item;
+  }
+
+  function hydrateTopSymbolFacts(packet, ticker) {
+    if (!packet || packet.schema !== "OB_KEYED_PROVIDER_RESEARCH_V1") return;
+    const rows = Array.isArray(packet.provider_research) ? packet.provider_research : [];
+    const alpaca = sourceRow(rows, "alpaca");
+    const finnhub = sourceRow(rows, "finnhub");
+    const alpha = sourceRow(rows, "alpha_vantage");
+    const finazon = sourceRow(rows, "finazon");
+
+    if (finnhub && finnhub.state === "SOURCE_BOUND") {
+      if (finnhub.security_name) set("symbolCompany", finnhub.security_name);
+      if (finnhub.industry) set("symbolSector", finnhub.industry);
+      const heroState = [
+        finnhub.exchange,
+        finnhub.country,
+        finnhub.currency,
+      ].filter(Boolean).join(" · ");
+      if (heroState) set("symbolMarketState", heroState);
+    }
+
+    const metrics = byId("symbolUnderlyingMetrics");
+    if (metrics) {
+      const items = [];
+      if (alpaca && alpaca.state === "SOURCE_BOUND") {
+        const q = alpaca.quote || {}, b = alpaca.bar || {};
+        if (q.midpoint != null) items.push(card("Current midpoint", money(q.midpoint), "Alpaca IEX"));
+        if (q.bid != null || q.ask != null) items.push(card("Bid / Ask", fmt(q.bid) + " / " + fmt(q.ask), "Alpaca IEX"));
+        if (b.open != null) items.push(card("Minute open", money(b.open), "Latest IEX bar"));
+        if (b.high != null && b.low != null) items.push(card("Minute range", money(b.low) + " – " + money(b.high), "Latest IEX bar"));
+        if (b.volume != null) items.push(card("Minute volume", fmt(b.volume, 0), "Latest IEX bar"));
+      } else if (finazon && finazon.state === "SOURCE_BOUND") {
+        const t = finazon.last_trade || {}, s = finazon.session || {};
+        if (t.price != null) items.push(card("Current trade", money(t.price), "Finazon"));
+        if (s.o != null) items.push(card("Session open", money(s.o), "Finazon"));
+        if (s.h != null && s.l != null) items.push(card("Session range", money(s.l) + " – " + money(s.h), "Finazon"));
+        if (s.v != null) items.push(card("Session volume", fmt(s.v, 0), "Finazon"));
+        if (finazon.daily_change_percent != null) items.push(card("Daily change", pct(finazon.daily_change_percent), "Finazon"));
+      }
+      if (alpha && alpha.state === "SOURCE_BOUND" && Array.isArray(alpha.bars) && alpha.bars.length) {
+        const latest = alpha.bars[0];
+        items.push(card("Last daily close", money(latest.close), latest.session_date));
+        items.push(card("Daily range", money(latest.low) + " – " + money(latest.high), latest.session_date));
+        items.push(card("Daily volume", fmt(latest.volume, 0), latest.session_date));
+      }
+      if (items.length) metrics.replaceChildren(...items.slice(0, 8));
+    }
+
+    const facts = byId("symbolStarFacts");
+    if (facts) {
+      const items = [];
+      if (finnhub && finnhub.state === "SOURCE_BOUND") {
+        if (finnhub.exchange) items.push(fact("Exchange", finnhub.exchange));
+        if (finnhub.industry) items.push(fact("Industry", finnhub.industry));
+        if (finnhub.ipo_date) items.push(fact("IPO", finnhub.ipo_date));
+        if (finnhub.country) items.push(fact("Country", finnhub.country));
+        if (finnhub.currency) items.push(fact("Currency", finnhub.currency));
+        if (finnhub.market_cap_millions != null) {
+          items.push(fact("Market cap", "$" + fmt(finnhub.market_cap_millions, 0) + "M"));
+        }
+        if (finnhub.shares_outstanding_millions != null) {
+          items.push(fact("Shares outstanding", fmt(finnhub.shares_outstanding_millions, 1) + "M"));
+        }
+        if (finnhub.website) items.push(fact("Website", finnhub.website));
+      }
+      if (finazon && finazon.state === "SOURCE_BOUND") {
+        if (finazon.low_52w != null && finazon.high_52w != null) {
+          items.push(fact("52-week range", money(finazon.low_52w) + " – " + money(finazon.high_52w)));
+        }
+      }
+      if (items.length) facts.replaceChildren(...items.slice(0, 10));
+    }
+  }
+
   function hydrateHeroFromAlpaca(row) {
     if (!row || row.state !== "SOURCE_BOUND") return;
     const q = row.quote || {};
@@ -459,6 +558,7 @@
     if (results[0].status === "fulfilled") {
       try {
         providerCount = renderProviderResearch(results[0].value, ticker);
+        hydrateTopSymbolFacts(results[0].value, ticker);
         live = results[0].value.live_prices_attached === true;
       } catch (_) {}
     }
