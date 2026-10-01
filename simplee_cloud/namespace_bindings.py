@@ -233,6 +233,24 @@ class SQLiteNamespaceBindingLedger:
                 raise AccessDenied("stable namespace binding key/entity mismatch")
             raise AccessDenied("stable namespace not independently enrolled")
 
+    def checkpoint_head(self, event_count: int) -> str:
+        """Return a fully verified historical binding-ledger prefix head."""
+        if type(event_count) is not int or event_count < 0:
+            raise IntegrityError("invalid namespace checkpoint event count")
+        with closing(self._connect()) as conn:
+            total, _ = self._verify(conn)
+            if event_count > total:
+                raise IntegrityError("namespace checkpoint prefix unavailable")
+            if event_count == 0:
+                return _GENESIS
+            row = conn.execute(
+                "SELECT event_hash FROM binding_events WHERE seq=?",
+                (event_count,),
+            ).fetchone()
+            if row is None:
+                raise IntegrityError("namespace checkpoint prefix unavailable")
+            return row["event_hash"]
+
     def verify_chain(self) -> dict:
         with closing(self._connect()) as conn:
             seq, digest = self._verify(conn)
