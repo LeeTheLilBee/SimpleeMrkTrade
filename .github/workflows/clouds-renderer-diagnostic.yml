@@ -28,6 +28,15 @@ jobs:
           def page_factory(*, title, body):
               return "<html><title>" + title + "</title><body>" + body + "</body></html>"
 
+          print("AFTER_REQUEST_FUNCTIONS", [
+              getattr(fn, "__name__", str(fn))
+              for fn in app.after_request_funcs.get(None, [])
+              if "cloud" in getattr(fn, "__name__", "").lower()
+          ])
+          print("MOUNT_EXTENSION", app.extensions.get(
+              "clouds_live_owner_command_hosted_mount_20261001"
+          ))
+
           with app.test_request_context("/clouds"):
               html = render_owner_command(
                   page_factory=page_factory,
