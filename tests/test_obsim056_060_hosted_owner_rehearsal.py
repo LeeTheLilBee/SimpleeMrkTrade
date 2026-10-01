@@ -127,7 +127,9 @@ def test_057_cannot_enter_on_missing_owner_step_up_or_operational_receipt(monkey
     assert "next=%2Fob%2Fowner-rehearsal" in location
     state["owner"] = True
     state["step"] = False
-    assert get(client, hosted.ENTRY).headers["Location"].endswith("/tower/access-home")
+    location = get(client, hosted.ENTRY).headers["Location"]
+    assert "/tower/step-up/observatory?" in location
+    assert "next=%2Fob%2Fowner-rehearsal" in location
     state["step"] = True
     state["access"] = False
     assert get(client, hosted.ENTRY).headers["Location"].endswith("/tower/launch/observatory")
