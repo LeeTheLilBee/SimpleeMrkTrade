@@ -59,6 +59,12 @@ from .offer_lab import offer_lab_snapshot, record_offer_scenario
 from .external_proof_gate import integration_readiness
 from .expansion_store import ensure_schema as ensure_expansion_schema, load_thesis, save_thesis, add_record as add_intelligence_record, records as intelligence_records
 from .intelligence_studio import build_portfolio_studio, build_deal_studio, what_if
+from .owner_experience import (
+    ensure_ux_schema, preferences as ux_preferences, set_density, mark_pulse_seen,
+    record_triage, latest_triage, triage_map, universal_search, paged_opportunities,
+    pulse_snapshot, integration_cockpit, revision_diff, provenance, acceptance_steps,
+    record_acceptance_defect, acceptance_defects, resolve_acceptance_defect,
+)
 
 def create_app(config=None):
     app=Flask(__name__, template_folder="ui/templates", static_folder="ui/static",
@@ -117,7 +123,7 @@ def create_app(config=None):
         raise RuntimeError("Set BUYBOX_DOCS_DIR and BUYBOX_DOCUMENT_KEY for protected document intake.")
     docstore=PrivateDocumentStore(app.config["BUYBOX_DOCS_DIR"],
                                   app.config["BUYBOX_DOCUMENT_KEY"])
-    db=connect(str(db_path));ensure_expansion_schema(db);db.close()
+    db=connect(str(db_path));ensure_expansion_schema(db);ensure_ux_schema(db);db.close()
 
     @app.after_request
     def no_cache(response):
@@ -191,10 +197,16 @@ def create_app(config=None):
                         "/tower/access-home"}
         if "csrf" not in session:
             session["csrf"]=secrets.token_hex(32)
-        return {"csrf_token": session["csrf"], "verticals": VERTICALS,
+        shell={"csrf_token": session["csrf"], "verticals": VERTICALS,
                 "tower_governed": auth_mode=="tower",
                 "tower_return_url": (app.config["TOWER_PUBLIC_ORIGIN"]+
-                    "/tower/access-home" if auth_mode=="tower" else None)}
+                    "/tower/access-home" if auth_mode=="tower" else None),
+                "owner_pulse":None,"density_mode":"STANDARD"}
+        if session.get("buybox_owner") is True:
+            with db() as conn:
+                shell["owner_pulse"]=pulse_snapshot(conn)
+                shell["density_mode"]=ux_preferences(conn)["density"]
+        return shell
 
     @app.before_request
     def guard():
@@ -309,16 +321,119 @@ def create_app(config=None):
     @app.get("/")
     @login_required
     def index():
-        with db() as conn:
-            ops=list_opportunities(conn)
         current_vertical=request.args.get("vertical","")
         if current_vertical and current_vertical not in VERTICALS:
             abort(400,"Unknown category")
         q=request.args.get("q","").strip()[:120]
-        selected=filter_opportunities(ops,vertical=current_vertical or None,query=q)
-        panels=[{"record":op,"analysis":evaluate(op)} for op in selected]
-        return render_template("index.html",records=panels,total=len(ops),
-                               current_vertical=current_vertical,q=q)
+        try: page=max(1,int(request.args.get("page","1")))
+        except ValueError: abort(400,"Invalid page")
+        with db() as conn:
+            result=paged_opportunities(conn,vertical=current_vertical or None,
+                                       query=q,page=page,page_size=24)
+            triage=triage_map(conn,[op["id"] for op in result["items"]])
+        panels=[{"record":op,"analysis":evaluate(op),"triage":triage.get(op["id"])}
+                for op in result["items"]]
+        return render_template("index.html",records=panels,total=result["total"],
+            current_vertical=current_vertical,q=q,page=result["page"],pages=result["pages"])
+
+    @app.get("/command")
+    @login_required
+    def command_center():
+        q=request.args.get("q","").strip()[:160]
+        with db() as conn:
+            results=universal_search(conn,q,limit=50) if q else []
+        return render_template("owner_command.html",q=q,results=results)
+
+    @app.post("/owner-density")
+    @login_required
+    def owner_density():
+        with db() as conn:
+            try: set_density(conn,request.form.get("density"))
+            except ValueError: abort(400,"Invalid density")
+        return redirect(request.form.get("return_to") or url_for("focus"),code=303)
+
+    @app.post("/pulse/seen")
+    @login_required
+    def pulse_seen():
+        with db() as conn: mark_pulse_seen(conn)
+        return redirect(request.form.get("return_to") or url_for("focus"),code=303)
+
+    @app.post("/bulk-triage")
+    @login_required
+    def bulk_triage():
+        ids=request.form.getlist("opportunity_id")
+        if not 1<=len(ids)<=50 or len(set(ids))!=len(ids):
+            abort(400,"Choose one to fifty distinct opportunities")
+        state=request.form.get("state","")
+        note=request.form.get("note","")
+        with db() as conn:
+            actor=owner_actor(conn)
+            try:
+                for oid in ids: record_triage(conn,oid,state,note,actor)
+            except ValueError as exc:
+                abort(400,str(exc))
+        return redirect(request.form.get("return_to") or url_for("index"),code=303)
+
+    @app.get("/integration-cockpit")
+    @login_required
+    def integration_cockpit_room():
+        with db() as conn:
+            ops=list_opportunities(conn)
+        return render_template("integration_cockpit.html",
+            systems=integration_cockpit(ops),opportunities=ops)
+
+    @app.get("/opportunities/<oid>/provenance")
+    @login_required
+    def provenance_room(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            diff=revision_diff(conn,oid)
+        analysis=evaluate(op)
+        return render_template("provenance.html",op=op,analysis=analysis,
+            rows=provenance(op,analysis),diff=diff)
+
+    @app.route("/opportunities/<oid>/field",methods=["GET","POST"])
+    @login_required
+    def field_mode(oid):
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            if request.method=="POST":
+                title=request.form.get("title","").strip()[:160]
+                note=request.form.get("note","").strip()[:2000]
+                if not title or not note: abort(400,"Field title and note required")
+                add_intelligence_record(conn,oid,"QUICK_CAPTURE",
+                    {"title":title,"note":note,"capture_mode":"FIELD"},
+                    actor_ref=owner_actor(conn))
+                return redirect(url_for("field_mode",oid=oid),code=303)
+            captures=[r for r in intelligence_records(conn,opportunity_id=oid,kind="QUICK_CAPTURE")][:20]
+        return render_template("field_mode.html",op=op,captures=captures)
+
+    @app.get("/acceptance")
+    @login_required
+    def owner_acceptance():
+        with db() as conn: defects=acceptance_defects(conn)
+        return render_template("owner_acceptance.html",steps=acceptance_steps(),defects=defects)
+
+    @app.post("/acceptance/defects")
+    @login_required
+    def add_acceptance_defect():
+        with db() as conn:
+            try:
+                record_acceptance_defect(conn,area=request.form.get("area"),
+                    severity=request.form.get("severity"),title=request.form.get("title"),
+                    detail=request.form.get("detail"),actor_ref=owner_actor(conn))
+            except ValueError as exc: abort(400,str(exc))
+        return redirect(url_for("owner_acceptance"),code=303)
+
+    @app.post("/acceptance/defects/<int:defect_id>/resolve")
+    @login_required
+    def resolve_defect(defect_id):
+        with db() as conn:
+            try: resolve_acceptance_defect(conn,defect_id,actor_ref=owner_actor(conn))
+            except ValueError as exc: abort(400,str(exc))
+        return redirect(url_for("owner_acceptance"),code=303)
 
     @app.get("/intelligence")
     @login_required
