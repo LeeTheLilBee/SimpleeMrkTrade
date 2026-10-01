@@ -1,0 +1,141 @@
+name: Tower Grounds real owner runtime provider
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "simplee_integrations/**"
+      - "tower/identity_authority.py"
+      - "tower/ecosystem_direct_route_guard.py"
+      - "tower/grounds_runtime_receiver.py"
+      - "deploy/hosted_tower/requirements.txt"
+      - "tests/test_tower_real_identity_people_source_twr131_135.py"
+      - ".github/workflows/tower-grounds-owner-runtime-provider.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "simplee_integrations/**"
+      - "tower/identity_authority.py"
+      - "tower/ecosystem_direct_route_guard.py"
+      - "tower/grounds_runtime_receiver.py"
+      - "deploy/hosted_tower/requirements.txt"
+      - "tests/test_tower_real_identity_people_source_twr131_135.py"
+      - ".github/workflows/tower-grounds-owner-runtime-provider.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  real-owner-provider:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: grounds_ci
+          POSTGRES_PASSWORD: grounds_ci_password
+          POSTGRES_DB: grounds_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U grounds_ci -d grounds_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      GROUNDS_PRIVATE_POSTGRES_URL: postgresql://grounds_ci:grounds_ci_password@127.0.0.1:5432/grounds_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: grounds-resident-operations-grd001-005
+          path: _grounds_contract
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - name: Apply exact current Grounds schema and seed one synthetic property
+        run: |
+          psql "$GROUNDS_PRIVATE_POSTGRES_URL" -v ON_ERROR_STOP=1 -f _grounds_contract/grounds/sql/0001_initial_postgres.sql
+          psql "$GROUNDS_PRIVATE_POSTGRES_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          INSERT INTO properties(property_ref,name,owned_on,close_proof_ref)
+          VALUES ('grounds_property_provider_ci_000001','Synthetic provider property','2026-10-01','close_proof_provider_ci_000001');
+          SQL
+      - run: python -m pytest -q simplee_integrations/test_grounds_owner_runtime_provider.py tests/test_tower_real_identity_people_source_twr131_135.py
+      - name: Exact real owner provider -> Tower adapter -> current Grounds TowerScope
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+          from pathlib import Path
+
+          from flask import Flask, request, session
+          from werkzeug.security import generate_password_hash
+
+          sys.path.append(str(Path("_grounds_contract").resolve()))
+
+          from grounds.access import TowerScope
+          from simplee_integrations import grounds_owner_runtime_provider as provider
+          from tower.ecosystem_direct_route_guard import (
+              ACCESS_RECEIPT_KEYS, build_ecosystem_access_receipt,
+          )
+          from tower.grounds_runtime_receiver import (
+              PROVIDER_ENV, create_certified_grounds_receiver,
+              create_certified_grounds_staff_directory,
+          )
+          from tower.tower_human_login_ob_launch import (
+              SESSION_AUTHENTICATED, SESSION_ID, SESSION_OWNER_ID, SESSION_ROLE,
+              SESSION_USERNAME,
+          )
+
+          os.environ["TOWER_OWNER_USERNAME"]="provider-ci-owner"
+          os.environ["TOWER_OWNER_PASSWORD_HASH"]=generate_password_hash("provider-ci-password")
+          os.environ["TOWER_OWNER_ID"]="owner_provider_ci_000001"
+          os.environ["TOWER_OWNER_DISPLAY_NAME"]="Provider CI Owner"
+          os.environ[PROVIDER_ENV]="simplee_integrations.grounds_owner_runtime_provider"
+
+          # This is an actual Postgres-backed provider health check.
+          attestation=provider.provider_attestation()
+          assert attestation["status"]=="VERIFIED"
+          assert provider.health_check() is True
+
+          app=Flask("real-grounds-owner-provider-ci")
+          app.config.update(TESTING=True,SECRET_KEY="real-provider-ci-session-secret")
+          with app.test_request_context(
+              "/grounds/api/me",
+              headers={"X-Role":"resident","X-Property-Refs":"invented-browser-property"},
+          ):
+              session[SESSION_AUTHENTICATED]=True
+              session[SESSION_ROLE]="owner"
+              session[SESSION_OWNER_ID]="owner_provider_ci_000001"
+              session[SESSION_USERNAME]="provider-ci-owner"
+              session[SESSION_ID]="tower_session_provider_ci_000001"
+              session[ACCESS_RECEIPT_KEYS["grounds"]]=build_ecosystem_access_receipt("grounds")
+
+              receiver=create_certified_grounds_receiver()
+              scope=receiver(request.environ)
+              assert isinstance(scope,TowerScope)
+              assert scope.subject_ref=="owner_provider_ci_000001"
+              assert scope.role=="owner"
+              assert scope.property_refs==frozenset({"grounds_property_provider_ci_000001"})
+              assert not scope.unit_refs
+              assert not scope.assigned_work_refs
+              assert "invented-browser-property" not in scope.property_refs
+
+              directory=create_certified_grounds_staff_directory()
+              assert directory(scope,"grounds_property_provider_ci_000001")==[]
+
+              session.pop(ACCESS_RECEIPT_KEYS["grounds"])
+              try:
+                  receiver(request.environ)
+              except Exception:
+                  pass
+              else:
+                  raise AssertionError("revoked/missing Tower Grounds receipt remained authorized")
+
+          print("Real Tower owner session + receipt + real PostgreSQL property grant -> current Grounds TowerScope passed.")
+          PY
