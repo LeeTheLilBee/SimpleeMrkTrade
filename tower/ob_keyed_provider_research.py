@@ -7,6 +7,7 @@ Tower owner session. It never grants trading, capital, broker or mode authority.
 - Alpha Vantage: completed daily history only.
 - Finazon: commercial-license-free US Equities Basic market context; the
   free-forever trial is restricted to AAPL, TSLA and GOOG.
+- Alpaca: current IEX stock quote/minute-bar context for the owner account.
 - BEA: official public-domain U.S. macroeconomic statistics.
 - EIA uses the separate Official Catalyst Radar so its energy series are not
   duplicated in this corridor.
@@ -30,10 +31,11 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from flask import Blueprint, abort, jsonify, make_response, request
 
 from tower.ob_public_owner_connection import _owner_sid
+from tower.ob_alpaca_market_feed import stock_snapshot as _alpaca_snapshot
 
 PATH = "/ob/research/providers.json"
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,15}$")
-PROVIDERS = ("finnhub", "alpha_vantage", "finazon", "bea")
+PROVIDERS = ("finnhub", "alpha_vantage", "finazon", "alpaca", "bea")
 FINAZON_FREE_SYMBOLS = frozenset({"AAPL", "TSLA", "GOOG"})
 MAX_RESPONSE = 900_000
 CACHE_TTL = timedelta(minutes=5)
@@ -383,6 +385,28 @@ def _soulaana(rows: list[dict]) -> dict:
                 "The latest intraday market, options chain, data entitlement and issuer-event "
                 "cross-check remain separate; do not extrapolate a current price or trade signal."
             )
+        elif provider == "alpaca":
+            quote = row.get("quote", {})
+            bar = row.get("bar", {})
+            item["summary"] = {
+                "feed": row.get("feed"),
+                "bid": quote.get("bid"),
+                "ask": quote.get("ask"),
+                "midpoint": quote.get("midpoint"),
+                "last_minute_close": bar.get("close"),
+                "last_minute_volume": bar.get("volume"),
+                "observed_at": row.get("as_of"),
+            }
+            item["finding"] = (
+                f"Alpaca IEX reports current owner-development market context for {row['symbol']}. "
+                f"The latest IEX quote is bid {quote.get('bid')} / ask {quote.get('ask')}, "
+                f"with midpoint {quote.get('midpoint')}. "
+                "This is IEX venue data, not SIP/NBBO and not an execution quote."
+            )
+            item["what_is_missing"] = (
+                "Consolidated SIP/NBBO coverage, separately entitled options data, broker-side execution "
+                "context and an independent quote-family corroboration remain separate."
+            )
         elif provider == "finazon":
             trade = row["last_trade"]
             session = row["session"]
@@ -545,6 +569,14 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
                     cache.put(key, row)
                     rows.append(row)
                     continue
+            elif provider == "alpaca":
+                payload = _alpaca_snapshot(symbol, item=item, opener=opener)
+                payload["kind"] = "IEX_REALTIME_EQUITY_CONTEXT"
+                payload["source_reference"] = "https://docs.alpaca.markets/us/docs/about-market-data-api"
+                payload["historical_only"] = False
+                payload["live_quote"] = False
+                payload["real_time_market_context"] = True
+                payload["consolidated_quote"] = False
             else:
                 payload = _bea(symbol, item.value, opener=opener)
             row = {"state": "SOURCE_BOUND", **payload}
@@ -560,7 +592,7 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
         "source_only": True,
         "provider_research": rows,
         "live_prices_attached": any(
-            row.get("provider") == "finazon" and row.get("state") == "SOURCE_BOUND"
+            row.get("provider") in {"finazon", "alpaca"} and row.get("state") == "SOURCE_BOUND"
             and row.get("real_time_market_context") is True
             for row in rows
         ),

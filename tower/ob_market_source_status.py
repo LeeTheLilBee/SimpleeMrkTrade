@@ -14,6 +14,8 @@ from __future__ import annotations
 
 from flask import jsonify
 
+from tower.ob_public_owner_connection import _owner_sid
+
 FEED_PATH = "/ob/engine-feed-snapshot.json"
 FEED_ENDPOINT = "ob_engine_feed_snapshot_v25"
 VERSION = "OBDATA009_HOSTED_PROVIDER_NOT_CONFIGURED"
@@ -89,10 +91,41 @@ def register_hosted_ob_market_source_status(app):
     app.extensions["ob_old_seed_only_feed_handler_preserved_for_audit"] = old_handler
 
     def hosted_source_status():
-        response = jsonify(pending_provider_document())
+        document = pending_provider_document()
+        state = "provider-not-configured"
+        try:
+            sid = _owner_sid()
+            reader = app.extensions.get("ob_provider_key_secret_reader_v1")
+            item = reader(sid, "alpaca") if sid and callable(reader) else None
+            if item is not None and getattr(item, "probe", None) == "READ_ONLY_CHECK_PASSED":
+                document.update({
+                    "version": "OBDATA010_ALPACA_OWNER_DEVELOPMENT_CONNECTED",
+                    "market_data_state": "provider_connected_owner_development",
+                    "source": "alpaca-iex",
+                    "source_identified": True,
+                    "current_eligible": True,
+                    "display_eligible": True,
+                    "reason": (
+                        "Alpaca personal Trading API credentials passed the protected read-only "
+                        "probe. Current symbol data is available through the source-bound provider "
+                        "research corridor; this generic feed-status endpoint does not fabricate "
+                        "prices or promote IEX data to SIP/NBBO."
+                    ),
+                })
+                document["provider_boundary"].update({
+                    "authorized_feed_connected": True,
+                    "status_only": False,
+                    "personal_owner_development_only": True,
+                    "iex_venue_limited": True,
+                    "commercial_redistribution_authorized": False,
+                })
+                state = "alpaca-owner-development-connected"
+        except Exception:
+            pass
+        response = jsonify(document)
         response.headers["Cache-Control"] = "private, no-store"
         response.headers["Vary"] = "Cookie"
-        response.headers["X-OB-Market-Source-State"] = "provider-not-configured"
+        response.headers["X-OB-Market-Source-State"] = state
         return response
 
     app.view_functions[FEED_ENDPOINT] = hosted_source_status
