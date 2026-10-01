@@ -176,9 +176,12 @@
     const alpha = sourceRow(providerRows, "alpha_vantage");
     const bea = sourceRow(providerRows, "bea");
 
-    const industry = finnhub && finnhub.industry;
+    const alphaProfile = alpha && alpha.company_profile && typeof alpha.company_profile === "object"
+      ? alpha.company_profile : null;
+    const industry = (finnhub && finnhub.industry) ||
+      (alphaProfile && (alphaProfile.industry || alphaProfile.sector));
     const sensitivity = sectorSensitivity(industry);
-    if (industry) why.push(ticker + " is classified by the connected company-profile source in " + industry + ".");
+    if (industry) why.push(ticker + " is classified by the connected company-profile sources in " + industry + ".");
     if (sensitivity.rateSensitive) why.push("That industry can be sensitive to discount-rate changes, so Treasury yield direction belongs in this symbol read.");
     if (sensitivity.energySensitive) why.push("That industry has direct sensitivity to energy conditions, so EIA context is more relevant than it would be for many other symbols.");
     if (sensitivity.cyclical) why.push("That industry is economically cyclical, so growth and labor direction matter to the backdrop.");
@@ -431,7 +434,7 @@
     return item;
   }
 
-  function hydrateTopSymbolFacts(packet, ticker) {
+  function hydrateTopSymbolFacts(packet, ticker, settings) {
     if (!packet || packet.schema !== "OB_KEYED_PROVIDER_RESEARCH_V1") return;
     const rows = Array.isArray(packet.provider_research) ? packet.provider_research : [];
     const alpaca = sourceRow(rows, "alpaca");
@@ -449,7 +452,7 @@
       if (heroState) set("symbolMarketState", heroState);
 
       const cardNode = byId("symbolCompanyProfileCard");
-      if (cardNode) cardNode.hidden = false;
+      if (cardNode) cardNode.hidden = settings && settings.show_company_background === false;
       set("symbolCompanyProfileName", profile.name || ticker);
       set("symbolCompanyDescription", profile.description || "No reviewed business description was returned.");
       set("symbolCompanyProfileTrust", "Alpha Overview · owner-only research");
@@ -813,7 +816,7 @@
       try {
         providerCount = renderProviderResearch(results[0].value, ticker);
         if (settings.show_company_background !== false || settings.use_current_market_context !== false || settings.use_completed_session_history !== false) {
-          hydrateTopSymbolFacts(results[0].value, ticker);
+          hydrateTopSymbolFacts(results[0].value, ticker, settings);
         }
         live = results[0].value.live_prices_attached === true;
       } catch (_) {}
