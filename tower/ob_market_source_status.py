@@ -39,6 +39,53 @@ def _midpoint(bid, ask, last=None):
     return None
 
 
+def _canonical_public_option_contracts(options, symbol):
+    """Convert reviewed Public option rows into the existing web research contract shape."""
+    if not isinstance(options, dict):
+        return []
+    expiration = options.get("expiration")
+    source_reference = options.get("source_reference")
+    rows = options.get("contracts")
+    if not isinstance(rows, list):
+        return []
+
+    normalized = []
+    for raw in rows:
+        if not isinstance(raw, dict):
+            continue
+        provider_symbol = raw.get("provider_symbol")
+        greeks = raw.get("greeks") if isinstance(raw.get("greeks"), dict) else {}
+        contract = dict(raw)
+        contract["symbol"] = symbol
+        contract["underlying_symbol"] = symbol
+        if provider_symbol:
+            contract.setdefault("contract_symbol", provider_symbol)
+            contract.setdefault("contractSymbol", provider_symbol)
+        if expiration:
+            contract.setdefault("expiration", expiration)
+            contract.setdefault("expiry", expiration)
+        if contract.get("mark") is None and isinstance(contract.get("mid"), (int, float)):
+            contract["mark"] = contract["mid"]
+        if contract.get("implied_volatility") is None and isinstance(
+            greeks.get("implied_volatility"), (int, float)
+        ):
+            contract["implied_volatility"] = greeks["implied_volatility"]
+        if contract.get("delta") is None and isinstance(greeks.get("delta"), (int, float)):
+            contract["delta"] = greeks["delta"]
+        contract["source"] = "public_options"
+        contract["data_source"] = "public_options"
+        contract["source_reference"] = source_reference
+        contract["source_backed"] = True
+        contract["research_only"] = True
+        contract["personal_owner_only"] = True
+        contract["commercial_use_allowed"] = False
+        contract["broker_execution"] = False
+        contract["automatic_execution"] = False
+        contract["automatic_contract_selection"] = False
+        normalized.append(contract)
+    return normalized
+
+
 def _merge_public_owner_context(app, document, sid):
     """Add Public beside existing sources; never replace or promote it."""
     quote_reader = app.extensions.get("ob_public_owner_quote_reader_v1")
@@ -62,6 +109,7 @@ def _merge_public_owner_context(app, document, sid):
     public_options = 0
     soulaana_public_quotes = 0
     soulaana_public_options = 0
+    canonical_public_option_contracts = []
 
     for row in symbol_rows:
         symbol = row["symbol"]
@@ -116,10 +164,14 @@ def _merge_public_owner_context(app, document, sid):
                 and option_state == "SOURCE_BOUND"
                 and options.get("owner_display_reviewed") is True
             ):
+                canonical_contracts = _canonical_public_option_contracts(
+                    options, symbol
+                )
+                canonical_public_option_contracts.extend(canonical_contracts)
                 observations["public_options"] = {
                     "expiration": options.get("expiration"),
                     "underlying_midpoint": options.get("underlying_midpoint"),
-                    "contract_count": options.get("contract_count"),
+                    "contract_count": len(canonical_contracts),
                     "personal_owner_only": True,
                     "execution_authorized": False,
                 }
@@ -184,6 +236,34 @@ def _merge_public_owner_context(app, document, sid):
             "research symbols. No provider overwrote another; provenance and differences "
             "remain explicit."
         )
+
+    if canonical_public_option_contracts:
+        existing_options = [
+            dict(row)
+            for row in document.get("options", [])
+            if isinstance(row, dict)
+        ]
+        seen = {
+            (
+                row.get("contract_symbol")
+                or row.get("contractSymbol")
+                or row.get("provider_symbol"),
+                row.get("symbol") or row.get("underlying_symbol"),
+            )
+            for row in existing_options
+        }
+        for contract in canonical_public_option_contracts:
+            key = (
+                contract.get("contract_symbol")
+                or contract.get("contractSymbol")
+                or contract.get("provider_symbol"),
+                contract.get("symbol") or contract.get("underlying_symbol"),
+            )
+            if key not in seen:
+                existing_options.append(contract)
+                seen.add(key)
+        document["options"] = existing_options
+        document["public_option_contract_count"] = len(canonical_public_option_contracts)
 
     fusion = {
         "schema": "OB_CANONICAL_MULTI_SOURCE_FUSION_V1",
