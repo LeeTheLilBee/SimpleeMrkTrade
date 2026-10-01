@@ -10,9 +10,13 @@ from typing import Mapping
 from .authority_checkpoints import (
     SignedAuthorityCheckpoint, verify_authority_checkpoint,
 )
+from .control_checkpoints import (
+    SignedControlCheckpoint, verify_control_checkpoint,
+)
 from .contracts import CloudError, IntegrityError
 from .journal import SQLiteOperationalJournal
 from .journaled_backup import JournaledBackupOperations
+from .namespace_bindings import SQLiteNamespaceBindingLedger
 from .key_readiness import source_backup_key_readiness
 from .provider_review import ProviderCandidate, review_candidate, required_provider_checks
 from .readiness import source_preflight
@@ -27,6 +31,8 @@ def owner_local_evidence_desk(
     provider_references: dict[str, str] | None = None,
     release_references: Mapping[str, str] | None = None,
     checkpoint: SignedAuthorityCheckpoint | None = None,
+    control_checkpoint: SignedControlCheckpoint | None = None,
+    namespace_bindings: SQLiteNamespaceBindingLedger | None = None,
     pinned_public_keys: Mapping[str, bytes] | None = None,
     backup_operations: JournaledBackupOperations | None = None,
 ) -> dict:
@@ -41,8 +47,19 @@ def owner_local_evidence_desk(
         raise CloudError("separate verified Cloud and replay source ledgers required")
     if (candidate is None) != (provider_references is None):
         raise CloudError("provider identity and evidence pointers must be supplied together")
-    if (checkpoint is None) != (pinned_public_keys is None):
+    if checkpoint is not None and control_checkpoint is not None:
+        raise CloudError("supply one checkpoint generation, never both")
+    supplied_checkpoint = (
+        checkpoint if checkpoint is not None else control_checkpoint
+    )
+    if (supplied_checkpoint is None) != (pinned_public_keys is None):
         raise CloudError("signed checkpoint and independent pinned public keys required together")
+    if namespace_bindings is not None and not isinstance(
+        namespace_bindings, SQLiteNamespaceBindingLedger
+    ):
+        raise CloudError("verified namespace binding ledger required")
+    if control_checkpoint is not None and namespace_bindings is None:
+        raise CloudError("control checkpoint requires verified namespace binding ledger")
     if backup_operations is not None and (
         not isinstance(backup_operations, JournaledBackupOperations) or
         backup_operations.journal.path != journal.path
@@ -56,11 +73,42 @@ def owner_local_evidence_desk(
     if replay["valid"] is not True or replay["production_authorized"] is not False:
         raise IntegrityError("unexpected replay ledger source status")
 
+    namespace_summary = {
+        "supplied": namespace_bindings is not None,
+        "status": "NOT_EVALUATED",
+        "binding_count": None,
+        "event_count": None,
+        "raw_entity_ids_persisted": False,
+        "external_registry_certified": False,
+        "binding_key_custody_certified": False,
+        "production_authorized": False,
+    }
+    if namespace_bindings is not None:
+        verified_namespace = namespace_bindings.verify_chain()
+        namespace_summary.update({
+            "status": "SOURCE_ONLY_LOCAL_NAMESPACE_BINDING_VERIFIED",
+            "binding_count": verified_namespace["binding_count"],
+            "event_count": verified_namespace["event_count"],
+            "raw_entity_ids_persisted": False,
+            "external_registry_certified": False,
+            "binding_key_custody_certified": False,
+            "production_authorized": False,
+        })
+
     release = source_preflight(release_references)
     provider = review_candidate(candidate, provider_references) if candidate is not None else None
     checkpoint_summary = {
-        "supplied": checkpoint is not None,
+        "supplied": supplied_checkpoint is not None,
+        "kind": (
+            "SC020_STORAGE_REPLAY"
+            if checkpoint is not None else
+            "SC039_STORAGE_REPLAY_NAMESPACE"
+            if control_checkpoint is not None else
+            "NONE"
+        ),
         "local_storage_and_replay_prefix_verified": False,
+        "local_namespace_prefix_verified": False,
+        "local_cross_ledger_checkpoint_verified": False,
         "actual_external_latest_attested": False,
         "external_immutability_certified": False,
     }
@@ -72,6 +120,18 @@ def owner_local_evidence_desk(
         checkpoint_summary["local_storage_and_replay_prefix_verified"] = True
         checkpoint_summary["storage_event_count"] = doc["storage_event_count"]
         checkpoint_summary["replay_event_count"] = doc["replay_event_count"]
+    elif control_checkpoint is not None:
+        doc = verify_control_checkpoint(
+            control_checkpoint, pinned_public_keys=pinned_public_keys,
+            journal=journal, replay_store=replay_store,
+            namespace_bindings=namespace_bindings,
+        )
+        checkpoint_summary["local_storage_and_replay_prefix_verified"] = True
+        checkpoint_summary["local_namespace_prefix_verified"] = True
+        checkpoint_summary["local_cross_ledger_checkpoint_verified"] = True
+        checkpoint_summary["storage_event_count"] = doc["storage_event_count"]
+        checkpoint_summary["replay_event_count"] = doc["replay_event_count"]
+        checkpoint_summary["namespace_event_count"] = doc["namespace_event_count"]
 
     key_summary = {
         "supplied": backup_operations is not None,
@@ -143,6 +203,7 @@ def owner_local_evidence_desk(
             "external_checkpoint_certified": False,
         },
         "joint_checkpoint": checkpoint_summary,
+        "namespace_binding_readiness": namespace_summary,
         "backup_key_readiness": key_summary,
         "provider_review": {
             "supplied": provider is not None,
