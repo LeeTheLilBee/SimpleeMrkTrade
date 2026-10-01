@@ -6,6 +6,8 @@ import pytest
 from deploy.hosted_tower.ob_publication_observer import (
     EXPECTED_BRANCH,
     EXPECTED_REPOSITORY,
+    POLL_SECONDS,
+    RECEIPT_SECONDS,
     metadata_from_environment,
     observe,
 )
@@ -89,7 +91,10 @@ def test_valid_observed_receipt_is_schema_and_integrity_valid_and_expires():
     expiry = datetime.fromisoformat(
         valid["apps"]["observatory"]["health_verified"]["fresh_until_utc"]
     )
-    assert expiry == now + timedelta(seconds=45)
+    assert expiry == now + timedelta(seconds=RECEIPT_SECONDS)
+    assert RECEIPT_SECONDS == 180
+    assert POLL_SECONDS == 60
+    assert RECEIPT_SECONDS >= POLL_SECONDS * 2
 
 
 @pytest.mark.parametrize("path,bad", [
