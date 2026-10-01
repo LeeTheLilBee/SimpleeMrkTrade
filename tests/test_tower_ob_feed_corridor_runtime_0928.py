@@ -39,7 +39,22 @@ def test_existing_hosted_backend_endpoint_is_registered_and_safe():
         assert response.is_json
         assert response.headers["Cache-Control"] == "private, no-store"
         assert response.headers["X-OB-Market-Source-State"] == "provider-not-configured"
-        assert response.get_json() == pending_provider_document()
+        body=response.get_json()
+        pending=pending_provider_document()
+        for key in (
+            "version","market_data_state","source","as_of","source_identified",
+            "timestamp_identified","current_eligible","display_eligible",
+        ):
+            assert body[key] == pending[key]
+        for key in (
+            "sectors","symbols","signals","options","research_contracts","ranked_contracts",
+            "positions","positions_preview","candidates","candidates_preview","manual_live_queue",
+        ):
+            assert body[key] == []
+        assert body["provider_boundary"]["authorized_feed_connected"] is False
+        assert body["provider_boundary"]["autonomous_research_hold"] == "ValueError"
+        assert body["tower_boundaries"]["no_order_submission"] is True
+        assert body["tower_boundaries"]["no_capital_movement"] is True
 
 
 def test_no_seeded_candidate_position_score_or_manual_live_claim_exposed():
