@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Provenance · {{ op.name }}{% endblock %}{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero"><p class="eyebrow">WHY AM I SEEING THIS?</p><h1>{{ op.name }}</h1><p>Trace the current analysis back to recorded evidence, metrics, rules, and accepted external proof records.</p></section>
+<section class="panel"><p class="eyebrow">CURRENT PROVENANCE</p><h2>{{ rows|length }} trace item{% if rows|length != 1 %}s{% endif %}</h2>
+{% for r in rows %}<div class="evidence-row"><div><strong>{{ r.label|replace('_',' ')|title }}</strong><small>{{ r.kind|replace('_',' ')|title }} · {{ r.source }}</small></div><span>{{ r.value }}</span></div>{% else %}<p class="muted">No traceable evidence, metric, finding, or external proof exists yet.</p>{% endfor %}</section>
+<section class="panel"><p class="eyebrow">DEAL CHANGE DIFF</p><h2>{% if diff.from_revision %}Revision {{ diff.from_revision }} → {{ diff.to_revision }}{% else %}No prior revision yet{% endif %}</h2>
+{% for x in diff.changes %}<div class="diff-row"><strong>{{ x.field }}</strong><span class="before">{{ x.before if x.before is not none else '—' }}</span><span aria-hidden="true">→</span><span class="after">{{ x.after if x.after is not none else '—' }}</span></div>{% else %}<p class="muted">There is not a second preserved revision to compare yet.</p>{% endfor %}</section>
+{% endblock %}

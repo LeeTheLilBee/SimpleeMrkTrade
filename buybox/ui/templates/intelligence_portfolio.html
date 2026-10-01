@@ -35,8 +35,7 @@
 
 <section class="panel"><p class="eyebrow">GEOGRAPHIC EXPANSION INTELLIGENCE</p><h2>Where multiple acquisition lanes are accumulating</h2>
 {% for x in studio.geo_expansion %}<div class="evidence-row"><div><strong>{{ x.city }}, {{ x.region }}</strong><small>{{ x.opportunities }} opportunity records · {{ x.vertical_diversity }} vertical type(s)</small></div></div>{% endfor %}</section>
-{% endblock %}
-<section class="panel"><p class="eyebrow">OPPORTUNITY INBOX</p><h2>Capture first, verify later.</h2>
+<section class="panel standard-only"><p class="eyebrow">OPPORTUNITY INBOX</p><h2>Capture first, verify later.</h2>
 <form method="post" action="{{ url_for('intelligence_inbox') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 <label>Category<select name="vertical" required>{% for key,v in verticals.items() %}<option value="{{ key }}">{{ v.label }}</option>{% endfor %}</select></label>
 <label>Working title<input name="title" required maxlength="160"></label>
@@ -52,3 +51,4 @@
 <section class="panel"><p class="eyebrow">BUYBOX WATCHTOWER</p><h2>Saved acquisition strategies</h2>
 {% for item in radar %}<div class="evidence-row"><div><strong><a href="{{ url_for('saved_search_detail',sid=item.definition.id) }}">{{ item.definition.name }}</a></strong><small>{{ item.definition.filters }}</small></div><span>{{ 'Checked' if item.latest else 'Never checked' }}</span></div>
 {% else %}<p class="muted">No saved searches yet. Opportunity Radar remains manual until an approved external listing feed exists.</p>{% endfor %}</section>
+{% endblock %}

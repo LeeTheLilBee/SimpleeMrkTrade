@@ -1,1 +1,4 @@
-{% extends "base.html" %}{% block title %}Request not completed · BuyBox{% endblock %}{% block content %}<section class="empty"><h1>That action was not completed.</h1><p>{{ message }}</p><a class="button" href="{{ url_for('index') }}">Return to BuyBox</a></section>{% endblock %}
+{% extends "base.html" %}{% block title %}{{ status }} · BuyBox{% endblock %}{% block content %}
+<section class="hero"><p class="eyebrow">BUYBOX · {{ status }}</p><h1>{{ title }}</h1><p>{{ message }}</p></section>
+<section class="panel"><h2>What you can do</h2><p class="muted">{{ guidance }}</p><div class="command-shortcuts"><a class="button" href="{{ url_for('focus') }}">Owner opening view</a><a class="button" href="{{ url_for('command_center') }}">Search BuyBox</a>{% if tower_governed %}<a class="button" href="{{ tower_return_url }}">Return to Tower</a>{% endif %}</div></section>
+{% endblock %}
