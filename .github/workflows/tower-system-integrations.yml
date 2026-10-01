@@ -14,6 +14,8 @@ on:
       - "tower/ecosystem_owner_launch_gates.py"
       - "tower/ecosystem_integration_desk.py"
       - "tower/app_registry.py"
+      - "web/static/tower/buybox_bootstrap_launch.js"
+      - "docs/TOWER_BUYBOX_BROWSER_BOOTSTRAP_20261001.md"
       - "tower/ecosystem_return_routes.py"
       - "tower/test_ecosystem_navigation_guard.py"
       - "tower/test_ecosystem_owner_launch_gates.py"
@@ -34,6 +36,8 @@ on:
       - "tower/ecosystem_owner_launch_gates.py"
       - "tower/ecosystem_integration_desk.py"
       - "tower/app_registry.py"
+      - "web/static/tower/buybox_bootstrap_launch.js"
+      - "docs/TOWER_BUYBOX_BROWSER_BOOTSTRAP_20261001.md"
       - "tower/ecosystem_return_routes.py"
       - "tower/test_ecosystem_navigation_guard.py"
       - "tower/test_ecosystem_owner_launch_gates.py"
@@ -54,9 +58,92 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - uses: actions/checkout@v4
+        with:
+          ref: f690e998a077154265eab5969c64147fd2b95517
+          path: _buybox_contract
+          persist-credentials: false
       - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
       - run: python -m compileall -q tower/grounds_runtime_receiver.py tower/grounds_operational_release.py tower/buybox_owner_handoff_issuer.py tower/ecosystem_direct_route_guard.py tower/ecosystem_owner_launch_gates.py tower/ecosystem_integration_desk.py tower/ecosystem_return_routes.py tower/app_registry.py tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py tower/test_ecosystem_owner_launch_gates.py tower/test_ecosystem_integration_desk.py web/hosted_tower.py
       - run: python -m pytest -q tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py tower/test_ecosystem_owner_launch_gates.py tower/test_ecosystem_integration_desk.py
+      - run: node --check web/static/tower/buybox_bootstrap_launch.js
+      - name: Exact Tower issuer ↔ merged BuyBox receiver/bootstrap contract
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          from flask import Flask, request
+
+          sys.path.append(str(Path("_buybox_contract").resolve()))
+
+          from tower.buybox_owner_handoff_issuer import issue_buybox_owner_handoff
+          from buybox.tower_owner_receiver import verify_tower_buybox_owner_handoff
+          from buybox.hosted_auth import exact_tower_bootstrap_transport
+
+          secret="x"*64
+          session={
+              "authenticated":True,
+              "role":"owner",
+              "owner_id":"tower_owner_fixture_000000000001",
+              "tower_session_ref":"tower_session_fixture_000000000001",
+              "step_up_active":True,
+          }
+          identity={
+              "verification_state":"VERIFIED",
+              "record":{
+                  "person_id":"tower_person_fixture_000000000001",
+                  "account_id":"tower_account_fixture_000000000001",
+                  "organization":None,
+              },
+              "app_entitlements":[{
+                  "app_id":"buybox",
+                  "verification_state":"VERIFIED",
+                  "access_policy":"GRANTED",
+                  "source_id":"tower.identity.buybox.fixture_000001",
+              }],
+          }
+          issued=issue_buybox_owner_handoff(
+              session_context=session,
+              identity=identity,
+              app_truth={"launchable":True},
+              now_epoch=1_800_000_000,
+              shared_secret=secret,
+          )
+          verified=verify_tower_buybox_owner_handoff(
+              issued["token"], shared_secret=secret, now_epoch=1_800_000_001
+          )
+          assert verified.claims["tower_session_ref"]==session["tower_session_ref"]
+          assert verified.claims["target_path"]=="/"
+          assert verified.claims["return_path"]=="/tower/access-home"
+
+          app=Flask("tower-buybox-cross-contract")
+          with app.test_request_context(
+              "/tower/bootstrap",
+              base_url="https://buybox.example.invalid",
+              method="POST",
+              headers={"Origin":"https://tower.example.invalid"},
+          ):
+              assert exact_tower_bootstrap_transport(
+                  request,
+                  tower_origin="https://tower.example.invalid",
+                  buybox_origin="https://buybox.example.invalid",
+              ) is True
+          with app.test_request_context(
+              "/tower/bootstrap",
+              base_url="https://buybox.example.invalid",
+              method="POST",
+              headers={"Origin":"https://evil.example.invalid"},
+          ):
+              assert exact_tower_bootstrap_transport(
+                  request,
+                  tower_origin="https://tower.example.invalid",
+                  buybox_origin="https://buybox.example.invalid",
+              ) is False
+          print("Tower token and BuyBox merged bootstrap receiver contract agree.")
+          PY
       - name: Hosted future-app routes never open by source registration alone
         run: |
           python - <<'PY'
