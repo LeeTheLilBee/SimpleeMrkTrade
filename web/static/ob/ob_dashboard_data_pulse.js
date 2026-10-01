@@ -30,29 +30,50 @@
       ? brief.observation_count : null;
   }
 
+  function fetchJson(path) {
+    return fetch(path, {
+      credentials: "same-origin", cache: "no-store",
+      headers: {"Accept": "application/json"}
+    }).then(response => {
+      const contentType = String(response.headers.get("content-type") || "").toLowerCase();
+      if (response.redirected || /\/tower\/(login|access-home|launch\/observatory|step-up\/observatory)/.test(response.url)) {
+        const error = new Error("tower verification required");
+        error.code = "TOWER_VERIFICATION_REQUIRED";
+        throw error;
+      }
+      if (!response.ok) throw new Error("source request held");
+      if (!contentType.includes("application/json")) {
+        throw new Error("source contract hold");
+      }
+      return response.json();
+    });
+  }
+
   Promise.allSettled([
-    fetch("/ob/research/keyless.json", {
-      credentials: "same-origin", cache: "no-store",
-      headers: {"Accept": "application/json"}
-    }).then(r => {
-      if (!r.ok) throw new Error("keyless held");
-      return r.json();
-    }),
-    fetch("/ob/research/catalysts.json", {
-      credentials: "same-origin", cache: "no-store",
-      headers: {"Accept": "application/json"}
-    }).then(r => {
-      if (!r.ok) throw new Error("catalyst held");
-      return r.json();
-    }),
-    fetch("/ob/engine-feed-snapshot.json", {
-      credentials: "same-origin", cache: "no-store",
-      headers: {"Accept": "application/json"}
-    }).then(r => {
-      if (!r.ok) throw new Error("market scan held");
-      return r.json();
-    })
+    fetchJson("/ob/research/keyless.json"),
+    fetchJson("/ob/research/catalysts.json"),
+    fetchJson("/ob/engine-feed-snapshot.json")
   ]).then(results => {
+    const towerVerificationRequired = results.some(result =>
+      result.status === "rejected" &&
+      result.reason &&
+      result.reason.code === "TOWER_VERIFICATION_REQUIRED"
+    );
+    if (towerVerificationRequired) {
+      mount.replaceChildren(
+        chip("Tower verification · renew", "hold"),
+        chip("Public research · paused", ""),
+        chip("Catalysts · paused", ""),
+        chip("Market scan · paused", "")
+      );
+      const catalystLabel = document.getElementById("obCatalystLabel");
+      const changedLabel = document.getElementById("obChangedLabel");
+      if (catalystLabel) catalystLabel.textContent =
+        "Tower verification expired; catalyst context is paused.";
+      if (changedLabel) changedLabel.textContent =
+        "Tower verification expired; source-change context is paused.";
+      return;
+    }
     const keyless = results[0].status === "fulfilled" ? results[0].value : null;
     const catalysts = results[1].status === "fulfilled" ? results[1].value : null;
     const market = results[2].status === "fulfilled" ? results[2].value : null;
@@ -67,10 +88,10 @@
 
     const nodes = [];
     nodes.push(sourceCount === null
-      ? chip("Public sources · held", "hold")
-      : chip("Public sources · " + sourceCount + "/4", sourceCount ? "good" : ""));
+      ? chip("Public research · contract hold", "hold")
+      : chip("Public research · " + sourceCount + "/4", sourceCount ? "good" : ""));
     nodes.push(catalystCount === null
-      ? chip("Catalysts · held", "hold")
+      ? chip("Catalysts · contract hold", "hold")
       : chip("Catalysts · " + catalystCount + "/6", catalystCount ? "good" : ""));
     nodes.push(reviewed === null
       ? chip("Soulaana · checking", "")
@@ -78,8 +99,8 @@
     const marketCount = market && market.market_data_state === "source_bound_research_scan" &&
       Array.isArray(market.symbols) ? market.symbols.length : null;
     nodes.push(marketCount === null
-      ? chip("Alpaca scan · held", "hold")
-      : chip("Alpaca scan · " + marketCount + " surfaced", marketCount ? "good" : ""));
+      ? chip("Market scan · contract hold", "hold")
+      : chip("Market scan · " + marketCount + " surfaced", marketCount ? "good" : ""));
 
     mount.replaceChildren(...nodes);
 
