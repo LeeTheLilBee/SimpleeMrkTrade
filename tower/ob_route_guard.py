@@ -353,7 +353,7 @@ def evaluate_ob_request_guard(
     # authenticated Tower session. The independent OB HTTP boundary still
     # requires fresh step-up + consumed OB handoff; Public POST separately
     # enforces origin, CSRF, feature flag and source-specific rights.
-    if path in {"/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json", "/ob/engine-feed-snapshot.json"}:
+    if path in {"/ob/settings", "/ob/settings.json", "/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json", "/ob/engine-feed-snapshot.json"}:
         try:
             from flask import has_request_context, session
             if has_request_context():
@@ -611,6 +611,16 @@ def match_ob_guard_policy(path: str) -> Dict[str, Any]:
 
 
 OB_ROUTE_GUARD_MAP.update({
+    "/ob/settings": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk", action="view", clearance="owner", risk_floor=20,
+        room="OB Settings", purpose="Owner-only Observatory settings control room.",
+        soulaana_translation="Soulaana: These are owner preferences and safe research controls; security and legal gates remain separate.",
+    ),
+    "/ob/settings.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk", action="view", clearance="owner", risk_floor=20,
+        room="OB Settings State", purpose="Owner-only settings projection for protected OB rooms.",
+        soulaana_translation="Soulaana: I can read owner preferences here; they do not bypass Tower or provider rights.",
+    ),
     "/ob/research/catalysts.json": _tower_ob_real_surface_policy_2593_2602(
         route_key="analysis_vault", action="view", clearance="owner", risk_floor=20,
         room="Official Market Catalyst Radar",
