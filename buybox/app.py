@@ -218,6 +218,24 @@ def create_app(config=None):
             if not expected or not secrets.compare_digest(value,expected):
                 abort(400,"Invalid CSRF token")
 
+    @app.errorhandler(400)
+    def owner_bad_request(error):
+        return render_template("error.html",status=400,title="BuyBox could not use that request.",
+            message=getattr(error,"description","The request was not valid."),
+            guidance="Check the fields or return to the owner view. No deal state was advanced."),400
+
+    @app.errorhandler(403)
+    def owner_forbidden(error):
+        return render_template("error.html",status=403,title="This BuyBox action is blocked.",
+            message=getattr(error,"description","Current owner authority could not be verified."),
+            guidance="Use the current Tower/BuyBox session or return to the previous owner workspace. A blocked action does not create approval."),403
+
+    @app.errorhandler(404)
+    def owner_not_found(error):
+        return render_template("error.html",status=404,title="That BuyBox record or room was not found.",
+            message="The requested record may not exist in the current workspace.",
+            guidance="Search BuyBox by deal name, location, source, evidence, or note."),404
+
     @app.route("/login", methods=["GET","POST"])
     def login():
         if auth_mode=="tower":
