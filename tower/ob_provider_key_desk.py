@@ -321,22 +321,28 @@ def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
             operation = request.form.get("operation", "")
             if provider not in PROVIDERS or operation not in {"save", "forget", "verify"}:
                 abort(400)
+            audit_result = "UNKNOWN"
             if operation == "save":
                 raw = request.form.get("secret", "")
                 try:
                     memory.put(sid, provider, raw, key_id=request.form.get("key_id") if provider == "alpaca" else None)
                     session["ob_provider_key_notice"] = "Key received into temporary server memory. No feed was activated."
+                    audit_result = "TEMPORARY_KEY_ACCEPTED"
                 except ValueError:
                     session["ob_provider_key_notice"] = "Key format not accepted. Nothing was saved."
+                    audit_result = "KEY_FORMAT_REJECTED"
             elif operation == "forget":
                 memory.forget(sid, provider)
                 session["ob_provider_key_notice"] = "Temporary key discarded."
+                audit_result = "TEMPORARY_KEY_FORGOTTEN"
             else:
                 item = memory.get(sid, provider)
                 if item is None:
                     session["ob_provider_key_notice"] = "Enter a key first."
+                    audit_result = "NO_KEY_PRESENT"
                 elif item.last_checked_at and _now() - item.last_checked_at < timedelta(seconds=60):
                     session["ob_provider_key_notice"] = "Verification cooldown is active. No new request sent."
+                    audit_result = "VERIFY_COOLDOWN"
                 else:
                     item.last_checked_at = _now()
                     # A provider network or parser failure is a generic hold, never
@@ -351,6 +357,14 @@ def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
                     except Exception:
                         item.probe = "PROVIDER_MESSAGE"
                     session["ob_provider_key_notice"] = probe_message(item.probe)
+                    audit_result = item.probe
+            print(
+                "[OB_PROVIDER_KEY_AUDIT] provider="
+                + provider
+                + " operation=" + operation
+                + " result=" + audit_result,
+                flush=True,
+            )
             return _headers(redirect(PATH, code=303))
         return _headers(make_response(render_template(
             "ob_provider_key_desk.html", csrf=_csrf(), enabled=_enabled(),
