@@ -102,7 +102,7 @@
     const rows = [];
     const providers = providerPacket && Array.isArray(providerPacket.provider_research)
       ? providerPacket.provider_research : [];
-    ["finnhub","alpha_vantage","finazon","alpaca","bea"].forEach(name => {
+    ["finnhub","alpha_vantage","finazon","alpaca","public","bea"].forEach(name => {
       const item = sourceRow(providers, name);
       rows.push({
         name,
@@ -170,6 +170,7 @@
       ? providerPacket.provider_research : [];
     const alpaca = sourceRow(providerRows, "alpaca");
     const finazon = sourceRow(providerRows, "finazon");
+    const publicQuote = sourceRow(providerRows, "public");
     const finnhub = sourceRow(providerRows, "finnhub");
     const alpha = sourceRow(providerRows, "alpha_vantage");
     const bea = sourceRow(providerRows, "bea");
@@ -195,7 +196,24 @@
         if (d === "up") addFinding(positive, "positive", "Current IEX midpoint is above the latest minute close, a small near-term firming signal in venue-limited data.", "Alpaca IEX");
         if (d === "down") addFinding(negative, "negative", "Current IEX midpoint is below the latest minute close, a small near-term softening signal in venue-limited data.", "Alpaca IEX");
       }
-    } else if (finazon && finazon.state === "SOURCE_BOUND") {
+    }
+
+    if (publicQuote && publicQuote.state === "SOURCE_BOUND") {
+      const pb = Number(publicQuote.bid), pa = Number(publicQuote.ask);
+      if (Number.isFinite(pb) && Number.isFinite(pa) && pa >= pb) {
+        const pm = (pb + pa) / 2;
+        addFinding(watch, "neutral", "Public personal API is contributing current owner-only quote context around " + pm.toFixed(2) + ".", "Public");
+        if (alpaca && alpaca.state === "SOURCE_BOUND" && alpaca.quote && Number.isFinite(Number(alpaca.quote.midpoint))) {
+          const am = Number(alpaca.quote.midpoint);
+          const diffPct = am > 0 ? Math.abs(pm - am) / am * 100 : null;
+          if (Number.isFinite(diffPct) && diffPct <= 0.5) {
+            addFinding(agreement, "agree", "Public and Alpaca IEX are broadly aligned on current price context.", "Public + Alpaca");
+          } else if (Number.isFinite(diffPct) && diffPct > 0.5) {
+            addFinding(conflict, "conflict", "Public and Alpaca IEX are materially apart right now, so Soulaana should treat current-price context cautiously.", "Public + Alpaca");
+          }
+        }
+      }
+    } else if (!(alpaca && alpaca.state === "SOURCE_BOUND") && finazon && finazon.state === "SOURCE_BOUND") {
       const ch = Number(finazon.daily_change_percent);
       if (Number.isFinite(ch) && ch > 0) addFinding(positive, "positive", "The connected current-market source shows a positive daily move.", "Finazon");
       if (Number.isFinite(ch) && ch < 0) addFinding(negative, "negative", "The connected current-market source shows a negative daily move.", "Finazon");

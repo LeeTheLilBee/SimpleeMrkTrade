@@ -346,7 +346,12 @@ def _soulaana(rows: list[dict]) -> dict:
     readable = []
     for row in rows:
         provider = row.get("provider")
-        if row.get("state") != "SOURCE_BOUND" or provider not in PROVIDERS or not _ai_enabled(provider):
+        if row.get("state") != "SOURCE_BOUND":
+            continue
+        if provider == "public":
+            if row.get("soulaana_ai_use_reviewed") is not True:
+                continue
+        elif provider not in PROVIDERS or not _ai_enabled(provider):
             continue
         item = {
             "provider": provider,
@@ -449,6 +454,29 @@ def _soulaana(rows: list[dict]) -> dict:
             item["what_is_missing"] = (
                 "A consolidated market quote, options chain, broker-side entitlement and execution "
                 "context remain separate. Treat this as one corroborating market-data source."
+            )
+        elif provider == "public":
+            bid = row.get("bid")
+            ask = row.get("ask")
+            last = row.get("last")
+            item["summary"] = {
+                "bid": bid,
+                "ask": ask,
+                "last": last,
+                "observed_at": row.get("observed_at"),
+                "personal_owner_only": True,
+            }
+            item["finding"] = (
+                f"Public reports owner-only personal market context for {row['symbol']}: "
+                f"bid {bid} / ask {ask}"
+                + (f", last {last}" if last is not None else "")
+                + ". This is source-backed market context for the owner's personal research lane, "
+                  "not business/beta redistribution and not broker execution authority."
+            )
+            item["what_is_missing"] = (
+                "Treat Public as one corroborating source. Consolidated coverage, independent quote "
+                "corroboration, options-chain context when relevant, and the separate Hybrid/Tower "
+                "approval path remain required."
             )
         else:
             macro = row.get("macro_series")
@@ -558,7 +586,7 @@ class ProviderResearchCache:
 
 
 def provider_research_projection(*, sid: str, symbol: str, secret_reader,
-                                 opener=None, cache=None) -> dict:
+                                 public_reader=None, opener=None, cache=None) -> dict:
     if not isinstance(sid, str) or not sid.startswith("tower_session_"):
         raise ValueError("current owner session required")
     symbol = str(symbol or "").strip().upper()
@@ -633,6 +661,21 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
             }
         cache.put(key, row)
         rows.append(row)
+
+    if callable(public_reader):
+        try:
+            public_row = public_reader(sid, symbol, "EQUITY")
+            if not isinstance(public_row, dict) or public_row.get("provider") != "public":
+                raise ValueError("invalid Public projection")
+        except Exception:
+            public_row = {
+                "provider": "public",
+                "state": "SOURCE_HOLD",
+                "owner_display_reviewed": False,
+                "soulaana_ai_use_reviewed": False,
+            }
+        rows.append(public_row)
+
     return {
         "schema": "OB_KEYED_PROVIDER_RESEARCH_V1",
         "symbol": symbol,
@@ -641,7 +684,7 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
         "source_only": True,
         "provider_research": rows,
         "live_prices_attached": any(
-            row.get("provider") in {"finazon", "alpaca"} and row.get("state") == "SOURCE_BOUND"
+            row.get("provider") in {"finazon", "alpaca", "public"} and row.get("state") == "SOURCE_BOUND"
             and row.get("real_time_market_context") is True
             for row in rows
         ),
@@ -654,7 +697,8 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
     }
 
 
-def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader, opener=None):
+def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader,
+                                             public_reader=None, opener=None):
     if not callable(owner_authorize) or not callable(secret_reader):
         raise ValueError("Tower owner authorization and server key reader required")
     cache = ProviderResearchCache()
@@ -670,7 +714,8 @@ def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader, 
         try:
             payload = provider_research_projection(
                 sid=sid, symbol=request.args.get("symbol", ""),
-                secret_reader=secret_reader, opener=opener, cache=cache,
+                secret_reader=secret_reader, public_reader=public_reader,
+                opener=opener, cache=cache,
             )
         except ValueError:
             abort(400)

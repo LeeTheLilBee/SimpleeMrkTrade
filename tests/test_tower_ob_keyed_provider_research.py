@@ -353,3 +353,52 @@ def test_finazon_and_bea_soulaana_require_independent_ai_grants(rights, monkeypa
     assert finazon["live_quote"] is False
     assert bea["live_quote"] is False
     assert packet["soulaana_research"]["candidate_admitted"] is False
+
+
+def test_public_personal_quote_can_feed_owner_soulaana_without_order_authority(rights):
+    def public_reader(sid, symbol, kind):
+        assert sid.startswith("tower_session_")
+        assert symbol == "AAPL"
+        assert kind == "EQUITY"
+        return {
+            "provider": "public",
+            "state": "SOURCE_BOUND",
+            "kind": "PUBLIC_PERSONAL_REALTIME_QUOTE",
+            "symbol": symbol,
+            "bid": 100.0,
+            "ask": 100.2,
+            "last": 100.1,
+            "observed_at": "2026-10-01T14:00:00Z",
+            "source_reference": "https://public.com/api/docs/resources/market-data/get-quotes",
+            "historical_only": False,
+            "live_quote": False,
+            "real_time_market_context": True,
+            "consolidated_quote": False,
+            "personal_owner_only": True,
+            "commercial_use_allowed": False,
+            "beta_user_use_allowed": False,
+            "broker_execution_authorized": False,
+            "owner_display_reviewed": True,
+            "soulaana_ai_use_reviewed": True,
+        }
+
+    packet = provider_research_projection(
+        sid="tower_session_" + "x"*20,
+        symbol="AAPL",
+        secret_reader=secret_reader,
+        public_reader=public_reader,
+        opener=Recorder(),
+        cache=ProviderResearchCache(),
+    )
+    public_row = next(row for row in packet["provider_research"]
+                      if row.get("provider") == "public")
+    assert public_row["state"] == "SOURCE_BOUND"
+    assert public_row["personal_owner_only"] is True
+    assert public_row["commercial_use_allowed"] is False
+    assert public_row["broker_execution_authorized"] is False
+    observations = packet["soulaana_research"]["observations"]
+    public_ai = next(row for row in observations if row["provider"] == "public")
+    assert "Public reports owner-only personal market context" in public_ai["finding"]
+    assert public_ai["summary"]["bid"] == 100.0
+    assert packet["may_authorize_order"] is False
+    assert packet["may_authorize_capital"] is False

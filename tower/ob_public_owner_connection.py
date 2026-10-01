@@ -57,13 +57,36 @@ def _flag(name: str) -> bool:
 
 
 def _quote_policy() -> PublicReadPolicy:
+    """Owner-only personal API research policy.
+
+    The Individual API is deliberately scoped to the current owner's personal,
+    non-commercial use. These flags never imply beta-user, business, resale,
+    redistribution, broker execution, or automatic-trading permission.
+    """
+    personal_owner_use = _flag("OB_PUBLIC_PERSONAL_OWNER_USE_REVIEWED")
     return PublicReadPolicy(
-        account_scope_reviewed=_flag("OB_PUBLIC_ACCOUNT_SCOPE_REVIEWED"),
-        non_display_use_reviewed=_flag("OB_PUBLIC_NONDISPLAY_REVIEWED"),
-        owner_display_reviewed=_flag("OB_PUBLIC_OWNER_DISPLAY_REVIEWED"),
+        account_scope_reviewed=(
+            personal_owner_use
+            and _flag("OB_PUBLIC_ACCOUNT_SCOPE_REVIEWED")
+        ),
+        non_display_use_reviewed=(
+            personal_owner_use
+            and _flag("OB_PUBLIC_NONDISPLAY_REVIEWED")
+        ),
+        owner_display_reviewed=(
+            personal_owner_use
+            and _flag("OB_PUBLIC_OWNER_DISPLAY_REVIEWED")
+        ),
         marketdata_scope_verified=_flag("OB_PUBLIC_MARKETDATA_SCOPE_VERIFIED"),
         equity_entitled=_flag("OB_PUBLIC_EQUITY_ENTITLED"),
         option_entitled=_flag("OB_PUBLIC_OPTION_ENTITLED"),
+    )
+
+
+def _soulaana_personal_ai_reviewed() -> bool:
+    return (
+        _flag("OB_PUBLIC_PERSONAL_OWNER_USE_REVIEWED")
+        and _flag("OB_PUBLIC_SOULAANA_AI_USE_REVIEWED")
     )
 
 
@@ -379,7 +402,7 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
                 elif not item.account_id or item.account_kind not in _SELECTABLE_ACCOUNT_TYPES:
                     session["ob_public_owner_notice"] = "Choose an account before checking quotes."
                 elif not policy.permits({kind}):
-                    session["ob_public_owner_notice"] = "Quote held: separate business data-use, display and instrument permissions must be reviewed."
+                    session["ob_public_owner_notice"] = "Quote held: owner-only personal data-use, display and instrument permissions must be reviewed."
                 else:
                     try:
                         q = QuoteRequest(symbol=symbol, kind=kind)
@@ -452,12 +475,78 @@ def register_public_owner_connection(app: Flask, *, owner_authorize):
             "authentication_temporarily_present": item is not None,
             "account_linked": bool(item is not None and item.account_id),
             "owner_selection_required": bool(item is not None and item.candidates and not item.account_id),
+            "personal_owner_use_reviewed": _flag("OB_PUBLIC_PERSONAL_OWNER_USE_REVIEWED"),
+            "soulaana_ai_use_reviewed": _soulaana_personal_ai_reviewed(),
+        }
+
+    def _owner_personal_quote_reader(sid: str, symbol: str, kind: str = "EQUITY"):
+        """Server-only normalized Public quote for the current Tower owner.
+
+        This never returns tokens/account IDs and never submits an order.
+        It is eligible only for the owner's personal, non-commercial research
+        lane and may be consumed by Soulaana only when the separate AI-use
+        review flag is enabled.
+        """
+        item = store.get(sid)
+        if item is None or not item.account_id:
+            return {
+                "provider": "public",
+                "state": "NOT_CONNECTED",
+                "owner_display_reviewed": False,
+                "soulaana_ai_use_reviewed": False,
+            }
+        policy = _quote_policy()
+        if not policy.permits({kind}):
+            return {
+                "provider": "public",
+                "state": "RIGHTS_OR_FETCH_HOLD",
+                "owner_display_reviewed": False,
+                "soulaana_ai_use_reviewed": False,
+            }
+        try:
+            request_item = QuoteRequest(symbol=symbol, kind=kind)
+            result = PublicReadOnlyQuoteClient(policy).fetch_once(
+                backend_account_id=item.account_id,
+                backend_access_token=item.access_token,
+                requests=[request_item],
+            )[0]
+        except (ValueError, PublicQuoteHold):
+            return {
+                "provider": "public",
+                "state": "SOURCE_HOLD",
+                "owner_display_reviewed": True,
+                "soulaana_ai_use_reviewed": _soulaana_personal_ai_reviewed(),
+            }
+
+        return {
+            "provider": "public",
+            "state": "SOURCE_BOUND",
+            "kind": "PUBLIC_PERSONAL_REALTIME_QUOTE",
+            "symbol": symbol,
+            "bid": result.normalized["bid"],
+            "ask": result.normalized["ask"],
+            "last": result.normalized.get("last"),
+            "observed_at": result.normalized["observed_at"],
+            "source_reference": "https://public.com/api/docs/resources/market-data/get-quotes",
+            "historical_only": False,
+            "live_quote": False,
+            "real_time_market_context": True,
+            "consolidated_quote": False,
+            "personal_owner_only": True,
+            "commercial_use_allowed": False,
+            "beta_user_use_allowed": False,
+            "broker_execution_authorized": False,
+            "owner_display_reviewed": True,
+            "soulaana_ai_use_reviewed": _soulaana_personal_ai_reviewed(),
         }
 
     app.extensions["ob_public_owner_status_reader_v1"] = _safe_owner_connection_status
+    app.extensions["ob_public_owner_quote_reader_v1"] = _owner_personal_quote_reader
     app.extensions["ob_public_owner_connection_v1"] = {
         "path": PATH, "api_key_persisted": False, "bearer_in_cookie": False,
         "in_process_token_seconds": _AUTH_TTL_SECONDS, "broker_execution": False,
         "auto_connection": False, "gateway_installation": False,
+        "personal_owner_only": True, "commercial_use_allowed": False,
+        "beta_user_use_allowed": False,
     }
     return app
