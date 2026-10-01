@@ -84,6 +84,11 @@ def test_verified_owner_get_head_are_catalog_only_and_public_mutation_denied(pri
     assert client.post("/ob/data-desk").status_code == 405
     assert client.get("/ob/data-desk/connect").status_code == 403
     assert client.get("/ob/data-desk/approve").status_code == 403
+    trace = client.get("/ob/data-desk/event-traces.json")
+    assert trace.status_code == 200
+    assert trace.get_json()["schema"] == "OB_EVENT_TRACE_V1"
+    assert trace.get_json()["traces"] == []
+    assert client.post("/ob/data-desk/event-traces.json").status_code == 405
     assert client.get("/trade-center").status_code == 404
 
 
@@ -107,6 +112,7 @@ def test_source_failures_are_sanitized_and_no_alternate_owner_route(private_app,
 
 def test_map_exact_and_return_navigation_preserved():
     assert match_ob_guard_policy("/ob/data-desk")["match_type"] == "exact"
+    assert match_ob_guard_policy("/ob/data-desk/event-traces.json")["match_type"] == "exact"
     assert match_ob_guard_policy("/ob/data-desk/secret")["match_type"] == "unmapped_default_deny"
     assert match_ob_guard_policy("/trade-center")["match_type"] == "unmapped_default_deny"
     js = (ROOT / "web/static/ob/ob_nav_shell.js").read_text()
