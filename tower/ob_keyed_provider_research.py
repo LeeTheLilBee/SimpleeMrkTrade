@@ -827,7 +827,7 @@ def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader,
                     for row in payload.get("provider_research", [])
                 )
                 event = event_hub.observe_digest_event(
-                    observation_key="provider_research:" + payload["symbol"],
+                    observation_key="provider_research:" + payload["symbol"].lower(),
                     digest=digest,
                     event_type="research_context_changed",
                     source="keyed_provider_research",
