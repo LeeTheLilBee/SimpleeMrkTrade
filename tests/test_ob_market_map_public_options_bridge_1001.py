@@ -72,3 +72,13 @@ def test_public_option_contracts_are_promoted_into_canonical_options_collection(
     assert 'document["options"] = existing_options' in SOURCE_STATUS
     assert 'document["public_option_contract_count"]' in SOURCE_STATUS
     assert '"public_options"' in SOURCE_STATUS
+
+
+def test_shared_engine_adapter_is_single_flight_across_focus_boot_and_poll_refreshes():
+    assert "let inFlightFetch" in ADAPTER
+    assert "async function fetchEngineSnapshotOnce()" in ADAPTER
+    assert "async function fetchEngineSnapshot()" in ADAPTER
+    assert "if (inFlightFetch)" in ADAPTER
+    assert "return inFlightFetch;" in ADAPTER
+    assert "fetchEngineSnapshotOnce();" in ADAPTER
+    assert "finally" in ADAPTER
