@@ -125,8 +125,11 @@ class JournaledBackupOperations:
                 code="BACKUP_SOURCE_BACKEND_ERROR",
             )
             raise
+        # Active key is resolved by opaque reference only. Cloud source never
+        # owns a rotation catalog; a future KMS/HSM resolver remains external.
+        key = self.backup._key_for(self.backup.key_reference)
         nonce = secrets.token_bytes(12)
-        outer = b"SCB1" + nonce + _aesgcm()(self.backup._backup_key).encrypt(
+        outer = b"SCB1" + nonce + _aesgcm()(key).encrypt(
             nonce, inner, _aad(scope, source_object_ref, source_ciphertext_sha256),
         )
         if not 33 <= len(outer) <= MAX_ENVELOPE_BYTES + 64:
