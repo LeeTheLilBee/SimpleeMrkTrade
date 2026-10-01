@@ -678,15 +678,29 @@ def _clouds_live_owner_command_hosted_upgrade(response):
 if not app.extensions.get(
     "clouds_live_owner_command_hosted_mount_20261001"
 ):
-    app.after_request(
-        _clouds_live_owner_command_hosted_upgrade
+    # Flask runs global after-request callbacks in reverse order.
+    # Insert this presentation hook first so it runs LAST, after the
+    # existing Tower Clouds OB-default-deny recovery has produced the
+    # canonical authenticated 200 response.
+    _clouds_after_callbacks = (
+        app.after_request_funcs
+        .setdefault(
+            None,
+            [],
+        )
     )
+    _clouds_after_callbacks.insert(
+        0,
+        _clouds_live_owner_command_hosted_upgrade,
+    )
+
     app.extensions[
         "clouds_live_owner_command_hosted_mount_20261001"
     ] = {
         "canonical_route": "/clouds",
         "tower_authority_preserved": True,
         "presentation_only": True,
+        "runs_after_tower_clouds_recovery": True,
         "clouds_executes_navigation": False,
         "downstream_execution_performed": False,
     }
