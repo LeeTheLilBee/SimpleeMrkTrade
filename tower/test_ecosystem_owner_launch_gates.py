@@ -84,7 +84,22 @@ def test_ground_preflight_requires_truth_mount_receiver_and_release(monkeypatch)
     @app.get("/grounds")
     def grounds():
         return "grounds"
+
+    # A stray or placeholder route is not the reviewed Tower<->Grounds mount.
     monkeypatch.setattr(gates, "_grounds_runtime_health", lambda: (True, []))
+    route_only = gates.inspect_grounds_launch(app, truth={"launchable": True})
+    assert route_only["can_launch"] is False
+    assert "GROUNDS_SAME_ORIGIN_RUNTIME_NOT_MOUNTED" in route_only["reason_codes"]
+
+    app.extensions["tower_grounds_same_origin_mount_v1"] = {
+        "configured": True,
+        "mounted": True,
+        "same_origin": True,
+        "root_path": "/grounds",
+        "owner_crossing_only": True,
+        "resident_staff_launch_created": False,
+        "new_entitlement_granted": False,
+    }
     ready = gates.inspect_grounds_launch(app, truth={"launchable": True})
     assert ready["can_launch"] is True
     assert ready["target_path"] == "/grounds"
