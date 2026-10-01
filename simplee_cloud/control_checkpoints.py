@@ -237,11 +237,18 @@ def seal_source_control_checkpoint(
             prior["storage_event_count"], prior["replay_event_count"],
             prior["namespace_event_count"],
         )
-        if any(now < then for now, then in zip(current_vector, prior_vector)) or (
-            current_vector == prior_vector
-        ):
+        regressed = any(
+            now < then for now, then in zip(current_vector, prior_vector)
+        )
+        same_vector = current_vector == prior_vector
+        schema_only_upgrade = (
+            same_vector and
+            prior["schema"] == _SCHEMA_V1
+        )
+        if regressed or (same_vector and not schema_only_upgrade):
             raise CloudError(
-                "new control checkpoint requires monotonic ledger progress"
+                "new control checkpoint requires monotonic ledger progress "
+                "or one v1-to-v2 key-commitment upgrade"
             )
         previous_digest = previous.sha256
 
@@ -334,6 +341,7 @@ def verify_source_control_checkpoint_sequence(
 
     previous = None
     prior = (-1, -1, -1)
+    prior_schema = None
     refs = set()
     tip = None
     for signed in checkpoints:
@@ -351,13 +359,21 @@ def verify_source_control_checkpoint_sequence(
             doc["storage_event_count"], doc["replay_event_count"],
             doc["namespace_event_count"],
         )
-        if previous is not None and (
-            any(now < then for now, then in zip(current, prior)) or
-            current == prior
-        ):
-            raise IntegrityError("nonmonotonic control checkpoint")
+        if previous is not None:
+            regressed = any(
+                now < then for now, then in zip(current, prior)
+            )
+            same_vector = current == prior
+            schema_only_upgrade = (
+                same_vector and
+                prior_schema == _SCHEMA_V1 and
+                doc["schema"] == _SCHEMA_V2
+            )
+            if regressed or (same_vector and not schema_only_upgrade):
+                raise IntegrityError("nonmonotonic control checkpoint")
         refs.add(doc["checkpoint_ref"])
         prior = current
+        prior_schema = doc["schema"]
         previous, tip = signed, doc
 
     return {
