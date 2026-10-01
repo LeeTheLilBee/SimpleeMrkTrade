@@ -233,6 +233,23 @@ class SQLiteNamespaceBindingLedger:
                 raise AccessDenied("stable namespace binding key/entity mismatch")
             raise AccessDenied("stable namespace not independently enrolled")
 
+    def source_namespace_inventory(self) -> dict:
+        """Verified enrolled opaque namespaces for internal reconciliation only."""
+        with closing(self._connect()) as conn:
+            self._verify(conn)
+            values = frozenset(
+                row["namespace_digest"]
+                for row in conn.execute("SELECT namespace_digest FROM bindings")
+            )
+        return {
+            "status": "SOURCE_ONLY_VERIFIED_ENROLLED_NAMESPACE_INVENTORY",
+            "namespace_digests": values,
+            "namespace_count": len(values),
+            "raw_entity_ids_persisted": False,
+            "external_registry_certified": False,
+            "production_authorized": False,
+        }
+
     def checkpoint_head(self, event_count: int) -> str:
         """Return a fully verified historical binding-ledger prefix head."""
         if type(event_count) is not int or event_count < 0:

@@ -17,6 +17,7 @@ from .contracts import CloudError, IntegrityError
 from .journal import SQLiteOperationalJournal
 from .journaled_backup import JournaledBackupOperations
 from .namespace_bindings import SQLiteNamespaceBindingLedger
+from .namespace_coverage import source_namespace_binding_coverage
 from .key_readiness import source_backup_key_readiness
 from .provider_review import ProviderCandidate, review_candidate, required_provider_checks
 from .readiness import source_preflight
@@ -78,6 +79,10 @@ def owner_local_evidence_desk(
         "status": "NOT_EVALUATED",
         "binding_count": None,
         "event_count": None,
+        "resolver_namespace_count": None,
+        "matched_namespace_count": None,
+        "missing_resolver_namespace_count": None,
+        "unused_enrolled_namespace_count": None,
         "raw_entity_ids_persisted": False,
         "external_registry_certified": False,
         "binding_key_custody_certified": False,
@@ -85,10 +90,15 @@ def owner_local_evidence_desk(
     }
     if namespace_bindings is not None:
         verified_namespace = namespace_bindings.verify_chain()
+        coverage = source_namespace_binding_coverage(journal, namespace_bindings)
         namespace_summary.update({
-            "status": "SOURCE_ONLY_LOCAL_NAMESPACE_BINDING_VERIFIED",
+            "status": coverage["status"],
             "binding_count": verified_namespace["binding_count"],
             "event_count": verified_namespace["event_count"],
+            "resolver_namespace_count": coverage["resolver_namespace_count"],
+            "matched_namespace_count": coverage["matched_namespace_count"],
+            "missing_resolver_namespace_count": coverage["missing_resolver_namespace_count"],
+            "unused_enrolled_namespace_count": coverage["unused_enrolled_namespace_count"],
             "raw_entity_ids_persisted": False,
             "external_registry_certified": False,
             "binding_key_custody_certified": False,

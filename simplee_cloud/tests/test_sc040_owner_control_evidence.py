@@ -93,8 +93,11 @@ def test_verified_local_namespace_ledger_is_redacted_without_external_claim(tmp_
     report = view(h, namespace_bindings=ledger)
     namespace = report["namespace_binding_readiness"]
     assert namespace["supplied"] is True
-    assert namespace["status"] == "SOURCE_ONLY_LOCAL_NAMESPACE_BINDING_VERIFIED"
+    assert namespace["status"] == "SOURCE_ONLY_NAMESPACE_BINDING_COVERAGE_VERIFIED"
     assert namespace["binding_count"] == 1
+    assert namespace["resolver_namespace_count"] == 0
+    assert namespace["missing_resolver_namespace_count"] == 0
+    assert namespace["unused_enrolled_namespace_count"] == 1
     assert namespace["event_count"] == 1
     assert namespace["raw_entity_ids_persisted"] is False
     assert namespace["external_registry_certified"] is False
