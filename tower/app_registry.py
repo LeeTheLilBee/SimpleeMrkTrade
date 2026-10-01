@@ -118,7 +118,7 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_name="The Grounds",
         app_label="Grounds",
         app_status="registered_future_room",
-        tower_launch_route="/tower/app-registry",
+        tower_launch_route="/tower/launch/grounds",
         primary_room_route="/grounds",
         owner_only=True,
         requires_tower_handoff=True,
@@ -127,8 +127,9 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "The Grounds is registered as a future property/operations room. "
-            "This layer does not open property workflows."
+            "The Grounds has an exact owner Tower launch gate, but real property "
+            "workflows remain blocked until the same-origin runtime, certified "
+            "Tower receiver, and independent operational release are verified."
         ),
     ),
 
@@ -140,7 +141,7 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_name="BuyBox",
         app_label="BuyBox",
         app_status="registered_future_room",
-        tower_launch_route="/tower/app-registry",
+        tower_launch_route="/tower/launch/buybox",
         primary_room_route="/buybox",
         owner_only=True,
         requires_tower_handoff=True,
@@ -149,10 +150,11 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "BuyBox is a Tower-governed universal acquisition workspace under "
-            "separate development. No hosted owner launch, production BuyBox "
-            "session, external acquisition readiness, Vault archival, "
-            "closing, funding, or handoff authority is activated here. "
+            "BuyBox has an exact owner Tower launch gate and signed issuer "
+            "preflight, but the browser bootstrap into its same-origin exchange "
+            "is not implemented yet. No production BuyBox session, external "
+            "acquisition readiness, Vault archival, closing, funding, or "
+            "handoff authority is activated here. "
             "Teller owns financial and capacity readiness; Grounds owns "
             "owned-property operations; Vault proof is mediated by Tower."
         ),
