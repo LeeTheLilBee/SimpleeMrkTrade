@@ -102,7 +102,7 @@
     const rows = [];
     const providers = providerPacket && Array.isArray(providerPacket.provider_research)
       ? providerPacket.provider_research : [];
-    ["finnhub","alpha_vantage","finazon","alpaca","public","bea"].forEach(name => {
+    ["finnhub","alpha_vantage","finazon","alpaca","public","public_options","bea"].forEach(name => {
       const item = sourceRow(providers, name);
       rows.push({
         name,
@@ -171,6 +171,7 @@
     const alpaca = sourceRow(providerRows, "alpaca");
     const finazon = sourceRow(providerRows, "finazon");
     const publicQuote = sourceRow(providerRows, "public");
+    const publicOptions = sourceRow(providerRows, "public_options");
     const finnhub = sourceRow(providerRows, "finnhub");
     const alpha = sourceRow(providerRows, "alpha_vantage");
     const bea = sourceRow(providerRows, "bea");
@@ -213,7 +214,21 @@
           }
         }
       }
-    } else if (!(alpaca && alpaca.state === "SOURCE_BOUND") && finazon && finazon.state === "SOURCE_BOUND") {
+    }
+
+    if (publicOptions && publicOptions.state === "SOURCE_BOUND") {
+      const count = Number(publicOptions.contract_count || 0);
+      const expiry = publicOptions.expiration || "the nearest available expiration";
+      addFinding(
+        watch,
+        "neutral",
+        "Public options data is loaded for " + expiry + " with " + count +
+          " bounded near-the-money contracts. Soulaana can use the real spreads, volume, open interest, IV and Greeks instead of guessing from the stock alone.",
+        "Public Options"
+      );
+    }
+
+    if (!(alpaca && alpaca.state === "SOURCE_BOUND") && finazon && finazon.state === "SOURCE_BOUND") {
       const ch = Number(finazon.daily_change_percent);
       if (Number.isFinite(ch) && ch > 0) addFinding(positive, "positive", "The connected current-market source shows a positive daily move.", "Finazon");
       if (Number.isFinite(ch) && ch < 0) addFinding(negative, "negative", "The connected current-market source shows a negative daily move.", "Finazon");
