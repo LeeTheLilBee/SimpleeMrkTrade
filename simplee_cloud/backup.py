@@ -1,8 +1,11 @@
 """Independent, doubly encrypted backup and isolated restore-verification seam.
 
 Vault's VLT1 inner encryption stays in Vault. SCB1 is a second AES-256-GCM
-layer using an independently supplied backup key. Restore NEVER overwrites a
-primary object and does not constitute an authorized Vault recovery commit.
+layer using an independently supplied backup key. SC034 may resolve historical
+keys by opaque reference through an injected source-only callback so a NEW active
+key does not strand older immutable backups. Cloud never owns the key catalog.
+Restore NEVER overwrites a primary object and does not constitute an authorized
+Vault recovery commit.
 """
 from __future__ import annotations
 
