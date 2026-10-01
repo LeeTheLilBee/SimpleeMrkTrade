@@ -101,6 +101,21 @@ def _route_present(app: Flask, path: str) -> bool:
     return path in {rule.rule for rule in app.url_map.iter_rules()}
 
 
+def _reviewed_grounds_mount_present(app: Flask) -> bool:
+    """Require the exact reviewed Tower mount, not an arbitrary /grounds route."""
+    record = app.extensions.get("tower_grounds_same_origin_mount_v1")
+    return bool(
+        isinstance(record, Mapping)
+        and record.get("configured") is True
+        and record.get("mounted") is True
+        and record.get("same_origin") is True
+        and record.get("root_path") == "/grounds"
+        and record.get("owner_crossing_only") is True
+        and record.get("resident_staff_launch_created") is False
+        and record.get("new_entitlement_granted") is False
+    )
+
+
 def inspect_grounds_launch(app: Flask, *, truth: Mapping[str, Any] | None = None) -> dict[str, Any]:
     reasons: list[str] = []
     current_truth = app_truth_by_id("grounds") if truth is None else truth
@@ -109,7 +124,10 @@ def inspect_grounds_launch(app: Flask, *, truth: Mapping[str, Any] | None = None
 
     # Grounds has no cross-origin browser handoff protocol. Until one exists,
     # only a same-origin mounted runtime can be safely launched.
-    if not _route_present(app, "/grounds"):
+    if (
+        not _route_present(app, "/grounds")
+        or not _reviewed_grounds_mount_present(app)
+    ):
         reasons.append("GROUNDS_SAME_ORIGIN_RUNTIME_NOT_MOUNTED")
 
     runtime_ready, runtime_reasons = _grounds_runtime_health()
