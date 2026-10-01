@@ -21,6 +21,10 @@ from werkzeug.exceptions import HTTPException
 
 from tower.app_truth_projection import app_truth_by_id
 from tower.buybox_owner_handoff_issuer import inspect_current_buybox_issue_preflight
+from tower.ecosystem_direct_route_guard import (
+    ACCESS_RECEIPT_KEYS,
+    build_ecosystem_access_receipt,
+)
 from tower.tower_human_login_ob_launch import (
     ACCESS_HOME_PATH,
     SESSION_AUTHENTICATED,
@@ -187,6 +191,9 @@ def grounds_launch_view(app: Flask):
     report = inspect_grounds_launch(app)
     if report["can_launch"] is not True:
         return _blocked_page("The Grounds", report)
+    # The generic direct-route guard still requires a Tower-created,
+    # current-session receipt even after product-specific readiness succeeds.
+    session[ACCESS_RECEIPT_KEYS["grounds"]] = build_ecosystem_access_receipt("grounds")
     return redirect("/grounds")
 
 
