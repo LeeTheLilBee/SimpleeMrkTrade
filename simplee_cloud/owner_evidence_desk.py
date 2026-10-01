@@ -12,6 +12,8 @@ from .authority_checkpoints import (
 )
 from .contracts import CloudError, IntegrityError
 from .journal import SQLiteOperationalJournal
+from .journaled_backup import JournaledBackupOperations
+from .key_readiness import source_backup_key_readiness
 from .provider_review import ProviderCandidate, review_candidate, required_provider_checks
 from .readiness import source_preflight
 from .source_status import owner_safe_source_snapshot
@@ -26,6 +28,7 @@ def owner_local_evidence_desk(
     release_references: Mapping[str, str] | None = None,
     checkpoint: SignedAuthorityCheckpoint | None = None,
     pinned_public_keys: Mapping[str, bytes] | None = None,
+    backup_operations: JournaledBackupOperations | None = None,
 ) -> dict:
     """Combine verified local-source facts without accepting self-asserted GO.
 
@@ -40,6 +43,11 @@ def owner_local_evidence_desk(
         raise CloudError("provider identity and evidence pointers must be supplied together")
     if (checkpoint is None) != (pinned_public_keys is None):
         raise CloudError("signed checkpoint and independent pinned public keys required together")
+    if backup_operations is not None and (
+        not isinstance(backup_operations, JournaledBackupOperations) or
+        backup_operations.journal.path != journal.path
+    ):
+        raise CloudError("backup key preflight must use this verified Cloud journal")
 
     # Fail closed on any tampered storage or replay history, including when
     # optional evidence/pointers are omitted. Never swallow verification errors.
@@ -64,6 +72,30 @@ def owner_local_evidence_desk(
         checkpoint_summary["local_storage_and_replay_prefix_verified"] = True
         checkpoint_summary["storage_event_count"] = doc["storage_event_count"]
         checkpoint_summary["replay_event_count"] = doc["replay_event_count"]
+
+    key_summary = {
+        "supplied": backup_operations is not None,
+        "status": "NOT_EVALUATED",
+        "acknowledged_backup_count": None,
+        "distinct_key_reference_count": None,
+        "resolvable_key_reference_count": None,
+        "unavailable_key_reference_count": None,
+        "acknowledged_backups_depending_on_unavailable_key_count": None,
+        "pending_backup_count": None,
+        "integrity_hold_backup_count": None,
+        "provider_bytes_read": False,
+        "backup_ciphertext_authenticated_in_this_check": False,
+        "external_kms_hsm_custody_certified": False,
+        "old_key_recovery_drill_certified": False,
+        "production_authorized": False,
+    }
+    if backup_operations is not None:
+        verified_keys = source_backup_key_readiness(backup_operations)
+        for key in tuple(key_summary):
+            if key == "supplied":
+                continue
+            if key in verified_keys:
+                key_summary[key] = verified_keys[key]
 
     provider_count = len(required_provider_checks())
     return {
@@ -111,6 +143,7 @@ def owner_local_evidence_desk(
             "external_checkpoint_certified": False,
         },
         "joint_checkpoint": checkpoint_summary,
+        "backup_key_readiness": key_summary,
         "provider_review": {
             "supplied": provider is not None,
             "required_check_count": provider_count,
