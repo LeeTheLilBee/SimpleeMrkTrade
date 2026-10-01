@@ -353,7 +353,7 @@ def evaluate_ob_request_guard(
     # authenticated Tower session. The independent OB HTTP boundary still
     # requires fresh step-up + consumed OB handoff; Public POST separately
     # enforces origin, CSRF, feature flag and source-specific rights.
-    if path in {"/ob/settings", "/ob/settings.json", "/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json", "/ob/engine-feed-snapshot.json"}:
+    if path in {"/ob/settings", "/ob/settings.json", "/ob/hybrid-readiness.json", "/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json", "/ob/engine-feed-snapshot.json"}:
         try:
             from flask import has_request_context, session
             if has_request_context():
@@ -611,6 +611,11 @@ def match_ob_guard_policy(path: str) -> Dict[str, Any]:
 
 
 OB_ROUTE_GUARD_MAP.update({
+    "/ob/hybrid-readiness.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="analysis_vault", action="view", clearance="owner", risk_floor=30,
+        room="Hybrid Readiness Gate", purpose="Owner-only fail-closed Hybrid qualification evidence view.",
+        soulaana_translation="Soulaana: I can explain whether the three simulations have earned Hybrid review. I cannot unlock Hybrid, submit orders, or move money.",
+    ),
     "/ob/settings": _tower_ob_real_surface_policy_2593_2602(
         route_key="data_desk", action="view", clearance="owner", risk_floor=20,
         room="OB Settings", purpose="Owner-only Observatory settings control room.",
