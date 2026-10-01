@@ -24,3 +24,4 @@ python-dateutil>=2.9,<3
 # Explicitly opt-in ASGI wrapper for authenticated Catalyst Radar notification socket.
 asgiref>=3.8,<4
 uvicorn[standard]>=0.30,<1
+\n# Server-side Alpaca IEX market-data WebSocket client.\nwebsockets>=12,<16\n
