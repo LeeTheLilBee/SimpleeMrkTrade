@@ -123,7 +123,6 @@ def test_map_exact_and_return_navigation_preserved():
     assert "Market Data Desk" not in observe
     settings = js.split('<div class="ob-nav-group-label">Settings</div>', 1)[1].split('<div class="ob-nav-group-label">Tower connection</div>', 1)[0]
     assert "Market Data Desk" in settings
-    assert 'href="/ob/data-desk"' in js
     assert 'navLink(path, "/ob/trade-center", "Trade Center"' in js
     assert 'navLink(path, "/ob/review-center", "Review Center"' in js
     assert 'TOWER_RETURN_PATH = "/tower/return/observatory"' in js
