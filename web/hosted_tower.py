@@ -582,15 +582,104 @@ register_ob_settings_control_room(app)
 # CLOUDS_LIVE_OWNER_COMMAND_HOSTED_MOUNT_20261001
 # Presentation-only response upgrade. Tower's existing Clouds before-request
 # authority/handoff remains the access decision; this hook runs afterward.
-from clouds.clouds_routes import (
-    clouds_live_hosted_owner_command_upgrade,
-)
+def _clouds_live_owner_command_hosted_upgrade(response):
+    from flask import (
+        Response as _CloudsResponse,
+        request as _clouds_request,
+    )
+
+    if _clouds_request.path != "/clouds":
+        return response
+
+    if response.status_code != 200:
+        return response
+
+    if (
+        response.headers.get(
+            "x-tower-clouds-pack1"
+        )
+        != "canonical-owner-command"
+    ):
+        return response
+
+    try:
+        from tower.clouds_live_owner_command import (
+            render_owner_command,
+        )
+        from tower.tower_clouds_native_launch import (
+            CLOUDS_RETURN_PATH,
+            _page,
+        )
+
+        html = render_owner_command(
+            page_factory=_page,
+            clouds_return_path=CLOUDS_RETURN_PATH,
+        )
+
+        link_rewrites = {
+            "/tower/clouds/open/observatory":
+                "/tower/launch/observatory",
+            "/tower/clouds/open/teller":
+                "/tower/launch/teller",
+            "/tower/clouds/open/grounds":
+                "/tower/launch/grounds",
+            "/tower/clouds/open/buybox":
+                "/tower/launch/buybox",
+            "/tower/clouds/open/clouds":
+                "/clouds",
+        }
+
+        for old, new in link_rewrites.items():
+            html = html.replace(
+                old,
+                new,
+            )
+
+        upgraded = _CloudsResponse(
+            html,
+            status=200,
+            mimetype="text/html",
+        )
+
+        upgraded.headers[
+            "Cache-Control"
+        ] = "private, no-store, max-age=0"
+
+        upgraded.headers[
+            "x-tower-clouds-pack1"
+        ] = "canonical-owner-command"
+
+        upgraded.headers[
+            "x-clouds-live-owner-command"
+        ] = "20261001"
+
+        recovery = response.headers.get(
+            "x-tower-clouds-ob-guard-recovery"
+        )
+
+        if recovery:
+            upgraded.headers[
+                "x-tower-clouds-ob-guard-recovery"
+            ] = recovery
+
+        return upgraded
+
+    except Exception as exc:
+        response.headers[
+            "x-clouds-live-owner-command-error"
+        ] = (
+            type(exc).__name__
+            + ":"
+            + str(exc)[:160]
+        )
+        return response
+
 
 if not app.extensions.get(
     "clouds_live_owner_command_hosted_mount_20261001"
 ):
     app.after_request(
-        clouds_live_hosted_owner_command_upgrade
+        _clouds_live_owner_command_hosted_upgrade
     )
     app.extensions[
         "clouds_live_owner_command_hosted_mount_20261001"
@@ -601,3 +690,4 @@ if not app.extensions.get(
         "clouds_executes_navigation": False,
         "downstream_execution_performed": False,
     }
+
