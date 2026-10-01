@@ -108,8 +108,12 @@
         name,
         state: item ? sourceStateLabel(item.state) : "not returned",
         disposition: item && item.state === "SOURCE_BOUND"
-          ? "visible + available to Soulaana when provider AI-use review is enabled"
-          : "not used in this read"
+          ? (item.soulaana_ai_use_reviewed === true
+              ? "visible + actually readable by Soulaana"
+              : "visible to owner, but Soulaana AI-use review is OFF")
+          : (item && item.state === "RIGHTS_OR_FETCH_HOLD"
+              ? "connected credential may exist, but owner-display/fetch review is OFF"
+              : "not used in this read")
       });
     });
 
@@ -311,16 +315,60 @@
     renderList("symbolImpactConflict", conflict, "No material cross-source conflict is visible yet.");
     renderList("symbolImpactWatch", watch, "No additional evidence checkpoint is available yet.");
 
+    const providerSoulaana = providerPacket && providerPacket.soulaana_research;
+    const providerObservations = providerSoulaana && Array.isArray(providerSoulaana.observations)
+      ? providerSoulaana.observations : [];
+    const readableProviders = providerRows.filter(x => x && x.state === "SOURCE_BOUND" && x.soulaana_ai_use_reviewed === true);
+    const heldForSoulaana = providerRows.filter(x => x && x.state === "SOURCE_BOUND" && x.soulaana_ai_use_reviewed !== true);
+
+    const translated = providerObservations
+      .map(x => x && x.finding)
+      .filter(Boolean);
+    const meanings = providerObservations
+      .map(x => x && x.why_it_matters)
+      .filter(Boolean);
+
     const soulaanaSees = byId("symbolSoulaanaSees");
     const soulaanaMeans = byId("symbolSoulaanaMeans");
     const soulaanaCaution = byId("symbolSoulaanaCaution");
     const soulaanaNext = byId("symbolSoulaanaNext");
-    if (soulaanaSees) soulaanaSees.textContent = headline + ". " + summary;
-    if (soulaanaMeans) soulaanaMeans.textContent = why.join(" ");
-    if (soulaanaCaution) soulaanaCaution.textContent = conflict.length
-      ? conflict[0].text + " I am keeping that disagreement visible instead of smoothing it over."
-      : "Evidence can agree and still be incomplete. Missing current options/liquidity or issuer-specific evidence stays missing.";
-    if (soulaanaNext) soulaanaNext.textContent = watch.length ? watch[0].text : "Wait for the next source-backed update.";
+
+    if (soulaanaSees) {
+      soulaanaSees.textContent = translated.length
+        ? translated.slice(0, 3).join(" ")
+        : headline + ". " + summary;
+    }
+    if (soulaanaMeans) {
+      soulaanaMeans.textContent = meanings.length
+        ? meanings.slice(0, 3).join(" ")
+        : why.join(" ");
+    }
+    if (soulaanaCaution) {
+      if (heldForSoulaana.length) {
+        soulaanaCaution.textContent =
+          heldForSoulaana.map(x => String(x.provider).toUpperCase()).join(", ") +
+          " returned owner-visible data but is not currently cleared for Soulaana AI-use. " +
+          (conflict.length ? conflict[0].text : "I will not pretend I interpreted content I was not cleared to read.");
+      } else {
+        soulaanaCaution.textContent = conflict.length
+          ? conflict[0].text + " I am keeping that disagreement visible instead of smoothing it over."
+          : "Evidence can agree and still be incomplete. Missing current options/liquidity or issuer-specific evidence stays missing.";
+      }
+    }
+    if (soulaanaNext) {
+      const missing = providerObservations
+        .map(x => x && x.what_is_missing)
+        .filter(Boolean);
+      soulaanaNext.textContent = missing.length
+        ? missing[0]
+        : (watch.length ? watch[0].text : "Wait for the next source-backed update.");
+    }
+
+    if (readableProviders.length && !translated.length) {
+      addFinding(conflict, "conflict",
+        "Provider rows are marked readable by Soulaana, but the provider-research translation packet returned no observation. That is a wiring defect, not a clean research state.",
+        "Soulaana diagnostics");
+    }
   }
 
 
