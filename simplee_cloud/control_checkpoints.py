@@ -20,13 +20,17 @@ from .journal import SQLiteOperationalJournal
 from .namespace_bindings import SQLiteNamespaceBindingLedger
 from .tower_grants import SQLiteNonceReplayStore
 
-_SCHEMA = "simplee.cloud.control-checkpoint.v1"
-_FIELDS = frozenset({
+_SCHEMA_V1 = "simplee.cloud.control-checkpoint.v1"
+_SCHEMA_V2 = "simplee.cloud.control-checkpoint.v2"
+_FIELDS_V1 = frozenset({
     "schema", "checkpoint_ref", "key_id",
     "storage_event_count", "storage_head_sha256",
     "replay_event_count", "replay_head_sha256",
     "namespace_event_count", "namespace_head_sha256",
     "previous_checkpoint_sha256", "created_at_utc",
+})
+_FIELDS_V2 = _FIELDS_V1 | frozenset({
+    "namespace_binding_key_commitment_sha256",
 })
 _ID = re.compile(r"[A-Za-z0-9_.:-]{1,64}\Z")
 _REF = re.compile(r"control-checkpoints/[0-9a-f]{48}\Z")
@@ -67,7 +71,15 @@ def _claims(payload: bytes) -> dict:
         doc = json.loads(
             payload.decode("utf-8"), object_pairs_hook=_strict_pairs,
         )
-        if not isinstance(doc, dict) or set(doc) != _FIELDS:
+        if not isinstance(doc, dict):
+            raise IntegrityError("unexpected control checkpoint claims")
+        schema = doc.get("schema")
+        expected_fields = (
+            _FIELDS_V1 if schema == _SCHEMA_V1 else
+            _FIELDS_V2 if schema == _SCHEMA_V2 else
+            None
+        )
+        if expected_fields is None or set(doc) != expected_fields:
             raise IntegrityError("unexpected control checkpoint claims")
         canonical = json.dumps(
             doc, sort_keys=True, separators=(",", ":"), ensure_ascii=True,
@@ -90,7 +102,7 @@ def verify_control_checkpoint(
         raise IntegrityError("signed control checkpoint required")
     doc = _claims(signed.payload)
     if (
-        doc["schema"] != _SCHEMA or
+        doc["schema"] not in (_SCHEMA_V1, _SCHEMA_V2) or
         not isinstance(doc["checkpoint_ref"], str) or
         _REF.fullmatch(doc["checkpoint_ref"]) is None
     ):
@@ -126,6 +138,11 @@ def verify_control_checkpoint(
     ):
         if not valid_sha256(doc[field]):
             raise IntegrityError("invalid control checkpoint hash")
+    if (
+        doc["schema"] == _SCHEMA_V2 and
+        not valid_sha256(doc["namespace_binding_key_commitment_sha256"])
+    ):
+        raise IntegrityError("invalid namespace binding key commitment hash")
     if (
         not isinstance(doc["created_at_utc"], str) or
         not doc["created_at_utc"].endswith("Z")
@@ -165,6 +182,15 @@ def verify_control_checkpoint(
             ) from exc
         if namespace_head != doc["namespace_head_sha256"]:
             raise IntegrityError("control checkpoint namespace prefix mismatch")
+        if doc["schema"] == _SCHEMA_V2:
+            key_doc = namespace_bindings.source_binding_key_commitment()
+            if not hmac.compare_digest(
+                key_doc["binding_key_commitment"],
+                doc["namespace_binding_key_commitment_sha256"],
+            ):
+                raise IntegrityError(
+                    "control checkpoint namespace binding-key commitment mismatch"
+                )
     return dict(doc)
 
 
@@ -195,6 +221,7 @@ def seal_source_control_checkpoint(
     storage = journal.verify_chain()
     replay = replay_store.verify_chain()
     namespace = namespace_bindings.verify_chain()
+    namespace_key = namespace_bindings.source_binding_key_commitment()
     previous_digest = _ZERO
     if previous is not None:
         prior = verify_control_checkpoint(
@@ -219,7 +246,7 @@ def seal_source_control_checkpoint(
         previous_digest = previous.sha256
 
     payload = json.dumps({
-        "schema": _SCHEMA,
+        "schema": _SCHEMA_V2,
         "checkpoint_ref": "control-checkpoints/" + secrets.token_hex(24),
         "key_id": key_id,
         "storage_event_count": storage["event_count"],
@@ -228,6 +255,7 @@ def seal_source_control_checkpoint(
         "replay_head_sha256": replay["head_sha256"],
         "namespace_event_count": namespace["event_count"],
         "namespace_head_sha256": namespace["head_sha256"],
+        "namespace_binding_key_commitment_sha256": namespace_key["binding_key_commitment"],
         "previous_checkpoint_sha256": previous_digest,
         "created_at_utc": datetime.now(timezone.utc).isoformat().replace(
             "+00:00", "Z"
@@ -342,6 +370,12 @@ def verify_source_control_checkpoint_sequence(
         "storage_prefix_matches": True,
         "replay_prefix_matches": True,
         "namespace_prefix_matches": True,
+        "namespace_binding_key_commitment_in_tip": (
+            tip["schema"] == _SCHEMA_V2
+        ),
+        "namespace_binding_key_commitment_matches_current": (
+            tip["schema"] == _SCHEMA_V2
+        ),
         "actual_external_latest_attested": False,
         "independent_offsite_immutability_certified": False,
         "production_authorized": False,
