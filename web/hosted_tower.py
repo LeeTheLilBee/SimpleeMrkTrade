@@ -577,3 +577,27 @@ register_protected_symbol_research_context(
 # Owner OB Settings Control Room
 from tower.ob_settings_control_room import register_ob_settings_control_room
 register_ob_settings_control_room(app)
+
+
+# CLOUDS_LIVE_OWNER_COMMAND_HOSTED_MOUNT_20261001
+# Presentation-only response upgrade. Tower's existing Clouds before-request
+# authority/handoff remains the access decision; this hook runs afterward.
+from clouds.clouds_routes import (
+    clouds_live_hosted_owner_command_upgrade,
+)
+
+if not app.extensions.get(
+    "clouds_live_owner_command_hosted_mount_20261001"
+):
+    app.after_request(
+        clouds_live_hosted_owner_command_upgrade
+    )
+    app.extensions[
+        "clouds_live_owner_command_hosted_mount_20261001"
+    ] = {
+        "canonical_route": "/clouds",
+        "tower_authority_preserved": True,
+        "presentation_only": True,
+        "clouds_executes_navigation": False,
+        "downstream_execution_performed": False,
+    }
