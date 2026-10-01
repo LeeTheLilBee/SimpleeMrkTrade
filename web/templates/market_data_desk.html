@@ -66,6 +66,16 @@
 
       <div id="mddConnectionStatus" role="status" aria-live="polite" class="mdd-provider-grid">Reading authorized Tower source status…</div>
 
+      <section class="mdd-section" aria-labelledby="mddEventJourneyTitle">
+        <div class="mdd-heading"><div><span class="mdd-eyebrow">OBSERVATORY EVENT FABRIC · PROOF OF CONSUMPTION</span>
+          <h2 id="mddEventJourneyTitle">Did the information actually make it through?</h2>
+          <p>These receipts show only internal lifecycle status. A stage stays pending until that component actually handled the event; provider values, credentials, positions and orders never appear here.</p></div>
+          <a href="/ob/data-desk/event-traces.json" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open sanitized event traces →</a></div>
+        <div id="mddEventTraceStatus" class="mdd-trace-grid" role="status" aria-live="polite">
+          <p class="mdd-empty">Reading the protected Observatory event ledger…</p>
+        </div>
+      </section>
+
       <section class="mdd-section" aria-labelledby="mddProvidersTitle">
         <div class="mdd-heading"><div><span class="mdd-eyebrow">CONNECTION CONSTELLATION</span><h2 id="mddProvidersTitle">Provider connections</h2><p>Open a card to see the feed's role, status, and the proof required before use.</p></div>
         <div class="mdd-filter" role="group" aria-label="Filter providers">
@@ -125,6 +135,7 @@
   <script id="mddSnapshot" type="application/json">{{ (data_desk_snapshot if data_desk_snapshot is defined else none) | tojson }}</script>
   <script src="{{ url_for('static', filename='ob/ob_market_data_desk.js') }}"></script>
   <script defer src="/static/ob/ob_connection_truth.js?v=truth001"></script>
+  <script defer src="/static/ob/ob_event_trace.js?v=grpc001"></script>
   <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
 </body>
 </html>
