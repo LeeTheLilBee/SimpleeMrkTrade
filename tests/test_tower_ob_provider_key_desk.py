@@ -53,7 +53,7 @@ def test_owner_only_get_does_not_create_source_or_make_provider_calls(env):
     page = client.get(desk.PATH)
     assert page.status_code == 200
     assert b"Finnhub" in page.data and b"Alpha Vantage" in page.data
-    assert b"Finazon" in page.data and b"U.S. EIA" in page.data and b"U.S. BEA" in page.data
+    assert b"Finazon" in page.data and b"U.S. EIA" in page.data and b"U.S. BEA" in page.data and b"Alpaca" in page.data
     assert b"SEC EDGAR" in page.data and b"Public" in page.data
     assert calls == []
     assert memory.status("tower_session_synthetic_only_123456789")[0]["present"] is False
@@ -90,6 +90,27 @@ def test_save_verify_forget_no_key_in_html_or_cookie(env):
     assert send(client, operation="forget").status_code == 303
     assert raw.encode() not in client.get(desk.PATH).data
     assert memory.get("tower_session_synthetic_only_123456789", "finnhub") is None
+
+
+def test_alpaca_pair_fields_save_without_rendering_credentials(env):
+    _, client, gate, memory, _ = env
+    gate["owner"] = True
+    client.get(desk.PATH)
+    key_id = "PK_SYNTHETIC_ALPACA_123"
+    secret = "SK_SYNTHETIC_ALPACA_456"
+    result = client.post(desk.PATH, data={
+        "csrf": csrf(client), "provider": "alpaca", "operation": "save",
+        "key_id": key_id, "secret": secret,
+    }, headers={"Origin": "https://tower.example", "Sec-Fetch-Site": "same-origin"})
+    assert result.status_code == 303
+    item = memory.get("tower_session_synthetic_only_123456789", "alpaca")
+    assert item is not None
+    assert item.key_id == key_id and item.value == secret
+    page = client.get(desk.PATH)
+    assert key_id.encode() not in page.data
+    assert secret.encode() not in page.data
+    assert b"Alpaca API key ID" in page.data
+    assert b"Alpaca API secret" in page.data
 
 
 def test_each_vendor_uses_independent_slot_and_expires(env):
