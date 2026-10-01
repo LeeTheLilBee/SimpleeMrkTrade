@@ -1,4 +1,4 @@
-"""TWR201 — BuyBox registration is descriptive, not access authorization."""
+"""TWR201+ — BuyBox registration/launch gate is descriptive, not product authorization."""
 
 from tower.app_registry import (
     app_ids,
@@ -17,7 +17,7 @@ def test_buybox_registered_once_without_hosted_access():
     assert len(registered) == 1
     app = registered[0]
     assert app["app_status"] == "registered_future_room"
-    assert app["tower_launch_route"] == "/tower/app-registry"
+    assert app["tower_launch_route"] == "/tower/launch/buybox"
     assert app["primary_room_route"] == "/buybox"
     assert app["owner_only"] is True
     assert app["requires_tower_handoff"] is True
@@ -27,10 +27,16 @@ def test_buybox_registered_once_without_hosted_access():
     assert app_ids().count("buybox") == 1
 
 
-def test_buybox_registry_does_not_mint_launch_route_or_entitlement():
-    assert route_by_path("/tower/launch/buybox") is None
+def test_buybox_registry_launch_gate_does_not_mint_product_entitlement():
+    launch = route_by_path("/tower/launch/buybox")
+    assert launch is not None
+    assert launch["owner_only"] is True
+    assert launch["requires_owner_session"] is True
+    assert launch["requires_step_up"] is True
+    assert launch["lock_state"] == "protected_fail_closed_launch_gate"
+    # Product routes themselves are still not authorized by registry metadata.
     assert route_by_path("/buybox") is None
-    assert not any(route["app_id"] == "buybox" for route in registered_routes())
+    assert [r for r in registered_routes() if r["app_id"] == "buybox"] == [launch]
     truth = app_truth_by_id("buybox")
     assert truth is not None
     assert truth["registry_status"] == "registered_future_room"
