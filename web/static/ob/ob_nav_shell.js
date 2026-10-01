@@ -14,7 +14,7 @@
   function isActive(path, key) {
     if (key === "dashboard") return currentRoom(path) === "Dashboard";
     if (key === "market") return path.includes("market-map");
-    if (key === "data") return path === "/ob/data-desk";
+    if (key === "settings") return path === "/ob/settings";\n    if (key === "data") return path === "/ob/data-desk";
     if (key === "trade") return path.includes("trade");
     if (key === "review") return path.includes("review");
     if (key === "owner") return path.includes("owner") || path.includes("admin");
@@ -150,7 +150,7 @@
         <span class="ob-route-chip gold">Paper Mode</span>
         <span class="ob-route-chip green">Tower Protected</span>
         <span class="ob-route-chip red">Live Auto Locked</span>
-        <a class="ob-route-chip${path === "/ob/data-desk" ? " gold" : ""}" href="/ob/data-desk" style="display:inline-flex;align-items:center;text-decoration:none">Settings</a>
+        <a class="ob-route-chip${path === "/ob/settings" ? " gold" : ""}" href="/ob/settings" style="display:inline-flex;align-items:center;text-decoration:none">Settings</a>
         <span class="ob-route-chip">Notifications</span>
       </div>
     `;
