@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OB Settings · The Observatory</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_settings.css') }}">
+</head>
+<body data-ob-room="settings" data-ob-data-desk-route-enabled="true">
+  <div class="ob-sky" aria-hidden="true"><div class="ob-sky__weather"></div><div class="ob-sky__horizon"></div><div class="ob-sky__grid"></div></div>
+
+  <main class="settings-shell">
+    <header class="settings-hero">
+      <div>
+        <span class="settings-eyebrow">THE OBSERVATORY · OWNER SETTINGS</span>
+        <h1>Settings that actually make sense.</h1>
+        <p>Change what OB shows, what Soulaana explains, how often research refreshes, and which kinds of information are allowed into the Symbol Page. Security and legal-review facts stay locked and are explained in plain English.</p>
+      </div>
+      <a class="settings-back" href="/ob/dashboard">← Back to Dashboard</a>
+    </header>
+
+    {% if notice %}<div class="settings-notice" role="status">{{ notice }}</div>{% endif %}
+
+    <form method="post" action="/ob/settings" class="settings-form">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+
+      <section class="settings-section">
+        <div class="settings-section-head">
+          <div>
+            <span class="settings-eyebrow">SOULAANA</span>
+            <h2>What should she explain?</h2>
+            <p>These switches control how much interpretation Soulaana gives you. They do not give her access to a source she is not allowed to read.</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          {% for key, label, explanation in controls %}
+            {% if key.startswith('soulaana_') %}
+            <label class="settings-card">
+              <div class="settings-card-copy">
+                <strong>{{ label }}</strong>
+                <p>{{ explanation }}</p>
+              </div>
+              <input type="checkbox" name="{{ key }}" {% if settings[key] %}checked{% endif %}>
+              <span class="settings-toggle" aria-hidden="true"></span>
+            </label>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-head">
+          <div>
+            <span class="settings-eyebrow">SYMBOL PAGE</span>
+            <h2>What do you want to see?</h2>
+            <p>This controls the company background, evidence, and top-of-page information you see when you open a symbol.</p>
+          </div>
+        </div>
+        <div class="settings-grid">
+          {% for key, label, explanation in controls %}
+            {% if key.startswith('show_') or key == 'compact_symbol_top' %}
+            <label class="settings-card">
+              <div class="settings-card-copy">
+                <strong>{{ label }}</strong>
+                <p>{{ explanation }}</p>
+              </div>
+              <input type="checkbox" name="{{ key }}" {% if settings[key] %}checked{% endif %}>
+              <span class="settings-toggle" aria-hidden="true"></span>
+            </label>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-head">
+          <div>
+            <span class="settings-eyebrow">RESEARCH INPUTS</span>
+            <h2>What kinds of information can feed the read?</h2>
+            <p>Turn these off if you temporarily do not want that kind of information influencing the Symbol Page. This does not disconnect the provider itself.</p>
+          </div>
+        </div>
+        <div class="settings-grid">
+          {% for key, label, explanation in controls %}
+            {% if key.startswith('use_') %}
+            <label class="settings-card">
+              <div class="settings-card-copy">
+                <strong>{{ label }}</strong>
+                <p>{{ explanation }}</p>
+              </div>
+              <input type="checkbox" name="{{ key }}" {% if settings[key] %}checked{% endif %}>
+              <span class="settings-toggle" aria-hidden="true"></span>
+            </label>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-head">
+          <div>
+            <span class="settings-eyebrow">REFRESH</span>
+            <h2>How often should OB check again?</h2>
+            <p>This only changes the owner page refresh behavior. It does not change a provider's actual rate limits or market-data entitlement.</p>
+          </div>
+        </div>
+        <div class="settings-grid">
+          {% for key, label, explanation in controls %}
+            {% if key in ['auto_refresh_symbol_research','refresh_on_focus'] %}
+            <label class="settings-card">
+              <div class="settings-card-copy">
+                <strong>{{ label }}</strong>
+                <p>{{ explanation }}</p>
+              </div>
+              <input type="checkbox" name="{{ key }}" {% if settings[key] %}checked{% endif %}>
+              <span class="settings-toggle" aria-hidden="true"></span>
+            </label>
+            {% endif %}
+          {% endfor %}
+          <label class="settings-card settings-card--select">
+            <div class="settings-card-copy">
+              <strong>Research refresh speed</strong>
+              <p>How often the Symbol Page asks the protected research routes for an updated read while auto-refresh is on.</p>
+            </div>
+            <select name="refresh_seconds">
+              {% for seconds in refresh_choices %}
+              <option value="{{ seconds }}" {% if settings.refresh_seconds == seconds %}selected{% endif %}>Every {{ seconds }} seconds</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-head">
+          <div>
+            <span class="settings-eyebrow">CONNECTIONS + PERMISSIONS</span>
+            <h2>Things you can inspect, but not fake with a switch.</h2>
+            <p>These are real connection, security, or legal-review facts. The buttons take you to the correct place to fix them.</p>
+          </div>
+        </div>
+
+        <div class="settings-action-grid">
+          <article>
+            <strong>API keys</strong>
+            <p>See which research providers have a key saved for this Tower session and test read-only access.</p>
+            <a href="/ob/data-desk/api-keys">Open API Key Desk →</a>
+          </article>
+          <article>
+            <strong>Provider connection truth</strong>
+            <p>See whether a source is connected, held, or waiting on a rights/review check.</p>
+            <a href="/ob/data-desk">Open Market Data Desk →</a>
+          </article>
+          <article>
+            <strong>Public brokerage connection</strong>
+            <p>Check the separate Public account connection. This is not an OB research toggle.</p>
+            <a href="/ob/data-desk/public">Open Public connection →</a>
+          </article>
+          <article>
+            <strong>Notifications</strong>
+            <p>Choose which alerts should reach you and how selective they should be.</p>
+            <a href="/notification-settings">Open notification settings →</a>
+          </article>
+        </div>
+
+        <div class="settings-locked">
+          <article>
+            <strong>Provider rights review</strong>
+            <span>Not a toggle</span>
+            <p>You cannot make a provider legal for display or AI use by flipping a switch. OB should show whether that review is complete and why a source is held.</p>
+          </article>
+          <article>
+            <strong>Tower security clearance</strong>
+            <span>Not a toggle</span>
+            <p>Owner session, step-up, and Tower route clearance are security facts. Settings can explain them but cannot bypass them.</p>
+          </article>
+          <article>
+            <strong>Live Auto</strong>
+            <span>Locked</span>
+            <p>Automated live trading stays outside normal settings. This page cannot enable broker execution or move capital.</p>
+          </article>
+        </div>
+      </section>
+
+      <div class="settings-savebar">
+        <div>
+          <strong>Save owner settings</strong>
+          <p>These settings apply to your current owner session. Provider rights and broker permissions are unchanged.</p>
+        </div>
+        <button type="submit">Save changes</button>
+      </div>
+    </form>
+  </main>
+
+  <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
+</body>
+</html>
