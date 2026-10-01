@@ -6,8 +6,9 @@ authority.
 """
 from __future__ import annotations
 import json, sqlite3
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from .external_proof_gate import integration_readiness
+from .dealroom import current_tasks
 
 UX_SCHEMA="""
 CREATE TABLE IF NOT EXISTS buybox_owner_preferences (
@@ -146,11 +147,12 @@ def paged_opportunities(db,*,vertical=None,query="",page=1,page_size=24):
         args.extend([like,like])
     clause=(" WHERE "+" AND ".join(where)) if where else ""
     total=db.execute("SELECT COUNT(*) AS n FROM opportunities"+clause,args).fetchone()["n"]
+    pages=max(1,(total+page_size-1)//page_size)
+    page=min(page,pages)
     rows=db.execute("SELECT current_json FROM opportunities"+clause+" ORDER BY name LIMIT ? OFFSET ?",
                     [*args,page_size,(page-1)*page_size]).fetchall()
     return {"items":[json.loads(r["current_json"]) for r in rows],"total":total,
-            "page":page,"page_size":page_size,
-            "pages":max(1,(total+page_size-1)//page_size)}
+            "page":page,"page_size":page_size,"pages":pages}
 
 def pulse_snapshot(db):
     ensure_ux_schema(db)
@@ -159,7 +161,21 @@ def pulse_snapshot(db):
     ops=[json.loads(r["current_json"]) for r in rows]
     active=[op for op in ops if op.get("lifecycle")!="ARCHIVED"]
     triage=triage_map(db,[op["id"] for op in active])
-    needs=sum(1 for op in active if triage.get(op["id"],{}).get("state")=="FOCUS")
+    today=date.today()
+    needs_ids=set()
+    for op in active:
+        if triage.get(op["id"],{}).get("state")=="FOCUS":
+            needs_ids.add(op["id"])
+        for task in current_tasks(op):
+            if task.get("status") not in ("OPEN","WAITING"):
+                continue
+            try:
+                due=date.fromisoformat(task.get("due_date",""))
+            except (TypeError,ValueError):
+                continue
+            if due<=today:
+                needs_ids.add(op["id"])
+    needs=len(needs_ids)
     blockers=0
     for op in active:
         ready=integration_readiness(op)
