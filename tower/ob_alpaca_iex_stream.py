@@ -255,6 +255,7 @@ class AlpacaIEXStreamManager:
                         source="alpaca_iex_stream",
                         snapshot_path="/ob/engine-feed-snapshot.json",
                         symbol=symbol,
+                        producer_stages=("RECEIVED", "VALIDATED", "NORMALIZED"),
                     )
                 except Exception:
                     pass
