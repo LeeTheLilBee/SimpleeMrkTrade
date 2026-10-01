@@ -11,8 +11,11 @@ from tower.tower_human_login_ob_launch import (
     OBSERVATORY_STEP_UP_PATH,
     SESSION_AUTHENTICATED,
     SESSION_OB_LAUNCH_RECEIPT,
+    SESSION_OB_OPERATIONAL_ACCESS_RECEIPT,
     SESSION_OWNER_ID,
     SESSION_ROLE,
+    SESSION_ID,
+    SESSION_STEP_UP_UNTIL,
     register_tower_human_login,
 )
 
@@ -386,3 +389,59 @@ def test_return_route_in_existing_login_suite(client):
     ] is False
 
 # END ACCESS HOME UI V2 TESTS
+
+
+def test_fresh_login_to_private_ob_rebuilds_verification(client):
+    target = "/ob/data-desk/public"
+    response = client.post(
+        LOGIN_PATH + "?next=" + target,
+        data={
+            "username": "solice",
+            "password": "local-test-password",
+            "next": target,
+        },
+        follow_redirects=False,
+    )
+    assert response.status_code == 302
+    assert "/tower/step-up/observatory?" in response.headers["Location"]
+    assert "next=%2Fob%2Fdata-desk%2Fpublic" in response.headers["Location"]
+
+    with client.session_transaction() as session:
+        first_sid = session[SESSION_ID]
+        assert session[SESSION_AUTHENTICATED] is True
+        assert SESSION_STEP_UP_UNTIL not in session
+        assert SESSION_OB_OPERATIONAL_ACCESS_RECEIPT not in session
+
+    stepped = client.post(
+        OBSERVATORY_STEP_UP_PATH,
+        data={
+            "password": "local-test-password",
+            "next": target,
+        },
+        follow_redirects=False,
+    )
+    assert stepped.status_code == 302
+    assert "/tower/launch/observatory?" in stepped.headers["Location"]
+    assert "next=%2Fob%2Fdata-desk%2Fpublic" in stepped.headers["Location"]
+
+    client.get(LOGOUT_PATH)
+    with client.session_transaction() as session:
+        assert SESSION_ID not in session
+        assert SESSION_STEP_UP_UNTIL not in session
+        assert SESSION_OB_OPERATIONAL_ACCESS_RECEIPT not in session
+
+    again = client.post(
+        LOGIN_PATH,
+        data={
+            "username": "solice",
+            "password": "local-test-password",
+            "next": target,
+        },
+        follow_redirects=False,
+    )
+    assert again.status_code == 302
+    assert "/tower/step-up/observatory?" in again.headers["Location"]
+    with client.session_transaction() as session:
+        assert session[SESSION_ID] != first_sid
+        assert SESSION_STEP_UP_UNTIL not in session
+        assert SESSION_OB_OPERATIONAL_ACCESS_RECEIPT not in session
