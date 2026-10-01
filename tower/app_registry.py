@@ -464,6 +464,26 @@ TOWER_ROUTE_REGISTRY: Tuple[TowerRouteRegistration, ...] = (
         ),
     ),
     TowerRouteRegistration(
+        route_id="clouds_owner_launch",
+        route="/tower/launch/clouds",
+        label="Open The Clouds",
+        app_id="clouds",
+        room_id="owner_command",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="medium",
+        lock_state="protected_owner_command",
+        explanation=(
+            "Tower owns the protected Clouds owner launch. Clouds may interpret "
+            "permitted summary state and route the owner, but it cannot grant "
+            "permissions or perform downstream business execution."
+        ),
+    ),
+    TowerRouteRegistration(
         route_id="grounds_owner_launch",
         route="/tower/launch/grounds",
         label="Open The Grounds",
