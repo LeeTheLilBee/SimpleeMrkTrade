@@ -180,6 +180,47 @@
       </article>
     </section>
 
+    <section class="ob-symbol-card ob-symbol-research">
+      <div class="ob-symbol-section-head">
+        <div>
+          <span class="ob-symbol-eyebrow">RESEARCH ROOM</span>
+          <h2>What do we actually know about this symbol?</h2>
+          <p id="symbolResearchStatus">Pulling source-backed research through Tower…</p>
+        </div>
+        <span id="symbolResearchFreshness" class="ob-symbol-mini-status">Checking sources</span>
+      </div>
+
+      <div class="ob-symbol-research-grid">
+        <article>
+          <span class="ob-symbol-eyebrow">MARKET NOW</span>
+          <h3 id="symbolResearchMarketTitle">Waiting for Alpaca</h3>
+          <p id="symbolResearchMarket">Current venue-limited market context has not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">COMPANY</span>
+          <h3 id="symbolResearchCompanyTitle">Waiting for company research</h3>
+          <p id="symbolResearchCompany">Issuer and industry context has not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">PRICE HISTORY</span>
+          <h3 id="symbolResearchHistoryTitle">Waiting for completed sessions</h3>
+          <p id="symbolResearchHistory">Historical price context has not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">MACRO BACKDROP</span>
+          <h3 id="symbolResearchMacroTitle">Waiting for official macro data</h3>
+          <p id="symbolResearchMacro">Macro context has not loaded yet.</p>
+        </article>
+      </div>
+
+      <div class="ob-symbol-research-soulaana">
+        <span class="ob-symbol-eyebrow">SOULAANA · SOURCE-BACKED READ</span>
+        <div id="symbolResearchSoulaana" class="ob-symbol-research-list">
+          <p>I’m waiting for the connected research lanes before I explain this symbol.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="ob-symbol-card">
       <div class="ob-symbol-section-head">
         <div>
@@ -481,9 +522,9 @@
   <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
   <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
 
-  <!-- Keyless research is separate from quote/trade truth and follows Tower's exact read corridor. -->
-  <section id="obKeylessContextRoot" class="ob-keyless-context" aria-label="Keyless official public research context"></section>
+  <section id="obKeylessContextRoot" class="ob-keyless-context ob-symbol-hidden-shared-research" aria-hidden="true"></section>
   <script defer src="/static/ob/ob_keyless_context.js?v=keyless001"></script>
   <script defer src="/static/ob/ob_official_catalyst_radar.js?v=catalyst001"></script>
+  <script defer src="/static/ob/ob_symbol_research.js?v=symbolresearch001"></script>
 </body>
 </html>
