@@ -96,7 +96,9 @@ def test_actual_vault_hold_release_and_disposition_review_do_not_delete_cloud_by
     provider_path = h.primary.root / receipt.namespace_digest / receipt.object_ref
     before = provider_path.read_bytes()
 
-    registry = CanonicalEvidenceRegistry(tmp_path / "vault" / "registry.sqlite")
+    vault_dir = tmp_path / "vault"
+    vault_dir.mkdir(parents=True, exist_ok=True)
+    registry = CanonicalEvidenceRegistry(vault_dir / "registry.sqlite")
     registry.record_archival(
         receipt_id="receipt-1", request_id="archive-1",
         entity_id="trust", evidence_id="evidence-1", version_id="version-1",
@@ -106,7 +108,7 @@ def test_actual_vault_hold_release_and_disposition_review_do_not_delete_cloud_by
         scan_receipt_ref="scan-1", tower_receipt_ref="tower-1",
         retention_policy_id="retain-7",
     )
-    governance = RetentionGovernance(tmp_path / "vault" / "retention.sqlite")
+    governance = RetentionGovernance(vault_dir / "retention.sqlite")
     governance.record(
         event_id="policy-1", entity_id="trust", version_id="version-1",
         action="POLICY_SET", policy_id="retain-7", reason="synthetic retention",
