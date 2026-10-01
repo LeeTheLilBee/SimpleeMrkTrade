@@ -1,4 +1,4 @@
-"""Tower-guarded temporary research API-key entry (Finnhub / Alpha Vantage).
+"""Tower-guarded temporary research API-key entry for approved owner-development providers.
 
 This is NOT a durable secret vault, API rights approval, market-data gateway, or
 broker login. Values live only in one server worker's RAM for <= 30 minutes and
@@ -29,7 +29,7 @@ from tower.ob_provider_diagnostics import (
 PATH = "/ob/data-desk/api-keys"
 TTL = timedelta(minutes=30)
 MAX_BODY = 8192
-MAX_KEYS_PER_SESSION = 5
+MAX_KEYS_PER_SESSION = 6
 PROVIDERS = {
     "finnhub": {"name": "Finnhub", "purpose": "Company and market research; exact endpoint and rights review still required.",
                 "docs": "https://finnhub.io/docs/api"},
@@ -41,6 +41,8 @@ PROVIDERS = {
             "docs": "https://www.eia.gov/opendata/documentation.php"},
     "bea": {"name": "U.S. BEA", "purpose": "Free official U.S. economic statistics; macro context only, never a security quote.",
             "docs": "https://apps.bea.gov/api/signup/"},
+    "alpaca": {"name": "Alpaca", "purpose": "Personal owner-development market data. Free/basic stock reads use the account-entitled feed (normally IEX); no commercial/display rights are inferred.",
+               "docs": "https://docs.alpaca.markets/us/docs/getting-started-with-alpaca-market-data", "credential_pair": True},
 }
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,14}$")
 
@@ -70,14 +72,20 @@ def _form_hold():
     # Duplicate/conflicting form fields must not allow different parser/proxy
     # interpretations of the same credential operation.
     required = {"csrf", "provider", "operation"}
-    allowed = required | {"secret"}
+    allowed = required | {"secret", "key_id"}
     if not required <= set(request.form) or set(request.form) - allowed:
         return "FORM_FIELDS_HOLD"
     if any(len(request.form.getlist(key)) != 1 for key in request.form):
         return "FORM_FIELDS_HOLD"
     if request.form.get("operation") == "save" and "secret" not in request.form:
         return "FORM_FIELDS_HOLD"
-    if request.form.get("operation") != "save" and "secret" in request.form:
+    provider = request.form.get("provider", "")
+    if provider == "alpaca":
+        if request.form.get("operation") == "save" and "key_id" not in request.form:
+            return "FORM_FIELDS_HOLD"
+    elif "key_id" in request.form:
+        return "FORM_FIELDS_HOLD"
+    if request.form.get("operation") != "save" and ("secret" in request.form or "key_id" in request.form):
         return "FORM_FIELDS_HOLD"
     expected = _approved_browser_origin()
     if not expected:
@@ -114,6 +122,7 @@ def _headers(response):
 class TemporaryKey:
     value: str
     expires_at: datetime
+    key_id: str | None = None
     probe: str = "NOT_TESTED"
     last_checked_at: datetime | None = None
 
@@ -134,18 +143,25 @@ class TemporaryProviderKeyStore:
             if not self._data[sid]:
                 self._data.pop(sid, None)
 
-    def put(self, sid: str, provider: str, secret: str):
+    def put(self, sid: str, provider: str, secret: str, *, key_id: str | None = None):
         if not sid.startswith("tower_session_") or provider not in PROVIDERS:
             raise ValueError("invalid owner/provider selection")
         if (not isinstance(secret, str) or not 8 <= len(secret) <= 4096
                 or secret.strip() != secret or any(ord(ch) < 33 or ord(ch) > 126 for ch in secret)):
             raise ValueError("invalid key format")
+        if provider == "alpaca":
+            if (not isinstance(key_id, str) or not 8 <= len(key_id) <= 256
+                    or key_id.strip() != key_id
+                    or any(ord(ch) < 33 or ord(ch) > 126 for ch in key_id)):
+                raise ValueError("invalid Alpaca key id format")
+        elif key_id is not None:
+            raise ValueError("unexpected key id")
         with self._lock:
             self._prune()
             bucket = self._data.setdefault(sid, {})
             if provider not in bucket and len(bucket) >= MAX_KEYS_PER_SESSION:
                 raise ValueError("provider key capacity")
-            bucket[provider] = TemporaryKey(secret, _now() + TTL)
+            bucket[provider] = TemporaryKey(secret, _now() + TTL, key_id=key_id)
 
     def get(self, sid: str, provider: str) -> TemporaryKey | None:
         if not isinstance(sid, str) or provider not in PROVIDERS:
@@ -184,7 +200,7 @@ class _NoRedirect(HTTPRedirectHandler):
         return None
 
 
-def probe_one(provider: str, secret: str, *, opener=None) -> str:
+def probe_one(provider: str, secret: str, *, key_id=None, opener=None) -> str:
     """One bounded official read-only request with secret-safe diagnostics.
 
     Alpha Vantage requires its key as an HTTPS query parameter. Never log the
@@ -208,6 +224,15 @@ def probe_one(provider: str, secret: str, *, opener=None) -> str:
     elif provider == "eia":
         url = "https://api.eia.gov/v2/electricity?" + urlencode({"api_key": secret})
         headers = {"Accept": "application/json"}
+    elif provider == "alpaca":
+        if not key_id:
+            return "REQUEST_REJECTED"
+        url = "https://data.alpaca.markets/v2/stocks/AAPL/bars/latest?feed=iex"
+        headers = {
+            "APCA-API-KEY-ID": key_id,
+            "APCA-API-SECRET-KEY": secret,
+            "Accept": "application/json",
+        }
     elif provider == "bea":
         url = "https://apps.bea.gov/api/data?" + urlencode({
             "UserID": secret, "method": "GETDATASETLIST", "ResultFormat": "JSON"})
@@ -299,7 +324,7 @@ def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
             if operation == "save":
                 raw = request.form.get("secret", "")
                 try:
-                    memory.put(sid, provider, raw)
+                    memory.put(sid, provider, raw, key_id=request.form.get("key_id") if provider == "alpaca" else None)
                     session["ob_provider_key_notice"] = "Key received into temporary server memory. No feed was activated."
                 except ValueError:
                     session["ob_provider_key_notice"] = "Key format not accepted. Nothing was saved."
@@ -317,7 +342,12 @@ def create_provider_key_blueprint(*, owner_authorize, store=None, probe=None):
                     # A provider network or parser failure is a generic hold, never
                     # an exception response containing the credential-bearing URL.
                     try:
-                        item.probe = normalize_probe_code(checker(provider, item.value))
+                        if provider == "alpaca":
+                            item.probe = normalize_probe_code(
+                                checker(provider, item.value, key_id=item.key_id)
+                            )
+                        else:
+                            item.probe = normalize_probe_code(checker(provider, item.value))
                     except Exception:
                         item.probe = "PROVIDER_MESSAGE"
                     session["ob_provider_key_notice"] = probe_message(item.probe)
