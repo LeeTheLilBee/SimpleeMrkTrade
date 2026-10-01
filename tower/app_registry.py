@@ -150,9 +150,11 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "BuyBox has an exact owner Tower launch gate and signed issuer "
-            "preflight, but the browser bootstrap into its same-origin exchange "
-            "is not implemented yet. No production BuyBox session, external "
+            "BuyBox has an exact owner Tower launch gate, signed issuer preflight, "
+            "and a reviewed POST-only browser bootstrap into its same-origin "
+            "exchange. The crossing still requires current publication/health, "
+            "explicit owner entitlement, private storage/restore evidence, and "
+            "live Tower session introspection on the BuyBox runtime. No external "
             "acquisition readiness, Vault archival, closing, funding, or "
             "handoff authority is activated here. "
             "Teller owns financial and capacity readiness; Grounds owns "
@@ -496,10 +498,11 @@ TOWER_ROUTE_REGISTRY: Tuple[TowerRouteRegistration, ...] = (
         risk_level="high",
         lock_state="protected_fail_closed_launch_gate",
         explanation=(
-            "Tower owns the BuyBox owner launch gate and signed issuer preflight. "
-            "The crossing stays blocked until the reviewed BuyBox browser bootstrap, "
-            "current entitlement, publication/health, Tower session introspection, "
-            "and private storage/restore evidence are independently verified."
+            "Tower owns the BuyBox owner launch gate, signed issuer preflight, and "
+            "POST-only browser bootstrap. The crossing remains fail-closed unless "
+            "current entitlement, publication/health, exact HTTPS BuyBox origin, "
+            "Tower session introspection, and private storage/restore evidence are "
+            "independently verified."
         ),
     ),
 )
