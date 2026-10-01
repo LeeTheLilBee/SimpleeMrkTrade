@@ -14,13 +14,19 @@ from __future__ import annotations
 
 from datetime import timedelta
 from html import escape
+import os
 from typing import Any, Mapping
+from urllib.parse import urlsplit
 
-from flask import Flask, jsonify, redirect, request, session
+from flask import Flask, jsonify, make_response, redirect, request, session
 from werkzeug.exceptions import HTTPException
 
 from tower.app_truth_projection import app_truth_by_id
-from tower.buybox_owner_handoff_issuer import inspect_current_buybox_issue_preflight
+from tower.buybox_owner_handoff_issuer import (
+    TowerBuyBoxIssuerUnavailable,
+    inspect_current_buybox_issue_preflight,
+    issue_buybox_owner_handoff,
+)
 from tower.ecosystem_direct_route_guard import (
     ACCESS_RECEIPT_KEYS,
     build_ecosystem_access_receipt,
@@ -47,6 +53,8 @@ BUYBOX_LAUNCH_PATH = "/tower/launch/buybox"
 ECOSYSTEM_STEP_UP_PATH = "/tower/step-up/ecosystem"
 GROUNDS_STATUS_PATH = "/tower/launch/grounds.json"
 BUYBOX_STATUS_PATH = "/tower/launch/buybox.json"
+BUYBOX_BOOTSTRAP_PATH = "/tower/bootstrap"
+BUYBOX_PUBLIC_ORIGIN_ENV = "BUYBOX_PUBLIC_ORIGIN"
 
 _ALLOWED_APPS = {
     "grounds": GROUNDS_LAUNCH_PATH,
@@ -123,6 +131,29 @@ def inspect_grounds_launch(app: Flask, *, truth: Mapping[str, Any] | None = None
     }
 
 
+def _buybox_bootstrap_target() -> tuple[str | None, str | None]:
+    """Return the exact configured HTTPS BuyBox bootstrap URL or a safe blocker."""
+    raw = str(os.getenv(BUYBOX_PUBLIC_ORIGIN_ENV, "") or "").strip()
+    if not raw:
+        return None, "BUYBOX_PUBLIC_ORIGIN_NOT_CONFIGURED"
+    try:
+        parsed = urlsplit(raw)
+    except ValueError:
+        return None, "BUYBOX_PUBLIC_ORIGIN_INVALID"
+    if (
+        parsed.scheme != "https"
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+        or parsed.path not in {"", "/"}
+    ):
+        return None, "BUYBOX_PUBLIC_ORIGIN_INVALID"
+    origin = "https://" + parsed.netloc
+    return origin + BUYBOX_BOOTSTRAP_PATH, None
+
+
 def inspect_buybox_launch(*, truth: Mapping[str, Any] | None = None) -> dict[str, Any]:
     current_truth = app_truth_by_id("buybox") if truth is None else truth
     preflight = inspect_current_buybox_issue_preflight(
@@ -130,22 +161,21 @@ def inspect_buybox_launch(*, truth: Mapping[str, Any] | None = None) -> dict[str
         app_truth=current_truth,
     )
     reasons = list(preflight.get("reason_codes", []))
-
-    # The BuyBox receiver intentionally accepts only a same-origin POST body.
-    # No reviewed BuyBox bootstrap page currently transports Tower's short-lived
-    # handoff into that same-origin POST, so Tower must not leak it via query,
-    # cross-origin form, localStorage, cookie, or an invented endpoint.
-    reasons.append("BUYBOX_BROWSER_BOOTSTRAP_NOT_IMPLEMENTED")
-
+    bootstrap_url, bootstrap_reason = _buybox_bootstrap_target()
+    if bootstrap_reason:
+        reasons.append(bootstrap_reason)
+    reasons = list(dict.fromkeys(reasons))
+    ready = preflight.get("can_issue_handoff") is True and bootstrap_url is not None and not reasons
     return {
-        "schema_version": "tower.buybox.owner-launch-preflight.v1",
+        "schema_version": "tower.buybox.owner-launch-preflight.v2",
         "app_id": "buybox",
-        "state": "BLOCKED",
-        "reason_codes": list(dict.fromkeys(reasons)),
-        "can_launch": False,
+        "state": "READY_TO_LAUNCH" if ready else "BLOCKED",
+        "reason_codes": reasons,
+        "can_launch": ready,
         "tower_handoff_preflight_ready": preflight.get("can_issue_handoff") is True,
-        "receiver_contract": "POST /tower/owner-exchange",
-        "browser_bootstrap_transport_ready": False,
+        "receiver_contract": "POST /tower/bootstrap -> POST /tower/owner-exchange",
+        "browser_bootstrap_transport_ready": bootstrap_url is not None,
+        "bootstrap_target_configured": bootstrap_url is not None,
         "owner_session_required": True,
         "step_up_required": True,
         "broker_submission_authorized": False,
@@ -203,13 +233,69 @@ def grounds_launch_view(app: Flask):
     return redirect("/grounds")
 
 
+def _buybox_handoff_page(*, bootstrap_url: str, token: str):
+    action = escape(bootstrap_url, quote=True)
+    bearer = escape(token, quote=True)
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Opening BuyBox · The Tower</title>
+</head>
+<body>
+  <main>
+    <h1>Opening BuyBox</h1>
+    <p>Tower verified your owner session and step-up. Crossing through the protected BuyBox exchange now.</p>
+    <form id="towerBuyBoxBootstrap" method="post" action="{action}">
+      <input type="hidden" name="handoff" value="{bearer}">
+      <button type="submit">Continue to BuyBox</button>
+    </form>
+    <noscript><p>JavaScript is off. Use the Continue button above before this short-lived handoff expires.</p></noscript>
+    <script src="/static/tower/buybox_bootstrap_launch.js" defer></script>
+  </main>
+</body>
+</html>"""
+    response = make_response(html, 200)
+    response.headers["Cache-Control"] = "private, no-store, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    origin = bootstrap_url.removesuffix(BUYBOX_BOOTSTRAP_PATH)
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; "
+        f"form-action {origin}; base-uri 'none'; frame-ancestors 'none'"
+    )
+    return response
+
+
 def buybox_launch_view():
     if not step_up_active():
         return _step_up_redirect("buybox")
     report = inspect_buybox_launch()
-    # Do not issue a signed bearer handoff until the receiver-side same-origin
-    # bootstrap is implemented and reviewed.
-    return _blocked_page("BuyBox", report)
+    if report["can_launch"] is not True:
+        return _blocked_page("BuyBox", report)
+    bootstrap_url, reason = _buybox_bootstrap_target()
+    if bootstrap_url is None:
+        return _blocked_page(
+            "BuyBox",
+            {"reason_codes": [reason or "BUYBOX_BOOTSTRAP_TARGET_UNAVAILABLE"]},
+        )
+    try:
+        issued = issue_buybox_owner_handoff(session_context=_session_context())
+    except TowerBuyBoxIssuerUnavailable:
+        return _blocked_page(
+            "BuyBox",
+            {"reason_codes": ["BUYBOX_HANDOFF_ISSUANCE_FAILED"]},
+        )
+    token = issued.get("token")
+    if not isinstance(token, str) or not token:
+        return _blocked_page(
+            "BuyBox",
+            {"reason_codes": ["BUYBOX_HANDOFF_ISSUANCE_FAILED"]},
+        )
+    return _buybox_handoff_page(bootstrap_url=bootstrap_url, token=token)
 
 
 def _status_response(report: Mapping[str, Any]):
@@ -308,7 +394,7 @@ def register_ecosystem_owner_launch_gates(app: Flask) -> Flask:
         "grounds_launch_path": GROUNDS_LAUNCH_PATH,
         "buybox_launch_path": BUYBOX_LAUNCH_PATH,
         "grounds_runtime_must_be_same_origin": True,
-        "buybox_browser_bootstrap_implemented": False,
+        "buybox_browser_bootstrap_implemented": True,
         "unknown_apps_default_denied": True,
         "broker_submission_authorized": False,
         "capital_movement_authorized": False,
