@@ -41,7 +41,7 @@ _BACKUP_STATES = {"BACKUP_RESERVED", "BACKUP_UNCERTAIN", "BACKUP_ACKNOWLEDGED",
                   "BACKUP_RECONCILE_CORRUPT", "BACKUP_REPLAY_INTEGRITY_FAILURE"}
 _SAFE_EVENTS = {"read_intent", "read_verified", "backup_intent",
                 "backup_acknowledged", "restore_verification_intent",
-                "restore_copy_verified"}
+                "restore_copy_verified", "namespace_binding_verified"}
 _GENESIS = "0" * 64
 
 
@@ -1180,6 +1180,30 @@ class SQLiteOperationalJournal:
             except BaseException:
                 conn.rollback()
                 raise
+
+    def source_resolver_namespace_inventory(self) -> dict:
+        """Verified opaque namespaces that actually used resolver-backed I/O.
+
+        SC041 services emit namespace_binding_verified only after the durable
+        binding ledger accepts the exact canonical entity→namespace mapping.
+        Older/fixed-secret operations have no such marker and are not silently
+        reclassified as resolver-backed.
+        """
+        with closing(self._connect()) as conn:
+            self._verify(conn)
+            values = frozenset(
+                row["namespace_digest"] for row in conn.execute(
+                    """SELECT DISTINCT namespace_digest FROM events
+                       WHERE event_type='namespace_binding_verified'"""
+                )
+            )
+        return {
+            "status": "SOURCE_ONLY_VERIFIED_RESOLVER_NAMESPACE_INVENTORY",
+            "namespace_digests": values,
+            "namespace_count": len(values),
+            "raw_entity_ids_persisted": False,
+            "production_authorized": False,
+        }
 
     def health(self) -> dict:
         with closing(self._connect()) as conn:
