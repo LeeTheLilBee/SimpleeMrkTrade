@@ -25,6 +25,8 @@ def test_ob_settings_control_room_is_plain_language_and_real():
     assert 'json("/ob/settings.json")' in symbol
     assert "filteredPackets(" in symbol
     assert "use_macro_context" in symbol
+    assert '"use_public_options_data": True' in backend
+    assert "Use Public options data" in backend
     assert "use_official_catalysts" in symbol
     assert "use_sec_filings" in symbol
     assert "show_evidence_drawer" in symbol
