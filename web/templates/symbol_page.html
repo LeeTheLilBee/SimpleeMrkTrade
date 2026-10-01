@@ -18,8 +18,6 @@
     href="{{ url_for('static', filename='ob/ob_symbol_room.css') }}"
   />
   <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
-  <link rel="stylesheet" href="/static/ob/ob_research_context.css?v=obintel001030" />
-<link rel="stylesheet" href="/static/ob/ob_keyless_context.css?v=keyless001" />
 </head>
 
 <body
@@ -73,12 +71,7 @@
         </span>
       </div>
     </header>
-
-    {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
-    {% include 'ob_research_context_partial.html' %}
-    {% endif %}
-
-    <section id="symbolModeBanner" class="ob-mode-banner">
+<section id="symbolModeBanner" class="ob-mode-banner">
       <div>
         <span class="ob-symbol-eyebrow">CURRENT MODE</span>
         <h2 id="symbolModeTitle">Survey · Observe</h2>
@@ -521,10 +514,6 @@
 <script src="/static/ob/ob_global_session_shell.js"></script>
   <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
   <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
-
-  <section id="obKeylessContextRoot" class="ob-keyless-context ob-symbol-hidden-shared-research" aria-hidden="true"></section>
-  <script defer src="/static/ob/ob_keyless_context.js?v=keyless001"></script>
-  <script defer src="/static/ob/ob_official_catalyst_radar.js?v=catalyst001"></script>
-  <script defer src="/static/ob/ob_symbol_research.js?v=symbolresearch001"></script>
+<script defer src="/static/ob/ob_symbol_research.js?v=symbolresearch001"></script>
 </body>
 </html>
