@@ -343,7 +343,7 @@ def test_source_research_partial_remains_safe_and_opt_in_to_current_rooms():
         assert "include 'ob_research_context_partial.html'" not in template
         assert "ob_research_context.css" not in template
     symbol=(root/"symbol_page.html").read_text()
-    assert "/static/ob/ob_symbol_research.js?v=publicoptions005" in symbol
+    assert "/static/ob/ob_symbol_research.js?v=companyprofile006" in symbol
     with app.test_request_context():
         blank=render_template("ob_research_context_partial.html")
         assert "Symbol research context" not in blank
