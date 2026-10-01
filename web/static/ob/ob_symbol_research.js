@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  const CATALYST_SOURCES = ["federal_register", "cftc", "eia", "world_bank", "nws"];
+
   function byId(id) { return document.getElementById(id); }
   function symbol() {
     const room = byId("obSymbolRoom");
@@ -239,7 +241,7 @@
     mount.replaceChildren();
     let count = 0;
     (packet.sources || []).forEach(row => {
-      if (!row || row.source === "sec_edgar") return;
+      if (!row || row.source === "sec_edgar" || !CATALYST_SOURCES.includes(row.source)) return;
       const card = document.createElement("article");
       card.className = "ob-symbol-research-note";
       const title = document.createElement("strong");
