@@ -43,4 +43,4 @@ jobs:
         run: python -m compileall -q tower/tower_human_login_ob_launch.py tower/owner_observatory_handoff.py tower/ob_web_route_enforcement.py
       - name: Verify logout/login rebind and protected route continuity
         run: |
-          python -m pytest -q             tower/test_tower_human_login_ob_launch.py             tests/test_tower_ob_web_route_enforcement.py             tests/test_obsim056_060_hosted_owner_rehearsal.py             tests/test_ob_public_owner_connection.py
+          python -m pytest -q tower/test_tower_human_login_ob_launch.py::test_fresh_login_to_private_ob_rebuilds_verification tests/test_tower_ob_web_route_enforcement.py tests/test_obsim056_060_hosted_owner_rehearsal.py tests/test_ob_public_owner_connection.py
