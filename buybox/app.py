@@ -410,6 +410,30 @@ def create_app(config=None):
             captures=[r for r in intelligence_records(conn,opportunity_id=oid,kind="QUICK_CAPTURE")][:20]
         return render_template("field_mode.html",op=op,captures=captures)
 
+    @app.post("/opportunities/<oid>/field/<record_id>/follow-up")
+    @login_required
+    def field_followup(oid,record_id):
+        due=request.form.get("due_date","")
+        with db() as conn:
+            op=load(conn,oid)
+            if op is None: abort(404)
+            row=conn.execute("""SELECT payload_json FROM buybox_intelligence_records
+                WHERE id=? AND opportunity_id=? AND kind='QUICK_CAPTURE'""",
+                (record_id,oid)).fetchone()
+            if row is None: abort(404)
+            import json as _json
+            payload=_json.loads(row["payload_json"])
+            title=("Follow up: "+str(payload.get("title") or "field note"))[:180]
+            try:
+                revised,task=new_task(op,title=title,due_date=due,
+                    owner=owner_actor(conn),source_reference="FIELD_CAPTURE:"+record_id,
+                    notes=str(payload.get("note") or "")[:1000])
+            except ValueError as exc: abort(400,str(exc))
+            save(conn,revised,"FieldCapturePromotedToTask",
+                {"capture_id":record_id,"task_id":task["id"],"evidence_promoted":False},
+                expected_revision=op["version"])
+        return redirect(url_for("deal_room",oid=oid),code=303)
+
     @app.get("/acceptance")
     @login_required
     def owner_acceptance():
