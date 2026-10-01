@@ -134,7 +134,15 @@ def test_buybox_never_issues_handoff_before_reviewed_browser_bootstrap(monkeypat
         lambda **_kwargs: {
             "can_issue_handoff": True, "reason_codes": [], "state": "READY_TO_ISSUE"
         })
-    report = gates.inspect_buybox_launch(truth={"launchable": True})
+    with client.get("/tower/access-home").request.environ["werkzeug.request"].environ if False else app.test_request_context("/tower/launch/buybox"):
+        # Move the authenticated browser session into a real client request below;
+        # direct preflight is request/session-bound by design.
+        pass
+    with client.session_transaction() as stored:
+        snapshot = dict(stored)
+    with app.test_request_context("/tower/launch/buybox"):
+        session.update(snapshot)
+        report = gates.inspect_buybox_launch(truth={"launchable": True})
     assert report["can_launch"] is False
     assert report["tower_handoff_preflight_ready"] is True
     assert report["browser_bootstrap_transport_ready"] is False
