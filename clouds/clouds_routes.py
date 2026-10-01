@@ -273,3 +273,101 @@ def clouds_gp006_status_json():
     from .clouds_mission_lane_service import get_clouds_gp006_status_payload
     return jsonify(get_clouds_gp006_status_payload())
 # === CLOUDS GIANT PACK 006 ROUTES END ===
+
+
+# === CLOUDS LIVE HOSTED OWNER COMMAND UPGRADE START ===
+# This is presentation-only. Tower has already authenticated /clouds and
+# established the canonical Clouds handoff before this response can be upgraded.
+# It grants no app access and creates no execution authority.
+@clouds_bp.after_app_request
+def clouds_live_hosted_owner_command_upgrade(response):
+    try:
+        from flask import request, Response
+
+        if request.path != "/clouds":
+            return response
+
+        if response.status_code != 200:
+            return response
+
+        if (
+            response.headers.get("x-tower-clouds-pack1")
+            != "canonical-owner-command"
+        ):
+            return response
+
+        from tower.clouds_live_owner_command import (
+            render_owner_command,
+        )
+        from tower.tower_clouds_native_launch import (
+            CLOUDS_RETURN_PATH,
+            _page,
+        )
+
+        html = render_owner_command(
+            page_factory=_page,
+            clouds_return_path=CLOUDS_RETURN_PATH,
+        )
+
+        # Use the already-reviewed Tower launch corridors. These replacements
+        # are links only; each destination still performs its own authorization.
+        link_rewrites = {
+            "/tower/clouds/open/observatory":
+                "/tower/launch/observatory",
+            "/tower/clouds/open/teller":
+                "/tower/launch/teller",
+            "/tower/clouds/open/grounds":
+                "/tower/launch/grounds",
+            "/tower/clouds/open/buybox":
+                "/tower/launch/buybox",
+            "/tower/clouds/open/clouds":
+                "/clouds",
+        }
+
+        for old, new in link_rewrites.items():
+            html = html.replace(old, new)
+
+        upgraded = Response(
+            html,
+            status=200,
+            mimetype="text/html",
+        )
+
+        upgraded.headers["Cache-Control"] = (
+            "private, no-store, max-age=0"
+        )
+        upgraded.headers["x-tower-clouds-pack1"] = (
+            "canonical-owner-command"
+        )
+        upgraded.headers["x-clouds-live-owner-command"] = (
+            "20261001"
+        )
+
+        recovery = response.headers.get(
+            "x-tower-clouds-ob-guard-recovery"
+        )
+        if recovery:
+            upgraded.headers[
+                "x-tower-clouds-ob-guard-recovery"
+            ] = recovery
+
+        return upgraded
+
+    except Exception:
+        # Never replace a valid protected Tower response with a broken UI.
+        return response
+
+
+@clouds_bp.route("/clouds/live-owner-command.json")
+def clouds_live_owner_command_json():
+    from tower.clouds_live_owner_command import (
+        build_owner_command_payload,
+    )
+
+    payload = build_owner_command_payload()
+    payload["presentation_upgrade"] = "20261001"
+    payload["clouds_executes_navigation"] = False
+    payload["downstream_execution_performed"] = False
+
+    return jsonify(payload)
+# === CLOUDS LIVE HOSTED OWNER COMMAND UPGRADE END ===
