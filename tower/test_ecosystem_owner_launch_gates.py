@@ -134,10 +134,7 @@ def test_buybox_never_issues_handoff_before_reviewed_browser_bootstrap(monkeypat
         lambda **_kwargs: {
             "can_issue_handoff": True, "reason_codes": [], "state": "READY_TO_ISSUE"
         })
-    with client.get("/tower/access-home").request.environ["werkzeug.request"].environ if False else app.test_request_context("/tower/launch/buybox"):
-        # Move the authenticated browser session into a real client request below;
-        # direct preflight is request/session-bound by design.
-        pass
+    # Direct preflight is request/session-bound by design.
     with client.session_transaction() as stored:
         snapshot = dict(stored)
     with app.test_request_context("/tower/launch/buybox"):
