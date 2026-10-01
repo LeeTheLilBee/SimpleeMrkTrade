@@ -401,7 +401,6 @@ def render_access_home_v2(
     )
 
     return_receipt = active_return_receipt()
-
     return_verified = verify_return_receipt(
         return_receipt
     )
@@ -418,9 +417,9 @@ def render_access_home_v2(
     )
 
     step_status = (
-        "Verified for protected entry"
+        "Protected doors ready"
         if summary["step_up_active"]
-        else "Additional verification required"
+        else "Protected doors need verification"
     )
 
     step_chip = (
@@ -435,238 +434,570 @@ def render_access_home_v2(
         else "No verified return receipt"
     )
 
-    card_html = "\n".join(
+    business_cards = [
+        card for card in APP_CARDS
+        if card.get("category") == "business"
+    ]
+
+    consumer_cards = [
+        card for card in APP_CARDS
+        if card.get("category") == "apps"
+    ]
+
+    live_count = sum(
+        1 for card in APP_CARDS
+        if card.get("href")
+    )
+
+    building_count = (
+        len(APP_CARDS)
+        - live_count
+    )
+
+    business_html = "\n".join(
         _render_app_card(card)
-        for card in APP_CARDS
+        for card in business_cards
+    )
+
+    consumer_html = "\n".join(
+        _render_app_card(card)
+        for card in consumer_cards
+    )
+
+    soulaana_line = (
+        "Your protected doors are ready. Pick where you want to go."
+        if summary["step_up_active"]
+        else
+        "Your world is here. OB and Teller are live; protected entry will ask for verification when needed."
     )
 
     owner_style = """
     <style>
-    .tower-main {
-        max-width: 1440px;
-        width: 100%;
+    :root {
+        --tower-ink: #050708;
+        --tower-glass: rgba(13,18,18,.82);
+        --tower-glass-2: rgba(18,31,29,.74);
+        --tower-line: rgba(196,226,216,.12);
+        --tower-text: #edf3f0;
+        --tower-muted: #91a39d;
+        --tower-soft: #c5ddd5;
+        --tower-sage: #94b9aa;
+        --tower-gold: #d8c99a;
+        --tower-live: #a8dbc8;
+        --tower-building: #a99bb8;
+    }
+
+    body {
+        background:
+            radial-gradient(circle at 14% 8%, rgba(91,142,124,.13), transparent 27%),
+            radial-gradient(circle at 88% 4%, rgba(213,190,132,.08), transparent 24%),
+            linear-gradient(160deg, #030506, #09100e 58%, #050708);
+        color: var(--tower-text);
+    }
+
+    .tower-shell {
+        display: block;
+        min-height: 100vh;
+    }
+
+    .tower-lobby {
+        width: min(1500px, calc(100% - 48px));
         margin: 0 auto;
+        padding: 24px 0 64px;
     }
 
-    .tower-owner-home {
-        display: grid;
-        gap: 18px;
-    }
-
-    .tower-access-hero {
-        min-height: 250px;
-    }
-
-    .tower-access-hero h1 {
-        max-width: 820px;
-    }
-
-    .tower-owner-state-strip {
+    .tower-topbar {
+        position: sticky;
+        top: 14px;
+        z-index: 20;
         display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 20px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 62px;
+        padding: 10px 14px;
+        border: 1px solid var(--tower-line);
+        border-radius: 22px;
+        background: rgba(5,8,8,.76);
+        backdrop-filter: blur(24px);
+        box-shadow: 0 18px 48px rgba(0,0,0,.20);
     }
 
-    .tower-owner-state-chip {
+    .tower-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .tower-brand-mark {
+        width: 42px;
+        aspect-ratio: 1;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        color: #16110b;
+        font-weight: 950;
+        background: linear-gradient(145deg, var(--tower-gold), #f3e9bf);
+        box-shadow: 0 0 28px rgba(216,201,154,.14);
+    }
+
+    .tower-brand strong,
+    .tower-brand span {
+        display: block;
+    }
+
+    .tower-brand strong {
+        font-size: .95rem;
+    }
+
+    .tower-brand span {
+        margin-top: 2px;
+        color: var(--tower-muted);
+        font-size: .72rem;
+    }
+
+    .tower-top-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .tower-mini-chip,
+    .tower-top-link {
         display: inline-flex;
         align-items: center;
         min-height: 34px;
-        padding: 0 12px;
-        border: 1px solid var(--line);
+        padding: 0 11px;
+        border: 1px solid var(--tower-line);
         border-radius: 999px;
-        background: rgba(255,255,255,.045);
-        color: var(--muted);
-        font-size: .78rem;
+        background: rgba(255,255,255,.035);
+        color: var(--tower-muted);
+        font-size: .72rem;
         font-weight: 800;
+        text-decoration: none;
     }
 
-    .tower-owner-state-chip strong {
-        color: var(--gold);
-        margin-left: 6px;
+    .tower-mini-chip strong {
+        color: var(--tower-soft);
+        margin-left: 5px;
     }
 
-    .tower-access-stage {
+    .tower-top-link:hover {
+        color: var(--tower-text);
+        border-color: rgba(216,201,154,.28);
+    }
+
+    .tower-lobby-hero {
+        position: relative;
+        overflow: hidden;
         display: grid;
-        grid-template-columns:
-            minmax(0, 1.6fr)
-            minmax(310px, .72fr);
-        gap: 18px;
-        align-items: stretch;
-    }
-
-    .tower-primary-door {
-        border:
-            1px solid
-            rgba(244,210,123,.40);
-        border-radius: 30px;
-        padding: 28px;
+        grid-template-columns: minmax(0,1.45fr) minmax(280px,.65fr);
+        gap: 22px;
+        align-items: end;
+        min-height: 320px;
+        margin-top: 18px;
+        padding: 38px;
+        border: 1px solid var(--tower-line);
+        border-radius: 32px;
         background:
-            radial-gradient(
-                circle at 86% 8%,
-                rgba(244,210,123,.13),
-                transparent 30%
-            ),
-            linear-gradient(
-                145deg,
-                rgba(125,79,214,.18),
-                rgba(255,255,255,.035)
-            );
+            radial-gradient(circle at 78% 18%, rgba(148,185,170,.12), transparent 27%),
+            linear-gradient(145deg, rgba(17,30,28,.86), rgba(5,8,8,.90));
+        box-shadow: 0 28px 90px rgba(0,0,0,.26);
+    }
+
+    .tower-lobby-hero:after {
+        content: "";
+        position: absolute;
+        right: -70px;
+        top: -100px;
+        width: 330px;
+        height: 330px;
+        border-radius: 50%;
+        border: 1px solid rgba(216,201,154,.09);
         box-shadow:
-            0 30px 100px
-            rgba(0,0,0,.28);
+            0 0 0 38px rgba(148,185,170,.025),
+            0 0 0 78px rgba(216,201,154,.018);
     }
 
-    .tower-primary-door > .tower-overline {
-        margin-bottom: 15px;
+    .tower-lobby-hero > * {
+        position: relative;
+        z-index: 2;
     }
 
-    .tower-primary-door .tower-app-grid {
-        grid-template-columns: 1fr;
+    .tower-kicker {
+        color: var(--tower-gold);
+        font-size: .68rem;
+        font-weight: 900;
+        letter-spacing: .16em;
+        text-transform: uppercase;
     }
 
-    .tower-primary-door .tower-app-card {
-        min-height: 305px;
-        border-radius: 26px;
-        padding: 26px;
+    .tower-lobby-hero h1 {
+        max-width: 850px;
+        margin: 9px 0 12px;
+        font-size: clamp(2.8rem, 6vw, 6.4rem);
+        line-height: .92;
+        letter-spacing: -.065em;
     }
 
-    .tower-primary-door .tower-app-card h3 {
-        font-size:
-            clamp(2rem, 4vw, 3.6rem);
-        letter-spacing: -.04em;
+    .tower-lobby-hero .tower-hero-sub {
+        max-width: 680px;
+        margin: 0;
+        color: var(--tower-muted);
+        font-size: 1rem;
+        line-height: 1.55;
     }
 
-    .tower-primary-door .tower-button {
-        min-height: 50px;
-        padding: 0 22px;
+    .tower-soulaana-brief {
+        padding: 20px;
+        border: 1px solid rgba(148,185,170,.16);
+        border-radius: 22px;
+        background: rgba(9,17,16,.62);
     }
 
-    .tower-owner-side {
-        display: grid;
-        gap: 14px;
+    .tower-soulaana-brief strong {
+        display: block;
+        margin: 8px 0 7px;
+        font-size: 1.15rem;
     }
 
-    .tower-owner-control-card,
-    .tower-return-card,
-    .tower-backstage-details {
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        background:
-            linear-gradient(
-                180deg,
-                rgba(255,255,255,.07),
-                rgba(255,255,255,.03)
-            );
-        box-shadow:
-            0 20px 70px
-            rgba(0,0,0,.20);
-    }
-
-    .tower-owner-control-card,
-    .tower-return-card {
-        padding: 22px;
-    }
-
-    .tower-owner-control-card {
-        border-color:
-            rgba(244,210,123,.26);
-    }
-
-    .tower-owner-control-card h3,
-    .tower-return-card h3 {
-        margin: 7px 0 10px;
-        font-size: 1.35rem;
-    }
-
-    .tower-owner-control-card p,
-    .tower-return-card p,
-    .tower-backstage-details p {
-        color: var(--muted);
+    .tower-soulaana-brief p {
+        margin: 0;
+        color: var(--tower-muted);
+        font-size: .84rem;
         line-height: 1.5;
     }
 
-    .tower-owner-control-card .tower-button {
-        margin-top: 4px;
+    .tower-world-pulse {
+        display: grid;
+        grid-template-columns: repeat(3,minmax(0,1fr));
+        gap: 10px;
+        margin-top: 14px;
     }
 
-    .tower-backstage-details {
-        padding: 0;
-        overflow: hidden;
+    .tower-world-pulse span {
+        padding: 10px 12px;
+        border: 1px solid var(--tower-line);
+        border-radius: 13px;
+        background: rgba(255,255,255,.025);
+        color: var(--tower-muted);
+        font-size: .72rem;
+        line-height: 1.35;
     }
 
-    .tower-backstage-details summary {
-        cursor: pointer;
-        list-style: none;
-        padding: 18px 20px;
-        color: var(--muted);
+    .tower-world-pulse strong {
+        display: block;
+        margin-top: 3px;
+        color: var(--tower-text);
+        font-size: .92rem;
+    }
+
+    .tower-world-section {
+        margin-top: 34px;
+    }
+
+    .tower-world-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 14px;
+    }
+
+    .tower-world-head h2 {
+        margin: 5px 0 0;
+        font-size: clamp(1.55rem, 3vw, 2.25rem);
+        letter-spacing: -.035em;
+    }
+
+    .tower-world-head p {
+        max-width: 520px;
+        margin: 0;
+        color: var(--tower-muted);
+        font-size: .78rem;
+        line-height: 1.45;
+        text-align: right;
+    }
+
+    .tower-square-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+        gap: 14px;
+    }
+
+    .tower-square-tile {
+        position: relative;
+        min-width: 0;
+        aspect-ratio: 1 / 1;
+        padding: 17px;
+        border: 1px solid var(--tower-line);
+        border-radius: 24px;
+        background:
+            radial-gradient(circle at 86% 9%, rgba(148,185,170,.08), transparent 28%),
+            linear-gradient(150deg, rgba(19,29,28,.78), rgba(7,10,10,.91));
+        box-shadow: 0 18px 48px rgba(0,0,0,.18);
+        color: var(--tower-text);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    a.tower-square-tile:hover {
+        transform: translateY(-3px);
+        border-color: rgba(168,219,200,.30);
+        background:
+            radial-gradient(circle at 82% 10%, rgba(168,219,200,.13), transparent 30%),
+            linear-gradient(150deg, rgba(22,36,33,.86), rgba(7,10,10,.92));
+    }
+
+    .tower-square-tile.building {
+        opacity: .82;
+    }
+
+    .tower-tile-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .tower-tile-mark {
+        width: 46px;
+        aspect-ratio: 1;
+        border-radius: 15px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(216,201,154,.14);
+        background: rgba(216,201,154,.075);
+        color: var(--tower-gold);
+        font-size: .76rem;
+        font-weight: 950;
+        letter-spacing: .04em;
+    }
+
+    .tower-tile-state {
+        display: inline-flex;
+        align-items: center;
+        min-height: 25px;
+        padding: 0 8px;
+        border: 1px solid var(--tower-line);
+        border-radius: 999px;
+        color: var(--tower-muted);
+        font-size: .62rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+    }
+
+    .tower-square-tile.live .tower-tile-state {
+        color: var(--tower-live);
+        border-color: rgba(168,219,200,.20);
+        background: rgba(168,219,200,.06);
+    }
+
+    .tower-tile-copy {
+        margin-top: auto;
+        padding-top: 18px;
+    }
+
+    .tower-tile-copy h3 {
+        margin: 0;
+        font-size: clamp(1.2rem, 2vw, 1.55rem);
+        line-height: 1.02;
+        letter-spacing: -.03em;
+    }
+
+    .tower-tile-copy .tower-tile-subtitle {
+        margin: 6px 0 0;
+        color: var(--tower-gold);
+        font-size: .75rem;
         font-weight: 800;
     }
 
-    .tower-backstage-details
-    summary::-webkit-details-marker {
-        display: none;
+    .tower-tile-copy p {
+        margin: 10px 0 0;
+        color: var(--tower-muted);
+        font-size: .73rem;
+        line-height: 1.42;
     }
 
-    .tower-backstage-details summary:after {
-        content: "+";
-        float: right;
-        color: var(--gold);
-        font-size: 1.1rem;
-    }
-
-    .tower-backstage-details[open]
-    summary:after {
-        content: "–";
-    }
-
-    .tower-backstage-body {
-        padding: 0 20px 20px;
-    }
-
-    .tower-backstage-link {
-        display: inline-flex;
+    .tower-tile-action {
+        display: flex;
+        justify-content: space-between;
         align-items: center;
-        min-height: 40px;
-        padding: 0 14px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        color: var(--muted);
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 12px;
+        border-top: 1px solid var(--tower-line);
+        color: var(--tower-soft);
+        font-size: .72rem;
+        font-weight: 900;
+    }
+
+    .tower-tile-action span:last-child {
+        color: var(--tower-muted);
+        font-weight: 700;
+    }
+
+    .tower-infra-grid {
+        display: grid;
+        grid-template-columns: repeat(4,minmax(0,1fr));
+        gap: 14px;
+    }
+
+    .tower-infra-tile {
+        min-height: 150px;
+        padding: 18px;
+        border: 1px solid var(--tower-line);
+        border-radius: 20px;
+        background: rgba(255,255,255,.025);
+        color: var(--tower-text);
         text-decoration: none;
+    }
+
+    .tower-infra-tile strong {
+        display: block;
+        margin: 8px 0 6px;
+        font-size: 1.05rem;
+    }
+
+    .tower-infra-tile p {
+        margin: 0;
+        color: var(--tower-muted);
+        font-size: .74rem;
+        line-height: 1.45;
+    }
+
+    .tower-infra-tile small {
+        display: block;
+        margin-top: 13px;
+        color: var(--tower-gold);
+        font-size: .68rem;
+        font-weight: 800;
+    }
+
+    .tower-return-card {
+        border-color: rgba(216,201,154,.16);
+    }
+
+    .tower-evidence-mini {
+        margin-top: 14px;
+        border: 1px solid var(--tower-line);
+        border-radius: 18px;
+        background: rgba(255,255,255,.02);
+        overflow: hidden;
+    }
+
+    .tower-evidence-mini summary {
+        cursor: pointer;
+        padding: 14px 16px;
+        color: var(--tower-muted);
+        font-size: .75rem;
+        font-weight: 800;
+    }
+
+    .tower-evidence-mini div {
+        padding: 0 16px 16px;
+    }
+
+    .tower-evidence-mini a {
+        color: var(--tower-gold);
+        font-size: .76rem;
         font-weight: 800;
     }
 
     .tower-access-footer {
         display: flex;
         justify-content: space-between;
-        gap: 16px;
+        gap: 14px;
         flex-wrap: wrap;
-        color: var(--dim);
-        padding: 8px 2px 0;
-        font-size: .82rem;
+        margin-top: 32px;
+        padding: 16px 2px 0;
+        color: var(--tower-muted);
+        font-size: .72rem;
     }
 
-    @media (max-width: 980px) {
-        .tower-access-stage {
+    @media (max-width: 1050px) {
+        .tower-lobby-hero {
+            grid-template-columns: 1fr;
+        }
+
+        .tower-infra-grid {
+            grid-template-columns: repeat(2,minmax(0,1fr));
+        }
+    }
+
+    @media (max-width: 720px) {
+        .tower-lobby {
+            width: min(100% - 24px, 1500px);
+            padding-top: 12px;
+        }
+
+        .tower-topbar {
+            top: 8px;
+        }
+
+        .tower-top-actions .tower-mini-chip {
+            display: none;
+        }
+
+        .tower-lobby-hero {
+            min-height: 0;
+            padding: 24px 20px;
+            border-radius: 24px;
+        }
+
+        .tower-world-pulse {
+            grid-template-columns: 1fr;
+        }
+
+        .tower-world-head {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .tower-world-head p {
+            text-align: left;
+        }
+
+        .tower-square-grid {
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 10px;
+        }
+
+        .tower-square-tile {
+            padding: 13px;
+            border-radius: 19px;
+        }
+
+        .tower-tile-copy p {
+            display: none;
+        }
+
+        .tower-infra-grid {
             grid-template-columns: 1fr;
         }
     }
 
-    @media (max-width: 820px) {
-        .tower-shell {
-            grid-template-columns: 1fr;
+    @media (max-width: 430px) {
+        .tower-square-grid {
+            grid-template-columns: 1fr 1fr;
         }
 
-        .tower-rail {
-            position: relative;
-            height: auto;
-            border-right: 0;
-            border-bottom:
-                1px solid var(--line);
+        .tower-square-tile {
+            aspect-ratio: .92 / 1;
         }
 
-        .tower-main {
-            padding: 20px;
+        .tower-tile-mark {
+            width: 38px;
+            border-radius: 12px;
+        }
+
+        .tower-tile-copy h3 {
+            font-size: 1.04rem;
         }
     }
     </style>
@@ -677,16 +1008,8 @@ def render_access_home_v2(
     <html lang="en">
     <head>
         <meta charset="utf-8">
-
-        <meta
-            name="viewport"
-            content="width=device-width,initial-scale=1"
-        >
-
-        <title>
-            Tower Access Home
-        </title>
-
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Simplee Tower · Access Home</title>
         {_tower_css()}
         {owner_style}
     </head>
@@ -696,290 +1019,195 @@ def render_access_home_v2(
             class="tower-shell"
             data-tower-owner-access-home="twr156-160"
         >
+            <div class="tower-lobby">
 
-            <aside class="tower-rail">
-
-                <div class="tower-mark">
-                    T
-                </div>
-
-                <div>
-                    <div class="tower-overline">
-                        Simplee Tower
+                <header class="tower-topbar">
+                    <div class="tower-brand">
+                        <div class="tower-brand-mark">T</div>
+                        <div>
+                            <strong>Simplee Tower</strong>
+                            <span>Simplee World · private access</span>
+                        </div>
                     </div>
 
-                    <h2>
-                        Access Home
-                    </h2>
-                </div>
+                    <div class="tower-top-actions">
+                        <span class="tower-mini-chip">
+                            {escape(auth_status)}
+                            <strong>{escape(role_status)}</strong>
+                        </span>
+                        <span class="tower-mini-chip">
+                            {escape(step_chip)}
+                        </span>
+                        <a class="tower-top-link" href="/tower/owner-dashboard">
+                            Owner
+                        </a>
+                        <a class="tower-top-link" href="/tower/logout">
+                            Logout
+                        </a>
+                    </div>
+                </header>
 
-                <nav
-                    class="tower-nav"
-                    aria-label="Tower owner navigation"
+                <section
+                    class="tower-lobby-hero"
+                    data-tower-owner-front-door="true"
                 >
-                    <a
-                        href="/tower/access-home"
-                        aria-current="page"
-                    >
-                        Access Home
-                    </a>
-
-                    <a
-                        href="/tower/launch/observatory"
-                    >
-                        Observatory
-                    </a>
-
-                    <a
-                        href="/tower/launch/teller"
-                    >
-                        The Teller
-                    </a>
-
-                    <a
-                        href="/tower/owner-dashboard"
-                    >
-                        Owner Headquarters
-                    </a>
-
-                    <a
-                        href="/tower/integrations"
-                    >
-                        Integration Desk
-                    </a>
-
-                    <a
-                        href="/tower/logout"
-                    >
-                        Logout
-                    </a>
-                </nav>
-
-                <div class="tower-rail-card">
-                    <span>
-                        Owner session
-                    </span>
-
-                    <strong>
-                        {escape(auth_status)}
-                    </strong>
-                </div>
-
-            </aside>
-
-
-            <section class="tower-main">
-
-                <div class="tower-owner-home">
-
-                    <header
-                        class="tower-hero tower-access-hero"
-                        data-tower-owner-front-door="true"
-                    >
-
-                        <div>
-
-                            <div class="tower-overline">
-                                Tower · Owner Access
-                            </div>
-
-                            <h1>
-                                Welcome back, {escape(username)}.
-                            </h1>
-
-                            <p>
-                                One front door. Protected product entries.
-                                Owner controls stay close. Technical proof
-                                stays backstage.
-                            </p>
-
-                            <div class="tower-owner-state-strip">
-
-                                <span class="tower-owner-state-chip">
-                                    ROLE
-                                    <strong>
-                                        {escape(role_status)}
-                                    </strong>
-                                </span>
-
-                                <span class="tower-owner-state-chip">
-                                    BOUNDARY
-                                    <strong>
-                                        DEFAULT DENY
-                                    </strong>
-                                </span>
-
-                                <span class="tower-owner-state-chip">
-                                    {escape(step_chip)}
-                                </span>
-
-                            </div>
-
+                    <div>
+                        <div class="tower-kicker">
+                            SIMPLEE WORLD · YOUR FRONT DOOR
                         </div>
 
+                        <h1>
+                            Welcome home, {escape(username)}.
+                        </h1>
 
-                        <div class="tower-session-card">
+                        <p class="tower-hero-sub">
+                            Everything you built, one place.
+                            Pick a door and go.
+                        </p>
 
+                        <div class="tower-world-pulse">
                             <span>
-                                Protected product entry
+                                LIVE DOORS
+                                <strong>{live_count}</strong>
                             </span>
-
-                            <strong>
-                                {escape(step_status)}
-                            </strong>
-
-                            <small>
-                                Tower verifies the current owner
-                                boundary before protected
-                                product handoff.
-                            </small>
-
+                            <span>
+                                BUILDING
+                                <strong>{building_count}</strong>
+                            </span>
+                            <span>
+                                ACCESS
+                                <strong>{escape(step_status)}</strong>
+                            </span>
                         </div>
+                    </div>
 
-                    </header>
+                    <aside class="tower-soulaana-brief">
+                        <div class="tower-kicker">
+                            SOULAANA
+                        </div>
+                        <strong>
+                            Everything is where it belongs.
+                        </strong>
+                        <p>
+                            {escape(soulaana_line)}
+                        </p>
+                    </aside>
+                </section>
 
+                <section
+                    class="tower-world-section"
+                    data-tower-primary-owner-action="protected-products"
+                >
+                    <div class="tower-world-head">
+                        <div>
+                            <div class="tower-kicker">BUSINESS SYSTEMS</div>
+                            <h2>Run the world.</h2>
+                        </div>
+                        <p>
+                            Live doors open through Tower.
+                            Building tiles stay visible without pretending
+                            their runtimes are published.
+                        </p>
+                    </div>
 
-                    <section
-                        class="tower-access-stage"
-                        aria-label="Tower owner access"
-                    >
+                    <div class="tower-square-grid">
+                        {business_html}
+                    </div>
+                </section>
 
-                        <section
-                            class="tower-primary-door"
-                            data-tower-primary-owner-action="protected-products"
+                <section class="tower-world-section">
+                    <div class="tower-world-head">
+                        <div>
+                            <div class="tower-kicker">SIMPLEE APPS</div>
+                            <h2>Your app shelf.</h2>
+                        </div>
+                        <p>
+                            The full consumer portfolio lives here now.
+                            Each tile becomes a real door when that app is hosted.
+                        </p>
+                    </div>
+
+                    <div class="tower-square-grid">
+                        {consumer_html}
+                    </div>
+                </section>
+
+                <section class="tower-world-section">
+                    <div class="tower-world-head">
+                        <div>
+                            <div class="tower-kicker">INFRASTRUCTURE & RECORDS</div>
+                            <h2>Behind the walls.</h2>
+                        </div>
+                        <p>
+                            Owner control and technical proof stay available
+                            without taking over the front door.
+                        </p>
+                    </div>
+
+                    <div class="tower-infra-grid">
+                        <a
+                            id="tower-owner-launch-dock"
+                            class="tower-infra-tile"
+                            data-tower-owner-control="integrated"
+                            href="/tower/owner-dashboard"
                         >
+                            <div class="tower-kicker">OWNER</div>
+                            <strong>Owner Headquarters</strong>
+                            <p>People, access, owner state, and control surfaces.</p>
+                            <small>Open →</small>
+                        </a>
 
-                            <div class="tower-overline">
-                                Protected products
-                            </div>
+                        <a
+                            class="tower-infra-tile"
+                            data-tower-control="integrations"
+                            href="/tower/integrations"
+                        >
+                            <div class="tower-kicker">CONNECTIONS</div>
+                            <strong>Integration Desk</strong>
+                            <p>See which Simplee systems are connected and what is still waiting.</p>
+                            <small>Open →</small>
+                        </a>
 
-                            <div class="tower-app-grid">
-                                {card_html}
-                            </div>
+                        <article
+                            class="tower-infra-tile tower-return-card"
+                            data-tower-return-status="compact"
+                        >
+                            <div class="tower-kicker">RECENT HANDOFF</div>
+                            <strong>{escape(return_status)}</strong>
+                            <p>Return state stays compact unless you ask for the receipt.</p>
+                            <small>OB → Tower</small>
+                        </article>
 
-                        </section>
+                        <article class="tower-infra-tile">
+                            <div class="tower-kicker">SESSION</div>
+                            <strong>{escape(step_status)}</strong>
+                            <p>Default-deny remains underneath every protected doorway.</p>
+                            <small>{escape(step_chip)}</small>
+                        </article>
+                    </div>
 
+                    <details
+                        class="tower-evidence-mini"
+                        data-tower-backstage-evidence="true"
+                    >
+                        <summary>Evidence & audit</summary>
+                        <div>
+                            <a href="/tower/owner/evidence">
+                                Open Evidence Basement →
+                            </a>
+                        </div>
+                    </details>
+                </section>
 
-                        <aside class="tower-owner-side">
+                <footer class="tower-access-footer">
+                    <span>Simplee Tower · Simplee World</span>
+                    <span>
+                        DEFAULT DENY · No release execution ·
+                        no broker submission · no capital movement
+                    </span>
+                </footer>
 
-                            <article
-                                id="tower-owner-launch-dock"
-                                class="tower-owner-control-card"
-                                data-tower-owner-control="integrated"
-                            >
-
-                                <div class="tower-overline">
-                                    Owner control
-                                </div>
-
-                                <h3>
-                                    Owner Headquarters
-                                </h3>
-
-                                <p>
-                                    Review Tower owner state,
-                                    people and access truth,
-                                    and operational release review
-                                    without turning technical proof
-                                    into the main product experience.
-                                </p>
-
-                                <a
-                                    class="tower-button secondary"
-                                    href="/tower/owner-dashboard"
-                                >
-                                    Open Owner Headquarters
-                                </a>
-
-                            </article>
-
-
-                            <article class="tower-owner-control-card" data-tower-control="integrations">
-                                <div class="tower-overline">Ecosystem connections</div>
-                                <h3>Integration Desk</h3>
-                                <p>View live launch truth separately from product-source completion,
-                                   and see what Grounds, BuyBox, Teller, Vault and Clouds still need.</p>
-                                <a class="tower-button secondary" href="/tower/integrations">
-                                    Review integrations
-                                </a>
-                            </article>
-
-                            <article
-                                class="
-                                    tower-return-card
-                                    tower-return-panel
-                                "
-                                data-tower-return-status="compact"
-                            >
-
-                                <div class="tower-overline">
-                                    OB → Tower
-                                </div>
-
-                                <h3>
-                                    {escape(return_status)}
-                                </h3>
-
-                                <p>
-                                    Technical receipt proof is not
-                                    shown on the normal Access Home.
-                                </p>
-
-                            </article>
-
-
-                            <details
-                                class="tower-backstage-details"
-                                data-tower-backstage-evidence="true"
-                            >
-
-                                <summary>
-                                    Evidence & audit
-                                </summary>
-
-                                <div class="tower-backstage-body">
-
-                                    <p>
-                                        Walkthroughs, certificates,
-                                        readiness proof, and verification
-                                        records stay in the
-                                        Evidence Basement.
-                                    </p>
-
-                                    <a
-                                        class="tower-backstage-link"
-                                        href="/tower/owner/evidence"
-                                    >
-                                        Open Evidence Basement
-                                    </a>
-
-                                </div>
-
-                            </details>
-
-                        </aside>
-
-                    </section>
-
-
-                    <footer class="tower-access-footer">
-
-                        <span>
-                            Tower Access Home · © Simplee
-                        </span>
-
-                        <span>
-                            No release execution ·
-                            no broker submission ·
-                            no capital movement
-                        </span>
-
-                    </footer>
-
-                </div>
-
-            </section>
-
+            </div>
         </main>
     </body>
     </html>
@@ -989,44 +1217,74 @@ def render_access_home_v2(
         page
     )
 
+
 def _render_app_card(
     card: Dict[str, Any],
 ) -> str:
-    step_label = (
-        "<span>Step-up protected</span>"
-        if card.get("requires_step_up")
-        else "<span>Protected</span>"
+
+    live = bool(
+        card.get("href")
     )
+
+    state_class = (
+        "live"
+        if live
+        else "building"
+    )
+
+    step_note = (
+        "Protected"
+        if card.get("requires_step_up")
+        else "App"
+    )
+
+    content = f"""
+        <div class="tower-tile-top">
+            <span class="tower-tile-mark">
+                {escape(card.get("mark") or "SW")}
+            </span>
+            <span class="tower-tile-state">
+                {escape(card["status"])}
+            </span>
+        </div>
+
+        <div class="tower-tile-copy">
+            <h3>{escape(card["name"])}</h3>
+            <p class="tower-tile-subtitle">
+                {escape(card["subtitle"])}
+            </p>
+            <p>
+                {escape(card["description"])}
+            </p>
+        </div>
+
+        <div class="tower-tile-action">
+            <span>{escape(card["primary_action"])}</span>
+            <span>{escape(step_note)}</span>
+        </div>
+    """
+
+    if live:
+        return f"""
+        <a
+            id="{escape(card["id"])}-entry"
+            class="tower-square-tile {state_class}"
+            href="{escape(card["href"])}"
+            aria-label="{escape(card["primary_action"])} {escape(card["name"])}"
+        >
+            {content}
+        </a>
+        """
 
     return f"""
     <article
         id="{escape(card["id"])}-entry"
-        class="tower-app-card tower-app-card-active"
+        class="tower-square-tile {state_class}"
+        aria-label="{escape(card["name"])} · building"
     >
-        <div class="tower-card-top">
-            <span>{escape(card["status"])}</span>
-            {step_label}
-        </div>
-
-        <h3>{escape(card["name"])}</h3>
-
-        <p class="tower-card-subtitle">
-            {escape(card["subtitle"])}
-        </p>
-
-        <p>
-            {escape(card["description"])}
-        </p>
-
-        <a
-            class="tower-button"
-            href="{escape(card["href"])}"
-        >
-            {escape(card["primary_action"])}
-        </a>
+        {content}
     </article>
     """
-
 
 def _tower_css() -> str:
     return """
