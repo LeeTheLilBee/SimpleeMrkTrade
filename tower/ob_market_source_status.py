@@ -15,7 +15,7 @@ from __future__ import annotations
 from flask import jsonify
 
 from tower.ob_public_owner_connection import _owner_sid
-from tower.ob_soulaana_autonomous_market_research import autonomous_dashboard_projection
+from tower.ob_soulaana_autonomous_market_research import (\n    autonomous_dashboard_projection, resolve_credential,\n)\nfrom tower.ob_alpaca_iex_stream import stream_manager
 
 FEED_PATH = "/ob/engine-feed-snapshot.json"
 FEED_ENDPOINT = "ob_engine_feed_snapshot_v25"
@@ -101,7 +101,37 @@ def register_hosted_ob_market_source_status(app):
                 sid=sid,
                 temp_reader=reader,
             )
-            state = "alpaca-autonomous-research"
+            item, _credential_source = resolve_credential(
+                sid=sid,
+                temp_reader=reader,
+            )
+            if item is not None and isinstance(sid, str) and sid:
+                manager = stream_manager()
+                stream_status = manager.ensure(
+                    sid=sid,
+                    credential=item,
+                    symbols=document.get("watchlist") or [
+                        row.get("symbol") for row in document.get("symbols", [])
+                    ],
+                    hub=app.extensions.get("ob_observatory_event_hub"),
+                )
+                stream_rows = manager.snapshot(document.get("watchlist") or None)
+                document.setdefault("market_health", {})["alpaca_websocket"] = stream_status
+                document["stream_market_context"] = stream_rows
+                document.setdefault("provider_boundary", {})["persistent_websocket_requested"] = True
+                document["provider_boundary"]["websocket_endpoint"] = (
+                    "wss://stream.data.alpaca.markets/v2/iex"
+                )
+                document["provider_boundary"]["stream_read_only"] = True
+                document.setdefault("soulaana", {})["stream_state"] = stream_status["state"]
+                document["soulaana"]["stream_symbols"] = stream_status["symbols_active"]
+                if stream_rows:
+                    document["soulaana"]["stream_note"] = (
+                        "I am receiving normalized Alpaca IEX trade, quote and minute-bar updates "
+                        "for the current research watchlist. This is venue-limited research context, "
+                        "not SIP/NBBO and not an execution quote."
+                    )
+            state = "alpaca-autonomous-research-websocket"
         except Exception as exc:
             # Fail closed without leaking provider response or secret material.
             document["reason"] = (
