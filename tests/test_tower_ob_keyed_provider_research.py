@@ -67,6 +67,16 @@ class Recorder:
                 "52w": {"h": 260.1, "l": 170.2},
                 "ch": {"dap": 1.0066},
             })
+        if "data.alpaca.markets/v2/stocks/AAPL/quotes/latest" in request.full_url:
+            return Response(request.full_url, {
+                "quote": {"bp": 100.0, "bs": 10, "ap": 100.2, "as": 12,
+                          "t": "2026-09-30T19:00:00Z"}
+            })
+        if "data.alpaca.markets/v2/stocks/AAPL/bars/latest" in request.full_url:
+            return Response(request.full_url, {
+                "bar": {"o": 99.0, "h": 101.0, "l": 98.5, "c": 100.1,
+                        "v": 12345, "t": "2026-09-30T19:00:00Z"}
+            })
         if "apps.bea.gov/api/data" in request.full_url:
             values = {
                 "T10105": ("31,250.0", "30,900.0"),
@@ -90,13 +100,17 @@ class Recorder:
 
 def secret_reader(sid, provider):
     assert sid.startswith("tower_session_")
-    return SimpleNamespace(value="SECRET-" + provider)
+    if provider == "alpaca":
+        return SimpleNamespace(
+            value="SECRET-alpaca", key_id="KEY-alpaca-123", probe="READ_ONLY_CHECK_PASSED"
+        )
+    return SimpleNamespace(value="SECRET-" + provider, probe="READ_ONLY_CHECK_PASSED")
 
 
 @pytest.fixture
 def rights(monkeypatch):
     monkeypatch.setenv("OB_PROVIDER_RESEARCH_FETCH_ENABLED", "1")
-    for provider in ("FINNHUB", "ALPHA_VANTAGE", "FINAZON", "BEA"):
+    for provider in ("FINNHUB", "ALPHA_VANTAGE", "FINAZON", "ALPACA", "BEA"):
         monkeypatch.setenv(f"OB_PROVIDER_{provider}_SOURCE_USE_REVIEWED", "1")
         monkeypatch.setenv(f"OB_PROVIDER_{provider}_OWNER_DISPLAY_REVIEWED", "1")
         monkeypatch.delenv(f"OB_PROVIDER_{provider}_AI_USE_REVIEWED", raising=False)
@@ -117,7 +131,7 @@ def test_no_key_never_calls_provider(monkeypatch):
         sid="tower_session_" + "x"*20, symbol="AAPL",
         secret_reader=lambda *_: None, opener=rec, cache=ProviderResearchCache())
     assert not rec.calls
-    assert [x["state"] for x in packet["provider_research"]] == ["NOT_CONNECTED"] * 4
+    assert [x["state"] for x in packet["provider_research"]] == ["NOT_CONNECTED"] * 5
     assert packet["soulaana_research"]["observations"] == []
 
 
@@ -128,7 +142,7 @@ def test_rights_hold_never_calls_provider(monkeypatch):
         sid="tower_session_" + "x"*20, symbol="AAPL",
         secret_reader=secret_reader, opener=rec, cache=ProviderResearchCache())
     assert not rec.calls
-    assert [x["state"] for x in packet["provider_research"]] == ["RIGHTS_OR_FETCH_HOLD"]*4
+    assert [x["state"] for x in packet["provider_research"]] == ["RIGHTS_OR_FETCH_HOLD"]*5
 
 
 def test_source_bound_owner_projection_is_bounded_and_not_live(rights):
@@ -136,12 +150,12 @@ def test_source_bound_owner_projection_is_bounded_and_not_live(rights):
     packet = provider_research_projection(
         sid="tower_session_" + "x"*20, symbol="AAPL",
         secret_reader=secret_reader, opener=rec, cache=ProviderResearchCache())
-    assert len(rec.calls) == 7
+    assert len(rec.calls) == 9
     assert packet["schema"] == "OB_KEYED_PROVIDER_RESEARCH_V1"
     assert packet["live_prices_attached"] is True
     assert packet["orders_attached"] is False
     assert packet["may_authorize_order"] is False
-    finnhub, alpha, finazon, bea = packet["provider_research"]
+    finnhub, alpha, finazon, alpaca, bea = packet["provider_research"]
     assert finnhub["state"] == "SOURCE_BOUND"
     assert finnhub["security_name"] == "Apple Inc"
     assert "marketCapitalization" not in finnhub
@@ -152,6 +166,11 @@ def test_source_bound_owner_projection_is_bounded_and_not_live(rights):
     assert finazon["state"] == "SOURCE_BOUND"
     assert finazon["real_time_market_context"] is True
     assert finazon["consolidated_quote"] is False
+    assert alpaca["state"] == "SOURCE_BOUND"
+    assert alpaca["provider"] == "alpaca"
+    assert alpaca["feed"] == "iex"
+    assert alpaca["quote"]["midpoint"] == 100.1
+    assert alpaca["consolidated_quote"] is False
     assert bea["state"] == "SOURCE_BOUND"
     assert bea["kind"] == "OFFICIAL_US_QUARTERLY_MACRO_CONTEXT"
     assert bea["unit"] == "BILLIONS_OF_CURRENT_DOLLARS_SAAR"
@@ -217,7 +236,7 @@ def test_revoking_ai_grant_suppresses_findings_even_when_provider_is_cached(righ
     assert len(provider_research_projection(**args)["soulaana_research"]["observations"]) == 2
     monkeypatch.delenv("OB_PROVIDER_ALPHA_VANTAGE_AI_USE_REVIEWED")
     second = provider_research_projection(**args)
-    assert len(recorder.calls) == 7  # no fresh provider call needed
+    assert len(recorder.calls) == 9  # no fresh provider call needed
     assert [o["provider"] for o in second["soulaana_research"]["observations"]] == ["finnhub"]
     monkeypatch.delenv("OB_PROVIDER_FINNHUB_AI_USE_REVIEWED")
     third = provider_research_projection(**args)["soulaana_research"]
@@ -242,7 +261,7 @@ def test_cache_avoids_repeat_provider_call_within_ttl(rights):
                 secret_reader=secret_reader, opener=rec, cache=cache)
     first = provider_research_projection(**args)
     second = provider_research_projection(**args)
-    assert len(rec.calls) == 7
+    assert len(rec.calls) == 9
     assert first["provider_research"] == second["provider_research"]
 
 
