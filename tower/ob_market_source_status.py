@@ -15,7 +15,10 @@ from __future__ import annotations
 from flask import jsonify
 
 from tower.ob_public_owner_connection import _owner_sid
-from tower.ob_soulaana_autonomous_market_research import (\n    autonomous_dashboard_projection, resolve_credential,\n)\nfrom tower.ob_alpaca_iex_stream import stream_manager
+from tower.ob_soulaana_autonomous_market_research import (
+    autonomous_dashboard_projection, resolve_credential,
+)
+from tower.ob_alpaca_iex_stream import stream_manager
 
 FEED_PATH = "/ob/engine-feed-snapshot.json"
 FEED_ENDPOINT = "ob_engine_feed_snapshot_v25"
