@@ -1,0 +1,241 @@
+"""BBX136–155 owner-experience, provenance, search and acceptance helpers.
+
+This layer improves navigation and review speed only. It never upgrades owner
+notes into evidence, fabricates external readiness, or creates acquisition
+authority.
+"""
+from __future__ import annotations
+import json, sqlite3
+from datetime import datetime, timezone
+from .external_proof_gate import integration_readiness
+
+UX_SCHEMA="""
+CREATE TABLE IF NOT EXISTS buybox_owner_preferences (
+ id INTEGER PRIMARY KEY CHECK(id=1),
+ density TEXT NOT NULL CHECK(density IN ('CALM','STANDARD','DEEP')),
+ pulse_seen_at TEXT,
+ updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS buybox_owner_triage (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ opportunity_id TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('FOCUS','WATCH','PARKED','ARCHIVE_CANDIDATE')),
+ note TEXT NOT NULL,
+ actor_ref TEXT NOT NULL,
+ created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_bbx_triage_op_created
+ ON buybox_owner_triage(opportunity_id,created_at DESC,id DESC);
+CREATE INDEX IF NOT EXISTS idx_bbx_events_occurred
+ ON events(occurred_at DESC,event_id DESC);
+CREATE INDEX IF NOT EXISTS idx_bbx_opportunities_vertical_name
+ ON opportunities(vertical,name);
+"""
+DENSITIES=frozenset({"CALM","STANDARD","DEEP"})
+TRIAGE_STATES=frozenset({"FOCUS","WATCH","PARKED","ARCHIVE_CANDIDATE"})
+
+def _now():
+    return datetime.now(timezone.utc).isoformat()
+
+def ensure_ux_schema(db: sqlite3.Connection):
+    db.executescript(UX_SCHEMA)
+    row=db.execute("SELECT id FROM buybox_owner_preferences WHERE id=1").fetchone()
+    if row is None:
+        at=_now()
+        db.execute("INSERT INTO buybox_owner_preferences VALUES(1,'STANDARD',NULL,?)",(at,))
+        db.commit()
+
+def preferences(db):
+    ensure_ux_schema(db)
+    row=db.execute("SELECT density,pulse_seen_at,updated_at FROM buybox_owner_preferences WHERE id=1").fetchone()
+    return dict(row)
+
+def set_density(db,density):
+    ensure_ux_schema(db)
+    density=str(density or "").upper()
+    if density not in DENSITIES: raise ValueError("DENSITY_INVALID")
+    at=_now()
+    db.execute("UPDATE buybox_owner_preferences SET density=?,updated_at=? WHERE id=1",(density,at))
+    db.commit()
+    return preferences(db)
+
+def mark_pulse_seen(db):
+    ensure_ux_schema(db)
+    at=_now()
+    db.execute("UPDATE buybox_owner_preferences SET pulse_seen_at=?,updated_at=? WHERE id=1",(at,at))
+    db.commit()
+    return preferences(db)
+
+def record_triage(db,opportunity_id,state,note,actor_ref):
+    ensure_ux_schema(db)
+    state=str(state or "").upper()
+    if state not in TRIAGE_STATES: raise ValueError("TRIAGE_STATE_INVALID")
+    note=str(note or "").strip()[:500]
+    actor=str(actor_ref or "").strip()[:255]
+    if not actor: raise ValueError("TRIAGE_ACTOR_REQUIRED")
+    if db.execute("SELECT 1 FROM opportunities WHERE id=?",(opportunity_id,)).fetchone() is None:
+        raise ValueError("OPPORTUNITY_NOT_FOUND")
+    at=_now()
+    db.execute("INSERT INTO buybox_owner_triage(opportunity_id,state,note,actor_ref,created_at) VALUES(?,?,?,?,?)",
+               (opportunity_id,state,note,actor,at))
+    db.commit()
+    return {"opportunity_id":opportunity_id,"state":state,"note":note,"actor_ref":actor,"created_at":at}
+
+def latest_triage(db,opportunity_id):
+    ensure_ux_schema(db)
+    row=db.execute("""SELECT opportunity_id,state,note,actor_ref,created_at
+      FROM buybox_owner_triage WHERE opportunity_id=?
+      ORDER BY id DESC LIMIT 1""",(opportunity_id,)).fetchone()
+    return dict(row) if row else None
+
+def triage_map(db,ids):
+    ensure_ux_schema(db)
+    result={}
+    for oid in ids:
+        row=latest_triage(db,oid)
+        if row: result[oid]=row
+    return result
+
+def universal_search(db,query,*,limit=40):
+    ensure_ux_schema(db)
+    q=str(query or "").strip()
+    if not q: return []
+    limit=max(1,min(int(limit),100))
+    like="%"+q.replace("%","\\%").replace("_","\\_")+"%"
+    rows=db.execute("""SELECT id,vertical,name,current_json FROM opportunities
+      WHERE name LIKE ? ESCAPE '\\' OR vertical LIKE ? ESCAPE '\\'
+         OR current_json LIKE ? ESCAPE '\\'
+      ORDER BY name LIMIT ?""",(like,like,like,limit)).fetchall()
+    out=[]
+    for row in rows:
+        op=json.loads(row["current_json"])
+        where=[]
+        if q.lower() in op.get("name","").lower(): where.append("name")
+        loc=op.get("location",{})
+        if q.lower() in (loc.get("city") or "").lower() or q.lower() in (loc.get("region") or "").lower():
+            where.append("location")
+        if any(q.lower() in str(x).lower() for x in op.get("sources",[])): where.append("source")
+        if any(q.lower() in str(x).lower() for x in op.get("evidence",[])): where.append("evidence")
+        if any(q.lower() in str(x).lower() for x in op.get("owner_notes",[])): where.append("owner note")
+        out.append({"id":op["id"],"name":op["name"],"vertical":op["vertical"],
+                    "location":op.get("location",{}),"lifecycle":op.get("lifecycle"),
+                    "matched_in":where or ["record"]})
+    return out
+
+def paged_opportunities(db,*,vertical=None,query="",page=1,page_size=24):
+    ensure_ux_schema(db)
+    page=max(1,int(page)); page_size=max(6,min(int(page_size),60))
+    where=[]; args=[]
+    if vertical:
+        where.append("vertical=?"); args.append(vertical)
+    q=str(query or "").strip()
+    if q:
+        like="%"+q.replace("%","\\%").replace("_","\\_")+"%"
+        where.append("(name LIKE ? ESCAPE '\\' OR current_json LIKE ? ESCAPE '\\')")
+        args.extend([like,like])
+    clause=(" WHERE "+" AND ".join(where)) if where else ""
+    total=db.execute("SELECT COUNT(*) AS n FROM opportunities"+clause,args).fetchone()["n"]
+    rows=db.execute("SELECT current_json FROM opportunities"+clause+" ORDER BY name LIMIT ? OFFSET ?",
+                    [*args,page_size,(page-1)*page_size]).fetchall()
+    return {"items":[json.loads(r["current_json"]) for r in rows],"total":total,
+            "page":page,"page_size":page_size,
+            "pages":max(1,(total+page_size-1)//page_size)}
+
+def pulse_snapshot(db):
+    ensure_ux_schema(db)
+    pref=preferences(db)
+    rows=db.execute("SELECT current_json FROM opportunities").fetchall()
+    ops=[json.loads(r["current_json"]) for r in rows]
+    active=[op for op in ops if op.get("lifecycle")!="ARCHIVED"]
+    triage=triage_map(db,[op["id"] for op in active])
+    needs=sum(1 for op in active if triage.get(op["id"],{}).get("state")=="FOCUS")
+    blockers=0
+    for op in active:
+        ready=integration_readiness(op)
+        if ready.get("source_state")!="EXTERNAL_PROOFS_COMPLETE_OWNER_RELEASE_REQUIRED":
+            blockers+=1
+    since=pref.get("pulse_seen_at")
+    if since:
+        changed=db.execute("SELECT COUNT(*) AS n FROM events WHERE occurred_at>?",(since,)).fetchone()["n"]
+    else:
+        changed=db.execute("SELECT COUNT(*) AS n FROM events").fetchone()["n"]
+    return {"active_opportunities":len(active),"needs_owner":needs,
+            "external_blockers":blockers,"changed_since_seen":changed,
+            "seen_at":since,"density":pref["density"]}
+
+def integration_cockpit(opportunities):
+    systems=("TOWER_PROTECTED_ACTION","TELLER_MONEY_AND_MANAGEMENT","VAULT_CANONICAL_ARCHIVAL","OPERATIONS_RECEIVER_ACCEPTANCE")
+    labels={
+      "TOWER_PROTECTED_ACTION":"Tower protected action",
+      "TELLER_MONEY_AND_MANAGEMENT":"Teller money + management",
+      "VAULT_CANONICAL_ARCHIVAL":"Vault canonical archival",
+      "OPERATIONS_RECEIVER_ACCEPTANCE":"Operations receiver",
+    }
+    rows=[]
+    for kind in systems:
+        present=0; required=0
+        for op in opportunities:
+            report=integration_readiness(op)
+            # Operations receiver applies only where integration_readiness requires it.
+            if kind=="OPERATIONS_RECEIVER_ACCEPTANCE" and op.get("vertical") not in ("atm","multifamily"):
+                continue
+            required+=1
+            if kind not in report.get("missing",[]): present+=1
+        rows.append({"kind":kind,"label":labels[kind],"present":present,"required":required,
+                     "state":"COMPLETE" if required and present==required else
+                             "NOT_APPLICABLE" if required==0 else
+                             "PARTIAL" if present else "AWAITING_EXTERNAL_PROOF"})
+    return rows
+
+def _flatten(prefix,value,out):
+    if isinstance(value,dict):
+        for key in sorted(value):
+            if key in ("updated_at","version","external_proofs"): continue
+            _flatten(prefix+"."+key if prefix else key,value[key],out)
+    elif isinstance(value,list):
+        out[prefix]=f"{len(value)} item(s)"
+    else:
+        out[prefix]=value
+
+def revision_diff(db,opportunity_id):
+    rows=db.execute("""SELECT revision,snapshot_json,occurred_at FROM revisions
+      WHERE opportunity_id=? ORDER BY revision DESC LIMIT 2""",(opportunity_id,)).fetchall()
+    if len(rows)<2:
+        return {"from_revision":None,"to_revision":rows[0]["revision"] if rows else None,"changes":[]}
+    newer,older=rows[0],rows[1]
+    left={}; right={}
+    _flatten("",json.loads(older["snapshot_json"]),left)
+    _flatten("",json.loads(newer["snapshot_json"]),right)
+    changes=[]
+    for key in sorted(set(left)|set(right)):
+        if left.get(key)!=right.get(key):
+            changes.append({"field":key,"before":left.get(key),"after":right.get(key)})
+    return {"from_revision":older["revision"],"to_revision":newer["revision"],
+            "occurred_at":newer["occurred_at"],"changes":changes[:80]}
+
+def provenance(op,analysis):
+    rows=[]
+    for finding in analysis.get("findings",[]):
+        rows.append({"kind":"RULE_FINDING","label":finding.get("rule_id"),
+                     "value":finding.get("reason"),"source":"BuyBox deterministic rules"})
+    for e in op.get("evidence",[]):
+        rows.append({"kind":"EVIDENCE","label":e.get("kind"),"value":e.get("status"),
+                     "source":e.get("source") or e.get("reference") or "Recorded source"})
+    for key,val in op.get("metrics",{}).items():
+        rows.append({"kind":"METRIC","label":key,"value":val.get("value"),
+                     "source":val.get("evidence_id") or "Linked reviewed evidence"})
+    for proof in op.get("external_proofs",[]):
+        rows.append({"kind":"EXTERNAL_PROOF","label":proof.get("kind"),
+                     "value":proof.get("receipt_ref"),"source":proof.get("issuer")})
+    return rows
+
+def acceptance_steps():
+    return [
+      {"id":"discover","label":"Discover","path":"/","check":"Create/find a real opportunity and verify empty/search states."},
+      {"id":"diligence","label":"Diligence","path":None,"check":"Open a deal and verify evidence, provenance and source review."},
+      {"id":"finance","label":"Financing + Insurance","path":None,"check":"Verify stale/recheck states and source-linked cost modeling."},
+      {"id":"decision","label":"Decision + Offer","path":None,"check":"Review Red Team, Decision Desk and Offer Lab authority boundaries."},
+      {"id":"closing","label":"Closing","path":None,"check":"Verify closing review never claims external authority."},
+      {"id":"integration","label":"Integration","path":"/integration-cockpit","check":"Verify Tower/Teller/Vault/operations proof states."},
+      {"id":"handoff","label":"Handoff","path":None,"check":"Verify post-close receiver acceptance remains externally proven."},
+    ]
