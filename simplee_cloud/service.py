@@ -12,7 +12,7 @@ import secrets
 from threading import Lock
 from collections.abc import Callable
 
-_NAMESPACE = re.compile(r"[0-9a-f]{64}\\Z")
+_NAMESPACE = re.compile(r"[0-9a-f]{64}\Z")
 
 
 from .contracts import (
