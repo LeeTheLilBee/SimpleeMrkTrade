@@ -98,14 +98,31 @@ def test_twr127_owner_dashboard_source_no_longer_routes_to_walkthrough():
     )
 
 
-def test_twr128_access_home_only_shows_current_protected_products():
+def test_twr128_access_home_shows_full_world_but_only_live_products_launch():
     assert [
         card["id"]
         for card in APP_CARDS
     ] == [
         "observatory",
         "teller",
+        "grounds",
+        "buybox",
+        "vault",
+        "clouds",
+        "simplee_on_the_go",
+        "crown_calendar",
+        "beauty",
+        "sunday_table",
+        "our_oral_traditions",
+        "cookout_ready",
+        "sunday_best",
+        "the_village",
+        "simplee_fitness",
+        "simplee_skincare",
     ]
+    assert {
+        card["id"] for card in APP_CARDS if card["href"]
+    } == {"observatory", "teller"}
 
     source = (
         REPO
@@ -129,7 +146,7 @@ def test_twr128_access_home_only_shows_current_protected_products():
 def test_twr128_access_home_does_not_claim_runtime_availability():
     card = APP_CARDS[0]
 
-    assert card["status"] == "Protected entry"
+    assert card["status"] == "Live door"
     assert card["href"] == "/tower/launch/observatory"
 
     assert "ready" not in card["status"].lower()
@@ -155,15 +172,26 @@ def test_twr128_rendered_access_home_has_no_product_theater():
         )
 
     assert "The Observatory" in body
-    assert "Additional verification required" in body
+    assert "Protected doors need verification" in body
 
     assert "The Teller" in body
     assert "/tower/launch/teller" in body
 
-    for prohibited in (
+    for visible in (
         "The Grounds",
-        "The Clouds",
+        "BuyBox",
         "Archive Vault",
+        "Simplee Cloud",
+        "SimpleeOnTheGo",
+        "Crown Calendar",
+    ):
+        assert visible in body
+
+    assert 'href="/grounds"' not in body
+    assert 'href="/buybox"' not in body
+    assert 'href="/apps/crown-calendar"' not in body
+
+    for prohibited in (
         "Preview",
         "Simulate return",
         "Evidence drawers",
@@ -218,7 +246,7 @@ def test_twr129_security_map_removed_from_primary_shortcut_set():
     assert summary["people_authority_state"] == "NOT_CONFIGURED"
 
 
-def test_twr129_future_apps_remain_registered_but_not_rendered():
+def test_twr129_future_apps_remain_registered_visible_and_nonlaunchable():
     apps = {
         app["app_id"]: app
         for app in registered_apps()
@@ -229,13 +257,11 @@ def test_twr129_future_apps_remain_registered_but_not_rendered():
     assert apps["clouds"]["app_status"] == "registered_future_room"
     assert apps["grounds"]["app_status"] == "registered_future_room"
 
-    assert [
-        card["id"]
-        for card in APP_CARDS
-    ] == [
-        "observatory",
-        "teller",
-    ]
+    cards = {card["id"]: card for card in APP_CARDS}
+    for app_id in ("grounds", "vault", "clouds"):
+        assert app_id in cards
+        assert cards[app_id]["href"] is None
+        assert cards[app_id]["status"] == "Building"
 
 
 def test_twr130_retirement_focus_has_zero_retire_or_review_findings():
