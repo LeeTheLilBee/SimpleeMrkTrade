@@ -337,6 +337,109 @@ def _bea(symbol: str, secret: str, *, opener=None) -> dict:
         "public_domain_source": True,
     }
 
+def _soulaana_fusion(rows: list[dict], readable: list[dict]) -> dict:
+    """Summarize every eligible source family without selecting a winner."""
+    states = {}
+    eligible = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        provider = row.get("provider")
+        if not isinstance(provider, str):
+            continue
+        states[provider] = row.get("state")
+        if row.get("state") != "SOURCE_BOUND":
+            continue
+        if provider in {"public", "public_options"}:
+            approved = row.get("soulaana_ai_use_reviewed") is True
+        else:
+            approved = provider in PROVIDERS and _ai_enabled(provider)
+        if approved:
+            eligible.append(provider)
+
+    consumed = [
+        item.get("provider")
+        for item in readable
+        if isinstance(item, dict) and isinstance(item.get("provider"), str)
+    ]
+
+    families = {
+        "identity_reference": [],
+        "historical_price": [],
+        "current_market": [],
+        "options_market": [],
+        "macro": [],
+    }
+    market_values = []
+    for item in readable:
+        if not isinstance(item, dict):
+            continue
+        provider = item.get("provider")
+        kind = str(item.get("kind") or "")
+        summary = item.get("summary") if isinstance(item.get("summary"), dict) else {}
+        if provider == "finnhub":
+            families["identity_reference"].append(provider)
+        elif provider == "alpha_vantage":
+            families["historical_price"].append(provider)
+        elif provider in {"alpaca", "finazon", "public"}:
+            families["current_market"].append(provider)
+            value = None
+            observed_at = summary.get("observed_at")
+            if provider == "alpaca":
+                value = summary.get("midpoint")
+            elif provider == "finazon":
+                value = summary.get("last_trade_price")
+                observed_at = summary.get("last_trade_timestamp_ms")
+            else:
+                bid, ask, last = summary.get("bid"), summary.get("ask"), summary.get("last")
+                if isinstance(bid, (int, float)) and isinstance(ask, (int, float)) and bid > 0 and ask > 0:
+                    value = (float(bid) + float(ask)) / 2.0
+                elif isinstance(last, (int, float)) and last > 0:
+                    value = float(last)
+            if isinstance(value, (int, float)) and isfinite(float(value)) and float(value) > 0:
+                market_values.append({
+                    "provider": provider,
+                    "reference_value": float(value),
+                    "observed_at": observed_at,
+                })
+        elif provider == "public_options":
+            families["options_market"].append(provider)
+        elif provider == "bea" or "MACRO" in kind:
+            families["macro"].append(provider)
+
+    comparison = {
+        "source_count": len(market_values),
+        "sources": market_values,
+        "dispersion_percent": None,
+        "winner_selected": False,
+        "direct_interchangeability_assumed": False,
+    }
+    if len(market_values) >= 2:
+        values = [x["reference_value"] for x in market_values]
+        mean = sum(values) / len(values)
+        if mean > 0:
+            comparison["dispersion_percent"] = round(
+                ((max(values) - min(values)) / mean) * 100.0, 6
+            )
+
+    return {
+        "schema": "OB_SOULAANA_MULTI_SOURCE_FUSION_V1",
+        "provider_states": states,
+        "eligible_source_bound_providers": eligible,
+        "consumed_providers": consumed,
+        "all_eligible_source_bound_consumed": sorted(eligible) == sorted(consumed),
+        "source_families": families,
+        "current_market_comparison": comparison,
+        "single_provider_selected_as_truth": False,
+        "cross_source_causality_claimed": False,
+        "trade_signal_created": False,
+        "explanation": (
+            "Soulaana keeps every permitted source in its own lane, compares overlapping "
+            "evidence, and preserves disagreements instead of replacing all sources with one provider."
+        ),
+    }
+
+
 def _soulaana(rows: list[dict]) -> dict:
     """Examine only independently AI-reviewed bounded provider evidence.
 
@@ -604,10 +707,12 @@ def _soulaana(rows: list[dict]) -> dict:
                 "Macro agreement raises context confidence; it does not create a trade candidate."
             )
         readable.append(item)
+    fusion = _soulaana_fusion(rows, readable)
     return {
         "schema": "OB_SOULAANA_KEYED_PROVIDER_RESEARCH_V1",
         "channel": "SOULAANA_REVIEWED_PROVIDER_RESEARCH",
         "observations": readable,
+        "fusion": fusion,
         "explanation_contract": {
             "sequence": ["what_changed", "what_it_means", "why_it_matters", "what_confirms_or_conflicts", "what_is_missing"],
             "cross_source_causality_claimed": False,

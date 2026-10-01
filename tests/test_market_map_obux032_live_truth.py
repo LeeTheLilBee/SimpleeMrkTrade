@@ -75,3 +75,10 @@ def test_obux032_ui_age_timer_is_not_data_polling():
     assert "refreshRelativeAgeOnly" in JS
     assert "UI clock only." in JS
     assert "This does NOT fetch data" in JS
+
+
+def test_obux032_source_backed_symbols_do_not_disappear_without_group_metadata():
+    assert 'name: "Ungrouped source-backed"' in JS
+    assert 'region_type: "CANONICAL_UNGROUPED"' in JS
+    assert "safeArray(contract.symbols)" in JS
+    assert "Never invent symbols or market values" in JS

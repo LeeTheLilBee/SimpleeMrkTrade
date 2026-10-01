@@ -38,12 +38,17 @@ class TowerGroundsHandoffTests(unittest.TestCase):
         self.assertFalse(review["entitlement_granted"])
         self.assertFalse(review["token_issued"])
 
-    def test_public_registry_remains_nonlaunchable(self):
+    def test_public_registry_has_fail_closed_gate_but_product_remains_nonlaunchable(self):
         from tower.app_registry import TOWER_APP_REGISTRY, TOWER_ROUTE_REGISTRY
         grounds=next(app for app in TOWER_APP_REGISTRY if app.app_id=="grounds")
         self.assertEqual(grounds.app_status,"registered_future_room")
-        self.assertEqual(grounds.tower_launch_route,"/tower/app-registry")
-        self.assertFalse(any(route.app_id=="grounds" for route in TOWER_ROUTE_REGISTRY))
+        self.assertEqual(grounds.tower_launch_route,"/tower/launch/grounds")
+        routes=[route for route in TOWER_ROUTE_REGISTRY if route.app_id=="grounds"]
+        self.assertEqual(len(routes),1)
+        self.assertEqual(routes[0].lock_state,"protected_fail_closed_launch_gate")
+        self.assertTrue(routes[0].requires_owner_session)
+        self.assertTrue(routes[0].requires_step_up)
+        # This source contract still does not itself register or authorize a product route.
         self.assertFalse(get_grounds_requirements()["route_registered"])
 
     def test_checklist_is_copy_safe(self):

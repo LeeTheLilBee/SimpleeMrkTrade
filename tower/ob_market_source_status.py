@@ -31,6 +31,193 @@ NO_PROVIDER_REASON = (
 )
 
 
+def _midpoint(bid, ask, last=None):
+    if isinstance(bid, (int, float)) and isinstance(ask, (int, float)) and bid > 0 and ask > 0:
+        return (float(bid) + float(ask)) / 2.0
+    if isinstance(last, (int, float)) and last > 0:
+        return float(last)
+    return None
+
+
+def _merge_public_owner_context(app, document, sid):
+    """Add Public beside existing sources; never replace or promote it."""
+    quote_reader = app.extensions.get("ob_public_owner_quote_reader_v1")
+    option_reader = app.extensions.get("ob_public_owner_option_chain_reader_v1")
+    if not callable(quote_reader):
+        document.setdefault("source_fusion", {})["public_lane"] = "UNAVAILABLE"
+        return document
+
+    try:
+        from tower.ob_settings_control_room import get_owner_settings
+        use_public_options = get_owner_settings().get("use_public_options_data") is True
+    except Exception:
+        use_public_options = False
+
+    symbol_rows = [
+        row for row in document.get("symbols", [])
+        if isinstance(row, dict) and isinstance(row.get("symbol"), str)
+    ][:6]
+    per_symbol = {}
+    public_quotes = 0
+    public_options = 0
+    soulaana_public_quotes = 0
+    soulaana_public_options = 0
+
+    for row in symbol_rows:
+        symbol = row["symbol"]
+        coverage = [
+            x for x in row.get("source_coverage", [])
+            if isinstance(x, str)
+        ]
+        observations = (
+            dict(row.get("source_observations"))
+            if isinstance(row.get("source_observations"), dict)
+            else {}
+        )
+
+        try:
+            public = quote_reader(sid, symbol, "EQUITY")
+        except Exception:
+            public = {"provider": "public", "state": "SOURCE_HOLD"}
+        quote_state = public.get("state") if isinstance(public, dict) else "SOURCE_HOLD"
+        public_ai = isinstance(public, dict) and public.get("soulaana_ai_use_reviewed") is True
+        if (
+            isinstance(public, dict)
+            and quote_state == "SOURCE_BOUND"
+            and public.get("owner_display_reviewed") is True
+        ):
+            observations["public"] = {
+                "bid": public.get("bid"),
+                "ask": public.get("ask"),
+                "last": public.get("last"),
+                "midpoint": _midpoint(public.get("bid"), public.get("ask"), public.get("last")),
+                "observed_at": public.get("observed_at"),
+                "personal_owner_only": True,
+                "consolidated_quote": public.get("consolidated_quote") is True,
+                "execution_grade_quote": False,
+            }
+            if "public" not in coverage:
+                coverage.append("public")
+            public_quotes += 1
+            if public_ai:
+                soulaana_public_quotes += 1
+
+        option_state = "DISABLED_BY_OWNER"
+        option_ai = False
+        if use_public_options and callable(option_reader):
+            try:
+                options = option_reader(sid, symbol)
+            except Exception:
+                options = {"provider": "public_options", "state": "SOURCE_HOLD"}
+            option_state = options.get("state") if isinstance(options, dict) else "SOURCE_HOLD"
+            option_ai = isinstance(options, dict) and options.get("soulaana_ai_use_reviewed") is True
+            if (
+                isinstance(options, dict)
+                and option_state == "SOURCE_BOUND"
+                and options.get("owner_display_reviewed") is True
+            ):
+                observations["public_options"] = {
+                    "expiration": options.get("expiration"),
+                    "underlying_midpoint": options.get("underlying_midpoint"),
+                    "contract_count": options.get("contract_count"),
+                    "personal_owner_only": True,
+                    "execution_authorized": False,
+                }
+                if "public_options" not in coverage:
+                    coverage.append("public_options")
+                public_options += 1
+                if option_ai:
+                    soulaana_public_options += 1
+
+        alpaca = observations.get("alpaca") if isinstance(observations.get("alpaca"), dict) else {}
+        pub = observations.get("public") if isinstance(observations.get("public"), dict) else {}
+        alpaca_value = alpaca.get("midpoint")
+        public_value = pub.get("midpoint")
+        comparison = {
+            "sources_compared": [],
+            "dispersion_percent": None,
+            "winner_selected": False,
+            "direct_interchangeability_assumed": False,
+        }
+        if isinstance(alpaca_value, (int, float)) and alpaca_value > 0:
+            comparison["sources_compared"].append("alpaca")
+        if isinstance(public_value, (int, float)) and public_value > 0:
+            comparison["sources_compared"].append("public")
+        if (
+            isinstance(alpaca_value, (int, float)) and alpaca_value > 0
+            and isinstance(public_value, (int, float)) and public_value > 0
+        ):
+            mean = (float(alpaca_value) + float(public_value)) / 2.0
+            comparison["dispersion_percent"] = round(
+                abs(float(alpaca_value) - float(public_value)) / mean * 100.0, 6
+            )
+
+        row["source_coverage"] = coverage
+        row["source_observations"] = observations
+        row["source_comparison"] = comparison
+        per_symbol[symbol] = {
+            "source_coverage": list(coverage),
+            "public_quote_state": quote_state,
+            "public_options_state": option_state,
+            "public_quote_ai_consumable": public_ai and quote_state == "SOURCE_BOUND",
+            "public_options_ai_consumable": option_ai and option_state == "SOURCE_BOUND",
+            "comparison": comparison,
+        }
+
+    if symbol_rows:
+        document["sectors"] = [{
+            "name": "Source-backed attention",
+            "region_type": "RESEARCH_ATTENTION",
+            "symbols": [dict(row) for row in symbol_rows],
+        }]
+
+    providers_present = sorted({
+        provider
+        for row in symbol_rows
+        for provider in row.get("source_coverage", [])
+        if isinstance(provider, str)
+    })
+    if len(providers_present) > 1:
+        document["source"] = "observatory-multi-provider-owner-research"
+        document["reason"] = (
+            "The Observatory retained multiple permitted source families for the same "
+            "research symbols. No provider overwrote another; provenance and differences "
+            "remain explicit."
+        )
+
+    fusion = {
+        "schema": "OB_CANONICAL_MULTI_SOURCE_FUSION_V1",
+        "providers_present": providers_present,
+        "per_symbol": per_symbol,
+        "public_quote_symbols": public_quotes,
+        "public_option_symbols": public_options,
+        "soulaana_public_quote_symbols": soulaana_public_quotes,
+        "soulaana_public_option_symbols": soulaana_public_options,
+        "single_provider_selected_as_truth": False,
+        "provider_values_overwritten": False,
+        "all_source_observations_preserved_separately": True,
+    }
+    document["source_fusion"] = fusion
+    document.setdefault("market_health", {})["source_fusion"] = {
+        "providers_present": providers_present,
+        "symbol_count": len(symbol_rows),
+        "multi_source_symbols": sum(
+            1 for row in symbol_rows if len(row.get("source_coverage", [])) > 1
+        ),
+    }
+    document.setdefault("soulaana", {})["source_fusion"] = {
+        "providers_present": providers_present,
+        "public_quote_symbols_consumed": soulaana_public_quotes,
+        "public_option_symbols_consumed": soulaana_public_options,
+        "single_provider_selected": False,
+        "meaning": (
+            "I am keeping every permitted source observation in its own lane and comparing "
+            "overlap instead of choosing one provider to replace the rest."
+        ),
+    }
+    return document
+
+
 def pending_provider_document() -> dict:
     """No fabricated positions, opportunities, option contracts, or market score."""
     return {
@@ -134,7 +321,14 @@ def register_hosted_ob_market_source_status(app):
                         "for the current research watchlist. This is venue-limited research context, "
                         "not SIP/NBBO and not an execution quote."
                     )
-            state = "alpaca-autonomous-research-websocket"
+
+            document = _merge_public_owner_context(app, document, sid)
+            providers = document.get("source_fusion", {}).get("providers_present", [])
+            state = (
+                "multi-provider-observatory-research"
+                if len(providers) > 1
+                else "alpaca-autonomous-research-websocket"
+            )
         except Exception as exc:
             # Fail closed without leaking provider response or secret material.
             document["reason"] = (

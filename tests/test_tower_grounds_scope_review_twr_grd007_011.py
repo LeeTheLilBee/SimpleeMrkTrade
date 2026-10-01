@@ -181,8 +181,13 @@ def test_owner_role_is_not_permission_for_physical_entry():
     assert response["entry_authorized"] is False
 
 
-def test_no_real_grounds_door_or_untrusted_http_endpoint():
-    assert route_by_path("/tower/launch/grounds") is None
+def test_fail_closed_grounds_launch_gate_is_not_product_entry():
+    launch = route_by_path("/tower/launch/grounds")
+    assert launch is not None
+    assert launch["owner_only"] is True
+    assert launch["requires_owner_session"] is True
+    assert launch["requires_step_up"] is True
+    assert launch["lock_state"] == "protected_fail_closed_launch_gate"
     assert route_by_path("/grounds") is None
     truth = app_truth_by_id("grounds")
     assert truth is not None

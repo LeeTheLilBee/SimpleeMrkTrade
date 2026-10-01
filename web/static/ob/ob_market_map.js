@@ -1439,10 +1439,21 @@
     mount.replaceChildren();
 
 
-    const sectors =
+    let sectors =
       safeArray(
         contract.sectors
       );
+
+    // Presentation-only resilience: if canonical truth contains real
+    // source-backed symbols but no grouping metadata, keep those exact symbols
+    // visible in one ungrouped region. Never invent symbols or market values.
+    if (!sectors.length && safeArray(contract.symbols).length) {
+      sectors = [{
+        name: "Ungrouped source-backed",
+        region_type: "CANONICAL_UNGROUPED",
+        symbols: safeArray(contract.symbols),
+      }];
+    }
 
 
     const sets =
@@ -1635,7 +1646,7 @@
           contract.sectors
         ).length
         +
-        " sector groups · "
+        " source regions · "
         +
         safeArray(
           contract.symbols
