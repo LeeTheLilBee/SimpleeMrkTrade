@@ -45,6 +45,10 @@ def test_registry_has_exact_tower_launch_routes_without_claiming_product_release
     assert apps["buybox"]["app_status"] == "registered_future_room"
     assert apps["grounds"]["broker_execution_enabled"] is False
     assert apps["buybox"]["capital_action_enabled"] is False
+    grounds_route = route_by_path("/tower/launch/grounds")
+    buybox_route = route_by_path("/tower/launch/buybox")
+    assert grounds_route["owner_only"] is True and grounds_route["requires_step_up"] is True
+    assert buybox_route["owner_only"] is True and buybox_route["requires_step_up"] is True
 
 
 def test_anonymous_launch_requires_tower_owner_login():
