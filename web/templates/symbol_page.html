@@ -206,6 +206,73 @@
         </article>
       </div>
 
+      <div class="ob-symbol-research-grid ob-symbol-research-grid--public">
+        <article>
+          <span class="ob-symbol-eyebrow">LABOR + INFLATION</span>
+          <h3 id="symbolResearchBlsTitle">Waiting for BLS</h3>
+          <p id="symbolResearchBls">CPI, unemployment, payrolls and producer-price context have not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">RATES + TREASURY</span>
+          <h3 id="symbolResearchTreasuryTitle">Waiting for Treasury</h3>
+          <p id="symbolResearchTreasury">Debt and reviewed Treasury-rate context have not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">IDENTITY CROSS-CHECK</span>
+          <h3 id="symbolResearchFigiTitle">Waiting for OpenFIGI</h3>
+          <p id="symbolResearchFigi">Ticker-to-FIGI reference has not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">SEC EDGAR</span>
+          {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
+          <h3>{{ ob_research_context.get('identity',{}).get('security_name') or symbol }}</h3>
+          <p>
+            CIK {{ ob_research_context.get('identity',{}).get('cik') or 'not verified' }} ·
+            {{ ob_research_context.get('fundamentals',{}).get('state','NOT_AVAILABLE')|replace('_',' ') }} ·
+            {{ ob_research_context.get('issuer_events',[])|length }} cited issuer event(s).
+          </p>
+          {% else %}
+          <h3>Issuer research held</h3>
+          <p>No reviewed SEC issuer packet is attached to this symbol request.</p>
+          {% endif %}
+        </article>
+      </div>
+
+      {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
+      {% set sec_read = ob_research_context.get('soulaana_sec_examination', {}) %}
+      <div class="ob-symbol-research-soulaana ob-symbol-sec-native">
+        <span class="ob-symbol-eyebrow">SEC · WHAT THE FILINGS SAY</span>
+        <div class="ob-symbol-research-list">
+          {% for fact in ob_research_context.get('fundamentals',{}).get('reported_concepts',[])[:8] %}
+          <article class="ob-symbol-research-note">
+            <strong>{{ fact.get('concept','Reported item')|e }}</strong>
+            <p>{{ fact.get('value','—')|e }} {{ fact.get('units','')|e }} · period ending {{ fact.get('fiscal_end','Unknown')|e }}</p>
+            <p class="ob-symbol-research-muted">{{ fact.get('form','SEC filing')|e }} · accepted {{ fact.get('accepted_at','Unknown')|e }}</p>
+          </article>
+          {% endfor %}
+          {% for event in ob_research_context.get('issuer_events',[])[:6] %}
+          <article class="ob-symbol-research-note">
+            <strong>{{ event.get('headline','Issuer event')|e }}</strong>
+            <p>{{ event.get('kind','issuer event')|replace('_',' ')|e }} · {{ event.get('accepted_at','Source time unavailable')|e }}</p>
+          </article>
+          {% endfor %}
+          {% if not ob_research_context.get('fundamentals',{}).get('reported_concepts') and not ob_research_context.get('issuer_events') %}
+          <p class="ob-symbol-research-muted">No reviewed SEC filing facts or issuer events are available for this symbol yet.</p>
+          {% endif %}
+        </div>
+        {% if sec_read.get('state') == 'SOURCE_BOUND' %}
+        <p class="ob-symbol-research-muted">Soulaana reviewed {{ sec_read.get('findings',[])|length }} filing fact(s) and {{ sec_read.get('comparisons',[])|length }} period comparison(s). Historical issuer evidence only; not a current quote.</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div class="ob-symbol-research-soulaana">
+        <span class="ob-symbol-eyebrow">MARKET + POLICY CATALYSTS</span>
+        <div id="symbolResearchCatalysts" class="ob-symbol-research-list">
+          <p>I’m checking Federal Register, CFTC, EIA, World Bank and NWS research lanes.</p>
+        </div>
+      </div>
+
       <div class="ob-symbol-research-soulaana">
         <span class="ob-symbol-eyebrow">SOULAANA · SOURCE-BACKED READ</span>
         <div id="symbolResearchSoulaana" class="ob-symbol-research-list">
