@@ -52,6 +52,31 @@ class Recorder:
                 "marketCapitalization": 999999999,
             })
         if "alphavantage.co/query" in request.full_url:
+            if "function=OVERVIEW" in request.full_url:
+                return Response(request.full_url, {
+                    "Symbol": "AAPL",
+                    "AssetType": "Common Stock",
+                    "Name": "Apple Inc",
+                    "Description": "Apple designs, manufactures and markets smartphones, personal computers, tablets, wearables and services.",
+                    "CIK": "0000320193",
+                    "Exchange": "NASDAQ",
+                    "Currency": "USD",
+                    "Country": "USA",
+                    "Sector": "TECHNOLOGY",
+                    "Industry": "CONSUMER ELECTRONICS",
+                    "Address": "One Apple Park Way, Cupertino, CA",
+                    "FiscalYearEnd": "September",
+                    "LatestQuarter": "2026-06-30",
+                    "MarketCapitalization": "3200000000000",
+                    "SharesOutstanding": "15000000000",
+                    "RevenueTTM": "420000000000",
+                    "EPS": "7.20",
+                    "PERatio": "34.5",
+                    "ProfitMargin": "0.255",
+                    "Beta": "1.18",
+                    "52WeekHigh": "260.10",
+                    "52WeekLow": "170.20"
+                })
             return Response(request.full_url, {
                 "Meta Data": {"2. Symbol": "AAPL"},
                 "Time Series (Daily)": {
@@ -151,7 +176,7 @@ def test_source_bound_owner_projection_is_bounded_and_not_live(rights):
     packet = provider_research_projection(
         sid="tower_session_" + "x"*20, symbol="AAPL",
         secret_reader=secret_reader, opener=rec, cache=ProviderResearchCache())
-    assert len(rec.calls) == 9
+    assert len(rec.calls) == 10
     assert packet["schema"] == "OB_KEYED_PROVIDER_RESEARCH_V1"
     assert packet["live_prices_attached"] is True
     assert packet["orders_attached"] is False
@@ -161,8 +186,15 @@ def test_source_bound_owner_projection_is_bounded_and_not_live(rights):
     assert finnhub["security_name"] == "Apple Inc"
     assert "marketCapitalization" not in finnhub
     assert alpha["state"] == "SOURCE_BOUND"
-    assert alpha["historical_only"] is True
+    assert alpha["historical_only"] is False
     assert len(alpha["bars"]) == 3
+    assert alpha["company_profile"]["name"] == "Apple Inc"
+    assert alpha["company_profile"]["sector"] == "TECHNOLOGY"
+    assert alpha["company_profile"]["industry"] == "CONSUMER ELECTRONICS"
+    assert "smartphones" in alpha["company_profile"]["description"]
+    assert alpha["company_profile"]["market_cap"] == 3200000000000.0
+    assert alpha["personal_owner_only"] is True
+    assert alpha["commercial_or_beta_use_allowed"] is False
     assert alpha["bars"][0]["session_date"] == "2026-09-28"
     assert finazon["state"] == "SOURCE_BOUND"
     assert finazon["real_time_market_context"] is True
@@ -221,7 +253,10 @@ def test_reviewed_provider_records_are_actually_examined_and_cited(rights, monke
     assert "+3.000%" in history["finding"]
     assert history["summary"]["close_change"] == "3.0"
     assert history["summary"]["close_change_percent"] == "+3.000"
-    assert history["source_reference"] == "https://www.alphavantage.co/documentation/#daily"
+    assert history["source_reference"] == "https://www.alphavantage.co/documentation/"
+    assert "Apple Inc" in history["finding"]
+    assert "CONSUMER ELECTRONICS" in history["finding"]
+    assert history["why_it_matters"]
     assert "SECRET" not in json.dumps(brief)
     assert "bars" not in json.dumps(brief)
     assert brief["live_quote_verified"] is False
@@ -237,7 +272,7 @@ def test_revoking_ai_grant_suppresses_findings_even_when_provider_is_cached(righ
     assert len(provider_research_projection(**args)["soulaana_research"]["observations"]) == 2
     monkeypatch.delenv("OB_PROVIDER_ALPHA_VANTAGE_AI_USE_REVIEWED")
     second = provider_research_projection(**args)
-    assert len(recorder.calls) == 9  # no fresh provider call needed
+    assert len(recorder.calls) == 10  # no fresh provider call needed
     assert [o["provider"] for o in second["soulaana_research"]["observations"]] == ["finnhub"]
     monkeypatch.delenv("OB_PROVIDER_FINNHUB_AI_USE_REVIEWED")
     third = provider_research_projection(**args)["soulaana_research"]
@@ -262,7 +297,7 @@ def test_cache_avoids_repeat_provider_call_within_ttl(rights):
                 secret_reader=secret_reader, opener=rec, cache=cache)
     first = provider_research_projection(**args)
     second = provider_research_projection(**args)
-    assert len(rec.calls) == 9
+    assert len(rec.calls) == 10
     assert first["provider_research"] == second["provider_research"]
 
 
