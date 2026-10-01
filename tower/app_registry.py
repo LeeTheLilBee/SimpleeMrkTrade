@@ -460,6 +460,48 @@ TOWER_ROUTE_REGISTRY: Tuple[TowerRouteRegistration, ...] = (
             "verified publication truth, and one-time Tower handoff are required."
         ),
     ),
+    TowerRouteRegistration(
+        route_id="grounds_owner_launch",
+        route="/tower/launch/grounds",
+        label="Open The Grounds",
+        app_id="grounds",
+        room_id="owner_launch",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="high",
+        lock_state="protected_fail_closed_launch_gate",
+        explanation=(
+            "Tower owns the Grounds owner launch gate. The crossing remains "
+            "blocked unless the same-origin Grounds runtime, certified current "
+            "Tower receiver, publication truth, entitlement, and independent "
+            "operational release are all verified."
+        ),
+    ),
+    TowerRouteRegistration(
+        route_id="buybox_owner_launch",
+        route="/tower/launch/buybox",
+        label="Open BuyBox",
+        app_id="buybox",
+        room_id="owner_launch",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="high",
+        lock_state="protected_fail_closed_launch_gate",
+        explanation=(
+            "Tower owns the BuyBox owner launch gate and signed issuer preflight. "
+            "The crossing stays blocked until the reviewed BuyBox browser bootstrap, "
+            "current entitlement, publication/health, Tower session introspection, "
+            "and private storage/restore evidence are independently verified."
+        ),
+    ),
 )
 
 
