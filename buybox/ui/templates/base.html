@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark"><title>{% block title %}BuyBox{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static',filename='buybox.css') }}">
+<script src="{{ url_for('static',filename='owner_experience.js') }}" defer></script></head>
+<body data-density="{{ density_mode|lower }}"><a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="brand"><span class="mark">◈</span><div><strong>BUYBOX</strong><small>Simplee acquisition intelligence</small></div></div>
+{% if session.get('buybox_owner') %}<nav aria-label="Primary">{% if tower_governed %}<a href="{{ tower_return_url }}">← Return to Tower</a>{% endif %}<a href="{{ url_for('focus') }}">Focus</a><a href="{{ url_for('index') }}">Discover</a><a href="{{ url_for('intelligence_home') }}">Intelligence</a><a href="{{ url_for('integration_cockpit_room') }}">Integrations</a><a href="{{ url_for('owner_acceptance') }}">Acceptance</a><a href="{{ url_for('command_center') }}" data-command-open>⌘ Search</a><form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit">{{ 'Leave BuyBox' if tower_governed else 'Sign out' }}</button></form></nav>{% endif %}
+</header>
+{% if session.get('buybox_owner') and owner_pulse %}
+<section class="owner-pulse" aria-label="Acquisition pulse">
+<a href="{{ url_for('focus') }}"><strong>{{ owner_pulse.active_opportunities }} active</strong></a>
+<span><strong>{{ owner_pulse.needs_owner }}</strong> need you</span>
+<a href="{{ url_for('integration_cockpit_room') }}"><strong>{{ owner_pulse.external_blockers }}</strong> external blocker{% if owner_pulse.external_blockers != 1 %}s{% endif %}</a>
+<span><strong>{{ owner_pulse.changed_since_seen }}</strong> changed since pulse read</span>
+<form method="post" action="{{ url_for('pulse_seen') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="return_to" value="{{ request.full_path if request.query_string else request.path }}"><button type="submit">Mark pulse read</button></form>
+</section>
+<section class="owner-tools" aria-label="Owner view controls">
+<form class="command-inline" method="get" action="{{ url_for('command_center') }}"><label class="sr-only" for="global-q">Search BuyBox</label><input id="global-q" name="q" type="search" maxlength="160" placeholder="Search deals, places, evidence, notes…"><button type="submit">Search</button></form>
+<form method="post" action="{{ url_for('owner_density') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="return_to" value="{{ request.full_path if request.query_string else request.path }}"><label>View density <select name="density" onchange="this.form.submit()"><option value="CALM" {% if density_mode=='CALM' %}selected{% endif %}>Calm</option><option value="STANDARD" {% if density_mode=='STANDARD' %}selected{% endif %}>Standard</option><option value="DEEP" {% if density_mode=='DEEP' %}selected{% endif %}>Deep Dive</option></select></label></form>
+</section>
+{% endif %}
+<main id="main" class="shell">{% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<p class="notice" role="status">{{ message }}</p>{% endfor %}{% endwith %}{% block content %}{% endblock %}</main>
+<footer>BuyBox preserves source boundaries. Owner notes, models and workflow records are not external verification or purchase authority.</footer></body></html>

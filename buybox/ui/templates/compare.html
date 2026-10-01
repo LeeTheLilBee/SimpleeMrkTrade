@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Compare opportunities · BuyBox{% endblock %}
+{% block content %}<a class="back" href="{{ url_for('index') }}">← Discover</a>
+<section class="hero"><p class="eyebrow">UNIVERSAL COMPARISON</p><h1>See the differences.</h1><p>These comparisons use only your actual saved opportunities and current documented inputs. Unknown metrics remain unknown.</p></section>
+<section class="comparison-grid">{% for item in records %}{% set op=item.record %}{% set assessment=item.analysis %}
+<article class="panel"><p class="eyebrow">{{ verticals[op.vertical].label }}</p><h2>{{ op.name }}</h2>
+<div class="evidence-row"><span>Asking price</span><strong>{{ '$' ~ op.asking_price if op.asking_price is not none else 'Unknown' }}</strong></div>
+<div class="evidence-row"><span>Evidence coverage</span><strong>{{ assessment.evidence.confidence_percent }}%</strong></div>
+<div class="evidence-row"><span>Analysis state</span><strong>{{ assessment.judgment|replace('_',' ')|title }}</strong></div>
+<div class="evidence-row"><span>Calculated annual net</span><strong>{{ '$' ~ assessment.financials.net if assessment.financials.net is not none else 'Unavailable' }}</strong></div>
+<div class="evidence-row"><span>Teller readiness</span><strong>{{ assessment.teller_readiness }}</strong></div>
+{% if assessment.findings %}<p class="muted">{{ assessment.findings[0].reason }}</p>{% else %}<p class="muted">No current rule finding. This is not transaction authorization.</p>{% endif %}
+<a class="button primary" href="{{ url_for('opportunity',oid=op.id) }}">Open dossier →</a></article>{% endfor %}</section>{% endblock %}

@@ -1,0 +1,47 @@
+name: BuyBox local original integrity BBX032-036
+
+on:
+  push:
+    branches:
+      - buybox-vault-original-preflight-bbx032-036
+  pull_request:
+    paths:
+      - 'buybox/**'
+      - 'docs/BUYBOX_LOCAL_ORIGINAL_PREFLIGHT_BBX032_036.md'
+      - '.github/workflows/buybox-vault-original-bbx032-036.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-original-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install BuyBox test/runtime requirements
+        run: python -m pip install -r buybox/requirements.txt
+      - name: Pin exact Tower source validator
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 5dfab66f7ca1a99b885bdee036e84abc1b6abdf9
+          path: tower-contract
+          persist-credentials: false
+      - name: Pin reviewed metadata-only Vault contract
+        uses: actions/checkout@v4
+        with:
+          repository: LeeTheLilBee/SimpleeMrkTrade
+          ref: 1b9a3e191cf8f8b61adb59b790033983f767f42f
+          path: upstream-proof
+          persist-credentials: false
+      - name: Full BuyBox source and cross-contract regressions
+        env:
+          BUYBOX_TOWER_ACTION_CONTRACT_PATH: tower-contract/tower/buybox_action_contract.py
+          BUYBOX_CANONICAL_CONTRACT_PATH: upstream-proof/vault/buybox_evidence_handoff_contract.py
+        run: python -m unittest discover -s buybox/tests -v

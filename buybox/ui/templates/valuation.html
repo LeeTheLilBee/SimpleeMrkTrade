@@ -1,0 +1,84 @@
+{% extends "base.html" %}{% block title %}Comparable Research · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero"><p class="eyebrow">COMPARABLE RESEARCH · {{ verticals[op.vertical].label }}</p>
+<h1>What do the source documents show?</h1>
+<p>Study source-located asking-price and reported-sale observations. Each record comes from a protected uploaded original. Listed prices and reported closed transactions are never combined into one benchmark or presented as an appraisal.</p></section>
+<section class="stats">
+<div class="tile"><small>Current saved observations</small><strong>{{ report.active_count }}</strong></div>
+<div class="tile"><small>Distinct source cohorts</small><strong>{{ report.cohort_count }}</strong></div>
+<div class="tile"><small>Target property appraisal</small><strong>Not performed</strong></div>
+<div class="tile"><small>Teller/Tower authority</small><strong>Not granted</strong></div>
+</section>
+<section class="panel">
+<p class="eyebrow">LIKE-FOR-LIKE SOURCE COMPARISON</p><h2>Recorded market distributions</h2>
+<p class="muted">Only identical asset category, comparison basis, exact owner-entered market text, and source-event type share a cohort. At least two different subject IDs are required for a descriptive range. There is no automatic geography matching, time-adjustment, appraisal, confidence score, or recommended offer.</p>
+{% if report.cohorts %}
+<div class="comparison-grid">{% for c in report.cohorts %}<article class="financing-option">
+<p class="eyebrow">{{ c.source_kind|replace('_',' ') }}</p>
+<h3>{{ c.basis|replace('_',' ')|title }}</h3>
+<p class="muted">{{ c.market }} · {{ c.unit|replace('_',' ')|title }}</p>
+<p>{{ c.count }} source records · {{ c.distinct_subject_count }} distinct subjects</p>
+<p class="muted">Observation dates: {{ c.earliest_event_date }} to {{ c.latest_event_date }}</p>
+{% if c.status=='DESCRIPTIVE_COHORT_ONLY' %}
+<div class="evidence-row"><span>Observed minimum</span><strong>{{ c.observed_min }}</strong></div>
+<div class="evidence-row"><span>Observed median</span><strong>{{ c.observed_median }}</strong></div>
+<div class="evidence-row"><span>Observed maximum</span><strong>{{ c.observed_max }}</strong></div>
+{% else %}<p class="notice">Insufficient independent subjects to display a comparable distribution.</p>{% endif %}
+<p class="muted">These figures describe owner-transcribed originals only; no independent closed-sale or target valuation has been certified.</p>
+</article>{% endfor %}</div>
+{% else %}<p class="muted">No comparable observations recorded. BuyBox will not fill this room with invented property, business, machine or land sales.</p>{% endif %}
+</section>
+<section class="workspace"><div class="main-column">
+<div class="panel"><p class="eyebrow">PROVENANCE LEDGER</p><h2>Current individual observations</h2>
+{% for c in report.active_observations|reverse %}
+<div class="claim-card"><p class="eyebrow">{{ c.source_kind|replace('_',' ') }}</p>
+<h3>{{ c.subject_id }} · {{ c.market }}</h3>
+<div class="evidence-row"><span>Documented price</span><strong>USD {{ c.documented_price }}</strong></div>
+<div class="evidence-row"><span>Documented denominator</span><strong>{{ c.documented_denominator }}</strong></div>
+<div class="evidence-row"><span>Observed normalized value</span><strong>{{ c.normalized_observed_value }} {{ c.basis_unit }}</strong></div>
+<p class="muted">{{ c.basis|replace('_',' ')|title }} · Source event date {{ c.event_date }}</p>
+<p>Locator: {{ c.source_locator }}</p>
+<a href="{{ url_for('download_document',oid=op.id,artifact_id=c.source_artifact_id) }}">Retrieve protected original →</a>
+<p class="muted">Record {{ c.id }} · Original SHA-256 {{ c.source_sha256[:16] }}…</p>
+{% if c.supersedes %}<p class="muted">Documented correction of {{ c.supersedes[:12] }}…; prior observation is preserved.</p>{% endif %}
+<p class="muted">A reported sale remains an owner-recorded source assertion. No independent appraisal or public-record verification is inferred.</p>
+</div>
+{% else %}<p class="muted">No saved comparable observations yet.</p>{% endfor %}
+</div></div>
+<aside class="side-column">
+<div class="panel"><p class="eyebrow">ACTUAL SOURCE INTAKE</p><h2>Original comparable records</h2>
+{% for e in documents %}<div class="evidence-row"><div><strong>{{ artifacts[e.artifact_id].name }}</strong><small>{{ e.status|replace('_',' ')|title }} · {{ e.source }}</small></div>
+<a href="{{ url_for('download_document',oid=op.id,artifact_id=e.artifact_id) }}">Open original</a></div>{% else %}
+<p class="muted">Upload a real listing, sale record or documented comparable source in the opportunity dossier, using “Comparable listing / sale original.”</p>{% endfor %}
+<a class="button" href="{{ url_for('opportunity',oid=op.id) }}#doc-upload">Upload a comparable original →</a>
+</div>
+<div class="panel"><p class="eyebrow">OWNER SOURCE TRANSCRIPTION</p><h2>Record a documented comparison</h2>
+{% if documents %}<form method="post" action="{{ url_for('record_market_comparable',oid=op.id) }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<label>Original document<select name="evidence_id" required>{% for e in documents %}
+<option value="{{ e.id }}">{{ artifacts[e.artifact_id].name }} · {{ e.id[:8] }}</option>{% endfor %}</select></label>
+<label>Distinct comparable subject reference<input name="subject_id" maxlength="128" required placeholder="Listing ID, parcel ID, machine lot reference…"></label>
+<label>Exact market/location text<input name="market" maxlength="120" required placeholder="As indicated by your source"></label>
+<label>Type of source statement<select name="source_kind" required>
+<option value="DOCUMENTED_LISTING_ASK">Documented listing asking price</option>
+<option value="OWNER_RECORDED_REPORTED_SALE">Owner-recorded reported sale (not verified)</option></select></label>
+<label>Vertical-specific normalized basis<select name="basis" required>
+{% for key,unit in bases.items() %}<option value="{{ key }}">{{ key|replace('_',' ')|title }} ({{ unit|replace('_',' ') }})</option>{% endfor %}</select></label>
+<label>Price recorded in the original (USD)<input name="price" type="number" step="0.01" min="0.01" required></label>
+<label>Corresponding source-supported denominator<input name="denominator" type="number" step="0.0001" min="0.0001" required placeholder="Units, machines, sq ft, acres, annual earnings…"></label>
+<label>Actual listing/sale event date<input name="event_date" type="date" required></label>
+<label>Exact source page/section/line locator<input name="locator" maxlength="240" required></label>
+<label>Correct a current comparable (optional)<select name="supersedes">
+<option value="">New independent subject/event</option>{% for c in report.active_observations %}
+<option value="{{ c.id }}">{{ c.subject_id }} · {{ c.basis|replace('_',' ') }} · {{ c.id[:8] }}</option>{% endfor %}</select></label>
+<label>Correction reason (required only when replacing)<textarea name="correction_reason" maxlength="1000" rows="2"></textarea></label>
+<button type="submit" class="primary">Preserve comparable source record</button>
+<small>No listing feed, seller contact, independent reported-sale verification or lender appraisal is created by this action.</small>
+</form>{% else %}<p class="muted">An uploaded original must exist before recording a comparable. Do not enter undocumented sale claims as verified market data.</p>{% endif %}
+</div>
+<div class="panel"><p class="eyebrow">✧ SOULAANA</p><h2>Explain the market evidence</h2>
+<p class="muted">She can describe actual source groups, source dates, basis mismatches and insufficient records. She cannot invent a valuation or select a purchase price.</p>
+<a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='valuation') }}">Open valuation evidence explanation →</a>
+</div></aside></section>
+{% endblock %}

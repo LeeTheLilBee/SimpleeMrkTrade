@@ -1,0 +1,85 @@
+{% extends "base.html" %}{% block title %}{{ op.name }} · BuyBox{% endblock %}{% block content %}
+<a class="back" href="{{ url_for('index') }}">← All opportunities</a><section class="dossier-hero"><div><p class="eyebrow">{{ manifest.label }} / OPPORTUNITY DOSSIER</p><h1>{{ op.name }}</h1><p class="muted">{{ op.location.city or 'Location unknown' }}{% if op.location.region %}, {{ op.location.region }}{% endif %} · {{ op.lifecycle|replace('_',' ')|title }}</p></div><span class="pill">{{ analysis.judgment|replace('_',' ')|title }}</span></section>
+<section class="stats"><div class="tile"><small>Asking price</small><strong>{{ '$' ~ op.asking_price if op.asking_price is not none else 'Unknown' }}</strong></div>
+<div class="tile"><small>Evidence coverage</small><strong>{{ analysis.evidence.confidence_percent }}%</strong></div><div class="tile"><small>Money and management</small><strong>{{ analysis.teller_readiness }}</strong></div>
+<div class="tile"><small>Calculated annual net</small><strong>{{ '$' ~ analysis.financials.net if analysis.financials.net is not none else 'Unavailable' }}</strong></div></section>
+<section class="soulaana"><p class="eyebrow">✧ SOULAANA · GROUNDED BRIEF</p><h2>{{ brief.summary }}</h2><p>{{ brief.next_action }}</p><small>Based on current BuyBox records. Soulaana cannot approve an acquisition, verify a document by herself, or change policy.</small></section>
+<p class="workspace-links"><a class="button primary" href="{{ url_for('intelligence_deal',oid=op.id) }}">Intelligence Studio →</a> <a class="button" href="{{ url_for('provenance_room',oid=op.id) }}">Why am I seeing this? →</a> <a class="button" href="{{ url_for('field_mode',oid=op.id) }}">Field Mode →</a> <a class="button primary" href="{{ url_for('diligence_room',oid=op.id) }}">Diligence Workbench →</a> <a class="button" href="{{ url_for('deal_integrity',oid=op.id) }}">Open Deal Integrity →</a> <a class="button" href="{{ url_for('soulaana_room',oid=op.id) }}">Ask Soulaana about this deal →</a> <a class="button" href="{{ url_for('financing_room',oid=op.id) }}">Financing Desk →</a> <a class="button" href="{{ url_for('insurance_room',oid=op.id) }}">Insurance Desk →</a> <a class="button" href="{{ url_for('valuation_room',oid=op.id) }}">Comparable Research →</a> <a class="button" href="{{ url_for('decision_desk_room',oid=op.id) }}">Decision Desk →</a> <a class="button" href="{{ url_for('offer_lab_room',oid=op.id) }}">Offer Lab →</a> <a class="button" href="{{ url_for('closing_review_room',oid=op.id) }}">Closing Review →</a> <a class="button" href="{{ url_for('red_team_room',oid=op.id) }}">Red Team →</a> <a class="button" href="{{ url_for('scenario',oid=op.id) }}">Open Scenario Lab →</a> <a class="button" href="{{ url_for('deal_room',oid=op.id) }}">Open Deal Room →</a></p>
+{% if analysis.deal_integrity.unresolved_count %}
+<section class="panel discrepancy-alert" role="status">
+  <p class="eyebrow">SOURCE DISCREPANCIES · REVIEW REQUIRED</p>
+  <h2>{{ analysis.deal_integrity.unresolved_count }} unresolved document comparison{% if analysis.deal_integrity.unresolved_count != 1 %}s{% endif %}</h2>
+  <p>BuyBox has not selected a source as truth. Analytical qualification remains blocked until the differing evidence is investigated.</p>
+  <a class="button" href="{{ url_for('deal_integrity',oid=op.id) }}">Investigate original statements →</a>
+</section>
+{% endif %}
+<section class="workspace"><div class="main-column"><div class="panel"><p class="eyebrow">EVIDENCE DOSSIER</p><h2>What has been received?</h2>
+{% for row in analysis.evidence.rows %}<div class="evidence-row"><div><strong>{{ row.kind|replace('_',' ')|title }}</strong><small>{{ row.state|replace('_',' ')|title }}{% if row.critical %} · Critical{% endif %}</small></div><span>{{ '✓' if row.state in ('DOCUMENT_SUPPORTED','THIRD_PARTY_VERIFIED') else '○' }}</span></div>{% endfor %}
+<form id="doc-upload" method="post" action="{{ url_for('upload_document',oid=op.id) }}" enctype="multipart/form-data" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<h3>Upload original source document</h3><p class="muted">The original file is encrypted at rest in BuyBox's private intake storage. A received document is not yet verified. Accepted formats: PDF, PNG, JPEG, TXT or UTF-8 CSV; maximum 25 MB.</p>
+<label>Evidence category<select name="kind" required>{% for kind in manifest.evidence %}<option value="{{ kind.kind }}">{{ kind.kind|replace('_',' ')|title }}</option>{% endfor %}<option value="financing_terms">Financing correspondence / term sheet (separate from seller diligence)</option><option value="insurance_document">Insurance quote / binder / policy / certificate (supplemental source)</option><option value="comparable_original">Comparable listing / reported sale original (research only)</option></select></label>
+<label>Original document<input type="file" name="document" accept=".pdf,.png,.jpg,.jpeg,.txt,.csv" required></label>
+<label>Document source party<input name="source_party" required maxlength="160" placeholder="Seller, processor, advisor…"></label>
+<button type="submit" class="primary">Save original document</button></form>
+{% if op.get("artifacts") %}<h3>Preserved originals</h3>{% for artifact in op.artifacts %}<p class="source"><a href="{{ url_for('download_document',oid=op.id,artifact_id=artifact.id) }}">{{ artifact.name }}</a> <small>· SHA-256: {{ artifact.sha256[:16] }}…</small></p>{% endfor %}{% endif %}
+{% if op.get("artifacts") %}
+<div class="panel-form"><h3>Local proof snapshots</h3>
+<p class="muted">Freeze the exact version of an uploaded original for a future Tower-mediated archival request. This preserves a local evidence version and digest only; it does not send the file, verify its contents or create a Vault archival receipt.</p>
+{% for e in op.evidence if e.get('artifact_id') and e.status != 'SUPERSEDED' %}
+<form method="post" action="{{ url_for('freeze_local_proof',oid=op.id,evidence_id=e.id) }}">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<p class="muted">{{ e.kind|replace('_',' ')|title }} · {{ e.reference }} · {{ e.status|replace('_',' ')|title }}</p>
+<button type="submit">Freeze source-bound local snapshot</button></form>{% endfor %}
+{% for snap in op.snapshots|reverse %}
+<div class="evidence-row"><div><strong>Local snapshot {{ snap.snapshot_id[:8] }}…</strong>
+<small>Revision {{ snap.opportunity_revision }} · {{ snap.archive_state|replace('_',' ')|title }} · digest {{ snap.snapshot_sha256[:16] }}…</small></div><span>Not in Vault</span></div>
+{% endfor %}</div>{% endif %}
+<form method="post" action="{{ url_for('evidence',oid=op.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<h3>Record received evidence</h3><p class="muted">This logs a source reference. Receipt alone does not mark its contents verified.</p>
+<label>Evidence category<select name="kind" required>{% for kind in manifest.evidence %}<option value="{{ kind.kind }}">{{ kind.kind|replace('_',' ')|title }}</option>{% endfor %}</select></label>
+<label>Document/reference ID or private description<input name="reference" required maxlength="500" placeholder="Internal document reference"></label>
+<label>Source party<input name="source_party" required maxlength="160" placeholder="Seller, processor, professional…"></label>
+<label>Notes<textarea name="notes" maxlength="1000" rows="3"></textarea></label><button type="submit" class="primary">Record evidence receipt</button></form></div>
+{% if op.vertical=='atm' %}
+<div class="panel"><p class="eyebrow">ATM MACHINE PORTFOLIO</p><h2>Individual assets in the proposed purchase</h2><p class="muted">Ownership statements are source-attributed claims. Documentary support is a separate status; professional title, transfer and lien diligence remains necessary.</p>
+{% for machine in op.vertical_data.get('machine_inventory',[]) %}
+<div class="evidence-row"><div><strong>{{ machine.serial_number }}</strong><small>{{ machine.model or 'Model unknown' }} · {{ machine.location_name or 'Location unknown' }} · {{ machine.ownership|replace('_',' ')|title }}</small></div><span>{{ 'Document linked' if machine.ownership_evidence_id else 'Proof pending' }}</span></div>
+{% else %}<p class="muted">No machine identities have been entered.</p>{% endfor %}
+<form method="post" action="{{ url_for('add_atm_machine',oid=op.id) }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<h3>Register an actual included machine</h3>
+<label>Machine serial number<input name="serial_number" required maxlength="120"></label>
+<label>Manufacturer/model, if known<input name="model" maxlength="160"></label>
+<label>Current location, if known<input name="location_name" maxlength="160"></label>
+<label>Ownership information<select name="ownership"><option value="UNKNOWN">Unknown</option><option value="CLAIMED_SELLER_OWNED">Seller claims ownership</option><option value="THIRD_PARTY">Known third-party ownership</option></select></label>
+{% set owner_proof=op.evidence|selectattr('kind','equalto','ownership_documents')|selectattr('status','equalto','DOCUMENT_SUPPORTED')|list %}
+<label>Reviewed ownership document, if applicable<select name="ownership_evidence_id"><option value="">Not established</option>{% for doc in owner_proof %}<option value="{{ doc.id }}">{{ doc.reference }} · {{ doc.source }}</option>{% endfor %}</select></label>
+<label>Machine information source/reference<input name="source_reference" required maxlength="500" placeholder="Asset schedule or seller document reference"></label>
+<button type="submit" class="primary">Preserve machine record</button></form>
+</div>{% endif %}
+<div class="panel"><p class="eyebrow">SOURCE REVIEW</p><h2>Review received evidence</h2>
+<p class="muted">Recording a source does not verify it. After examining the source yourself, record its documentary support and a reason. This is not independent third-party verification.</p>
+{% for e in op.evidence if e.status in ('RECEIVED','CLAIMED','STALE') %}
+<div class="evidence-row"><div><strong>{{ e.kind|replace('_',' ')|title }}</strong><small>{{ e.reference }} · {{ e.source }}</small></div></div>
+<form method="post" action="{{ url_for('review_evidence',oid=op.id,evidence_id=e.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<label>Document review rationale<input name="rationale" required maxlength="1000" placeholder="What specific information did you examine?"></label>
+<button type="submit">Record owner document review</button></form>
+{% else %}<p class="muted">No newly received evidence awaiting review.</p>{% endfor %}</div>
+<div class="panel"><p class="eyebrow">FINANCIAL TRUTH</p><h2>Source-linked financial inputs</h2>
+<p class="muted">Only enter values shown by a reviewed source. Annual revenue and annual expense figures must describe the exact same reporting period for a comparable calculation. A documentary review does not establish third-party verification.</p>
+{% if op.metrics %}{% for key,value in op.metrics.items() %}<div class="evidence-row"><div><strong>{{ key|replace('_',' ')|title }}</strong><small>{{ value.period }} · {{ value.state|replace('_',' ')|title }}</small></div><strong>{{ value.value }}</strong></div>{% endfor %}{% endif %}
+{% set reviewed=op.evidence|selectattr('status','equalto','DOCUMENT_SUPPORTED')|list %}
+{% if reviewed %}
+<form method="post" action="{{ url_for('record_metric',oid=op.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}">
+<label>Metric<select name="metric_name" required><option value="annual_revenue">Annual revenue</option><option value="annual_expenses">Annual expenses</option>{% if op.vertical=='atm' %}<option value="largest_location_share">Largest location revenue share (0–1)</option>{% endif %}</select></label>
+<label>Value<input type="number" inputmode="decimal" name="value" step="any" required></label>
+<label>Exact reporting period<input name="period" required maxlength="100" placeholder="YYYY-MM-DD / YYYY-MM-DD"></label>
+<label>Supporting reviewed evidence<select name="evidence_id" required>{% for e in reviewed %}<option value="{{ e.id }}">{{ e.kind|replace('_',' ')|title }} — {{ e.reference }}</option>{% endfor %}</select></label><button type="submit">Record document-linked metric</button></form>
+{% else %}<p class="muted">Review a received source before recording a supported financial figure.</p>{% endif %}</div>
+<div class="panel"><p class="eyebrow">SOURCE HISTORY</p><h2>Listing and correspondence sources</h2>{% if op.sources %}{% for source in op.sources %}<p class="source">{{ source.url }}</p>{% endfor %}{% else %}<p class="muted">No source link recorded.</p>{% endif %}
+<form method="post" action="{{ url_for('source',oid=op.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}"><label>Add source URL<input type="url" name="url" maxlength="500" required placeholder="https://…"></label><button type="submit">Attach source</button></form></div>
+</div><aside class="side-column"><div class="panel"><p class="eyebrow">ACQUISITION STAGE</p><h2>Progress intentionally</h2><p class="muted">Current: {{ op.lifecycle|replace('_',' ')|title }}</p>
+<form method="post" action="{{ url_for('stage',oid=op.id) }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="revision" value="{{ op.version }}"><label>Next stage<select name="target" required>{% for target in gate_options %}<option value="{{ target }}">{{ target|replace('_',' ')|title }}</option>{% endfor %}</select></label><label>Reason<input name="reason" required maxlength="300"></label><button type="submit">Request stage change</button></form>
+<p class="muted">Protected deal stages remain unavailable until real authenticated Tower/Teller integrations are connected.</p></div>
+<div class="panel"><p class="eyebrow">WHAT CHANGED?</p><h2>Activity history</h2>{% for entry in events[:12] %}<div class="event"><strong>{{ entry.event_type }}</strong><small>Revision {{ entry.revision }} · {{ entry.occurred_at }}</small></div>{% else %}<p class="muted">No activity.</p>{% endfor %}<small>{{ revisions|length }} preserved revisions</small></div><div class="panel"><p class="eyebrow">SOULAANA CONTEXT RAIL</p><h2>Explain this deal from where you are.</h2><div class="context-rail-links"><a href="{{ url_for('soulaana_room',oid=op.id,intent='overview') }}">Overview</a><a href="{{ url_for('soulaana_room',oid=op.id,intent='evidence') }}">Evidence</a><a href="{{ url_for('soulaana_room',oid=op.id,intent='changes') }}">What changed</a><a href="{{ url_for('soulaana_room',oid=op.id,intent='next_action') }}">Next useful action</a><a href="{{ url_for('integration_readiness_room',oid=op.id) }}">Integration Readiness</a></div></div></aside></section>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Diligence · {{ op.name }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Opportunity dossier</a>
+<section class="hero">
+  <p class="eyebrow">DILIGENCE WORKBENCH · {{ verticals[op.vertical].label }}</p>
+  <h1>What do we actually have?</h1>
+  <p>Every requirement comes from the registered asset class. Sources, reviews, and deadlines come from your saved records—not invented seller responses, fake verification, or automatic purchase approvals.</p>
+</section>
+<section class="stats">
+  <div class="tile"><small>Required categories</small><strong>{{ checklist.total_requirements }}</strong></div>
+  <div class="tile"><small>Recorded documentary support</small><strong>{{ checklist.documentary_supported_count }}</strong></div>
+  <div class="tile"><small>Critical still outstanding</small><strong>{{ checklist.critical_outstanding }}</strong></div>
+  <div class="tile"><small>Actual open owner tasks</small><strong>{{ checklist.open_owner_tasks }}</strong></div>
+</section>
+<div class="panel">
+<p class="eyebrow">YOUR DOCUMENT QUEUE · REGISTRY {{ checklist.manifest_version }}</p>
+<h2>Required evidence</h2>
+<p class="muted">Document-supported means the record contains an owner review; it is not independent professional certification or Vault archival. A recorded document may still contain contradictory claims—check Deal Integrity too. Dates below are entered by you.</p>
+<section class="diligence-grid">
+{% for item in checklist.requirements %}
+<article class="diligence-card">
+  <div class="diligence-heading"><div>
+    <p class="eyebrow">{{ 'CRITICAL REQUIREMENT' if item.critical else 'ADDITIONAL DILIGENCE' }}</p>
+    <h3>{{ item.kind|replace('_',' ')|title }}</h3></div>
+    <span class="pill">{{ item.recorded_state|replace('_',' ')|title }}</span>
+  </div>
+  {% if item.evidence_id %}
+    <p class="muted">Recorded evidence: <code>{{ item.evidence_id }}</code></p>
+    <p>Source reference: {{ item.source_reference or 'Not specified' }}</p>
+    <p class="muted">Source party: {{ item.source_party or 'Not supplied' }}</p>
+    {% if item.artifact_id %}
+      <a class="button" href="{{ url_for('download_document',oid=op.id,artifact_id=item.artifact_id) }}">Retrieve linked original →</a>
+    {% else %}
+      <p class="muted">No original file is linked. A typed reference is not a protected upload.</p>
+    {% endif %}
+  {% else %}
+    <p class="muted">No active evidence record in this category.</p>
+  {% endif %}
+  {% for task in item.open_tasks %}
+    <div class="diligence-task"><strong>{{ task.status|replace('_',' ')|title }}</strong>
+      <p>{{ task.title }}</p><small>Owner deadline: {{ task.due_date }} · Task {{ task.id[:8] }}…</small>
+      <p><a href="{{ url_for('deal_room',oid=op.id) }}">Review or update task →</a></p>
+    </div>
+  {% endfor %}
+  {% if not item.documentary_supported and not item.open_tasks %}
+  <form method="post" action="{{ url_for('create_evidence_task',oid=op.id) }}" class="panel-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="revision" value="{{ op.version }}">
+    <input type="hidden" name="evidence_kind" value="{{ item.kind }}">
+    <label>Choose an actual follow-up deadline<input type="date" name="due_date" required></label>
+    <label>Owner notes (optional)<textarea name="notes" rows="2" maxlength="1000" placeholder="What document or clarification do you need?"></textarea></label>
+    <button type="submit">Add to my Deal Room tasks</button>
+    <small>Creates a private task. Does not send a seller request or verify evidence.</small>
+  </form>
+  {% elif item.documentary_supported %}
+    <p class="muted">Documentary support is recorded. Review conflicts and independent checks before using this for a protected decision.</p>
+  {% endif %}
+</article>
+{% endfor %}
+</section>
+</div>
+<section class="panel">
+<p class="eyebrow">NEXT STEPS</p><h2>Stay with the actual sources.</h2>
+<div class="workspace-links">
+  <a class="button primary" href="{{ url_for('opportunity',oid=op.id) }}#doc-upload">Upload a protected original →</a>
+  <a class="button" href="{{ url_for('deal_integrity',oid=op.id) }}">Open Deal Integrity →</a>
+  <a class="button" href="{{ url_for('deal_room',oid=op.id) }}">Open owner task queue →</a>
+  <a class="button" href="{{ url_for('soulaana_room',oid=op.id,intent='diligence') }}">Soulaana: explain diligence →</a>
+</div>
+<p class="muted">Closing and external readiness remain under Tower and Teller. Nothing in this checklist constitutes a transaction authorization or completed archival handoff.</p>
+</section>
+{% endblock %}

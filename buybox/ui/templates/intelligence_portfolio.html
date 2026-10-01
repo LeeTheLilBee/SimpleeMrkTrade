@@ -1,0 +1,54 @@
+{% extends "base.html" %}{% block title %}Intelligence Studio · BuyBox{% endblock %}{% block content %}
+<section class="hero"><p class="eyebrow">BUYBOX INTELLIGENCE STUDIO</p><h1>See the acquisition universe as a system.</h1>
+<p>Portfolio fit, geography, calendar, lender history, capital-readiness gaps and owner thesis — derived only from BuyBox records.</p></section>
+
+<section class="panel"><p class="eyebrow">OWNER THESIS BOARD</p><h2>What are we trying to build right now?</h2>
+<form method="post" action="{{ url_for('save_intelligence_thesis') }}" class="panel-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<label>Priorities <textarea name="priorities" rows="3" placeholder="One per line">{{ thesis.priorities|join('\n') }}</textarea></label>
+<label>Preferred regions <textarea name="preferred_regions" rows="2" placeholder="One per line">{{ thesis.preferred_regions|join('\n') }}</textarea></label>
+<label>Avoid / hard dislikes <textarea name="avoid" rows="2" placeholder="One per line">{{ thesis.avoid|join('\n') }}</textarea></label>
+<label>Sequence / ordering <textarea name="sequence" rows="3" placeholder="One per line">{{ thesis.sequence|join('\n') }}</textarea></label>
+<label>Notes <textarea name="notes" rows="3">{{ thesis.notes }}</textarea></label>
+<button class="primary" type="submit">Save owner thesis</button></form></section>
+
+<section class="heading"><div><p class="eyebrow">ACQUISITION COMMAND MAP</p><h2>Geographic pipeline clusters</h2></div></section>
+<section class="cards">{% for x in studio.command_map %}
+<article class="deal"><div class="card-body"><h3>{{ x.city }}, {{ x.region }}</h3><p>{{ x.count }} opportunity{% if x.count != 1 %}ies{% endif %}</p>
+<p class="muted">{% for k,v in x.verticals.items() %}{{ k|replace('_',' ')|title }} {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</p></div></article>
+{% else %}<p class="muted">No geographic records yet.</p>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">ACQUISITION CALENDAR</p><h2>Deadlines and recorded dates</h2>
+{% for x in studio.calendar[:20] %}<div class="evidence-row"><div><strong>{{ x.date }} · {{ x.opportunity_name }}</strong><small>{{ x.kind|replace('_',' ')|title }} · {{ x.label }}</small></div><span>{{ x.state }}</span></div>
+{% else %}<p class="muted">No dated acquisition items yet.</p>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">COUNTERPARTY HISTORY</p><h2>Seller / broker relationship profiles</h2>
+{% for x in studio.counterparty_library %}<div class="evidence-row"><div><strong>{{ x.name }}</strong><small>{{ x.roles|join(', ') }} · {{ x.deal_count }} deal(s) · {{ x.record_count }} note(s)</small></div><span>No inferred rating</span></div>
+{% else %}<p class="muted">No counterparties recorded yet. BuyBox does not invent reliability ratings.</p>{% endfor %}</section>
+<section class="panel"><p class="eyebrow">LENDER LIBRARY</p><h2>Actual financing sources previously recorded</h2>
+{% for x in studio.lender_library %}<div class="evidence-row"><div><strong>{{ x.lender }}</strong><small>{{ x.recorded_options }} recorded option(s) · {{ x.verticals|join(', ') }}</small></div><span>Historical only</span></div>
+{% else %}<p class="muted">No financing sources have been recorded.</p>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">CAPITAL DEPLOYMENT BOARD</p><h2>Deal requirements, not balances</h2>
+<p class="muted">Teller remains the authority for deployable capital and management capacity. BuyBox never reads OB balances directly.</p>
+{% for x in studio.capital_board %}<div class="evidence-row"><div><strong>{{ x.name }}</strong><small>Asking {{ '$' ~ x.asking_price if x.asking_price else 'unknown' }}</small></div><span>{{ 'Teller proof recorded' if x.teller_proof_present else 'Teller proof pending' }}</span></div>{% endfor %}</section>
+
+<section class="panel"><p class="eyebrow">GEOGRAPHIC EXPANSION INTELLIGENCE</p><h2>Where multiple acquisition lanes are accumulating</h2>
+{% for x in studio.geo_expansion %}<div class="evidence-row"><div><strong>{{ x.city }}, {{ x.region }}</strong><small>{{ x.opportunities }} opportunity records · {{ x.vertical_diversity }} vertical type(s)</small></div></div>{% endfor %}</section>
+<section class="panel standard-only"><p class="eyebrow">OPPORTUNITY INBOX</p><h2>Capture first, verify later.</h2>
+<form method="post" action="{{ url_for('intelligence_inbox') }}" class="panel-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<label>Category<select name="vertical" required>{% for key,v in verticals.items() %}<option value="{{ key }}">{{ v.label }}</option>{% endfor %}</select></label>
+<label>Working title<input name="title" required maxlength="160"></label>
+<label>Source URL<input name="source_url" type="url" maxlength="500"></label>
+<label>Raw intake note<textarea name="note" required maxlength="4000" rows="5" placeholder="Paste the listing summary, broker note, field notes, or anything you have. It remains owner-entered until sourced and reviewed."></textarea></label>
+<button class="primary" type="submit">Create provisional opportunity</button></form></section>
+
+<section class="panel"><p class="eyebrow">WHAT-IF PORTFOLIO BUILDER</p><h2>Combine possible acquisitions without pretending the capital exists.</h2>
+<form method="post" action="{{ url_for('intelligence_what_if') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+{% for op in opportunities %}<label class="compare-select"><input type="checkbox" name="opportunity_id" value="{{ op.id }}"> {{ op.name }} · {{ op.vertical|replace('_',' ')|title }}</label>{% endfor %}
+<button type="submit">Model selected portfolio</button></form></section>
+
+<section class="panel"><p class="eyebrow">BUYBOX WATCHTOWER</p><h2>Saved acquisition strategies</h2>
+{% for item in radar %}<div class="evidence-row"><div><strong><a href="{{ url_for('saved_search_detail',sid=item.definition.id) }}">{{ item.definition.name }}</a></strong><small>{{ item.definition.filters }}</small></div><span>{{ 'Checked' if item.latest else 'Never checked' }}</span></div>
+{% else %}<p class="muted">No saved searches yet. Opportunity Radar remains manual until an approved external listing feed exists.</p>{% endfor %}</section>
+{% endblock %}
