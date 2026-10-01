@@ -118,7 +118,8 @@ def test_sc039_control_checkpoint_verifies_all_three_local_prefixes_but_not_exte
     )
     checkpoint = report["joint_checkpoint"]
     assert checkpoint["supplied"] is True
-    assert checkpoint["kind"] == "SC039_STORAGE_REPLAY_NAMESPACE"
+    assert checkpoint["kind"] == "SC043_STORAGE_REPLAY_NAMESPACE_KEY"
+    assert checkpoint["local_namespace_binding_key_commitment_signed"] is True
     assert checkpoint["local_storage_and_replay_prefix_verified"] is True
     assert checkpoint["local_namespace_prefix_verified"] is True
     assert checkpoint["local_cross_ledger_checkpoint_verified"] is True
