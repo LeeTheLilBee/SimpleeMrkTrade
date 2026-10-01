@@ -674,16 +674,25 @@ def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader, 
             )
         except ValueError:
             abort(400)
-        states = {
-            row.get("provider"): {
+        states = {}
+        for row in payload.get("provider_research", []):
+            if not isinstance(row, dict):
+                continue
+            provider = row.get("provider")
+            category = row.get("kind")
+            states[provider] = {
                 "state": row.get("state"),
+                "data_category": category,
                 "display": row.get("owner_display_reviewed") is True,
                 "soulaana": row.get("soulaana_ai_use_reviewed") is True,
             }
-            for row in payload.get("provider_research", [])
-        }
         readable = [
-            row.get("provider")
+            {
+                "provider": row.get("provider"),
+                "kind": row.get("kind"),
+                "has_finding": bool(row.get("finding")),
+                "has_why_it_matters": bool(row.get("why_it_matters")),
+            }
             for row in payload.get("soulaana_research", {}).get("observations", [])
             if isinstance(row, dict)
         ]
@@ -691,7 +700,7 @@ def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader, 
             "[OB_PROVIDER_RESEARCH_STATE] symbol="
             + str(payload.get("symbol"))
             + " states=" + json.dumps(states, sort_keys=True)
-            + " soulaana_observations=" + json.dumps(readable),
+            + " soulaana_observations=" + json.dumps(readable, sort_keys=True),
             flush=True,
         )
         response = make_response(jsonify(payload))
