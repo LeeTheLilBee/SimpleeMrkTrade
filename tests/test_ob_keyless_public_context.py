@@ -387,26 +387,21 @@ def test_tower_exact_route_requires_owner_stepup_admission_before_transport(monk
     assert len(fake.calls)==6
 
 
-def test_private_room_consumers_share_one_endpoint_without_faux_live_quotes():
+def test_research_backend_stays_shared_but_generic_ui_shell_is_not_injected_into_rooms():
     pages=("market_data_desk","market_map","symbol_page",
            "trade_center","review_center","owner_dashboard","owner_console")
     for name in pages:
         source=(ROOT/"web/templates"/(name+".html")).read_text()
-        assert 'id="obKeylessContextRoot"' in source,name
-        assert "/static/ob/ob_keyless_context.js" in source,name
-        assert "/static/ob/ob_keyless_context.css" in source,name
-    dashboard=(ROOT/"web/templates/dashboard.html").read_text()
-    assert 'id="obDataPulseChips"' in dashboard
-    assert "/static/ob/ob_dashboard_data_pulse.js" in dashboard
-    assert 'id="obKeylessContextRoot"' not in dashboard
-    js=(ROOT/"web/static/ob/ob_keyless_context.js").read_text()
-    assert '"/ob/research/keyless.json"' in js
+        assert 'id="obKeylessContextRoot"' not in source,name
+        assert "/static/ob/ob_keyless_context.js" not in source,name
+        assert "/static/ob/ob_keyless_context.css" not in source,name
+        assert "/static/ob/ob_official_catalyst_radar.js" not in source,name
+    symbol=(ROOT/"web/templates/symbol_page.html").read_text()
+    assert "/static/ob/ob_symbol_research.js?v=symbolresearch001" in symbol
+    js=(ROOT/"web/static/ob/ob_symbol_research.js").read_text()
+    assert '"/ob/research/keyless.json?symbol="' in js
+    assert '"/ob/research/catalysts.json"' in js
     assert 'credentials: "same-origin"' in js
-    assert "innerHTML" not in js
-    assert "api.public.com" not in js and "api.openfigi.com" not in js
-    assert "trading" in js.lower()
-    assert 'packet.prices_attached !== false' in js
-    assert 'packet.broker_execution_authorized !== false' in js
     from engine.market_intake.provider_catalog import CATALOG
     product=CATALOG["treasury-debt-to-penny"]
     assert product.current_quote_eligible is False

@@ -18,8 +18,6 @@
     href="{{ url_for('static', filename='ob/ob_symbol_room.css') }}"
   />
   <link rel="stylesheet" href="/static/ob/ob_interchangeable_themes.css?v=obux081085" />
-  <link rel="stylesheet" href="/static/ob/ob_research_context.css?v=obintel001030" />
-<link rel="stylesheet" href="/static/ob/ob_keyless_context.css?v=keyless001" />
 </head>
 
 <body
@@ -73,12 +71,7 @@
         </span>
       </div>
     </header>
-
-    {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
-    {% include 'ob_research_context_partial.html' %}
-    {% endif %}
-
-    <section id="symbolModeBanner" class="ob-mode-banner">
+<section id="symbolModeBanner" class="ob-mode-banner">
       <div>
         <span class="ob-symbol-eyebrow">CURRENT MODE</span>
         <h2 id="symbolModeTitle">Survey · Observe</h2>
@@ -211,6 +204,73 @@
           <h3 id="symbolResearchMacroTitle">Waiting for official macro data</h3>
           <p id="symbolResearchMacro">Macro context has not loaded yet.</p>
         </article>
+      </div>
+
+      <div class="ob-symbol-research-grid ob-symbol-research-grid--public">
+        <article>
+          <span class="ob-symbol-eyebrow">LABOR + INFLATION</span>
+          <h3 id="symbolResearchBlsTitle">Waiting for BLS</h3>
+          <p id="symbolResearchBls">CPI, unemployment, payrolls and producer-price context have not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">RATES + TREASURY</span>
+          <h3 id="symbolResearchTreasuryTitle">Waiting for Treasury</h3>
+          <p id="symbolResearchTreasury">Debt and reviewed Treasury-rate context have not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">IDENTITY CROSS-CHECK</span>
+          <h3 id="symbolResearchFigiTitle">Waiting for OpenFIGI</h3>
+          <p id="symbolResearchFigi">Ticker-to-FIGI reference has not loaded yet.</p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">SEC EDGAR</span>
+          {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
+          <h3>{{ ob_research_context.get('identity',{}).get('security_name') or symbol }}</h3>
+          <p>
+            CIK {{ ob_research_context.get('identity',{}).get('cik') or 'not verified' }} ·
+            {{ ob_research_context.get('fundamentals',{}).get('state','NOT_AVAILABLE')|replace('_',' ') }} ·
+            {{ ob_research_context.get('issuer_events',[])|length }} cited issuer event(s).
+          </p>
+          {% else %}
+          <h3>Issuer research held</h3>
+          <p>No reviewed SEC issuer packet is attached to this symbol request.</p>
+          {% endif %}
+        </article>
+      </div>
+
+      {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
+      {% set sec_read = ob_research_context.get('soulaana_sec_examination', {}) %}
+      <div class="ob-symbol-research-soulaana ob-symbol-sec-native">
+        <span class="ob-symbol-eyebrow">SEC · WHAT THE FILINGS SAY</span>
+        <div class="ob-symbol-research-list">
+          {% for fact in ob_research_context.get('fundamentals',{}).get('reported_concepts',[])[:8] %}
+          <article class="ob-symbol-research-note">
+            <strong>{{ fact.get('concept','Reported item')|e }}</strong>
+            <p>{{ fact.get('value','—')|e }} {{ fact.get('units','')|e }} · period ending {{ fact.get('fiscal_end','Unknown')|e }}</p>
+            <p class="ob-symbol-research-muted">{{ fact.get('form','SEC filing')|e }} · accepted {{ fact.get('accepted_at','Unknown')|e }}</p>
+          </article>
+          {% endfor %}
+          {% for event in ob_research_context.get('issuer_events',[])[:6] %}
+          <article class="ob-symbol-research-note">
+            <strong>{{ event.get('headline','Issuer event')|e }}</strong>
+            <p>{{ event.get('kind','issuer event')|replace('_',' ')|e }} · {{ event.get('accepted_at','Source time unavailable')|e }}</p>
+          </article>
+          {% endfor %}
+          {% if not ob_research_context.get('fundamentals',{}).get('reported_concepts') and not ob_research_context.get('issuer_events') %}
+          <p class="ob-symbol-research-muted">No reviewed SEC filing facts or issuer events are available for this symbol yet.</p>
+          {% endif %}
+        </div>
+        {% if sec_read.get('state') == 'SOURCE_BOUND' %}
+        <p class="ob-symbol-research-muted">Soulaana reviewed {{ sec_read.get('findings',[])|length }} filing fact(s) and {{ sec_read.get('comparisons',[])|length }} period comparison(s). Historical issuer evidence only; not a current quote.</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div class="ob-symbol-research-soulaana">
+        <span class="ob-symbol-eyebrow">MARKET + POLICY CATALYSTS</span>
+        <div id="symbolResearchCatalysts" class="ob-symbol-research-list">
+          <p>I’m checking Federal Register, CFTC, EIA, World Bank and NWS research lanes.</p>
+        </div>
       </div>
 
       <div class="ob-symbol-research-soulaana">
@@ -521,10 +581,6 @@
 <script src="/static/ob/ob_global_session_shell.js"></script>
   <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
   <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
-
-  <section id="obKeylessContextRoot" class="ob-keyless-context ob-symbol-hidden-shared-research" aria-hidden="true"></section>
-  <script defer src="/static/ob/ob_keyless_context.js?v=keyless001"></script>
-  <script defer src="/static/ob/ob_official_catalyst_radar.js?v=catalyst001"></script>
-  <script defer src="/static/ob/ob_symbol_research.js?v=symbolresearch001"></script>
+<script defer src="/static/ob/ob_symbol_research.js?v=symbolresearch001"></script>
 </body>
 </html>
