@@ -40,6 +40,13 @@ PROVIDERS = ("finnhub", "alpha_vantage", "finazon", "alpaca", "bea")
 FINAZON_FREE_SYMBOLS = frozenset({"AAPL", "TSLA", "GOOG"})
 MAX_RESPONSE = 900_000
 CACHE_TTL = timedelta(minutes=5)
+PROVIDER_CACHE_TTLS = {
+    "finnhub": timedelta(hours=12),
+    "alpha_vantage": timedelta(hours=12),
+    "bea": timedelta(hours=6),
+    "finazon": timedelta(minutes=5),
+    "alpaca": timedelta(seconds=30),
+}
 
 
 def _now():
@@ -133,14 +140,40 @@ def _finnhub(symbol: str, secret: str, *, opener=None) -> dict:
     }
 
 
+def _alpha_text(value, limit: int):
+    if not isinstance(value, str):
+        return None
+    cleaned = " ".join(value.split()).strip()
+    if not cleaned or cleaned.lower() in {"none", "null", "n/a", "-"}:
+        return None
+    return cleaned[:limit]
+
+
+def _alpha_number(value):
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError, OverflowError):
+        return None
+    return parsed if isfinite(parsed) else None
+
+
 def _alpha_vantage(symbol: str, secret: str, *, opener=None) -> dict:
-    url = "https://www.alphavantage.co/query?" + urlencode({
+    """Completed daily history + owner-only Alpha Company Overview.
+
+    Alpha's free individual license is suitable for private investment
+    analysis/research/testing, not for exposing this payload to beta users or
+    using it on behalf of an entity without a commercial agreement.
+    """
+    daily_url = "https://www.alphavantage.co/query?" + urlencode({
         "function": "TIME_SERIES_DAILY",
         "symbol": symbol,
         "outputsize": "compact",
         "apikey": secret,
     })
-    doc = _read_json(Request(url, headers={"Accept": "application/json"}, method="GET"), opener=opener)
+    doc = _read_json(
+        Request(daily_url, headers={"Accept": "application/json"}, method="GET"),
+        opener=opener,
+    )
     if "Error Message" in doc or "Information" in doc or "Note" in doc:
         raise ValueError("provider response hold")
     meta = doc.get("Meta Data")
@@ -150,6 +183,7 @@ def _alpha_vantage(symbol: str, secret: str, *, opener=None) -> dict:
     stated_symbol = str(meta.get("2. Symbol") or "").upper()
     if stated_symbol and stated_symbol != symbol:
         raise ValueError("provider response hold")
+
     bars = []
     for day in sorted(series.keys(), reverse=True)[:5]:
         row = series.get(day)
@@ -176,16 +210,62 @@ def _alpha_vantage(symbol: str, secret: str, *, opener=None) -> dict:
         })
     if not bars:
         raise ValueError("provider response hold")
+
+    overview_url = "https://www.alphavantage.co/query?" + urlencode({
+        "function": "OVERVIEW",
+        "symbol": symbol,
+        "apikey": secret,
+    })
+    overview = _read_json(
+        Request(overview_url, headers={"Accept": "application/json"}, method="GET"),
+        opener=opener,
+    )
+    if "Error Message" in overview or "Information" in overview or "Note" in overview:
+        raise ValueError("provider response hold")
+    overview_symbol = str(overview.get("Symbol") or "").upper()
+    if overview_symbol != symbol:
+        raise ValueError("provider response hold")
+
+    profile = {
+        "name": _alpha_text(overview.get("Name"), 180),
+        "description": _alpha_text(overview.get("Description"), 4000),
+        "asset_type": _alpha_text(overview.get("AssetType"), 80),
+        "exchange": _alpha_text(overview.get("Exchange"), 120),
+        "currency": _alpha_text(overview.get("Currency"), 20),
+        "country": _alpha_text(overview.get("Country"), 80),
+        "sector": _alpha_text(overview.get("Sector"), 120),
+        "industry": _alpha_text(overview.get("Industry"), 160),
+        "address": _alpha_text(overview.get("Address"), 260),
+        "fiscal_year_end": _alpha_text(overview.get("FiscalYearEnd"), 40),
+        "latest_quarter": _alpha_text(overview.get("LatestQuarter"), 20),
+        "cik": _alpha_text(overview.get("CIK"), 20),
+        "market_cap": _alpha_number(overview.get("MarketCapitalization")),
+        "shares_outstanding": _alpha_number(overview.get("SharesOutstanding")),
+        "revenue_ttm": _alpha_number(overview.get("RevenueTTM")),
+        "eps": _alpha_number(overview.get("EPS")),
+        "pe_ratio": _alpha_number(overview.get("PERatio")),
+        "profit_margin": _alpha_number(overview.get("ProfitMargin")),
+        "beta": _alpha_number(overview.get("Beta")),
+        "week_52_high": _alpha_number(overview.get("52WeekHigh")),
+        "week_52_low": _alpha_number(overview.get("52WeekLow")),
+    }
+    if not profile["name"]:
+        raise ValueError("provider response hold")
+
     return {
         "provider": "alpha_vantage",
-        "kind": "COMPLETED_DAILY_HISTORY",
+        "kind": "COMPANY_OVERVIEW_AND_COMPLETED_DAILY_HISTORY",
         "symbol": symbol,
         "bars": bars,
-        "source_reference": "https://www.alphavantage.co/documentation/#daily",
-        "historical_only": True,
+        "company_profile": profile,
+        "source_reference": "https://www.alphavantage.co/documentation/",
+        "profile_source_reference": "https://www.alphavantage.co/documentation/#fundamentals",
+        "daily_source_reference": "https://www.alphavantage.co/documentation/#daily",
+        "historical_only": False,
         "live_quote": False,
+        "personal_owner_only": True,
+        "commercial_or_beta_use_allowed": False,
     }
-
 
 
 def _finazon(symbol: str, secret: str, *, opener=None) -> dict:
@@ -747,8 +827,10 @@ class ProviderResearchCache:
             return value
 
     def put(self, key, value):
+        provider = key[1] if isinstance(key, tuple) and len(key) > 1 else None
+        ttl = PROVIDER_CACHE_TTLS.get(provider, CACHE_TTL)
         with self._lock:
-            self._rows[key] = (_now() + CACHE_TTL, value)
+            self._rows[key] = (_now() + ttl, value)
 
 
 def provider_research_projection(*, sid: str, symbol: str, secret_reader,
