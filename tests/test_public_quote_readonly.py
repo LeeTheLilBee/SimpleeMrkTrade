@@ -6,7 +6,7 @@ import pytest
 
 from engine.market_intake.public_quote_readonly import (
     PublicQuoteHold, PublicReadPolicy, QuoteRequest, PublicReadOnlyQuoteClient,
-    normalize_public_quotes,
+    PublicReadOnlyOptionChainClient, normalize_public_quotes,
 )
 from engine.market_intake.adapters import FeedAdapter
 from engine.market_intake.contracts import ScanContext, SourceRights
@@ -202,3 +202,72 @@ def test_account_token_and_batch_rejection_before_network():
             client.fetch_once(backend_account_id=account,
                               backend_access_token=token, requests=requests)
     assert not opener.requests
+
+
+class OptionChainOpener:
+    def __init__(self):
+        self.requests = []
+
+    def __call__(self, request, timeout):
+        self.requests.append((request, timeout))
+        now = (datetime.now(timezone.utc) - timedelta(seconds=1)).isoformat()
+        if request.full_url.endswith("/option-expirations"):
+            return Result({"baseSymbol": "XYZ", "expirations": ["2026-10-02", "2026-10-09"]})
+        if request.full_url.endswith("/quotes"):
+            row = equity()
+            for key in ("lastTimestamp", "bidTimestamp", "askTimestamp"):
+                row[key] = now
+            return Result({"quotes": [row]})
+        if request.full_url.endswith("/option-chain"):
+            def chain_row(symbol, strike, oi, volume, delta, iv):
+                return {
+                    "instrument": {"symbol": symbol, "type": "OPTION"},
+                    "outcome": "SUCCESS",
+                    "last": "1.25", "lastTimestamp": now,
+                    "bid": "1.20", "bidSize": 5, "bidTimestamp": now,
+                    "ask": "1.30", "askSize": 7, "askTimestamp": now,
+                    "volume": volume, "openInterest": oi,
+                    "optionDetails": {
+                        "strikePrice": str(strike),
+                        "midPrice": "1.25",
+                        "greeks": {
+                            "delta": str(delta), "gamma": "0.05",
+                            "theta": "-0.03", "vega": "0.08",
+                            "rho": "0.01", "impliedVolatility": str(iv),
+                        },
+                    },
+                }
+            return Result({
+                "baseSymbol": "XYZ",
+                "calls": [
+                    chain_row("XYZ261002C00100000", "100", 900, 120, 0.52, 0.31),
+                    chain_row("XYZ261002C00105000", "105", 300, 40, 0.31, 0.36),
+                ],
+                "puts": [
+                    chain_row("XYZ261002P00100000", "100", 800, 110, -0.48, 0.33),
+                    chain_row("XYZ261002P00095000", "95", 250, 35, -0.28, 0.39),
+                ],
+            })
+        raise AssertionError(request.full_url)
+
+
+def test_public_option_chain_is_bounded_owner_research_and_never_order_authority():
+    opener = OptionChainOpener()
+    policy = PublicReadPolicy(True, True, True, True, True, True)
+    snapshot = PublicReadOnlyOptionChainClient(policy, opener=opener).fetch_nearest(
+        backend_account_id=ACCOUNT,
+        backend_access_token=TOKEN,
+        symbol="XYZ",
+    )
+    assert snapshot.underlying == "XYZ"
+    assert snapshot.expiration == "2026-10-02"
+    assert snapshot.underlying_midpoint == 100.3
+    assert len(snapshot.contracts) == 4
+    assert any(row["greeks"]["implied_volatility"] == 0.31 for row in snapshot.contracts)
+    assert any(row["open_interest"] == 900 for row in snapshot.contracts)
+    assert snapshot.broker_execution_authorized is False
+    assert [req.full_url.rsplit("/", 1)[-1] for req, _ in opener.requests] == [
+        "option-expirations", "quotes", "option-chain"
+    ]
+    assert all("order" not in req.full_url and "preflight" not in req.full_url
+               for req, _ in opener.requests)
