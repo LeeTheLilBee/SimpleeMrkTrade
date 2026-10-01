@@ -200,13 +200,35 @@ def _build_projection(rows, *, credential_source):
     now = _now()
     ranked = sorted(rows, key=lambda x: (-x["attention_score"], x["symbol"]))
     leaders = ranked[:6]
-    glance = leaders[:3]
     source_times = [row["observed_at"] for row in leaders if row.get("observed_at")]
 
     warnings = [
         f"{row['symbol']} research attention · " + "; ".join(row["research_reasons"][:2])
         for row in leaders[:3]
     ]
+
+    def symbol_projection(row):
+        return {
+            "symbol": row["symbol"],
+            "source": "Alpaca IEX",
+            "source_coverage": ["alpaca"],
+            "source_observations": {
+                "alpaca": {
+                    "feed": "iex",
+                    "bid": row.get("bid"),
+                    "ask": row.get("ask"),
+                    "midpoint": row.get("midpoint"),
+                    "minute_close": row.get("minute_close"),
+                    "observed_at": row["observed_at"],
+                    "consolidated_quote": False,
+                    "execution_grade_quote": False,
+                },
+            },
+            "observed_at": row["observed_at"],
+            "move_pct": row["move_pct"],
+            "attention_score": row["attention_score"],
+            "research_reasons": row["research_reasons"],
+        }
 
     return {
         "version": "OBDATA011_SOULAANA_AUTONOMOUS_ALPACA_RESEARCH",
@@ -232,18 +254,12 @@ def _build_projection(rows, *, credential_source):
             "coverage": "IEX venue-limited",
             "consolidated_nbbo": False,
         },
-        "sectors": [],
-        "symbols": [
-            {
-                "symbol": row["symbol"],
-                "source": "Alpaca IEX",
-                "observed_at": row["observed_at"],
-                "move_pct": row["move_pct"],
-                "attention_score": row["attention_score"],
-                "research_reasons": row["research_reasons"],
-            }
-            for row in glance
-        ],
+        "sectors": [{
+            "name": "Source-backed attention",
+            "region_type": "RESEARCH_ATTENTION",
+            "symbols": [symbol_projection(row) for row in leaders],
+        }],
+        "symbols": [symbol_projection(row) for row in leaders],
         "signals": [],
         "watchlist": [row["symbol"] for row in leaders],
         "options": [],
