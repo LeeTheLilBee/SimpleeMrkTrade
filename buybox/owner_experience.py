@@ -28,6 +28,15 @@ CREATE INDEX IF NOT EXISTS idx_bbx_triage_op_created
  ON buybox_owner_triage(opportunity_id,created_at DESC,id DESC);
 CREATE INDEX IF NOT EXISTS idx_bbx_events_occurred
  ON events(occurred_at DESC,event_id DESC);
+CREATE TABLE IF NOT EXISTS buybox_acceptance_defects (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ area TEXT NOT NULL, severity TEXT NOT NULL,
+ title TEXT NOT NULL, detail TEXT NOT NULL,
+ status TEXT NOT NULL CHECK(status IN ('OPEN','RESOLVED')),
+ actor_ref TEXT NOT NULL, created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_bbx_acceptance_defects
+ ON buybox_acceptance_defects(status,id DESC);
 CREATE INDEX IF NOT EXISTS idx_bbx_opportunities_vertical_name
  ON opportunities(vertical,name);
 """
@@ -239,3 +248,32 @@ def acceptance_steps():
       {"id":"integration","label":"Integration","path":"/integration-cockpit","check":"Verify Tower/Teller/Vault/operations proof states."},
       {"id":"handoff","label":"Handoff","path":None,"check":"Verify post-close receiver acceptance remains externally proven."},
     ]
+
+def record_acceptance_defect(db,*,area,severity,title,detail,actor_ref):
+    ensure_ux_schema(db)
+    sev=str(severity or "").upper()
+    if sev not in {"LOW","MEDIUM","HIGH","BLOCKER"}: raise ValueError("DEFECT_SEVERITY_INVALID")
+    area=str(area or "").strip()[:100]; title=str(title or "").strip()[:180]
+    detail=str(detail or "").strip()[:2000]; actor=str(actor_ref or "").strip()[:255]
+    if not area or not title or not detail or not actor: raise ValueError("DEFECT_FIELDS_REQUIRED")
+    at=_now()
+    cur=db.execute("""INSERT INTO buybox_acceptance_defects
+      (area,severity,title,detail,status,actor_ref,created_at)
+      VALUES(?,?,?,?, 'OPEN',?,?)""",(area,sev,title,detail,actor,at))
+    db.commit()
+    return {"id":cur.lastrowid,"area":area,"severity":sev,"title":title,
+            "detail":detail,"status":"OPEN","actor_ref":actor,"created_at":at}
+
+def acceptance_defects(db):
+    ensure_ux_schema(db)
+    return [dict(r) for r in db.execute("""SELECT id,area,severity,title,detail,status,actor_ref,created_at
+      FROM buybox_acceptance_defects ORDER BY CASE status WHEN 'OPEN' THEN 0 ELSE 1 END,id DESC""").fetchall()]
+
+def resolve_acceptance_defect(db,defect_id,*,actor_ref):
+    ensure_ux_schema(db)
+    actor=str(actor_ref or "").strip()
+    if not actor: raise ValueError("DEFECT_ACTOR_REQUIRED")
+    changed=db.execute("UPDATE buybox_acceptance_defects SET status='RESOLVED' WHERE id=? AND status='OPEN'",(int(defect_id),)).rowcount
+    db.commit()
+    if changed!=1: raise ValueError("DEFECT_NOT_OPEN")
+    return True
