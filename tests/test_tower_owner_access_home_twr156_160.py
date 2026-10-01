@@ -79,7 +79,7 @@ def test_twr156_access_home_is_explicit_owner_front_door():
     )
 
     assert (
-        "Welcome back, Owner."
+        "Welcome home, Owner."
         in body
     )
 
@@ -339,7 +339,7 @@ def test_twr160_access_home_keeps_default_deny_visible():
     )
 
     assert (
-        "Additional verification required"
+        "Protected doors need verification"
         in body
     )
 
@@ -353,6 +353,6 @@ def test_twr160_access_home_keeps_default_deny_visible():
     )
 
     assert (
-        "Verified for protected entry"
+        "Protected doors ready"
         in body
     )
