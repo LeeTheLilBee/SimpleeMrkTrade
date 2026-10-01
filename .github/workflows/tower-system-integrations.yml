@@ -67,6 +67,7 @@ jobs:
           path: _buybox_contract
           persist-credentials: false
       - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - run: python -m pip install -r _buybox_contract/buybox/requirements.txt
       - run: python -m compileall -q tower/grounds_runtime_receiver.py tower/grounds_operational_release.py tower/buybox_owner_handoff_issuer.py tower/ecosystem_direct_route_guard.py tower/ecosystem_owner_launch_gates.py tower/ecosystem_integration_desk.py tower/ecosystem_return_routes.py tower/app_registry.py tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py tower/test_ecosystem_owner_launch_gates.py tower/test_ecosystem_integration_desk.py web/hosted_tower.py
       - run: python -m pytest -q tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py tower/test_ecosystem_owner_launch_gates.py tower/test_ecosystem_integration_desk.py
       - run: node --check web/static/tower/buybox_bootstrap_launch.js
