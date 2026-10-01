@@ -22,7 +22,8 @@ from flask import Blueprint, Flask, abort, make_response, redirect, render_templ
 
 from scripts.ob_public_local_probe import _ACCOUNTS, _http, _request_json, get_short_token, ProbeHold
 from engine.market_intake.public_quote_readonly import (
-    PublicReadPolicy, PublicReadOnlyQuoteClient, PublicQuoteHold, QuoteRequest,
+    PublicReadPolicy, PublicReadOnlyQuoteClient, PublicReadOnlyOptionChainClient,
+    PublicQuoteHold, QuoteRequest,
 )
 
 PATH = "/ob/data-desk/public"
@@ -98,6 +99,8 @@ class _Connection:
     account_kind: str = "UNSELECTED"
     candidates: tuple[tuple[str, str], ...] = ()
     last_quote: dict | None = None
+    last_option_chain: dict | None = None
+    last_option_chain_checked_at: datetime | None = None
 
 
 class OwnerConnectionStore:
@@ -388,6 +391,8 @@ def create_public_owner_blueprint(*, owner_authorize, opener=None, store=None):
                     item.account_id, item.account_kind = item.candidates[int(selected) - 1]
                     item.candidates = ()
                     item.last_quote = None
+                    item.last_option_chain = None
+                    item.last_option_chain_checked_at = None
                     session["ob_public_owner_notice"] = (
                         "Selected " + item.account_kind
                         + " account. Temporary authentication established; market-data permissions remain separate."
@@ -540,8 +545,90 @@ def register_public_owner_connection(app: Flask, *, owner_authorize):
             "soulaana_ai_use_reviewed": _soulaana_personal_ai_reviewed(),
         }
 
+
+    def _owner_personal_option_chain_reader(sid: str, symbol: str):
+        """Server-only nearest-expiration Public option-chain research.
+
+        The result is bounded and cached briefly inside the same temporary
+        owner connection. It never exposes the bearer/account ID and can never
+        submit, preflight, replace or cancel an order.
+        """
+        item = store.get(sid)
+        if item is None or not item.account_id:
+            return {
+                "provider": "public_options",
+                "state": "NOT_CONNECTED",
+                "owner_display_reviewed": False,
+                "soulaana_ai_use_reviewed": False,
+            }
+
+        policy = _quote_policy()
+        if not policy.permits({"EQUITY", "OPTION"}):
+            return {
+                "provider": "public_options",
+                "state": "RIGHTS_OR_FETCH_HOLD",
+                "owner_display_reviewed": False,
+                "soulaana_ai_use_reviewed": False,
+            }
+
+        symbol = str(symbol or "").strip().upper()
+        now = _now()
+        cached = item.last_option_chain
+        checked_at = item.last_option_chain_checked_at
+        if (
+            isinstance(cached, dict)
+            and cached.get("symbol") == symbol
+            and isinstance(checked_at, datetime)
+            and now - checked_at <= timedelta(minutes=5)
+        ):
+            return dict(cached)
+
+        try:
+            snapshot = PublicReadOnlyOptionChainClient(policy).fetch_nearest(
+                backend_account_id=item.account_id,
+                backend_access_token=item.access_token,
+                symbol=symbol,
+            )
+        except (ValueError, PublicQuoteHold):
+            result = {
+                "provider": "public_options",
+                "state": "SOURCE_HOLD",
+                "symbol": symbol,
+                "owner_display_reviewed": True,
+                "soulaana_ai_use_reviewed": _soulaana_personal_ai_reviewed(),
+            }
+            item.last_option_chain = result
+            item.last_option_chain_checked_at = now
+            return dict(result)
+
+        contracts = [dict(contract) for contract in snapshot.contracts]
+        result = {
+            "provider": "public_options",
+            "state": "SOURCE_BOUND",
+            "kind": "PUBLIC_PERSONAL_OPTION_CHAIN",
+            "symbol": symbol,
+            "expiration": snapshot.expiration,
+            "underlying_midpoint": snapshot.underlying_midpoint,
+            "contracts": contracts,
+            "contract_count": len(contracts),
+            "source_reference": snapshot.source_reference,
+            "historical_only": False,
+            "live_quote": False,
+            "real_time_market_context": True,
+            "personal_owner_only": True,
+            "commercial_use_allowed": False,
+            "beta_user_use_allowed": False,
+            "broker_execution_authorized": False,
+            "owner_display_reviewed": True,
+            "soulaana_ai_use_reviewed": _soulaana_personal_ai_reviewed(),
+        }
+        item.last_option_chain = result
+        item.last_option_chain_checked_at = now
+        return dict(result)
+
     app.extensions["ob_public_owner_status_reader_v1"] = _safe_owner_connection_status
     app.extensions["ob_public_owner_quote_reader_v1"] = _owner_personal_quote_reader
+    app.extensions["ob_public_owner_option_chain_reader_v1"] = _owner_personal_option_chain_reader
     app.extensions["ob_public_owner_connection_v1"] = {
         "path": PATH, "api_key_persisted": False, "bearer_in_cookie": False,
         "in_process_token_seconds": _AUTH_TTL_SECONDS, "broker_execution": False,

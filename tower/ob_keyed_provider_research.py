@@ -348,7 +348,7 @@ def _soulaana(rows: list[dict]) -> dict:
         provider = row.get("provider")
         if row.get("state") != "SOURCE_BOUND":
             continue
-        if provider == "public":
+        if provider in {"public", "public_options"}:
             if row.get("soulaana_ai_use_reviewed") is not True:
                 continue
         elif provider not in PROVIDERS or not _ai_enabled(provider):
@@ -454,6 +454,66 @@ def _soulaana(rows: list[dict]) -> dict:
             item["what_is_missing"] = (
                 "A consolidated market quote, options chain, broker-side entitlement and execution "
                 "context remain separate. Treat this as one corroborating market-data source."
+            )
+        elif provider == "public_options":
+            contracts = row.get("contracts")
+            if not isinstance(contracts, list) or not contracts:
+                continue
+            calls = [x for x in contracts if isinstance(x, dict) and x.get("right") == "call"]
+            puts = [x for x in contracts if isinstance(x, dict) and x.get("right") == "put"]
+            ranked = sorted(
+                (x for x in contracts if isinstance(x, dict)),
+                key=lambda x: (
+                    -(int(x.get("open_interest") or 0)),
+                    -(int(x.get("volume") or 0)),
+                ),
+            )
+            busiest = ranked[0] if ranked else None
+            iv_values = []
+            for contract in contracts:
+                greeks = contract.get("greeks") if isinstance(contract, dict) else None
+                if isinstance(greeks, dict):
+                    iv = greeks.get("implied_volatility")
+                    if isinstance(iv, (int, float)) and isfinite(float(iv)) and float(iv) >= 0:
+                        iv_values.append(float(iv))
+            avg_iv = round(sum(iv_values) / len(iv_values), 6) if iv_values else None
+            item["summary"] = {
+                "expiration": row.get("expiration"),
+                "underlying_midpoint": row.get("underlying_midpoint"),
+                "bounded_contract_count": len(contracts),
+                "calls": len(calls),
+                "puts": len(puts),
+                "average_implied_volatility": avg_iv,
+                "highest_open_interest_contract": busiest.get("provider_symbol") if busiest else None,
+                "highest_open_interest": busiest.get("open_interest") if busiest else None,
+                "personal_owner_only": True,
+            }
+            item["finding"] = (
+                f"Public's owner-only options chain for {row['symbol']} is available for "
+                f"{row.get('expiration')}. OB retained {len(contracts)} near-the-money contracts "
+                f"around an underlying midpoint of {row.get('underlying_midpoint')}. "
+            )
+            if busiest:
+                item["finding"] += (
+                    f"The largest open-interest contract in this bounded view is "
+                    f"{busiest.get('provider_symbol')} with {busiest.get('open_interest') or 0} open contracts. "
+                )
+            if avg_iv is not None:
+                item["finding"] += (
+                    f"Average implied volatility across contracts with reported IV is {avg_iv:.4f}. "
+                )
+            item["finding"] += (
+                "This is current options market context for the owner's personal research lane, "
+                "not an order recommendation or execution authorization."
+            )
+            item["why_it_matters"] = (
+                "The chain adds actual contract liquidity, open-interest, spread and volatility context, "
+                "so OB can judge whether an options idea is realistically tradable instead of reasoning "
+                "from the stock price alone."
+            )
+            item["what_is_missing"] = (
+                "A specific strategy still needs contract selection, risk sizing, realistic fill assumptions, "
+                "and the separate Hybrid owner-approval path. Chain data alone cannot authorize a trade."
             )
         elif provider == "public":
             bid = row.get("bid")
@@ -586,7 +646,9 @@ class ProviderResearchCache:
 
 
 def provider_research_projection(*, sid: str, symbol: str, secret_reader,
-                                 public_reader=None, opener=None, cache=None) -> dict:
+                                 public_reader=None, public_option_reader=None,
+                                 use_public_options: bool = True,
+                                 opener=None, cache=None) -> dict:
     if not isinstance(sid, str) or not sid.startswith("tower_session_"):
         raise ValueError("current owner session required")
     symbol = str(symbol or "").strip().upper()
@@ -676,6 +738,28 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
             }
         rows.append(public_row)
 
+    if callable(public_option_reader):
+        if use_public_options is True:
+            try:
+                option_row = public_option_reader(sid, symbol)
+                if not isinstance(option_row, dict) or option_row.get("provider") != "public_options":
+                    raise ValueError("invalid Public option projection")
+            except Exception:
+                option_row = {
+                    "provider": "public_options",
+                    "state": "SOURCE_HOLD",
+                    "owner_display_reviewed": False,
+                    "soulaana_ai_use_reviewed": False,
+                }
+        else:
+            option_row = {
+                "provider": "public_options",
+                "state": "DISABLED_BY_OWNER",
+                "owner_display_reviewed": True,
+                "soulaana_ai_use_reviewed": False,
+            }
+        rows.append(option_row)
+
     return {
         "schema": "OB_KEYED_PROVIDER_RESEARCH_V1",
         "symbol": symbol,
@@ -698,7 +782,9 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
 
 
 def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader,
-                                             public_reader=None, opener=None):
+                                             public_reader=None,
+                                             public_option_reader=None,
+                                             opener=None):
     if not callable(owner_authorize) or not callable(secret_reader):
         raise ValueError("Tower owner authorization and server key reader required")
     cache = ProviderResearchCache()
@@ -712,9 +798,13 @@ def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader,
         if not sid:
             abort(403)
         try:
+            from tower.ob_settings_control_room import get_owner_settings
+            owner_settings = get_owner_settings()
             payload = provider_research_projection(
                 sid=sid, symbol=request.args.get("symbol", ""),
                 secret_reader=secret_reader, public_reader=public_reader,
+                public_option_reader=public_option_reader,
+                use_public_options=owner_settings.get("use_public_options_data") is True,
                 opener=opener, cache=cache,
             )
         except ValueError:

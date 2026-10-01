@@ -19,11 +19,15 @@ from urllib.request import Request, build_opener, HTTPRedirectHandler
 from .contracts import OCC, clean_symbol
 
 DOCS = "https://public.com/api/docs/resources/market-data/get-quotes"
+OPTION_EXPIRATIONS_DOCS = "https://public.com/api/docs/resources/market-data/get-option-expirations"
+OPTION_CHAIN_DOCS = "https://public.com/api/docs/resources/market-data/get-option-chain"
 _HOST = "https://api.public.com"
 _ACCOUNT = re.compile(r"^[A-Za-z0-9_-]{5,128}$")
 _OPTION = re.compile(r"^([A-Z0-9./-]{1,6})(\d{6})([CP])(\d{8})$")
 _MAX_RESPONSE_BYTES = 500_000
+_MAX_CHAIN_RESPONSE_BYTES = 2_000_000
 _MAX_QUOTE_BATCH = 8
+_MAX_CHAIN_SIDE = 8
 
 
 class PublicQuoteHold(ValueError):
@@ -265,3 +269,244 @@ class PublicReadOnlyQuoteClient:
             raise PublicQuoteHold("PUBLIC_RESPONSE_SHAPE_HOLD") from None
         received = datetime.now(timezone.utc)
         return normalize_public_quotes(payload, requests, received_at=received)
+
+
+@dataclass(frozen=True)
+class PublicOptionChainSnapshot:
+    underlying: str
+    expiration: str
+    underlying_midpoint: float
+    contracts: tuple[Mapping[str, object], ...]
+    retrieved_at: datetime
+    source_reference: str = OPTION_CHAIN_DOCS
+    personal_owner_only: bool = True
+    broker_execution_authorized: bool = False
+
+
+def _signed_number(value: object, *, allow_zero: bool = True) -> float:
+    if not isinstance(value, str):
+        raise PublicQuoteHold("PUBLIC_OPTION_NUMBER_INVALID")
+    try:
+        decimal = Decimal(value)
+    except InvalidOperation:
+        raise PublicQuoteHold("PUBLIC_OPTION_NUMBER_INVALID") from None
+    if not decimal.is_finite() or (not allow_zero and decimal == 0):
+        raise PublicQuoteHold("PUBLIC_OPTION_NUMBER_INVALID")
+    try:
+        numeric = float(decimal)
+    except (ValueError, OverflowError):
+        raise PublicQuoteHold("PUBLIC_OPTION_NUMBER_INVALID") from None
+    if not (-float("inf") < numeric < float("inf")):
+        raise PublicQuoteHold("PUBLIC_OPTION_NUMBER_INVALID")
+    return numeric
+
+
+def _read_json_response(opener: Callable, request: Request, *, max_bytes: int) -> object:
+    try:
+        with opener(request, timeout=8) as response:
+            raw = response.read(max_bytes + 1)
+        if len(raw) > max_bytes:
+            raise PublicQuoteHold("PUBLIC_RESPONSE_TOO_LARGE")
+        return json.loads(raw)
+    except (HTTPError, URLError, OSError, TimeoutError):
+        raise PublicQuoteHold("PUBLIC_TRANSPORT_HOLD") from None
+    except (UnicodeError, json.JSONDecodeError):
+        raise PublicQuoteHold("PUBLIC_RESPONSE_SHAPE_HOLD") from None
+
+
+def _option_chain_row(row: object, *, right: str, expiration: str,
+                      underlying_midpoint: float, received_at: datetime
+                      ) -> Mapping[str, object] | None:
+    if not isinstance(row, dict) or row.get("outcome") != "SUCCESS":
+        return None
+    instrument = row.get("instrument")
+    if not isinstance(instrument, dict):
+        return None
+    symbol = instrument.get("symbol")
+    if not isinstance(symbol, str):
+        return None
+    symbol = symbol.upper()
+    match = _OPTION.fullmatch(symbol)
+    if match is None:
+        return None
+    underlying, occ, parsed_expiry, parsed_right, strike = _option_parts(symbol)
+    if parsed_expiry != expiration or parsed_right != right:
+        return None
+
+    details = row.get("optionDetails")
+    if not isinstance(details, dict):
+        return None
+    try:
+        stated_strike = _number(details.get("strikePrice"))
+        if abs(stated_strike - strike) > 0.000001:
+            return None
+        bid = _number(row.get("bid"), allow_zero=True)
+        ask = _number(row.get("ask"))
+        if bid > ask:
+            return None
+        mid = _number(details.get("midPrice"), allow_zero=True)
+        last_raw = row.get("last")
+        last = _number(last_raw, allow_zero=True) if last_raw is not None else None
+        volume = _count(row.get("volume"))
+        open_interest = _count(row.get("openInterest"))
+        observed = min(
+            _timestamp(row.get("lastTimestamp"), received_at),
+            _timestamp(row.get("bidTimestamp"), received_at),
+            _timestamp(row.get("askTimestamp"), received_at),
+        )
+    except PublicQuoteHold:
+        return None
+
+    greeks_raw = details.get("greeks")
+    greeks = {}
+    if isinstance(greeks_raw, dict):
+        for source, target in (
+            ("delta", "delta"), ("gamma", "gamma"), ("theta", "theta"),
+            ("vega", "vega"), ("rho", "rho"),
+            ("impliedVolatility", "implied_volatility"),
+        ):
+            value = greeks_raw.get(source)
+            if value is None:
+                continue
+            try:
+                parsed = _signed_number(value)
+            except PublicQuoteHold:
+                continue
+            if target == "implied_volatility" and parsed < 0:
+                continue
+            greeks[target] = parsed
+
+    return {
+        "occ_symbol": occ.replace(" ", ""),
+        "provider_symbol": symbol,
+        "underlying": underlying,
+        "right": right,
+        "expiration": expiration,
+        "strike": strike,
+        "bid": bid,
+        "ask": ask,
+        "mid": mid,
+        "last": last,
+        "volume": volume,
+        "open_interest": open_interest,
+        "greeks": greeks,
+        "observed_at": observed.isoformat(),
+        "distance_from_underlying": abs(strike - underlying_midpoint),
+    }
+
+
+class PublicReadOnlyOptionChainClient:
+    """Bounded owner-only option-chain research; never an order client."""
+
+    def __init__(self, policy: PublicReadPolicy, *, opener: Callable | None = None):
+        if not isinstance(policy, PublicReadPolicy):
+            raise TypeError("explicit exact use-and-scope policy required")
+        self.policy = policy
+        self._open = opener or _http
+
+    def _post(self, *, backend_account_id: str, backend_access_token: str,
+              suffix: str, body: Mapping[str, object], max_bytes: int) -> object:
+        if not self.policy.permits({"EQUITY", "OPTION"}):
+            raise PublicQuoteHold("PUBLIC_SCOPE_RIGHTS_HOLD")
+        if not isinstance(backend_account_id, str) or not _ACCOUNT.fullmatch(backend_account_id):
+            raise PublicQuoteHold("PUBLIC_ACCOUNT_NOT_CONFIGURED")
+        if (not isinstance(backend_access_token, str) or
+                not re.fullmatch(r"[A-Za-z0-9._~+/=-]{20,4096}", backend_access_token)):
+            raise PublicQuoteHold("PUBLIC_BACKEND_TOKEN_NOT_CONFIGURED")
+        request = Request(
+            f"{_HOST}/userapigateway/marketdata/{backend_account_id}/{suffix}",
+            data=json.dumps(body).encode(),
+            headers={"Content-Type": "application/json", "Accept": "application/json",
+                     "Authorization": "Bearer " + backend_access_token},
+            method="POST",
+        )
+        return _read_json_response(self._open, request, max_bytes=max_bytes)
+
+    def fetch_nearest(self, *, backend_account_id: str, backend_access_token: str,
+                      symbol: str) -> PublicOptionChainSnapshot:
+        symbol = clean_symbol(str(symbol or "").strip().upper())
+        expirations_payload = self._post(
+            backend_account_id=backend_account_id,
+            backend_access_token=backend_access_token,
+            suffix="option-expirations",
+            body={"instrument": {"symbol": symbol, "type": "EQUITY"}},
+            max_bytes=_MAX_RESPONSE_BYTES,
+        )
+        if (not isinstance(expirations_payload, dict)
+                or expirations_payload.get("baseSymbol") != symbol
+                or not isinstance(expirations_payload.get("expirations"), list)):
+            raise PublicQuoteHold("PUBLIC_OPTION_EXPIRATIONS_SHAPE_HOLD")
+
+        today = datetime.now(timezone.utc).date()
+        expirations = []
+        for value in expirations_payload["expirations"]:
+            if not isinstance(value, str):
+                continue
+            try:
+                parsed = datetime.strptime(value, "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            if parsed >= today:
+                expirations.append(parsed)
+        if not expirations:
+            raise PublicQuoteHold("PUBLIC_OPTION_EXPIRATIONS_EMPTY")
+        expiration = min(expirations).isoformat()
+
+        equity = PublicReadOnlyQuoteClient(self.policy, opener=self._open).fetch_once(
+            backend_account_id=backend_account_id,
+            backend_access_token=backend_access_token,
+            requests=[QuoteRequest(symbol=symbol, kind="EQUITY")],
+        )[0]
+        bid = float(equity.normalized["bid"])
+        ask = float(equity.normalized["ask"])
+        midpoint = round((bid + ask) / 2.0, 6)
+
+        chain_payload = self._post(
+            backend_account_id=backend_account_id,
+            backend_access_token=backend_access_token,
+            suffix="option-chain",
+            body={
+                "instrument": {"symbol": symbol, "type": "EQUITY"},
+                "expirationDate": expiration,
+            },
+            max_bytes=_MAX_CHAIN_RESPONSE_BYTES,
+        )
+        if (not isinstance(chain_payload, dict)
+                or chain_payload.get("baseSymbol") != symbol
+                or not isinstance(chain_payload.get("calls"), list)
+                or not isinstance(chain_payload.get("puts"), list)):
+            raise PublicQuoteHold("PUBLIC_OPTION_CHAIN_SHAPE_HOLD")
+
+        received = datetime.now(timezone.utc)
+        selected = []
+        for right, rows in (("call", chain_payload["calls"]), ("put", chain_payload["puts"])):
+            parsed = [
+                item for item in (
+                    _option_chain_row(
+                        row, right=right, expiration=expiration,
+                        underlying_midpoint=midpoint, received_at=received,
+                    )
+                    for row in rows
+                )
+                if item is not None
+            ]
+            parsed.sort(key=lambda item: (
+                float(item["distance_from_underlying"]),
+                -int(item["open_interest"] or 0),
+                -int(item["volume"] or 0),
+            ))
+            selected.extend(parsed[:_MAX_CHAIN_SIDE])
+
+        if not selected:
+            raise PublicQuoteHold("PUBLIC_OPTION_CHAIN_EMPTY")
+
+        selected.sort(key=lambda item: (
+            item["right"], float(item["strike"]), str(item["provider_symbol"])
+        ))
+        return PublicOptionChainSnapshot(
+            underlying=symbol,
+            expiration=expiration,
+            underlying_midpoint=midpoint,
+            contracts=tuple(selected),
+            retrieved_at=received,
+        )
