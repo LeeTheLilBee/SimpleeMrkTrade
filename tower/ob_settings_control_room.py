@@ -88,6 +88,18 @@ def register_ob_settings_control_room(app):
 
     bp = Blueprint("ob_settings_control_room", __name__)
 
+    @bp.route(PATH + ".json", methods=["GET"])
+    def settings_json():
+        response = make_response({
+            "schema": "OB_OWNER_SETTINGS_V1",
+            "settings": get_owner_settings(),
+            "owner_changeable": sorted(DEFAULTS.keys()),
+            "rights_flags_are_not_user_toggles": True,
+        })
+        response.headers["Cache-Control"] = "private, no-store"
+        response.headers["Pragma"] = "no-cache"
+        return response
+
     @bp.route(PATH, methods=["GET", "POST"])
     def settings():
         if request.method == "POST":
