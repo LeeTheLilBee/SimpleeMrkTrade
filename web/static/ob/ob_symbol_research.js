@@ -213,7 +213,7 @@
           }
         }
       }
-    } else if (!alpaca && finazon && finazon.state === "SOURCE_BOUND") {
+    } else if (!(alpaca && alpaca.state === "SOURCE_BOUND") && finazon && finazon.state === "SOURCE_BOUND") {
       const ch = Number(finazon.daily_change_percent);
       if (Number.isFinite(ch) && ch > 0) addFinding(positive, "positive", "The connected current-market source shows a positive daily move.", "Finazon");
       if (Number.isFinite(ch) && ch < 0) addFinding(negative, "negative", "The connected current-market source shows a negative daily move.", "Finazon");
