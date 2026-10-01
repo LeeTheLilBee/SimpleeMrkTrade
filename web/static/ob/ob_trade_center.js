@@ -1409,6 +1409,60 @@
 
 
   // ================================================================================================
+  // CANONICAL FEED SYNC
+  // ================================================================================================
+
+  function syncCanonicalProjection() {
+    state.projection =
+      resolveProjection();
+
+    state.positions =
+      extractArray(
+        state.projection,
+        [
+          "active_positions",
+          "positions",
+          "open_positions",
+        ]
+      );
+
+    state.candidates =
+      extractArray(
+        state.projection,
+        [
+          "trade_candidates",
+          "candidates",
+          "opportunities",
+        ]
+      );
+
+    const currentSymbol =
+      symbolOf(state.activeTrade)
+      || handoff().symbol;
+
+    if (currentSymbol) {
+      const current =
+        [...state.positions, ...state.candidates]
+          .find(item => symbolOf(item) === currentSymbol);
+
+      if (current) {
+        state.activeTrade = current;
+      }
+
+      state.rankedContracts =
+        contractsForSymbol(
+          state.projection,
+          currentSymbol
+        );
+    }
+
+    renderAttention();
+    renderChrome();
+    renderWorkspace();
+  }
+
+
+  // ================================================================================================
   // INIT
   // ================================================================================================
 
@@ -1504,6 +1558,11 @@
         openSymbol
       );
 
+    window.addEventListener(
+      "obEngineFeedAdapterUpdated",
+      syncCanonicalProjection
+    );
+
     window.OBTradeCenter =
       Object.freeze({
         getState() {
@@ -1531,10 +1590,7 @@
         },
 
         refresh() {
-          state.projection =
-            resolveProjection();
-
-          renderWorkspace();
+          syncCanonicalProjection();
         },
       });
 
