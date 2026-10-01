@@ -135,7 +135,7 @@ def test_public_owner_selection_cannot_outlive_temporary_session_auth():
         connection_status_projection(sid=SID, key_reader=keys, public_reader=invalid)
 
 
-def test_soulaana_displays_full_provider_status_off_dashboard_and_compact_status_on_dashboard():
+def test_soulaana_provider_status_asset_stays_safe_without_global_room_injection():
     rail = (ROOT / "web/static/ob/ob_keyless_context.js").read_text()
     for expected in (
         '"/ob/data-desk/connections.json"',
@@ -153,9 +153,7 @@ def test_soulaana_displays_full_provider_status_off_dashboard_and_compact_status
         "trade_center", "review_center", "owner_dashboard", "owner_console"
     ):
         html = (ROOT / "web/templates" / (page + ".html")).read_text()
-        assert 'id="obKeylessContextRoot"' in html
-        assert "/static/ob/ob_keyless_context.js" in html
+        assert 'id="obKeylessContextRoot"' not in html
+        assert "/static/ob/ob_keyless_context.js" not in html
     dashboard = (ROOT / "web/templates/dashboard.html").read_text()
-    assert 'id="obDataPulseChips"' in dashboard
     assert "/static/ob/ob_dashboard_data_pulse.js" in dashboard
-    assert 'id="obKeylessContextRoot"' not in dashboard
