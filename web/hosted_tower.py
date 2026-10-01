@@ -422,6 +422,14 @@ from tower.ecosystem_integration_desk import register_tower_integration_desk
 
 register_tower_integration_desk(app)
 
+# Grounds same-origin runtime composition. This registers /grounds ONLY when
+# an operator explicitly opts in and Grounds' own production factory completes
+# all of its private DB, Tower receiver/staff and independent release preflight.
+# Failure leaves Tower healthy and the Grounds launch gate blocked.
+from tower.grounds_same_origin_mount import register_configured_grounds_same_origin_runtime
+
+register_configured_grounds_same_origin_runtime(app)
+
 # Cross-system navigation safety:
 # - future app source routes cannot bypass Tower merely by being mounted
 # - product -> Tower return routes preserve only an existing owner session
