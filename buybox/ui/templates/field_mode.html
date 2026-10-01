@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Field Mode · {{ op.name }}{% endblock %}{% block content %}
+<a class="back" href="{{ url_for('opportunity',oid=op.id) }}">← Dossier</a>
+<section class="hero compact-hero"><p class="eyebrow">FIELD MODE</p><h1>{{ op.name }}</h1><p>Fast capture while you are standing at the asset. Notes remain owner observations until separately sourced/reviewed.</p></section>
+<section class="panel field-panel"><form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>What are you looking at?<input name="title" maxlength="160" required autocomplete="off" placeholder="Machine condition, roof, parking lot, seller statement…"></label><label>Field note<textarea name="note" maxlength="2000" rows="7" required placeholder="Capture the observation now. Source it later."></textarea></label><button class="primary field-action" type="submit">Save field note</button></form></section>
+<section class="panel"><h2>Recent field captures</h2>{% for r in captures %}<div class="event"><strong>{{ r.payload.title }}</strong><small>{{ r.created_at }}</small><p>{{ r.payload.note }}</p></div>{% else %}<p class="muted">No field captures yet.</p>{% endfor %}</section>
+{% endblock %}
