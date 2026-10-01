@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from urllib.parse import urlencode
 
 from flask import abort, redirect, request
 
@@ -125,16 +126,24 @@ def register_ob_protected_route_enforcement(app):
             abort(405)
 
         if not owner_session_active():
-            return redirect("/tower/login")
+            return redirect(
+                "/tower/login?" + urlencode({"next": path})
+            )
 
         if is_owner_only_ob_web_room(path):
             return None
 
         if not step_up_active():
-            return redirect("/tower/access-home")
+            return redirect(
+                "/tower/step-up/observatory?"
+                + urlencode({"next": path})
+            )
 
         if not operational_ob_access_active():
-            return redirect("/tower/launch/observatory")
+            return redirect(
+                "/tower/launch/observatory?"
+                + urlencode({"next": path})
+            )
 
         return None
 
