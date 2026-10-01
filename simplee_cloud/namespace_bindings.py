@@ -307,6 +307,28 @@ class SQLiteNamespaceBindingLedger:
             "production_authorized": False,
         }
 
+    def source_binding_key_commitment(self) -> dict:
+        """Verified local commitment used only by signed source checkpoints."""
+        with closing(self._connect()) as conn:
+            self._verify_key_commitment(conn)
+            self._verify(conn)
+            row = conn.execute(
+                "SELECT binding_key_commitment FROM ledger_metadata "
+                "WHERE schema_id=?",
+                (_KEY_META_SCHEMA,),
+            ).fetchone()
+            if row is None:
+                raise IntegrityError("namespace binding key commitment unavailable")
+            commitment = row["binding_key_commitment"]
+        return {
+            "schema": _KEY_META_SCHEMA,
+            "binding_key_commitment": commitment,
+            "matches_current_source_key": True,
+            "external_anchor_certified": False,
+            "binding_key_custody_certified": False,
+            "production_authorized": False,
+        }
+
     def checkpoint_head(self, event_count: int) -> str:
         """Return a fully verified historical binding-ledger prefix head."""
         if type(event_count) is not int or event_count < 0:

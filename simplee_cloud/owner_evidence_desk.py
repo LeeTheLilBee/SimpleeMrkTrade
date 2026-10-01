@@ -123,6 +123,7 @@ def owner_local_evidence_desk(
         "local_storage_and_replay_prefix_verified": False,
         "local_namespace_prefix_verified": False,
         "local_cross_ledger_checkpoint_verified": False,
+        "local_namespace_binding_key_commitment_signed": False,
         "actual_external_latest_attested": False,
         "external_immutability_certified": False,
     }
@@ -140,9 +141,17 @@ def owner_local_evidence_desk(
             journal=journal, replay_store=replay_store,
             namespace_bindings=namespace_bindings,
         )
+        checkpoint_summary["kind"] = (
+            "SC043_STORAGE_REPLAY_NAMESPACE_KEY"
+            if doc["schema"] == "simplee.cloud.control-checkpoint.v2"
+            else "SC039_STORAGE_REPLAY_NAMESPACE"
+        )
         checkpoint_summary["local_storage_and_replay_prefix_verified"] = True
         checkpoint_summary["local_namespace_prefix_verified"] = True
         checkpoint_summary["local_cross_ledger_checkpoint_verified"] = True
+        checkpoint_summary["local_namespace_binding_key_commitment_signed"] = (
+            doc["schema"] == "simplee.cloud.control-checkpoint.v2"
+        )
         checkpoint_summary["storage_event_count"] = doc["storage_event_count"]
         checkpoint_summary["replay_event_count"] = doc["replay_event_count"]
         checkpoint_summary["namespace_event_count"] = doc["namespace_event_count"]
