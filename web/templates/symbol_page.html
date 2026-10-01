@@ -242,6 +242,12 @@
           <article><strong>Treasury</strong><p id="symbolResearchTreasury">Rates context has not loaded yet.</p></article>
           <article><strong>OpenFIGI</strong><p id="symbolResearchFigi">Identifier context has not loaded yet.</p></article>
           <article><strong>Official catalysts</strong><div id="symbolResearchCatalysts" class="ob-symbol-impact-list"><p>Catalyst context has not loaded yet.</p></div></article>
+          <article class="ob-symbol-source-accounting-card">
+            <strong>Source accounting</strong>
+            <div id="symbolSourceAccounting" class="ob-symbol-impact-list">
+              <p>Checking which sources were available, used, held, or not applicable to this symbol.</p>
+            </div>
+          </article>
         </div>
       </details>
     </section>
@@ -546,6 +552,9 @@
 <script src="/static/ob/ob_global_session_shell.js"></script>
   <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
   <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
-<script defer src="/static/ob/ob_symbol_research.js?v=symboltop002"></script>
+{% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
+<script id="symbolServerResearch" type="application/json">{{ ob_research_context|tojson }}</script>
+{% endif %}
+<script defer src="/static/ob/ob_symbol_research.js?v=symbolsources003"></script>
 </body>
 </html>

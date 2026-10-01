@@ -93,6 +93,72 @@
     });
   }
 
+
+  function sourceStateLabel(state) {
+    return String(state || "UNAVAILABLE").replaceAll("_", " ").toLowerCase();
+  }
+
+  function renderSourceAccounting(providerPacket, keylessPacket, catalystPacket, secPacket) {
+    const rows = [];
+    const providers = providerPacket && Array.isArray(providerPacket.provider_research)
+      ? providerPacket.provider_research : [];
+    ["finnhub","alpha_vantage","finazon","alpaca","bea"].forEach(name => {
+      const item = sourceRow(providers, name);
+      rows.push({
+        name,
+        state: item ? sourceStateLabel(item.state) : "not returned",
+        disposition: item && item.state === "SOURCE_BOUND"
+          ? "visible + available to Soulaana when provider AI-use review is enabled"
+          : "not used in this read"
+      });
+    });
+
+    const publics = keylessPacket && Array.isArray(keylessPacket.sources) ? keylessPacket.sources : [];
+    ["bls","treasury","openfigi"].forEach(name => {
+      const item = sourceRow(publics, name, "source");
+      rows.push({
+        name,
+        state: item ? sourceStateLabel(item.state) : "not returned",
+        disposition: item && item.state === "SOURCE_BOUND"
+          ? (name === "openfigi"
+              ? "visible identity evidence; Soulaana accounts for the mapping without treating it as company fundamentals or a quote"
+              : "visible + macro evidence used by Soulaana when reviewed")
+          : "not used in this read"
+      });
+    });
+
+    const catalysts = catalystPacket && Array.isArray(catalystPacket.sources) ? catalystPacket.sources : [];
+    ["federal_register","cftc","eia","world_bank","nws"].forEach(name => {
+      const item = sourceRow(catalysts, name, "source");
+      rows.push({
+        name,
+        state: item ? sourceStateLabel(item.state) : "not returned",
+        disposition: item && item.state === "SOURCE_BOUND"
+          ? "visible catalyst evidence; Soulaana applies it only when it is relevant enough to this symbol"
+          : "not used in this read"
+      });
+    });
+
+    rows.push({
+      name:"sec_edgar",
+      state: secPacket ? sourceStateLabel(secPacket.state || (secPacket.fundamentals && secPacket.fundamentals.state)) : "not attached",
+      disposition: secPacket
+        ? "issuer-specific filing evidence available to the Symbol read"
+        : "server-side issuer packet not attached"
+    });
+
+    const mount = byId("symbolSourceAccounting");
+    if (!mount) return;
+    mount.replaceChildren();
+    rows.forEach(item => {
+      const p = paragraph(
+        item.name.toUpperCase() + " · " + item.state + " · " + item.disposition,
+        "ob-symbol-source-accounting-row"
+      );
+      mount.append(p);
+    });
+  }
+
   function buildImpact(providerPacket, keylessPacket, catalystPacket, secPacket, ticker) {
     const positive = [], negative = [], agreement = [], conflict = [], watch = [];
     const why = [];
@@ -134,6 +200,7 @@
     const publicRows = keylessPacket && Array.isArray(keylessPacket.sources) ? keylessPacket.sources : [];
     const bls = sourceRow(publicRows, "bls", "source");
     const treasury = sourceRow(publicRows, "treasury", "source");
+    const openfigi = sourceRow(publicRows, "openfigi", "source");
 
     let inflationDir = null, laborDir = null, yieldDir = null;
     if (bls && bls.state === "SOURCE_BOUND" && Array.isArray(bls.series)) {
@@ -155,6 +222,10 @@
       if (laborDir === "stronger") addFinding(positive, "positive", "Labor data are broadly firmer, which supports demand but can also keep rate pressure alive.", "BLS");
       if (laborDir === "weaker") addFinding(negative, "negative", "Labor data are broadly weakening, which can pressure cyclical demand expectations.", "BLS");
       if (laborDir === "mixed") addFinding(conflict, "conflict", "Labor measures are not telling one clean story, so Soulaana should not force a single macro label.", "BLS");
+    }
+
+    if (openfigi && openfigi.state === "SOURCE_BOUND" && openfigi.value) {
+      addFinding(agreement, "agree", "The ticker has a reviewed OpenFIGI reference mapping, which strengthens identifier consistency but does not prove issuer fundamentals.", "OpenFIGI");
     }
 
     if (treasury && treasury.state === "SOURCE_BOUND" && treasury.rates && treasury.rates.state === "SOURCE_BOUND") {
@@ -182,6 +253,8 @@
     const eia = sourceRow(cats, "eia", "source");
     const fedreg = sourceRow(cats, "federal_register", "source");
     const cftc = sourceRow(cats, "cftc", "source");
+    const worldBank = sourceRow(cats, "world_bank", "source");
+    const nws = sourceRow(cats, "nws", "source");
     if (eia && eia.state === "SOURCE_BOUND" && sensitivity.energySensitive) {
       addFinding(watch, "neutral", "Energy inventory data are live in the context stack; the direction matters more for this industry than for the average symbol.", "EIA");
     }
@@ -190,6 +263,12 @@
     }
     if (cftc && cftc.state === "SOURCE_BOUND") {
       addFinding(watch, "neutral", "Futures positioning context is available, but it is not issuer-specific and should be treated as backdrop only.", "CFTC");
+    }
+    if (worldBank && worldBank.state === "SOURCE_BOUND") {
+      addFinding(watch, "neutral", "World Bank annual U.S. GDP context is available as a long-horizon backdrop. It is too slow-moving to explain a current symbol move by itself.", "World Bank");
+    }
+    if (nws && nws.state === "SOURCE_BOUND") {
+      addFinding(watch, "neutral", "NWS alert context is available. Soulaana keeps it as environmental context unless a direct geographic/operational link to this issuer is established.", "NWS");
     }
 
     const sec = secPacket && secPacket.room === "symbol_page" ? secPacket : null;
@@ -577,7 +656,9 @@
     const providerPacket = results[0].status === "fulfilled" ? results[0].value : null;
     const keylessPacket = results[1].status === "fulfilled" ? results[1].value : null;
     const catalystPacket = results[2].status === "fulfilled" ? results[2].value : null;
-    buildImpact(providerPacket, keylessPacket, catalystPacket, serverResearch(), ticker);
+    const secPacket = serverResearch();
+    buildImpact(providerPacket, keylessPacket, catalystPacket, secPacket, ticker);
+    renderSourceAccounting(providerPacket, keylessPacket, catalystPacket, secPacket);
     set("symbolImpactFreshness", live ? "Current + fused context" : "Fused research context");
 
     if (!total) {
