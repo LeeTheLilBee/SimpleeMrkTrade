@@ -168,7 +168,9 @@ def test_forged_unknown_key_reference_denied_before_provider_read(tmp_path):
     spy = CountBackupGet(service.backup_backend)
     service.backup_backend = spy
 
-    with pytest.raises(AccessDenied, match="backup key unavailable"):
+    # Durable SC029 restore provenance rejects the forged key reference even
+    # before key resolution because it no longer matches the ACKed backup intent.
+    with pytest.raises(CloudError, match="acknowledged exact backup"):
         restore(port, h, forged, "restore-forged-key-ref")
     assert spy.get_calls == 0
 
@@ -221,7 +223,8 @@ def test_fixed_key_legacy_mode_still_rejects_different_receipt_key_reference(tmp
     )
     forged = replace(receipt, key_reference="different-key")
     h.receipts["restore-fixed-forged"] = forged
-    with pytest.raises(AccessDenied, match="backup key reference unavailable"):
+    # Fixed-key mode is also protected first by exact durable backup provenance.
+    with pytest.raises(CloudError, match="acknowledged exact backup"):
         h.port.verify_backup_copy(
             grant=h.grant(
                 "restore-fixed-forged", "VERIFY_BACKUP",
