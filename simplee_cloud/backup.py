@@ -9,7 +9,9 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import re
 import secrets
+from collections.abc import Callable
 
 from .contracts import (
     AccessDenied, BackupReceipt, CiphertextBackend, CloudError, IntegrityError,
@@ -37,19 +39,47 @@ def _aad(namespace: str, object_ref: str, digest: str) -> bytes:
 class IndependentBackupService:
     def __init__(
         self, *, source: CiphertextStorageService,
-        backup_backend: CiphertextBackend, backup_key: bytes,
+        backup_backend: CiphertextBackend, backup_key: bytes | None = None,
         key_reference: str,
+        backup_key_resolver: Callable[[str], bytes] | None = None,
     ):
         if backup_backend is None or backup_backend is source._backend:
             raise CloudError("primary and backup must use separate backends")
-        if not isinstance(backup_key, bytes) or len(backup_key) != 32:
-            raise CloudError("separate 32-byte backup key required")
-        if not isinstance(key_reference, str) or not key_reference or len(key_reference) > 128:
+        if not isinstance(key_reference, str) or not re.fullmatch(
+            r"[A-Za-z0-9_.:-]{1,128}", key_reference
+        ):
             raise CloudError("approved backup key reference required")
+        if backup_key_resolver is None:
+            if not isinstance(backup_key, bytes) or len(backup_key) != 32:
+                raise CloudError("separate 32-byte backup key required")
+        elif backup_key is not None or not callable(backup_key_resolver):
+            raise CloudError("use either fixed backup key or resolver, never both")
         self.source = source
         self.backup_backend = backup_backend
+        # Fixed-key mode remains for legacy source fixtures. Resolver mode
+        # models rotation without storing a key catalog in Cloud source.
         self._backup_key = backup_key
+        self._backup_key_resolver = backup_key_resolver
         self.key_reference = key_reference
+        self._key_for(self.key_reference)
+
+    def _key_for(self, key_reference: str) -> bytes:
+        if not isinstance(key_reference, str) or not re.fullmatch(
+            r"[A-Za-z0-9_.:-]{1,128}", key_reference
+        ):
+            raise AccessDenied("invalid backup key reference")
+        if self._backup_key_resolver is None:
+            if key_reference != self.key_reference:
+                raise AccessDenied("backup key reference unavailable")
+            key = self._backup_key
+        else:
+            try:
+                key = self._backup_key_resolver(key_reference)
+            except Exception as exc:
+                raise AccessDenied("backup key unavailable") from exc
+        if not isinstance(key, bytes) or len(key) != 32:
+            raise AccessDenied("backup key unavailable")
+        return key
 
     def create(
         self, *, context: StorageContext, source_object_ref: str,
@@ -58,10 +88,11 @@ class IndependentBackupService:
         scope = self.source._gate(context, "BACKUP_CIPHERTEXT")
         if not valid_object_ref(source_object_ref) or not valid_sha256(source_ciphertext_sha256):
             raise CloudError("invalid backup source reference")
+        key = self._key_for(self.key_reference)
         self.source._audit(action="backup_intent", context=context, namespace=scope)
         inner = self.source._read_verified(scope, source_object_ref, source_ciphertext_sha256)
         nonce = secrets.token_bytes(12)
-        outer = b"SCB1" + nonce + _aesgcm()(self._backup_key).encrypt(
+        outer = b"SCB1" + nonce + _aesgcm()(key).encrypt(
             nonce, inner, _aad(scope, source_object_ref, source_ciphertext_sha256)
         )
         if len(outer) > MAX_ENVELOPE_BYTES + 64:
@@ -85,8 +116,12 @@ class IndependentBackupService:
             valid_sha256(receipt.source_ciphertext_sha256)
         ):
             raise CloudError("invalid backup receipt")
-        if receipt.namespace_digest != scope or receipt.key_reference != self.key_reference:
-            raise AccessDenied("backup entity or key reference mismatch")
+        if receipt.namespace_digest != scope:
+            raise AccessDenied("backup entity mismatch")
+        # Resolve the historical receipt's exact key reference BEFORE provider
+        # access. Rotation may change the active key for NEW backups without
+        # silently re-encrypting or re-labeling older immutable copies.
+        key = self._key_for(receipt.key_reference)
         self.source._audit(action="restore_verification_intent", context=context, namespace=scope)
         outer = self.backup_backend.get(scope, receipt.backup_ref)
         if not isinstance(outer, bytes) or not outer.startswith(b"SCB1") or not (
@@ -96,7 +131,7 @@ class IndependentBackupService:
         if not hmac.compare_digest(hashlib.sha256(outer).hexdigest(), receipt.backup_sha256):
             raise IntegrityError("backup ciphertext integrity mismatch")
         try:
-            inner = _aesgcm()(self._backup_key).decrypt(
+            inner = _aesgcm()(key).decrypt(
                 outer[4:16], outer[16:],
                 _aad(scope, receipt.source_object_ref, receipt.source_ciphertext_sha256),
             )
