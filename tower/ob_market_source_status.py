@@ -86,6 +86,169 @@ def _canonical_public_option_contracts(options, symbol):
     return normalized
 
 
+def _compact_cached_provider_row(row):
+    if not isinstance(row, dict):
+        return None
+    if row.get("state") != "SOURCE_BOUND" or row.get("owner_display_reviewed") is not True:
+        return None
+    provider = row.get("provider")
+    if provider not in {"finnhub", "alpha_vantage", "finazon", "bea"}:
+        return None
+
+    compact = {
+        "provider": provider,
+        "state": "SOURCE_BOUND",
+        "kind": row.get("kind"),
+        "source_reference": row.get("source_reference"),
+        "historical_only": row.get("historical_only") is True,
+        "live_quote": row.get("live_quote") is True,
+        "real_time_market_context": row.get("real_time_market_context") is True,
+        "consolidated_quote": row.get("consolidated_quote") is True,
+        "soulaana_ai_use_reviewed": row.get("soulaana_ai_use_reviewed") is True,
+        "research_only": True,
+    }
+    if provider == "finnhub":
+        compact["summary"] = {
+            "security_name": row.get("security_name"),
+            "exchange": row.get("exchange"),
+            "industry": row.get("industry"),
+            "ipo_date": row.get("ipo_date"),
+            "country": row.get("country"),
+            "currency": row.get("currency"),
+            "market_cap_millions": row.get("market_cap_millions"),
+            "shares_outstanding_millions": row.get("shares_outstanding_millions"),
+        }
+    elif provider == "alpha_vantage":
+        profile = row.get("company_profile") if isinstance(row.get("company_profile"), dict) else {}
+        bars = row.get("bars") if isinstance(row.get("bars"), list) else []
+        compact["summary"] = {
+            "company_name": profile.get("name"),
+            "sector": profile.get("sector"),
+            "industry": profile.get("industry"),
+            "country": profile.get("country"),
+            "exchange": profile.get("exchange"),
+            "market_cap": profile.get("market_cap"),
+            "shares_outstanding": profile.get("shares_outstanding"),
+            "latest_sessions": [dict(item) for item in bars[:2] if isinstance(item, dict)],
+        }
+    elif provider == "finazon":
+        compact["summary"] = {
+            "last_trade": dict(row.get("last_trade")) if isinstance(row.get("last_trade"), dict) else None,
+            "session": dict(row.get("session")) if isinstance(row.get("session"), dict) else None,
+            "prior_close": row.get("prior_close"),
+            "high_52w": row.get("high_52w"),
+            "low_52w": row.get("low_52w"),
+            "daily_change_percent": row.get("daily_change_percent"),
+            "coverage": row.get("coverage"),
+        }
+    else:
+        macro = row.get("macro_series") if isinstance(row.get("macro_series"), list) else []
+        compact["summary"] = {
+            "macro_series": [dict(item) for item in macro[:4] if isinstance(item, dict)],
+        }
+    return compact
+
+
+def _merge_cached_provider_context(app, document, sid):
+    """Amalgamate already-fetched provider research without triggering new API calls."""
+    cache = app.extensions.get("ob_provider_research_cache_v1")
+    snapshot = getattr(cache, "snapshot_for_symbol", None)
+    if not callable(snapshot) or not isinstance(sid, str) or not sid:
+        document.setdefault("market_health", {})["cached_provider_amalgamation"] = {
+            "available": False,
+            "network_fetches_triggered": False,
+        }
+        return document
+
+    symbol_rows = [
+        row for row in document.get("symbols", [])
+        if isinstance(row, dict) and isinstance(row.get("symbol"), str)
+    ][:6]
+    shared_context = {}
+    per_symbol = {}
+    ai_consumed = set()
+
+    for row in symbol_rows:
+        symbol = row["symbol"]
+        coverage = [
+            item for item in row.get("source_coverage", [])
+            if isinstance(item, str)
+        ]
+        observations = (
+            dict(row.get("source_observations"))
+            if isinstance(row.get("source_observations"), dict)
+            else {}
+        )
+        attached = []
+        for cached in snapshot(sid, symbol):
+            compact = _compact_cached_provider_row(cached)
+            if compact is None:
+                continue
+            provider = compact["provider"]
+            if provider == "bea":
+                shared_context.setdefault("bea", compact)
+                if compact.get("soulaana_ai_use_reviewed") is True:
+                    ai_consumed.add("bea")
+                continue
+            observations[provider] = compact
+            if provider not in coverage:
+                coverage.append(provider)
+            attached.append(provider)
+            if compact.get("soulaana_ai_use_reviewed") is True:
+                ai_consumed.add(provider)
+
+        row["source_coverage"] = coverage
+        row["source_observations"] = observations
+        row["amalgamated_cached_providers"] = sorted(set(attached))
+        per_symbol[symbol] = sorted(set(attached))
+
+    if symbol_rows:
+        document["sectors"] = [{
+            "name": "Source-backed attention",
+            "region_type": "RESEARCH_ATTENTION",
+            "symbols": [dict(row) for row in symbol_rows],
+        }]
+
+    providers_present = {
+        provider
+        for row in symbol_rows
+        for provider in row.get("source_coverage", [])
+        if isinstance(provider, str)
+    }
+    providers_present.update(shared_context.keys())
+    providers_present = sorted(providers_present)
+
+    fusion = document.setdefault("source_fusion", {})
+    fusion["providers_present"] = providers_present
+    fusion["cached_provider_amalgamation"] = {
+        "per_symbol": per_symbol,
+        "shared_context_providers": sorted(shared_context.keys()),
+        "network_fetches_triggered": False,
+    }
+    fusion["single_provider_selected_as_truth"] = False
+    fusion["provider_values_overwritten"] = False
+    fusion["all_source_observations_preserved_separately"] = True
+
+    document["shared_research_context"] = shared_context
+    document.setdefault("market_health", {})["cached_provider_amalgamation"] = {
+        "available": True,
+        "providers_present": providers_present,
+        "symbols_with_cached_research": sum(1 for providers in per_symbol.values() if providers),
+        "network_fetches_triggered": False,
+    }
+    soulaana = document.setdefault("soulaana", {}).setdefault("source_fusion", {})
+    soulaana["cached_ai_reviewed_providers"] = sorted(ai_consumed)
+    soulaana["single_provider_selected"] = False
+    soulaana["meaning"] = (
+        "I read the same canonical symbol records as every Observatory room. "
+        "Already-fetched provider evidence stays separate by provenance but is "
+        "amalgamated into one room projection."
+    )
+    if len(providers_present) > 1:
+        document["source"] = "observatory-multi-provider-owner-research"
+    return document
+
+
 def _merge_public_owner_context(app, document, sid):
     """Add Public beside existing sources; never replace or promote it."""
     quote_reader = app.extensions.get("ob_public_owner_quote_reader_v1")
@@ -403,6 +566,7 @@ def register_hosted_ob_market_source_status(app):
                     )
 
             document = _merge_public_owner_context(app, document, sid)
+            document = _merge_cached_provider_context(app, document, sid)
             providers = document.get("source_fusion", {}).get("providers_present", [])
             state = (
                 "multi-provider-observatory-research"

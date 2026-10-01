@@ -76,6 +76,10 @@
     null;
 
 
+  let inFlightFetch =
+    null;
+
+
   function safeObject(value) {
     return (
       value
@@ -1489,7 +1493,7 @@
   }
 
 
-  async function fetchEngineSnapshot() {
+  async function fetchEngineSnapshotOnce() {
     adapterState.status =
       "loading";
 
@@ -1767,6 +1771,25 @@
     return {
       ...adapterState,
     };
+  }
+
+
+  async function fetchEngineSnapshot() {
+    if (inFlightFetch) {
+      return inFlightFetch;
+    }
+
+    inFlightFetch =
+      fetchEngineSnapshotOnce();
+
+    try {
+      return await inFlightFetch;
+    }
+
+    finally {
+      inFlightFetch =
+        null;
+    }
   }
 
 

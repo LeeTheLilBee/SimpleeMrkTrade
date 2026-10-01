@@ -860,6 +860,30 @@ class ProviderResearchCache:
         with self._lock:
             self._rows[key] = (_now() + ttl, value)
 
+    def snapshot_for_symbol(self, sid, symbol):
+        """Return only already-fetched, unexpired rows for canonical room fusion."""
+        now = _now()
+        symbol = str(symbol or "").strip().upper()
+        rows = []
+        stale = []
+        with self._lock:
+            for key, item in self._rows.items():
+                if not isinstance(key, tuple) or len(key) != 3:
+                    continue
+                key_sid, provider, key_symbol = key
+                if key_sid != sid or key_symbol != symbol:
+                    continue
+                expires, value = item
+                if expires <= now:
+                    stale.append(key)
+                    continue
+                if isinstance(value, dict):
+                    rows.append(dict(value))
+            for key in stale:
+                self._rows.pop(key, None)
+        rows.sort(key=lambda row: str(row.get("provider") or ""))
+        return rows
+
 
 def provider_research_projection(*, sid: str, symbol: str, secret_reader,
                                  public_reader=None, public_option_reader=None,
@@ -1001,10 +1025,11 @@ def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader,
                                              public_reader=None,
                                              public_option_reader=None,
                                              opener=None,
-                                             event_hub=None):
+                                             event_hub=None,
+                                             cache=None):
     if not callable(owner_authorize) or not callable(secret_reader):
         raise ValueError("Tower owner authorization and server key reader required")
-    cache = ProviderResearchCache()
+    cache = cache or ProviderResearchCache()
     bp = Blueprint("ob_keyed_provider_research", __name__)
 
     @bp.route(PATH, methods=["GET"])

@@ -87,13 +87,19 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
         eia_secret_reader=app.extensions["ob_provider_key_secret_reader_v1"],
     ))
 
-    from tower.ob_keyed_provider_research import create_keyed_provider_research_blueprint
+    from tower.ob_keyed_provider_research import (
+        ProviderResearchCache,
+        create_keyed_provider_research_blueprint,
+    )
+    provider_research_cache = ProviderResearchCache()
+    app.extensions["ob_provider_research_cache_v1"] = provider_research_cache
     app.register_blueprint(create_keyed_provider_research_blueprint(
         owner_authorize=_tower_authorize_data_desk,
         secret_reader=app.extensions["ob_provider_key_secret_reader_v1"],
         public_reader=app.extensions["ob_public_owner_quote_reader_v1"],
         public_option_reader=app.extensions["ob_public_owner_option_chain_reader_v1"],
         event_hub=event_hub,
+        cache=provider_research_cache,
     ))
 
     from web.ob_connection_truth_route import create_connection_truth_blueprint
