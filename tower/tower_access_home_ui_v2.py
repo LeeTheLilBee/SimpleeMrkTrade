@@ -477,18 +477,18 @@ def render_access_home_v2(
     owner_style = """
     <style>
     :root {
-        --tower-ink: #16120f;
-        --tower-walnut: #211914;
-        --tower-walnut-2: #2b211a;
-        --tower-bronze: #b88a58;
-        --tower-brass: #d7b980;
-        --tower-cream: #efe5d2;
-        --tower-paper: #d8cdbc;
-        --tower-muted: #a99b8c;
-        --tower-line: rgba(239,229,210,.12);
-        --tower-line-strong: rgba(215,185,128,.26);
-        --tower-live: #d7b980;
-        --tower-building: #92877d;
+        --tower-ink: #07080d;
+        --tower-walnut: #10121a;
+        --tower-walnut-2: #171a24;
+        --tower-bronze: #8f7cff;
+        --tower-brass: #c9b8ff;
+        --tower-cream: #f5f3fb;
+        --tower-paper: #d8d4e6;
+        --tower-muted: #9497a8;
+        --tower-line: rgba(220,216,244,.12);
+        --tower-line-strong: rgba(201,184,255,.30);
+        --tower-live: #72a7ff;
+        --tower-building: #787c8e;
     }
 
     body {
@@ -500,9 +500,9 @@ def render_access_home_v2(
             ) 0 0 / 72px 72px,
             linear-gradient(
                 180deg,
-                #17120f 0%,
-                #0f0c0a 58%,
-                #17120f 100%
+                #090a11 0%,
+                #10121a 58%,
+                #090a11 100%
             );
         color: var(--tower-cream);
     }
@@ -530,7 +530,7 @@ def render_access_home_v2(
         padding: 11px 14px;
         border: 1px solid var(--tower-line);
         border-radius: 16px;
-        background: rgba(27,20,16,.96);
+        background: rgba(12,13,20,.96);
         box-shadow: 0 14px 34px rgba(0,0,0,.24);
     }
 
@@ -546,9 +546,9 @@ def render_access_home_v2(
         border-radius: 9px;
         display: grid;
         place-items: center;
-        color: #22170f;
+        color: #090a10;
         font-weight: 950;
-        background: linear-gradient(145deg, #dfc997, #b8844f);
+        background: linear-gradient(145deg, #d9ccff, #8f7cff);
         box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
     }
 
@@ -599,7 +599,7 @@ def render_access_home_v2(
     .tower-top-link:hover {
         color: var(--tower-cream);
         border-color: var(--tower-line-strong);
-        background: rgba(215,185,128,.055);
+        background: rgba(201,184,255,.07);
     }
 
     .tower-lobby-hero {
@@ -617,9 +617,9 @@ def render_access_home_v2(
         background:
             linear-gradient(
                 105deg,
-                rgba(49,36,27,.98) 0%,
-                rgba(34,25,20,.98) 56%,
-                rgba(24,18,15,.98) 100%
+                rgba(24,26,38,.98) 0%,
+                rgba(17,19,29,.98) 56%,
+                rgba(9,10,16,.98) 100%
             );
         box-shadow: 0 26px 60px rgba(0,0,0,.26);
     }
@@ -631,11 +631,11 @@ def render_access_home_v2(
         right: 0;
         width: 34%;
         height: 100%;
-        border-left: 1px solid rgba(215,185,128,.09);
+        border-left: 1px solid rgba(201,184,255,.10);
         background:
             linear-gradient(
                 180deg,
-                rgba(215,185,128,.035),
+                rgba(143,124,255,.045),
                 rgba(0,0,0,.08)
             );
     }
@@ -673,10 +673,10 @@ def render_access_home_v2(
 
     .tower-soulaana-brief {
         padding: 20px;
-        border: 1px solid rgba(215,185,128,.20);
+        border: 1px solid rgba(201,184,255,.22);
         border-radius: 14px;
-        background: rgba(11,9,8,.32);
-        box-shadow: inset 3px 0 0 rgba(215,185,128,.42);
+        background: rgba(12,13,20,.48);
+        box-shadow: inset 3px 0 0 rgba(143,124,255,.48);
     }
 
     .tower-soulaana-brief strong {
@@ -764,8 +764,8 @@ def render_access_home_v2(
         background:
             linear-gradient(
                 155deg,
-                rgba(47,35,27,.96),
-                rgba(27,21,17,.98)
+                rgba(24,26,38,.96),
+                rgba(11,12,19,.98)
             );
         box-shadow:
             0 14px 34px rgba(0,0,0,.18),
@@ -784,8 +784,8 @@ def render_access_home_v2(
         background:
             linear-gradient(
                 155deg,
-                rgba(41,31,25,.96),
-                rgba(24,19,16,.98)
+                rgba(21,23,34,.96),
+                rgba(10,11,17,.98)
             );
     }
 
@@ -793,27 +793,27 @@ def render_access_home_v2(
         background:
             linear-gradient(
                 155deg,
-                rgba(52,39,29,.92),
-                rgba(29,22,18,.98)
+                rgba(28,30,44,.94),
+                rgba(12,13,20,.98)
             );
     }
 
     a.tower-square-tile:hover {
         transform: translateY(-3px);
-        border-color: rgba(215,185,128,.34);
+        border-color: rgba(201,184,255,.36);
         background:
             linear-gradient(
                 155deg,
-                rgba(58,43,32,.98),
-                rgba(31,23,18,.98)
+                rgba(31,33,49,.98),
+                rgba(13,14,22,.98)
             );
     }
 
     .tower-square-tile.live {
-        border-color: rgba(215,185,128,.25);
+        border-color: rgba(114,167,255,.30);
         box-shadow:
             0 16px 38px rgba(0,0,0,.20),
-            inset 0 0 0 1px rgba(215,185,128,.05);
+            inset 0 0 0 1px rgba(114,167,255,.06);
     }
 
     .tower-square-tile.building {
@@ -834,8 +834,8 @@ def render_access_home_v2(
         border-radius: 8px;
         display: grid;
         place-items: center;
-        border: 1px solid rgba(215,185,128,.18);
-        background: #17110e;
+        border: 1px solid rgba(201,184,255,.18);
+        background: #0d0f16;
         color: var(--tower-brass);
         font-size: .72rem;
         font-weight: 950;
@@ -858,8 +858,8 @@ def render_access_home_v2(
 
     .tower-square-tile.live .tower-tile-state {
         color: var(--tower-brass);
-        border-color: rgba(215,185,128,.22);
-        background: rgba(215,185,128,.05);
+        border-color: rgba(114,167,255,.24);
+        background: rgba(114,167,255,.06);
     }
 
     .tower-tile-copy {
@@ -919,7 +919,7 @@ def render_access_home_v2(
         padding: 18px;
         border: 1px solid var(--tower-line);
         border-radius: 12px;
-        background: rgba(39,29,23,.72);
+        background: rgba(18,20,30,.82);
         color: var(--tower-cream);
         text-decoration: none;
     }
@@ -948,7 +948,7 @@ def render_access_home_v2(
     }
 
     .tower-return-card {
-        border-color: rgba(215,185,128,.18);
+        border-color: rgba(201,184,255,.18);
     }
 
     .tower-evidence-mini {
