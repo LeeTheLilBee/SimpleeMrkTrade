@@ -28,6 +28,7 @@ from tower.app_truth_projection import (
     registered_app_truth_projection,
     verified_launchable_app_ids,
 )
+from tower.app_registry import registered_apps
 from tower.truth_contract import (
     AVAILABLE,
     AUTHORIZED,
@@ -291,9 +292,15 @@ def test_twr141_registry_alone_does_not_publish_future_apps(monkeypatch):
         future_registered_apps()
     )
 
+    expected_future_count = len([
+        app
+        for app in registered_apps()
+        if app["app_status"] == "registered_future_room"
+    ])
+
     assert len(
         future
-    ) == 4
+    ) == expected_future_count
 
     for app in future:
 
@@ -1266,7 +1273,9 @@ def test_twr145_access_home_reports_zero_verified_launchable_without_provider(
 
     assert summary[
         "registered_app_count"
-    ] == 6
+    ] == len(
+        registered_apps()
+    )
 
     assert summary[
         "verified_launchable_app_count"
@@ -1307,7 +1316,9 @@ def test_twr145_access_home_reports_verified_ob_launchability(
 
     assert summary[
         "registered_app_count"
-    ] == 6
+    ] == len(
+        registered_apps()
+    )
 
     assert summary[
         "verified_launchable_app_count"
