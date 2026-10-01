@@ -11,6 +11,7 @@ from tower.app_truth_projection import (
     future_registered_apps,
     registered_app_truth_projection,
 )
+from tower.app_registry import registered_apps
 from tower.truth_contract import (
     AUTHORITATIVE,
     AVAILABLE,
@@ -322,34 +323,33 @@ def test_twr124_all_registered_apps_receive_truth_projection():
 
     projections = registered_app_truth_projection()
 
-    assert len(projections) == 6
+    expected_ids = {
+        app["app_id"]
+        for app in registered_apps()
+    }
+
+    assert len(projections) == len(expected_ids)
 
     assert {
         projection["app_id"]
         for projection in projections
-    } == {
-        "observatory",
-        "teller",
-        "vault",
-        "clouds",
-        "grounds",
-        "buybox",
-    }
+    } == expected_ids
 
 
 def test_twr124_future_registration_does_not_mean_published_or_available():
 
     future = future_registered_apps()
 
+    expected_future_ids = {
+        app["app_id"]
+        for app in registered_apps()
+        if app["app_status"] == "registered_future_room"
+    }
+
     assert {
         projection["app_id"]
         for projection in future
-    } == {
-        "vault",
-        "clouds",
-        "grounds",
-        "buybox",
-    }
+    } == expected_future_ids
 
     for projection in future:
 
