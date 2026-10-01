@@ -193,6 +193,12 @@ def grounds_launch_view(app: Flask):
         return _blocked_page("The Grounds", report)
     # The generic direct-route guard still requires a Tower-created,
     # current-session receipt even after product-specific readiness succeeds.
+    # Normalize a still-valid pre-upgrade owner session before binding receipt.
+    if not ensure_tower_session_id():
+        return _blocked_page(
+            "The Grounds",
+            {"reason_codes": ["CURRENT_TOWER_SESSION_BINDING_REQUIRED"]},
+        )
     session[ACCESS_RECEIPT_KEYS["grounds"]] = build_ecosystem_access_receipt("grounds")
     return redirect("/grounds")
 
