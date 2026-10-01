@@ -290,6 +290,25 @@ def test_shared_panel_renders_reviewed_examination_not_only_connected_status():
     assert "record.append" in js and "textContent" in js
     assert "Soulaana can read only the provider research" not in js
 
+def test_cache_snapshot_for_symbol_reuses_only_existing_rows_without_network(rights):
+    rec = Recorder()
+    cache = ProviderResearchCache()
+    sid = "tower_session_" + "x"*20
+    assert cache.snapshot_for_symbol(sid, "AAPL") == []
+    packet = provider_research_projection(
+        sid=sid, symbol="AAPL",
+        secret_reader=secret_reader, opener=rec, cache=cache)
+    before = len(rec.calls)
+    rows = cache.snapshot_for_symbol(sid, "AAPL")
+    assert len(rec.calls) == before
+    assert {row["provider"] for row in rows} == {
+        "finnhub", "alpha_vantage", "finazon", "alpaca", "bea"
+    }
+    assert all(row["state"] == "SOURCE_BOUND" for row in rows)
+    assert cache.snapshot_for_symbol(sid, "MSFT") == []
+    assert packet["symbol"] == "AAPL"
+
+
 def test_cache_avoids_repeat_provider_call_within_ttl(rights):
     rec = Recorder()
     cache = ProviderResearchCache()
