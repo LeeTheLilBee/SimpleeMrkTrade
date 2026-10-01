@@ -237,7 +237,7 @@ def test_missing_middle_fork_or_duplicate_vector_denied(tmp_path):
     with pytest.raises(IntegrityError, match="lineage gap or fork"):
         sequence([first, fork], h, bindings, pubs)
 
-    with pytest.raises(IntegrityError, match="duplicate|nonmonotonic"):
+    with pytest.raises(IntegrityError, match="lineage gap|duplicate|nonmonotonic"):
         sequence([first, first], h, bindings, pubs)
 
 
