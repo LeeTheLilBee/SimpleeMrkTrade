@@ -141,7 +141,7 @@ def test_gp021_tower_handoff_cards():
         )
     )
 
-    assert len(cards) == 5
+    assert len(cards) == 6
 
     assert all(
         item.navigation.kind
@@ -150,19 +150,24 @@ def test_gp021_tower_handoff_cards():
     )
 
 
-def test_gp021_clouds_internal_atm():
+def test_gp021_atm_routes_through_tower():
     card = get_owner_command_card(
         "atm_operations"
     )
 
     assert (
         card.navigation.kind
-        == "clouds_internal"
+        == "tower_handoff"
     )
 
     assert (
         card.navigation.requires_tower
-        is False
+        is True
+    )
+
+    assert (
+        card.navigation.requires_step_up
+        is True
     )
 
 
