@@ -126,7 +126,7 @@ def test_blocked_ground_launch_never_writes_access_receipt(monkeypatch):
         assert ACCESS_RECEIPT_KEYS["grounds"] not in s
 
 
-def test_buybox_never_issues_handoff_before_reviewed_browser_bootstrap(monkeypatch):
+def test_buybox_bootstrap_requires_exact_https_origin_and_current_issue_preflight(monkeypatch):
     app = make_app()
     client = app.test_client()
     owner(client)
@@ -134,19 +134,80 @@ def test_buybox_never_issues_handoff_before_reviewed_browser_bootstrap(monkeypat
         lambda **_kwargs: {
             "can_issue_handoff": True, "reason_codes": [], "state": "READY_TO_ISSUE"
         })
-    # Direct preflight is request/session-bound by design.
     with client.session_transaction() as stored:
         snapshot = dict(stored)
+
+    monkeypatch.delenv("BUYBOX_PUBLIC_ORIGIN", raising=False)
     with app.test_request_context("/tower/launch/buybox"):
         session.update(snapshot)
-        report = gates.inspect_buybox_launch(truth={"launchable": True})
-    assert report["can_launch"] is False
-    assert report["tower_handoff_preflight_ready"] is True
-    assert report["browser_bootstrap_transport_ready"] is False
-    assert "BUYBOX_BROWSER_BOOTSTRAP_NOT_IMPLEMENTED" in report["reason_codes"]
+        missing = gates.inspect_buybox_launch(truth={"launchable": True})
+    assert missing["can_launch"] is False
+    assert "BUYBOX_PUBLIC_ORIGIN_NOT_CONFIGURED" in missing["reason_codes"]
+
+    monkeypatch.setenv("BUYBOX_PUBLIC_ORIGIN", "http://buybox.example.invalid")
+    with app.test_request_context("/tower/launch/buybox"):
+        session.update(snapshot)
+        invalid = gates.inspect_buybox_launch(truth={"launchable": True})
+    assert invalid["can_launch"] is False
+    assert "BUYBOX_PUBLIC_ORIGIN_INVALID" in invalid["reason_codes"]
+
+    monkeypatch.setenv("BUYBOX_PUBLIC_ORIGIN", "https://buybox.example.invalid")
+    with app.test_request_context("/tower/launch/buybox"):
+        session.update(snapshot)
+        ready = gates.inspect_buybox_launch(truth={"launchable": True})
+    assert ready["can_launch"] is True
+    assert ready["browser_bootstrap_transport_ready"] is True
+    assert ready["receiver_contract"] == "POST /tower/bootstrap -> POST /tower/owner-exchange"
+    assert ready["broker_submission_authorized"] is False
+    assert ready["capital_movement_authorized"] is False
+
+
+def test_buybox_launch_issues_post_body_only_bootstrap_after_all_gates(monkeypatch):
+    app = make_app()
+    client = app.test_client()
+    owner(client)
+    monkeypatch.setenv("BUYBOX_PUBLIC_ORIGIN", "https://buybox.example.invalid")
+    monkeypatch.setattr(gates, "inspect_buybox_launch", lambda: {
+        "can_launch": True, "reason_codes": [], "state": "READY_TO_LAUNCH"
+    })
+    monkeypatch.setattr(gates, "issue_buybox_owner_handoff", lambda **_kwargs: {
+        "token": "tbh1.payload.signature",
+        "broker_submission_authorized": False,
+        "capital_movement_authorized": False,
+        "closing_authorized": False,
+        "vault_access_authorized": False,
+    })
+    response = client.get("/tower/launch/buybox")
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert 'method="post"' in html
+    assert 'action="https://buybox.example.invalid/tower/bootstrap"' in html
+    assert 'name="handoff" value="tbh1.payload.signature"' in html
+    assert "handoff=" not in html
+    assert response.location is None
+    assert "no-store" in response.headers["Cache-Control"]
+    assert response.headers["Referrer-Policy"] == "no-referrer"
+    assert "form-action https://buybox.example.invalid" in response.headers["Content-Security-Policy"]
+    assert "/static/tower/buybox_bootstrap_launch.js" in html
+    with client.session_transaction() as s:
+        assert ACCESS_RECEIPT_KEYS["buybox"] not in s
+
+
+def test_buybox_launch_sanitizes_issuance_failure(monkeypatch):
+    app = make_app()
+    client = app.test_client()
+    owner(client)
+    monkeypatch.setenv("BUYBOX_PUBLIC_ORIGIN", "https://buybox.example.invalid")
+    monkeypatch.setattr(gates, "inspect_buybox_launch", lambda: {
+        "can_launch": True, "reason_codes": [], "state": "READY_TO_LAUNCH"
+    })
+    def fail(**_kwargs):
+        raise gates.TowerBuyBoxIssuerUnavailable("private signer detail")
+    monkeypatch.setattr(gates, "issue_buybox_owner_handoff", fail)
     response = client.get("/tower/launch/buybox")
     assert response.status_code == 503
-    assert b"BUYBOX_BROWSER_BOOTSTRAP_NOT_IMPLEMENTED" in response.data
+    assert b"BUYBOX_HANDOFF_ISSUANCE_FAILED" in response.data
+    assert b"private signer detail" not in response.data
 
 
 def test_status_requires_current_stepup_even_for_authenticated_owner():
