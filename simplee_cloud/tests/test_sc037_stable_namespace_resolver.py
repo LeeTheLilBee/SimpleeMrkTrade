@@ -105,7 +105,7 @@ def test_naive_fixed_namespace_key_rotation_cannot_silently_claim_old_object(tmp
     )
     spy = CountGet(backend)
     _, ops2 = source(backend=spy, journal=journal, key=key2)
-    with pytest.raises(CloudError, match="acknowledged exact primary"):
+    with pytest.raises(CloudError, match="acknowledged matching primary intent"):
         ops2.get(
             context=ctx("READ_CIPHERTEXT", "read-after-naive-rotation"),
             object_ref=ref, expected_sha256=digest,
