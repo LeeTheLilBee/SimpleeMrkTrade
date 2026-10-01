@@ -14,7 +14,8 @@
   function isActive(path, key) {
     if (key === "dashboard") return currentRoom(path) === "Dashboard";
     if (key === "market") return path.includes("market-map");
-    if (key === "settings") return path === "/ob/settings";\n    if (key === "data") return path === "/ob/data-desk";
+    if (key === "settings") return path === "/ob/settings";
+    if (key === "data") return path === "/ob/data-desk";
     if (key === "trade") return path.includes("trade");
     if (key === "review") return path.includes("review");
     if (key === "owner") return path.includes("owner") || path.includes("admin");
@@ -99,6 +100,7 @@
 
         <div class="ob-nav-group">
           <div class="ob-nav-group-label">Settings</div>
+          ${navLink(path, "/ob/settings", "Settings", "settings", true)}
           ${document.body.dataset.obDataDeskRouteEnabled === "true"
             ? navLink(path, "/ob/data-desk", "Market Data Desk", "data", true)
             : ""}
