@@ -57,6 +57,12 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
     event_hub = ObservatoryEventHub()
     app.extensions["ob_observatory_event_hub"] = event_hub
 
+    from web.ob_event_trace_route import create_event_trace_blueprint
+    app.register_blueprint(create_event_trace_blueprint(
+        owner_authorize=_tower_authorize_data_desk,
+        event_hub=event_hub,
+    ))
+
     from tower.ob_public_owner_connection import register_public_owner_connection
     register_public_owner_connection(app, owner_authorize=_tower_authorize_data_desk)
 
@@ -87,6 +93,7 @@ def register_protected_ob_market_data_desk(app: Flask) -> Flask:
         secret_reader=app.extensions["ob_provider_key_secret_reader_v1"],
         public_reader=app.extensions["ob_public_owner_quote_reader_v1"],
         public_option_reader=app.extensions["ob_public_owner_option_chain_reader_v1"],
+        event_hub=event_hub,
     ))
 
     from web.ob_connection_truth_route import create_connection_truth_blueprint

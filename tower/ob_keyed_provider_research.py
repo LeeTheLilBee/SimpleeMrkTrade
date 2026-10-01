@@ -20,6 +20,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from math import isfinite
+from hashlib import sha256
 import json
 import os
 import re
@@ -784,7 +785,8 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
 def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader,
                                              public_reader=None,
                                              public_option_reader=None,
-                                             opener=None):
+                                             opener=None,
+                                             event_hub=None):
     if not callable(owner_authorize) or not callable(secret_reader):
         raise ValueError("Tower owner authorization and server key reader required")
     cache = ProviderResearchCache()
@@ -809,6 +811,48 @@ def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader,
             )
         except ValueError:
             abort(400)
+
+        if event_hub is not None:
+            try:
+                digest_body = {
+                    "symbol": payload.get("symbol"),
+                    "provider_research": payload.get("provider_research", []),
+                    "soulaana_research": payload.get("soulaana_research", {}),
+                }
+                digest = sha256(json.dumps(
+                    digest_body, sort_keys=True, separators=(",", ":")
+                ).encode("utf-8")).hexdigest()
+                source_bound = any(
+                    isinstance(row, dict) and row.get("state") == "SOURCE_BOUND"
+                    for row in payload.get("provider_research", [])
+                )
+                event = event_hub.observe_digest_event(
+                    observation_key="provider_research:" + payload["symbol"].lower(),
+                    digest=digest,
+                    event_type="research_context_changed",
+                    source="keyed_provider_research",
+                    snapshot_path=PATH,
+                    symbol=payload["symbol"],
+                    producer_stages=(
+                        ("RECEIVED", "VALIDATED", "NORMALIZED")
+                        if source_bound else ()
+                    ),
+                )
+                observations = payload.get("soulaana_research", {}).get("observations", [])
+                if event is not None and isinstance(observations, list) and observations:
+                    event_hub.record_lifecycle(
+                        event_id=event["event_id"],
+                        stage="SOULAANA_CONSUMED",
+                        consumer="soulaana_provider_research",
+                    )
+                    event_hub.record_lifecycle(
+                        event_id=event["event_id"],
+                        stage="SOULAANA_INTERPRETED",
+                        consumer="soulaana_provider_research",
+                    )
+            except Exception:
+                print("[OB_EVENT_TRACE_HOLD] provider_research lifecycle receipt unavailable", flush=True)
+
         states = {}
         for row in payload.get("provider_research", []):
             if not isinstance(row, dict):

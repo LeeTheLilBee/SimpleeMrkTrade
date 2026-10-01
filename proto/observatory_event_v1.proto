@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package simplee.observatory.v1;
+
+// Internal coordination only. This protocol does not carry provider payloads,
+// credentials, positions, orders, capital authority, or trading-mode authority.
+enum LifecycleStage {
+  LIFECYCLE_STAGE_UNSPECIFIED = 0;
+  RECEIVED = 1;
+  VALIDATED = 2;
+  NORMALIZED = 3;
+  PUBLISHED = 4;
+  SCANNER_CONSUMED = 5;
+  SIMULATION_CONSUMED = 6;
+  SOULAANA_CONSUMED = 7;
+  SOULAANA_INTERPRETED = 8;
+}
+
+message ObservatoryEventV1 {
+  string schema = 1;
+  string event_id = 2;
+  string type = 3;
+  string channel = 4;
+  string epoch = 5;
+  uint64 cursor = 6;
+  string source = 7;
+  string symbol = 8;
+  bool has_symbol = 9;
+  string snapshot_path = 10;
+  bool needs_authenticated_snapshot = 11;
+  bool trace_available = 12;
+
+  // Negative authority flags are explicit on every message.
+  bool content_attached = 20;
+  bool provider_payload_attached = 21;
+  bool provider_stream_attached = 22;
+  bool live_quote_payload_attached = 23;
+  bool current_quote_verified = 24;
+  bool candidate_admitted = 25;
+  bool execution_authorized = 26;
+}
+
+message EventStreamCursorV1 {
+  string epoch = 1;
+  uint64 cursor = 2;
+  string consumer = 3;
+}
+
+message LifecycleReceiptV1 {
+  string event_id = 1;
+  LifecycleStage stage = 2;
+  string consumer = 3;
+  string observed_at = 4;
+}
+
+message LifecycleAckV1 {
+  bool accepted = 1;
+  string code = 2;
+}
+
+// This is the service contract for the point where OB internal consumers become
+// separate processes/services. The current single-process EventHub remains the
+// source implementation until that split exists.
+service ObservatoryEventService {
+  rpc StreamEvents(EventStreamCursorV1) returns (stream ObservatoryEventV1);
+  rpc RecordLifecycle(LifecycleReceiptV1) returns (LifecycleAckV1);
+}

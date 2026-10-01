@@ -34,6 +34,8 @@ def _key_rows(_sid):
          "probe": "NOT_CONFIGURED", "secret": SECRET},
         {"id": "bea", "name": "U.S. BEA", "present": False,
          "probe": "NOT_CONFIGURED", "secret": SECRET},
+        {"id": "alpaca", "name": "Alpaca", "present": False,
+         "probe": "NOT_CONFIGURED", "secret": SECRET},
     )
 
 
@@ -55,7 +57,7 @@ def test_safe_projection_never_conflates_connection_and_data_license(monkeypatch
     assert result["live_feed_count_verified"] is None
     assert result["prices_attached"] is False
     assert result["may_authorize_order"] is False
-    assert len(result["provider_status"]) == 10
+    assert len(result["provider_status"]) == 11
     states = {x["provider"]: x for x in result["provider_status"]}
     assert states["finnhub"]["state"] == "READ_ONLY_CHECK_PASSED"
     assert states["finnhub"]["source_use_rights_verified"] is False
@@ -169,7 +171,8 @@ def test_canonical_tower_routes_and_existing_dissemination_preserved():
     assert "register_provider_key_desk(app," in app_source
     assert "create_connection_truth_blueprint(" in app_source
     html = (ROOT / "web/templates/market_data_desk.html").read_text()
-    assert "ob_keyless_context.js" in html
+    assert "ob_keyless_context.js" not in html
+    assert "ob_event_trace.js" in html
     assert keys.PATH in html and PATH in html
     assert "ob_connection_truth.js" in html
     nav = (ROOT / "web/static/ob/ob_nav_shell.js").read_text()

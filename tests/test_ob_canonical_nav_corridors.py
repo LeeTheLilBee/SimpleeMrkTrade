@@ -18,6 +18,7 @@ CANONICAL = {
     "Dashboard": "/ob/dashboard",
     "Market Map": "/ob/market-map",
     "Market Data Desk": "/ob/data-desk",
+    "Settings": "/ob/settings",
     "Trade Center": "/ob/trade-center",
     "Review Center": "/ob/review-center",
     "Owner Console": "/ob/owner-console",

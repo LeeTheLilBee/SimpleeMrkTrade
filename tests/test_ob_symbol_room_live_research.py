@@ -24,7 +24,7 @@ def test_symbol_room_fuses_research_into_impact_read_and_keeps_sources_underneat
     assert "RESEARCH ROOM" not in template
     assert "SOULAANA · SYMBOL IMPACT READ" in template
     assert 'id="symbolServerResearch"' in template
-    assert "/static/ob/ob_symbol_research.js?v=symbolimpact001" in template
+    assert "/static/ob/ob_symbol_research.js?v=publicoptions005" in template
 
     assert "buildImpact(" in script
     assert "sectorSensitivity(" in script

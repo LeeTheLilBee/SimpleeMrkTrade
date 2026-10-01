@@ -249,12 +249,13 @@ class AlpacaIEXStreamManager:
             if hub is not None:
                 try:
                     hub.observe_digest(
-                        observation_key=f"alpaca_stream:{symbol}:{kind}",
+                        observation_key=f"alpaca_stream:{symbol.lower()}:{kind}",
                         digest=digest,
                         event_type="market_snapshot_changed",
                         source="alpaca_iex_stream",
                         snapshot_path="/ob/engine-feed-snapshot.json",
                         symbol=symbol,
+                        producer_stages=("RECEIVED", "VALIDATED", "NORMALIZED"),
                     )
                 except Exception:
                     pass

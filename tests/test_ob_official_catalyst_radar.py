@@ -263,13 +263,13 @@ def test_same_origin_exact_tower_route_blocks_anonymous_methods_and_arguments():
          enforcement.operational_ob_access_active) = original
 
 
-def test_private_rooms_share_protected_radar_while_dashboard_stays_compact():
+def test_private_rooms_do_not_duplicate_generic_radar_shell_and_backend_stays_protected():
     rooms = ("market_data_desk", "market_map", "symbol_page",
              "trade_center", "review_center", "owner_dashboard", "owner_console")
     for room in rooms:
         body = (ROOT / "web/templates" / (room + ".html")).read_text()
-        assert "/static/ob/ob_official_catalyst_radar.js" in body, room
-        assert 'id="obKeylessContextRoot"' in body, room
+        assert "/static/ob/ob_official_catalyst_radar.js" not in body, room
+        assert 'id="obKeylessContextRoot"' not in body, room
     dashboard = (ROOT / "web/templates/dashboard.html").read_text()
     assert "/static/ob/ob_dashboard_data_pulse.js" in dashboard
     assert "/static/ob/ob_official_catalyst_radar.js" not in dashboard

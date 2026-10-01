@@ -213,3 +213,16 @@ body[data-ob-room="market-data-desk"] details.ob-keyless-evidence-drawer[open]{
     margin-bottom:32px;
   }
 }
+
+
+/* Observatory event journey · status-only lifecycle proof */
+.mdd-trace-grid{display:grid;gap:12px;margin-top:18px}
+.mdd-trace-card{border:1px solid var(--mdd-border);background:rgba(8,15,15,.78);border-radius:16px;padding:16px;display:grid;gap:12px}
+.mdd-trace-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.mdd-trace-head strong{display:block;font-size:.95rem}
+.mdd-trace-head small{display:block;color:var(--mdd-muted);font-size:.69rem;margin-top:5px;word-break:break-all}
+.mdd-trace-path{margin:0;color:var(--mdd-muted);font-size:.76rem;word-break:break-word}
+.mdd-trace-rail{display:flex;flex-wrap:wrap;gap:7px}
+.mdd-trace-stage{border:1px solid var(--mdd-border);border-radius:999px;padding:7px 10px;font-size:.68rem;font-weight:750;letter-spacing:.01em}
+.mdd-trace-stage.is-done{color:var(--mdd-aqua);background:rgba(57,191,165,.10);border-color:rgba(167,232,216,.26)}
+.mdd-trace-stage.is-pending{color:var(--mdd-muted);background:rgba(255,255,255,.025)}

@@ -10,6 +10,7 @@ from types import SimpleNamespace
 from flask import Flask
 import pytest
 
+from engine.market_intake.observatory_event_stream import ObservatoryEventHub
 from tower.ob_keyed_provider_research import (
     PATH, ProviderResearchCache, create_keyed_provider_research_blueprint,
     provider_research_projection,
@@ -296,6 +297,45 @@ def test_http_blueprint_requires_owner_and_current_sid(rights):
     assert payload["symbol"] == "AAPL"
     assert response.headers["Cache-Control"].startswith("private, no-store")
     assert client.post(PATH+"?symbol=AAPL").status_code == 405
+
+
+def test_http_provider_research_records_truthful_soulaana_event_receipts(rights, monkeypatch):
+    monkeypatch.setenv("OB_PROVIDER_FINNHUB_AI_USE_REVIEWED", "1")
+    hub = ObservatoryEventHub()
+    app = Flask(__name__)
+    app.secret_key = "test-only"
+    app.config["TESTING"] = True
+    app.register_blueprint(create_keyed_provider_research_blueprint(
+        owner_authorize=lambda: True,
+        secret_reader=secret_reader,
+        opener=Recorder(),
+        event_hub=hub,
+    ))
+    client = app.test_client()
+    with client.session_transaction() as sess:
+        sess["tower_session_id"] = "tower_session_" + "x"*20
+
+    response = client.get(PATH + "?symbol=AAPL")
+    assert response.status_code == 200
+
+    traces = hub.trace_snapshot()["traces"]
+    assert len(traces) == 1
+    trace = traces[0]
+    assert trace["source"] == "keyed_provider_research"
+    assert trace["symbol"] == "AAPL"
+    assert trace["stages"]["RECEIVED"] is True
+    assert trace["stages"]["VALIDATED"] is True
+    assert trace["stages"]["NORMALIZED"] is True
+    assert trace["stages"]["PUBLISHED"] is True
+    assert trace["stages"]["SCANNER_CONSUMED"] is False
+    assert trace["stages"]["SOULAANA_CONSUMED"] is True
+    assert trace["stages"]["SOULAANA_INTERPRETED"] is True
+    assert trace["soulaana_complete"] is True
+
+    # Same cached research content must not manufacture a second event/receipt.
+    second = client.get(PATH + "?symbol=AAPL")
+    assert second.status_code == 200
+    assert len(hub.trace_snapshot()["traces"]) == 1
 
 
 def test_finazon_free_trial_holds_symbols_outside_trial(rights):
