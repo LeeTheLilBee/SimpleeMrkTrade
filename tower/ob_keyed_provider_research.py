@@ -566,13 +566,40 @@ def _soulaana(rows: list[dict]) -> dict:
         elif provider == "alpha_vantage":
             bars = row.get("bars", [])
             latest = bars[0]
+            profile = row.get("company_profile") if isinstance(row.get("company_profile"), dict) else {}
             item["summary"] = {
                 "completed_sessions": len(bars),
                 "latest_session": latest["session_date"],
+                "company_name": profile.get("name"),
+                "sector": profile.get("sector"),
+                "industry": profile.get("industry"),
+                "country": profile.get("country"),
+                "exchange": profile.get("exchange"),
+                "market_cap": profile.get("market_cap"),
+                "shares_outstanding": profile.get("shares_outstanding"),
+                "fiscal_year_end": profile.get("fiscal_year_end"),
+                "latest_quarter": profile.get("latest_quarter"),
             }
-            item["finding"] = (
-                f"Alpha Vantage reports a completed historical daily close for {row['symbol']} "
-                f"on {latest['session_date']}: {latest['close']:.2f}. "
+            company_bits = []
+            if profile.get("name"):
+                company_bits.append(str(profile["name"]))
+            if profile.get("sector"):
+                company_bits.append("sector " + str(profile["sector"]))
+            if profile.get("industry"):
+                company_bits.append("industry " + str(profile["industry"]))
+            if company_bits:
+                item["finding"] = (
+                    "Alpha Vantage's Company Overview identifies " + "; ".join(company_bits) + ". "
+                )
+            else:
+                item["finding"] = ""
+            if profile.get("description"):
+                item["finding"] += (
+                    "The company description says: " + str(profile["description"])[:700] + " "
+                )
+            item["finding"] += (
+                f"The latest completed daily close in this same source is {latest['close']:.2f} "
+                f"for {latest['session_date']}. "
             )
             if len(bars) >= 2:
                 prior = bars[1]
@@ -587,14 +614,15 @@ def _soulaana(rows: list[dict]) -> dict:
                 item["summary"]["prior_session"] = prior["session_date"]
                 item["summary"]["close_change"] = str(difference)
                 item["summary"]["close_change_percent"] = f"{percent:+.3f}"
-            else:
-                item["finding"] += "No second validated daily session is available for comparison. "
-            item["finding"] += (
-                "This is a comparison of source-reported completed daily records, not a live quote or forecast."
+            item["why_it_matters"] = (
+                "The company overview gives Soulaana the business, sector and industry context needed "
+                "to decide which macro, rates and catalyst evidence is actually relevant to this symbol, "
+                "instead of treating every company the same."
             )
             item["what_is_missing"] = (
-                "The latest intraday market, options chain, data entitlement and issuer-event "
-                "cross-check remain separate; do not extrapolate a current price or trade signal."
+                "Alpha's overview is provider reference data for the owner's private research. SEC filings "
+                "remain the independent issuer/source-of-record cross-check, and current market/options "
+                "conditions remain separate from the company description."
             )
         elif provider == "alpaca":
             quote = row.get("quote", {})
