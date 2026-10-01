@@ -1,0 +1,39 @@
+name: Clouds Live Hosted Acceptance
+
+on:
+  push:
+    branches:
+      - clouds-live-owner-command-finish
+  workflow_dispatch:
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install hosted runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r deploy/hosted_tower/requirements.txt
+          pip install pytest
+
+      - name: Compile Clouds finish
+        run: |
+          python -m py_compile \
+            tower/clouds_live_owner_command.py \
+            clouds/clouds_routes.py
+
+      - name: Run Clouds hosted acceptance
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+        run: |
+          python -m pytest -q --tb=short \
+            tests/test_clouds_live_hosted_finish.py \
+            tests/test_tower_clouds_owner_access_native_launch_pack1.py
