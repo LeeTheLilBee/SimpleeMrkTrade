@@ -70,10 +70,15 @@ def _project_registered_app(app: dict) -> dict:
         truth = app_truth_by_id(app_id)
     except Exception:
         truth = None
+    launch_gate_route = (
+        app.get("tower_launch_route")
+        if str(app.get("tower_launch_route", "")).startswith("/tower/launch/")
+        else None
+    )
     launchable = bool(
         isinstance(truth, dict) and truth.get("launchable") is True
         and app.get("app_status") == "protected_hosted"
-        and app.get("tower_launch_route", "").startswith("/tower/launch/")
+        and launch_gate_route
     )
     # 'launchable' is a runtime projection, not a test of owner browser
     # completion and never enables an unregistered future app.
@@ -84,6 +89,7 @@ def _project_registered_app(app: dict) -> dict:
         "state": "RUNTIME_LAUNCH_TRUTH_VERIFIED" if launchable else "BLOCKED_EXTERNAL_INTEGRATION",
         "tower_launch_route": app.get("tower_launch_route")
             if app.get("app_status") == "protected_hosted" else None,
+        "launch_gate_route": launch_gate_route,
         "launchable": launchable,
         "separate_product_runtime_activated": False if app_id in {
             "grounds", "buybox", "vault", "clouds",
@@ -126,12 +132,19 @@ def _owner_integration_desk_page():
         state = escape(item["state"])
         label = escape(str(item.get("label", item["app_id"])))
         required = escape(item["required_next"])
-        launch = (
-            '<a href="' + escape(item["tower_launch_route"], quote=True)
-            + '">Open through Tower</a>'
-            if item["launchable"] and item.get("tower_launch_route")
-            else '<span aria-label="Launch blocked">Launch blocked — no permission issued</span>'
-        )
+        if item["launchable"] and item.get("tower_launch_route"):
+            launch = (
+                '<a href="' + escape(item["tower_launch_route"], quote=True)
+                + '">Open through Tower</a>'
+            )
+        elif item.get("launch_gate_route"):
+            launch = (
+                '<a href="' + escape(item["launch_gate_route"], quote=True)
+                + '">Check Tower launch gate</a>'
+                '<span aria-label="Product runtime blocked"> — product runtime not released</span>'
+            )
+        else:
+            launch = '<span aria-label="Launch blocked">Launch blocked — no permission issued</span>'
         cards.append(
             '<article style="border:1px solid rgba(255,255,255,.15);'
             'border-radius:18px;background:rgba(255,255,255,.04);padding:18px">'

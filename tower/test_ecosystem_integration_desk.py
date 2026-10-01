@@ -58,12 +58,21 @@ def test_authenticated_runtime_truth_is_not_a_false_future_launch(client):
         assert apps[name]["tower_launch_route"] is None
         assert apps[name]["owner_acceptance_verified"] is False
         assert apps[name]["separate_product_runtime_activated"] is False
+    assert apps["grounds"]["launch_gate_route"] == "/tower/launch/grounds"
+    assert apps["buybox"]["launch_gate_route"] == "/tower/launch/buybox"
+    assert apps["vault"]["launch_gate_route"] is None
+    assert apps["clouds"]["launch_gate_route"] is None
     for name in ("observatory", "teller"):
         assert apps[name]["launchable"] is True
         assert apps[name]["tower_launch_route"].startswith("/tower/launch/")
         assert apps[name]["owner_acceptance_verified"] is False
     assert data["grants_issued"] is False
     assert data["external_calls_made"] is False
+    html = client.get(INTEGRATION_DESK_PATH).get_data(as_text=True)
+    assert 'href="/tower/launch/grounds"' in html
+    assert 'href="/tower/launch/buybox"' in html
+    assert "Check Tower launch gate" in html
+    assert "product runtime not released" in html
 
 
 def test_provider_error_degrades_to_blocked_without_secret_error_or_launch(client):

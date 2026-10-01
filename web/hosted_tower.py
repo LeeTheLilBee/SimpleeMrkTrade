@@ -72,6 +72,8 @@ _RUNTIME_CRITICAL_ROUTES = {
     "ob_trade_center": "/ob/trade-center",
     "ob_review_center": "/ob/review-center",
     "ob_owner_console": "/ob/owner-console",
+    "tower_launch_grounds": "/tower/launch/grounds",
+    "tower_launch_buybox": "/tower/launch/buybox",
 }
 
 
@@ -429,6 +431,12 @@ from tower.ecosystem_return_routes import register_ecosystem_return_routes
 
 register_ecosystem_direct_route_guard(app)
 register_ecosystem_return_routes(app)
+
+# Exact authenticated product launch gates. Registration does not release either
+# product: Grounds still needs its certified receiver/release + mounted runtime;
+# BuyBox still needs its reviewed browser bootstrap into the same-origin exchange.
+from tower.ecosystem_owner_launch_gates import register_ecosystem_owner_launch_gates
+register_ecosystem_owner_launch_gates(app)
 
 # ==============================================================================================================
 # TWR192_CANONICAL_HOSTED_FRONT_DOOR

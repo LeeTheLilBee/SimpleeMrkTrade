@@ -118,7 +118,7 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_name="The Grounds",
         app_label="Grounds",
         app_status="registered_future_room",
-        tower_launch_route="/tower/app-registry",
+        tower_launch_route="/tower/launch/grounds",
         primary_room_route="/grounds",
         owner_only=True,
         requires_tower_handoff=True,
@@ -127,20 +127,21 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "The Grounds is registered as a future property/operations room. "
-            "This layer does not open property workflows."
+            "The Grounds has an exact owner Tower launch gate, but real property "
+            "workflows remain blocked until the same-origin runtime, certified "
+            "Tower receiver, and independent operational release are verified."
         ),
     ),
 
-    # TWR201 — BuyBox is a known ecosystem application, not a live doorway.
-    # The BuyBox workspace currently uses development-only local login.
-    # Do not represent that as Tower identity or hosted availability.
+    # BuyBox is a known ecosystem application with a real Tower-side
+    # fail-closed launch gate. The product runtime itself is still unreleased;
+    # do not represent route registration as hosted BuyBox availability.
     TowerAppRegistration(
         app_id="buybox",
         app_name="BuyBox",
         app_label="BuyBox",
         app_status="registered_future_room",
-        tower_launch_route="/tower/app-registry",
+        tower_launch_route="/tower/launch/buybox",
         primary_room_route="/buybox",
         owner_only=True,
         requires_tower_handoff=True,
@@ -149,10 +150,11 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "BuyBox is a Tower-governed universal acquisition workspace under "
-            "separate development. No hosted owner launch, production BuyBox "
-            "session, external acquisition readiness, Vault archival, "
-            "closing, funding, or handoff authority is activated here. "
+            "BuyBox has an exact owner Tower launch gate and signed issuer "
+            "preflight, but the browser bootstrap into its same-origin exchange "
+            "is not implemented yet. No production BuyBox session, external "
+            "acquisition readiness, Vault archival, closing, funding, or "
+            "handoff authority is activated here. "
             "Teller owns financial and capacity readiness; Grounds owns "
             "owned-property operations; Vault proof is mediated by Tower."
         ),
@@ -456,6 +458,48 @@ TOWER_ROUTE_REGISTRY: Tuple[TowerRouteRegistration, ...] = (
             "Active owner-only Tower launch corridor for The Teller. "
             "A current owner session, step-up, effective entitlement, "
             "verified publication truth, and one-time Tower handoff are required."
+        ),
+    ),
+    TowerRouteRegistration(
+        route_id="grounds_owner_launch",
+        route="/tower/launch/grounds",
+        label="Open The Grounds",
+        app_id="grounds",
+        room_id="owner_launch",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="high",
+        lock_state="protected_fail_closed_launch_gate",
+        explanation=(
+            "Tower owns the Grounds owner launch gate. The crossing remains "
+            "blocked unless the same-origin Grounds runtime, certified current "
+            "Tower receiver, publication truth, entitlement, and independent "
+            "operational release are all verified."
+        ),
+    ),
+    TowerRouteRegistration(
+        route_id="buybox_owner_launch",
+        route="/tower/launch/buybox",
+        label="Open BuyBox",
+        app_id="buybox",
+        room_id="owner_launch",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="high",
+        lock_state="protected_fail_closed_launch_gate",
+        explanation=(
+            "Tower owns the BuyBox owner launch gate and signed issuer preflight. "
+            "The crossing stays blocked until the reviewed BuyBox browser bootstrap, "
+            "current entitlement, publication/health, Tower session introspection, "
+            "and private storage/restore evidence are independently verified."
         ),
     ),
 )

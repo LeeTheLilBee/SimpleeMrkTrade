@@ -11,8 +11,13 @@ on:
       - "tower/test_grounds_runtime_integration.py"
       - "tower/test_buybox_owner_handoff_issuer.py"
       - "tower/ecosystem_direct_route_guard.py"
+      - "tower/ecosystem_owner_launch_gates.py"
+      - "tower/ecosystem_integration_desk.py"
+      - "tower/app_registry.py"
       - "tower/ecosystem_return_routes.py"
       - "tower/test_ecosystem_navigation_guard.py"
+      - "tower/test_ecosystem_owner_launch_gates.py"
+      - "tower/test_ecosystem_integration_desk.py"
       - "web/hosted_tower.py"
       - "docs/TOWER_SYSTEM_INTEGRATIONS_20260928.md"
       - ".github/workflows/tower-system-integrations.yml"
@@ -26,8 +31,13 @@ on:
       - "tower/test_grounds_runtime_integration.py"
       - "tower/test_buybox_owner_handoff_issuer.py"
       - "tower/ecosystem_direct_route_guard.py"
+      - "tower/ecosystem_owner_launch_gates.py"
+      - "tower/ecosystem_integration_desk.py"
+      - "tower/app_registry.py"
       - "tower/ecosystem_return_routes.py"
       - "tower/test_ecosystem_navigation_guard.py"
+      - "tower/test_ecosystem_owner_launch_gates.py"
+      - "tower/test_ecosystem_integration_desk.py"
       - "web/hosted_tower.py"
       - "docs/TOWER_SYSTEM_INTEGRATIONS_20260928.md"
       - ".github/workflows/tower-system-integrations.yml"
@@ -45,8 +55,8 @@ jobs:
         with:
           python-version: "3.11"
       - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
-      - run: python -m compileall -q tower/grounds_runtime_receiver.py tower/grounds_operational_release.py tower/buybox_owner_handoff_issuer.py tower/ecosystem_direct_route_guard.py tower/ecosystem_return_routes.py tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py web/hosted_tower.py
-      - run: python -m pytest -q tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py
+      - run: python -m compileall -q tower/grounds_runtime_receiver.py tower/grounds_operational_release.py tower/buybox_owner_handoff_issuer.py tower/ecosystem_direct_route_guard.py tower/ecosystem_owner_launch_gates.py tower/ecosystem_integration_desk.py tower/ecosystem_return_routes.py tower/app_registry.py tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py tower/test_ecosystem_owner_launch_gates.py tower/test_ecosystem_integration_desk.py web/hosted_tower.py
+      - run: python -m pytest -q tower/test_grounds_runtime_integration.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py tower/test_ecosystem_owner_launch_gates.py tower/test_ecosystem_integration_desk.py
       - name: Hosted future-app routes never open by source registration alone
         run: |
           python - <<'PY'
@@ -57,13 +67,19 @@ jobs:
               assert response.status_code != 200, (path, response.status_code)
           print("Hosted future-app routes remain fail-closed.")
           PY
-      - name: Preserve non-launchable registry truth
+      - name: Preserve fail-closed registry truth with real Tower gates
         run: |
           python - <<'PY'
-          from tower.app_registry import TOWER_APP_REGISTRY
-          for app_id in ("grounds", "buybox"):
+          from tower.app_registry import TOWER_APP_REGISTRY, route_by_path
+          expected = {
+              "grounds": "/tower/launch/grounds",
+              "buybox": "/tower/launch/buybox",
+          }
+          for app_id, route in expected.items():
               app = next(x for x in TOWER_APP_REGISTRY if x.app_id == app_id)
               assert app.app_status == "registered_future_room"
-              assert app.tower_launch_route == "/tower/app-registry"
-          print("Grounds and BuyBox remain non-live registry entries.")
+              assert app.tower_launch_route == route
+              registered = route_by_path(route)
+              assert registered and registered["owner_only"] and registered["requires_step_up"]
+          print("Grounds and BuyBox have exact protected Tower gates but remain unreleased products.")
           PY
