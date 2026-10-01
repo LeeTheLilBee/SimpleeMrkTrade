@@ -74,7 +74,7 @@ def test_twr156_access_home_is_explicit_owner_front_door():
     )
 
     assert (
-        "One front door. Protected product entries."
+        "Everything you built, one place."
         in body
     )
 
@@ -84,27 +84,45 @@ def test_twr156_access_home_is_explicit_owner_front_door():
     )
 
 
-def test_twr157_only_current_protected_product_cards_are_rendered():
+def test_twr157_access_home_shows_full_world_without_fake_launches():
 
-    assert [
+    ids = [
         card["id"]
         for card in APP_CARDS
-    ] == [
-        "observatory",
-        "teller",
     ]
 
-    card = APP_CARDS[0]
+    for expected in (
+        "observatory",
+        "teller",
+        "grounds",
+        "buybox",
+        "vault",
+        "clouds",
+        "simplee_on_the_go",
+        "crown_calendar",
+        "beauty",
+        "sunday_table",
+        "our_oral_traditions",
+        "cookout_ready",
+        "sunday_best",
+        "the_village",
+        "simplee_fitness",
+        "simplee_skincare",
+    ):
+        assert expected in ids
 
-    assert (
-        card["href"]
-        == "/tower/launch/observatory"
-    )
+    live = [
+        card for card in APP_CARDS
+        if card["href"]
+    ]
 
-    assert (
-        card["status"]
-        == "Protected entry"
-    )
+    assert {
+        card["id"]
+        for card in live
+    } == {
+        "observatory",
+        "teller",
+    }
 
     body = render_home()
 
@@ -113,40 +131,32 @@ def test_twr157_only_current_protected_product_cards_are_rendered():
         in body
     )
 
-    assert (
-        "The Observatory"
-        in body
-    )
-
-    assert (
-        "/tower/launch/observatory"
-        in body
-    )
-
-
-def test_twr157_access_home_does_not_publish_fake_products():
-
-    body = render_home()
-
-    assert "The Teller" in body
-    assert "/tower/launch/teller" in body
-    assert APP_CARDS[1]["href"] == "/tower/launch/teller"
-    assert APP_CARDS[1]["status"] == "Protected entry"
-
-    for prohibited in (
+    for visible in (
+        "The Observatory",
+        "The Teller",
         "The Grounds",
-        "The Clouds",
+        "BuyBox",
         "Archive Vault",
-        "#vault-preview",
-        "#teller-preview",
-        "#grounds-preview",
-        "#clouds-preview",
+        "Simplee Cloud",
+        "SimpleeOnTheGo",
+        "Crown Calendar",
+        "Simplee Beauty",
+        "Sunday Table",
+        "Our Oral Traditions",
+        "Cookout Ready",
+        "Sunday Best",
+        "The Village",
+        "Simplee Fitness",
+        "Simplee Skincare",
     ):
+        assert visible in body
 
-        assert (
-            prohibited
-            not in body
-        )
+    assert "/tower/launch/observatory" in body
+    assert "/tower/launch/teller" in body
+
+    assert 'href="/apps/crown-calendar"' not in body
+    assert 'href="/grounds"' not in body
+    assert 'href="/buybox"' not in body
 
 
 def test_twr158_owner_headquarters_is_integrated_not_duplicated():
