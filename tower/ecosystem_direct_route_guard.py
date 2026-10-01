@@ -92,6 +92,18 @@ def _valid_access_receipt(app_id: str, receipt, *, now_epoch: int | None = None)
     )
 
 
+def ecosystem_access_active(app_id: str, *, now_epoch: int | None = None) -> bool:
+    """Return current exact Tower owner/session receipt truth for a known app.
+
+    This is deliberately not an entitlement issuer. It only re-checks the same
+    server-created short-lived receipt used by the direct-route guard.
+    """
+    if app_id not in APP_PATHS or not owner_session_active():
+        return False
+    receipt=session.get(ACCESS_RECEIPT_KEYS[app_id])
+    return _valid_access_receipt(app_id,receipt,now_epoch=now_epoch)
+
+
 def _matches(path: str, prefixes: tuple[str, ...]) -> bool:
     return any(path == prefix or path.startswith(prefix + "/") for prefix in prefixes)
 
@@ -184,7 +196,7 @@ def ecosystem_direct_route_guard():
         receipt = session.get(ACCESS_RECEIPT_KEYS[app_id])
         if not isinstance(receipt, dict):
             return _blocked(app_id, "tower_app_access_receipt_required")
-        if not _valid_access_receipt(app_id, receipt):
+        if not ecosystem_access_active(app_id):
             session.pop(ACCESS_RECEIPT_KEYS[app_id], None)
             return _blocked(app_id, "tower_app_access_receipt_invalid")
 
