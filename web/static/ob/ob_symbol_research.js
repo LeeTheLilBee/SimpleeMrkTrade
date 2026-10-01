@@ -21,6 +21,10 @@
     if (!Number.isFinite(n)) return "—";
     return (n > 0 ? "+" : "") + n.toFixed(2) + "%";
   }
+  function money(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n.toLocaleString(undefined, {style:"currency", currency:"USD", maximumFractionDigits:2}) : "—";
+  }
   function paragraph(value, cls) {
     const p = document.createElement("p");
     if (cls) p.className = cls;
