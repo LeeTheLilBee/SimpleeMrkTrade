@@ -706,3 +706,5 @@ body[data-ob-room="symbol"] {
   .ob-symbol-research-grid,
   .ob-symbol-research-list { grid-template-columns:1fr; }
 }
+
+body[data-ob-room="symbol"] .ob-symbol-hidden-shared-research{display:none!important;}
