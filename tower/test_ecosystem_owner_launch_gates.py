@@ -17,10 +17,9 @@ def make_app():
     app = Flask(__name__)
     app.config.update(TESTING=True, SECRET_KEY="test-only-secret-key")
     login = Blueprint("tower_human_login", __name__)
-    @login.get("/tower/login")
     def login_view():
         return "login"
-    login.add_url_rule("/tower/login", endpoint="login", view_func=login_view)
+    login.add_url_rule("/tower/login", endpoint="login", view_func=login_view, methods=["GET"])
     app.register_blueprint(login)
     gates.register_ecosystem_owner_launch_gates(app)
     return app
