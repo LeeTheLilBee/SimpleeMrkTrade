@@ -161,7 +161,7 @@ def pulse_snapshot(db):
     blockers=0
     for op in active:
         ready=integration_readiness(op)
-        if ready.get("source_state")!="EXTERNAL_PROOFS_COMPLETE_OWNER_RELEASE_REQUIRED":
+        if ready.get("source_state")!="EXTERNAL_PROOFS_COMPLETE_OWNER_RELEASE_STILL_REQUIRED":
             blockers+=1
     since=pref.get("pulse_seen_at")
     if since:
