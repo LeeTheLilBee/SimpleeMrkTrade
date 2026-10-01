@@ -61,3 +61,40 @@ def test_return_context_restores_owner_orientation():
     assert "Back in Clouds." in html
     assert "I kept your place" in html
     assert "resume-focus" in html
+
+
+def test_native_contract_route_was_not_lost_during_ui_rebuild():
+    from flask import Flask
+
+    from tower.tower_clouds_native_launch import (
+        CLOUDS_CONTRACT_JSON_PATH,
+        register_tower_clouds_native_launch,
+    )
+
+    app = Flask(
+        "clouds-contract-route-regression"
+    )
+
+    app.secret_key = (
+        "clouds-contract-route-test-only"
+    )
+
+    register_tower_clouds_native_launch(
+        app
+    )
+
+    routes = {
+        rule.rule
+        for rule
+        in app.url_map.iter_rules()
+    }
+
+    assert (
+        CLOUDS_CONTRACT_JSON_PATH
+        in routes
+    )
+
+    assert (
+        "/tower/ecosystem/lines"
+        in routes
+    )
