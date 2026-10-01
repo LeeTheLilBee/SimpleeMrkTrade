@@ -99,8 +99,8 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_id="clouds",
         app_name="The Clouds",
         app_label="Clouds",
-        app_status="registered_future_room",
-        tower_launch_route="/tower/app-registry",
+        app_status="protected_hosted",
+        tower_launch_route="/tower/launch/clouds",
         primary_room_route="/clouds",
         owner_only=True,
         requires_tower_handoff=True,
@@ -109,8 +109,9 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "The Clouds is registered as a future owner-wide status room. "
-            "This layer does not expose business operations."
+            "The Clouds has an active protected Tower owner launch corridor. "
+            "Clouds interprets permitted summaries and routes the owner; Tower "
+            "and each owning app retain authorization and execution authority."
         ),
     ),
     TowerAppRegistration(
