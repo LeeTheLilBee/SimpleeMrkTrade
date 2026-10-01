@@ -1,0 +1,37 @@
+name: Inspect Clouds Route Resolution
+
+on:
+  push:
+    branches:
+      - clouds-live-owner-command-finish
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install hosted runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r deploy/hosted_tower/requirements.txt
+      - name: Inspect Clouds route resolution
+        run: |
+          python - <<'PY'
+          from web.app import app
+          wanted = {"/clouds", "/the-clouds", "/tower/launch/clouds"}
+          for rule in app.url_map.iter_rules():
+              if rule.rule in wanted:
+                  print("ROUTE", rule.rule, "ENDPOINT", rule.endpoint, "METHODS", sorted(rule.methods))
+          adapter = app.url_map.bind("localhost")
+          for path in ["/clouds", "/the-clouds", "/tower/launch/clouds"]:
+              try:
+                  endpoint, values = adapter.match(path, method="GET")
+                  print("MATCH", path, endpoint, values)
+              except Exception as exc:
+                  print("MATCH_ERROR", path, type(exc).__name__, str(exc))
+          PY
