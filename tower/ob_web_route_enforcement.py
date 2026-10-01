@@ -16,6 +16,7 @@ PROTECTED_EXACT_OB_ROUTES = frozenset(
         "/ob/dashboard",
         "/ob/settings",
         "/ob/settings.json",
+        "/ob/hybrid-readiness.json",
         "/ob/market-map",
         "/ob/data-desk",
         "/ob/data-desk/public",
@@ -120,7 +121,7 @@ def register_ob_protected_route_enforcement(app):
 
         # Keyless source context only supports a real authenticated GET. A HEAD
         # must not accidentally execute paid/quota-limited provider fetches.
-        if path in {"/ob/settings.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json", "/ob/data-desk/connections.json"} and request.method != "GET":
+        if path in {"/ob/hybrid-readiness.json", "/ob/settings.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json", "/ob/data-desk/connections.json"} and request.method != "GET":
             abort(405)
 
         if not owner_session_active():
