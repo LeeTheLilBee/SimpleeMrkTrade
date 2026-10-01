@@ -1038,6 +1038,41 @@ class SQLiteOperationalJournal:
             self._verify(conn)
             return self._source_backup_coverage(conn)
 
+    def source_backup_key_reference_inventory(self) -> dict:
+        """Internal source inventory; raw key refs MUST NOT reach owner/UI output.
+
+        This verifies the full journal before returning opaque references used
+        only for injected key-resolver preflight. It does not read provider
+        bytes or validate whether resolved key material is cryptographically
+        correct for an SCB1 object.
+        """
+        with closing(self._connect()) as conn:
+            self._verify(conn)
+            acknowledged = {}
+            pending = 0
+            integrity_hold = 0
+            for row in conn.execute(
+                "SELECT request_tag,key_reference FROM backup_intents"
+            ):
+                state = self._backup_state(conn, row["request_tag"]) or "UNVERIFIED"
+                if state in (
+                    "BACKUP_ACKNOWLEDGED", "BACKUP_RECONCILE_PRESENT",
+                ):
+                    ref = row["key_reference"]
+                    acknowledged[ref] = acknowledged.get(ref, 0) + 1
+                elif state in ("BACKUP_RESERVED", "BACKUP_UNCERTAIN"):
+                    pending += 1
+                elif state in (
+                    "BACKUP_RECONCILE_MISSING", "BACKUP_RECONCILE_CORRUPT",
+                    "BACKUP_REPLAY_INTEGRITY_FAILURE",
+                ):
+                    integrity_hold += 1
+            return {
+                "acknowledged_key_counts": dict(sorted(acknowledged.items())),
+                "pending_backup_count": pending,
+                "integrity_hold_backup_count": integrity_hold,
+            }
+
     def _health_from_verified(
         self, conn: sqlite3.Connection, seq: int, digest: str,
     ) -> dict:
