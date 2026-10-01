@@ -7,8 +7,13 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import re
 import secrets
+from threading import Lock
 from collections.abc import Callable
+
+_NAMESPACE = re.compile(r"[0-9a-f]{64}\\Z")
+
 
 from .contracts import (
     AccessDenied, CiphertextBackend, CloudError, DenyAllAuthority, IntegrityError,
@@ -32,7 +37,8 @@ class CiphertextStorageService:
     def __init__(
         self, *,
         backend: CiphertextBackend,
-        namespace_key: bytes,
+        namespace_key: bytes | None = None,
+        namespace_resolver: Callable[[str], str] | None = None,
         authority: StorageAuthority | None = None,
         audit_event: Callable[[dict], None] | None = None,
         mode: str = "disabled",
@@ -41,10 +47,24 @@ class CiphertextStorageService:
         # reviewed runtime/transport will have to introduce that separately.
         if mode not in ("disabled", "source_test"):
             raise CloudError("production storage not authorized")
-        if backend is None or not isinstance(namespace_key, bytes) or len(namespace_key) != 32:
-            raise CloudError("explicit backend and approved namespace secret required")
+        if backend is None:
+            raise CloudError("explicit ciphertext backend required")
+        if namespace_resolver is None:
+            if not isinstance(namespace_key, bytes) or len(namespace_key) != 32:
+                raise CloudError("approved namespace secret or stable resolver required")
+        elif namespace_key is not None or not callable(namespace_resolver):
+            raise CloudError("use either namespace secret or stable resolver, never both")
         self._backend = backend
         self._namespace_key = namespace_key
+        self._namespace_resolver = namespace_resolver
+        # Resolver mode keeps only per-process keyed tags, never raw entity IDs,
+        # to detect mapping drift/collision within this source runtime.
+        self._resolver_cache_key = (
+            secrets.token_bytes(32) if namespace_resolver is not None else None
+        )
+        self._resolver_entity_to_namespace = {}
+        self._resolver_namespace_to_entity = {}
+        self._resolver_lock = Lock()
         self._authority = authority if authority is not None else DenyAllAuthority()
         self._audit_event = audit_event
         self.mode = mode
@@ -52,6 +72,31 @@ class CiphertextStorageService:
     @staticmethod
     def new_object_ref() -> str:
         return "objects/" + secrets.token_hex(24)
+
+    def _namespace_for(self, entity_id: str) -> str:
+        if self._namespace_resolver is None:
+            return namespace_digest(entity_id, namespace_key=self._namespace_key)
+        try:
+            namespace = self._namespace_resolver(entity_id)
+        except Exception as exc:
+            raise AccessDenied("trusted stable namespace unavailable") from exc
+        if not isinstance(namespace, str) or _NAMESPACE.fullmatch(namespace) is None:
+            raise AccessDenied("invalid trusted stable namespace")
+        entity_tag = hmac.new(
+            self._resolver_cache_key,
+            b"simplee-cloud:resolver-entity:v1:" + entity_id.encode(),
+            hashlib.sha256,
+        ).hexdigest()
+        with self._resolver_lock:
+            prior_namespace = self._resolver_entity_to_namespace.get(entity_tag)
+            if prior_namespace is not None and prior_namespace != namespace:
+                raise AccessDenied("stable namespace resolver changed entity binding")
+            prior_entity = self._resolver_namespace_to_entity.get(namespace)
+            if prior_entity is not None and prior_entity != entity_tag:
+                raise AccessDenied("stable namespace resolver collision")
+            self._resolver_entity_to_namespace[entity_tag] = namespace
+            self._resolver_namespace_to_entity[namespace] = entity_tag
+        return namespace
 
     def _gate(self, context: StorageContext, operation: str) -> str:
         if self.mode != "source_test":
@@ -65,7 +110,7 @@ class CiphertextStorageService:
         # inject a REAL verifier checking authenticated service transport,
         # Tower-issued scope/decision, expiry, revocation and replay state.
         self._authority.authorize(context, operation)
-        return namespace_digest(context.entity_id, namespace_key=self._namespace_key)
+        return self._namespace_for(context.entity_id)
 
     def _audit(self, *, action: str, context: StorageContext, namespace: str) -> None:
         # No plaintext, object body, raw entity name or reusable bearer tokens.
@@ -127,5 +172,9 @@ class CiphertextStorageService:
             "external_provider_connected": False,
             "tower_runtime_verifier_certified": False,
             "backup_restore_drill_certified": False,
+            "source_stable_namespace_resolver_injected": (
+                self._namespace_resolver is not None
+            ),
+            "namespace_rotation_custody_certified": False,
             "status": "SOURCE_ONLY_NO_GO",
         }
