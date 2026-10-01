@@ -595,20 +595,22 @@
       status === "fresh"
       && glance.length
     ) {
+      const soulaana = safeObject(projection.soulaana);
       return {
         title:
-          "The market is live enough to study.",
+          safeText(
+            soulaana.headline,
+            "I found source-backed market activity worth a closer look."
+          ),
 
         summary:
-          (
-            `I found ${glance.length} source-backed symbol`
-            + (
-                glance.length === 1
-                  ? ""
-                  : "s"
-              )
-            + " for exploration. "
-            + "This page stays observational; choose what you want to study."
+          safeText(
+            soulaana.meaning,
+            (
+              `I checked the research lanes and surfaced ${glance.length} symbol`
+              + (glance.length === 1 ? "" : "s")
+              + " for investigation. Attention is not a buy or sell instruction."
+            )
           )
       };
     }
