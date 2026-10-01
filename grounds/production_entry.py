@@ -1,17 +1,23 @@
-"""GRD102 — opt-in production WSGI composition; intentionally unavailable today.
+"""GRD219 — opt-in production WSGI composition; still fail-closed for live use.
+
+Tower's development lane now implements the exact adapter module/factory names
+this composition imports, and Tower CI cross-tests them against the current
+Grounds branch. Source presence is not provider certification. A deployed
+revision must actually contain those reviewed Tower modules, and the separately
+installed server-owned runtime provider must currently attest identity/session,
+revocation and exact property/unit/job grants. A second independent operational
+release provider must currently approve the exact environment/revision with
+owner, recovery, privacy/housing and operations evidence.
 
 This module creates NO public server, endpoint, Render service, user account,
 schema or credential. It has no `app` global and never uses developer fixture
-verifiers. An operator invoking create_wsgi_application MUST first obtain the
-separate owner/security approval and supply a privately provisioned PostgreSQL
-DSN and independent high-entropy anti-CSRF secret. A trusted Tower module with
-the exact certified receiver factory MUST exist in the authoritative branch.
-The current Tower source-only reviewer does not satisfy that requirement.
+verifiers. An operator invoking create_wsgi_application must also supply the
+approved private PostgreSQL DSN and independent high-entropy anti-CSRF secret.
 
-The future Tower adapter must verify original authenticated session, audience,
-issuer, expiry, replay, revoke/logout, active tenant/property/unit/lease and
-staff job assignment for EVERY request. It returns a TowerScope only after
-verification and never consumes claimed role flags supplied by a browser.
+The runtime provider behind Tower must verify the original authenticated
+request, audience, issuer, expiry, replay, revoke/logout, active
+tenant/property/unit/lease and staff job assignment for EVERY request. Grounds
+returns no access merely because Tower adapter source or a launch route exists.
 """
 from __future__ import annotations
 
@@ -46,12 +52,17 @@ def create_wsgi_application():
         raise GroundsProductionUnavailable("high-entropy CSRF configuration required")
     try:
         authority=import_module("tower.grounds_runtime_receiver")
+    except ImportError as exc:
+        raise GroundsProductionUnavailable(
+            "required Tower Grounds adapter modules are absent from this deployed revision"
+        ) from exc
+    try:
         factory=getattr(authority,"create_certified_grounds_receiver")
         directory_factory=getattr(authority,"create_certified_grounds_staff_directory")
         resolver_factory=getattr(authority,"create_certified_grounds_staff_resolver")
-    except (ImportError,AttributeError) as exc:
+    except AttributeError as exc:
         raise GroundsProductionUnavailable(
-            "real Tower Grounds receiver and staff authority are not implemented/certified"
+            "Tower Grounds adapter contract is incomplete; staff authority unavailable"
         ) from exc
     if not all(isinstance(item,Callable) for item in (
         factory,directory_factory,resolver_factory,
@@ -62,7 +73,7 @@ def create_wsgi_application():
         staff_directory=directory_factory()
         staff_resolver=resolver_factory()
     except Exception as exc:
-        raise GroundsProductionUnavailable("certified Tower adapters failed initialization") from None
+        raise GroundsProductionUnavailable("independent Tower Grounds runtime provider failed certification") from None
     if not all(isinstance(item,Callable) for item in (
         receiver,staff_directory,staff_resolver,
     )):
@@ -83,7 +94,7 @@ def create_wsgi_application():
             raise TypeError("independent release authority unavailable")
     except Exception:
         raise GroundsProductionUnavailable(
-            "independent Grounds operational release authority is not implemented/certified"
+            "independent Grounds operational release provider is unavailable or uncertified"
         ) from None
     try:
         # Construct inside the sanitized failure boundary as well: adapter

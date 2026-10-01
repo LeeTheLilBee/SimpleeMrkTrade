@@ -88,7 +88,7 @@ class GroundsProductionErrorTests(unittest.TestCase):
         ):
             with self.assertRaises(GroundsProductionUnavailable) as caught:
                 create_wsgi_application()
-        self.assertEqual(str(caught.exception), "certified Tower adapters failed initialization")
+        self.assertEqual(str(caught.exception), "independent Tower Grounds runtime provider failed certification")
         self.assertIsNone(caught.exception.__cause__)
         self.assertTrue(caught.exception.__suppress_context__)
 
