@@ -542,171 +542,269 @@ def _render_owner_command_experience() -> str:
 
     title = str(_value(experience, "title", CANONICAL_TITLE) or CANONICAL_TITLE)
     subtitle = str(_value(experience, "subtitle", CANONICAL_SUBTITLE) or CANONICAL_SUBTITLE)
+    hero = _value(experience, "hero")
 
-    # The canonical GP021/GP024 owner labels are rendered even when the
-    # Clouds service object is unavailable in the Tower runtime. This is still
-    # the Tower integration layer for /clouds; it is not a Clouds GP025 rebuild.
+    greeting = str(_value(hero, "greeting", "Good to see you.") or "Good to see you.")
+    headline = str(
+        _value(
+            hero,
+            "headline",
+            "Here is what needs you, what I am watching, and what can wait.",
+        )
+        or ""
+    )
+    explanation = str(
+        _value(
+            hero,
+            "explanation",
+            "Soulaana leads with meaning first. Details stay tucked away until you ask for them.",
+        )
+        or ""
+    )
+
+    needs_count = int(_value(hero, "needs_you_count", 0) or 0)
+    watching_count = int(_value(hero, "watching_count", 0) or 0)
+    quiet_count = int(_value(hero, "quiet_count", 0) or 0)
+
+    resume = str(request.args.get("resume") or "").strip()
+    returned_from = str(request.args.get("from") or "").strip()
+
+    return_banner = ""
+    if resume or returned_from:
+        source_label = (
+            returned_from.replace("_", " ").title()
+            if returned_from
+            else "your app"
+        )
+        return_banner = f"""
+        <section class="resume-banner">
+          <div>
+            <strong>Back in Clouds.</strong>
+            <span>
+              I kept your place from {escape(source_label)}.
+              I will only clear the item when its source says it actually changed.
+            </span>
+          </div>
+          <a href="/tower/ecosystem/lines">Check all lines</a>
+        </section>
+        """
+
+    def chip_html(chip):
+        label = str(_value(chip, "label", "Status") or "Status")
+        value = str(_value(chip, "value", "unknown") or "unknown")
+        return (
+            '<span class="chip">'
+            + escape(label)
+            + " · "
+            + escape(value)
+            + "</span>"
+        )
+
+    def card_html(card):
+        source_id = str(_value(card, "source_id", "") or "")
+        source_label = str(_value(card, "source_label", source_id) or source_id)
+        card_title = str(_value(card, "title", source_label) or source_label)
+        message = str(
+            _value(
+                card,
+                "soulaana_message",
+                "I am keeping this visible until the source tells me otherwise.",
+            )
+            or ""
+        )
+        why = str(_value(card, "why_it_matters", "") or "")
+        attention = str(_value(card, "what_needs_attention", "") or "")
+        wait = str(_value(card, "what_can_wait", "") or "")
+        next_step = str(_value(card, "owner_next_step", "") or "")
+        chips = _as_list(_value(card, "chips", []))
+
+        navigation = _value(card, "navigation")
+        route = str(_value(navigation, "route_reference", "") or "")
+        nav_label = str(_value(navigation, "label", "Open through Tower") or "Open through Tower")
+        requires_step_up = bool(_value(navigation, "requires_step_up", False))
+
+        is_resume = bool(
+            resume
+            and source_id
+            and source_id.replace("_", "-") in resume
+        )
+
+        action = ""
+        if route:
+            step_note = " · step-up" if requires_step_up else ""
+            action = f"""
+            <a class="button primary" href="{escape(route)}">
+              {escape(nav_label)}{escape(step_note)}
+            </a>
+            """
+
+        return f"""
+        <article class="focus-card {'resume-focus' if is_resume else ''}" data-source="{escape(source_id)}">
+          <div class="focus-top">
+            <div>
+              <div class="source-kicker">{escape(source_label)}</div>
+              <h3>{escape(card_title)}</h3>
+            </div>
+            <span class="state-dot" aria-hidden="true"></span>
+          </div>
+
+          <p class="soulaana-line">{escape(message)}</p>
+
+          <div class="chip-row compact">
+            {''.join(chip_html(chip) for chip in chips)}
+          </div>
+
+          <div class="actions">
+            {action}
+            <a class="button" href="/tower/ecosystem/lines">Line status</a>
+          </div>
+
+          <details>
+            <summary>Soulaana explains</summary>
+            <div class="explain-grid">
+              <div><strong>Why it matters</strong><p>{escape(why)}</p></div>
+              <div><strong>Needs attention</strong><p>{escape(attention)}</p></div>
+              <div><strong>Can wait</strong><p>{escape(wait)}</p></div>
+              <div><strong>Next move</strong><p>{escape(next_step)}</p></div>
+            </div>
+          </details>
+        </article>
+        """
+
+    sections = _as_list(_value(experience, "sections", []))
+    section_html = []
+
+    for section in sections:
+        section_id = str(_value(section, "section_id", "section") or "section")
+        section_title = str(_value(section, "title", "Focus") or "Focus")
+        intro = str(_value(section, "soulaana_intro", "") or "")
+        cards = _as_list(_value(section, "cards", []))
+        collapsed = bool(_value(section, "collapsed_by_default", False))
+
+        if not cards:
+            continue
+
+        cards_markup = "".join(card_html(card) for card in cards)
+
+        if collapsed:
+            section_html.append(
+                f"""
+                <details class="lane collapsed-lane" id="{escape(section_id)}">
+                  <summary>
+                    <span>{escape(section_title)}</span>
+                    <small>{len(cards)} items · tucked away</small>
+                  </summary>
+                  <p class="lane-intro">{escape(intro)}</p>
+                  <div class="focus-grid">{cards_markup}</div>
+                </details>
+                """
+            )
+        else:
+            section_html.append(
+                f"""
+                <section class="lane" id="{escape(section_id)}">
+                  <div class="lane-head">
+                    <div>
+                      <div class="lane-title">{escape(section_title)}</div>
+                      <p>{escape(intro)}</p>
+                    </div>
+                    <span class="lane-count">{len(cards)}</span>
+                  </div>
+                  <div class="focus-grid">{cards_markup}</div>
+                </section>
+                """
+            )
+
+    if not section_html:
+        section_html.append(
+            """
+            <section class="lane">
+              <div class="lane-head">
+                <div>
+                  <div class="lane-title">Nothing is shouting at you.</div>
+                  <p>
+                    Clouds could not load the current card set,
+                    so I left the system fail-closed instead of inventing work.
+                  </p>
+                </div>
+              </div>
+            </section>
+            """
+        )
+
+    extra_css = """
+    <style id="clouds-adhd-owner-command-v2">
+      .resume-banner {
+        display:flex; align-items:center; justify-content:space-between; gap:14px;
+        margin:0 0 16px; padding:14px 16px;
+        border:1px solid rgba(158,240,192,.28); border-radius:18px;
+        background:rgba(32,75,53,.18);
+      }
+      .resume-banner strong { display:block; color:var(--good); margin-bottom:4px; }
+      .resume-banner span { color:var(--muted); }
+      .resume-banner a { color:var(--gold); font-weight:900; white-space:nowrap; text-decoration:none; }
+      .command-rail { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:20px; }
+      .command-stat { padding:14px; border:1px solid var(--line); border-radius:17px; background:rgba(255,255,255,.045); }
+      .command-stat strong { display:block; font-size:1.65rem; line-height:1; }
+      .command-stat span { color:var(--muted); font-size:.78rem; }
+      .lane { margin-top:16px; padding:20px; border:1px solid var(--line); border-radius:24px; background:rgba(18,15,31,.74); }
+      .lane-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+      .lane-head p,.lane-intro { margin:5px 0 0; }
+      .lane-title { font-size:1.05rem; font-weight:950; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
+      .lane-count { min-width:34px; height:34px; display:grid; place-items:center; border:1px solid var(--line); border-radius:999px; color:var(--violet); font-weight:950; }
+      .collapsed-lane > summary { display:flex; justify-content:space-between; align-items:center; gap:14px; list-style:none; }
+      .collapsed-lane > summary small { color:var(--muted); font-weight:700; }
+      .focus-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; margin-top:14px; }
+      .focus-card { padding:17px; border:1px solid var(--line); border-radius:19px; background:rgba(35,27,56,.76); }
+      .focus-card.resume-focus { border-color:rgba(158,240,192,.55); box-shadow:0 0 0 2px rgba(158,240,192,.08); }
+      .focus-top { display:flex; justify-content:space-between; gap:12px; }
+      .focus-top h3 { margin:3px 0 0; font-size:1.15rem; }
+      .source-kicker { color:var(--violet); font-size:.7rem; font-weight:950; letter-spacing:.12em; text-transform:uppercase; }
+      .state-dot { width:10px; height:10px; border-radius:999px; background:var(--gold); box-shadow:0 0 18px rgba(245,207,122,.55); margin-top:4px; }
+      .soulaana-line { color:var(--text); font-size:.96rem; line-height:1.5; min-height:2.8em; }
+      .compact { margin-top:10px; }
+      .compact .chip { padding:7px 9px; font-size:.72rem; }
+      .explain-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+      .explain-grid > div { padding:12px; border-radius:14px; background:rgba(255,255,255,.04); }
+      .explain-grid strong { color:var(--gold); font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; }
+      .explain-grid p { margin:5px 0 0; }
+
+      @media (max-width:700px) {
+        .command-rail { grid-template-columns:1fr; }
+        .resume-banner { align-items:flex-start; flex-direction:column; }
+        .explain-grid { grid-template-columns:1fr; }
+      }
+    </style>
+    """
+
     return _page(
         title=title,
         body=f"""
-        <div class="kicker">{escape(subtitle)}</div>
+        {extra_css}
+        {return_banner}
 
         <section class="hero" aria-label="Soulaana Explains">
+          <div class="kicker">{escape(subtitle)}</div>
           <h1>{escape(title)}</h1>
-          <h2>Good to see you.</h2>
-          <p>
-            Soulaana Explains first: what is happening, why this matters,
-            what can wait, and what you can do next.
-          </p>
-          <div class="chip-row">
-            <span class="chip good">Protected Tower launch reference exists</span>
-            <span class="chip good">Clouds owner command opens</span>
-            <span class="chip">Soulaana explains first</span>
-            <span class="chip warn">No raw downstream execution</span>
+          <h2>{escape(greeting)}</h2>
+          <p>{escape(headline)}</p>
+          <p>{escape(explanation)}</p>
+
+          <div class="command-rail">
+            <div class="command-stat"><strong>{needs_count}</strong><span>Needs You</span></div>
+            <div class="command-stat"><strong>{watching_count}</strong><span>Keep Watching</span></div>
+            <div class="command-stat"><strong>{quiet_count}</strong><span>Can Wait</span></div>
           </div>
-          <div class="chip-row" id="tower-clouds-pack1-canonical-walkthrough-labels">
-            <span class="chip">Needs You identifies top focus</span>
-            <span class="chip">Keep Watching identifies ATM lane</span>
-            <span class="chip">Quiet work remains collapsed</span>
-            <span class="chip">Detail drawers are progressive</span>
-            <span class="chip">Soulaana explains everything preference</span>
-            <span class="chip">Operating source boundary is explicit</span>
-            <span class="chip">Protected handoff remains non-executing</span>
-            <span class="chip">No raw downstream execution</span>
+
+          <div class="actions">
+            <a class="button primary" href="/tower/ecosystem/lines">Ecosystem Lines</a>
+            <a class="button" href="/tower/access-home">Tower Home</a>
           </div>
         </section>
 
-        <section class="grid">
-          <article class="card span-4" aria-label="Needs You">
-            <h2>Needs You</h2>
-            <p>
-              Needs You identifies top focus. The current top-focus source is
-              observatory.
-            </p>
-            <details>
-              <summary>Why this matters</summary>
-              <p>
-                Soulaana explains everything preference is preserved before
-                technical evidence appears. Protected handoff remains non-executing.
-              </p>
-            </details>
-          </article>
-
-          <article class="card span-4" aria-label="Keep Watching">
-            <h2>Keep Watching</h2>
-            <p>
-              Keep Watching identifies ATM lane. ATM Operations remains visible
-              as a watch source without becoming raw execution.
-            </p>
-            <details>
-              <summary>What is happening</summary>
-              <p>
-                Operating source boundary is explicit: Clouds summarizes owner
-                command signals while Tower controls protected app entry.
-              </p>
-            </details>
-          </article>
-
-          <article class="card span-4" aria-label="Can Wait">
-            <h2>Can Wait</h2>
-            <p>
-              Quiet work remains collapsed so the owner view stays calm.
-            </p>
-            <details>
-              <summary>What can wait</summary>
-              <p>
-                Detail drawers are progressive. Status details and Technical
-                evidence stay behind owner-controlled expansion.
-              </p>
-            </details>
-          </article>
-
-          <article class="card span-6" aria-label="Simplee World">
-            <h2>Simplee World</h2>
-            <p>
-              This is the owner command surface for Simplee World. Tower is the
-              protected doorway; Clouds owns the owner-command rendering.
-            </p>
-          </article>
-
-          <article class="card span-6" aria-label="What you can do next">
-            <h2>What you can do next</h2>
-            <p>
-              Open the protected Observatory detail through Tower. Protected handoff remains non-executing.
-            </p>
-            <div class="actions">
-              <a class="button primary" href="/ob/dashboard">Open protected Observatory detail</a>
-              <a class="button" href="{CLOUDS_RETURN_PATH}">Return through Tower</a>
-            </div>
-          </article>
-
-          <article class="card span-12" aria-label="Status details">
-            <h2>Status details</h2>
-            <p>
-              Technical evidence is available only after the explanation layer.
-              No raw downstream execution happens from this surface.
-            </p>
-            <details>
-              <summary>Technical evidence</summary>
-              <ul>
-                <li>Owner surface: {escape(CANONICAL_OWNER_SURFACE)}</li>
-                <li>Service getter: {escape(CANONICAL_OWNER_SERVICE_GETTER)}</li>
-                <li>App id: {escape(APP_ID)}</li>
-                <li>Open route: {escape(CLOUDS_HOME_PATH)}</li>
-                <li>Clouds GP024 pre-existing session handoff key: none</li>
-                <li>Tower integration session handoff key: {escape(SESSION_TOWER_CLOUDS_INTEGRATION_HANDOFF)}</li>
-              </ul>
-            </details>
-          </article>
-        </section>
+        {''.join(section_html)}
         """,
     )
-
-
-@tower_clouds_native_bp.get(CLOUDS_CONTRACT_JSON_PATH)
-def clouds_native_launch_contract_json():
-    owner_redirect = _require_owner_or_redirect()
-    if owner_redirect is not None:
-        return jsonify({
-            "allowed": False,
-            "reason_code": "tower_owner_session_required",
-            "app_id": APP_ID,
-            "default_deny": True,
-        }), 403
-
-    package = build_canonical_tower_intake_package()
-    boundary = build_canonical_clouds_boundary_record(package=package)
-
-    package_validation = validate_tower_clouds_intake_package(package)
-    boundary_validation = validate_clouds_handoff_boundary_record(boundary)
-
-    return jsonify({
-        "allowed": package_validation.valid and boundary_validation.valid,
-        "reason_code": "tower_clouds_canonical_contract_ready",
-        "app_id": APP_ID,
-        "app_name": APP_NAME,
-        "owner_route": CLOUDS_HOME_PATH,
-        "owner_surface": CANONICAL_OWNER_SURFACE,
-        "owner_service_getter": CANONICAL_OWNER_SERVICE_GETTER,
-        "package_type": TOWER_INTAKE_PACKAGE_TYPE,
-        "package_version": package["package_version"],
-        "package_id": package["package_id"],
-        "boundary_type": BOUNDARY_RECORD_TYPE,
-        "boundary_state": boundary["boundary_state"],
-        "delivery_state": boundary["delivery_state"],
-        "clouds_gp024_preexisting_session_handoff_key": None,
-        "tower_integration_session_handoff_key": SESSION_TOWER_CLOUDS_INTEGRATION_HANDOFF,
-        "tower_owns_launch_identity_session_step_up_return": True,
-        "clouds_owns_owner_command_rendering": True,
-        "clouds_executes_navigation": False,
-        "downstream_execution_performed": False,
-        "dry_run_only": True,
-        "production_manual_live_authorized": False,
-        "broker_submission_enabled": False,
-        "real_capital_movement_enabled": False,
-        "direct_vault_upload_enabled": False,
-        "live_auto_locked": True,
-    })
 
 
 @tower_clouds_native_bp.route(CLOUDS_STEP_UP_PATH, methods=["GET", "POST"])
@@ -934,6 +1032,12 @@ def _inject_clouds_access_home_card(response: Response) -> Response:
 def register_tower_clouds_native_launch(app) -> None:
     if "tower_clouds_native_launch" not in app.blueprints:
         app.register_blueprint(tower_clouds_native_bp)
+
+    from tower.ecosystem_router import (
+        register_tower_ecosystem_router,
+    )
+
+    register_tower_ecosystem_router(app)
 
     app.before_request(_tower_clouds_before_request_authority)
     app.after_request(_tower_clouds_pack1_ob_default_deny_recovery)
