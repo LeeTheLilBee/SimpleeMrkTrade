@@ -1,0 +1,49 @@
+name: Clouds Ecosystem Finish Check
+
+on:
+  push:
+    branches:
+      - clouds-ecosystem-finish
+  workflow_dispatch:
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install focused runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r deploy/runtime/requirements.txt
+          pip install pytest
+
+      - name: Compile integration modules
+        run: |
+          python -m py_compile \
+            tower/ecosystem_destination_registry.py \
+            tower/ecosystem_router.py \
+            tower/clouds_owner_command_web.py \
+            tower/tower_clouds_native_launch.py \
+            clouds/owner_command_experience_service.py \
+            web/runtime.py
+
+      - name: Run ecosystem focused tests
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+        run: |
+          python -m pytest -q --tb=short \
+            tests/tower_clouds_gp060/test_ecosystem_destination_registry.py \
+            tests/tower_clouds_gp060/test_ecosystem_router.py \
+            tests/tower_clouds_gp060/test_clouds_owner_command_web.py \
+            clouds/tests/test_gp021_owner_command_ux_soulaana_executive_surface.py \
+            clouds/tests/test_gp085_ecosystem_navigation_fabric.py \
+            deploy/runtime/test_runtime_ready.py
