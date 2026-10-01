@@ -108,6 +108,11 @@ class JournaledBackupOperations:
             digest=source_ciphertext_sha256,
         )
 
+        # Active key is resolved by opaque reference BEFORE reading primary
+        # bytes. Cloud source never owns a rotation catalog; a future KMS/HSM
+        # resolver remains external and unavailable means deny.
+        key = self.backup._key_for(self.backup.key_reference)
+
         # Source is a bound VLT1; the second SCB1 encryption has its own
         # distinct 32-byte backup key and cryptographically bound AAD.
         self.backup.source._audit(
@@ -126,7 +131,7 @@ class JournaledBackupOperations:
             )
             raise
         nonce = secrets.token_bytes(12)
-        outer = b"SCB1" + nonce + _aesgcm()(self.backup._backup_key).encrypt(
+        outer = b"SCB1" + nonce + _aesgcm()(key).encrypt(
             nonce, inner, _aad(scope, source_object_ref, source_ciphertext_sha256),
         )
         if not 33 <= len(outer) <= MAX_ENVELOPE_BYTES + 64:
