@@ -99,8 +99,8 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_id="clouds",
         app_name="The Clouds",
         app_label="Clouds",
-        app_status="protected_hosted",
-        tower_launch_route="/tower/launch/clouds",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
         primary_room_route="/clouds",
         owner_only=True,
         requires_tower_handoff=True,
@@ -109,9 +109,8 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "The Clouds has an active protected Tower owner launch corridor. "
-            "Clouds interprets permitted summaries and routes the owner; Tower "
-            "and each owning app retain authorization and execution authority."
+            "The Clouds is registered as a future owner-wide status room. "
+            "This layer does not expose business operations."
         ),
     ),
     TowerAppRegistration(
@@ -461,26 +460,6 @@ TOWER_ROUTE_REGISTRY: Tuple[TowerRouteRegistration, ...] = (
             "Active owner-only Tower launch corridor for The Teller. "
             "A current owner session, step-up, effective entitlement, "
             "verified publication truth, and one-time Tower handoff are required."
-        ),
-    ),
-    TowerRouteRegistration(
-        route_id="clouds_owner_launch",
-        route="/tower/launch/clouds",
-        label="Open The Clouds",
-        app_id="clouds",
-        room_id="owner_command",
-        route_type="exact",
-        owner_only=True,
-        requires_owner_session=True,
-        requires_step_up=True,
-        default_denied_when_unknown=True,
-        temporary_placeholder=False,
-        risk_level="medium",
-        lock_state="protected_owner_command",
-        explanation=(
-            "Tower owns the protected Clouds owner launch. Clouds may interpret "
-            "permitted summary state and route the owner, but it cannot grant "
-            "permissions or perform downstream business execution."
         ),
     ),
     TowerRouteRegistration(
