@@ -34,6 +34,7 @@ from .soulaana import context as soulaana_context, INTENTS as SOULAANA_INTENTS
 from .atm import register_machine
 from .focus import build_focus
 from .hosted_auth import (prepare_hosted_runtime, exact_receiver_origin,
+    exact_tower_bootstrap_transport,
     require_verified_session, owner_session_claims, HostedAuthError)
 from .tower_owner_receiver import (verify_tower_buybox_owner_handoff,
     consume_verified_handoff, TowerBuyBoxHandoffError)
@@ -182,6 +183,12 @@ def create_app(config=None):
 
     @app.context_processor
     def csrf_context():
+        # The pre-auth Tower bootstrap must not create a BuyBox browser session.
+        if request.endpoint=="tower_browser_bootstrap":
+            return {"csrf_token":None, "verticals":VERTICALS,
+                    "tower_governed":True,
+                    "tower_return_url":app.config["TOWER_PUBLIC_ORIGIN"]+
+                        "/tower/access-home"}
         if "csrf" not in session:
             session["csrf"]=secrets.token_hex(32)
         return {"csrf_token": session["csrf"], "verticals": VERTICALS,
@@ -191,7 +198,7 @@ def create_app(config=None):
 
     @app.before_request
     def guard():
-        if request.endpoint=="tower_owner_exchange":
+        if request.endpoint in ("tower_browser_bootstrap","tower_owner_exchange"):
             return
         if request.method not in ("GET","HEAD","OPTIONS"):
             value=request.form.get("csrf_token","")
@@ -224,6 +231,38 @@ def create_app(config=None):
         if auth_mode=="tower":
             return redirect(app.config["TOWER_PUBLIC_ORIGIN"]+"/tower/access-home",code=303)
         return redirect(url_for("login"))
+
+    @app.post("/tower/bootstrap")
+    def tower_browser_bootstrap():
+        """Tower-origin bridge into the existing same-origin owner exchange.
+
+        The signed bearer remains POST-body only. It is verified before being
+        rendered into a no-store BuyBox-origin page, never placed in a URL,
+        cookie, localStorage, or server log field by this route.
+        """
+        if auth_mode!="tower":
+            abort(404)
+        if request.content_length is None or not 0<request.content_length<=8192:
+            abort(413,"Tower bootstrap payload size invalid")
+        if (not exact_tower_bootstrap_transport(
+                request,tower_origin=app.config["TOWER_PUBLIC_ORIGIN"],
+                buybox_origin=app.config["BUYBOX_PUBLIC_ORIGIN"])
+                or request.mimetype!="application/x-www-form-urlencoded"
+                or set(request.form)!={"handoff"}
+                or len(request.form.getlist("handoff"))!=1):
+            abort(403,"Invalid Tower bootstrap transport")
+        token=request.form.get("handoff","")
+        try:
+            verify_tower_buybox_owner_handoff(
+                token,shared_secret=app.config["TOWER_BUYBOX_HANDOFF_SECRET"],
+                now_epoch=int(datetime.now(timezone.utc).timestamp()))
+        except TowerBuyBoxHandoffError:
+            abort(403,"Tower bootstrap not verified")
+        response=app.make_response(render_template(
+            "tower_bootstrap.html",handoff=token))
+        response.headers["Cache-Control"]="private, no-store, max-age=0"
+        response.headers["Pragma"]="no-cache"
+        return response
 
     @app.post("/tower/owner-exchange")
     def tower_owner_exchange():

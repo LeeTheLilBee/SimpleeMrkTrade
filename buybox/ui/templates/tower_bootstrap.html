@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Opening BuyBox…{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">TOWER → BUYBOX</p>
+  <h1>Opening your private BuyBox workspace.</h1>
+  <p>The signed Tower handoff is being moved into BuyBox's same-origin exchange. It is not stored in the URL or browser storage.</p>
+</section>
+<form id="tower-buybox-bootstrap" method="post" action="{{ url_for('tower_owner_exchange') }}">
+  <input type="hidden" name="handoff" value="{{ handoff }}">
+  <button type="submit">Continue to BuyBox</button>
+</form>
+<script src="{{ url_for('static',filename='tower_bootstrap.js') }}" defer></script>
+{% endblock %}
