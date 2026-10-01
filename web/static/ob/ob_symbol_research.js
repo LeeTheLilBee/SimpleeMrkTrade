@@ -675,6 +675,44 @@
     return count;
   }
 
+
+  function filteredPackets(providerPacket, keylessPacket, catalystPacket, secPacket, settings) {
+    const s = settings || {};
+    let provider = providerPacket;
+    if (providerPacket && Array.isArray(providerPacket.provider_research)) {
+      provider = Object.assign({}, providerPacket, {
+        provider_research: providerPacket.provider_research.filter(row => {
+          if (!row) return false;
+          if (["alpaca","finazon"].includes(row.provider) && s.use_current_market_context === false) return false;
+          if (row.provider === "alpha_vantage" && s.use_completed_session_history === false) return false;
+          if (row.provider === "bea" && s.use_macro_context === false) return false;
+          return true;
+        })
+      });
+    }
+    let keyless = keylessPacket;
+    if (keylessPacket && Array.isArray(keylessPacket.sources) && s.use_macro_context === false) {
+      keyless = Object.assign({}, keylessPacket, {
+        sources: keylessPacket.sources.filter(row => row && !["bls","treasury"].includes(row.source))
+      });
+    }
+    return {
+      provider,
+      keyless,
+      catalysts: s.use_official_catalysts === false ? null : catalystPacket,
+      sec: s.use_sec_filings === false ? null : secPacket,
+    };
+  }
+
+  function applyOwnerSettings(settings) {
+    const s = settings || {};
+    const evidence = document.querySelector(".ob-symbol-evidence-drawer");
+    if (evidence) evidence.hidden = s.show_evidence_drawer === false;
+    const accounting = document.querySelector(".ob-symbol-source-accounting-card");
+    if (accounting) accounting.hidden = s.show_source_accounting === false;
+    document.body.classList.toggle("ob-symbol-compact-top", s.compact_symbol_top === true);
+  }
+
   async function load() {
     const ticker = symbol();
     if (!ticker) return;
@@ -682,14 +720,21 @@
     const results = await Promise.allSettled([
       json("/ob/research/providers.json?symbol=" + encodeURIComponent(ticker)),
       json("/ob/research/keyless.json?symbol=" + encodeURIComponent(ticker)),
-      json("/ob/research/catalysts.json")
+      json("/ob/research/catalysts.json"),
+      json("/ob/settings.json")
     ]);
+    const settingsPacket = results[3].status === "fulfilled" ? results[3].value : null;
+    const settings = settingsPacket && settingsPacket.schema === "OB_OWNER_SETTINGS_V1"
+      ? settingsPacket.settings || {} : {};
+    applyOwnerSettings(settings);
 
     let providerCount = 0, publicCount = 0, catalystCount = 0, live = false;
     if (results[0].status === "fulfilled") {
       try {
         providerCount = renderProviderResearch(results[0].value, ticker);
-        hydrateTopSymbolFacts(results[0].value, ticker);
+        if (settings.show_company_background !== false || settings.use_current_market_context !== false || settings.use_completed_session_history !== false) {
+          hydrateTopSymbolFacts(results[0].value, ticker);
+        }
         live = results[0].value.live_prices_attached === true;
       } catch (_) {}
     }
@@ -705,8 +750,16 @@
     const keylessPacket = results[1].status === "fulfilled" ? results[1].value : null;
     const catalystPacket = results[2].status === "fulfilled" ? results[2].value : null;
     const secPacket = serverResearch();
-    buildImpact(providerPacket, keylessPacket, catalystPacket, secPacket, ticker);
+    const active = filteredPackets(providerPacket, keylessPacket, catalystPacket, secPacket, settings);
+    buildImpact(active.provider, active.keyless, active.catalysts, active.sec, ticker);
     renderSourceAccounting(providerPacket, keylessPacket, catalystPacket, secPacket);
+
+    if (settings.soulaana_show_missing === false) {
+      const caution = byId("symbolSoulaanaCaution");
+      const next = byId("symbolSoulaanaNext");
+      if (caution && /missing|cannot|not cleared|unavailable/i.test(caution.textContent || "")) caution.textContent = "Missing-data commentary is hidden in Settings.";
+      if (next && /missing|remain separate|unavailable/i.test(next.textContent || "")) next.textContent = "Missing-data commentary is hidden in Settings.";
+    }
     set("symbolImpactFreshness", live ? "Current + fused context" : "Fused research context");
 
     if (!total) {
@@ -719,7 +772,24 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", load, {once:true});
   else load();
 
-  window.setInterval(function () {
-    if (document.visibilityState === "visible") load();
-  }, 30000);
+  let refreshTimer = null;
+  async function scheduleFromSettings() {
+    try {
+      const packet = await json("/ob/settings.json");
+      const settings = packet && packet.settings || {};
+      if (refreshTimer) window.clearInterval(refreshTimer);
+      if (settings.auto_refresh_symbol_research !== false) {
+        const seconds = [15,30,60,120].includes(Number(settings.refresh_seconds)) ? Number(settings.refresh_seconds) : 30;
+        refreshTimer = window.setInterval(function () {
+          if (document.visibilityState === "visible") load();
+        }, seconds * 1000);
+      }
+      if (settings.refresh_on_focus !== false) {
+        document.addEventListener("visibilitychange", function () {
+          if (document.visibilityState === "visible") load();
+        });
+      }
+    } catch (_) {}
+  }
+  scheduleFromSettings();
 })();
