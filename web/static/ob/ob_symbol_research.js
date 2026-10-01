@@ -183,11 +183,37 @@
 
     if (treasury && treasury.state === "SOURCE_BOUND") {
       const rates = treasury.rates || {};
-      const parts = ["Public debt " + treasury.value + " (" + treasury.period + ")"];
+      const parts = ["Public debt " + fmt(treasury.value, 0) + " (" + treasury.period + ")"];
       if (rates.state === "SOURCE_BOUND") {
-        if (rates.nominal) parts.push("Nominal curve " + JSON.stringify(rates.nominal));
-        if (rates.real) parts.push("Real curve " + JSON.stringify(rates.real));
-        if (rates.derived) parts.push("Derived " + JSON.stringify(rates.derived));
+        const nominal = rates.nominal || {};
+        const yields = nominal.yields_percent || {};
+        const real = rates.real || {};
+        const realYields = real.yields_percent || {};
+        const derived = rates.derived || {};
+        if (nominal.date) {
+          parts.push(
+            "Nominal yields " + nominal.date +
+            ": 2Y " + (yields["2Y"] || "—") + "%, 10Y " + (yields["10Y"] || "—") +
+            "%, 30Y " + (yields["30Y"] || "—") + "%"
+          );
+        }
+        if (real.date) {
+          parts.push(
+            "Real yields " + real.date +
+            ": 5Y " + (realYields["5Y"] || "—") + "%, 10Y " + (realYields["10Y"] || "—") +
+            "%, 30Y " + (realYields["30Y"] || "—") + "%"
+          );
+        }
+        if (derived.curve_shape) {
+          parts.push(
+            "2s10s curve " + String(derived.curve_shape).replaceAll("_"," ").toLowerCase() +
+            " at " + (derived.two_ten_spread_bp || "—") + " bp" +
+            (derived.curve_change ? ", " + String(derived.curve_change).replaceAll("_"," ").toLowerCase() : "")
+          );
+        }
+        if (derived.ten_year_breakeven_percent) {
+          parts.push("10Y breakeven approximation " + derived.ten_year_breakeven_percent + "%");
+        }
       }
       set("symbolResearchTreasuryTitle", "U.S. Treasury");
       set("symbolResearchTreasury", parts.join(" · "));
