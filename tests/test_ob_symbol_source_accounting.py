@@ -9,7 +9,7 @@ def test_symbol_source_accounting_covers_every_active_research_lane():
 
     assert 'id="symbolSourceAccounting"' in template
     assert 'id="symbolServerResearch"' in template
-    assert "/static/ob/ob_symbol_research.js?v=symbolsources003" in template
+    assert "/static/ob/ob_symbol_research.js?v=publicoptions005" in template
 
     for source in (
         "finnhub","alpha_vantage","finazon","alpaca","bea",
