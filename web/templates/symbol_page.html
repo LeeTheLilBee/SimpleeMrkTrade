@@ -173,112 +173,77 @@
       </article>
     </section>
 
-    <section class="ob-symbol-card ob-symbol-research">
+    <section class="ob-symbol-card ob-symbol-impact">
       <div class="ob-symbol-section-head">
         <div>
-          <span class="ob-symbol-eyebrow">RESEARCH ROOM</span>
-          <h2>What do we actually know about this symbol?</h2>
-          <p id="symbolResearchStatus">Pulling source-backed research through Tower…</p>
-        </div>
-        <span id="symbolResearchFreshness" class="ob-symbol-mini-status">Checking sources</span>
-      </div>
-
-      <div class="ob-symbol-research-grid">
-        <article>
-          <span class="ob-symbol-eyebrow">MARKET NOW</span>
-          <h3 id="symbolResearchMarketTitle">Waiting for Alpaca</h3>
-          <p id="symbolResearchMarket">Current venue-limited market context has not loaded yet.</p>
-        </article>
-        <article>
-          <span class="ob-symbol-eyebrow">COMPANY</span>
-          <h3 id="symbolResearchCompanyTitle">Waiting for company research</h3>
-          <p id="symbolResearchCompany">Issuer and industry context has not loaded yet.</p>
-        </article>
-        <article>
-          <span class="ob-symbol-eyebrow">PRICE HISTORY</span>
-          <h3 id="symbolResearchHistoryTitle">Waiting for completed sessions</h3>
-          <p id="symbolResearchHistory">Historical price context has not loaded yet.</p>
-        </article>
-        <article>
-          <span class="ob-symbol-eyebrow">MACRO BACKDROP</span>
-          <h3 id="symbolResearchMacroTitle">Waiting for official macro data</h3>
-          <p id="symbolResearchMacro">Macro context has not loaded yet.</p>
-        </article>
-      </div>
-
-      <div class="ob-symbol-research-grid ob-symbol-research-grid--public">
-        <article>
-          <span class="ob-symbol-eyebrow">LABOR + INFLATION</span>
-          <h3 id="symbolResearchBlsTitle">Waiting for BLS</h3>
-          <p id="symbolResearchBls">CPI, unemployment, payrolls and producer-price context have not loaded yet.</p>
-        </article>
-        <article>
-          <span class="ob-symbol-eyebrow">RATES + TREASURY</span>
-          <h3 id="symbolResearchTreasuryTitle">Waiting for Treasury</h3>
-          <p id="symbolResearchTreasury">Debt and reviewed Treasury-rate context have not loaded yet.</p>
-        </article>
-        <article>
-          <span class="ob-symbol-eyebrow">IDENTITY CROSS-CHECK</span>
-          <h3 id="symbolResearchFigiTitle">Waiting for OpenFIGI</h3>
-          <p id="symbolResearchFigi">Ticker-to-FIGI reference has not loaded yet.</p>
-        </article>
-        <article>
-          <span class="ob-symbol-eyebrow">SEC EDGAR</span>
-          {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
-          <h3>{{ ob_research_context.get('identity',{}).get('security_name') or symbol }}</h3>
-          <p>
-            CIK {{ ob_research_context.get('identity',{}).get('cik') or 'not verified' }} ·
-            {{ ob_research_context.get('fundamentals',{}).get('state','NOT_AVAILABLE')|replace('_',' ') }} ·
-            {{ ob_research_context.get('issuer_events',[])|length }} cited issuer event(s).
+          <span class="ob-symbol-eyebrow">SOULAANA · SYMBOL IMPACT READ</span>
+          <h2 id="symbolImpactHeadline">Pulling the evidence together…</h2>
+          <p id="symbolImpactSummary">
+            I’m combining market behavior, company context, filings, macro conditions,
+            rates, policy and catalyst evidence into one symbol-specific read.
           </p>
-          {% else %}
-          <h3>Issuer research held</h3>
-          <p>No reviewed SEC issuer packet is attached to this symbol request.</p>
-          {% endif %}
+        </div>
+        <span id="symbolImpactFreshness" class="ob-symbol-mini-status">Building read</span>
+      </div>
+
+      <div class="ob-symbol-impact-grid">
+        <article class="ob-symbol-impact-card">
+          <span class="ob-symbol-eyebrow">WHAT IS HELPING</span>
+          <div id="symbolImpactTailwinds" class="ob-symbol-impact-list">
+            <p>Waiting for source-backed tailwinds.</p>
+          </div>
+        </article>
+
+        <article class="ob-symbol-impact-card">
+          <span class="ob-symbol-eyebrow">WHAT IS PRESSURING IT</span>
+          <div id="symbolImpactHeadwinds" class="ob-symbol-impact-list">
+            <p>Waiting for source-backed pressure.</p>
+          </div>
+        </article>
+
+        <article class="ob-symbol-impact-card">
+          <span class="ob-symbol-eyebrow">WHAT AGREES</span>
+          <div id="symbolImpactAgreement" class="ob-symbol-impact-list">
+            <p>Checking whether independent evidence points the same way.</p>
+          </div>
+        </article>
+
+        <article class="ob-symbol-impact-card">
+          <span class="ob-symbol-eyebrow">WHAT CONFLICTS</span>
+          <div id="symbolImpactConflict" class="ob-symbol-impact-list">
+            <p>Checking for evidence that does not fit the same story.</p>
+          </div>
         </article>
       </div>
 
-      {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
-      {% set sec_read = ob_research_context.get('soulaana_sec_examination', {}) %}
-      <div class="ob-symbol-research-soulaana ob-symbol-sec-native">
-        <span class="ob-symbol-eyebrow">SEC · WHAT THE FILINGS SAY</span>
-        <div class="ob-symbol-research-list">
-          {% for fact in ob_research_context.get('fundamentals',{}).get('reported_concepts',[])[:8] %}
-          <article class="ob-symbol-research-note">
-            <strong>{{ fact.get('concept','Reported item')|e }}</strong>
-            <p>{{ fact.get('value','—')|e }} {{ fact.get('units','')|e }} · period ending {{ fact.get('fiscal_end','Unknown')|e }}</p>
-            <p class="ob-symbol-research-muted">{{ fact.get('form','SEC filing')|e }} · accepted {{ fact.get('accepted_at','Unknown')|e }}</p>
-          </article>
-          {% endfor %}
-          {% for event in ob_research_context.get('issuer_events',[])[:6] %}
-          <article class="ob-symbol-research-note">
-            <strong>{{ event.get('headline','Issuer event')|e }}</strong>
-            <p>{{ event.get('kind','issuer event')|replace('_',' ')|e }} · {{ event.get('accepted_at','Source time unavailable')|e }}</p>
-          </article>
-          {% endfor %}
-          {% if not ob_research_context.get('fundamentals',{}).get('reported_concepts') and not ob_research_context.get('issuer_events') %}
-          <p class="ob-symbol-research-muted">No reviewed SEC filing facts or issuer events are available for this symbol yet.</p>
-          {% endif %}
-        </div>
-        {% if sec_read.get('state') == 'SOURCE_BOUND' %}
-        <p class="ob-symbol-research-muted">Soulaana reviewed {{ sec_read.get('findings',[])|length }} filing fact(s) and {{ sec_read.get('comparisons',[])|length }} period comparison(s). Historical issuer evidence only; not a current quote.</p>
-        {% endif %}
-      </div>
-      {% endif %}
-
-      <div class="ob-symbol-research-soulaana">
-        <span class="ob-symbol-eyebrow">MARKET + POLICY CATALYSTS</span>
-        <div id="symbolResearchCatalysts" class="ob-symbol-research-list">
-          <p>I’m checking Federal Register, CFTC, EIA, World Bank and NWS research lanes.</p>
-        </div>
+      <div class="ob-symbol-impact-wide">
+        <article>
+          <span class="ob-symbol-eyebrow">WHY THIS SYMBOL CARES</span>
+          <p id="symbolImpactWhy">
+            Waiting for company, industry, market and macro context.
+          </p>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">WHAT WOULD CHANGE THE READ</span>
+          <div id="symbolImpactWatch" class="ob-symbol-impact-list">
+            <p>Waiting for the next evidence checkpoints.</p>
+          </div>
+        </article>
       </div>
 
-      <div class="ob-symbol-research-soulaana">
-        <span class="ob-symbol-eyebrow">SOULAANA · SOURCE-BACKED READ</span>
-        <div id="symbolResearchSoulaana" class="ob-symbol-research-list">
-          <p>I’m waiting for the connected research lanes before I explain this symbol.</p>
+      <details class="ob-symbol-evidence-drawer">
+        <summary>Show the evidence underneath this read</summary>
+        <div class="ob-symbol-evidence-grid">
+          <article><strong>Market now</strong><p id="symbolResearchMarket">Current market context has not loaded yet.</p></article>
+          <article><strong>Company</strong><p id="symbolResearchCompany">Company context has not loaded yet.</p></article>
+          <article><strong>Completed sessions</strong><p id="symbolResearchHistory">Historical context has not loaded yet.</p></article>
+          <article><strong>BEA macro</strong><p id="symbolResearchMacro">Macro context has not loaded yet.</p></article>
+          <article><strong>BLS</strong><p id="symbolResearchBls">Labor and inflation context has not loaded yet.</p></article>
+          <article><strong>Treasury</strong><p id="symbolResearchTreasury">Rates context has not loaded yet.</p></article>
+          <article><strong>OpenFIGI</strong><p id="symbolResearchFigi">Identifier context has not loaded yet.</p></article>
+          <article><strong>Official catalysts</strong><div id="symbolResearchCatalysts" class="ob-symbol-impact-list"><p>Catalyst context has not loaded yet.</p></div></article>
         </div>
-      </div>
+      </details>
     </section>
 
     <section class="ob-symbol-card">
