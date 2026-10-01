@@ -123,9 +123,8 @@ def test_anonymous_direct_ob_rooms_redirect_to_tower_login(monkeypatch):
             308,
         }
 
-        assert response.headers["Location"].endswith(
-            "/tower/login"
-        )
+        assert "/tower/login?" in response.headers["Location"]
+        assert "next=%2Fob%2F" in response.headers["Location"]
 
 
 def test_owner_without_step_up_cannot_enter_normal_rooms(monkeypatch):
@@ -151,9 +150,8 @@ def test_owner_without_step_up_cannot_enter_normal_rooms(monkeypatch):
             308,
         }
 
-        assert response.headers["Location"].endswith(
-            "/tower/access-home"
-        )
+        assert "/tower/step-up/observatory?" in response.headers["Location"]
+        assert "next=%2Fob%2F" in response.headers["Location"]
 
 
 def test_owner_only_rooms_remain_owner_session_only(monkeypatch):
@@ -223,8 +221,10 @@ def test_protected_feed_is_session_and_step_up_scoped(monkeypatch):
     app = build_app(monkeypatch, owner=False, step_up=False)
     response = app.test_client().get("/ob/engine-feed-snapshot.json")
     assert response.status_code == 302
-    assert response.headers["Location"].endswith("/tower/login")
+    assert "/tower/login?" in response.headers["Location"]
+    assert "next=%2Fob%2Fengine-feed-snapshot.json" in response.headers["Location"]
     app = build_app(monkeypatch, owner=True, step_up=False)
     response = app.test_client().get("/ob/engine-feed-snapshot.json")
     assert response.status_code == 302
-    assert response.headers["Location"].endswith("/tower/access-home")
+    assert "/tower/step-up/observatory?" in response.headers["Location"]
+    assert "next=%2Fob%2Fengine-feed-snapshot.json" in response.headers["Location"]
