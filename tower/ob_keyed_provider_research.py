@@ -568,11 +568,23 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
     rows = []
     for provider in PROVIDERS:
         item = secret_reader(sid, provider)
+        ai_reviewed = _ai_enabled(provider)
+        display_reviewed = _enabled(provider)
         if item is None:
-            rows.append({"provider": provider, "state": "NOT_CONNECTED"})
+            rows.append({
+                "provider": provider,
+                "state": "NOT_CONNECTED",
+                "owner_display_reviewed": display_reviewed,
+                "soulaana_ai_use_reviewed": ai_reviewed,
+            })
             continue
-        if not _enabled(provider):
-            rows.append({"provider": provider, "state": "RIGHTS_OR_FETCH_HOLD"})
+        if not display_reviewed:
+            rows.append({
+                "provider": provider,
+                "state": "RIGHTS_OR_FETCH_HOLD",
+                "owner_display_reviewed": False,
+                "soulaana_ai_use_reviewed": False,
+            })
             continue
         key = (sid, provider, symbol)
         cached = cache.get(key)
@@ -587,7 +599,12 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
             elif provider == "finazon":
                 payload = _finazon(symbol, item.value, opener=opener)
                 if payload.get("trial_access_state") == "SYMBOL_NOT_IN_FREE_TRIAL":
-                    row = {"state": "FREE_TRIAL_SYMBOL_HOLD", **payload}
+                    row = {
+                        "state": "FREE_TRIAL_SYMBOL_HOLD",
+                        "owner_display_reviewed": display_reviewed,
+                        "soulaana_ai_use_reviewed": ai_reviewed,
+                        **payload,
+                    }
                     cache.put(key, row)
                     rows.append(row)
                     continue
@@ -601,9 +618,19 @@ def provider_research_projection(*, sid: str, symbol: str, secret_reader,
                 payload["consolidated_quote"] = False
             else:
                 payload = _bea(symbol, item.value, opener=opener)
-            row = {"state": "SOURCE_BOUND", **payload}
+            row = {
+                "state": "SOURCE_BOUND",
+                "owner_display_reviewed": display_reviewed,
+                "soulaana_ai_use_reviewed": ai_reviewed,
+                **payload,
+            }
         except Exception:
-            row = {"provider": provider, "state": "SOURCE_HOLD"}
+            row = {
+                "provider": provider,
+                "state": "SOURCE_HOLD",
+                "owner_display_reviewed": display_reviewed,
+                "soulaana_ai_use_reviewed": ai_reviewed,
+            }
         cache.put(key, row)
         rows.append(row)
     return {
