@@ -397,7 +397,7 @@ def test_research_backend_stays_shared_but_generic_ui_shell_is_not_injected_into
         assert "/static/ob/ob_keyless_context.css" not in source,name
         assert "/static/ob/ob_official_catalyst_radar.js" not in source,name
     symbol=(ROOT/"web/templates/symbol_page.html").read_text()
-    assert "/static/ob/ob_symbol_research.js?v=publicoptions005" in symbol
+    assert "/static/ob/ob_symbol_research.js?v=companyprofile006" in symbol
     js=(ROOT/"web/static/ob/ob_symbol_research.js").read_text()
     assert '"/ob/research/keyless.json?symbol="' in js
     assert '"/ob/research/catalysts.json"' in js

@@ -32,3 +32,7 @@ def test_ob_settings_control_room_is_plain_language_and_real():
     assert "show_evidence_drawer" in symbol
     assert "auto_refresh_symbol_research" in symbol
     assert "refresh_on_focus" in symbol
+    symbol_template = (ROOT / "web/templates/symbol_page.html").read_text()
+    assert 'id="symbolCompanyProfileCard"' in symbol_template
+    assert "company_profile" in symbol
+    assert "symbolCompanyDescription" in symbol

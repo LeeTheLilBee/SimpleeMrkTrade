@@ -30,7 +30,7 @@ def test_current_hosted_rooms_keep_optional_source_partial_out_of_room_shells():
     symbol = (ROOT / "web/templates/symbol_page.html").read_text()
     assert "ob_research_context is defined" in symbol
     assert 'id="symbolServerResearch"' in symbol
-    assert "/static/ob/ob_symbol_research.js?v=publicoptions005" in symbol
+    assert "/static/ob/ob_symbol_research.js?v=companyprofile006" in symbol
     nav = (ROOT / "web/static/ob/ob_nav_shell.js").read_text()
     assert 'navLink(path, "/ob/trade-center", "Trade Center"' in nav
     assert 'navLink(path, "/ob/review-center", "Review Center"' in nav

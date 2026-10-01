@@ -126,6 +126,23 @@
       </div>
     </section>
 
+    <section id="symbolCompanyProfileCard" class="ob-symbol-card" hidden>
+      <div class="ob-symbol-section-head">
+        <div>
+          <span class="ob-symbol-eyebrow">COMPANY PROFILE</span>
+          <h2 id="symbolCompanyProfileName">Who is this company?</h2>
+          <p id="symbolCompanyDescription">
+            Waiting for reviewed company background.
+          </p>
+        </div>
+        <span id="symbolCompanyProfileTrust" class="ob-symbol-mini-status">
+          Source-backed profile only
+        </span>
+      </div>
+
+      <div id="symbolCompanyProfileFacts" class="ob-symbol-facts"></div>
+    </section>
+
     <section class="ob-symbol-grid ob-symbol-grid--lead">
       <article class="ob-symbol-card">
         <span class="ob-symbol-eyebrow">WHAT CHANGED?</span>
@@ -555,6 +572,6 @@
 {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
 <script id="symbolServerResearch" type="application/json">{{ ob_research_context|tojson }}</script>
 {% endif %}
-<script defer src="/static/ob/ob_symbol_research.js?v=publicoptions005"></script>
+<script defer src="/static/ob/ob_symbol_research.js?v=companyprofile006"></script>
 </body>
 </html>
