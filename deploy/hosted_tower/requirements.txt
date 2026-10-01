@@ -21,6 +21,9 @@ yfinance>=0.2,<1
 pytz>=2024.1
 python-dateutil>=2.9,<3
 
+# Private Grounds runtime/provider uses the reviewed psycopg 3 adapter when enabled.
+psycopg[binary]>=3.2,<4
+
 # Explicitly opt-in ASGI wrapper for authenticated Catalyst Radar notification socket.
 asgiref>=3.8,<4
 uvicorn[standard]>=0.30,<1
