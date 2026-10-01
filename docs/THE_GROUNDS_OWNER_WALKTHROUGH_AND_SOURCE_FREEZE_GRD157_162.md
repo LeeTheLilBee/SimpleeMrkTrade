@@ -17,13 +17,17 @@ A source test or local checklist cannot certify any of the following. The real, 
 
 | Gate | External owner | Minimum independently verified evidence | Current status |
 | --- | --- | --- | --- |
-| Current human identity and assignments | Tower | Real `tower.grounds_runtime_receiver` with issuer/audience, session binding, expiry, logout/replay/revocation, resident/property/unit/lease/household and exact maintenance assignment; current staff directory/resolver; negative cross-tenant walkthrough | NOT CERTIFIED |
-| Independent operating authorization | Tower + owner/security | Real `tower.grounds_operational_release` with independently authenticated non-revoked owner/provider/recovery/privacy approval, health and per-request admission, revocation while running | NOT CERTIFIED |
+| Current human identity and assignments | Tower + independent runtime provider | Tower adapter source/factory now implemented and cross-tested against current Grounds; still requires actual provider attestation, original-session verification, expiry/logout/replay/revocation, resident/property/unit/lease/household and exact maintenance assignment; current staff directory/resolver; negative cross-tenant walkthrough | ADAPTER SOURCE IMPLEMENTED; LIVE PROVIDER NOT CERTIFIED |
+| Independent operating authorization | Tower + owner/security + independent release provider | Tower operational-release adapter factory now implemented; still requires a real short-lived decision binding exact environment/revision to owner acceptance, successful restore, privacy/housing review and operations coverage, with current health/revocation | ADAPTER SOURCE IMPLEMENTED; LIVE DECISION NOT CERTIFIED |
 | Tenant data custody | Approved hosting/operator | Private PostgreSQL, exact reviewed migration inventory, encryption/network/secret/retention access, backup, successfully observed restore, rollback/rotation and incident access evidence | NOT CERTIFIED |
 | Rent and receipts | Teller through Tower | Original signed invoice per exact lease, payer authorization, real checkout in Teller, idempotency, partial/failed/returned/reversed/refunded paths and authoritative reconciliation; no card/bank details in Grounds | NOT CERTIFIED |
 | Private evidence/contact | Tower + Vault | Actual sealed document/upload/scanning/authorization, private access and original issuer proof, retention/revocation/recovery; lease/work/inspection and prospect-contact scoping | NOT CERTIFIED |
 | Notifications and urgent human coverage | Tower delivery gateway + operations | Current recipient grants, live delivery receipts/failures/retry/dead letter, after-hours contact roster, actual human acknowledgment, service recovery and escalation plan | NOT CERTIFIED |
 | Housing and real-person acceptance | Owner + qualified local professionals | Applicable fair-housing, notices, entry, emergency procedures, lease/privacy/accessibility review; full owner and role-specific hosted walkthrough and final signed approval | NOT CERTIFIED |
+
+## October 1 Tower reconciliation
+
+Tower now also has an authenticated owner + step-up Grounds launch gate and a reviewed fail-closed same-origin mount source. The mount registers `/grounds` only if Grounds' own production factory succeeds; an arbitrary route cannot satisfy Tower's launch preflight. This retires the old **missing Tower module / missing owner doorway source** blockers, but does not create a resident/staff launch, live provider attestation, private database, release approval or tenant authorization. See `docs/THE_GROUNDS_TOWER_RECONCILIATION_GRD219_224.md`.
 
 ## Hosted owner walkthrough — future gated sequence (no real tenant until signed approval)
 
