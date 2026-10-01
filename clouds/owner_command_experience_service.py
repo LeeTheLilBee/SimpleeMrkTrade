@@ -51,57 +51,87 @@ except ImportError:
 
 SOURCE_DESTINATIONS = {
     "observatory": {
+        "label": "Open in Observatory",
         "kind": "tower_handoff",
         "destination_id": "tower-observatory",
-        "route_reference": "/tower/launch/observatory",
+        "route_reference": (
+            "/tower/ecosystem/launch/observatory"
+            "?destination=dashboard"
+            "&return_context=clouds-observatory"
+        ),
         "requires_tower": True,
         "requires_owner_permission": True,
         "requires_step_up": True,
     },
 
     "tower": {
+        "label": "Open Tower",
         "kind": "tower_handoff",
         "destination_id": "tower-access-home",
-        "route_reference": "/tower/access-home",
+        "route_reference": (
+            "/tower/ecosystem/launch/tower"
+            "?destination=access_home"
+            "&return_context=clouds-tower"
+        ),
         "requires_tower": True,
         "requires_owner_permission": True,
         "requires_step_up": False,
     },
 
     "teller": {
+        "label": "Open in Teller",
         "kind": "tower_handoff",
         "destination_id": "tower-teller",
-        "route_reference": None,
+        "route_reference": (
+            "/tower/ecosystem/launch/teller"
+            "?destination=payroll_review"
+            "&return_context=clouds-teller"
+        ),
         "requires_tower": True,
         "requires_owner_permission": True,
         "requires_step_up": True,
     },
 
     "grounds": {
+        "label": "Open in Grounds",
         "kind": "tower_handoff",
         "destination_id": "tower-grounds",
-        "route_reference": None,
+        "route_reference": (
+            "/tower/ecosystem/launch/grounds"
+            "?destination=portfolio"
+            "&return_context=clouds-grounds"
+        ),
         "requires_tower": True,
         "requires_owner_permission": True,
         "requires_step_up": True,
     },
 
     "archive_vault": {
+        "label": "Open Vault line",
         "kind": "tower_handoff",
         "destination_id": "tower-archive-vault",
-        "route_reference": None,
+        "route_reference": (
+            "/tower/ecosystem/launch/archive_vault"
+            "?destination=status_bridge"
+            "&return_context=clouds-archive-vault"
+        ),
         "requires_tower": True,
         "requires_owner_permission": True,
         "requires_step_up": True,
     },
 
     "atm_operations": {
-        "kind": "clouds_internal",
-        "destination_id": "clouds-atm-operations",
-        "route_reference": "/clouds/mission/atm-operations",
-        "requires_tower": False,
-        "requires_owner_permission": False,
-        "requires_step_up": False,
+        "label": "Open ATM Operations",
+        "kind": "tower_handoff",
+        "destination_id": "tower-atm-operations",
+        "route_reference": (
+            "/tower/ecosystem/launch/atm_operations"
+            "?destination=operations"
+            "&return_context=clouds-atm-operations"
+        ),
+        "requires_tower": True,
+        "requires_owner_permission": True,
+        "requires_step_up": True,
     },
 }
 
@@ -142,9 +172,12 @@ def _navigation(source_id):
             f"owner-command-nav-{source_id}"
         ),
         label=(
-            "Open protected app"
-            if config["requires_tower"]
-            else "Review in Clouds"
+            config.get("label")
+            or (
+                "Open protected app"
+                if config["requires_tower"]
+                else "Review in Clouds"
+            )
         ),
         kind=config["kind"],
         destination_id=(
