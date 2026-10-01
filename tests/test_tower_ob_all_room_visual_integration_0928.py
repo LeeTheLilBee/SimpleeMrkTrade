@@ -50,18 +50,20 @@ def test_living_market_sky_is_source_bound_and_original():
     assert "forced-colors" in css
     assert "adobestock" not in css.lower()
 
-def test_trade_and_review_show_product_first_while_legacy_stays_hidden():
-    for name, primary, hidden in (
-        ("trade_center.html","obtc-workspace","obtc-proof-compatibility"),
-        ("review_center.html","reviewHero",None),
-        ("owner_console.html","oboc-health-grid","oboc-compatibility"),
-    ):
-        s=content(name)
-        assert primary in s
-        if hidden:
-            idx=s.find('id="'+hidden+'"')
-            assert idx!=-1
-            assert "hidden" in s[idx:idx+220],name
+def test_trade_and_review_show_product_first_without_trade_center_proof_runtime():
+    trade=content("trade_center.html")
+    assert "obtc-workspace" in trade
+    assert "obtc-proof-compatibility" not in trade
+    assert "tradeCenterMount" not in trade
+
+    review=content("review_center.html")
+    assert "reviewHero" in review
+
+    console=content("owner_console.html")
+    assert "oboc-health-grid" in console
+    idx=console.find('id="oboc-compatibility"')
+    assert idx!=-1
+    assert "hidden" in console[idx:idx+220]
 
 def test_owner_access_separate_from_normal_dashboard():
     normal=content("dashboard.html")
