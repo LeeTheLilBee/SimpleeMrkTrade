@@ -457,6 +457,19 @@
 
     const identity = secPacket && secPacket.identity && typeof secPacket.identity === "object"
       ? secPacket.identity : null;
+
+    if (identity && settings && settings.show_company_background !== false) {
+      const cardNode = byId("symbolCompanyProfileCard");
+      if (cardNode) cardNode.hidden = false;
+      if (identity.security_name) {
+        set("symbolCompany", identity.security_name);
+        const currentProfileName = byId("symbolCompanyProfileName");
+        if (currentProfileName && (!currentProfileName.textContent || currentProfileName.textContent === "Who is this company?")) {
+          set("symbolCompanyProfileName", identity.security_name);
+        }
+      }
+      set("symbolCompanyProfileTrust", "SEC official identity + reviewed research sources");
+    }
     const fundamentals = secPacket && secPacket.fundamentals && typeof secPacket.fundamentals === "object"
       ? secPacket.fundamentals : null;
     const events = secPacket && Array.isArray(secPacket.issuer_events) ? secPacket.issuer_events : [];
