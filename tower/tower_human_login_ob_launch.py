@@ -751,9 +751,13 @@ def login():
                 username=username
             )
 
-            return redirect(
-                next_path
-            )
+            if next_path.startswith("/ob/"):
+                return redirect(
+                    OBSERVATORY_STEP_UP_PATH
+                    + "?"
+                    + urlencode({"next": next_path})
+                )
+            return redirect(next_path)
 
         else:
             error = (
@@ -1187,14 +1191,20 @@ def _operational_ob_launch_blocked(
 def _launch_observatory_operational():
     """Issue the real owner Observatory handoff or fail closed."""
 
+    next_path = safe_next_path(
+        request.args.get("next"),
+        OPERATIONAL_OB_ENTRY_PATH,
+    )
+    if not next_path.startswith("/ob/"):
+        next_path = OPERATIONAL_OB_ENTRY_PATH
+
     if not step_up_active():
 
         return redirect(
             OBSERVATORY_STEP_UP_PATH
             + "?"
             + urlencode({
-                "next":
-                    OBSERVATORY_LAUNCH_PATH,
+                "next": next_path,
             })
         )
 
@@ -1233,8 +1243,8 @@ def _launch_observatory_operational():
         TOWER_OPERATIONAL_OB_RECEIVE_PATH
         + "?"
         + urlencode({
-            "code":
-                issued["code"],
+            "code": issued["code"],
+            "next": next_path,
         })
     )
 
@@ -1246,14 +1256,20 @@ def _launch_observatory_operational():
 def receive_operational_observatory_handoff():
     """Consume the real one-time handoff at the Observatory receiving edge."""
 
+    next_path = safe_next_path(
+        request.args.get("next"),
+        OPERATIONAL_OB_ENTRY_PATH,
+    )
+    if not next_path.startswith("/ob/"):
+        next_path = OPERATIONAL_OB_ENTRY_PATH
+
     if not step_up_active():
 
         return redirect(
             OBSERVATORY_STEP_UP_PATH
             + "?"
             + urlencode({
-                "next":
-                    OBSERVATORY_LAUNCH_PATH,
+                "next": next_path,
             })
         )
 
@@ -1301,9 +1317,7 @@ def receive_operational_observatory_handoff():
         None,
     )
 
-    return redirect(
-        OPERATIONAL_OB_ENTRY_PATH
-    )
+    return redirect(next_path)
 
 
 
@@ -1410,9 +1424,13 @@ def observatory_step_up():
                 SESSION_STEP_UP_UNTIL
             ] = expires_at.isoformat()
 
-            return redirect(
-                OBSERVATORY_LAUNCH_PATH
-            )
+            if next_path.startswith("/ob/"):
+                return redirect(
+                    OBSERVATORY_LAUNCH_PATH
+                    + "?"
+                    + urlencode({"next": next_path})
+                )
+            return redirect(next_path)
 
         error = (
             "Tower could not verify the "
