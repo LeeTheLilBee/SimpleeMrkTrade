@@ -98,20 +98,22 @@ def test_access_home_v2_renders_front_door(client):
         as_text=True
     )
 
-    assert "Tower Access Command Center" in body
-    assert "Welcome back, solice." in body
-    assert "Access Hub" in body
+    assert "Simplee World · private access" in body
+    assert "Welcome home, solice." in body
+    assert "BUSINESS SYSTEMS" in body
+    assert "SIMPLEE APPS" in body
     assert "The Observatory" in body
     assert "Archive Vault" in body
     assert "The Teller" in body
     assert "The Grounds" in body
-    assert "The Clouds" in body
-    assert "Owner Actions" in body
-    assert "Quick Launch" in body
-    assert "Evidence drawers" in body
+    assert "Simplee Cloud" in body
+    assert "Crown Calendar" in body
+    assert "The Village" in body
+    assert "Owner Headquarters" in body
+    assert "Integration Desk" in body
     assert "<details" in body
-    assert "Proof stays available" in body
-    assert "Open Observatory" in body
+    assert "Evidence & audit" in body
+    assert "/tower/launch/observatory" in body
 
 
 def test_ob_return_preserves_owner_session(client):
