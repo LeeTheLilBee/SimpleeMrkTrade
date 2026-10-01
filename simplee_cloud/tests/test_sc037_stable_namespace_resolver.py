@@ -219,7 +219,7 @@ def test_wrong_stable_mapping_after_process_restart_fails_journal_provenance_bef
     spy = CountGet(backend)
     wrong_resolver = lambda entity: "b" * 64
     _, ops2 = source(backend=spy, journal=journal, resolver=wrong_resolver)
-    with pytest.raises(CloudError, match="acknowledged exact primary"):
+    with pytest.raises(CloudError, match="acknowledged matching primary intent"):
         ops2.get(
             context=ctx("READ_CIPHERTEXT", "read-wrong-stable-map"),
             object_ref=ref, expected_sha256=digest,
