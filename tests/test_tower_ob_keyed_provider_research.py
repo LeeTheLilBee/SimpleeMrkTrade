@@ -402,3 +402,77 @@ def test_public_personal_quote_can_feed_owner_soulaana_without_order_authority(r
     assert public_ai["summary"]["bid"] == 100.0
     assert packet["may_authorize_order"] is False
     assert packet["may_authorize_capital"] is False
+
+
+def test_public_options_setting_controls_fetch_and_soulaana_translation(rights):
+    calls = []
+
+    def option_reader(sid, symbol):
+        calls.append((sid, symbol))
+        return {
+            "provider": "public_options",
+            "state": "SOURCE_BOUND",
+            "kind": "PUBLIC_PERSONAL_OPTION_CHAIN",
+            "symbol": symbol,
+            "expiration": "2026-10-02",
+            "underlying_midpoint": 100.3,
+            "contract_count": 2,
+            "contracts": [
+                {
+                    "provider_symbol": "AAPL261002C00100000",
+                    "right": "call", "strike": 100.0,
+                    "bid": 1.2, "ask": 1.3, "mid": 1.25,
+                    "volume": 100, "open_interest": 900,
+                    "greeks": {"delta": 0.52, "implied_volatility": 0.31},
+                },
+                {
+                    "provider_symbol": "AAPL261002P00100000",
+                    "right": "put", "strike": 100.0,
+                    "bid": 1.1, "ask": 1.25, "mid": 1.175,
+                    "volume": 90, "open_interest": 800,
+                    "greeks": {"delta": -0.48, "implied_volatility": 0.33},
+                },
+            ],
+            "source_reference": "https://public.com/api/docs/resources/market-data/get-option-chain",
+            "owner_display_reviewed": True,
+            "soulaana_ai_use_reviewed": True,
+            "personal_owner_only": True,
+            "commercial_use_allowed": False,
+            "broker_execution_authorized": False,
+        }
+
+    enabled = provider_research_projection(
+        sid="tower_session_" + "x"*20,
+        symbol="AAPL",
+        secret_reader=secret_reader,
+        public_option_reader=option_reader,
+        use_public_options=True,
+        opener=Recorder(),
+        cache=ProviderResearchCache(),
+    )
+    assert len(calls) == 1
+    option_row = next(row for row in enabled["provider_research"]
+                      if row.get("provider") == "public_options")
+    assert option_row["state"] == "SOURCE_BOUND"
+    ai = next(row for row in enabled["soulaana_research"]["observations"]
+              if row.get("provider") == "public_options")
+    assert "options chain" in ai["finding"]
+    assert ai["why_it_matters"]
+    assert enabled["may_authorize_order"] is False
+
+    calls.clear()
+    disabled = provider_research_projection(
+        sid="tower_session_" + "x"*20,
+        symbol="AAPL",
+        secret_reader=secret_reader,
+        public_option_reader=option_reader,
+        use_public_options=False,
+        opener=Recorder(),
+        cache=ProviderResearchCache(),
+    )
+    assert calls == []
+    held = next(row for row in disabled["provider_research"]
+                if row.get("provider") == "public_options")
+    assert held["state"] == "DISABLED_BY_OWNER"
+    assert not any(row.get("provider") == "public_options"
+                   for row in disabled["soulaana_research"]["observations"])
