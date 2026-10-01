@@ -29,13 +29,18 @@ REQUIRED_ROUTES = (
     "ob_dashboard", "ob_market_map", "ob_trade_center",
     "ob_review_center", "ob_owner_console",
 )
-RECEIPT_SECONDS = 45
-POLL_SECONDS = 15
+RECEIPT_SECONDS = 180
+POLL_SECONDS = 60
 
 
 class _DoNotFollowRedirects(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         return None
+
+
+# One opener per observer process. Rebuilding urllib opener/handler stacks for
+# every probe created unnecessary churn on the 512 MiB owner-beta service.
+_PROBE_OPENER = build_opener(_DoNotFollowRedirects())
 
 
 def metadata_from_environment(env=None):
@@ -71,7 +76,7 @@ def metadata_from_environment(env=None):
 
 def _fetch(path, metadata):
     """Probe only the currently running local service; never follow redirects."""
-    opener = build_opener(_DoNotFollowRedirects())
+    opener = _PROBE_OPENER
     request = Request(
         "http://127.0.0.1:" + str(metadata["port"]) + path,
         headers={"Host": metadata["hostname"], "User-Agent": "tower-ob-publication-observer/1"},
