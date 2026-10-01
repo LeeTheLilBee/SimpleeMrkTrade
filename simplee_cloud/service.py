@@ -15,6 +15,8 @@ from collections.abc import Callable
 _NAMESPACE = re.compile(r"[0-9a-f]{64}\Z")
 
 
+from .namespace_bindings import SQLiteNamespaceBindingLedger
+
 from .contracts import (
     AccessDenied, CiphertextBackend, CloudError, DenyAllAuthority, IntegrityError,
     MAX_ENVELOPE_BYTES, StorageAuthority, StorageContext, StorageReceipt,
@@ -39,6 +41,7 @@ class CiphertextStorageService:
         backend: CiphertextBackend,
         namespace_key: bytes | None = None,
         namespace_resolver: Callable[[str], str] | None = None,
+        namespace_binding_ledger: SQLiteNamespaceBindingLedger | None = None,
         authority: StorageAuthority | None = None,
         audit_event: Callable[[dict], None] | None = None,
         mode: str = "disabled",
@@ -52,11 +55,16 @@ class CiphertextStorageService:
         if namespace_resolver is None:
             if not isinstance(namespace_key, bytes) or len(namespace_key) != 32:
                 raise CloudError("approved namespace secret or stable resolver required")
+            if namespace_binding_ledger is not None:
+                raise CloudError("namespace binding ledger is only valid with stable resolver")
         elif namespace_key is not None or not callable(namespace_resolver):
             raise CloudError("use either namespace secret or stable resolver, never both")
+        elif not isinstance(namespace_binding_ledger, SQLiteNamespaceBindingLedger):
+            raise CloudError("stable resolver requires durable redacted binding ledger")
         self._backend = backend
         self._namespace_key = namespace_key
         self._namespace_resolver = namespace_resolver
+        self._namespace_binding_ledger = namespace_binding_ledger
         # Resolver mode keeps only per-process keyed tags, never raw entity IDs,
         # to detect mapping drift/collision within this source runtime.
         self._resolver_cache_key = (
@@ -82,6 +90,12 @@ class CiphertextStorageService:
             raise AccessDenied("trusted stable namespace unavailable") from exc
         if not isinstance(namespace, str) or _NAMESPACE.fullmatch(namespace) is None:
             raise AccessDenied("invalid trusted stable namespace")
+        # SC038: resolver output is not self-authenticating. Every operation
+        # requires a separately pre-enrolled durable redacted entity binding.
+        # Cloud I/O NEVER creates that enrollment as a side effect.
+        self._namespace_binding_ledger.require_binding(
+            entity_id=entity_id, namespace=namespace,
+        )
         entity_tag = hmac.new(
             self._resolver_cache_key,
             b"simplee-cloud:resolver-entity:v1:" + entity_id.encode(),
@@ -176,5 +190,10 @@ class CiphertextStorageService:
                 self._namespace_resolver is not None
             ),
             "namespace_rotation_custody_certified": False,
+            "source_namespace_binding_ledger_verified": (
+                self._namespace_binding_ledger.verify_chain()["valid"]
+                if self._namespace_binding_ledger is not None else False
+            ),
+            "namespace_binding_external_registry_certified": False,
             "status": "SOURCE_ONLY_NO_GO",
         }
