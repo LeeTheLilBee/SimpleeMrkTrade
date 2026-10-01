@@ -751,9 +751,13 @@ def login():
                 username=username
             )
 
-            return redirect(
-                next_path
-            )
+            if next_path.startswith("/ob/"):
+                return redirect(
+                    OBSERVATORY_STEP_UP_PATH
+                    + "?"
+                    + urlencode({"next": next_path})
+                )
+            return redirect(next_path)
 
         else:
             error = (
