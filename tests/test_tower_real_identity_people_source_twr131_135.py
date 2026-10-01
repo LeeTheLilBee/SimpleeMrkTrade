@@ -406,6 +406,7 @@ def test_twr134_owner_observatory_policy_is_granted_without_runtime_claim(
     ] == [
         "observatory",
         "teller",
+        "grounds",
     ]
 
     observatory = entitlements[0]
@@ -454,9 +455,9 @@ def test_twr134_only_still_future_apps_are_not_granted_after_teller_activation(
     }
 
     assert "teller" in app_ids
+    assert "grounds" in app_ids
     assert "vault" not in app_ids
     assert "clouds" not in app_ids
-    assert "grounds" not in app_ids
 
 
 def test_twr135_people_registry_projects_one_real_configured_identity(

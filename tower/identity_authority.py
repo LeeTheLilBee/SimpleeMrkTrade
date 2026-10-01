@@ -454,6 +454,45 @@ def _teller_access_policy(
     }
 
 
+def _grounds_access_policy(
+) -> Dict[str, Any] | None:
+    """Current hosted owner is entitled to the owner Grounds doorway only.
+
+    This is access-policy truth, not runtime publication, provider health,
+    property grants, resident/staff access or operational release.
+    """
+    grounds=None
+    for app in registered_apps():
+        if app.get("app_id")=="grounds":
+            grounds=app
+            break
+    if grounds is None:
+        return None
+    if grounds.get("owner_only") is not True:
+        return None
+    if grounds.get("requires_tower_handoff") is not True:
+        return None
+    launch_route=str(grounds.get("tower_launch_route","") or "").strip()
+    if launch_route!="/tower/launch/grounds":
+        return None
+    return {
+        "app_id":"grounds",
+        "app_name":str(grounds.get("app_name","The Grounds")),
+        "access_policy":"GRANTED",
+        "verification_state":VERIFIED,
+        "source_class":DERIVED,
+        "source_id":OWNER_APP_ACCESS_SOURCE_ID,
+        "policy_basis":"current_owner_role_policy_grounds_owner_corridor",
+        "registry_status":str(grounds.get("app_status","")),
+        "launch_route":launch_route,
+        "runtime_availability":None,
+        "runtime_availability_state":UNKNOWN,
+        "runtime_availability_reason":"runtime_provider_not_evaluated_by_identity_authority",
+        "resident_staff_entitlement_granted":False,
+        "property_grants_invented":False,
+    }
+
+
 def hosted_owner_identity_authority() -> Dict[str, Any]:
     configuration = (
         hosted_owner_identity_config_status()
@@ -597,6 +636,15 @@ def hosted_owner_identity_authority() -> Dict[str, Any]:
     if teller_access is not None:
         entitlements.append(
             teller_access
+        )
+
+    grounds_access = (
+        _grounds_access_policy()
+    )
+
+    if grounds_access is not None:
+        entitlements.append(
+            grounds_access
         )
 
     record = {
