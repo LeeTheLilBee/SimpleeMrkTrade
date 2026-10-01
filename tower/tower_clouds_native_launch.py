@@ -553,6 +553,52 @@ def _render_owner_command_experience() -> str:
         returned_from=str(request.args.get("from") or ""),
     )
 
+@tower_clouds_native_bp.get(CLOUDS_CONTRACT_JSON_PATH)
+def clouds_native_launch_contract_json():
+    owner_redirect = _require_owner_or_redirect()
+    if owner_redirect is not None:
+        return jsonify({
+            "allowed": False,
+            "reason_code": "tower_owner_session_required",
+            "app_id": APP_ID,
+            "default_deny": True,
+        }), 403
+
+    package = build_canonical_tower_intake_package()
+    boundary = build_canonical_clouds_boundary_record(package=package)
+
+    package_validation = validate_tower_clouds_intake_package(package)
+    boundary_validation = validate_clouds_handoff_boundary_record(boundary)
+
+    return jsonify({
+        "allowed": package_validation.valid and boundary_validation.valid,
+        "reason_code": "tower_clouds_canonical_contract_ready",
+        "app_id": APP_ID,
+        "app_name": APP_NAME,
+        "owner_route": CLOUDS_HOME_PATH,
+        "owner_surface": CANONICAL_OWNER_SURFACE,
+        "owner_service_getter": CANONICAL_OWNER_SERVICE_GETTER,
+        "package_type": TOWER_INTAKE_PACKAGE_TYPE,
+        "package_version": package["package_version"],
+        "package_id": package["package_id"],
+        "boundary_type": BOUNDARY_RECORD_TYPE,
+        "boundary_state": boundary["boundary_state"],
+        "delivery_state": boundary["delivery_state"],
+        "clouds_gp024_preexisting_session_handoff_key": None,
+        "tower_integration_session_handoff_key": SESSION_TOWER_CLOUDS_INTEGRATION_HANDOFF,
+        "tower_owns_launch_identity_session_step_up_return": True,
+        "clouds_owns_owner_command_rendering": True,
+        "clouds_executes_navigation": False,
+        "downstream_execution_performed": False,
+        "dry_run_only": True,
+        "production_manual_live_authorized": False,
+        "broker_submission_enabled": False,
+        "real_capital_movement_enabled": False,
+        "direct_vault_upload_enabled": False,
+        "live_auto_locked": True,
+    })
+
+
 @tower_clouds_native_bp.route(CLOUDS_STEP_UP_PATH, methods=["GET", "POST"])
 def clouds_step_up():
     owner_redirect = _require_owner_or_redirect()
