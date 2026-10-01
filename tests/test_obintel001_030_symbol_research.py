@@ -332,35 +332,30 @@ def test_transient_reference_ledger_requires_retention_and_monotonicity():
     ledger.forget_runtime()
     assert ledger.get("one") is None
 
-def test_four_protected_room_templates_only_offer_server_bound_context():
+def test_source_research_partial_remains_safe_and_opt_in_to_current_rooms():
     root=Path("web/templates")
     app=Flask("source_research_test",template_folder=str(root.resolve()))
-    expected={
-        "symbol_page.html":"symbol_page",
-        "market_map.html":"market_map",
-        "trade_center.html":"trade_center",
-        "review_center.html":"review_center",
-    }
-    for name,room in expected.items():
+    partial=(root/"ob_research_context_partial.html").read_text()
+    assert "fetch(" not in partial
+    for name in ("symbol_page.html","market_map.html","trade_center.html","review_center.html"):
         template=(root/name).read_text()
         app.jinja_env.parse(template)
-        assert "ob_research_context_partial.html" in template
-        assert "ob_research_context.get('room') == '"+room+"'" in template
-        assert "ob_research_context.css" in template
-        assert "fetch(" not in (root/"ob_research_context_partial.html").read_text()
+        assert "include 'ob_research_context_partial.html'" not in template
+        assert "ob_research_context.css" not in template
+    symbol=(root/"symbol_page.html").read_text()
+    assert "/static/ob/ob_symbol_research.js?v=publicoptions005" in symbol
     with app.test_request_context():
         blank=render_template("ob_research_context_partial.html")
         assert "Symbol research context" not in blank
         view=project_research(packet(),"symbol_page")
         rendered=render_template("ob_research_context_partial.html",ob_research_context=view)
         assert "Symbol research context" in rendered and "SOURCE-BOUND" in rendered
-        assert "No broker execution" not in rendered # no new action button
+        assert "No broker execution" not in rendered
         malicious=deepcopy(view)
         malicious["identity"]["security_name"]="<script>alert(1)</script>"
         safe=render_template("ob_research_context_partial.html",ob_research_context=malicious)
         assert "<script>alert(1)</script>" not in safe
         assert "&lt;script&gt;" in safe
-
 
 def test_soulaana_does_not_infer_ai_rights_from_human_owner_display():
     # SourceRights currently has owner/invitee display but NO distinct event or
