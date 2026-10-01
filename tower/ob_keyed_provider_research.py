@@ -94,8 +94,25 @@ def _finnhub(symbol: str, secret: str, *, opener=None) -> dict:
     exchange = doc.get("exchange")
     industry = doc.get("finnhubIndustry")
     ipo = doc.get("ipo")
+    country = doc.get("country")
+    currency = doc.get("currency")
+    website = doc.get("weburl")
+    market_cap = doc.get("marketCapitalization")
+    shares_outstanding = doc.get("shareOutstanding")
     if ticker != symbol or not isinstance(name, str) or not name.strip():
         raise ValueError("provider response hold")
+    def safe_number(value):
+        try:
+            parsed = float(value)
+        except (TypeError, ValueError, OverflowError):
+            return None
+        return parsed if isfinite(parsed) and parsed >= 0 else None
+    if website is not None and (
+        not isinstance(website, str)
+        or not website.startswith(("https://", "http://"))
+        or len(website) > 300
+    ):
+        website = None
     return {
         "provider": "finnhub",
         "kind": "COMPANY_REFERENCE",
@@ -104,6 +121,11 @@ def _finnhub(symbol: str, secret: str, *, opener=None) -> dict:
         "exchange": exchange[:120] if isinstance(exchange, str) else None,
         "industry": industry[:120] if isinstance(industry, str) else None,
         "ipo_date": ipo[:20] if isinstance(ipo, str) else None,
+        "country": country[:80] if isinstance(country, str) else None,
+        "currency": currency[:20] if isinstance(currency, str) else None,
+        "website": website,
+        "market_cap_millions": safe_number(market_cap),
+        "shares_outstanding_millions": safe_number(shares_outstanding),
         "source_reference": "https://finnhub.io/docs/api/company-profile2",
         "historical_only": False,
         "live_quote": False,
