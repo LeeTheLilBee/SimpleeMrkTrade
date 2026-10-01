@@ -561,3 +561,8 @@ register_protected_symbol_research_context(
 # Owner OB Settings Control Room
 from tower.ob_settings_control_room import register_ob_settings_control_room
 register_ob_settings_control_room(app)
+
+
+# OB Hybrid Readiness Gate: qualification evidence only; no live unlock.
+from web.ob_hybrid_readiness_gate import register_hybrid_readiness_gate
+register_hybrid_readiness_gate(app)
