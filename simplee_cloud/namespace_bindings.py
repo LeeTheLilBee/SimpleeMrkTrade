@@ -24,12 +24,21 @@ from .contracts import AccessDenied, CloudError, IntegrityError
 _NAMESPACE = re.compile(r"[0-9a-f]{64}\Z")
 _TAG = re.compile(r"[0-9a-f]{64}\Z")
 _GENESIS = "0" * 64
+_KEY_META_SCHEMA = "simplee.cloud.namespace-binding-key-commitment.v1"
 
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(
         timespec="microseconds"
     ).replace("+00:00", "Z")
+
+
+def _binding_key_commitment(binding_key: bytes) -> str:
+    if not isinstance(binding_key, bytes) or len(binding_key) != 32:
+        raise CloudError("approved 32-byte namespace binding secret required")
+    return hashlib.sha256(
+        b"simplee-cloud:namespace-binding-key-commitment:v1:" + binding_key
+    ).hexdigest()
 
 
 def _entity_tag(binding_key: bytes, entity_id: str) -> str:
@@ -87,8 +96,10 @@ class SQLiteNamespaceBindingLedger:
         finally:
             os.close(fd)
         self._schema()
-        # Existing corrupted/legacy aliases fail at construction.
+        # Wrong-key restart, legacy populated DB without commitment and
+        # corrupted/aliased source state fail at construction.
         with closing(self._connect()) as conn:
+            self._verify_key_commitment(conn)
             self._verify(conn)
 
     def _connect(self) -> sqlite3.Connection:
@@ -104,6 +115,7 @@ class SQLiteNamespaceBindingLedger:
         conn = self._connect()
         try:
             conn.execute("BEGIN IMMEDIATE")
+            self._verify_key_commitment(conn)
             self._verify(conn)
             yield conn
             conn.commit()
@@ -128,13 +140,55 @@ class SQLiteNamespaceBindingLedger:
                 previous_hash TEXT NOT NULL,
                 event_hash TEXT NOT NULL
             )""")
-            for table in ("bindings", "binding_events"):
+            conn.execute("""CREATE TABLE IF NOT EXISTS ledger_metadata (
+                schema_id TEXT PRIMARY KEY,
+                binding_key_commitment TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )""")
+            metadata = conn.execute(
+                "SELECT schema_id,binding_key_commitment,created_at "
+                "FROM ledger_metadata"
+            ).fetchall()
+            if not metadata:
+                populated = (
+                    conn.execute("SELECT COUNT(*) FROM bindings").fetchone()[0] or
+                    conn.execute("SELECT COUNT(*) FROM binding_events").fetchone()[0]
+                )
+                if populated:
+                    raise IntegrityError(
+                        "legacy populated namespace ledger missing key commitment; "
+                        "reviewed migration required"
+                    )
+                conn.execute(
+                    "INSERT INTO ledger_metadata VALUES(?,?,?)",
+                    (_KEY_META_SCHEMA, _binding_key_commitment(self._binding_key), _now()),
+                )
+            for table in ("bindings", "binding_events", "ledger_metadata"):
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_update
                     BEFORE UPDATE ON {table}
                     BEGIN SELECT RAISE(ABORT, 'append-only namespace binding'); END""")
                 conn.execute(f"""CREATE TRIGGER IF NOT EXISTS {table}_block_delete
                     BEFORE DELETE ON {table}
                     BEGIN SELECT RAISE(ABORT, 'append-only namespace binding'); END""")
+
+    def _verify_key_commitment(self, conn: sqlite3.Connection) -> None:
+        rows = conn.execute(
+            "SELECT schema_id,binding_key_commitment,created_at FROM ledger_metadata"
+        ).fetchall()
+        if len(rows) != 1:
+            raise IntegrityError("namespace binding key commitment row mismatch")
+        row = rows[0]
+        if (
+            row["schema_id"] != _KEY_META_SCHEMA or
+            not isinstance(row["binding_key_commitment"], str) or
+            _TAG.fullmatch(row["binding_key_commitment"]) is None or
+            not isinstance(row["created_at"], str) or
+            not row["created_at"].endswith("Z")
+        ):
+            raise IntegrityError("invalid namespace binding key commitment metadata")
+        expected = _binding_key_commitment(self._binding_key)
+        if not hmac.compare_digest(row["binding_key_commitment"], expected):
+            raise AccessDenied("namespace binding key commitment mismatch")
 
     @staticmethod
     def _verify(conn: sqlite3.Connection) -> tuple[int, str]:
@@ -208,6 +262,7 @@ class SQLiteNamespaceBindingLedger:
                 "INSERT INTO binding_events VALUES(?,?,?,?,?,?)",
                 (next_seq, tag, namespace, created, previous, digest),
             )
+            self._verify_key_commitment(conn)
             self._verify(conn)
             return namespace
 
@@ -217,6 +272,7 @@ class SQLiteNamespaceBindingLedger:
             raise AccessDenied("invalid trusted stable namespace")
         tag = _entity_tag(self._binding_key, entity_id)
         with closing(self._connect()) as conn:
+            self._verify_key_commitment(conn)
             self._verify(conn)
             row = conn.execute(
                 "SELECT namespace_digest FROM bindings WHERE entity_tag=?", (tag,),
@@ -236,6 +292,7 @@ class SQLiteNamespaceBindingLedger:
     def source_namespace_inventory(self) -> dict:
         """Verified enrolled opaque namespaces for internal reconciliation only."""
         with closing(self._connect()) as conn:
+            self._verify_key_commitment(conn)
             self._verify(conn)
             values = frozenset(
                 row["namespace_digest"]
@@ -255,6 +312,7 @@ class SQLiteNamespaceBindingLedger:
         if type(event_count) is not int or event_count < 0:
             raise IntegrityError("invalid namespace checkpoint event count")
         with closing(self._connect()) as conn:
+            self._verify_key_commitment(conn)
             total, _ = self._verify(conn)
             if event_count > total:
                 raise IntegrityError("namespace checkpoint prefix unavailable")
@@ -270,6 +328,7 @@ class SQLiteNamespaceBindingLedger:
 
     def verify_chain(self) -> dict:
         with closing(self._connect()) as conn:
+            self._verify_key_commitment(conn)
             seq, digest = self._verify(conn)
             count = conn.execute("SELECT COUNT(*) FROM bindings").fetchone()[0]
         return {
@@ -278,6 +337,8 @@ class SQLiteNamespaceBindingLedger:
             "event_count": seq,
             "head_sha256": digest,
             "raw_entity_ids_persisted": False,
+            "binding_key_matches_registered_commitment": True,
+            "binding_key_commitment_external_anchor_certified": False,
             "external_registry_certified": False,
             "binding_key_custody_certified": False,
             "production_authorized": False,

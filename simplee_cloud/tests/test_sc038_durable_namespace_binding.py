@@ -107,15 +107,16 @@ def test_enrollment_is_idempotent_but_drift_and_collision_fail_closed(tmp_path):
         bindings.enroll_source_binding(entity_id="different-entity", namespace=namespace)
 
 
-def test_wrong_binding_key_after_restart_cannot_claim_existing_namespace(tmp_path):
+def test_wrong_binding_key_after_restart_fails_at_ledger_open(tmp_path):
     original = ledger(tmp_path, KEY)
     namespace = "a" * 64
     original.enroll_source_binding(entity_id="trust", namespace=namespace)
-    wrong = ledger(tmp_path, b"x" * 32)
-    with pytest.raises(AccessDenied, match="key/entity mismatch"):
-        wrong.require_binding(entity_id="trust", namespace=namespace)
-    assert wrong.verify_chain()["valid"] is True
-    assert wrong.verify_chain()["binding_key_custody_certified"] is False
+    report = original.verify_chain()
+    assert report["binding_key_matches_registered_commitment"] is True
+    assert report["binding_key_commitment_external_anchor_certified"] is False
+    assert report["binding_key_custody_certified"] is False
+    with pytest.raises(AccessDenied, match="binding key commitment mismatch"):
+        ledger(tmp_path, b"x" * 32)
 
 
 @pytest.mark.parametrize("table,column,value", [
