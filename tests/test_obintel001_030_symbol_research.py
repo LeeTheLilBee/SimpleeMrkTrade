@@ -344,9 +344,9 @@ def test_four_protected_room_templates_only_offer_server_bound_context():
     for name,room in expected.items():
         template=(root/name).read_text()
         app.jinja_env.parse(template)
-        assert "ob_research_context_partial.html" in template
-        assert "ob_research_context.get('room') == '"+room+"'" in template
-        assert "ob_research_context.css" in template
+        # Shared research slab was retired; rooms now render native research UI.
+        assert "ob_research_context_partial.html" not in template
+        assert "ob_research_context.css" not in template
         assert "fetch(" not in (root/"ob_research_context_partial.html").read_text()
     with app.test_request_context():
         blank=render_template("ob_research_context_partial.html")
