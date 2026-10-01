@@ -444,6 +444,57 @@ def test_public_personal_quote_can_feed_owner_soulaana_without_order_authority(r
     assert packet["may_authorize_capital"] is False
 
 
+def test_soulaana_fuses_all_ai_approved_sources_without_selecting_one(rights, monkeypatch):
+    for provider in ("FINNHUB", "ALPHA_VANTAGE", "FINAZON", "ALPACA", "BEA"):
+        monkeypatch.setenv(f"OB_PROVIDER_{provider}_AI_USE_REVIEWED", "1")
+
+    def public_reader(sid, symbol, kind):
+        return {
+            "provider": "public",
+            "state": "SOURCE_BOUND",
+            "kind": "PUBLIC_PERSONAL_REALTIME_QUOTE",
+            "symbol": symbol,
+            "bid": 100.1,
+            "ask": 100.3,
+            "last": 100.2,
+            "observed_at": "2026-10-01T14:00:00Z",
+            "source_reference": "https://public.com/api/docs/resources/market-data/get-quotes",
+            "historical_only": False,
+            "live_quote": False,
+            "real_time_market_context": True,
+            "consolidated_quote": False,
+            "personal_owner_only": True,
+            "commercial_use_allowed": False,
+            "beta_user_use_allowed": False,
+            "broker_execution_authorized": False,
+            "owner_display_reviewed": True,
+            "soulaana_ai_use_reviewed": True,
+        }
+
+    packet = provider_research_projection(
+        sid="tower_session_" + "x"*20,
+        symbol="AAPL",
+        secret_reader=secret_reader,
+        public_reader=public_reader,
+        opener=Recorder(),
+        cache=ProviderResearchCache(),
+    )
+    fusion = packet["soulaana_research"]["fusion"]
+    assert fusion["schema"] == "OB_SOULAANA_MULTI_SOURCE_FUSION_V1"
+    assert set(fusion["consumed_providers"]) == {
+        "finnhub", "alpha_vantage", "finazon", "alpaca", "bea", "public"
+    }
+    assert set(fusion["eligible_source_bound_providers"]) == set(fusion["consumed_providers"])
+    assert fusion["all_eligible_source_bound_consumed"] is True
+    assert set(fusion["source_families"]["current_market"]) == {"finazon", "alpaca", "public"}
+    assert fusion["current_market_comparison"]["source_count"] == 3
+    assert fusion["current_market_comparison"]["winner_selected"] is False
+    assert fusion["single_provider_selected_as_truth"] is False
+    assert fusion["cross_source_causality_claimed"] is False
+    assert packet["may_authorize_order"] is False
+    assert packet["may_authorize_capital"] is False
+
+
 def test_public_options_setting_controls_fetch_and_soulaana_translation(rights):
     calls = []
 
