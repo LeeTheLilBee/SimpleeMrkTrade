@@ -52,12 +52,17 @@ def create_wsgi_application():
         raise GroundsProductionUnavailable("high-entropy CSRF configuration required")
     try:
         authority=import_module("tower.grounds_runtime_receiver")
+    except ImportError as exc:
+        raise GroundsProductionUnavailable(
+            "required Tower Grounds adapter modules are absent from this deployed revision"
+        ) from exc
+    try:
         factory=getattr(authority,"create_certified_grounds_receiver")
         directory_factory=getattr(authority,"create_certified_grounds_staff_directory")
         resolver_factory=getattr(authority,"create_certified_grounds_staff_resolver")
-    except (ImportError,AttributeError) as exc:
+    except AttributeError as exc:
         raise GroundsProductionUnavailable(
-            "required Tower Grounds adapter modules are absent from this deployed revision"
+            "Tower Grounds adapter contract is incomplete; staff authority unavailable"
         ) from exc
     if not all(isinstance(item,Callable) for item in (
         factory,directory_factory,resolver_factory,
