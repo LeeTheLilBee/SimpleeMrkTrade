@@ -124,7 +124,15 @@ class CiphertextStorageService:
         # inject a REAL verifier checking authenticated service transport,
         # Tower-issued scope/decision, expiry, revocation and replay state.
         self._authority.authorize(context, operation)
-        return self._namespace_for(context.entity_id)
+        namespace = self._namespace_for(context.entity_id)
+        if self._namespace_resolver is not None:
+            # SC041: durable journal marker says this operation actually passed
+            # exact pre-enrolled namespace binding. It contains no raw entity.
+            self._audit(
+                action="namespace_binding_verified",
+                context=context, namespace=namespace,
+            )
+        return namespace
 
     def _audit(self, *, action: str, context: StorageContext, namespace: str) -> None:
         # No plaintext, object body, raw entity name or reusable bearer tokens.
