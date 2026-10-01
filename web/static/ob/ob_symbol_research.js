@@ -438,15 +438,46 @@
     const finnhub = sourceRow(rows, "finnhub");
     const alpha = sourceRow(rows, "alpha_vantage");
     const finazon = sourceRow(rows, "finazon");
+    const profile = alpha && alpha.state === "SOURCE_BOUND" && alpha.company_profile &&
+      typeof alpha.company_profile === "object" ? alpha.company_profile : null;
 
-    if (finnhub && finnhub.state === "SOURCE_BOUND") {
+    if (profile) {
+      if (profile.name) set("symbolCompany", profile.name);
+      const sectorLabel = [profile.sector, profile.industry].filter(Boolean).join(" · ");
+      if (sectorLabel) set("symbolSector", sectorLabel);
+      const heroState = [profile.exchange, profile.country, profile.currency].filter(Boolean).join(" · ");
+      if (heroState) set("symbolMarketState", heroState);
+
+      const cardNode = byId("symbolCompanyProfileCard");
+      if (cardNode) cardNode.hidden = false;
+      set("symbolCompanyProfileName", profile.name || ticker);
+      set("symbolCompanyDescription", profile.description || "No reviewed business description was returned.");
+      set("symbolCompanyProfileTrust", "Alpha Overview · owner-only research");
+
+      const profileFacts = byId("symbolCompanyProfileFacts");
+      if (profileFacts) {
+        const profileItems = [];
+        if (profile.asset_type) profileItems.push(fact("Asset type", profile.asset_type));
+        if (profile.sector) profileItems.push(fact("Sector", profile.sector));
+        if (profile.industry) profileItems.push(fact("Industry", profile.industry));
+        if (profile.exchange) profileItems.push(fact("Exchange", profile.exchange));
+        if (profile.country) profileItems.push(fact("Country", profile.country));
+        if (profile.address) profileItems.push(fact("Address", profile.address));
+        if (profile.fiscal_year_end) profileItems.push(fact("Fiscal year end", profile.fiscal_year_end));
+        if (profile.latest_quarter) profileItems.push(fact("Latest reported quarter", profile.latest_quarter));
+        if (profile.market_cap != null) profileItems.push(fact("Market cap", money(profile.market_cap)));
+        if (profile.shares_outstanding != null) profileItems.push(fact("Shares outstanding", fmt(profile.shares_outstanding, 0)));
+        if (profile.revenue_ttm != null) profileItems.push(fact("Revenue TTM", money(profile.revenue_ttm)));
+        if (profile.eps != null) profileItems.push(fact("EPS", fmt(profile.eps, 2)));
+        if (profile.pe_ratio != null) profileItems.push(fact("P/E", fmt(profile.pe_ratio, 2)));
+        if (profile.profit_margin != null) profileItems.push(fact("Profit margin", pct(Number(profile.profit_margin) * 100)));
+        if (profile.beta != null) profileItems.push(fact("Beta", fmt(profile.beta, 2)));
+        if (profileItems.length) profileFacts.replaceChildren(...profileItems.slice(0, 14));
+      }
+    } else if (finnhub && finnhub.state === "SOURCE_BOUND") {
       if (finnhub.security_name) set("symbolCompany", finnhub.security_name);
       if (finnhub.industry) set("symbolSector", finnhub.industry);
-      const heroState = [
-        finnhub.exchange,
-        finnhub.country,
-        finnhub.currency,
-      ].filter(Boolean).join(" · ");
+      const heroState = [finnhub.exchange, finnhub.country, finnhub.currency].filter(Boolean).join(" · ");
       if (heroState) set("symbolMarketState", heroState);
     }
 
@@ -480,21 +511,24 @@
     const facts = byId("symbolStarFacts");
     if (facts) {
       const items = [];
+      if (profile) {
+        if (profile.exchange) items.push(fact("Exchange", profile.exchange));
+        if (profile.industry) items.push(fact("Industry", profile.industry));
+        if (profile.country) items.push(fact("Country", profile.country));
+        if (profile.currency) items.push(fact("Currency", profile.currency));
+        if (profile.week_52_low != null && profile.week_52_high != null) {
+          items.push(fact("52-week range", money(profile.week_52_low) + " – " + money(profile.week_52_high)));
+        }
+      }
       if (finnhub && finnhub.state === "SOURCE_BOUND") {
-        if (finnhub.exchange) items.push(fact("Exchange", finnhub.exchange));
-        if (finnhub.industry) items.push(fact("Industry", finnhub.industry));
+        if (!profile && finnhub.exchange) items.push(fact("Exchange", finnhub.exchange));
+        if (!profile && finnhub.industry) items.push(fact("Industry", finnhub.industry));
         if (finnhub.ipo_date) items.push(fact("IPO", finnhub.ipo_date));
-        if (finnhub.country) items.push(fact("Country", finnhub.country));
-        if (finnhub.currency) items.push(fact("Currency", finnhub.currency));
-        if (finnhub.market_cap_millions != null) {
-          items.push(fact("Market cap", "$" + fmt(finnhub.market_cap_millions, 0) + "M"));
-        }
-        if (finnhub.shares_outstanding_millions != null) {
-          items.push(fact("Shares outstanding", fmt(finnhub.shares_outstanding_millions, 1) + "M"));
-        }
+        if (!profile && finnhub.country) items.push(fact("Country", finnhub.country));
+        if (!profile && finnhub.currency) items.push(fact("Currency", finnhub.currency));
         if (finnhub.website) items.push(fact("Website", finnhub.website));
       }
-      if (finazon && finazon.state === "SOURCE_BOUND") {
+      if (!profile && finazon && finazon.state === "SOURCE_BOUND") {
         if (finazon.low_52w != null && finazon.high_52w != null) {
           items.push(fact("52-week range", money(finazon.low_52w) + " – " + money(finazon.high_52w)));
         }
@@ -557,15 +591,24 @@
       set("symbolResearchMarket", "Neither Alpaca nor Finazon returned source-bound current context for this symbol.");
     }
 
-    if (finnhub && finnhub.state === "SOURCE_BOUND") {
-      
+    const alphaProfile = alpha && alpha.state === "SOURCE_BOUND" && alpha.company_profile &&
+      typeof alpha.company_profile === "object" ? alpha.company_profile : null;
+    if (alphaProfile) {
+      const bits = [
+        alphaProfile.name,
+        alphaProfile.sector,
+        alphaProfile.industry,
+        alphaProfile.exchange,
+        alphaProfile.country
+      ].filter(Boolean);
+      const summary = bits.join(" · ");
+      const description = alphaProfile.description ? " " + alphaProfile.description.slice(0, 700) : "";
+      set("symbolResearchCompany", (summary || "Alpha Company Overview returned.") + description);
+    } else if (finnhub && finnhub.state === "SOURCE_BOUND") {
       const bits = [finnhub.industry, finnhub.exchange, finnhub.ipo_date && ("IPO " + finnhub.ipo_date)].filter(Boolean);
       set("symbolResearchCompany", bits.join(" · ") || "Company profile returned without extra classification.");
-      if (finnhub.security_name) set("symbolCompany", finnhub.security_name);
-      if (finnhub.industry) set("symbolSector", finnhub.industry);
     } else {
-      
-      set("symbolResearchCompany", "Finnhub did not return a source-bound profile for this symbol.");
+      set("symbolResearchCompany", "No source-bound company profile returned for this symbol.");
     }
 
     if (alpha && alpha.state === "SOURCE_BOUND" && Array.isArray(alpha.bars) && alpha.bars.length) {
@@ -714,13 +757,15 @@
     let provider = providerPacket;
     if (providerPacket && Array.isArray(providerPacket.provider_research)) {
       provider = Object.assign({}, providerPacket, {
-        provider_research: providerPacket.provider_research.filter(row => {
-          if (!row) return false;
-          if (["alpaca","finazon"].includes(row.provider) && s.use_current_market_context === false) return false;
-          if (row.provider === "alpha_vantage" && s.use_completed_session_history === false) return false;
-          if (row.provider === "bea" && s.use_macro_context === false) return false;
-          return true;
-        })
+        provider_research: providerPacket.provider_research.map(row => {
+          if (!row) return null;
+          if (["alpaca","finazon","public"].includes(row.provider) && s.use_current_market_context === false) return null;
+          if (row.provider === "alpha_vantage" && s.use_completed_session_history === false) {
+            return Object.assign({}, row, {bars: []});
+          }
+          if (row.provider === "bea" && s.use_macro_context === false) return null;
+          return row;
+        }).filter(Boolean)
       });
     }
     let keyless = keylessPacket;
@@ -743,6 +788,8 @@
     if (evidence) evidence.hidden = s.show_evidence_drawer === false;
     const accounting = document.querySelector(".ob-symbol-source-accounting-card");
     if (accounting) accounting.hidden = s.show_source_accounting === false;
+    const companyProfile = byId("symbolCompanyProfileCard");
+    if (companyProfile && s.show_company_background === false) companyProfile.hidden = true;
     document.body.classList.toggle("ob-symbol-compact-top", s.compact_symbol_top === true);
   }
 
