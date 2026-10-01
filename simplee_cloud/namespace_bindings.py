@@ -193,12 +193,17 @@ class SQLiteNamespaceBindingLedger:
             if by_namespace is not None:
                 raise AccessDenied("stable namespace already belongs to another entity")
             created = _now()
+            last = conn.execute(
+                "SELECT seq,event_hash FROM binding_events ORDER BY seq DESC LIMIT 1"
+            ).fetchone()
+            next_seq = (last["seq"] + 1) if last is not None else 1
+            previous = last["event_hash"] if last is not None else _GENESIS
+            digest = _event_hash(next_seq, tag, namespace, created, previous)
+            # Row and its audit commitment become visible in the SAME
+            # transaction, so no intermediate uncommitted orphan is trusted.
             conn.execute(
                 "INSERT INTO bindings VALUES(?,?,?)", (tag, namespace, created),
             )
-            seq, previous = self._verify(conn)
-            next_seq = seq + 1
-            digest = _event_hash(next_seq, tag, namespace, created, previous)
             conn.execute(
                 "INSERT INTO binding_events VALUES(?,?,?,?,?,?)",
                 (next_seq, tag, namespace, created, previous, digest),
