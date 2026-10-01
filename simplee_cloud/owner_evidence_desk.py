@@ -75,6 +75,9 @@ def owner_local_evidence_desk(
         "real_tower_issuer_verified": False,
         "real_vault_registry_verified": False,
         "owner_release_recorded": False,
+        "retention_deletion_protocol_connected": False,
+        "cloud_delete_capability_exposed": False,
+        "provider_delete_authorized": False,
         "cross_ledger_point_in_time_certified": False,
         "local_storage": {
             "attention": local["attention"],
