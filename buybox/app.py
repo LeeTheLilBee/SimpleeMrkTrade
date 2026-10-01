@@ -577,7 +577,11 @@ def create_app(config=None):
         with db() as conn:
             opportunities=list_opportunities(conn)
             snapshot=build_focus(opportunities,lambda oid:activity(conn,oid))
-        return render_template("focus.html",snapshot=snapshot)
+            triage=triage_map(conn,[op["id"] for op in opportunities])
+        focus_deals=[{"id":op["id"],"name":op["name"],"vertical":op["vertical"],
+                      "location":op.get("location",{}),"triage":triage[op["id"]]}
+                     for op in opportunities if triage.get(op["id"],{}).get("state")=="FOCUS"]
+        return render_template("focus.html",snapshot=snapshot,focus_deals=focus_deals)
 
     @app.get("/saved-searches")
     @login_required
