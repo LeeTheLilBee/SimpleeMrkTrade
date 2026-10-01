@@ -1,0 +1,34 @@
+name: Grounds source-only contract
+on:
+  pull_request:
+    paths:
+      - 'grounds/**'
+      - 'docs/THE_GROUNDS_*.md'
+      - '.github/workflows/grounds-source-contract.yml'
+  push:
+    branches:
+      - 'grounds-resident-operations-grd001-005'
+    paths:
+      - 'grounds/**'
+      - 'docs/THE_GROUNDS_*.md'
+      - '.github/workflows/grounds-source-contract.yml'
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Compile source-only Grounds
+        run: python -m compileall -q grounds
+      - name: Run full Grounds domain and boundary tests
+        run: python -m unittest discover -s grounds -p 'test_*.py' -v
+      - name: Execute isolated fictional Grounds walkthrough
+        run: python -m grounds.dev_demo --fictional-only > /dev/null

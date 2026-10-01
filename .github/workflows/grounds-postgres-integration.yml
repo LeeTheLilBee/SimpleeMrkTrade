@@ -1,0 +1,47 @@
+# CI ONLY: disposable PostgreSQL container. No owner/prod credentials or data.
+# This never provisions a Render database or launches a Grounds user service.
+name: Grounds real PostgreSQL integration
+on:
+  pull_request:
+    paths:
+      - 'grounds/**'
+      - 'docs/THE_GROUNDS_*.md'
+      - '.github/workflows/grounds-postgres-integration.yml'
+  push:
+    branches:
+      - 'grounds-resident-operations-grd001-005'
+    paths:
+      - 'grounds/**'
+      - '.github/workflows/grounds-postgres-integration.yml'
+permissions:
+  contents: read
+jobs:
+  isolated-postgresql:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: grounds_ci
+          POSTGRES_USER: grounds_ci
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U grounds_ci -d grounds_ci"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 12
+    env:
+      GROUNDS_POSTGRES_TEST_ONLY: 'true'
+      GROUNDS_TEST_POSTGRES_URL: 'postgresql://grounds_ci@127.0.0.1:5432/grounds_ci'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install isolated PostgreSQL test driver
+        run: python -m pip install 'psycopg[binary]>=3.2,<4'
+      - name: Test real PostgreSQL schema and transaction-backed Grounds domain
+        run: python -m unittest grounds.test_grounds_postgres -v

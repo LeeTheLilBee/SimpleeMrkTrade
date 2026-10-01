@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090d19">
+  <meta name="grounds-csrf" content="__GROUNDS_CSRF__">
+  <title>The Grounds · Simplee World</title>
+  <link rel="stylesheet" href="/grounds/app.css">
+  <script defer src="/grounds/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="shell">
+    <header class="topbar">
+      <div class="wordmark" aria-label="The Grounds, Simplee World">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <div><span class="micro">SIMPLEE WORLD / PROPERTY LIFE</span><strong>THE GROUNDS</strong></div>
+      </div>
+      <div class="session" aria-live="polite"><button id="text-size-toggle" type="button" class="outline" aria-pressed="false" aria-label="Use larger text">Larger text</button><span class="indicator"></span><span id="session-label">Checking access…</span></div>
+    </header>
+    <main id="main">
+      <section class="welcome" aria-labelledby="page-title">
+        <p class="micro gold">A PLACE TO BELONG / A PLACE TO OPERATE</p>
+        <div class="welcome-line"><div><h1 id="page-title">Your property workspace</h1>
+          <p id="page-description">Your authorized lease and property context, in one place.</p>
+        </div><span id="role-badge" class="pill">Access check</span></div>
+      </section>
+      <div id="alert" role="status" aria-live="polite" class="alert hidden"></div>
+      <section class="context glass" aria-label="Current property and unit">
+        <div><label for="property-choice">PROPERTY</label><select id="property-choice" aria-label="Authorized property" disabled><option>Checking…</option></select></div>
+        <div id="unit-container"><label for="unit-choice">YOUR UNIT</label><select id="unit-choice" aria-label="Authorized unit" disabled><option>Checking…</option></select></div>
+        <button id="refresh" type="button" class="secondary">Refresh status</button>
+      </section>
+      <div id="content" class="content hidden">
+        <section id="summary" aria-label="Property summary" class="stat-grid"></section>
+        <div class="columns">
+          <div class="main-column">
+            <section id="my-home-panel" class="glass panel hidden" aria-labelledby="my-home-heading">
+              <div class="section-line"><h2 id="my-home-heading">My Home</h2><span id="my-home-count" class="pill muted">Checking</span></div>
+              <div id="my-home-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">This is a private view of your currently authorized lease, not a statement of payment, legal entry or delivered notice.</p>
+            </section>
+            <section id="move-panel" class="glass panel hidden" aria-labelledby="move-heading">
+              <div class="section-line"><h2 id="move-heading">Move-In &amp; Move-Out Concierge</h2><span id="move-count" class="pill muted">Checking</span></div>
+              <div id="move-list" class="stack" aria-live="polite"></div>
+              <p class="footnote">Your checklist marks are personal planning notes only. They do not end your lease, confirm keys, return a deposit, authorize entry or certify a signed condition report.</p>
+            </section>
+            <section id="privacy-panel" class="glass panel hidden" aria-labelledby="privacy-heading">
+              <div class="section-line"><h2 id="privacy-heading">Your record-access history</h2><span id="privacy-count" class="pill muted">On demand</span></div>
+              <button id="privacy-open" type="button" class="outline">View my recent Grounds record reads</button>
+              <div id="privacy-list" class="stack" aria-live="polite"></div>
+              <p class="footnote">A minimal, personal history of selected successful Grounds resident reads. No IP address, Tower session token, document content or payment details are displayed. This is not a full staff/provider security audit.</p>
+            </section>
+            <section id="rent-panel" class="glass panel hidden" aria-labelledby="rent-heading">
+              <div class="section-line"><h2 id="rent-heading">Rent &amp; your lease</h2><span class="pill muted">Teller source</span></div>
+              <p id="rent-message">Teller has not supplied a current verified invoice. An unavailable amount is not a zero balance or proof that a payment was made.</p>
+              <div class="lease-fields" id="lease-details"></div>
+              <p class="footnote">A checkout button will appear only after Tower and Teller certify the invoice and payment handoff.</p>
+            </section>
+            <section id="request-panel" class="glass panel hidden" aria-labelledby="request-heading">
+              <div class="section-line"><h2 id="request-heading">Report a maintenance issue</h2><span class="pill muted">Private to your request</span></div>
+              <form id="request-form">
+                <label for="category">What needs attention?</label>
+                <select name="category" id="category" required>
+                  <option value="plumbing">Plumbing</option><option value="electrical">Electrical</option>
+                  <option value="heating_cooling">Heating / Cooling</option><option value="appliance">Appliance</option>
+                  <option value="structure">Building / Structure</option><option value="safety">Safety</option>
+                  <option value="other">Something else</option>
+                </select>
+                <label for="description">Tell the team what is happening</label>
+                <textarea name="description" id="description" maxlength="2000" rows="4" required placeholder="Describe the issue and where you noticed it. Do not include sensitive personal information."></textarea>
+                <label class="check-line"><input id="urgent" type="checkbox"> <span>This needs urgent human review</span></label>
+                <label for="entry">How should staff approach entry?</label>
+                <select id="entry" required><option value="contact_first">Contact me first</option><option value="no">Do not enter</option><option value="yes">I can discuss access with staff</option></select>
+                <p class="footnote">An urgent report enters a human triage queue; it does not contact emergency services. Your preference is not a legal entry authorization.</p>
+                <button type="submit" class="primary">Submit maintenance request</button>
+              </form>
+            </section>
+            <section id="daily-panel" class="glass panel hidden" aria-labelledby="daily-heading">
+              <div class="section-line"><h2 id="daily-heading">The Daily Grounds</h2><span id="daily-count" class="pill muted">Checking</span></div>
+              <div id="daily-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">Operational source view only. Pending internal notification intents are not provider delivery or emergency response.</p>
+            </section>
+            <section id="move-desk-panel" class="glass panel hidden" aria-labelledby="move-desk-heading">
+              <div class="section-line"><h2 id="move-desk-heading">Move coordination</h2><span id="move-desk-count" class="pill muted">Checking</span></div>
+              <div id="move-desk-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">Recorded operational planning only; no resident identity, renewal outcome, actual key custody or deposit decision.</p>
+            </section>
+            <section id="safety-panel" class="glass panel hidden" aria-labelledby="safety-heading">
+              <div class="section-line"><h2 id="safety-heading">Human safety desk</h2><span id="safety-count" class="pill priority">Checking</span></div>
+              <p class="footnote">This is an internal triage queue, not emergency-service dispatch. Contact emergency services directly when an immediate life-safety threat exists.</p>
+              <div id="safety-list" class="stack" aria-live="polite"></div>
+              <p id="safety-delivery" class="footnote">Provider delivery and after-hours escalation have not been certified.</p>
+            </section>
+            <section id="delivery-panel" class="glass panel hidden" aria-labelledby="delivery-heading">
+              <div class="section-line"><h2 id="delivery-heading">Communication &amp; delivery status</h2><span id="delivery-count" class="pill muted">Checking</span></div>
+              <div id="delivery-list" class="stack" aria-live="polite"></div>
+              <p id="delivery-status" class="footnote">A Grounds event is only a local intent; provider receipts are historical evidence, not current provider availability or legal notice.</p>
+            </section>
+            <section id="leasing-panel" class="glass panel hidden" aria-labelledby="leasing-heading">
+              <div class="section-line"><h2 id="leasing-heading">Leasing desk</h2><span id="leasing-count" class="pill muted">Checking</span></div>
+              <p class="footnote">Property inventory and opaque prospect/tour stages only. No applicant contacts, screening decisions, advertised rent or delivered tour notification are displayed here.</p>
+              <div id="leasing-list" class="stack" aria-live="polite"></div>
+              <p id="leasing-status" class="footnote">Actual private contact records require Tower-mediated Vault access.</p>
+            </section>
+            <section id="physical-panel" class="glass panel hidden" aria-labelledby="physical-heading">
+              <div class="section-line"><h2 id="physical-heading">Physical operations</h2><span id="physical-count" class="pill muted">Checking</span></div>
+              <p class="footnote">Current asset and preventive-work records, open inspections and authorized turnovers. A recorded state is not proof of dispatch, legal entry, external inspection sign-off or sealed evidence.</p>
+              <div id="physical-list" class="stack" aria-live="polite"></div>
+              <p id="physical-status" class="footnote">External evidence, dispatch and capital authority are not connected.</p>
+            </section>
+            <section id="property-health-panel" class="glass panel hidden" aria-labelledby="property-health-heading">
+              <div class="section-line"><h2 id="property-health-heading">Property Health</h2><span id="property-health-count" class="pill muted">Checking</span></div>
+              <div id="property-health-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">Physical source counts and a bounded response-time sample, not a certified service-level score. All financial truth remains with Teller.</p>
+            </section>
+            <section id="owner-portfolio-panel" class="glass panel hidden" aria-labelledby="owner-portfolio-heading">
+              <div class="section-line"><h2 id="owner-portfolio-heading">Your property portfolio</h2><span id="owner-portfolio-count" class="pill muted">Checking</span></div>
+              <div id="owner-portfolio-list" class="experience-grid" aria-live="polite"></div>
+              <p class="footnote">Only your currently Tower-granted property sources. No resident identity or OB/Teller balance is included.</p>
+            </section>
+            <section class="glass panel" aria-labelledby="work-heading">
+              <div class="section-line"><h2 id="work-heading">Maintenance</h2><span id="work-count" class="pill muted">—</span></div>
+              <div id="work-list" class="stack"><p class="footnote">Loading authorized work…</p></div>
+            </section>
+            <section id="notices-panel" class="glass panel hidden" aria-labelledby="notices-heading">
+              <div class="section-line"><h2 id="notices-heading">Notices</h2><span class="pill muted">In-app visibility</span></div>
+              <div id="notice-list" class="stack"></div>
+              <p class="footnote">Marking a notice read records only an action inside Grounds; it is not proof of delivered or legally served notice.</p>
+            </section>
+          </div>
+          <aside class="side-column" aria-label="Assistant and service status">
+            <section class="glass panel soulaana" aria-labelledby="soulaana-heading">
+              <div class="section-line"><h2 id="soulaana-heading"><span aria-hidden="true">✧</span> Soulaana</h2><span class="pill muted">Source-bound</span></div>
+              <p id="soulaana-message">Once your verified context loads, I can explain what Grounds actually knows.</p>
+              <p id="soulaana-next" class="footnote"></p>
+            </section>
+            <section class="glass panel" aria-labelledby="status-heading">
+              <h2 id="status-heading">Connected services</h2>
+              <div class="service"><span>Property records</span><span id="property-state" class="pill muted">Checking</span></div>
+              <div class="service"><span>Rent &amp; payments</span><span id="rent-service-status" class="pill muted">Awaiting Teller</span></div>
+              <div class="service"><span>File uploads</span><span class="pill muted">Awaiting Vault</span></div>
+              <div class="service"><span>Messages and dispatch</span><span class="pill muted">Not connected</span></div>
+              <p class="footnote">Grounds will never represent a draft action as a delivered message, payment or emergency response.</p>
+            </section>
+          </aside>
+        </div>
+      </div>
+      <section id="locked" class="glass panel hidden" aria-labelledby="locked-heading">
+        <h2 id="locked-heading">This workspace is not available yet</h2>
+        <p id="locked-reason">The current role needs a specific Tower-certified assignment. No records have been exposed.</p>
+      </section>
+    </main>
+    <footer><span>THE GROUNDS · SIMPLEE WORLD</span><span>Private property operations · Tower-governed access</span></footer>
+  </div>
+</body>
+</html>

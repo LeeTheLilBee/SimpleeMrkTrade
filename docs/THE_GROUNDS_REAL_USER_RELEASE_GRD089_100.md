@@ -1,0 +1,48 @@
+# The Grounds — real user release workstream / GRD089–100
+
+**Source status, not a launch claim.** Grounds is no longer only a fictional preview: the branch contains a genuinely wired browser, guarded WSGI API, and a separately versioned PostgreSQL schema/adapter. The actual owner/resident/staff production opening remains **NO-GO** until the independent Tower, hosted private database, legal/privacy and provider gates below are verified and accepted. No public endpoint, credentials, real tenant records, paid Render product or actual money movement has been created by this branch. See [Grounds PR #51](https://github.com/LeeTheLilBee/SimpleeMrkTrade/pull/51).
+
+## Delivered source
+
+- `grounds/ui/app.html`, `app.css` and `app.js` constitute a **real-data**, mobile-responsive, keyboard-aware dark-glass workspace. No role switcher or made-up resident content. It renders only data read from the authenticated current Grounds domain services, with text-safe DOM updates rather than inserted untrusted markup. Resident operations include current lease context, private request submission and details, unit/lease-bound notice reads, existing appointment list/request/accept/cancel and revisioned entry preference. Staff operations include authorized work queue/details, human urgent review, status transitions and actual appointment proposal on an authorized request. Leasing, regional and owner views consume their corresponding property-bound read models. Six assignment-specific rooms remain locked until Tower issues exact delegations.
+- `grounds/web.py` exposes a real, bounded WSGI HTTP surface at `/grounds` and `/grounds/api/...`, but has **NO standalone server/credential login** and **NO production composition root**. Every route, including JS/CSS, calls an injected, server-owned Tower authentication adapter for a short-lived normalized `TowerScope`. POST also requires a high-entropy server-secret-backed anti-CSRF token bound to subject, role, Tower session and scope expiry. Routes reject unknown JSON keys, duplicate keys, excessive body sizes, malformed refs/revisions, unauthenticated access and cross-property/old-lease requests. Errors never return private SQL/credentials/stack traces. Responses are `no-store`, no frame, no sniff, no cross-origin read, and use a restrictive CSP.
+- **Safety hold in actual production composition (GRD101–103):** SQLite is accepted only as explicit `local_fixture_only=True`; a real PostgreSQL-backed `GroundsWebApp` requires read-only schema preflight and cannot masquerade as fixture mode. The separate `grounds/production_entry.py::create_wsgi_application()` is the future opt-in factory, but it refuses startup without a privately configured PostgreSQL URL, independent high-entropy CSRF secret and the specific future `tower.grounds_runtime_receiver.create_certified_grounds_receiver()` implementation. That exact Tower runtime module does not currently exist; source-only Tower scope review is deliberately insufficient. There is no public service/app global and no fabricated fallback login. Tests prove missing dependencies fail closed and do not print secrets.
+- `grounds/communications.py::appointments_for_work` returns current scoped appointment state without exposing another resident, a previous lease or legal entry approval.
+- `grounds/storage.py::GroundsStoreBase` gives the services a common transaction boundary instead of hard-coding SQLite in every domain constructor.
+- `grounds/sql/0001_initial_postgres.sql` is a **real PostgreSQL baseline** for a new separately provisioned private database; it preserves one active lease per unit, lease/member/notice composite references, exact work/asset refs, appointments, resource reversals, inspections/turnovers, event intent and audit constraints. It is not auto-run, doesn't drop tables and must NOT be used to import fictional SQLite or migrate a live service.
+- `grounds/postgres.py` provides a psycopg 3 transaction implementation (parameterized trusted SQL, mapping and numeric row access, SERIALIZABLE writes with no unsafe replay on concurrency conflict), converts database integrity failures into existing domain conflicts, refuses implicit `initialize()`, and requires an explicit baseline marker and critical column/index presence to report compatibility. It doesn't provision a DB, supply network credentials or claim encrypted backup/recovery.
+- `grounds/requirements-production.txt` documents the future bounded WSGI/PostgreSQL runtime requirements without deploying them.
+- `grounds/test_grounds_production_entry.py` and the extended `test_grounds_web.py` check fail-closed production factory, missing/weak secrets and PostgreSQL schema preflight; **no self-reported checklist can substitute for authenticated Tower runtime proof**.
+
+## Executable verification
+
+```bash
+python -m compileall -q grounds
+python -m unittest discover -s grounds -p 'test_*.py' -v
+python -m grounds.dev_demo --fictional-only
+```
+
+`test_grounds_web.py` uses only an **in-process fixture** to verify no unauthenticated static/UI access, session-bound CSRF, hostile input rejection, resident work/notice/appointment with domain actions, old-lease denial, role scoping and real source screen assets. `test_grounds_postgres_static.py` checks schema/parameterization and `PgRow` contract without pretending to have a database. `test_grounds_postgres.py` contains real PostgreSQL integration tests; it is explicitly **SKIPPED** unless the test runner supplies `GROUNDS_POSTGRES_TEST_ONLY=true` and a disposable isolated `GROUNDS_TEST_POSTGRES_URL` with psycopg installed. The added `.github/workflows/grounds-postgres-integration.yml` now runs these tests against an actual disposable PostgreSQL 16 CI service (and includes real API-to-database persistence); the general source suite still skips them without a test DB. Passing either workflow does **NOT** certify any hosted tenant PostgreSQL connection or backup/restore. Never point these tests at a private/shared/production database. For current retry-safety, Tower staff assignment and infrastructure-health acceptance, see `docs/THE_GROUNDS_OPERATIONAL_HANDOFF_GRD104_111.md`.
+
+The new static/public-facing UI must never be confused with `grounds/ui/preview.html`: `preview.html` remains fictional and self-contained; `app.html` only appears behind the future Tower-authenticated HTTP composition.
+
+## Production acceptance sequence — real users
+
+| Stage | Verified source / proof required | Current state |
+|---|---|---|
+| Tower identity | Real separate resident/staff/owner identity, exact current source grants, signed audience-bound short-lived/revocable receiver, logout/session invalidation, household/lease and job/inspection proof, owner step-up | Not certified; Tower PRs #52/#55 are source-only requirements/review |
+| Private hosting | Private PostgreSQL provisioned under approved plan, TLS/secrets, explicitly reviewed migration, encrypted backups + actual restore drill, retention/access controls, service health/log redaction and rollback | Code/schema prepared, runtime not provisioned |
+| Initial property | Only owner-approved verified closed property plus authoritative owner/manager onboarding. Real legal lease and household entitlement proof from Tower/Vault; verified building/unit inventory | Fixture domain available, actual onboarding not connected |
+| Teller | Signed exact resident/lease invoice, due status, checkout redirect/return reconciliation, partial/failed/returned payment handling, no payment card/ACH data in Grounds | Read-only display contract only, no checkout |
+| Vault | Private lease, identity, evidence/documents intake with malware scanning, opaque proof, signed provenance, access revocation and retention | Proof-reference contracts only, no live intake |
+| Resident safety | Actual communications provider delivery receipts and on-call urgent escalation, human response procedures, consent vs appointments vs legal entry separation, applicable housing and accessibility/privacy review | Metadata-only intents and human-triage local rules, no real provider |
+| Operational beta | Tested real Tower session through hosted revision, multi-role tenant isolation, cross-property/lease-reuse negatives, owner acceptance, incident contacts and rollback | No real end-to-end hosted acceptance |
+| Public launch | Owner authorizes a separate release after all preceding evidence is current | Blocked |
+
+### What can be accepted without adding paid Render resources today
+
+Independent developers can review/merge bounded source, inspect full HTML/CSS/JS, run the actual in-process API privacy tests, review/version the new private PostgreSQL schema and prepare the Tower issuer/receiver, Teller/Vault and notification protocols. They must not run the local `lambda x:x` fixture verifiers on public routes, copy development records as actual resident information, or treat a preview checkbox as deployment authorization.
+
+**Handoff to Tower:** implement the real receiver compatible with internal `grounds.access.verified_scope`, deriving role/subject/property/unit/assignment from current authoritative identity and active lease/job sources on every request, and give Grounds a server-only authenticated adapter. Current Tower proposed claims reviewer explicitly says `launch_authorized=False`. Do not promote those untrusted claims or open `/tower/launch/grounds` merely because the new web files exist.
+
+**Handoff to infrastructure:** choose a private managed PostgreSQL/backup path with cost and data-processing implications disclosed to the owner; run migration only against a new empty approved DB, certify recovery and check the exact schema. No existing Render service was created or altered in this source pack.

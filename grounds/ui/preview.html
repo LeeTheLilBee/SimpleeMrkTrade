@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Grounds — Local Experience Preview</title>
+<style>
+:root{color-scheme:dark;--ink:#eff4ef;--muted:#a7b8b1;--line:#36504a;--glass:#172a2aeb;--soft:#1e3533;--gold:#dcc68e;--mint:#8cdec5;--red:#f2b3a7;--bg:#071313;font:16px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(circle at 90% 4%,#1a4540 0,transparent 33%),radial-gradient(circle at 0% 85%,#1c3433 0,transparent 34%),var(--bg);min-height:100vh}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--mint);outline-offset:3px}a{color:var(--mint)}
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}.rail{border-right:1px solid var(--line);background:#0b1c1cbf;padding:30px 18px;display:flex;flex-direction:column;gap:24px}.brand{font-family:Georgia,serif;font-size:25px;letter-spacing:.11em;color:var(--gold)}.brand span{display:block;font:10px/1.5 ui-sans-serif,system-ui;letter-spacing:.26em;color:var(--muted);margin-top:6px}.leaf{font-size:23px;color:var(--mint)}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.19em;color:var(--mint);font-weight:700}.rail nav{display:grid;gap:8px}.navitem{padding:11px 13px;border:1px solid transparent;border-radius:13px;text-align:left;color:var(--muted);background:transparent}.navitem.active{background:#24443f;border-color:#547d6d;color:var(--ink);font-weight:700}.foot{margin-top:auto;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:18px}
+main{padding:27px clamp(20px,3vw,54px) 70px;max-width:1500px;width:100%;margin:0 auto}.topline{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.tag{display:inline-flex;gap:8px;align-items:center;border:1px solid #6b856c;border-radius:999px;padding:7px 12px;font-size:11px;letter-spacing:.12em;font-weight:800;color:#dceac3;background:#273a2a}.role{padding:9px 12px;min-width:180px;background:var(--soft);border:1px solid var(--line);border-radius:12px;color:var(--ink)}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;margin:42px 0 30px;border-bottom:1px solid var(--line);padding-bottom:30px}h1{font:clamp(32px,4vw,57px)/1.12 Georgia,serif;letter-spacing:-.018em;margin:10px 0;color:#f3f0df}h2{font:26px/1.2 Georgia,serif;margin:0 0 13px}h3{font-size:15px;margin:0 0 7px}.muted{color:var(--muted)}.hero p{max-width:630px}.glyph{font-size:68px;color:var(--gold);opacity:.65}.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:17px}.card{background:linear-gradient(145deg,#1c3331ee,#112322ee);border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:0 14px 32px #0002}.card.kpi{grid-column:span 4;min-height:138px}.card.half{grid-column:span 6}.card.wide{grid-column:span 12}.card.third{grid-column:span 4}.number{font-size:29px;line-height:1.2;font-weight:700;margin:8px 0;color:#f7f2d8}.quiet{color:var(--muted);font-size:13px}.label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:700}.pill{display:inline-flex;border-radius:99px;background:#29443d;color:#c3f2de;border:1px solid #4f7867;padding:4px 9px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}.pill.waiting{background:#4a3d29;color:#efd49e;border-color:#8a7241}.pill.urgent{background:#51312e;color:#ffcbbf;border-color:#946054}
+.button{display:inline-flex;align-items:center;justify-content:center;border-radius:11px;padding:10px 15px;background:#cdb985;color:#18261d;font-weight:800;border:1px solid #e5d49e;min-height:43px}.button.alt{background:#25413b;color:#d9f7e9;border-color:#598572}.button.ghost{background:transparent;color:var(--muted);border-color:var(--line)}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.divider{border:0;border-top:1px solid var(--line);margin:17px 0}.field{display:grid;gap:7px;margin-top:13px}.field label{font-size:13px;color:#d3e6dc;font-weight:600}.field input,.field select,.field textarea{background:#0d2220;border:1px solid #567469;border-radius:10px;color:var(--ink);padding:10px 12px;min-width:0;width:100%}.field textarea{min-height:96px;resize:vertical}.notice{background:#19332b;border-left:3px solid var(--mint);padding:11px 14px;margin:12px 0;border-radius:0 8px 8px 0}.callout{background:#382e25;border:1px solid #886c46;color:#ead4ae;border-radius:13px;padding:12px 15px;margin:18px 0}.listrow{padding:14px 0;border-bottom:1px solid var(--line)}.listrow:last-child{border:0;padding-bottom:0}.inline{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.history{font-size:12px;color:var(--muted);margin:10px 0 0}.empty{padding:24px;text-align:center;border:1px dashed #567469;border-radius:14px;color:var(--muted)}.screen-note{font-size:12px;color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media(max-width:900px){.shell{display:block}.rail{border-right:0;border-bottom:1px solid var(--line);padding:16px;gap:12px}.rail nav{display:flex;overflow-x:auto}.navitem{white-space:nowrap}.foot{display:none}.hero{margin-top:26px}.card.kpi,.card.third{grid-column:span 6}.card.half{grid-column:span 12}}@media(max-width:620px){.card.kpi,.card.third{grid-column:span 12}.glyph{display:none}main{padding:18px 14px 48px}.card{padding:17px}.role{width:100%}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="rail">
+<div class="brand"><span class="leaf" aria-hidden="true">✥</span> THE GROUNDS <span>SIMPLEE WORLD · PROPERTY LIFE</span></div>
+<div class="eyebrow">Workspaces</div>
+<nav aria-label="Preview workspaces" id="nav">
+<button type="button" class="navitem active" data-role="resident">⌂ &nbsp; Resident Home</button>
+<button type="button" class="navitem" data-role="maintenance_technician">▦ &nbsp; Maintenance</button>
+<button type="button" class="navitem" data-role="property_manager">◈ &nbsp; Management</button>
+<button type="button" class="navitem" data-role="leasing_agent">◇ &nbsp; Leasing Office</button>
+<button type="button" class="navitem" data-role="owner">✧ &nbsp; Owner Overview</button>
+<button type="button" class="navitem" data-role="maintenance_supervisor">▥ &nbsp; Maintenance Desk</button>
+<button type="button" class="navitem" data-role="regional_manager">◉ &nbsp; Regional View</button>
+<button type="button" class="navitem" data-role="inspector">▣ &nbsp; Inspections</button>
+<button type="button" class="navitem" data-role="turnover_crew">▤ &nbsp; Make Ready</button>
+<button type="button" class="navitem" data-role="grounds_janitorial">✿ &nbsp; Grounds Care</button>
+<button type="button" class="navitem" data-role="renovation_coordinator">▧ &nbsp; Renovations</button>
+<button type="button" class="navitem" data-role="compliance">◌ &nbsp; Compliance</button>
+<button type="button" class="navitem" data-role="vendor">◇ &nbsp; Vendor</button>
+</nav>
+<div class="foot">Designed as one Grounds product behind Tower, not separate disconnected apps. This page has no authentication, database, processor or network connection.</div>
+</aside>
+<main>
+<header class="topline">
+<div class="tag">● LOCAL CONCEPT PREVIEW · SAMPLE DATA ONLY</div>
+<label class="inline"> <span class="label">View as</span>
+<select id="role" class="role" aria-label="Select demo role">
+<option value="resident">Resident</option><option value="maintenance_technician">Maintenance technician</option>
+<option value="property_manager">Property manager</option><option value="leasing_agent">Leasing agent</option>
+<option value="owner">Owner</option>
+<option value="maintenance_supervisor">Maintenance supervisor</option>
+<option value="regional_manager">Regional manager</option>
+<option value="inspector">Inspector</option>
+<option value="turnover_crew">Turnover crew</option>
+<option value="grounds_janitorial">Janitorial / grounds</option>
+<option value="renovation_coordinator">Renovation coordinator</option>
+<option value="compliance">Compliance</option>
+<option value="vendor">Assigned vendor</option>
+</select></label>
+</header>
+<div class="callout" role="note"><strong>Development preview.</strong> Do not enter actual tenant information. All work orders below live in this browser tab only and disappear on refresh. Pay Rent, user authentication, notifications, and real dispatch are not connected.</div>
+<section class="hero">
+<div><div class="eyebrow">ONE PLACE. EVERYDAY PROPERTY LIFE.</div><h1 id="heading">Welcome home.</h1><p id="subheading" class="muted">Your home, requests, lease and notices in one simple place.</p></div>
+<div class="glyph" aria-hidden="true">✧</div>
+</section>
+<div id="feedback" aria-live="polite" class="sr-only"></div>
+<div id="content" class="grid"></div>
+<footer class="quiet" style="margin-top:35px">THE GROUNDS / GRD048 · Visual prototype only · Tower controls real entry · Teller owns payment truth · Vault holds sealed evidence.</footer>
+</main>
+</div>
+<script>
+"use strict";
+// Every record below is fictional preview data, never fetched, stored or sent.
+const demo = {role:"resident",noticeRead:false,appointment:null,orders:[{id:"DEMO-001",property:"Demo Garden",unit:"101",createdBy:"resident",
+category:"Plumbing",description:"Sample kitchen faucet request",urgent:false,entry:"Contact first",
+state:"submitted",revision:1,assignee:null,history:["Submitted by resident"]}]};
+const headings = {
+resident:["Welcome home.","Your home, maintenance, lease and notices in one calm place."],
+maintenance_technician:["Today's work.","See only assigned jobs, status, entry permission and the next useful action."],
+property_manager:["Property operations.","Keep the building running with a live-to-you work queue, residents and occupancy."],
+leasing_agent:["Leasing office.","Unit availability, tours, move-ins and renewals in one workspace."],
+owner:["Your property world.","A clear, property-owned overview without another financial ledger."],
+maintenance_supervisor:["Maintenance desk.","Human triage, assignments and service accountability in one property-scoped space."],
+regional_manager:["Regional overview.","Portfolio pulse with access restricted to your assigned properties."],
+inspector:["Assigned inspections.","Proof-backed findings, conditions and review, limited to your assigned inspections."],
+turnover_crew:["Make-ready queue.","Prepare units with linked inspections, repair work and an explicit final review."],
+grounds_janitorial:["Grounds care.","Your assigned common-area work, checklists and follow-up status."],
+renovation_coordinator:["Renovation board.","Phased renovation work, schedules and approvals."],
+compliance:["Compliance desk.","Assigned deadlines, notices and source-backed review records."],
+vendor:["Your assigned job.","Temporary and tightly scoped work, not unrestricted resident or property access."]};
+const esc = v => String(v).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const stateLabel = s => s.replaceAll("_"," ");
+const statePill = s => '<span class="pill '+(s==="waiting"?"waiting":"")+'">'+esc(stateLabel(s))+'</span>';
+const card = (body, className="half") => '<section class="card '+className+'">'+body+'</section>';
+const kpi = (label,value,detail) => card('<div class="label">'+label+'</div><div class="number">'+value+'</div><div class="quiet">'+detail+'</div>',"kpi");
+const button = (label,action,id,style="alt")=>'<button type="button" class="button '+style+'" data-action="'+esc(action)+'" data-id="'+esc(id)+'">'+esc(label)+'</button>';
+function orderActions(o){
+ let actions=[];
+ if(demo.role==="property_manager"){
+  const map={submitted:["Mark received","received"],received:["Start review","under_review"],under_review:["Schedule work","scheduled"],scheduled:["Assign technician","assigned"],waiting:["Reschedule","scheduled"],completed:["Request confirmation","confirmation"],confirmation:["Close request","closed"],reopened:["Return to review","under_review"]};
+  if(map[o.state]) actions.push(button(map[o.state][0],"next:"+map[o.state][1],o.id));
+ }else if(demo.role==="maintenance_technician" && o.assignee==="technician"){
+  if(o.state==="assigned")actions.push(button("Start job","next:in_progress",o.id));
+  if(o.state==="in_progress"){actions.push(button("Pause · waiting","next:waiting",o.id,"ghost"));actions.push(button("Mark completed","next:completed",o.id));}
+  if(o.state==="waiting")actions.push(button("Resume job","next:in_progress",o.id));
+ }else if(demo.role==="resident" && ["confirmation","closed"].includes(o.state)){
+  actions.push(button("Reopen for review","next:reopened",o.id,"ghost"));
+ }
+ return actions.join("");
+}
+function orderCard(o){
+ return '<div class="listrow"><div class="row"><div class="inline"><strong>'+esc(o.id)+'</strong>'+statePill(o.state)+(o.urgent?'<span class="pill urgent">Urgent flag</span>':'')+'</div><span class="quiet">Revision '+o.revision+'</span></div>'+
+ '<h3 style="margin-top:12px">'+esc(o.category)+' · Unit '+esc(o.unit)+'</h3><div class="muted">'+esc(o.description)+'</div>'+
+ '<div class="quiet" style="margin-top:9px">Entry: '+esc(o.entry)+(o.assignee?' · Assigned to demo technician':' · Awaiting assignment')+'</div>'+
+ '<div class="actions">'+orderActions(o)+'</div><div class="history">Latest: '+esc(o.history[o.history.length-1])+'</div></div>';
+}
+function ordersForRole(){
+ if(demo.role==="maintenance_technician")return demo.orders.filter(o=>o.assignee==="technician");
+ return demo.orders;
+}
+function workSection(title){
+ const orders=ordersForRole();
+ return card('<div class="row"><h2>'+title+'</h2><span class="pill">'+orders.length+' demo requests</span></div>'+
+ (orders.length?orders.map(orderCard).join(""):'<div class="empty">No assigned jobs in this demo yet. A manager can assign the sample request.</div>'),"wide");
+}
+function resident(){
+ const form = '<form id="request"><div class="field"><label for="category">What needs attention?</label><select required name="category" id="category"><option>Plumbing</option><option>Electrical</option><option>Heating or cooling</option><option>Appliances</option><option>Doors and locks</option><option>Other</option></select></div>'+
+ '<div class="field"><label for="description">Describe the problem (fictional demo only)</label><textarea id="description" name="description" minlength="8" maxlength="300" required placeholder="Example only: My faucet is leaking."></textarea></div>'+
+ '<div class="field"><label for="entry">Entry preference</label><select name="entry" id="entry"><option>Contact first</option><option>Permission granted</option><option>Do not enter without me</option></select></div>'+
+ '<div class="field"><label class="inline" for="urgent"><input style="width:auto" type="checkbox" id="urgent" name="urgent"> Mark as urgent for human review</label></div>'+
+ '<div class="actions"><button class="button" type="submit">Create demo request</button></div><p class="quiet">Emergency services are not provided through this preview. No photos or personal details are uploaded.</p></form>';
+ return kpi("Your sample unit","101","Demo Garden · Building A")+
+ kpi("Rent due","—","Verified Teller invoice not connected")+
+ kpi("Maintenance",String(demo.orders.length),"In-memory preview requests")+
+ card('<div class="eyebrow">Rent & payments</div><h2>Your rent, in one place.</h2><p class="muted">Grounds displays lease context. Teller owns the invoice, available payment methods, autopay, receipts and reconciliation.</p><div class="notice">Amount due and next due date will appear only from a fresh, verified Teller response.</div><div class="actions"><button class="button" disabled title="Teller integration required">Pay Rent · not connected</button><button class="button ghost" disabled>Autopay · not connected</button></div>')+
+ card('<div class="eyebrow">Lease & notices</div><h2>Your documents and updates.</h2><div class="listrow"><strong>Sample lease</strong><div class="quiet">Unit 101 · A sealed lease reference will be retrieved through Tower and Vault after integration.</div></div><div class="listrow"><strong>Building notice · water maintenance example</strong><div class="quiet">Status: '+(demo.noticeRead?'Read in this browser tab':'Unread in this browser tab')+'. This is not legal service or delivery confirmation.</div><div class="actions">'+(demo.noticeRead?'<span class="pill">Read locally</span>':button('Mark demo notice read','notice:read','notice'))+'</div></div>')+
+ card('<div class="eyebrow">Maintenance Center</div><h2>Tell us what needs fixing.</h2>'+form)+
+ card('<div class="eyebrow">Track & confirm</div><h2>Your requests.</h2>'+demo.orders.map(orderCard).join(''),"half")+
+ card('<div class="eyebrow">Appointments · fictional demo</div><h2>Choose a visit window.</h2><p class="muted">A visit request and acceptance are not entry authorization or legal notice.</p>'+
+ (demo.appointment?'<div class="notice">Status: '+esc(demo.appointment)+'. No real calendar, technician dispatch, notification or entry permission.</div>':'<div class="notice">No in-app window requested.</div>')+
+ '<div class="actions">'+(!demo.appointment?button('Request sample window','appointment:request','appointment'):
+ demo.appointment==='proposed'?button('Accept sample proposal','appointment:accept','appointment'):
+ demo.appointment!=='cancelled'?button('Cancel sample appointment','appointment:cancel','appointment','ghost'):'<span class="pill">Local demo cancelled</span>')+'</div>',"half");
+}
+function technician(){
+ return kpi("Assigned demo jobs",String(ordersForRole().length),"Only work explicitly assigned to this demo role")+
+ kpi("Waiting",String(ordersForRole().filter(x=>x.state==="waiting").length),"Pause reason / follow-up in future releases")+
+ kpi("Evidence","Vault references","No direct file upload in this preview")+
+ workSection("My work orders")+
+ card('<h2>Technician workflow.</h2><p class="muted">Assignment → start → pause/resume → completion. In the operating product, you will see scoped access notes, routes, parts, labor, equipment history and before/after proof.</p>',"wide");
+}
+function manager(){
+ return kpi("Units","1","Fictional property")+
+ kpi("Open requests",String(demo.orders.filter(x=>x.state!=="closed").length),"Sample work queue")+
+ kpi("Urgency flags",String(demo.orders.filter(x=>x.urgent&&x.state!=="closed").length),"Human assessment still required")+
+ workSection("Review & dispatch")+
+ card('<h2>Sample appointment request.</h2><p class="muted">A staff proposal still needs resident acceptance and separate entry/notice checks.</p>'+
+ '<div class="notice">Current demo: '+esc(demo.appointment||"No resident request")+'</div>'+
+ '<div class="actions">'+(demo.appointment==="requested"?button("Propose sample window","appointment:propose","appointment"):'<span class="quiet">No proposal action currently pending.</span>')+'</div>',"wide")+
+ card('<h2>Property desk.</h2><div class="listrow"><strong>Unit readiness</strong><div class="quiet">Occupancy, inspection, turnovers, preventive work and asset history.</div></div><div class="listrow"><strong>Leasing coordination</strong><div class="quiet">Tours, renewals, vacancy preparation and assigned follow-ups.</div></div>',"half")+
+ card('<h2>Money & records.</h2><p class="muted">The Teller owns rent and financial administration. The Vault holds sealed lease, repair and inspection evidence. Grounds handles physical operations and property decisions.</p>',"half");
+}
+function leasing(){
+ return kpi("Sample units","1","One fictional building")+
+ kpi("Availability","0","Demo unit currently occupied")+
+ kpi("Tours","—","Real prospect and calendar records not connected")+
+ card('<h2>Availability & matching.</h2><div class="listrow"><strong>Building A · 101</strong><div class="row"><span class="quiet">Example unit · occupied</span><span class="pill">Occupied</span></div></div><p class="muted">Unit characteristics, accessibility, availability, waitlists, tour coordination and renewals belong in this workspace. No actual applicant data is stored by this preview.</p>',"wide");
+}
+function owner(){
+ return kpi("Properties","1","Demo Garden · example only")+
+ kpi("Occupancy","1 / 1","Example leased unit")+
+ kpi("Work in progress",String(demo.orders.filter(x=>x.state!=="closed").length),"Derived only from in-memory demo requests")+
+ card('<h2>Operating pulse.</h2><p class="muted">Building condition, maintenance backlog, leasing, inspections, vendors, compliance deadlines, utilities, sustainability, tax intelligence and CapEx readiness.</p><div class="notice">Grounds owns physical property truth. Finance and protected capital readiness will come via Teller, never by interpreting OB balances as spendable acquisition capital.</div>',"half")+
+ card('<h2>Expansion & records.</h2><p class="muted">BuyBox hands off a property only after verified closing. Grounds owns the ongoing asset record; Tower mediates Vault proof; Clouds receives permission-safe owner summaries; Soulaana explains changes without overriding rules.</p>',"half")+
+ workSection("Sample property work");
+}
+const roleInfo={
+ maintenance_supervisor:["Human-triaged maintenance","Assignment and escalation","Parts, labor and evidence"],
+ regional_manager:["Assigned-property status","Management follow-up","Portfolio safety and capacity"],
+ inspector:["Assigned inspection cards","Finding severity","Verified resolution evidence"],
+ turnover_crew:["Assigned make-ready units","Turnover-specific inspections","Final review dependencies"],
+ grounds_janitorial:["Common-area task queue","Cleaning and grounds checklists","Completed-work evidence"],
+ renovation_coordinator:["Phased renovation projects","Contractor milestones","CapEx and approval gates"],
+ compliance:["Assigned compliance cases","Deadlines and notices","Proof and audit history"],
+ vendor:["Only assigned jobs","Expiry-bound temporary permissions","Completion and proof updates"]
+};
+function supportRole(){
+ const info=roleInfo[demo.role];
+ return card('<div class="eyebrow">Role-specific room · local design</div><h2>'+esc(headings[demo.role][0])+'</h2><p class="muted">'+esc(headings[demo.role][1])+'</p><div class="notice">A certified Tower assignment is required before real records, actions or another resident’s information may appear.</div>',"wide")+
+ info.map((heading,i)=>kpi(esc(heading),"—",i===0?"Workspace contract ready for integration":"No live source or assignment connected")).join("")+
+ card('<h2>What comes next.</h2><p class="muted">The operating version uses protected Grounds work and proof records, Tower property/job permissions, and Vault evidence. This fictional preview does not grant access or dispatch work.</p>',"wide");
+}
+const pages={resident,maintenance_technician:technician,property_manager:manager,leasing_agent:leasing,owner,
+ maintenance_supervisor:supportRole,regional_manager:supportRole,inspector:supportRole,
+ turnover_crew:supportRole,grounds_janitorial:supportRole,renovation_coordinator:supportRole,
+ compliance:supportRole,vendor:supportRole};
+function soulaanaCard(){
+ const latest=demo.orders[0];
+ const messages={
+ submitted:"The sample request is submitted. Management review is next.",
+ received:"The property desk has received this request. Human triage is next.",
+ under_review:"The property desk is reviewing the scope before scheduling.",
+ scheduled:"The next step is to assign a technician.",
+ assigned:"The demo technician may start this assigned job.",
+ in_progress:"The assigned technician has marked the job in progress.",
+ waiting:"Work is paused pending a follow-up or reschedule.",
+ completed:"The technician marked work complete. Management review is next.",
+ confirmation:"Management can close the request, or the resident can reopen it if unresolved.",
+ closed:"The example record is closed. Its local history remains until refresh.",
+ reopened:"The resident reopened the example. Management should review it again."
+ };
+ const message=roleInfo[demo.role]?
+ "I will explain only your Tower-assigned work, its source and next step. No actual assignment data is connected in this preview.":
+ demo.role==="leasing_agent"?
+ "I can explain unit availability and the next leasing action once real scoped records are connected.":
+ demo.role==="owner"?
+ "I show property operating context. Real collections and protected capital readiness must come from verified Teller records, never guessed from Observatory accounts.":
+ messages[latest.state]+(latest.urgent?" An urgency flag does not confirm emergency dispatch.":"");
+ return '<details class="card wide"><summary style="cursor:pointer;color:var(--gold);font-weight:800">✦ Soulaana · Explain what is happening</summary><p class="muted">'+esc(message)+'</p><div class="quiet">Read-only explanation · fictional local data · never an authorization or payment action</div></details>';
+}
+function render(){
+ const [heading,description]=headings[demo.role];
+ document.getElementById("heading").textContent=heading;
+ document.getElementById("subheading").textContent=description;
+ document.getElementById("role").value=demo.role;
+ for(const btn of document.querySelectorAll("[data-role]")){
+  btn.classList.toggle("active",btn.dataset.role===demo.role);
+  btn.setAttribute("aria-current",btn.dataset.role===demo.role?"page":"false");
+ }
+ document.getElementById("content").innerHTML=pages[demo.role]()+soulaanaCard();
+}
+const permitted={
+resident:{confirmation:["reopened"],closed:["reopened"]},
+maintenance_technician:{assigned:["in_progress"],in_progress:["waiting","completed"],waiting:["in_progress"]},
+property_manager:{submitted:["received"],received:["under_review"],under_review:["scheduled"],scheduled:["assigned"],waiting:["scheduled"],completed:["confirmation"],confirmation:["closed"],reopened:["under_review"]}
+};
+function transition(id,next){
+ const o=demo.orders.find(x=>x.id===id);
+ if(!o || !(permitted[demo.role]?.[o.state]||[]).includes(next)){return;}
+ if(demo.role==="maintenance_technician"&&o.assignee!=="technician")return;
+ if(next==="assigned")o.assignee="technician";
+ o.state=next;o.revision+=1;
+ o.history.push(stateLabel(next)+" · demo "+demo.role.replaceAll("_"," "));
+ document.getElementById("feedback").textContent=o.id+" is now "+stateLabel(next)+" (preview only).";
+ render();
+}
+document.getElementById("role").addEventListener("change",e=>{if(pages[e.target.value]){demo.role=e.target.value;render();}});
+document.getElementById("nav").addEventListener("click",e=>{const btn=e.target.closest("[data-role]");if(btn&&pages[btn.dataset.role]){demo.role=btn.dataset.role;render();}});
+document.getElementById("content").addEventListener("click",e=>{
+ const btn=e.target.closest("[data-action]");if(!btn)return;
+ const action=btn.dataset.action;
+ if(action.startsWith("next:"))transition(btn.dataset.id,action.slice(5));
+ if(action==="notice:read"&&demo.role==="resident"){demo.noticeRead=true;render();}
+ if(action==="appointment:request"&&demo.role==="resident"&&!demo.appointment){demo.appointment="requested";render();}
+ if(action==="appointment:propose"&&demo.role==="property_manager"&&demo.appointment==="requested"){demo.appointment="proposed";render();}
+ if(action==="appointment:accept"&&demo.role==="resident"&&demo.appointment==="proposed"){demo.appointment="accepted";render();}
+ if(action==="appointment:cancel"&&demo.role==="resident"&&demo.appointment&&!["cancelled"].includes(demo.appointment)){demo.appointment="cancelled";render();}
+});
+document.getElementById("content").addEventListener("submit",e=>{
+ if(e.target.id!=="request"||demo.role!=="resident")return;
+ e.preventDefault();const data=new FormData(e.target);
+ const description=String(data.get("description")||"").trim();
+ if(description.length<8||description.length>300)return;
+ const o={id:"DEMO-"+String(demo.orders.length+1).padStart(3,"0"),property:"Demo Garden",unit:"101",
+ createdBy:"resident",category:String(data.get("category")),description,urgent:!!data.get("urgent"),
+ entry:String(data.get("entry")),state:"submitted",revision:1,assignee:null,history:["Submitted by resident (preview only)"]};
+ demo.orders.unshift(o);
+ document.getElementById("feedback").textContent=o.id+" added to this tab only.";
+ render();
+});
+render();
+</script>
+</body>
+</html>
