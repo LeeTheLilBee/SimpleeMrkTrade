@@ -26,6 +26,8 @@ The adapter registers **no** `/grounds` route unless all of these are true:
 
 If any import, provider, release, database or Grounds preflight fails, Tower itself remains available but `/grounds` stays **unregistered**. The launch preflight therefore continues to return `GROUNDS_SAME_ORIGIN_RUNTIME_NOT_MOUNTED`. Private exception text, DSNs and provider diagnostics are not exposed in the mount status.
 
+A route path alone is not accepted as proof of this integration. The launch preflight also requires the exact `tower_grounds_same_origin_mount_v1` extension record emitted by this reviewed adapter. A placeholder, legacy or unrelated `/grounds` Flask route therefore cannot satisfy the product launch gate.
+
 The mounted child gets the original `/grounds...` PATH_INFO unchanged because the Grounds router owns that prefix.
 
 ## Existing Tower gates still apply
