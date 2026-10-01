@@ -99,11 +99,13 @@ def latest_triage(db,opportunity_id):
 
 def triage_map(db,ids):
     ensure_ux_schema(db)
-    result={}
-    for oid in ids:
-        row=latest_triage(db,oid)
-        if row: result[oid]=row
-    return result
+    wanted=set(ids)
+    if not wanted: return {}
+    rows=db.execute("""SELECT t.opportunity_id,t.state,t.note,t.actor_ref,t.created_at
+      FROM buybox_owner_triage t
+      JOIN (SELECT opportunity_id,MAX(id) AS max_id FROM buybox_owner_triage
+            GROUP BY opportunity_id) latest ON latest.max_id=t.id""").fetchall()
+    return {r["opportunity_id"]:dict(r) for r in rows if r["opportunity_id"] in wanted}
 
 def universal_search(db,query,*,limit=40):
     ensure_ux_schema(db)
@@ -180,16 +182,14 @@ def integration_cockpit(opportunities):
       "VAULT_CANONICAL_ARCHIVAL":"Vault canonical archival",
       "OPERATIONS_RECEIVER_ACCEPTANCE":"Operations receiver",
     }
+    reports=[(op,integration_readiness(op)) for op in opportunities]
     rows=[]
     for kind in systems:
-        present=0; required=0
-        for op in opportunities:
-            report=integration_readiness(op)
-            # Operations receiver applies only where integration_readiness requires it.
-            if kind=="OPERATIONS_RECEIVER_ACCEPTANCE" and op.get("vertical") not in ("atm","multifamily"):
-                continue
-            required+=1
-            if kind not in report.get("missing",[]): present+=1
+        applicable=[(op,report) for op,report in reports
+                    if kind!="OPERATIONS_RECEIVER_ACCEPTANCE"
+                    or op.get("vertical") in ("atm","multifamily")]
+        required=len(applicable)
+        present=sum(kind not in report.get("missing",[]) for _,report in applicable)
         rows.append({"kind":kind,"label":labels[kind],"present":present,"required":required,
                      "state":"COMPLETE" if required and present==required else
                              "NOT_APPLICABLE" if required==0 else
