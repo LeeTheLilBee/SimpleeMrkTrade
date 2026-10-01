@@ -14,7 +14,7 @@
   {% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
   <div class="cards">
     <section class="card">
-      <span class="eyebrow">PUBLIC BUSINESS ACCOUNT</span>
+      <span class="eyebrow">PUBLIC PERSONAL ACCOUNT</span>
       <h2>Connection</h2>
       {% if not connect_enabled %}
         <span class="tag hold">Owner connection is switched off in this runtime</span>
@@ -69,7 +69,7 @@
         <p>Connect the account first. No prices or provider stream are inferred from an API key alone.</p>
       {% elif not equity_ready %}
         <span class="tag hold">Market-data rights review required</span>
-        <p>Authentication works independently of quote use. Exact business-account internal research, owner-display and stock/options data permissions must be enabled in the backend before quote requests can be made. No trading access is granted.</p>
+        <p>Authentication works independently of quote use. Your personal API can be used only in the owner-only personal research lane. The market-data scope, owner display, and instrument permissions must still be enabled before quotes can feed OB. This does not grant Hybrid or automatic trading.</p>
       {% else %}
         <form method="post" action="/ob/data-desk/public" autocomplete="off">
           <input type="hidden" name="csrf" value="{{ csrf }}">
@@ -101,7 +101,7 @@
   </div>
   <section class="safety">
     <strong>Soulaana · What this means</strong>
-    <p>Successful login proves authentication only. Market-data entitlement, exchange coverage, timestamps and usage rights must be checked independently. These values do not enter the trading gateway or unlock Manual Live, capital transfers or automatic execution.</p>
+    <p>Successful login proves authentication only. When the personal-use and market-data checks pass, Public quote context can feed the owner-only Symbol read and Soulaana. It remains blocked from beta/commercial redistribution and cannot unlock Hybrid, move money, or submit an order.</p>
   </section>
 </main>
 </body>
