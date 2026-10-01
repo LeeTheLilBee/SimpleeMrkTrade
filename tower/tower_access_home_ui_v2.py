@@ -477,25 +477,34 @@ def render_access_home_v2(
     owner_style = """
     <style>
     :root {
-        --tower-ink: #050708;
-        --tower-glass: rgba(13,18,18,.82);
-        --tower-glass-2: rgba(18,31,29,.74);
-        --tower-line: rgba(196,226,216,.12);
-        --tower-text: #edf3f0;
-        --tower-muted: #91a39d;
-        --tower-soft: #c5ddd5;
-        --tower-sage: #94b9aa;
-        --tower-gold: #d8c99a;
-        --tower-live: #a8dbc8;
-        --tower-building: #a99bb8;
+        --tower-ink: #16120f;
+        --tower-walnut: #211914;
+        --tower-walnut-2: #2b211a;
+        --tower-bronze: #b88a58;
+        --tower-brass: #d7b980;
+        --tower-cream: #efe5d2;
+        --tower-paper: #d8cdbc;
+        --tower-muted: #a99b8c;
+        --tower-line: rgba(239,229,210,.12);
+        --tower-line-strong: rgba(215,185,128,.26);
+        --tower-live: #d7b980;
+        --tower-building: #92877d;
     }
 
     body {
         background:
-            radial-gradient(circle at 14% 8%, rgba(91,142,124,.13), transparent 27%),
-            radial-gradient(circle at 88% 4%, rgba(213,190,132,.08), transparent 24%),
-            linear-gradient(160deg, #030506, #09100e 58%, #050708);
-        color: var(--tower-text);
+            linear-gradient(
+                90deg,
+                rgba(255,255,255,.018) 1px,
+                transparent 1px
+            ) 0 0 / 72px 72px,
+            linear-gradient(
+                180deg,
+                #17120f 0%,
+                #0f0c0a 58%,
+                #17120f 100%
+            );
+        color: var(--tower-cream);
     }
 
     .tower-shell {
@@ -504,9 +513,9 @@ def render_access_home_v2(
     }
 
     .tower-lobby {
-        width: min(1500px, calc(100% - 48px));
+        width: min(1480px, calc(100% - 56px));
         margin: 0 auto;
-        padding: 24px 0 64px;
+        padding: 28px 0 72px;
     }
 
     .tower-topbar {
@@ -517,13 +526,12 @@ def render_access_home_v2(
         align-items: center;
         justify-content: space-between;
         gap: 18px;
-        min-height: 62px;
-        padding: 10px 14px;
+        min-height: 66px;
+        padding: 11px 14px;
         border: 1px solid var(--tower-line);
-        border-radius: 22px;
-        background: rgba(5,8,8,.76);
-        backdrop-filter: blur(24px);
-        box-shadow: 0 18px 48px rgba(0,0,0,.20);
+        border-radius: 16px;
+        background: rgba(27,20,16,.96);
+        box-shadow: 0 14px 34px rgba(0,0,0,.24);
     }
 
     .tower-brand {
@@ -535,13 +543,13 @@ def render_access_home_v2(
     .tower-brand-mark {
         width: 42px;
         aspect-ratio: 1;
-        border-radius: 14px;
+        border-radius: 9px;
         display: grid;
         place-items: center;
-        color: #16110b;
+        color: #22170f;
         font-weight: 950;
-        background: linear-gradient(145deg, var(--tower-gold), #f3e9bf);
-        box-shadow: 0 0 28px rgba(216,201,154,.14);
+        background: linear-gradient(145deg, #dfc997, #b8844f);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
     }
 
     .tower-brand strong,
@@ -550,13 +558,14 @@ def render_access_home_v2(
     }
 
     .tower-brand strong {
-        font-size: .95rem;
+        font-size: .96rem;
+        letter-spacing: .01em;
     }
 
     .tower-brand span {
         margin-top: 2px;
         color: var(--tower-muted);
-        font-size: .72rem;
+        font-size: .7rem;
     }
 
     .tower-top-actions {
@@ -574,54 +583,61 @@ def render_access_home_v2(
         min-height: 34px;
         padding: 0 11px;
         border: 1px solid var(--tower-line);
-        border-radius: 999px;
-        background: rgba(255,255,255,.035);
+        border-radius: 9px;
+        background: rgba(255,255,255,.025);
         color: var(--tower-muted);
-        font-size: .72rem;
+        font-size: .7rem;
         font-weight: 800;
         text-decoration: none;
     }
 
     .tower-mini-chip strong {
-        color: var(--tower-soft);
+        color: var(--tower-paper);
         margin-left: 5px;
     }
 
     .tower-top-link:hover {
-        color: var(--tower-text);
-        border-color: rgba(216,201,154,.28);
+        color: var(--tower-cream);
+        border-color: var(--tower-line-strong);
+        background: rgba(215,185,128,.055);
     }
 
     .tower-lobby-hero {
         position: relative;
         overflow: hidden;
         display: grid;
-        grid-template-columns: minmax(0,1.45fr) minmax(280px,.65fr);
-        gap: 22px;
+        grid-template-columns: minmax(0,1.4fr) minmax(300px,.6fr);
+        gap: 28px;
         align-items: end;
-        min-height: 320px;
-        margin-top: 18px;
-        padding: 38px;
+        min-height: 330px;
+        margin-top: 20px;
+        padding: 42px;
         border: 1px solid var(--tower-line);
-        border-radius: 32px;
+        border-radius: 20px;
         background:
-            radial-gradient(circle at 78% 18%, rgba(148,185,170,.12), transparent 27%),
-            linear-gradient(145deg, rgba(17,30,28,.86), rgba(5,8,8,.90));
-        box-shadow: 0 28px 90px rgba(0,0,0,.26);
+            linear-gradient(
+                105deg,
+                rgba(49,36,27,.98) 0%,
+                rgba(34,25,20,.98) 56%,
+                rgba(24,18,15,.98) 100%
+            );
+        box-shadow: 0 26px 60px rgba(0,0,0,.26);
     }
 
     .tower-lobby-hero:after {
         content: "";
         position: absolute;
-        right: -70px;
-        top: -100px;
-        width: 330px;
-        height: 330px;
-        border-radius: 50%;
-        border: 1px solid rgba(216,201,154,.09);
-        box-shadow:
-            0 0 0 38px rgba(148,185,170,.025),
-            0 0 0 78px rgba(216,201,154,.018);
+        top: 0;
+        right: 0;
+        width: 34%;
+        height: 100%;
+        border-left: 1px solid rgba(215,185,128,.09);
+        background:
+            linear-gradient(
+                180deg,
+                rgba(215,185,128,.035),
+                rgba(0,0,0,.08)
+            );
     }
 
     .tower-lobby-hero > * {
@@ -630,75 +646,79 @@ def render_access_home_v2(
     }
 
     .tower-kicker {
-        color: var(--tower-gold);
-        font-size: .68rem;
+        color: var(--tower-brass);
+        font-size: .66rem;
         font-weight: 900;
-        letter-spacing: .16em;
+        letter-spacing: .18em;
         text-transform: uppercase;
     }
 
     .tower-lobby-hero h1 {
-        max-width: 850px;
-        margin: 9px 0 12px;
-        font-size: clamp(2.8rem, 6vw, 6.4rem);
-        line-height: .92;
-        letter-spacing: -.065em;
+        max-width: 860px;
+        margin: 10px 0 14px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 500;
+        font-size: clamp(2.9rem, 5.6vw, 6rem);
+        line-height: .94;
+        letter-spacing: -.045em;
     }
 
     .tower-lobby-hero .tower-hero-sub {
-        max-width: 680px;
+        max-width: 650px;
         margin: 0;
-        color: var(--tower-muted);
-        font-size: 1rem;
-        line-height: 1.55;
+        color: var(--tower-paper);
+        font-size: .98rem;
+        line-height: 1.6;
     }
 
     .tower-soulaana-brief {
         padding: 20px;
-        border: 1px solid rgba(148,185,170,.16);
-        border-radius: 22px;
-        background: rgba(9,17,16,.62);
+        border: 1px solid rgba(215,185,128,.20);
+        border-radius: 14px;
+        background: rgba(11,9,8,.32);
+        box-shadow: inset 3px 0 0 rgba(215,185,128,.42);
     }
 
     .tower-soulaana-brief strong {
         display: block;
-        margin: 8px 0 7px;
-        font-size: 1.15rem;
+        margin: 9px 0 7px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 500;
+        font-size: 1.28rem;
     }
 
     .tower-soulaana-brief p {
         margin: 0;
         color: var(--tower-muted);
-        font-size: .84rem;
-        line-height: 1.5;
+        font-size: .82rem;
+        line-height: 1.55;
     }
 
     .tower-world-pulse {
         display: grid;
         grid-template-columns: repeat(3,minmax(0,1fr));
-        gap: 10px;
-        margin-top: 14px;
+        gap: 9px;
+        margin-top: 18px;
     }
 
     .tower-world-pulse span {
         padding: 10px 12px;
-        border: 1px solid var(--tower-line);
-        border-radius: 13px;
-        background: rgba(255,255,255,.025);
+        border-top: 1px solid var(--tower-line-strong);
+        background: rgba(255,255,255,.015);
         color: var(--tower-muted);
-        font-size: .72rem;
+        font-size: .69rem;
         line-height: 1.35;
     }
 
     .tower-world-pulse strong {
         display: block;
-        margin-top: 3px;
-        color: var(--tower-text);
-        font-size: .92rem;
+        margin-top: 4px;
+        color: var(--tower-cream);
+        font-size: .93rem;
     }
 
     .tower-world-section {
-        margin-top: 34px;
+        margin-top: 40px;
     }
 
     .tower-world-head {
@@ -706,28 +726,32 @@ def render_access_home_v2(
         align-items: end;
         justify-content: space-between;
         gap: 20px;
-        margin-bottom: 14px;
+        margin-bottom: 15px;
+        padding-bottom: 11px;
+        border-bottom: 1px solid var(--tower-line);
     }
 
     .tower-world-head h2 {
         margin: 5px 0 0;
-        font-size: clamp(1.55rem, 3vw, 2.25rem);
-        letter-spacing: -.035em;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.7rem, 3vw, 2.35rem);
+        font-weight: 500;
+        letter-spacing: -.025em;
     }
 
     .tower-world-head p {
-        max-width: 520px;
+        max-width: 500px;
         margin: 0;
         color: var(--tower-muted);
-        font-size: .78rem;
-        line-height: 1.45;
+        font-size: .75rem;
+        line-height: 1.48;
         text-align: right;
     }
 
     .tower-square-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
-        gap: 14px;
+        gap: 12px;
     }
 
     .tower-square-tile {
@@ -736,28 +760,65 @@ def render_access_home_v2(
         aspect-ratio: 1 / 1;
         padding: 17px;
         border: 1px solid var(--tower-line);
-        border-radius: 24px;
+        border-radius: 14px;
         background:
-            radial-gradient(circle at 86% 9%, rgba(148,185,170,.08), transparent 28%),
-            linear-gradient(150deg, rgba(19,29,28,.78), rgba(7,10,10,.91));
-        box-shadow: 0 18px 48px rgba(0,0,0,.18);
-        color: var(--tower-text);
+            linear-gradient(
+                155deg,
+                rgba(47,35,27,.96),
+                rgba(27,21,17,.98)
+            );
+        box-shadow:
+            0 14px 34px rgba(0,0,0,.18),
+            inset 0 1px 0 rgba(255,255,255,.025);
+        color: var(--tower-cream);
         text-decoration: none;
         display: flex;
         flex-direction: column;
-        transition: transform .16s ease, border-color .16s ease, background .16s ease;
+        transition:
+            transform .16s ease,
+            border-color .16s ease,
+            background .16s ease;
+    }
+
+    .tower-square-tile:nth-child(3n+2) {
+        background:
+            linear-gradient(
+                155deg,
+                rgba(41,31,25,.96),
+                rgba(24,19,16,.98)
+            );
+    }
+
+    .tower-square-tile:nth-child(3n+3) {
+        background:
+            linear-gradient(
+                155deg,
+                rgba(52,39,29,.92),
+                rgba(29,22,18,.98)
+            );
     }
 
     a.tower-square-tile:hover {
         transform: translateY(-3px);
-        border-color: rgba(168,219,200,.30);
+        border-color: rgba(215,185,128,.34);
         background:
-            radial-gradient(circle at 82% 10%, rgba(168,219,200,.13), transparent 30%),
-            linear-gradient(150deg, rgba(22,36,33,.86), rgba(7,10,10,.92));
+            linear-gradient(
+                155deg,
+                rgba(58,43,32,.98),
+                rgba(31,23,18,.98)
+            );
+    }
+
+    .tower-square-tile.live {
+        border-color: rgba(215,185,128,.25);
+        box-shadow:
+            0 16px 38px rgba(0,0,0,.20),
+            inset 0 0 0 1px rgba(215,185,128,.05);
     }
 
     .tower-square-tile.building {
-        opacity: .82;
+        opacity: .74;
+        filter: saturate(.72);
     }
 
     .tower-tile-top {
@@ -768,63 +829,65 @@ def render_access_home_v2(
     }
 
     .tower-tile-mark {
-        width: 46px;
+        width: 44px;
         aspect-ratio: 1;
-        border-radius: 15px;
+        border-radius: 8px;
         display: grid;
         place-items: center;
-        border: 1px solid rgba(216,201,154,.14);
-        background: rgba(216,201,154,.075);
-        color: var(--tower-gold);
-        font-size: .76rem;
+        border: 1px solid rgba(215,185,128,.18);
+        background: #17110e;
+        color: var(--tower-brass);
+        font-size: .72rem;
         font-weight: 950;
-        letter-spacing: .04em;
+        letter-spacing: .05em;
     }
 
     .tower-tile-state {
         display: inline-flex;
         align-items: center;
-        min-height: 25px;
+        min-height: 24px;
         padding: 0 8px;
         border: 1px solid var(--tower-line);
-        border-radius: 999px;
+        border-radius: 8px;
         color: var(--tower-muted);
-        font-size: .62rem;
+        font-size: .59rem;
         font-weight: 900;
         text-transform: uppercase;
-        letter-spacing: .08em;
+        letter-spacing: .09em;
     }
 
     .tower-square-tile.live .tower-tile-state {
-        color: var(--tower-live);
-        border-color: rgba(168,219,200,.20);
-        background: rgba(168,219,200,.06);
+        color: var(--tower-brass);
+        border-color: rgba(215,185,128,.22);
+        background: rgba(215,185,128,.05);
     }
 
     .tower-tile-copy {
         margin-top: auto;
-        padding-top: 18px;
+        padding-top: 20px;
     }
 
     .tower-tile-copy h3 {
         margin: 0;
-        font-size: clamp(1.2rem, 2vw, 1.55rem);
-        line-height: 1.02;
-        letter-spacing: -.03em;
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 500;
+        font-size: clamp(1.22rem, 2vw, 1.6rem);
+        line-height: 1.04;
+        letter-spacing: -.02em;
     }
 
     .tower-tile-copy .tower-tile-subtitle {
-        margin: 6px 0 0;
-        color: var(--tower-gold);
-        font-size: .75rem;
+        margin: 7px 0 0;
+        color: var(--tower-brass);
+        font-size: .72rem;
         font-weight: 800;
     }
 
     .tower-tile-copy p {
         margin: 10px 0 0;
         color: var(--tower-muted);
-        font-size: .73rem;
-        line-height: 1.42;
+        font-size: .71rem;
+        line-height: 1.45;
     }
 
     .tower-tile-action {
@@ -832,11 +895,11 @@ def render_access_home_v2(
         justify-content: space-between;
         align-items: center;
         gap: 10px;
-        margin-top: 15px;
+        margin-top: 14px;
         padding-top: 12px;
         border-top: 1px solid var(--tower-line);
-        color: var(--tower-soft);
-        font-size: .72rem;
+        color: var(--tower-paper);
+        font-size: .69rem;
         font-weight: 900;
     }
 
@@ -848,67 +911,68 @@ def render_access_home_v2(
     .tower-infra-grid {
         display: grid;
         grid-template-columns: repeat(4,minmax(0,1fr));
-        gap: 14px;
+        gap: 12px;
     }
 
     .tower-infra-tile {
         min-height: 150px;
         padding: 18px;
         border: 1px solid var(--tower-line);
-        border-radius: 20px;
-        background: rgba(255,255,255,.025);
-        color: var(--tower-text);
+        border-radius: 12px;
+        background: rgba(39,29,23,.72);
+        color: var(--tower-cream);
         text-decoration: none;
     }
 
     .tower-infra-tile strong {
         display: block;
         margin: 8px 0 6px;
-        font-size: 1.05rem;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.12rem;
+        font-weight: 500;
     }
 
     .tower-infra-tile p {
         margin: 0;
         color: var(--tower-muted);
-        font-size: .74rem;
-        line-height: 1.45;
+        font-size: .72rem;
+        line-height: 1.48;
     }
 
     .tower-infra-tile small {
         display: block;
         margin-top: 13px;
-        color: var(--tower-gold);
-        font-size: .68rem;
+        color: var(--tower-brass);
+        font-size: .66rem;
         font-weight: 800;
     }
 
     .tower-return-card {
-        border-color: rgba(216,201,154,.16);
+        border-color: rgba(215,185,128,.18);
     }
 
     .tower-evidence-mini {
-        margin-top: 14px;
-        border: 1px solid var(--tower-line);
-        border-radius: 18px;
-        background: rgba(255,255,255,.02);
-        overflow: hidden;
+        margin-top: 12px;
+        border-top: 1px solid var(--tower-line);
+        border-bottom: 1px solid var(--tower-line);
+        background: transparent;
     }
 
     .tower-evidence-mini summary {
         cursor: pointer;
-        padding: 14px 16px;
+        padding: 13px 2px;
         color: var(--tower-muted);
-        font-size: .75rem;
+        font-size: .72rem;
         font-weight: 800;
     }
 
     .tower-evidence-mini div {
-        padding: 0 16px 16px;
+        padding: 0 2px 14px;
     }
 
     .tower-evidence-mini a {
-        color: var(--tower-gold);
-        font-size: .76rem;
+        color: var(--tower-brass);
+        font-size: .73rem;
         font-weight: 800;
     }
 
@@ -917,10 +981,11 @@ def render_access_home_v2(
         justify-content: space-between;
         gap: 14px;
         flex-wrap: wrap;
-        margin-top: 32px;
+        margin-top: 36px;
         padding: 16px 2px 0;
+        border-top: 1px solid var(--tower-line);
         color: var(--tower-muted);
-        font-size: .72rem;
+        font-size: .68rem;
     }
 
     @media (max-width: 1050px) {
@@ -935,12 +1000,13 @@ def render_access_home_v2(
 
     @media (max-width: 720px) {
         .tower-lobby {
-            width: min(100% - 24px, 1500px);
+            width: min(100% - 24px, 1480px);
             padding-top: 12px;
         }
 
         .tower-topbar {
             top: 8px;
+            border-radius: 12px;
         }
 
         .tower-top-actions .tower-mini-chip {
@@ -949,8 +1015,8 @@ def render_access_home_v2(
 
         .tower-lobby-hero {
             min-height: 0;
-            padding: 24px 20px;
-            border-radius: 24px;
+            padding: 26px 21px;
+            border-radius: 15px;
         }
 
         .tower-world-pulse {
@@ -968,12 +1034,12 @@ def render_access_home_v2(
 
         .tower-square-grid {
             grid-template-columns: repeat(2,minmax(0,1fr));
-            gap: 10px;
+            gap: 9px;
         }
 
         .tower-square-tile {
             padding: 13px;
-            border-radius: 19px;
+            border-radius: 11px;
         }
 
         .tower-tile-copy p {
@@ -995,8 +1061,8 @@ def render_access_home_v2(
         }
 
         .tower-tile-mark {
-            width: 38px;
-            border-radius: 12px;
+            width: 37px;
+            border-radius: 7px;
         }
 
         .tower-tile-copy h3 {
