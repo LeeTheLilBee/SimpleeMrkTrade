@@ -93,8 +93,13 @@ def test_autonomous_scan_populates_dashboard_projection(monkeypatch):
     assert packet["market_data_state"] == "source_bound_research_scan"
     assert packet["source"] == "alpaca-iex-owner-development"
     assert packet["projection_status"] == "fresh"
-    assert len(packet["symbols"]) == 3
+    assert len(packet["symbols"]) == 6
     assert len(packet["watchlist"]) <= 6
+    assert len(packet["sectors"]) == 1
+    assert packet["sectors"][0]["name"] == "Source-backed attention"
+    assert len(packet["sectors"][0]["symbols"]) == 6
+    assert all(row["source_coverage"] == ["alpaca"] for row in packet["symbols"])
+    assert all("alpaca" in row["source_observations"] for row in packet["symbols"])
     assert packet["soulaana"]["headline"]
     assert packet["provider_boundary"]["sip_nbbo"] is False
     assert packet["tower_boundaries"]["no_order_submission"] is True
