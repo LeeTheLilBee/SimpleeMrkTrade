@@ -333,6 +333,7 @@ def test_twr190_registry_route_and_entitlement_are_active(
     assert app_ids == [
         "observatory",
         "teller",
+        "grounds",
     ]
 
 
