@@ -650,6 +650,17 @@
     read(currentSymbol);
     readKeyedProviderResearch(currentSymbol);
   });
+
+  // Once the owner chooses a symbol, refresh its protected provider research
+  // periodically while the page is visible. This is browser-driven read-only
+  // refresh, not a broker stream and not order authority.
+  window.setInterval(function () {
+    if (currentSymbol && document.visibilityState === "visible") {
+      readKeyedProviderResearch(currentSymbol);
+    }
+  }, 20000);
+
   read(currentSymbol);
+  if (currentSymbol) readKeyedProviderResearch(currentSymbol);
   readProviderSoulaana();
 })();
