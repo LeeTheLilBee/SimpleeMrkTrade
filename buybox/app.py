@@ -183,6 +183,12 @@ def create_app(config=None):
 
     @app.context_processor
     def csrf_context():
+        # The pre-auth Tower bootstrap must not create a BuyBox browser session.
+        if request.endpoint=="tower_browser_bootstrap":
+            return {"csrf_token":None, "verticals":VERTICALS,
+                    "tower_governed":True,
+                    "tower_return_url":app.config["TOWER_PUBLIC_ORIGIN"]+
+                        "/tower/access-home"}
         if "csrf" not in session:
             session["csrf"]=secrets.token_hex(32)
         return {"csrf_token": session["csrf"], "verticals": VERTICALS,
