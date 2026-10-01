@@ -121,6 +121,11 @@ def owner_local_evidence_desk(
         "local_cross_ledger_checkpoint_verified": False,
         "actual_external_latest_attested": False,
         "external_immutability_certified": False,
+        "freshness_status": "NOT_EVALUATED",
+        "matches_current_local_heads": None,
+        "storage_events_since_checkpoint": None,
+        "replay_events_since_checkpoint": None,
+        "namespace_events_since_checkpoint": None,
     }
     if checkpoint is not None:
         doc = verify_authority_checkpoint(
@@ -130,6 +135,19 @@ def owner_local_evidence_desk(
         checkpoint_summary["local_storage_and_replay_prefix_verified"] = True
         checkpoint_summary["storage_event_count"] = doc["storage_event_count"]
         checkpoint_summary["replay_event_count"] = doc["replay_event_count"]
+        storage_delta = local["journal_event_count"] - doc["storage_event_count"]
+        replay_delta = replay["event_count"] - doc["replay_event_count"]
+        current = storage_delta == 0 and replay_delta == 0
+        checkpoint_summary.update({
+            "freshness_status": (
+                "SOURCE_ONLY_LOCAL_CHECKPOINT_CURRENT"
+                if current else "SOURCE_ONLY_LOCAL_CHECKPOINT_STALE"
+            ),
+            "matches_current_local_heads": current,
+            "storage_events_since_checkpoint": storage_delta,
+            "replay_events_since_checkpoint": replay_delta,
+            "namespace_events_since_checkpoint": None,
+        })
     elif control_checkpoint is not None:
         doc = verify_control_checkpoint(
             control_checkpoint, pinned_public_keys=pinned_public_keys,
@@ -142,6 +160,24 @@ def owner_local_evidence_desk(
         checkpoint_summary["storage_event_count"] = doc["storage_event_count"]
         checkpoint_summary["replay_event_count"] = doc["replay_event_count"]
         checkpoint_summary["namespace_event_count"] = doc["namespace_event_count"]
+        storage_delta = local["journal_event_count"] - doc["storage_event_count"]
+        replay_delta = replay["event_count"] - doc["replay_event_count"]
+        namespace_delta = (
+            namespace_summary["event_count"] - doc["namespace_event_count"]
+        )
+        current = (
+            storage_delta == 0 and replay_delta == 0 and namespace_delta == 0
+        )
+        checkpoint_summary.update({
+            "freshness_status": (
+                "SOURCE_ONLY_LOCAL_CHECKPOINT_CURRENT"
+                if current else "SOURCE_ONLY_LOCAL_CHECKPOINT_STALE"
+            ),
+            "matches_current_local_heads": current,
+            "storage_events_since_checkpoint": storage_delta,
+            "replay_events_since_checkpoint": replay_delta,
+            "namespace_events_since_checkpoint": namespace_delta,
+        })
 
     key_summary = {
         "supplied": backup_operations is not None,
