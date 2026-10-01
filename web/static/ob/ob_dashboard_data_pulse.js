@@ -44,10 +44,18 @@
     }).then(r => {
       if (!r.ok) throw new Error("catalyst held");
       return r.json();
+    }),
+    fetch("/ob/engine-feed-snapshot.json", {
+      credentials: "same-origin", cache: "no-store",
+      headers: {"Accept": "application/json"}
+    }).then(r => {
+      if (!r.ok) throw new Error("market scan held");
+      return r.json();
     })
   ]).then(results => {
     const keyless = results[0].status === "fulfilled" ? results[0].value : null;
     const catalysts = results[1].status === "fulfilled" ? results[1].value : null;
+    const market = results[2].status === "fulfilled" ? results[2].value : null;
     const sourceCount = safeCountSources(keyless, "OB_KEYLESS_PUBLIC_CONTEXT_V1", 4);
     const catalystCount = safeCountSources(catalysts, "OB_OFFICIAL_CATALYST_RADAR_V1", 6);
 
@@ -67,6 +75,11 @@
     nodes.push(reviewed === null
       ? chip("Soulaana · checking", "")
       : chip("Soulaana · " + reviewed + " reviewed", reviewed ? "good" : ""));
+    const marketCount = market && market.market_data_state === "source_bound_research_scan" &&
+      Array.isArray(market.symbols) ? market.symbols.length : null;
+    nodes.push(marketCount === null
+      ? chip("Alpaca scan · held", "hold")
+      : chip("Alpaca scan · " + marketCount + " surfaced", marketCount ? "good" : ""));
 
     mount.replaceChildren(...nodes);
 
