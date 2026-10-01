@@ -1,6 +1,9 @@
 from types import SimpleNamespace
 
-from tower.ob_market_source_status import _merge_public_owner_context
+from tower.ob_market_source_status import (
+    _merge_cached_provider_context,
+    _merge_public_owner_context,
+)
 
 
 def base_document():
@@ -108,3 +111,85 @@ def test_public_hold_does_not_remove_alpaca_or_fake_multisource():
     assert doc["source_fusion"]["public_quote_symbols"] == 0
     assert all(row["source_coverage"] == ["alpaca"] for row in doc["symbols"])
     assert all("public" not in row["source_observations"] for row in doc["symbols"])
+
+
+class FakeProviderCache:
+    def snapshot_for_symbol(self, sid, symbol):
+        assert sid.startswith("tower_session_")
+        if symbol != "AAPL":
+            return []
+        return [
+            {
+                "provider": "finnhub",
+                "state": "SOURCE_BOUND",
+                "kind": "COMPANY_REFERENCE",
+                "symbol": "AAPL",
+                "security_name": "Apple Inc.",
+                "exchange": "NASDAQ",
+                "industry": "Technology",
+                "source_reference": "finnhub-ref",
+                "owner_display_reviewed": True,
+                "soulaana_ai_use_reviewed": True,
+                "historical_only": False,
+                "live_quote": False,
+            },
+            {
+                "provider": "alpha_vantage",
+                "state": "SOURCE_BOUND",
+                "kind": "COMPANY_OVERVIEW_AND_COMPLETED_DAILY_HISTORY",
+                "symbol": "AAPL",
+                "company_profile": {
+                    "name": "Apple Inc.",
+                    "sector": "Technology",
+                    "industry": "Consumer Electronics",
+                    "market_cap": 3200000000000.0,
+                },
+                "bars": [
+                    {"session_date": "2026-09-30", "close": 231.2},
+                    {"session_date": "2026-09-29", "close": 229.8},
+                ],
+                "source_reference": "alpha-ref",
+                "owner_display_reviewed": True,
+                "soulaana_ai_use_reviewed": True,
+                "historical_only": False,
+                "live_quote": False,
+            },
+            {
+                "provider": "bea",
+                "state": "SOURCE_BOUND",
+                "kind": "OFFICIAL_US_QUARTERLY_MACRO_CONTEXT",
+                "symbol": "AAPL",
+                "macro_series": [{"series_id": "real_gdp_growth", "observations": []}],
+                "source_reference": "bea-ref",
+                "owner_display_reviewed": True,
+                "soulaana_ai_use_reviewed": True,
+                "historical_only": True,
+                "live_quote": False,
+            },
+        ]
+
+
+def test_cached_provider_research_is_amalgamated_into_same_canonical_symbol_without_fetch():
+    app = SimpleNamespace(extensions={"ob_provider_research_cache_v1": FakeProviderCache()})
+    doc = _merge_cached_provider_context(
+        app, base_document(), "tower_session_" + "x"*20)
+
+    aapl = next(row for row in doc["symbols"] if row["symbol"] == "AAPL")
+    assert set(aapl["source_coverage"]) == {"alpaca", "finnhub", "alpha_vantage"}
+    assert set(aapl["source_observations"]) == {"alpaca", "finnhub", "alpha_vantage"}
+    assert aapl["source_observations"]["finnhub"]["summary"]["industry"] == "Technology"
+    assert aapl["source_observations"]["alpha_vantage"]["summary"]["latest_sessions"][0]["close"] == 231.2
+    assert aapl["amalgamated_cached_providers"] == ["alpha_vantage", "finnhub"]
+
+    msft = next(row for row in doc["symbols"] if row["symbol"] == "MSFT")
+    assert msft["source_coverage"] == ["alpaca"]
+    assert doc["shared_research_context"]["bea"]["research_only"] is True
+    assert set(doc["source_fusion"]["providers_present"]) == {
+        "alpaca", "alpha_vantage", "bea", "finnhub"
+    }
+    assert doc["source_fusion"]["single_provider_selected_as_truth"] is False
+    assert doc["source_fusion"]["cached_provider_amalgamation"]["network_fetches_triggered"] is False
+    assert doc["market_health"]["cached_provider_amalgamation"]["network_fetches_triggered"] is False
+    assert doc["soulaana"]["source_fusion"]["cached_ai_reviewed_providers"] == [
+        "alpha_vantage", "bea", "finnhub"
+    ]
