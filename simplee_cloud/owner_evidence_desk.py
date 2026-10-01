@@ -85,6 +85,8 @@ def owner_local_evidence_desk(
         "unused_enrolled_namespace_count": None,
         "raw_entity_ids_persisted": False,
         "external_registry_certified": False,
+        "binding_key_matches_registered_commitment": None,
+        "binding_key_commitment_external_anchor_certified": False,
         "binding_key_custody_certified": False,
         "production_authorized": False,
     }
@@ -100,6 +102,8 @@ def owner_local_evidence_desk(
             "missing_resolver_namespace_count": coverage["missing_resolver_namespace_count"],
             "unused_enrolled_namespace_count": coverage["unused_enrolled_namespace_count"],
             "raw_entity_ids_persisted": False,
+            "binding_key_matches_registered_commitment": verified_namespace["binding_key_matches_registered_commitment"],
+            "binding_key_commitment_external_anchor_certified": False,
             "external_registry_certified": False,
             "binding_key_custody_certified": False,
             "production_authorized": False,
