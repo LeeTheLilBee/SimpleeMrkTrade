@@ -126,7 +126,9 @@ def register_ob_protected_route_enforcement(app):
             abort(405)
 
         if not owner_session_active():
-            return redirect("/tower/login")
+            return redirect(
+                "/tower/login?" + urlencode({"next": path})
+            )
 
         if is_owner_only_ob_web_room(path):
             return None
