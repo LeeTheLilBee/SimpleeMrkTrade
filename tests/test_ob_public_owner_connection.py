@@ -16,7 +16,8 @@ from tower.ob_web_route_enforcement import PROTECTED_EXACT_OB_ROUTES
 @pytest.fixture
 def setup(monkeypatch):
     monkeypatch.setenv("OB_PUBLIC_OWNER_CONNECT_ENABLED", "1")
-    for field in ("ACCOUNT_SCOPE_REVIEWED","NONDISPLAY_REVIEWED","OWNER_DISPLAY_REVIEWED",
+    for field in ("PERSONAL_OWNER_USE_REVIEWED","SOULAANA_AI_USE_REVIEWED",
+                  "ACCOUNT_SCOPE_REVIEWED","NONDISPLAY_REVIEWED","OWNER_DISPLAY_REVIEWED",
                   "MARKETDATA_SCOPE_VERIFIED","EQUITY_ENTITLED","OPTION_ENTITLED"):
         monkeypatch.delenv("OB_PUBLIC_"+field,raising=False)
     recorder = Recorder()
@@ -113,7 +114,8 @@ def test_quote_after_explicit_independent_rights_stays_source_only(setup,monkeyp
     client,state,store,rec=setup;state["authorized"]=True
     key=csrf(page(client).get_data(as_text=True))
     post(client,key)
-    for flag in ("ACCOUNT_SCOPE_REVIEWED","NONDISPLAY_REVIEWED","OWNER_DISPLAY_REVIEWED",
+    for flag in ("PERSONAL_OWNER_USE_REVIEWED","ACCOUNT_SCOPE_REVIEWED",
+                 "NONDISPLAY_REVIEWED","OWNER_DISPLAY_REVIEWED",
                  "MARKETDATA_SCOPE_VERIFIED","EQUITY_ENTITLED"):
         monkeypatch.setenv("OB_PUBLIC_"+flag,"1")
     assert post(client,key,action="quote",extra={"symbol":"AAPL","kind":"EQUITY"}).status_code==303
