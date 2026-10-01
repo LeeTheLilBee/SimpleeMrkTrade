@@ -1181,26 +1181,40 @@ class SQLiteOperationalJournal:
                 conn.rollback()
                 raise
 
-    def source_resolver_namespace_inventory(self) -> dict:
-        """Verified opaque namespaces that actually used resolver-backed I/O.
+    def source_resolver_namespace_inventory(
+        self, event_count: int | None = None,
+    ) -> dict:
+        """Verified resolver-used namespaces at current or historical prefix.
 
-        SC041 services emit namespace_binding_verified only after the durable
-        binding ledger accepts the exact canonical entity→namespace mapping.
-        Older/fixed-secret operations have no such marker and are not silently
-        reclassified as resolver-backed.
+        A historical prefix is checked against the FULL current immutable chain
+        first; later events are then excluded from the inventory rather than
+        trusting a detached partial DB.
         """
         with closing(self._connect()) as conn:
-            self._verify(conn)
+            total, _ = self._verify(conn)
+            if event_count is None:
+                selected = total
+            elif type(event_count) is not int or event_count < 0 or event_count > total:
+                raise IntegrityError(
+                    "resolver namespace inventory prefix unavailable"
+                )
+            else:
+                selected = event_count
             values = frozenset(
                 row["namespace_digest"] for row in conn.execute(
                     """SELECT DISTINCT namespace_digest FROM events
-                       WHERE event_type='namespace_binding_verified'"""
+                       WHERE event_type='namespace_binding_verified'
+                         AND seq<=?""",
+                    (selected,),
                 )
             )
         return {
             "status": "SOURCE_ONLY_VERIFIED_RESOLVER_NAMESPACE_INVENTORY",
             "namespace_digests": values,
             "namespace_count": len(values),
+            "inventory_event_count": selected,
+            "current_event_count": total,
+            "historical_prefix": selected != total,
             "raw_entity_ids_persisted": False,
             "production_authorized": False,
         }

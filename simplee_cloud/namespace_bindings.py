@@ -289,19 +289,36 @@ class SQLiteNamespaceBindingLedger:
                 raise AccessDenied("stable namespace binding key/entity mismatch")
             raise AccessDenied("stable namespace not independently enrolled")
 
-    def source_namespace_inventory(self) -> dict:
-        """Verified enrolled opaque namespaces for internal reconciliation only."""
+    def source_namespace_inventory(
+        self, event_count: int | None = None,
+    ) -> dict:
+        """Verified enrolled namespaces at current or historical event prefix."""
         with closing(self._connect()) as conn:
             self._verify_key_commitment(conn)
-            self._verify(conn)
+            total, _ = self._verify(conn)
+            if event_count is None:
+                selected = total
+            elif type(event_count) is not int or event_count < 0 or event_count > total:
+                raise IntegrityError(
+                    "namespace inventory checkpoint prefix unavailable"
+                )
+            else:
+                selected = event_count
             values = frozenset(
                 row["namespace_digest"]
-                for row in conn.execute("SELECT namespace_digest FROM bindings")
+                for row in conn.execute(
+                    """SELECT DISTINCT namespace_digest FROM binding_events
+                       WHERE seq<=?""",
+                    (selected,),
+                )
             )
         return {
             "status": "SOURCE_ONLY_VERIFIED_ENROLLED_NAMESPACE_INVENTORY",
             "namespace_digests": values,
             "namespace_count": len(values),
+            "inventory_event_count": selected,
+            "current_event_count": total,
+            "historical_prefix": selected != total,
             "raw_entity_ids_persisted": False,
             "external_registry_certified": False,
             "production_authorized": False,

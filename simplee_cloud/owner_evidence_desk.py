@@ -17,7 +17,10 @@ from .contracts import CloudError, IntegrityError
 from .journal import SQLiteOperationalJournal
 from .journaled_backup import JournaledBackupOperations
 from .namespace_bindings import SQLiteNamespaceBindingLedger
-from .namespace_coverage import source_namespace_binding_coverage
+from .namespace_coverage import (
+    source_namespace_binding_coverage,
+    source_control_checkpoint_namespace_coverage,
+)
 from .key_readiness import source_backup_key_readiness
 from .provider_review import ProviderCandidate, review_candidate, required_provider_checks
 from .readiness import source_preflight
@@ -109,6 +112,21 @@ def owner_local_evidence_desk(
             "production_authorized": False,
         })
 
+    checkpoint_namespace_coverage = {
+        "supplied": False,
+        "status": "NOT_EVALUATED",
+        "signed_control_vector_verified": False,
+        "exact_signed_prefix_coverage_verified": False,
+        "resolver_namespace_count": None,
+        "enrolled_namespace_count": None,
+        "matched_namespace_count": None,
+        "missing_resolver_namespace_count": None,
+        "namespace_binding_key_commitment_signed": False,
+        "cross_ledger_point_in_time_certified": False,
+        "actual_external_latest_attested": False,
+        "production_authorized": False,
+    }
+
     release = source_preflight(release_references)
     provider = review_candidate(candidate, provider_references) if candidate is not None else None
     checkpoint_summary = {
@@ -155,6 +173,39 @@ def owner_local_evidence_desk(
         checkpoint_summary["storage_event_count"] = doc["storage_event_count"]
         checkpoint_summary["replay_event_count"] = doc["replay_event_count"]
         checkpoint_summary["namespace_event_count"] = doc["namespace_event_count"]
+        exact_coverage = source_control_checkpoint_namespace_coverage(
+            checkpoint=control_checkpoint,
+            pinned_public_keys=pinned_public_keys,
+            journal=journal,
+            replay_store=replay_store,
+            namespace_bindings=namespace_bindings,
+        )
+        checkpoint_namespace_coverage.update({
+            "supplied": True,
+            "status": exact_coverage["status"],
+            "signed_control_vector_verified": True,
+            "exact_signed_prefix_coverage_verified": exact_coverage[
+                "exact_signed_prefix_coverage_verified"
+            ],
+            "resolver_namespace_count": exact_coverage["resolver_namespace_count"],
+            "enrolled_namespace_count": exact_coverage["enrolled_namespace_count"],
+            "matched_namespace_count": exact_coverage["matched_namespace_count"],
+            "missing_resolver_namespace_count": exact_coverage[
+                "missing_resolver_namespace_count"
+            ],
+            "namespace_binding_key_commitment_signed": exact_coverage[
+                "namespace_binding_key_commitment_signed"
+            ],
+            "storage_state_advanced_after_prefix": exact_coverage[
+                "storage_state_advanced_after_prefix"
+            ],
+            "namespace_state_advanced_after_prefix": exact_coverage[
+                "namespace_state_advanced_after_prefix"
+            ],
+            "cross_ledger_point_in_time_certified": False,
+            "actual_external_latest_attested": False,
+            "production_authorized": False,
+        })
 
     key_summary = {
         "supplied": backup_operations is not None,
@@ -226,6 +277,7 @@ def owner_local_evidence_desk(
             "external_checkpoint_certified": False,
         },
         "joint_checkpoint": checkpoint_summary,
+        "checkpoint_namespace_coverage": checkpoint_namespace_coverage,
         "namespace_binding_readiness": namespace_summary,
         "backup_key_readiness": key_summary,
         "provider_review": {
