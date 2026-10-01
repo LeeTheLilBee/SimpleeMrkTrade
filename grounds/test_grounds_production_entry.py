@@ -35,7 +35,7 @@ class ProductionEntryTests(unittest.TestCase):
             with patch("grounds.production_entry.import_module",
                        side_effect=ModuleNotFoundError("no certified Tower Grounds receiver")):
                 with self.assertRaisesRegex(
-                    GroundsProductionUnavailable,"real Tower Grounds receiver",
+                    GroundsProductionUnavailable,"Tower Grounds adapter modules",
                 ):
                     create_wsgi_application()
 
