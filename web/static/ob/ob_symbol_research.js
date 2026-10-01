@@ -40,6 +40,206 @@
     return response.json();
   }
 
+
+  function serverResearch() {
+    const node = byId("symbolServerResearch");
+    if (!node) return null;
+    try { return JSON.parse(node.textContent || "null"); }
+    catch (_) { return null; }
+  }
+
+  function direction(latest, prior) {
+    const a = Number(latest), b = Number(prior);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+    return a > b ? "up" : a < b ? "down" : "flat";
+  }
+
+  function addFinding(list, tone, text, source) {
+    if (!text) return;
+    list.push({tone, text, source});
+  }
+
+  function sectorSensitivity(industry) {
+    const s = String(industry || "").toLowerCase();
+    return {
+      rateSensitive: /(software|technology|semiconductor|internet|communication|real estate|utilities|consumer durable|biotechnology)/.test(s),
+      energySensitive: /(energy|oil|gas|petroleum|airline|transport)/.test(s),
+      cyclical: /(industrial|manufactur|consumer cyclic|retail|automotive|materials|bank|financial)/.test(s),
+    };
+  }
+
+  function renderList(id, findings, empty) {
+    const mount = byId(id);
+    if (!mount) return;
+    mount.replaceChildren();
+    const rows = findings.slice(0, 6);
+    if (!rows.length) {
+      mount.append(paragraph(empty, "ob-symbol-research-muted"));
+      return;
+    }
+    rows.forEach(item => {
+      const p = paragraph(item.text);
+      p.className = "ob-symbol-impact-item ob-symbol-impact-item--" + item.tone;
+      if (item.source) {
+        const small = document.createElement("small");
+        small.textContent = item.source;
+        p.append(document.createElement("br"), small);
+      }
+      mount.append(p);
+    });
+  }
+
+  function buildImpact(providerPacket, keylessPacket, catalystPacket, secPacket, ticker) {
+    const positive = [], negative = [], agreement = [], conflict = [], watch = [];
+    const why = [];
+    const providerRows = providerPacket && Array.isArray(providerPacket.provider_research)
+      ? providerPacket.provider_research : [];
+    const alpaca = sourceRow(providerRows, "alpaca");
+    const finazon = sourceRow(providerRows, "finazon");
+    const finnhub = sourceRow(providerRows, "finnhub");
+    const alpha = sourceRow(providerRows, "alpha_vantage");
+    const bea = sourceRow(providerRows, "bea");
+
+    const industry = finnhub && finnhub.industry;
+    const sensitivity = sectorSensitivity(industry);
+    if (industry) why.push(ticker + " is classified by the connected company-profile source in " + industry + ".");
+    if (sensitivity.rateSensitive) why.push("That industry can be sensitive to discount-rate changes, so Treasury yield direction belongs in this symbol read.");
+    if (sensitivity.energySensitive) why.push("That industry has direct sensitivity to energy conditions, so EIA context is more relevant than it would be for many other symbols.");
+    if (sensitivity.cyclical) why.push("That industry is economically cyclical, so growth and labor direction matter to the backdrop.");
+
+    if (alpha && alpha.state === "SOURCE_BOUND" && Array.isArray(alpha.bars) && alpha.bars.length >= 2) {
+      const d = direction(alpha.bars[0].close, alpha.bars[1].close);
+      if (d === "up") addFinding(positive, "positive", "The latest completed daily close is above the prior completed session.", "Alpha Vantage");
+      if (d === "down") addFinding(negative, "negative", "The latest completed daily close is below the prior completed session.", "Alpha Vantage");
+      addFinding(watch, "neutral", "Watch whether the next completed session confirms or reverses the latest daily-price direction.", "Alpha Vantage");
+    }
+
+    if (alpaca && alpaca.state === "SOURCE_BOUND") {
+      const q = alpaca.quote || {}, b = alpaca.bar || {};
+      if (Number.isFinite(Number(q.midpoint)) && Number.isFinite(Number(b.close))) {
+        const d = direction(q.midpoint, b.close);
+        if (d === "up") addFinding(positive, "positive", "Current IEX midpoint is above the latest minute close, a small near-term firming signal in venue-limited data.", "Alpaca IEX");
+        if (d === "down") addFinding(negative, "negative", "Current IEX midpoint is below the latest minute close, a small near-term softening signal in venue-limited data.", "Alpaca IEX");
+      }
+    } else if (finazon && finazon.state === "SOURCE_BOUND") {
+      const ch = Number(finazon.daily_change_percent);
+      if (Number.isFinite(ch) && ch > 0) addFinding(positive, "positive", "The connected current-market source shows a positive daily move.", "Finazon");
+      if (Number.isFinite(ch) && ch < 0) addFinding(negative, "negative", "The connected current-market source shows a negative daily move.", "Finazon");
+    }
+
+    const publicRows = keylessPacket && Array.isArray(keylessPacket.sources) ? keylessPacket.sources : [];
+    const bls = sourceRow(publicRows, "bls", "source");
+    const treasury = sourceRow(publicRows, "treasury", "source");
+
+    let inflationDir = null, laborDir = null, yieldDir = null;
+    if (bls && bls.state === "SOURCE_BOUND" && Array.isArray(bls.series)) {
+      const cpi = bls.series.find(x => x.series_id === "CUUR0000SA0");
+      const ppi = bls.series.find(x => x.series_id === "WPUFD4");
+      const jobs = bls.series.find(x => x.series_id === "CES0000000001");
+      const unemp = bls.series.find(x => x.series_id === "LNS14000000");
+      const cpiD = cpi && direction(cpi.value, cpi.previous_value);
+      const ppiD = ppi && direction(ppi.value, ppi.previous_value);
+      if (cpiD && cpiD === ppiD) inflationDir = cpiD;
+      const jobsD = jobs && direction(jobs.value, jobs.previous_value);
+      const unempD = unemp && direction(unemp.value, unemp.previous_value);
+      if (jobsD === "up" && unempD !== "up") laborDir = "stronger";
+      else if (jobsD === "down" && unempD === "up") laborDir = "weaker";
+      else laborDir = "mixed";
+
+      if (inflationDir === "down") addFinding(positive, "positive", "Consumer and producer price measures are both cooling across their latest source periods, reducing one macro pressure point.", "BLS");
+      if (inflationDir === "up") addFinding(negative, "negative", "Consumer and producer price measures are both rising across their latest source periods, keeping inflation pressure in the backdrop.", "BLS");
+      if (laborDir === "stronger") addFinding(positive, "positive", "Labor data are broadly firmer, which supports demand but can also keep rate pressure alive.", "BLS");
+      if (laborDir === "weaker") addFinding(negative, "negative", "Labor data are broadly weakening, which can pressure cyclical demand expectations.", "BLS");
+      if (laborDir === "mixed") addFinding(conflict, "conflict", "Labor measures are not telling one clean story, so Soulaana should not force a single macro label.", "BLS");
+    }
+
+    if (treasury && treasury.state === "SOURCE_BOUND" && treasury.rates && treasury.rates.state === "SOURCE_BOUND") {
+      const d = treasury.rates.derived || {};
+      const tenChange = Number(d.ten_year_change_bp);
+      if (Number.isFinite(tenChange)) {
+        yieldDir = tenChange > 0 ? "up" : tenChange < 0 ? "down" : "flat";
+        if (sensitivity.rateSensitive && tenChange < 0) addFinding(positive, "positive", "The latest 10-year Treasury move is lower, which eases one valuation headwind for rate-sensitive businesses.", "U.S. Treasury");
+        if (sensitivity.rateSensitive && tenChange > 0) addFinding(negative, "negative", "The latest 10-year Treasury move is higher, which raises one valuation headwind for rate-sensitive businesses.", "U.S. Treasury");
+      }
+      if (d.curve_change) addFinding(watch, "neutral", "Watch whether the Treasury curve keeps " + String(d.curve_change).replaceAll("_"," ").toLowerCase() + " at the next official close.", "U.S. Treasury");
+    }
+
+    if (bea && bea.state === "SOURCE_BOUND" && Array.isArray(bea.macro_series)) {
+      const growth = bea.macro_series.find(x => x.series_id === "real_gdp_growth");
+      const obs = growth && growth.observations;
+      if (Array.isArray(obs) && obs.length >= 2) {
+        const d = direction(obs[0].value, obs[1].value);
+        if (d === "up" && sensitivity.cyclical) addFinding(positive, "positive", "Real GDP growth accelerated in the latest BEA comparison, a supportive cyclical backdrop.", "BEA");
+        if (d === "down" && sensitivity.cyclical) addFinding(negative, "negative", "Real GDP growth slowed in the latest BEA comparison, a softer cyclical backdrop.", "BEA");
+      }
+    }
+
+    const cats = catalystPacket && Array.isArray(catalystPacket.sources) ? catalystPacket.sources : [];
+    const eia = sourceRow(cats, "eia", "source");
+    const fedreg = sourceRow(cats, "federal_register", "source");
+    const cftc = sourceRow(cats, "cftc", "source");
+    if (eia && eia.state === "SOURCE_BOUND" && sensitivity.energySensitive) {
+      addFinding(watch, "neutral", "Energy inventory data are live in the context stack; the direction matters more for this industry than for the average symbol.", "EIA");
+    }
+    if (fedreg && fedreg.state === "SOURCE_BOUND" && Array.isArray(fedreg.facts) && fedreg.facts.length) {
+      addFinding(watch, "neutral", "Recent SEC-related Federal Register activity is present. It is policy context, not proof that this issuer is directly affected.", "Federal Register");
+    }
+    if (cftc && cftc.state === "SOURCE_BOUND") {
+      addFinding(watch, "neutral", "Futures positioning context is available, but it is not issuer-specific and should be treated as backdrop only.", "CFTC");
+    }
+
+    const sec = secPacket && secPacket.room === "symbol_page" ? secPacket : null;
+    if (sec) {
+      const events = Array.isArray(sec.issuer_events) ? sec.issuer_events : [];
+      const fundamentals = sec.fundamentals || {};
+      if (events.length) addFinding(watch, "neutral", events.length + " recent cited issuer event(s) are attached to this symbol and deserve direct review.", "SEC EDGAR");
+      if (fundamentals.state === "SOURCE_BOUND") {
+        addFinding(agreement, "agree", "Issuer filing facts are source-bound and can be checked against the market/macro story instead of relying on price alone.", "SEC EDGAR");
+      }
+    }
+
+    if (inflationDir === "down" && yieldDir === "down") addFinding(agreement, "agree", "Cooling price measures and lower long yields are directionally consistent with easing rate pressure.", "BLS + Treasury");
+    if (inflationDir === "up" && yieldDir === "up") addFinding(agreement, "agree", "Rising price measures and higher long yields are directionally consistent with persistent rate pressure.", "BLS + Treasury");
+    if (inflationDir === "down" && yieldDir === "up") addFinding(conflict, "conflict", "Price measures are cooling while long yields moved higher. Those signals do not support one simple macro story.", "BLS + Treasury");
+    if (inflationDir === "up" && yieldDir === "down") addFinding(conflict, "conflict", "Price measures are rising while long yields moved lower. The macro evidence is pulling in different directions.", "BLS + Treasury");
+
+    const support = positive.length, pressure = negative.length;
+    let headline = "Mixed evidence · keep investigating";
+    if (support >= pressure + 2) headline = "Evidence is leaning supportive, with caveats";
+    else if (pressure >= support + 2) headline = "Evidence is leaning pressured, with caveats";
+    else if (support && pressure) headline = "Support and pressure are both present";
+    else if (support) headline = "Some supportive evidence is present";
+    else if (pressure) headline = "Some pressure is present";
+
+    const summary = support + " supportive factor" + (support === 1 ? "" : "s") +
+      ", " + pressure + " pressure factor" + (pressure === 1 ? "" : "s") +
+      ", " + conflict.length + " conflict" + (conflict.length === 1 ? "" : "s") +
+      ". This is a research synthesis, not a trade recommendation.";
+
+    if (!why.length) why.push("The connected evidence does not yet establish enough company/industry sensitivity to say which macro lanes matter most.");
+    addFinding(watch, "neutral", "Re-check the current quote, the next completed session, any new SEC filing/event, and the next major macro/rates update before treating the read as stable.", "Soulaana");
+
+    set("symbolImpactHeadline", headline);
+    set("symbolImpactSummary", summary);
+    set("symbolImpactWhy", why.join(" "));
+    renderList("symbolImpactTailwinds", positive, "No clear source-backed tailwind is established yet.");
+    renderList("symbolImpactHeadwinds", negative, "No clear source-backed headwind is established yet.");
+    renderList("symbolImpactAgreement", agreement, "Independent evidence has not formed a strong agreement cluster yet.");
+    renderList("symbolImpactConflict", conflict, "No material cross-source conflict is visible yet.");
+    renderList("symbolImpactWatch", watch, "No additional evidence checkpoint is available yet.");
+
+    const soulaanaSees = byId("symbolSoulaanaSees");
+    const soulaanaMeans = byId("symbolSoulaanaMeans");
+    const soulaanaCaution = byId("symbolSoulaanaCaution");
+    const soulaanaNext = byId("symbolSoulaanaNext");
+    if (soulaanaSees) soulaanaSees.textContent = headline + ". " + summary;
+    if (soulaanaMeans) soulaanaMeans.textContent = why.join(" ");
+    if (soulaanaCaution) soulaanaCaution.textContent = conflict.length
+      ? conflict[0].text + " I am keeping that disagreement visible instead of smoothing it over."
+      : "Evidence can agree and still be incomplete. Missing current options/liquidity or issuer-specific evidence stays missing.";
+    if (soulaanaNext) soulaanaNext.textContent = watch.length ? watch[0].text : "Wait for the next source-backed update.";
+  }
+
   function hydrateHeroFromAlpaca(row) {
     if (!row || row.state !== "SOURCE_BOUND") return;
     const q = row.quote || {};
@@ -76,7 +276,7 @@
 
     if (alpaca && alpaca.state === "SOURCE_BOUND") {
       const q = alpaca.quote || {}, b = alpaca.bar || {};
-      set("symbolResearchMarketTitle", "Alpaca IEX · current");
+      
       set("symbolResearchMarket",
         "Bid " + fmt(q.bid) + " · Ask " + fmt(q.ask) + " · Mid " + fmt(q.midpoint) +
         " · minute close " + fmt(b.close) + " · minute volume " + fmt(b.volume, 0) +
@@ -84,36 +284,36 @@
       hydrateHeroFromAlpaca(alpaca);
     } else if (finazon && finazon.state === "SOURCE_BOUND") {
       const t = finazon.last_trade || {}, s = finazon.session || {};
-      set("symbolResearchMarketTitle", "Finazon · current context");
+      
       set("symbolResearchMarket",
         "Last source trade " + fmt(t.price) + " · session " + fmt(s.l) + "–" + fmt(s.h) +
         " · daily change " + pct(finazon.daily_change_percent) +
         " · 52-week range " + fmt(finazon.low_52w) + "–" + fmt(finazon.high_52w) + ".");
     } else {
-      set("symbolResearchMarketTitle", "Current market lane held");
+      
       set("symbolResearchMarket", "Neither Alpaca nor Finazon returned source-bound current context for this symbol.");
     }
 
     if (finnhub && finnhub.state === "SOURCE_BOUND") {
-      set("symbolResearchCompanyTitle", finnhub.security_name || ticker);
+      
       const bits = [finnhub.industry, finnhub.exchange, finnhub.ipo_date && ("IPO " + finnhub.ipo_date)].filter(Boolean);
       set("symbolResearchCompany", bits.join(" · ") || "Company profile returned without extra classification.");
       if (finnhub.security_name) set("symbolCompany", finnhub.security_name);
       if (finnhub.industry) set("symbolSector", finnhub.industry);
     } else {
-      set("symbolResearchCompanyTitle", "Company profile held");
+      
       set("symbolResearchCompany", "Finnhub did not return a source-bound profile for this symbol.");
     }
 
     if (alpha && alpha.state === "SOURCE_BOUND" && Array.isArray(alpha.bars) && alpha.bars.length) {
       const latest = alpha.bars[0], prior = alpha.bars[1];
-      set("symbolResearchHistoryTitle", "Alpha Vantage · completed sessions");
+      
       set("symbolResearchHistory",
         latest.session_date + " close " + fmt(latest.close) +
         (prior ? " · prior " + prior.session_date + " close " + fmt(prior.close) : "") +
         " · completed-session history only.");
     } else {
-      set("symbolResearchHistoryTitle", "History lane held");
+      
       set("symbolResearchHistory", "Alpha Vantage completed-session history is unavailable or held.");
     }
 
@@ -126,40 +326,17 @@
       const p = prices && prices.observations && prices.observations[0];
       const n = nominal && nominal.observations && nominal.observations[0];
       const r = real && real.observations && real.observations[0];
-      set("symbolResearchMacroTitle", "BEA · U.S. economy");
+      
       set("symbolResearchMacro",
         (g ? "Real GDP growth " + g.value + "% (" + g.period + "). " : "") +
         (p ? "GDP price change " + p.value + "% (" + p.period + "). " : "") +
         (n ? "Nominal GDP " + n.value + " " + nominal.unit + ". " : "") +
         (r ? "Real GDP " + r.value + " " + real.unit + "." : ""));
     } else {
-      set("symbolResearchMacroTitle", "BEA macro lane held");
+      
       set("symbolResearchMacro", "No source-bound BEA macro context is available.");
     }
 
-    const mount = byId("symbolResearchSoulaana");
-    if (mount) {
-      mount.replaceChildren();
-      const observations = packet.soulaana_research && Array.isArray(packet.soulaana_research.observations)
-        ? packet.soulaana_research.observations : [];
-      observations.forEach(item => {
-        const card = document.createElement("article");
-        card.className = "ob-symbol-research-note";
-        const title = document.createElement("strong");
-        title.textContent = String(item.provider || "source").toUpperCase();
-        card.append(title, paragraph(item.finding || "No finding supplied."));
-        if (item.why_it_matters) card.append(paragraph("Why it matters · " + item.why_it_matters, "ob-symbol-research-muted"));
-        if (Array.isArray(item.what_would_confirm) && item.what_would_confirm.length) {
-          card.append(paragraph("Would confirm · " + item.what_would_confirm.join(" "), "ob-symbol-research-muted"));
-        }
-        if (Array.isArray(item.what_would_conflict) && item.what_would_conflict.length) {
-          card.append(paragraph("Would conflict · " + item.what_would_conflict.join(" "), "ob-symbol-research-muted"));
-        }
-        if (item.what_is_missing) card.append(paragraph("Still missing · " + item.what_is_missing, "ob-symbol-research-hold"));
-        mount.append(card);
-      });
-      if (!observations.length) mount.append(paragraph("No connected provider content is cleared for explanation right now.", "ob-symbol-research-muted"));
-    }
     return rows.filter(row => row && row.state === "SOURCE_BOUND").length;
   }
 
@@ -176,10 +353,10 @@
       const parts = bls.series.filter(x => x && x.state === "SOURCE_BOUND").map(x =>
         x.label + " " + x.value + (x.unit === "percent" ? "%" : "") + " (" + x.period + ")"
       );
-      set("symbolResearchBlsTitle", "BLS · labor + inflation");
+      
       set("symbolResearchBls", parts.join(" · ") || "BLS returned no displayable reviewed series.");
     } else {
-      set("symbolResearchBlsTitle", "BLS lane held");
+      
       set("symbolResearchBls", "CPI, unemployment, payrolls and PPI are unavailable or held.");
     }
 
@@ -217,18 +394,18 @@
           parts.push("10Y breakeven approximation " + derived.ten_year_breakeven_percent + "%");
         }
       }
-      set("symbolResearchTreasuryTitle", "U.S. Treasury");
+      
       set("symbolResearchTreasury", parts.join(" · "));
     } else {
-      set("symbolResearchTreasuryTitle", "Treasury lane held");
+      
       set("symbolResearchTreasury", "Debt and rate context are unavailable or held.");
     }
 
     if (figi && figi.state === "SOURCE_BOUND" && figi.value) {
-      set("symbolResearchFigiTitle", "OpenFIGI · matched");
+      
       set("symbolResearchFigi", ticker + " maps to FIGI " + figi.value + ". Reference identity only; not issuer verification or market data.");
     } else {
-      set("symbolResearchFigiTitle", "OpenFIGI · " + String((figi && figi.state) || "held").replaceAll("_"," "));
+      
       set("symbolResearchFigi", "No unambiguous reviewed FIGI mapping is available.");
     }
     return rows.filter(row => row && row.state === "SOURCE_BOUND").length;
@@ -293,14 +470,16 @@
     }
 
     const total = providerCount + publicCount + catalystCount;
-    set("symbolResearchStatus",
-      total + " source-backed research lane" + (total === 1 ? "" : "s") +
-      " feeding this room · provider + public reference + catalyst context.");
-    set("symbolResearchFreshness", live ? "Current + deep research" : "Deep research");
+    const providerPacket = results[0].status === "fulfilled" ? results[0].value : null;
+    const keylessPacket = results[1].status === "fulfilled" ? results[1].value : null;
+    const catalystPacket = results[2].status === "fulfilled" ? results[2].value : null;
+    buildImpact(providerPacket, keylessPacket, catalystPacket, serverResearch(), ticker);
+    set("symbolImpactFreshness", live ? "Current + fused context" : "Fused research context");
 
     if (!total) {
-      set("symbolResearchStatus", "Research routes answered, but no reviewed source returned source-bound content. No gaps were filled with guesses.");
-      set("symbolResearchFreshness", "Research held");
+      set("symbolImpactHeadline", "Evidence is held");
+      set("symbolImpactSummary", "The research routes answered, but no reviewed source returned source-bound content. I am not filling those gaps with guesses.");
+      set("symbolImpactFreshness", "Research held");
     }
   }
 
