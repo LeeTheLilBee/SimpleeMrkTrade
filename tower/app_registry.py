@@ -156,7 +156,7 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
             "Teller owns financial and capacity readiness; Grounds owns "
             "owned-property operations; Vault proof is mediated by Tower."
         ),
-    ),,
+    ),
     TowerAppRegistration(
         app_id="simplee_on_the_go",
         app_name="SimpleeOnTheGo",
@@ -315,7 +315,7 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation="Simplee Skincare is registered for future protected Tower entry.",
-    )
+    ),
 )
 
 
