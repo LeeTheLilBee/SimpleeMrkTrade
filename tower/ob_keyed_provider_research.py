@@ -674,6 +674,26 @@ def create_keyed_provider_research_blueprint(*, owner_authorize, secret_reader, 
             )
         except ValueError:
             abort(400)
+        states = {
+            row.get("provider"): {
+                "state": row.get("state"),
+                "display": row.get("owner_display_reviewed") is True,
+                "soulaana": row.get("soulaana_ai_use_reviewed") is True,
+            }
+            for row in payload.get("provider_research", [])
+        }
+        readable = [
+            row.get("provider")
+            for row in payload.get("soulaana_research", {}).get("observations", [])
+            if isinstance(row, dict)
+        ]
+        print(
+            "[OB_PROVIDER_RESEARCH_STATE] symbol="
+            + str(payload.get("symbol"))
+            + " states=" + json.dumps(states, sort_keys=True)
+            + " soulaana_observations=" + json.dumps(readable),
+            flush=True,
+        )
         response = make_response(jsonify(payload))
         response.headers["Cache-Control"] = "private, no-store"
         response.headers["Vary"] = "Cookie"
