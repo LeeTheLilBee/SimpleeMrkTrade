@@ -501,103 +501,21 @@
   </aside>
 
 
-  <!-- =========================================================================================== -->
-  <!-- LEGACY / PROOF COMPATIBILITY MOUNT
-       Existing proof/rehearsal/manual-live scripts remain loaded.
-       Their old surfaces do NOT become the canonical beta-facing room.
-  ============================================================================================ -->
-
-  <section
-    id="obtc-proof-compatibility"
-    hidden
-    aria-hidden="true"
-  >
-    <div id="tradeCenterMount"></div>
-  </section>
 
 </main>
 
 
-<!-- CANONICAL DATA / OPTIONS -->
-<script src="{{ url_for('static', filename='ob/ob_options_research_contract.js') }}"></script>
-
-<script src="{{ url_for('static', filename='ob/ob_manual_live.js') }}"></script>
+<!-- CANONICAL HOSTED TRADE CENTER
+     Keep this room intentionally small. Historical proof/rehearsal assets stay
+     in source control and their dedicated test surfaces; they do not execute
+     on every owner Trade Center visit. -->
 <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_notifications_settings.js') }}?v=obux086090"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_readiness.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_visual_consistency.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_snapshot_display.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_room_data_polish.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_candidate_cards.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_receipts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_tester_ops.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_qa.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_expansion.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_diagnostics.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_trust_labels.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_room_mapping.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_source_audit.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_launch_control.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_invite_packet.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_feedback_intake.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_feedback_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_session_runbook.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_issue_triage.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_session_closeout.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_fix_verification.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_next_tester_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_level1_operating_room.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_receipts_review_foundation.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_tower_lock_polish.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_safety_preflight_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_decision_packet.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_broker_checklist_fill_capture.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_position_monitor_exit_close_capture.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_final_trade_review_performance_receipt.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_l1_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_rehearsal_engine.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_record_contracts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_review_center_rehearsal_command_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_input_persistence_prep.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_tower_step_up_enforcement_prep.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_real_candidate_rehearsal_adapter.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_owner_rehearsal_final_readiness.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_quality_freshness_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_pre_live_lock_wall.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_persistence_adapter_dry_run.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_loop_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_session_detail_drawer.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_lesson_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_loop_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_repetition_metrics_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_review_polish_guidance.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_focus_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_review_compact_snapshot.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_review_polish_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_step_confidence_checklist.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_scenario_confidence_review.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_improvement_plan.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_persistence.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_history_review.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_receipts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_proof_packet_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_evidence_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_candidate_decision_handoff.js') }}"></script>
-<script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
-<script src="/static/ob/ob_manual_live_dry_run_outcome_finalization.js"></script>
-
-<!-- CANONICAL TRADE CENTER -->
+<script src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}?v=hostedlean001"></script>
 <script src="{{ url_for('static', filename='ob/ob_trade_center_modes.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_trade_center.js') }}"></script>
-
+<script src="{{ url_for('static', filename='ob/ob_trade_center.js') }}?v=hostedlean001"></script>
 <script src="/static/ob/ob_session_state.js"></script>
 <script src="/static/ob/ob_global_session_shell.js"></script>
-  <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
-  <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
+<script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
+<script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
 </body>
 </html>
