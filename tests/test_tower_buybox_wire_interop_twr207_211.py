@@ -103,8 +103,14 @@ def test_public_issuer_unconditionally_blocked_even_on_forged_green_preflight(mo
         wire.issue_current_owner_buybox_handoff()
 
 
-def test_no_live_route_or_entitlement_manufactured():
-    assert route_by_path("/tower/launch/buybox") is None
+def test_launch_gate_exists_without_manufacturing_product_entitlement():
+    launch = route_by_path("/tower/launch/buybox")
+    assert launch is not None
+    assert launch["owner_only"] is True
+    assert launch["requires_owner_session"] is True
+    assert launch["requires_step_up"] is True
+    assert launch["lock_state"] == "protected_fail_closed_launch_gate"
+    assert route_by_path("/buybox") is None
     truth = app_truth_by_id("buybox")
     assert truth is not None
     assert truth["launchable"] is False
