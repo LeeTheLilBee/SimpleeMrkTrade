@@ -8,7 +8,7 @@ def test_symbol_top_cards_are_hydrated_from_provider_research_and_cache_is_buste
     script = (ROOT / "web/static/ob/ob_symbol_research.js").read_text()
     provider = (ROOT / "tower/ob_keyed_provider_research.py").read_text()
 
-    assert "/static/ob/ob_symbol_research.js?v=symboltop002" in template
+    assert "/static/ob/ob_symbol_research.js?v=publicoptions005" in template
     assert "hydrateTopSymbolFacts(" in script
     assert 'byId("symbolUnderlyingMetrics")' in script
     assert 'byId("symbolStarFacts")' in script
