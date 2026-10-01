@@ -36,3 +36,9 @@ def test_ob_settings_control_room_is_plain_language_and_real():
     assert 'id="symbolCompanyProfileCard"' in symbol_template
     assert "company_profile" in symbol
     assert "symbolCompanyDescription" in symbol
+    assert 'id="symbolGovernmentCompanySummary"' in symbol_template
+    assert 'id="symbolGovernmentCompanyFacts"' in symbol_template
+    assert 'id="symbolGovernmentRelevance"' in symbol_template
+    assert "function governmentCompanyDossier" in symbol
+    assert "SEC official identity + reviewed research sources" in symbol
+    assert "governmentDossier" in symbol

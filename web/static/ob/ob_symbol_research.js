@@ -163,7 +163,7 @@
     });
   }
 
-  function buildImpact(providerPacket, keylessPacket, catalystPacket, secPacket, ticker) {
+  function buildImpact(providerPacket, keylessPacket, catalystPacket, secPacket, ticker, governmentDossier) {
     const positive = [], negative = [], agreement = [], conflict = [], watch = [];
     const why = [];
     const providerRows = providerPacket && Array.isArray(providerPacket.provider_research)
@@ -369,15 +369,24 @@
     const soulaanaCaution = byId("symbolSoulaanaCaution");
     const soulaanaNext = byId("symbolSoulaanaNext");
 
+    const governmentSee = governmentDossier && governmentDossier.official_summary
+      ? governmentDossier.official_summary : "";
+    const governmentMeaning = governmentDossier && governmentDossier.relevance_summary
+      ? governmentDossier.relevance_summary : "";
+
     if (soulaanaSees) {
-      soulaanaSees.textContent = translated.length
-        ? translated.slice(0, 3).join(" ")
-        : headline + ". " + summary;
+      const parts = [];
+      if (governmentSee) parts.push(governmentSee);
+      if (translated.length) parts.push(translated.slice(0, 2).join(" "));
+      else parts.push(headline + ". " + summary);
+      soulaanaSees.textContent = parts.join(" ");
     }
     if (soulaanaMeans) {
-      soulaanaMeans.textContent = meanings.length
-        ? meanings.slice(0, 3).join(" ")
-        : why.join(" ");
+      const parts = [];
+      if (governmentMeaning) parts.push(governmentMeaning);
+      if (meanings.length) parts.push(meanings.slice(0, 2).join(" "));
+      else if (why.length) parts.push(why.join(" "));
+      soulaanaMeans.textContent = parts.join(" ");
     }
     if (soulaanaCaution) {
       if (heldForSoulaana.length) {
@@ -432,6 +441,129 @@
     v.textContent = value == null || value === "" ? "—" : String(value);
     item.append(l, v);
     return item;
+  }
+
+
+  function governmentCompanyDossier(providerPacket, keylessPacket, catalystPacket, secPacket, ticker, settings) {
+    const providerRows = providerPacket && Array.isArray(providerPacket.provider_research)
+      ? providerPacket.provider_research : [];
+    const finnhub = sourceRow(providerRows, "finnhub");
+    const alpha = sourceRow(providerRows, "alpha_vantage");
+    const alphaProfile = alpha && alpha.state === "SOURCE_BOUND" && alpha.company_profile &&
+      typeof alpha.company_profile === "object" ? alpha.company_profile : null;
+    const industry = (finnhub && finnhub.industry) ||
+      (alphaProfile && (alphaProfile.industry || alphaProfile.sector));
+    const sensitivity = sectorSensitivity(industry);
+
+    const identity = secPacket && secPacket.identity && typeof secPacket.identity === "object"
+      ? secPacket.identity : null;
+
+    if (identity && settings && settings.show_company_background !== false) {
+      const cardNode = byId("symbolCompanyProfileCard");
+      if (cardNode) cardNode.hidden = false;
+      if (identity.security_name) {
+        set("symbolCompany", identity.security_name);
+        const currentProfileName = byId("symbolCompanyProfileName");
+        if (currentProfileName && (!currentProfileName.textContent || currentProfileName.textContent === "Who is this company?")) {
+          set("symbolCompanyProfileName", identity.security_name);
+        }
+      }
+      set("symbolCompanyProfileTrust", "SEC official identity + reviewed research sources");
+    }
+    const fundamentals = secPacket && secPacket.fundamentals && typeof secPacket.fundamentals === "object"
+      ? secPacket.fundamentals : null;
+    const events = secPacket && Array.isArray(secPacket.issuer_events) ? secPacket.issuer_events : [];
+    const secExam = secPacket && secPacket.soulaana_sec_examination &&
+      typeof secPacket.soulaana_sec_examination === "object"
+      ? secPacket.soulaana_sec_examination : null;
+
+    const publicRows = keylessPacket && Array.isArray(keylessPacket.sources)
+      ? keylessPacket.sources : [];
+    const bls = sourceRow(publicRows, "bls", "source");
+    const treasury = sourceRow(publicRows, "treasury", "source");
+
+    const providerBea = sourceRow(providerRows, "bea");
+    const catalysts = catalystPacket && Array.isArray(catalystPacket.sources)
+      ? catalystPacket.sources : [];
+    const federalRegister = sourceRow(catalysts, "federal_register", "source");
+    const eia = sourceRow(catalysts, "eia", "source");
+
+    const officialBits = [];
+    const dossierFacts = [];
+    if (identity) {
+      if (identity.security_name) officialBits.push("SEC identifies " + ticker + " as " + identity.security_name);
+      if (identity.cik) dossierFacts.push(fact("SEC CIK", identity.cik));
+      if (identity.exchange_code) dossierFacts.push(fact("SEC exchange", identity.exchange_code));
+      if (identity.identity_status) dossierFacts.push(fact("SEC identity", String(identity.identity_status).replaceAll("_", " ")));
+    }
+    if (fundamentals && fundamentals.state === "SOURCE_BOUND") {
+      const concepts = Array.isArray(fundamentals.reported_concepts) ? fundamentals.reported_concepts : [];
+      dossierFacts.push(fact("SEC filing facts", String(concepts.length) + " attached"));
+      officialBits.push(concepts.length + " source-bound SEC financial fact" + (concepts.length === 1 ? "" : "s") + " attached");
+    }
+    if (events.length) {
+      dossierFacts.push(fact("Recent SEC events", String(events.length)));
+      const latest = events[0];
+      if (latest && latest.accepted_at) dossierFacts.push(fact("Latest SEC event", latest.accepted_at));
+      officialBits.push(events.length + " recent cited SEC filing/event" + (events.length === 1 ? "" : "s") + " attached");
+    }
+    if (secExam && secExam.state === "SOURCE_BOUND" && Array.isArray(secExam.findings)) {
+      dossierFacts.push(fact("Soulaana-reviewed SEC facts", String(secExam.findings.length)));
+    }
+
+    const relevant = [];
+    if (sensitivity.rateSensitive) {
+      relevant.push(treasury && treasury.state === "SOURCE_BOUND"
+        ? "Treasury rates are live and relevant because this business is rate-sensitive."
+        : "Treasury rates matter to this business, but the current official rate context is not source-bound.");
+    }
+    if (sensitivity.cyclical) {
+      const pieces = [];
+      if (bls && bls.state === "SOURCE_BOUND") pieces.push("BLS");
+      if (providerBea && providerBea.state === "SOURCE_BOUND") pieces.push("BEA");
+      relevant.push(
+        pieces.length
+          ? pieces.join(" + ") + " are active because this business is economically cyclical."
+          : "BLS/BEA growth and labor context matter to this cyclical business, but they are not currently source-bound."
+      );
+    }
+    if (sensitivity.energySensitive) {
+      relevant.push(
+        eia && eia.state === "SOURCE_BOUND"
+          ? "EIA energy inventory context is active because this industry has direct energy sensitivity."
+          : "EIA energy data would matter here, but the current EIA lane is not source-bound."
+      );
+    }
+    if (federalRegister && federalRegister.state === "SOURCE_BOUND") {
+      relevant.push("Federal Register SEC-related activity is available as regulatory backdrop; it is not treated as proof that this issuer is directly affected.");
+    }
+    if (!relevant.length) {
+      relevant.push("The current company classification does not justify forcing a special Treasury, BLS/BEA, or EIA sensitivity label.");
+    }
+
+    const summary = officialBits.length
+      ? officialBits.join(". ") + "."
+      : "SEC issuer evidence is not attached to this Symbol read, so OB will not invent an official issuer dossier.";
+
+    set("symbolGovernmentCompanySummary", summary);
+    set("symbolGovernmentRelevance", relevant.join(" "));
+    const mount = byId("symbolGovernmentCompanyFacts");
+    if (mount) {
+      if (dossierFacts.length) mount.replaceChildren(...dossierFacts.slice(0, 10));
+      else mount.replaceChildren();
+    }
+
+    return {
+      official_summary: summary,
+      relevance_summary: relevant.join(" "),
+      sec_identity_attached: !!identity,
+      sec_fundamentals_attached: !!(fundamentals && fundamentals.state === "SOURCE_BOUND"),
+      sec_events_attached: events.length,
+      treasury_relevant: sensitivity.rateSensitive,
+      cyclical_government_context_relevant: sensitivity.cyclical,
+      energy_government_context_relevant: sensitivity.energySensitive,
+      federal_register_available: !!(federalRegister && federalRegister.state === "SOURCE_BOUND"),
+    };
   }
 
   function hydrateTopSymbolFacts(packet, ticker, settings) {
@@ -834,7 +966,10 @@
     const catalystPacket = results[2].status === "fulfilled" ? results[2].value : null;
     const secPacket = serverResearch();
     const active = filteredPackets(providerPacket, keylessPacket, catalystPacket, secPacket, settings);
-    buildImpact(active.provider, active.keyless, active.catalysts, active.sec, ticker);
+    const governmentDossier = governmentCompanyDossier(
+      active.provider, active.keyless, active.catalysts, active.sec, ticker, settings
+    );
+    buildImpact(active.provider, active.keyless, active.catalysts, active.sec, ticker, governmentDossier);
     renderSourceAccounting(providerPacket, keylessPacket, catalystPacket, secPacket);
 
     if (settings.soulaana_show_missing === false) {

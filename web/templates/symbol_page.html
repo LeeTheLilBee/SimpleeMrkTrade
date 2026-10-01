@@ -141,6 +141,22 @@
       </div>
 
       <div id="symbolCompanyProfileFacts" class="ob-symbol-facts"></div>
+
+      <div class="ob-symbol-impact-wide">
+        <article>
+          <span class="ob-symbol-eyebrow">OFFICIAL / GOVERNMENT DOSSIER</span>
+          <p id="symbolGovernmentCompanySummary">
+            Waiting for SEC identity, filing, and government-context evidence.
+          </p>
+          <div id="symbolGovernmentCompanyFacts" class="ob-symbol-facts"></div>
+        </article>
+        <article>
+          <span class="ob-symbol-eyebrow">WHY THE GOVERNMENT DATA MATTERS HERE</span>
+          <p id="symbolGovernmentRelevance">
+            Waiting for the company classification before applying macro, rates, energy, and regulatory context.
+          </p>
+        </article>
+      </div>
     </section>
 
     <section class="ob-symbol-grid ob-symbol-grid--lead">
@@ -572,6 +588,6 @@
 {% if ob_research_context is defined and ob_research_context.get('room') == 'symbol_page' %}
 <script id="symbolServerResearch" type="application/json">{{ ob_research_context|tojson }}</script>
 {% endif %}
-<script defer src="/static/ob/ob_symbol_research.js?v=companyprofile006"></script>
+<script defer src="/static/ob/ob_symbol_research.js?v=governmentdossier007"></script>
 </body>
 </html>
