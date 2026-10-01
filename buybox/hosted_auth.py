@@ -52,6 +52,21 @@ def prepare_hosted_runtime(config):
             "provider_certification_independently_verified_here":False,
             "may_deploy_without_review":False}
 
+def exact_tower_bootstrap_transport(request, *, tower_origin, buybox_origin):
+    """Allow only Tower-origin POST into the non-session bootstrap surface."""
+    supplied=request.headers.get("Origin","")
+    tower=urlsplit(tower_origin)
+    buybox=urlsplit(buybox_origin)
+    return bool(
+        supplied==tower_origin
+        and tower.scheme=="https"
+        and buybox.scheme=="https"
+        and request.scheme=="https"
+        and request.host.lower()==buybox.netloc.lower()
+        and request.path=="/tower/bootstrap"
+        and not request.args
+    )
+
 def exact_receiver_origin(request, configured_origin):
     """Do not trust arbitrary forwarded headers or permit cross-origin posts."""
     supplied = request.headers.get("Origin","")
