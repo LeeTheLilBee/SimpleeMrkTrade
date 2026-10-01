@@ -75,6 +75,15 @@
         safeContract.watchlist
       );
 
+    const providerNames = new Set();
+    safeArray(safeContract.symbols).forEach(function (row) {
+      if (!row || typeof row !== "object") return;
+      safeArray(row.source_coverage).forEach(function (provider) {
+        if (typeof provider === "string" && provider) providerNames.add(provider);
+      });
+    });
+    const providerCount = providerNames.size;
+
 
     if (
       !safeProjection.display_eligible
@@ -281,7 +290,7 @@
           +
           sectors
           +
-          " sector group"
+          " source region"
           +
           (
             sectors === 1
@@ -289,7 +298,7 @@
               : "s"
           )
           +
-          " and "
+          ", "
           +
           symbols
           +
@@ -301,16 +310,20 @@
               : "s"
           )
           +
-          "."
+          (providerCount
+            ? " across " + providerCount + " provider lane" + (providerCount === 1 ? "" : "s") + "."
+            : ".")
         ),
 
       what_it_means:
         (
-          "This map shows where OB currently has source-backed "
+          "This map shows where OB currently has source-backed market context. "
           +
-          "market context. It is not a prediction, ranking, "
+          "When more than one provider covers a symbol, I keep those observations "
           +
-          "or automatic trade instruction."
+          "separate and compare them instead of letting one provider overwrite the others. "
+          +
+          "It is not a prediction, ranking, or automatic trade instruction."
         ),
 
       what_changed:
