@@ -37,7 +37,7 @@ EXPLANATIONS = {
 
 
 def build_soulaana_provider_status(packet: Mapping) -> dict:
-    """Allow only the exact non-promoting Tower status document and ten lanes."""
+    """Allow only the exact non-promoting Tower status document and twelve lanes."""
     if (
         not isinstance(packet, dict)
         or packet.get("schema") != "OB_TOWER_PROVIDER_CONNECTION_TRUTH_V1"
@@ -96,7 +96,7 @@ def build_soulaana_provider_status(packet: Mapping) -> dict:
     return {
         "schema": "OB_SOULAANA_PROVIDER_CONNECTION_STATUS_V1",
         "channel": "SOULAANA_CONNECTION_STATUS_ONLY",
-        "what_i_see": "I can see eleven separately labeled provider connection and rights-review states from Tower.",
+        "what_i_see": "I can see twelve separately labeled provider connection and rights-review states from Tower.",
         "what_it_means": "Credential receipt, a read-only probe, source configuration and Public account linkage are different steps; none independently supplies a licensed current market feed.",
         "what_is_missing": "Approved instrument/product data rights, provider provenance, permitted owner display/AI use, verified current prices and execution authority remain separate.",
         "next_step": "Use the protected Market Data Desk for credential checks and source review. Resolve Public's account linkage with Public; do not invent an account ID or substitute historical data for a live quote.",
