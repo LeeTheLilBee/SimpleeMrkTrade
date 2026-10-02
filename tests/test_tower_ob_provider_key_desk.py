@@ -53,7 +53,7 @@ def test_owner_only_get_does_not_create_source_or_make_provider_calls(env):
     page = client.get(desk.PATH)
     assert page.status_code == 200
     assert b"Finnhub" in page.data and b"Alpha Vantage" in page.data
-    assert b"Finazon" in page.data and b"U.S. EIA" in page.data and b"U.S. BEA" in page.data and b"Alpaca" in page.data
+    assert b"Finazon" in page.data and b"Twelve Data" in page.data and b"U.S. EIA" in page.data and b"U.S. BEA" in page.data and b"Alpaca" in page.data
     assert b"SEC EDGAR" in page.data and b"Public" in page.data
     assert calls == []
     assert memory.status("tower_session_synthetic_only_123456789")[0]["present"] is False
@@ -216,6 +216,12 @@ def test_fixed_official_probe_endpoints_and_sanitized_response():
     assert desk.probe_one("finazon", "PRIVATE_FINAZON_TEST", opener=finazon) == "READ_ONLY_CHECK_PASSED"
     assert "finazon/us_stocks_essential/api_usage" in finazon.requests[0].full_url
     assert "PRIVATE_FINAZON_TEST" in finazon.requests[0].full_url
+    twelve = _FakeOpener({"plan": "Basic", "current_usage": 1})
+    assert desk.probe_one("twelve_data", "PRIVATE_TWELVE_TEST", opener=twelve) == "READ_ONLY_CHECK_PASSED"
+    assert twelve.requests[0].full_url.startswith("https://api.twelvedata.com/api_usage?")
+    assert "PRIVATE_TWELVE_TEST" in twelve.requests[0].full_url
+    twelve_error = _FakeOpener({"status": "error", "code": 401, "message": "bad key"})
+    assert desk.probe_one("twelve_data", "PRIVATE_TWELVE_TEST", opener=twelve_error) == "ACCESS_REJECTED"
     eia = _FakeOpener({"response": {"routes": [{"id": "retail-sales"}]}})
     assert desk.probe_one("eia", "PRIVATE_EIA_TEST", opener=eia) == "READ_ONLY_CHECK_PASSED"
     assert eia.requests[0].full_url.startswith("https://api.eia.gov/v2/electricity?")
