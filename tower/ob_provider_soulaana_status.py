@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-ORDER = ("public", "finnhub", "alpha_vantage", "finazon", "eia", "bea", "alpaca", "sec", "bls", "treasury", "openfigi")
+ORDER = ("public", "finnhub", "alpha_vantage", "finazon", "twelve_data", "eia", "bea", "alpaca", "sec", "bls", "treasury", "openfigi")
 KEY_STATES = frozenset({"READ_ONLY_CHECK_PASSED", "TEMPORARY_KEY_RECEIVED", "NOT_CONFIGURED"})
 PUBLIC_STATES = frozenset({
     "TEMPORARY_ACCOUNT_LINK_VERIFIED", "OWNER_SELECTION_REQUIRED",
@@ -19,7 +19,7 @@ REFERENCE_STATES = frozenset({"USE_AND_OWNER_DISPLAY_CONFIGURED", "RIGHTS_REVIEW
 SEC_STATES = frozenset({"SEPARATE_ISSUER_RESEARCH_CONFIGURED", "RIGHTS_REVIEW_HOLD"})
 NAMES = {
     "public": "Public", "finnhub": "Finnhub", "alpha_vantage": "Alpha Vantage",
-    "finazon": "Finazon", "eia": "U.S. EIA", "bea": "U.S. BEA", "alpaca": "Alpaca",
+    "finazon": "Finazon", "twelve_data": "Twelve Data", "eia": "U.S. EIA", "bea": "U.S. BEA", "alpaca": "Alpaca",
     "sec": "SEC EDGAR", "bls": "BLS", "treasury": "U.S. Treasury", "openfigi": "OpenFIGI",
 }
 EXPLANATIONS = {
@@ -64,13 +64,13 @@ def build_soulaana_provider_status(packet: Mapping) -> dict:
         state = row.get("state")
         allowed = (
             PUBLIC_STATES if key == "public" else
-            KEY_STATES if key in {"finnhub", "alpha_vantage", "finazon", "eia", "bea", "alpaca"} else
+            KEY_STATES if key in {"finnhub", "alpha_vantage", "finazon", "twelve_data", "eia", "bea", "alpaca"} else
             SEC_STATES if key == "sec" else REFERENCE_STATES
         )
         if (
             not isinstance(state, str) or state not in allowed
             or row.get("quote_feed_activated") is not False
-            or (key in {"public", "finnhub", "alpha_vantage", "finazon", "eia", "bea", "alpaca"} and (
+            or (key in {"public", "finnhub", "alpha_vantage", "finazon", "twelve_data", "eia", "bea", "alpaca"} and (
                 row.get("source_use_rights_verified") is not False
                 or row.get("data_display_rights_verified") is not False
             ))
