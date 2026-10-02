@@ -1,0 +1,1210 @@
+{
+  "pack": "TWR176-TWR180",
+  "parent": "780014d06244d3a787f62a4a0e2daf8e9ceea041",
+  "scope": "Tracked repository text, post-change. Classification is a review aid, not certification of every referenced workflow.",
+  "all_repository_staging_removed": false,
+  "external_host_settings_verified": false,
+  "references": [
+    {
+      "path": "deploy/managed_staging/test_managed_staging_build_ready.py",
+      "lines": [
+        6,
+        19
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "deploy/managed_staging/test_managed_staging_health_ready.py",
+      "lines": [
+        3,
+        6,
+        11,
+        20,
+        28
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "deploy/managed_staging/test_managed_staging_start_ready.py",
+      "lines": [
+        10,
+        14,
+        18,
+        28
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "engine_v2/stagger_engine.py",
+      "lines": [
+        30
+      ],
+      "classification": "other_tracked_reference_requires_scope_review"
+    },
+    {
+      "path": "integration_checkpoints/20260714t202118z/04_gp052_evidence_binding_preparation.json",
+      "lines": [
+        59,
+        72,
+        75
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260714t202118z/50_gp051_completed_rehearsal_verification.json",
+      "lines": [
+        129,
+        134
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260714t202118z/integration_state.json",
+      "lines": [
+        64
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/RESUME_TOMORROW.md",
+      "lines": [
+        12
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp052_evidence_binding_continuation/gp052_continuation_prepared_20260715T012531Z.json",
+      "lines": [
+        25,
+        30
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/current_gp053_section_state.json",
+      "lines": [
+        9,
+        11,
+        13
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/step020_deployment_inputs/current_step020_state.json",
+      "lines": [
+        3,
+        9
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/step020_deployment_inputs/gp053_deployment_inputs_classified.json",
+      "lines": [
+        26,
+        32,
+        33,
+        39,
+        40,
+        74,
+        75,
+        76,
+        89,
+        90,
+        91,
+        96,
+        97,
+        98,
+        103,
+        108,
+        109,
+        110,
+        123,
+        127,
+        130,
+        132,
+        134
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/step021_deployment_specification/current_step021_state.json",
+      "lines": [
+        4,
+        10
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/step021_deployment_specification/gp053_managed_staging_deployment_specification.json",
+      "lines": [
+        18,
+        25,
+        32,
+        34,
+        42,
+        60,
+        63,
+        67,
+        68,
+        72,
+        82,
+        85,
+        90,
+        95,
+        102,
+        114
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/step022_no_deploy_rehearsal/gp053_no_deploy_rehearsal_completed.json",
+      "lines": [
+        50,
+        97
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/step023_gp053_closeout/current_step023_state.json",
+      "lines": [
+        11,
+        12
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_deployment_preparation_closeout/step023_gp053_closeout/gp053_deployment_preparation_closed.json",
+      "lines": [
+        25,
+        26,
+        30,
+        57,
+        58,
+        62,
+        63,
+        67,
+        90
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_managed_staging_environment_definition/current_gp053_environment_definition_state.json",
+      "lines": [
+        3,
+        6,
+        8,
+        9,
+        12
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_managed_staging_environment_definition/gp053_managed_staging_environment_defined_20260715T031014Z.json",
+      "lines": [
+        7,
+        9,
+        13,
+        16,
+        35
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_managed_staging_environment_definition/gp053_managed_staging_environment_definition_20260715T031014Z.json",
+      "lines": [
+        4,
+        11,
+        17,
+        18,
+        19,
+        28,
+        29,
+        35,
+        40,
+        2689,
+        2691,
+        2715,
+        2727,
+        2809,
+        2819,
+        2824,
+        2829
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_readiness_contract_implementation/current_gp053_readiness_contract_state.json",
+      "lines": [
+        10,
+        11
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_readiness_contract_implementation/gp053_readiness_contract_implemented_20260715T030137Z.json",
+      "lines": [
+        6,
+        7,
+        10,
+        18,
+        20
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_readiness_contract_implementation/gp053_readiness_package_20260715T030137Z.json",
+      "lines": [
+        2,
+        6,
+        7,
+        10,
+        41,
+        44,
+        47,
+        49,
+        50,
+        58,
+        59,
+        60,
+        61,
+        104,
+        107,
+        136,
+        139,
+        163,
+        166,
+        175,
+        176,
+        188,
+        190,
+        191,
+        192,
+        193,
+        195,
+        196,
+        207,
+        210,
+        216,
+        222,
+        228,
+        232,
+        262,
+        263,
+        269
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_scope_definition/current_gp053_scope_state.json",
+      "lines": [
+        6
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/evidence/gp053_scope_definition/gp053_scope_defined_20260715T024234Z.json",
+      "lines": [
+        13,
+        31,
+        35,
+        63,
+        65,
+        82,
+        90,
+        91,
+        98,
+        102,
+        105
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "integration_checkpoints/20260715T044400Z_tower_ob_safe_stop/resume_checkpoint.json",
+      "lines": [
+        12,
+        115,
+        150,
+        155,
+        160
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_candidate_release_gate_twr091_095.json",
+      "lines": [
+        20
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_candidate_release_gate_twr091_095_handoff.md",
+      "lines": [
+        45
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_owner_readiness_walkthrough_twr111_115.json",
+      "lines": [
+        17,
+        70,
+        71
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_owner_readiness_walkthrough_twr111_115_handoff.md",
+      "lines": [
+        18
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_owner_release_review_twr096_100.json",
+      "lines": [
+        32
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_owner_release_review_twr096_100_handoff.md",
+      "lines": [
+        46
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_owner_verification_prerequisite_certification_twr116_120.json",
+      "lines": [
+        41,
+        42
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_owner_verification_prerequisite_certification_twr116_120_handoff.md",
+      "lines": [
+        37
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_runtime_identity_twr081_085.json",
+      "lines": [
+        14,
+        21
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_runtime_identity_twr081_085_handoff.md",
+      "lines": [
+        15,
+        25,
+        41,
+        59,
+        63
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_runtime_parity_twr086_090.json",
+      "lines": [
+        11,
+        41,
+        56
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_hosted_runtime_parity_twr086_090_handoff.md",
+      "lines": [
+        7,
+        63,
+        80,
+        94,
+        123,
+        126
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_ob_protected_route_failclosed_repair.json",
+      "lines": [
+        21
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_owner_release_review_room_twr101_105.json",
+      "lines": [
+        33
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_owner_release_review_room_twr101_105_handoff.md",
+      "lines": [
+        16
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_release_candidate_publication_state_twr106_110.json",
+      "lines": [
+        48
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "ob_evidence/owner_experience_simplification/tower_release_candidate_publication_state_twr106_110_handoff.md",
+      "lines": [
+        27
+      ],
+      "classification": "historical_evidence_or_documentation"
+    },
+    {
+      "path": "tests/test_tower_hosted_candidate_release_gate_twr091_095.py",
+      "lines": [
+        31,
+        58,
+        232
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tests/test_tower_hosted_owner_readiness_walkthrough_twr111_115.py",
+      "lines": [
+        51,
+        67,
+        351,
+        419,
+        445,
+        447,
+        453,
+        462,
+        463,
+        500
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tests/test_tower_hosted_owner_release_review_twr096_100.py",
+      "lines": [
+        58,
+        81
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tests/test_tower_hosted_owner_verification_prerequisite_certification_twr116_120.py",
+      "lines": [
+        59,
+        75,
+        483,
+        609,
+        911
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tests/test_tower_hosted_runtime_parity_twr086_090.py",
+      "lines": [
+        595
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tests/test_tower_owner_release_review_room_twr101_105.py",
+      "lines": [
+        43,
+        59
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tests/test_tower_release_candidate_publication_state_twr106_110.py",
+      "lines": [
+        55,
+        71
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/hosted_candidate_release_gate.py",
+      "lines": [
+        9,
+        235,
+        351,
+        479,
+        517,
+        608
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/hosted_owner_release_readiness.py",
+      "lines": [
+        73,
+        77,
+        197,
+        223,
+        257,
+        261,
+        266,
+        283,
+        294,
+        308,
+        310,
+        322,
+        327
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/hosted_owner_release_review.py",
+      "lines": [
+        4,
+        51
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/hosted_release_packet_provider.py",
+      "lines": [
+        95,
+        165
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/hosted_release_prerequisite_certification.py",
+      "lines": [
+        69,
+        187,
+        236,
+        261,
+        283,
+        304,
+        385,
+        387
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/hosted_runtime_parity.py",
+      "lines": [
+        19,
+        322,
+        767
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/test_tower_app_registry_v2.py",
+      "lines": [
+        84
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_ob_six_room_acceptance_handoff.py",
+      "lines": [
+        16,
+        34,
+        52,
+        102,
+        108,
+        127,
+        164
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_observatory_walkthrough_activation_approval.py",
+      "lines": [
+        75
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_observatory_walkthrough_deployment_boundary.py",
+      "lines": [
+        96,
+        138
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_owner_beta_control_room.py",
+      "lines": [
+        4,
+        5,
+        10,
+        14,
+        32,
+        33,
+        41,
+        42,
+        43,
+        53,
+        57,
+        132,
+        152,
+        162
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_owner_beta_control_room_routes.py",
+      "lines": [
+        42
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_owner_beta_route_gate.py",
+      "lines": [
+        79
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_owner_console_v1.py",
+      "lines": [
+        66
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2543.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2544.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2545.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2546.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2547.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2548.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2549.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2550.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2551.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2552.py",
+      "lines": [
+        48,
+        57
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2553.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2554.py",
+      "lines": [
+        10,
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2555.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2556.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2557.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2558.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2559.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2560.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2561.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/test_tower_pack_2562.py",
+      "lines": [
+        13
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "tower/tower_ir_cert_p2554.py",
+      "lines": [
+        2
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/tower_ob_six_room_acceptance_handoff.py",
+      "lines": [
+        14,
+        166,
+        173,
+        190,
+        240,
+        246,
+        293,
+        313,
+        413,
+        419,
+        457,
+        517,
+        518,
+        827,
+        834
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/tower_observatory_walkthrough_deployment_boundary.py",
+      "lines": [
+        60
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "tower/tower_owner_beta_control_room.py",
+      "lines": [
+        5,
+        30,
+        31,
+        44,
+        113,
+        115,
+        131,
+        132,
+        133,
+        136,
+        379,
+        380,
+        385,
+        388,
+        669,
+        676,
+        697,
+        701
+      ],
+      "classification": "retained_receipt_schema_safety_contract_or_historical_proof_review"
+    },
+    {
+      "path": "vault/controlled_packet_assembly_readiness_checkpoint_service.py",
+      "lines": [
+        101,
+        102,
+        103,
+        107,
+        108,
+        109
+      ],
+      "classification": "vault_receipt_workflow_or_other_component_review"
+    },
+    {
+      "path": "vault/owner_decision_review_service.py",
+      "lines": [
+        196,
+        311,
+        687,
+        742,
+        760,
+        1228
+      ],
+      "classification": "vault_receipt_workflow_or_other_component_review"
+    },
+    {
+      "path": "vault/receipt_close_summary_service.py",
+      "lines": [
+        8,
+        22,
+        49,
+        105,
+        106,
+        112,
+        113,
+        148,
+        150,
+        164,
+        359,
+        365,
+        1372,
+        1409
+      ],
+      "classification": "vault_receipt_workflow_or_other_component_review"
+    },
+    {
+      "path": "vault/receipt_review_close_staging_service.py",
+      "lines": [
+        2,
+        8,
+        9,
+        19,
+        20,
+        50,
+        54,
+        55,
+        104,
+        106,
+        117,
+        118,
+        133,
+        139,
+        177,
+        183,
+        192,
+        193,
+        264,
+        267,
+        268,
+        276,
+        286,
+        304,
+        321,
+        322,
+        325,
+        326,
+        371,
+        396,
+        398,
+        399,
+        455,
+        735,
+        767,
+        775,
+        785,
+        818,
+        828,
+        860,
+        870,
+        900,
+        903,
+        904,
+        925,
+        928,
+        939,
+        999,
+        1004,
+        1007,
+        1076,
+        1080,
+        1105,
+        1110,
+        1123,
+        1132,
+        1388,
+        1390,
+        1415,
+        1427,
+        1436,
+        1437,
+        1462
+      ],
+      "classification": "vault_receipt_workflow_or_other_component_review"
+    },
+    {
+      "path": "vault/reviewed_decision_receipt_staging_service.py",
+      "lines": [
+        2,
+        8,
+        16,
+        17,
+        49,
+        50,
+        103,
+        114,
+        166,
+        172,
+        179,
+        180,
+        216,
+        249,
+        252,
+        253,
+        300,
+        303,
+        304,
+        337,
+        346,
+        368,
+        442,
+        494,
+        644,
+        646,
+        688,
+        723,
+        729,
+        788,
+        807,
+        855,
+        858,
+        940,
+        967,
+        1223,
+        1279
+      ],
+      "classification": "vault_receipt_workflow_or_other_component_review"
+    },
+    {
+      "path": "vault/test_vault_gp036.py",
+      "lines": [
+        472
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "vault/test_vault_gp037.py",
+      "lines": [
+        2,
+        9,
+        17,
+        19,
+        35,
+        38,
+        39,
+        78,
+        85,
+        86,
+        182,
+        225,
+        259,
+        309,
+        382,
+        448,
+        507,
+        528,
+        533,
+        534,
+        561,
+        564,
+        566,
+        588,
+        589,
+        613,
+        614,
+        636
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "vault/test_vault_gp038.py",
+      "lines": [
+        2,
+        9,
+        15,
+        18,
+        21,
+        36,
+        37,
+        40,
+        41,
+        83,
+        92,
+        93,
+        191,
+        193,
+        194,
+        247,
+        449,
+        517,
+        525,
+        526,
+        528,
+        549,
+        551,
+        554,
+        555,
+        556,
+        563,
+        564,
+        566,
+        618,
+        650,
+        655,
+        656,
+        664,
+        670,
+        686,
+        689,
+        691,
+        713,
+        714,
+        722,
+        740,
+        741,
+        749,
+        765
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "vault/test_vault_gp039.py",
+      "lines": [
+        35,
+        630
+      ],
+      "classification": "test_contract_or_fixture"
+    },
+    {
+      "path": "web/app.py",
+      "lines": [
+        31815,
+        31818,
+        31819,
+        31820,
+        31821,
+        31823,
+        31824,
+        31826,
+        31827,
+        31832,
+        31838,
+        31844,
+        31850,
+        31856,
+        31862,
+        31868,
+        31874,
+        31878,
+        32290,
+        32293,
+        32294,
+        32295,
+        32296,
+        32298,
+        32299,
+        32301,
+        32302,
+        32307,
+        32313,
+        32319,
+        32325,
+        32331,
+        32337,
+        32343,
+        32346,
+        32347,
+        32349,
+        32350,
+        32355,
+        32361,
+        32365
+      ],
+      "classification": "vault_receipt_workflow_or_other_component_review"
+    },
+    {
+      "path": "web/managed_staging.py",
+      "lines": [
+        8,
+        9
+      ],
+      "classification": "non_authoritative_compatibility_path"
+    },
+    {
+      "path": "web/test_managed_staging_entrypoint.py",
+      "lines": [
+        4,
+        6,
+        10
+      ],
+      "classification": "test_contract_or_fixture"
+    }
+  ]
+}

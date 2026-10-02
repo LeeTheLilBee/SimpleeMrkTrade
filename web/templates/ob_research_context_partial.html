@@ -1,0 +1,111 @@
+{# OBINTEL UI seam: render only a server-supplied, checked OB_RESEARCH_HANDOFF_V1.
+   No client-side market-data fetch, invented source, quote or trading action. #}
+{% if ob_research_context is defined and ob_research_context and
+      ob_research_context.get('schema') == 'OB_RESEARCH_HANDOFF_V1' and
+      ob_research_context.get('context_only') == true and
+      ob_research_context.get('may_authorize_order') == false and
+      ob_research_context.get('may_authorize_candidate') == false %}
+<section class="ob-research-context" aria-labelledby="obResearchContextTitle"
+         data-ob-research-room="{{ ob_research_context.get('room','')|e }}">
+  <div class="ob-research-context-head">
+    <div><span class="ob-research-kicker">SOURCE-BOUND · READ-ONLY</span>
+      <h2 id="obResearchContextTitle">Symbol research context</h2>
+      <p>Original evidence and completed-session history. Not a live quote, signal or permission.</p>
+    </div>
+    <span class="ob-research-badge">{{ ob_research_context.get('state','EVIDENCE_PENDING')|replace('_',' ')|e }}</span>
+  </div>
+  <div class="ob-research-context-grid">
+    <article>
+      <span>Issuer identity</span>
+      <strong>{{ ob_research_context.get('identity',{}).get('security_name') or ob_research_context.get('symbol','Unknown') }}</strong>
+      <small>CIK: {{ ob_research_context.get('identity',{}).get('cik') or 'Not verified' }}</small>
+    </article>
+    <article>
+      <span>Historical source</span>
+      <strong>{{ ob_research_context.get('history',{}).get('state','NOT_AVAILABLE')|replace('_',' ')|e }}</strong>
+      <small>
+        {% if ob_research_context.get('history',{}).get('bars_used') is not none %}
+        {{ ob_research_context.get('history',{}).get('bars_used') }} completed sessions ·
+        {% endif %}
+        {{ ob_research_context.get('history',{}).get('basis') or 'Basis unverified' }} · historical only
+      </small>
+    </article>
+    <article>
+      <span>Current-source research</span>
+      <strong>{{ ob_research_context.get('market_sources',{}).get('scanner_state','NOT_CONNECTED')|replace('_',' ')|e }}</strong>
+      <small>Broker-side quote verification and candidate admission remain separate.</small>
+    </article>
+    <article>
+      <span>Issuer disclosures</span>
+      <strong>{{ ob_research_context.get('fundamentals',{}).get('state','NOT_AVAILABLE')|replace('_',' ')|e }}</strong>
+      <small>{{ ob_research_context.get('issuer_events',[])|length }} cited issuer events in this bounded context.</small>
+    </article>
+  </div>
+  {% set sec_read = ob_research_context.get('soulaana_sec_examination', {}) %}
+  {% if sec_read.get('schema') == 'OB_SOULAANA_REVIEWED_SEC_EXAMINATION_V1'
+        and sec_read.get('symbol') == ob_research_context.get('symbol')
+        and sec_read.get('source_only') == true
+        and sec_read.get('live_quote_verified') == false
+        and sec_read.get('candidate_admitted') == false
+        and sec_read.get('broker_execution_authorized') == false %}
+  <div class="ob-research-detail" data-soulaana-sec-examination="{{ sec_read.get('state','NO_VERIFIED_REVIEWED_FACTS')|e }}">
+    <span class="ob-research-kicker">SOULAANA · SEC EVIDENCE EXAMINATION</span>
+    <h3>What I found in reviewed issuer records</h3>
+    {% if sec_read.get('state') == 'SOURCE_BOUND' %}
+      <p>These are source-reported filing facts with their periods and references. I cannot treat them as live prices, current trading signals or independently audited conclusions.</p>
+      {% for fact in sec_read.get('findings',[])[:6] %}
+      <article class="ob-research-event">
+        <strong>{{ fact.get('concept','Reported concept')|e }}: {{ fact.get('value')|e }} {{ fact.get('unit','')|e }}</strong>
+        <small>Fiscal end {{ fact.get('fiscal_end','')|e }} · {{ fact.get('filing_form','')|e }} · accepted {{ fact.get('accepted_at','')|e }}</small>
+        <p>{{ fact.get('meaning','')|e }}</p>
+        <code>{{ fact.get('source_reference','')|e }}</code>
+      </article>
+      {% endfor %}
+      {% for comp in sec_read.get('comparisons',[])[:3] %}
+      <article class="ob-research-event">
+        <strong>{{ comp.get('concept','Reported concept')|e }} · {{ comp.get('earlier_period','')|e }} → {{ comp.get('later_period','')|e }}</strong>
+        <p>{% if comp.get('reported_change_pct') is not none %}Reported period-relative change: {{ comp.get('reported_change_pct')|e }}%. {% else %}A numeric comparison was not available. {% endif %}{{ comp.get('meaning','')|e }}</p>
+        <code>{{ comp.get('earlier_source','')|e }} · {{ comp.get('later_source','')|e }}</code>
+      </article>
+      {% endfor %}
+    {% elif sec_read.get('state') == 'AI_RIGHTS_HOLD' %}
+      <p>Issuer evidence may be available to the owner, but separate SEC AI-explanation review is not active. I will not read or repeat those amounts.</p>
+    {% else %}
+      <p>No independently reviewed SEC financial facts are available to explain for this ticker.</p>
+    {% endif %}
+    <small>Source-specific deterministic explanation; no external model call, issuer-event AI-content inference, live quote or execution authority.</small>
+  </div>
+  {% endif %}
+  <details class="ob-research-disclosure">
+    <summary>What is verified, what is missing, and original evidence</summary>
+    <div class="ob-research-detail">
+      <p><strong>As of:</strong> {{ ob_research_context.get('as_of')|e }}</p>
+      <p>{{ ob_research_context.get('soulaana_context',{}).get('what_is_missing','Independent source review required.')|e }}</p>
+      <p>{{ ob_research_context.get('soulaana_context',{}).get('next_step','Review original evidence.')|e }}</p>
+      {% if ob_research_context.get('history',{}).get('snapshot_reference') %}
+      <p>Historical snapshot reference: <code>{{ ob_research_context.get('history',{}).get('snapshot_reference')|e }}</code></p>
+      {% endif %}
+      {% for event in ob_research_context.get('issuer_events',[])[:6] %}
+      <div class="ob-research-event">
+        <strong>{{ event.get('headline','Issuer event')|e }}</strong>
+        <small>{{ event.get('accepted_at','Source time unavailable')|e }}</small>
+        <code>{{ event.get('reference','No source reference')|e }}</code>
+      </div>
+      {% endfor %}
+      {% if ob_research_context.get('fundamentals',{}).get('reported_concepts') %}
+      <details class="ob-research-edgar" aria-label="Official EDGAR reported financial facts">
+        <summary>SEC EDGAR · reported financial facts</summary>
+        <p>Original issuer-reported concepts, fiscal periods, units and filing accessions. These are historical disclosures, never a live equity or option price.</p>
+        {% for fact in ob_research_context.get('fundamentals',{}).get('reported_concepts',[])[:8] %}
+        <div class="ob-research-event">
+          <strong>{{ fact.get('concept','Reported item')|e }} · {{ fact.get('value','—')|e }} {{ fact.get('units','')|e }}</strong>
+          <small>Period ending {{ fact.get('fiscal_end','Unknown')|e }} · {{ fact.get('form','SEC filing')|e }} · acceptance {{ fact.get('accepted_at','Unknown')|e }}</small>
+          <code>Accession: {{ fact.get('accession','Unavailable')|e }} · {{ fact.get('reference','Source reference unavailable')|e }}</code>
+        </div>
+        {% endfor %}
+      </details>
+      {% endif %}
+    </div>
+  </details>
+</section>
+{% endif %}

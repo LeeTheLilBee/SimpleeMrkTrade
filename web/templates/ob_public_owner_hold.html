@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connection held · OB Market Data Desk</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_public_owner_connection.css') }}">
+</head>
+<body>
+<main class="shell">
+  <nav><a href="/ob/data-desk">← Market Data Desk</a><a href="/tower/start">Tower landing</a></nav>
+  <div class="eyebrow">THE OBSERVATORY · SOULAANA · SAFE HOLD</div>
+  <h1>Connection <em>held.</em></h1>
+  <section class="card" role="alert">
+    <span class="tag hold">No Public authentication attempted</span>
+    <h2>{{ hold_code }}</h2>
+    <p>{{ hold_message }}</p>
+    <p>For your safety the submitted key has not been repeated on this screen. Do not send it through chat or screenshots.</p>
+    <p><a href="/ob/data-desk/public">Return to Public connection ↗</a></p>
+  </section>
+</main>
+</body>
+</html>

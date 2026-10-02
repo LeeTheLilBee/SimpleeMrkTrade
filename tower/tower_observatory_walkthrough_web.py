@@ -1867,6 +1867,11 @@ def walkthrough_open_real_surface(
 def _inject_real_surface_walkthrough_ui(
     response,
 ):
+    # TWR179: proof controls belong exclusively to the proof room.
+    if not (request.path == "/tower/observatory-walkthrough"
+            or request.path.startswith("/tower/observatory-walkthrough/")):
+        return response
+
     if response.status_code != 200:
         return response
 
@@ -3090,6 +3095,11 @@ def walkthrough_guided_reset():
 def _inject_guided_run_controls(
     response,
 ):
+    # TWR179: proof controls belong exclusively to the proof room.
+    if not (request.path == "/tower/observatory-walkthrough"
+            or request.path.startswith("/tower/observatory-walkthrough/")):
+        return response
+
     if response.status_code != 200:
         return response
 
@@ -3780,6 +3790,11 @@ def walkthrough_guided_history_verify_json(
 def _inject_guided_history_links(
     response,
 ):
+    # TWR179: proof controls belong exclusively to the proof room.
+    if not (request.path == "/tower/observatory-walkthrough"
+            or request.path.startswith("/tower/observatory-walkthrough/")):
+        return response
+
     if response.status_code != 200:
         return response
 

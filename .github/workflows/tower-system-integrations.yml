@@ -1,0 +1,300 @@
+name: Tower systems integration source contracts
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/grounds_runtime_receiver.py"
+      - "tower/grounds_operational_release.py"
+      - "tower/grounds_same_origin_mount.py"
+      - "tower/test_grounds_same_origin_mount.py"
+      - "tower/buybox_owner_handoff_issuer.py"
+      - "tower/test_grounds_runtime_integration.py"
+      - "tower/test_buybox_owner_handoff_issuer.py"
+      - "tower/ecosystem_direct_route_guard.py"
+      - "tower/ecosystem_owner_launch_gates.py"
+      - "tower/ecosystem_integration_desk.py"
+      - "tower/app_registry.py"
+      - "web/static/tower/buybox_bootstrap_launch.js"
+      - "docs/TOWER_BUYBOX_BROWSER_BOOTSTRAP_20261001.md"
+      - "tower/ecosystem_return_routes.py"
+      - "tower/test_ecosystem_navigation_guard.py"
+      - "tower/test_ecosystem_owner_launch_gates.py"
+      - "tower/test_ecosystem_integration_desk.py"
+      - "web/hosted_tower.py"
+      - "docs/TOWER_SYSTEM_INTEGRATIONS_20260928.md"
+      - "docs/TOWER_GROUNDS_SAME_ORIGIN_RUNTIME_20261001.md"
+      - ".github/workflows/tower-system-integrations.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/grounds_runtime_receiver.py"
+      - "tower/grounds_operational_release.py"
+      - "tower/grounds_same_origin_mount.py"
+      - "tower/test_grounds_same_origin_mount.py"
+      - "tower/buybox_owner_handoff_issuer.py"
+      - "tower/test_grounds_runtime_integration.py"
+      - "tower/test_buybox_owner_handoff_issuer.py"
+      - "tower/ecosystem_direct_route_guard.py"
+      - "tower/ecosystem_owner_launch_gates.py"
+      - "tower/ecosystem_integration_desk.py"
+      - "tower/app_registry.py"
+      - "web/static/tower/buybox_bootstrap_launch.js"
+      - "docs/TOWER_BUYBOX_BROWSER_BOOTSTRAP_20261001.md"
+      - "tower/ecosystem_return_routes.py"
+      - "tower/test_ecosystem_navigation_guard.py"
+      - "tower/test_ecosystem_owner_launch_gates.py"
+      - "tower/test_ecosystem_integration_desk.py"
+      - "web/hosted_tower.py"
+      - "docs/TOWER_SYSTEM_INTEGRATIONS_20260928.md"
+      - "docs/TOWER_GROUNDS_SAME_ORIGIN_RUNTIME_20261001.md"
+      - ".github/workflows/tower-system-integrations.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  fail-closed-crossings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - uses: actions/checkout@v4
+        with:
+          ref: f690e998a077154265eab5969c64147fd2b95517
+          path: _buybox_contract
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: grounds-resident-operations-grd001-005
+          path: _grounds_contract
+          persist-credentials: false
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - run: python -m pip install -r _buybox_contract/buybox/requirements.txt
+      - run: python -m compileall -q tower/grounds_runtime_receiver.py tower/grounds_operational_release.py tower/grounds_same_origin_mount.py tower/buybox_owner_handoff_issuer.py tower/ecosystem_direct_route_guard.py tower/ecosystem_owner_launch_gates.py tower/ecosystem_integration_desk.py tower/ecosystem_return_routes.py tower/app_registry.py tower/test_grounds_runtime_integration.py tower/test_grounds_same_origin_mount.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py tower/test_ecosystem_owner_launch_gates.py tower/test_ecosystem_integration_desk.py web/hosted_tower.py
+      - run: python -m pytest -q tower/test_grounds_runtime_integration.py tower/test_grounds_same_origin_mount.py tower/test_buybox_owner_handoff_issuer.py tower/test_ecosystem_navigation_guard.py tower/test_ecosystem_owner_launch_gates.py tower/test_ecosystem_integration_desk.py
+      - run: node --check web/static/tower/buybox_bootstrap_launch.js
+      - name: Exact Tower issuer ↔ merged BuyBox receiver/bootstrap contract
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          from flask import Flask, request
+
+          sys.path.append(str(Path("_buybox_contract").resolve()))
+
+          from tower.buybox_owner_handoff_issuer import issue_buybox_owner_handoff
+          from buybox.tower_owner_receiver import verify_tower_buybox_owner_handoff
+          from buybox.hosted_auth import exact_tower_bootstrap_transport
+
+          secret="x"*64
+          session={
+              "authenticated":True,
+              "role":"owner",
+              "owner_id":"tower_owner_fixture_000000000001",
+              "tower_session_ref":"tower_session_fixture_000000000001",
+              "step_up_active":True,
+          }
+          identity={
+              "verification_state":"VERIFIED",
+              "record":{
+                  "person_id":"tower_person_fixture_000000000001",
+                  "account_id":"tower_account_fixture_000000000001",
+                  "organization":None,
+              },
+              "app_entitlements":[{
+                  "app_id":"buybox",
+                  "verification_state":"VERIFIED",
+                  "access_policy":"GRANTED",
+                  "source_id":"tower.identity.buybox.fixture_000001",
+              }],
+          }
+          issued=issue_buybox_owner_handoff(
+              session_context=session,
+              identity=identity,
+              app_truth={"launchable":True},
+              now_epoch=1_800_000_000,
+              shared_secret=secret,
+          )
+          verified=verify_tower_buybox_owner_handoff(
+              issued["token"], shared_secret=secret, now_epoch=1_800_000_001
+          )
+          assert verified.claims["tower_session_ref"]==session["tower_session_ref"]
+          assert verified.claims["target_path"]=="/"
+          assert verified.claims["return_path"]=="/tower/access-home"
+
+          app=Flask("tower-buybox-cross-contract")
+          with app.test_request_context(
+              "/tower/bootstrap",
+              base_url="https://buybox.example.invalid",
+              method="POST",
+              headers={"Origin":"https://tower.example.invalid"},
+          ):
+              assert exact_tower_bootstrap_transport(
+                  request,
+                  tower_origin="https://tower.example.invalid",
+                  buybox_origin="https://buybox.example.invalid",
+              ) is True
+          with app.test_request_context(
+              "/tower/bootstrap",
+              base_url="https://buybox.example.invalid",
+              method="POST",
+              headers={"Origin":"https://evil.example.invalid"},
+          ):
+              assert exact_tower_bootstrap_transport(
+                  request,
+                  tower_origin="https://tower.example.invalid",
+                  buybox_origin="https://buybox.example.invalid",
+              ) is False
+          print("Tower token and BuyBox merged bootstrap receiver contract agree.")
+          PY
+      - name: Exact current Tower ↔ current Grounds production contract
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+          import time
+          import types
+          from pathlib import Path
+          from flask import Flask
+
+          sys.path.append(str(Path("_grounds_contract").resolve()))
+
+          import tower.grounds_runtime_receiver as runtime
+          import tower.grounds_operational_release as release
+          import tower.grounds_same_origin_mount as mount
+          from grounds.access import TowerScope
+          import grounds.production_entry as production
+
+          now=int(time.time())
+          package=types.ModuleType("simplee_integrations")
+          package.__path__=[]
+          runtime_provider=types.ModuleType("simplee_integrations.ci_grounds_runtime")
+          runtime_provider.provider_attestation=lambda:{
+              "schema_version":runtime.ATTESTATION_SCHEMA,
+              "issuer":"tower","audience":"grounds",
+              "provider_id":"tower_grounds_ci_provider_000001",
+              "status":"VERIFIED","issued_at_epoch":now-5,"expires_at_epoch":now+60,
+              "revocation_checked":True,"session_binding_checked":True,
+              "resource_grants_checked":True,
+          }
+          runtime_provider.health_check=lambda:True
+          runtime_provider.verify_grounds_request=lambda ticket:ticket["claims"]
+          runtime_provider.list_ground_technicians=lambda **kwargs:[
+              {"staff_ref":"tower_staff_ci_technician_000001","label":"Synthetic technician"}
+          ]
+          runtime_provider.verify_ground_technician_assignment=lambda **kwargs:{
+              "claims":{
+                  "issuer":"tower","audience":"grounds",
+                  "subject_ref":kwargs["technician_ref"],
+                  "session_ref":"tower_session_ci_technician_000001",
+                  "role":"maintenance_technician",
+                  "property_refs":[kwargs["property_ref"]],"unit_refs":[],
+                  "assigned_work_refs":[kwargs["work_ref"]],
+                  "issued_at":now-5,"expires_at":now+60,
+              }
+          }
+          release_provider=types.ModuleType("simplee_integrations.ci_grounds_release")
+          release_provider.health_check=lambda:True
+          release_provider.current_release_decision=lambda:{
+              "schema_version":release.SCHEMA,
+              "issuer":"tower","audience":"grounds","status":"APPROVED",
+              "environment_id":"grounds_environment_ci_000001",
+              "revision_id":"grounds_revision_ci_000001",
+              "owner_acceptance_ref":"owner_acceptance_ci_000001",
+              "storage_restore_ref":"storage_restore_ci_000001",
+              "privacy_housing_review_ref":"privacy_review_ci_000001",
+              "operations_coverage_ref":"operations_coverage_ci_000001",
+              "issued_at_epoch":now-5,"expires_at_epoch":now+60,
+              "revocation_checked":True,
+          }
+          sys.modules["simplee_integrations"]=package
+          sys.modules[runtime_provider.__name__]=runtime_provider
+          sys.modules[release_provider.__name__]=release_provider
+          os.environ[runtime.PROVIDER_ENV]=runtime_provider.__name__
+          os.environ[release.PROVIDER_ENV]=release_provider.__name__
+
+          receiver=runtime.create_certified_grounds_receiver()
+          owner=receiver({"claims":{
+              "issuer":"tower","audience":"grounds",
+              "subject_ref":"tower_owner_ci_000001",
+              "session_ref":"tower_session_ci_owner_000001",
+              "role":"owner","property_refs":["grounds_property_ci_000001"],
+              "unit_refs":[],"assigned_work_refs":[],
+              "issued_at":now-5,"expires_at":now+60,
+          }})
+          assert isinstance(owner,TowerScope)
+          assert owner.role=="owner"
+          assert "grounds_property_ci_000001" in owner.property_refs
+          directory=runtime.create_certified_grounds_staff_directory()
+          resolver=runtime.create_certified_grounds_staff_resolver()
+          assert directory(owner,"grounds_property_ci_000001")[0]["staff_ref"]=="tower_staff_ci_technician_000001"
+          tech=resolver(owner,"grounds_property_ci_000001","grounds_work_ci_000001","tower_staff_ci_technician_000001")
+          assert isinstance(tech,TowerScope)
+          assert "grounds_work_ci_000001" in tech.assigned_work_refs
+          guard=release.create_certified_grounds_operational_release_guard()
+          assert guard.health_check() is True
+
+          class FakeStore:
+              pass
+          production.PostgresGroundsStore=lambda dsn:FakeStore()
+          def fake_web(store,**kwargs):
+              assert isinstance(store,FakeStore)
+              assert callable(kwargs["tower_receiver"])
+              assert callable(kwargs["staff_directory"])
+              assert callable(kwargs["staff_resolver"])
+              def app(environ,start_response):
+                  body=b'{"grounds":"ci"}'
+                  start_response("200 OK",[
+                      ("Content-Type","application/json"),
+                      ("Content-Length",str(len(body))),
+                  ])
+                  return [body]
+              return app
+          production.GroundsWebApp=fake_web
+          os.environ["GROUNDS_PRIVATE_POSTGRES_URL"]="postgresql://ci.invalid/grounds"
+          os.environ["GROUNDS_CSRF_SECRET_HEX"]=bytes(range(32)).hex()
+          composed=production.create_wsgi_application()
+          assert callable(composed)
+
+          os.environ[mount.ENABLE_ENV]="1"
+          app=Flask("tower-grounds-cross-contract")
+          mount.register_configured_grounds_same_origin_runtime(app)
+          assert app.extensions[mount.EXTENSION_KEY]["mounted"] is True
+          assert "/grounds" in {rule.rule for rule in app.url_map.iter_rules()}
+          print("Current Tower factories, current Grounds production factory, and same-origin mount agree.")
+          PY
+      - name: Hosted future-app routes never open by source registration alone
+        run: |
+          python - <<'PY'
+          from web.hosted_tower import app
+          client = app.test_client()
+          for path in ("/vault", "/clouds", "/grounds", "/buybox"):
+              response = client.get(path, follow_redirects=False)
+              assert response.status_code != 200, (path, response.status_code)
+          print("Hosted future-app routes remain fail-closed.")
+          PY
+      - name: Preserve fail-closed registry truth with real Tower gates
+        run: |
+          python - <<'PY'
+          from tower.app_registry import TOWER_APP_REGISTRY, route_by_path
+          expected = {
+              "grounds": "/tower/launch/grounds",
+              "buybox": "/tower/launch/buybox",
+          }
+          for app_id, route in expected.items():
+              app = next(x for x in TOWER_APP_REGISTRY if x.app_id == app_id)
+              assert app.app_status == "registered_future_room"
+              assert app.tower_launch_route == route
+              registered = route_by_path(route)
+              assert registered and registered["owner_only"] and registered["requires_step_up"]
+          print("Grounds and BuyBox have exact protected Tower gates but remain unreleased products.")
+          PY

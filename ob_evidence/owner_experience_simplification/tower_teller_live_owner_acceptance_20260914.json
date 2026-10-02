@@ -1,0 +1,84 @@
+{
+  "authority_expansion": {
+    "bank_authority_enabled": false,
+    "broker_execution_enabled": false,
+    "capital_movement_enabled": false,
+    "employee_teller_hosted_access_enabled": false,
+    "live_auto_authorized": false,
+    "manager_teller_hosted_access_enabled": false,
+    "manual_live_authorized": false,
+    "payroll_execution_enabled": false
+  },
+  "classification": "evidence_status_only",
+  "live_owner_acceptance": {
+    "expected_owner_experience_present": "verified",
+    "observatory_card_present": "verified",
+    "owner_report": "Completed the hosted walkthrough and confirmed everything expected was present.",
+    "teller_card_present": "verified",
+    "teller_owner_workspace": "verified",
+    "tower_access_home": "verified",
+    "tower_front_door": "verified",
+    "tower_login": "verified",
+    "tower_to_teller_crossing": "verified",
+    "verification_method": "real hosted owner browser walkthrough",
+    "witness": "Solice"
+  },
+  "receipt_version": "tower-teller-live-owner-acceptance.v1",
+  "recorded_at_utc": "2026-09-14T16:21:04.733185+00:00",
+  "result": "FIRST REAL HOSTED OWNER TOWER -> TELLER INTEGRATION ACCEPTED",
+  "scope": "Tower -> Teller hosted owner crossing",
+  "security_regression_acceptance": {
+    "active_step_up_requirement": "regression_verified",
+    "canonical_tower_front_door": "regression_verified",
+    "effective_teller_entitlement": "regression_verified",
+    "exact_cors_origin": "regression_verified",
+    "one_time_handoff": "regression_verified",
+    "owner_role_boundary": "regression_verified",
+    "owner_session_boundary": "regression_verified",
+    "raw_handoff_code_not_persisted": "regression_verified",
+    "replay_denial": "regression_verified",
+    "signed_access_receipt": "regression_verified",
+    "teller_runtime_publication_truth": "regression_verified",
+    "test_files": [
+      "tests/test_tower_owner_teller_handoff_twr188.py",
+      "tests/test_tower_teller_handoff_exchange_twr189.py",
+      "tests/test_tower_teller_activation_twr190.py",
+      "tests/test_teller_runtime_publication_authority_twr191.py",
+      "tests/test_tower_canonical_front_door_twr192.py"
+    ],
+    "wrong_origin_denied": "regression_verified"
+  },
+  "status": "LIVE_VERIFIED",
+  "teller_source": {
+    "render_deploy_id": "dep-dak0uj9g82ac73fsgib0",
+    "render_service": "simplee-teller",
+    "render_url": "https://simplee-teller.onrender.com",
+    "repository": "LeeTheLilBee/The-Teller",
+    "sealed_sha": "1b24db502bbf170b11c081b20b49b5640417b2e8"
+  },
+  "tower_source": {
+    "branch": "tower-hosted-runtime-identity-twr081-085",
+    "render_deploy_id": "dep-dak1lqqd0e5s738c7s1g",
+    "render_service": "simplee-tower-ob",
+    "render_url": "https://simplee-tower-ob.onrender.com",
+    "repository": "LeeTheLilBee/SimpleeMrkTrade",
+    "sealed_twr192_sha": "1cfe40a385710c292f49ca2db20428605a1d5b43"
+  },
+  "truth_boundary": {
+    "live_human_walkthrough_proves": [
+      "Tower is usable as the hosted front door",
+      "owner can authenticate into Tower",
+      "Access Home exposes the expected protected products",
+      "owner can cross from Tower into hosted Teller",
+      "real Teller owner workspace is reachable"
+    ],
+    "not_claimed": "No production handoff token was captured, stored, or replayed for this receipt.",
+    "regression_wall_proves": [
+      "one-time handoff semantics remain enforced",
+      "handoff replay is denied",
+      "active step-up remains required",
+      "wrong Teller origin is denied",
+      "sealed publication/front-door contracts still pass"
+    ]
+  }
+}

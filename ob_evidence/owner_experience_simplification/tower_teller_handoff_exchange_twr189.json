@@ -1,0 +1,22 @@
+{
+  "arbitrary_urls_allowed": false,
+  "effective_teller_entitlement": false,
+  "exact_origin_cors": true,
+  "exchange_path": "/tower/teller/exchange",
+  "exchange_version": "tower-teller-exchange.v1",
+  "name": "Tower Teller HTTP Exchange and Navigation Context",
+  "navigation_fields": [
+    "source_app",
+    "destination_app",
+    "destination",
+    "item_id",
+    "return_app",
+    "return_destination",
+    "correlation_id"
+  ],
+  "pack": "TWR189",
+  "raw_handoff_code_returned": false,
+  "sealed_parent": "9e39259943aa4e6e36708dba41f4e0d36fc56e0e",
+  "status": "source_ready_unsealed",
+  "wildcard_cors": false
+}

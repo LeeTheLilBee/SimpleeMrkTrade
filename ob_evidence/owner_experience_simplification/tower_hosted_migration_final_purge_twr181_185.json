@@ -1,0 +1,47 @@
+{
+  "branch": "tower-hosted-runtime-identity-twr081-085",
+  "created_at": "2026-09-08T15:54:47.304290+00:00",
+  "pack": "TWR181-TWR185",
+  "parent": "f96a1de2b83efa31b4c20bef9ff8066d5afec972",
+  "safety": {
+    "broker_submission": false,
+    "capital_movement": false,
+    "commit_performed": false,
+    "deployment_performed": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "promotion_performed": false,
+    "push_performed": false
+  },
+  "twr181": {
+    "retired_deployment_bundle_removed": true,
+    "retired_wsgi_compatibility_removed": true
+  },
+  "twr182": {
+    "canonical_build_command": "pip install -r deploy/hosted_tower/requirements.txt",
+    "canonical_entrypoint": "web.hosted_tower:app",
+    "canonical_service_name": "simplee-tower-ob",
+    "canonical_start_command": "bash deploy/hosted_tower/start.sh"
+  },
+  "twr183": {
+    "external_host_migrated": false,
+    "external_host_verified": false,
+    "live_host_verifier_installed": true
+  },
+  "twr184": {
+    "product_endpoint": "ob_dashboard_v16",
+    "product_path": "/ob/dashboard",
+    "protected_receive": "/tower/observatory/receive",
+    "tower_launch": "/tower/launch/observatory",
+    "walkthrough_separate": true
+  },
+  "twr185": {
+    "active_host_identity_audit": {
+      "active_failures": [],
+      "ok": true
+    },
+    "current_readiness_safety_field": "hosted_ready_changed",
+    "full_regression_wall_passed": true,
+    "root_release_chain_passed": true
+  }
+}

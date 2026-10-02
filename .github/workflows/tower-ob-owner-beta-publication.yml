@@ -1,0 +1,37 @@
+name: Tower OB owner-beta publication TWR-146
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/owner_observatory_handoff.py"
+      - "web/hosted_tower.py"
+      - "deploy/hosted_tower/**"
+      - "tests/test_hosted_ob_publication_observer.py"
+      - "tests/test_owner_observatory_launch_dimension_diagnostics.py"
+      - ".github/workflows/tower-ob-owner-beta-publication.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/owner_observatory_handoff.py"
+      - "web/hosted_tower.py"
+      - "deploy/hosted_tower/**"
+      - "tests/test_hosted_ob_publication_observer.py"
+      - "tests/test_owner_observatory_launch_dimension_diagnostics.py"
+      - ".github/workflows/tower-ob-owner-beta-publication.yml"
+
+jobs:
+  fail-closed-runtime-publication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: bash -n deploy/hosted_tower/start.sh
+      - run: python -m compileall -q tower/app_publication_authority.py tower/owner_observatory_handoff.py web/hosted_tower.py deploy/hosted_tower/ob_publication_observer.py
+      - run: python -m pip install "pytest>=8,<10"
+      - run: python -m pytest -q tests/test_hosted_ob_publication_observer.py tests/test_owner_observatory_launch_dimension_diagnostics.py

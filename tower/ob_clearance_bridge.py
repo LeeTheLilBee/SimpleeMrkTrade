@@ -23,6 +23,24 @@ def _safe_int(value: Any, default: int = 0) -> int:
 
 
 OB_ROUTE_CLEARANCE_CATALOG: Dict[str, Dict[str, Any]] = {
+    # Source-only Market Data Desk and exact protected owner Public connection
+    # share a narrow VIEW clearance policy. This does not authorize the POST:
+    # HTTP owner/step-up/OB admission, CSRF/origin and the separately default-off
+    # Public connection/quote rights gates remain mandatory at the web layer.
+    'data_desk': {
+        'route_id': '/ob/data-desk',
+        'label': 'Market Data Desk and Public owner connection',
+        'required_clearance_level': 'critical',
+        'allowed_actions': ['view'],
+        'plain': 'Owner view of the exact protected market-data corridor. No provider credential, market feed, order or capital authority is granted.',
+    },
+    'engine_feed_source_status': {
+        'route_id': '/ob/engine-feed-snapshot.json',
+        'label': 'Canonical OB Market Source Status',
+        'required_clearance_level': 'critical',
+        'allowed_actions': ['view'],
+        'plain': 'Owner-only source-backed market status and research projection. No broker, order, capital, candidate-admission, or mode authority is granted.',
+    },
     'dashboard': {
         'route_id': '/dashboard',
         'label': 'OB Dashboard',
@@ -228,7 +246,7 @@ def evaluate_ob_route_clearance(
             'risk_score': max(current_risk_score, 70),
             'required_actions': ['upgrade_clearance', 'owner_review'],
             'human_reason': 'User clearance is not high enough for this OB route/action.',
-            'soulaana_translation': f'Soulaana: {route.get('label')} needs {required_level} clearance. This user only has {user_clearance_level}.',
+            'soulaana_translation': f"Soulaana: {route.get('label')} needs {required_level} clearance. This user only has {user_clearance_level}.",
             'metadata': {
                 'user_id': user_id,
                 'route_key': route_key,
@@ -248,7 +266,7 @@ def evaluate_ob_route_clearance(
         'risk_score': current_risk_score,
         'required_actions': [],
         'human_reason': 'The Tower allowed this OB route/action.',
-        'soulaana_translation': f'Soulaana: {route.get('label')} is cleared for {action}. Keep moving, but stay inside the mapped corridor.',
+        'soulaana_translation': f"Soulaana: {route.get('label')} is cleared for {action}. Keep moving, but stay inside the mapped corridor.",
         'metadata': {
             'user_id': user_id,
             'role': role,

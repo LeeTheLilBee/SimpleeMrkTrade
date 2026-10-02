@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import re
+
 from flask import abort, redirect, request
 
 from tower.tower_human_login_ob_launch import (
+    operational_ob_access_active,
     owner_session_active,
     step_up_active,
 )
@@ -11,11 +14,33 @@ from tower.tower_human_login_ob_launch import (
 PROTECTED_EXACT_OB_ROUTES = frozenset(
     {
         "/ob/dashboard",
+        "/ob/settings",
+        "/ob/settings.json",
         "/ob/market-map",
+        "/ob/data-desk",
+        "/ob/data-desk/public",
+        "/ob/data-desk/api-keys",
+        "/ob/data-desk/connections.json",
+        "/ob/data-desk/event-traces.json",
+        "/ob/research/keyless.json",
+        "/ob/research/providers.json",
+        "/ob/research/catalysts.json",
+        # OBDATA009: exact private, read-only canonical source-status corridor.
+        "/ob/engine-feed-snapshot.json",
         "/ob/trade-center",
         "/ob/review-center",
         "/ob/owner-console",
         "/ob/owner-dashboard",
+        # OBSIM hosted synthetic owner rehearsal: exact enumerated paths only.
+        "/ob/owner-rehearsal",
+        "/ob/owner-rehearsal/status.json",
+        "/ob/owner-rehearsal/sample.json",
+        "/ob/owner-rehearsal/tick.json",
+        "/ob/owner-rehearsal/pause.json",
+        "/ob/owner-rehearsal/resume.json",
+        "/ob/owner-rehearsal/stop.json",
+        "/ob/owner-rehearsal/new.json",
+        "/ob/owner-rehearsal/evidence.json",
     }
 )
 
@@ -48,8 +73,11 @@ def is_approved_ob_web_room(path: str) -> bool:
         return True
 
     if path.startswith(PROTECTED_SYMBOL_PREFIX):
-        symbol = path[len(PROTECTED_SYMBOL_PREFIX):].strip()
-        return bool(symbol)
+        # Match the exact canonical ticker shape; nonempty alone let nested
+        # /ob/symbol/XYZ/secret enter the protected-room allowlist.
+        symbol = path[len(PROTECTED_SYMBOL_PREFIX):]
+        return bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9.-]{0,15}", symbol)
+                    and ".." not in symbol)
 
     return False
 
@@ -87,6 +115,15 @@ def register_ob_protected_route_enforcement(app):
         if not is_approved_ob_web_room(path):
             abort(403)
 
+        # Only the canonical feed URL may be read; no mutation or alias.
+        if path == "/ob/engine-feed-snapshot.json" and request.method not in {"GET", "HEAD"}:
+            abort(405)
+
+        # Keyless source context only supports a real authenticated GET. A HEAD
+        # must not accidentally execute paid/quota-limited provider fetches.
+        if path in {"/ob/settings.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json", "/ob/data-desk/connections.json", "/ob/data-desk/event-traces.json"} and request.method != "GET":
+            abort(405)
+
         if not owner_session_active():
             return redirect("/tower/login")
 
@@ -95,6 +132,9 @@ def register_ob_protected_route_enforcement(app):
 
         if not step_up_active():
             return redirect("/tower/access-home")
+
+        if not operational_ob_access_active():
+            return redirect("/tower/launch/observatory")
 
         return None
 

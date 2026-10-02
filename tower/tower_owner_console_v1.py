@@ -156,8 +156,8 @@ def owner_console_contract() -> Dict[str, Any]:
 def default_owner_approval_queue() -> List[Dict[str, Any]]:
     return [
         {
-            "id": "approval-ob-staging-visual-check",
-            "title": "Review Tower → OB walkthrough",
+            "id": "approval-ob-hosted-visual-check",
+            "title": "Review Tower → OB product landing",
             "summary": (
                 "Owner should visually confirm Access Home, OB launch, "
                 "and return-to-Tower behavior before integration acceptance."
@@ -168,8 +168,8 @@ def default_owner_approval_queue() -> List[Dict[str, Any]]:
             "dangerous": False,
         },
         {
-            "id": "approval-render-staging-redeploy-hold",
-            "title": "Hosted staging redeploy hold",
+            "id": "approval-render-hosted-redeploy-hold",
+            "title": "Hosted hosted redeploy hold",
             "summary": (
                 "Redeploy remains held until Tower and OB source changes "
                 "are integrated and commit-pinned."
@@ -213,7 +213,7 @@ def dangerous_action_reviews() -> List[Dict[str, Any]]:
         {
             "title": "Production deployment",
             "state": "held",
-            "reason": "Staging acceptance is not yet STAGING_READY.",
+            "reason": "Hosted acceptance is not yet HOSTED_READY.",
             "step_up_required": True,
             "separate_authorization_required": True,
         },
@@ -230,13 +230,13 @@ def dangerous_action_reviews() -> List[Dict[str, Any]]:
 def deployment_hold_panel() -> Dict[str, Any]:
     return {
         "decision": (
-            "HOSTED_STAGING_FUNCTIONAL_HOLD_FOR_OWNER_UI_"
+            "HOSTED_HOSTED_FUNCTIONAL_HOLD_FOR_OWNER_UI_"
             "SIMPLIFICATION_AND_TOWER_RETURN_REPAIR"
         ),
         "tower_ui_v2_source_closed": True,
         "ob_visual_simplification_pending": True,
         "integration_redeploy_pending": True,
-        "staging_ready": False,
+        "hosted_ready": False,
         "production_deployment_authorized": False,
         "custom_dns_authorized": False,
         "database_authorized": False,
@@ -427,7 +427,7 @@ def render_owner_console(payload: Mapping[str, Any]) -> str:
                     <div class="owner-hero-card">
                         <span>Current hold</span>
                         <strong>
-                            {"Staging hold" if not deployment.get("staging_ready") else "Ready"}
+                            {"Hosted hold" if not deployment.get("hosted_ready") else "Ready"}
                         </strong>
                         <small>
                             Integration redeploy:
@@ -511,8 +511,8 @@ def render_owner_console(payload: Mapping[str, Any]) -> str:
                             {escape(str(deployment.get("production_deployment_authorized", False)))}
                         </p>
                         <p>
-                            Staging ready:
-                            {escape(str(deployment.get("staging_ready", False)))}
+                            Hosted ready:
+                            {escape(str(deployment.get("hosted_ready", False)))}
                         </p>
                     </article>
                 </section>

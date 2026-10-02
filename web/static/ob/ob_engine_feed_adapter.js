@@ -17,8 +17,19 @@
   const ADAPTER_VERSION =
     "OB_V25_CANONICAL_WEB_PROJECTION_OBDATA003";
 
+  const configuredEndpoint =
+    (
+      typeof window.OB_ENGINE_FEED_ENDPOINT === "string"
+      ? window.OB_ENGINE_FEED_ENDPOINT.trim()
+      : ""
+    );
+
   const ENDPOINT =
-    "/ob/engine-feed-snapshot.json";
+    (
+      configuredEndpoint.startsWith("/ob/")
+      ? configuredEndpoint
+      : "/ob/engine-feed-snapshot.json"
+    );
 
   const POLL_MS =
     60 * 1000;
@@ -62,6 +73,10 @@
 
 
   let pollHandle =
+    null;
+
+
+  let inFlightFetch =
     null;
 
 
@@ -565,6 +580,11 @@
         payload
       );
 
+    // A protected route may exist while no authorized market-data provider is
+    // wired. A pending source is not the same as a fresh market snapshot.
+    const sourcePending =
+      safe.market_data_state === "provider_not_configured";
+
     // ----------------------------------------------------------------------------------------------
     // OBDATA007_OPTIONS_RESEARCH_PROJECTION
     //
@@ -688,7 +708,12 @@
       null;
 
 
-    if (
+    if (sourcePending) {
+      freshness = "unavailable";
+      projectionStatus = "unavailable";
+    }
+
+    else if (
       sourceType === "quarantined"
     ) {
       freshness =
@@ -891,6 +916,10 @@
       );
 
 
+    if (sourcePending) {
+      warnings.push("Market data provider not configured. Old universe seed data remains quarantined.");
+    }
+
     if (
       projectionStatus === "provenance_required"
     ) {
@@ -935,6 +964,9 @@
       projection_status:
         projectionStatus,
 
+      market_data_state:
+        sourcePending ? "provider_not_configured" : "source_bound",
+
       freshness,
 
       source,
@@ -965,6 +997,10 @@
 
       reason:
         (
+          sourcePending
+            ? safeText(safe.reason,
+                "No authorized market data source connected. The old seed snapshot remains unavailable.").slice(0, 400)
+            :
           projectionStatus === "fresh"
             ? "Source-backed engine snapshot is within its freshness window."
             :
@@ -1365,6 +1401,63 @@
   }
 
 
+  function preserveLastGoodProjection(reason) {
+    if (
+      !currentProjection
+      ||
+      currentProjection.display_eligible !== true
+      ||
+      !currentProjection.source
+      ||
+      !currentProjection.as_of
+    ) {
+      return null;
+    }
+
+    const warnings =
+      safeArray(
+        currentProjection.warnings
+      ).map(
+        item => String(item)
+      );
+
+    warnings.push(
+      reason
+      ||
+      "Tower verification interrupted refresh. Last source-backed projection is preserved as stale."
+    );
+
+    const preserved = {
+      ...clone(
+        currentProjection
+      ),
+
+      projection_status:
+        "stale",
+
+      freshness:
+        "stale",
+
+      current_eligible:
+        false,
+
+      display_eligible:
+        true,
+
+      reason:
+        reason
+        ||
+        "Tower verification interrupted refresh. Last source-backed projection is preserved as stale.",
+
+      warnings,
+    };
+
+    return exposeServerData(
+      preserved
+    );
+  }
+
+
   function unavailableFromHttp(
     status,
     reason
@@ -1400,7 +1493,7 @@
   }
 
 
-  async function fetchEngineSnapshot() {
+  async function fetchEngineSnapshotOnce() {
     adapterState.status =
       "loading";
 
@@ -1432,6 +1525,69 @@
 
       adapterState.httpStatus =
         response.status;
+
+      const contentType =
+        String(
+          response.headers.get("content-type")
+          ||
+          ""
+        ).toLowerCase();
+
+      const redirectedToTower =
+        response.redirected
+        ||
+        /\/tower\/(login|access-home|launch\/observatory|step-up\/observatory)/.test(
+          response.url
+          ||
+          ""
+        );
+
+      if (
+        redirectedToTower
+        ||
+        (
+          response.ok
+          &&
+          !contentType.includes("application/json")
+        )
+      ) {
+        const reason =
+          "Tower verification interrupted the market refresh. "
+          +
+          "The last source-backed projection is preserved as stale instead of blanking the room.";
+
+        const preserved =
+          preserveLastGoodProjection(
+            reason
+          );
+
+        if (preserved) {
+          adapterState.status =
+            preserved.projection_status;
+
+          adapterState.source =
+            preserved.source;
+
+          adapterState.payload =
+            preserved;
+
+          adapterState.error =
+            reason;
+
+          adapterState.fallbackActive =
+            false;
+
+          updateEngineBar();
+
+          return {
+            ...adapterState,
+          };
+        }
+
+        throw new Error(
+          "Tower verification required before the market feed can be read."
+        );
+      }
 
 
       if (response.ok) {
@@ -1488,28 +1644,53 @@
                 ". No preview data was substituted."
               );
 
-
-        const projected =
-          unavailableFromHttp(
-            response.status,
+        const preserved =
+          preserveLastGoodProjection(
             reason
+            +
+            " Last source-backed projection is preserved as stale."
           );
 
+        if (preserved) {
+          adapterState.status =
+            preserved.projection_status;
 
-        adapterState.status =
-          projected.projection_status;
+          adapterState.source =
+            preserved.source;
 
-        adapterState.source =
-          null;
+          adapterState.payload =
+            preserved;
 
-        adapterState.payload =
-          projected;
+          adapterState.error =
+            reason;
 
-        adapterState.error =
-          reason;
+          adapterState.fallbackActive =
+            false;
+        }
 
-        adapterState.fallbackActive =
-          false;
+        else {
+          const projected =
+            unavailableFromHttp(
+              response.status,
+              reason
+            );
+
+
+          adapterState.status =
+            projected.projection_status;
+
+          adapterState.source =
+            null;
+
+          adapterState.payload =
+            projected;
+
+          adapterState.error =
+            reason;
+
+          adapterState.fallbackActive =
+            false;
+        }
       }
     }
 
@@ -1524,38 +1705,63 @@
           ? error.message
           : "Unknown fetch error";
 
-
-      const projected =
-        exposeServerData(
-          emptyProjection(
-            "Engine snapshot could not be reached. "
-            +
-            "No preview data was substituted.",
-            {
-              projection_status:
-                "unavailable",
-
-              freshness:
-                "unavailable",
-            }
-          )
+      const preserved =
+        preserveLastGoodProjection(
+          "Engine refresh could not be completed. "
+          +
+          "The last source-backed projection is preserved as stale."
         );
 
+      if (preserved) {
+        adapterState.status =
+          preserved.projection_status;
 
-      adapterState.status =
-        "unavailable";
+        adapterState.source =
+          preserved.source;
 
-      adapterState.source =
-        null;
+        adapterState.payload =
+          preserved;
 
-      adapterState.payload =
-        projected;
+        adapterState.error =
+          message;
 
-      adapterState.error =
-        message;
+        adapterState.fallbackActive =
+          false;
+      }
 
-      adapterState.fallbackActive =
-        false;
+      else {
+        const projected =
+          exposeServerData(
+            emptyProjection(
+              "Engine snapshot could not be reached. "
+              +
+              "No preview data was substituted.",
+              {
+                projection_status:
+                  "unavailable",
+
+                freshness:
+                  "unavailable",
+              }
+            )
+          );
+
+
+        adapterState.status =
+          "unavailable";
+
+        adapterState.source =
+          null;
+
+        adapterState.payload =
+          projected;
+
+        adapterState.error =
+          message;
+
+        adapterState.fallbackActive =
+          false;
+      }
     }
 
 
@@ -1565,6 +1771,25 @@
     return {
       ...adapterState,
     };
+  }
+
+
+  async function fetchEngineSnapshot() {
+    if (inFlightFetch) {
+      return inFlightFetch;
+    }
+
+    inFlightFetch =
+      fetchEngineSnapshotOnce();
+
+    try {
+      return await inFlightFetch;
+    }
+
+    finally {
+      inFlightFetch =
+        null;
+    }
   }
 
 

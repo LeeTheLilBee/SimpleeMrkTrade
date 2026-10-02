@@ -1,0 +1,67 @@
+name: Tower Teller Vault protocol reconciliation
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/vault_request_protocol_gate.py"
+      - "tower/vault_authorized_view_protocol.py"
+      - "tower/test_vault_view_decision_binding.py"
+      - "tools/tower_vault_request_protocol_gate_smoke_test_461_470.py"
+      - "tools/tower_authorized_view_protocol_smoke_test_471_480.py"
+      - "data/tower_vault_request_protocol_gate_gp461_470.json"
+      - "data/tower_authorized_view_protocol_gp471_480.json"
+      - "docs/tower/TOWER_TELLER_VAULT_HANDOFF_WAKEUP.md"
+      - ".github/workflows/tower-teller-vault-protocol.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "tower/vault_request_protocol_gate.py"
+      - "tower/vault_authorized_view_protocol.py"
+      - "tower/test_vault_view_decision_binding.py"
+      - "tools/tower_vault_request_protocol_gate_smoke_test_461_470.py"
+      - "tools/tower_authorized_view_protocol_smoke_test_471_480.py"
+      - "data/tower_vault_request_protocol_gate_gp461_470.json"
+      - "data/tower_authorized_view_protocol_gp471_480.json"
+      - "docs/tower/TOWER_TELLER_VAULT_HANDOFF_WAKEUP.md"
+      - ".github/workflows/tower-teller-vault-protocol.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  source-only-protocol:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m compileall -q tower/vault_request_protocol_gate.py tower/vault_authorized_view_protocol.py
+      - run: python tools/tower_vault_request_protocol_gate_smoke_test_461_470.py
+      - run: python tools/tower_authorized_view_protocol_smoke_test_471_480.py
+      - run: python -m pip install "pytest>=8,<10"
+      - run: python -m pytest -q tower/test_vault_view_decision_binding.py
+      - name: Confirm protocols create no hosted route or direct Vault authority
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from tower.vault_request_protocol_gate import get_tower_vault_protocol_gate_readiness
+          from tower.vault_authorized_view_protocol import get_tower_authorized_view_protocol_readiness
+
+          gate = get_tower_vault_protocol_gate_readiness()
+          view = get_tower_authorized_view_protocol_readiness()
+          assert gate["teller_direct_vault_access_allowed"] is False
+          assert gate["raw_vault_links_exposed_to_teller"] is False
+          assert gate["raw_vault_files_exposed_to_teller"] is False
+          assert view["teller_direct_vault_access_allowed"] is False
+          assert view["download_protocol_created"] is False
+
+          hosted = Path("web/hosted_tower.py").read_text(encoding="utf-8")
+          assert "vault_request_protocol_gate" not in hosted
+          assert "vault_authorized_view_protocol" not in hosted
+          print("Teller/Vault protocol remains source-only; no hosted endpoint opened.")
+          PY

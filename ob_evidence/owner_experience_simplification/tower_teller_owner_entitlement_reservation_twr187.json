@@ -1,0 +1,11 @@
+{
+  "activation_gate": "TWR190",
+  "depends_on": "TWR186",
+  "effective_entitlement": false,
+  "intended_access_policy": "GRANTED_ON_ACTIVATION",
+  "name": "Verified Owner Teller Entitlement Reservation",
+  "pack": "TWR187",
+  "reservation_state": "VERIFIED_RESERVED",
+  "sealed_parent": "9e39259943aa4e6e36708dba41f4e0d36fc56e0e",
+  "status": "source_ready_unsealed"
+}

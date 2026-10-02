@@ -1,0 +1,53 @@
+{
+  "canonical_dimensions": [
+    "registered",
+    "implemented",
+    "published",
+    "environment_available",
+    "user_entitled",
+    "launchable",
+    "health_verified"
+  ],
+  "next_mission": "Real Tower-to-Observatory Cutover",
+  "next_pack": "TWR146-TWR150",
+  "pack": "TWR141-TWR145",
+  "parent_commit": "a6a081a01884b628f4648e701fc680620a6b60fb",
+  "safety": {
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "observatory_modified": false,
+    "release_execution_authorized": false
+  },
+  "schema_version": "tower.authoritative-app-publication-availability.twr141-145.v1",
+  "title": "Authoritative App Publication + Availability",
+  "truth_contract": {
+    "launchable_requires_environment_available": true,
+    "launchable_requires_health_verified": true,
+    "launchable_requires_implemented": true,
+    "launchable_requires_published": true,
+    "launchable_requires_real_tower_launch_route": true,
+    "launchable_requires_registered": true,
+    "launchable_requires_user_entitled": true,
+    "provider_integrity_required": true,
+    "provider_requires_explicit_configuration": true
+  },
+  "truth_locks": {
+    "environment_available_implies_health_verified": false,
+    "future_registry_entry_implies_launchable": false,
+    "health_verified_implies_user_entitled": false,
+    "implemented_implies_published": false,
+    "launchable_bypasses_request_authorization": false,
+    "provider_path_exposed": false,
+    "published_implies_environment_available": false,
+    "registered_implies_implemented": false,
+    "registry_is_availability_authority": false,
+    "registry_is_health_authority": false,
+    "registry_is_publication_authority": false,
+    "stale_availability_receipt_implies_launchable": false,
+    "stale_health_receipt_implies_launchable": false,
+    "unknown_app_provider_records_allowed": false,
+    "user_entitled_implies_environment_available": false
+  }
+}

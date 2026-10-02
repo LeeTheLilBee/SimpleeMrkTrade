@@ -1,8 +1,10 @@
+# Historical OBUX21–25 source expectations use the exact archived pre-redesign files.
+# Current owner-only product source, routes and security are checked separately.
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (
-    ROOT / "web/static/ob/ob_owner_dashboard_soulaana.js"
+    ROOT / "docs/historical/obux_v25_ob_owner_dashboard_soulaana.js"
 ).read_text(encoding="utf-8")
 
 

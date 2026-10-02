@@ -346,6 +346,31 @@ def evaluate_ob_request_guard(
     route_key = _safe_str(policy.get('route_key'), 'unmapped')
     action = _safe_str(policy.get('action'), 'view')
 
+    # PACK046's legacy identity reader predates Tower's signed owner session:
+    # it reads stale session aliases and even URL-supplied role/clearance hints.
+    # For these two exact owner-only Desk corridors, never use those hints as
+    # authority in a real HTTP request. Derive owner clearance ONLY from the
+    # authenticated Tower session. The independent OB HTTP boundary still
+    # requires fresh step-up + consumed OB handoff; Public POST separately
+    # enforces origin, CSRF, feature flag and source-specific rights.
+    if path in {"/ob/settings", "/ob/settings.json", "/ob/data-desk", "/ob/data-desk/public", "/ob/data-desk/api-keys", "/ob/data-desk/connections.json", "/ob/data-desk/event-traces.json", "/ob/research/keyless.json", "/ob/research/providers.json", "/ob/research/catalysts.json", "/ob/engine-feed-snapshot.json"}:
+        try:
+            from flask import has_request_context, session
+            if has_request_context():
+                from tower.tower_human_login_ob_launch import (
+                    SESSION_OWNER_ID, owner_session_active,
+                )
+                if owner_session_active():
+                    user_id = session.get(SESSION_OWNER_ID, "")
+                    role = "owner"
+                    user_clearance_level = "critical"
+                else:
+                    user_id, role, user_clearance_level = "anonymous", "", "internal"
+        except Exception:
+            # A broken/missing Tower session is never permission to honor
+            # user-supplied role, query or clearance values.
+            user_id, role, user_clearance_level = "anonymous", "", "internal"
+
     decision = evaluate_ob_route_clearance(
         user_id=user_id,
         role=role,
@@ -425,6 +450,78 @@ OB_ROUTE_GUARD_MAP.update({
         room="Dashboard",
         purpose="Approved real Observatory Dashboard surface.",
         soulaana_translation="Soulaana: This is the Observatory Dashboard. I can open it through Tower clearance.",
+    ),
+    "/ob/engine-feed-snapshot.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="engine_feed_source_status",
+        action="view",
+        clearance="owner",
+        risk_floor=20,
+        room="Canonical Market Source Status",
+        purpose="Exact protected GET/HEAD source-status read. No licensed quote, provider, position or execution authority is implied.",
+        soulaana_translation="Soulaana: This is a protected market-source status corridor, not proof that a feed is connected.",
+    ),
+    "/ob/research/providers.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=25,
+        room="Keyed Provider Research",
+        purpose="Exact owner-only normalized Finnhub/Alpha research under separate source/display/AI grants; no live-feed or execution authority.",
+        soulaana_translation="Soulaana: I can read source-bound provider research only when Tower confirms separate source, display and AI-use rights.",
+    ),
+    "/ob/research/keyless.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=20,
+        room="Keyless Public Research Context",
+        purpose="Exact owner-only read of dated SEC/BLS/Treasury/OpenFIGI context; no price, broker or live feed authority.",
+        soulaana_translation="Soulaana: Source-dated public research is available. It is not a quote or trading clearance.",
+    ),
+    "/ob/data-desk/api-keys": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=30,
+        room="Research Provider API Key Desk",
+        purpose="Exact owner-only temporary research key receipt and harmless read-only probe; never live-feed entitlement.",
+        soulaana_translation="Soulaana: A key can be checked here, but it does not establish data rights or trading permission.",
+    ),
+    "/ob/data-desk/connections.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=20,
+        room="Provider Connection Truth",
+        purpose="Sanitized current-owner credential and source-review status only; no raw keys, prices, positions or market feed.",
+        soulaana_translation="Soulaana: I can show which connection checks passed and what is still unverified, without exposing secrets.",
+    ),
+    "/ob/data-desk/event-traces.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=20,
+        room="Observatory Event Lifecycle Proof",
+        purpose="Sanitized internal event-stage receipts only; no provider payload, credentials, positions, orders or execution authority.",
+        soulaana_translation="Soulaana: I can show whether an event reached each internal stage without pretending I consumed information I never actually handled.",
+    ),
+    "/ob/data-desk/public": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=30,
+        room="Public Owner Source Connection",
+        purpose="Exact Tower owner + step-up Public authentication and one-off source-only quote checks; no order authority.",
+        soulaana_translation="Soulaana: This is an owner-only Public account check, not broker execution or general live feed activation.",
+    ),
+    "/ob/data-desk": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk",
+        action="view",
+        clearance="owner",
+        risk_floor=20,
+        room="Market Data Desk",
+        purpose="Protected read-only owner connector catalog and source status; never live-price authority.",
+        soulaana_translation="Soulaana: The Market Data Desk is mapped for owner review. A listed provider does not mean a live feed is connected.",
     ),
     "/ob/market-map": _tower_ob_real_surface_policy_2593_2602(
         route_key="dashboard",
@@ -520,4 +617,24 @@ def match_ob_guard_policy(path: str) -> Dict[str, Any]:
 
     # Everything else remains fail-closed through the original default-deny decision.
     return original_match
+
+
+OB_ROUTE_GUARD_MAP.update({
+    "/ob/settings": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk", action="view", clearance="owner", risk_floor=20,
+        room="OB Settings", purpose="Owner-only Observatory settings control room.",
+        soulaana_translation="Soulaana: These are owner preferences and safe research controls; security and legal gates remain separate.",
+    ),
+    "/ob/settings.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="data_desk", action="view", clearance="owner", risk_floor=20,
+        room="OB Settings State", purpose="Owner-only settings projection for protected OB rooms.",
+        soulaana_translation="Soulaana: I can read owner preferences here; they do not bypass Tower or provider rights.",
+    ),
+    "/ob/research/catalysts.json": _tower_ob_real_surface_policy_2593_2602(
+        route_key="analysis_vault", action="view", clearance="owner", risk_floor=20,
+        room="Official Market Catalyst Radar",
+        purpose="Exact protected government-source research and independent Soulaana translation; no quote or trading authority.",
+        soulaana_translation="Soulaana: I examine independently approved official publications; unavailable sources remain held.",
+    ),
+})
 

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Market Data Desk · The Observatory</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_market_data_desk.css') }}">
+</head>
+<body data-ob-room="market-data-desk"
+      data-ob-data-desk-route-enabled="{{ 'true' if data_desk_route_enabled is defined and data_desk_route_enabled else 'false' }}"
+      data-ob-live-auto-locked="true">
+  <div class="ob-sky" aria-hidden="true"><div class="ob-sky__weather"></div><div class="ob-sky__horizon"></div><div class="ob-sky__grid"></div></div>
+  <div id="ob-app" class="mdd-app">
+    <main class="mdd-shell" id="marketDataDesk">
+      <header class="mdd-hero">
+        <div>
+          <span class="mdd-eyebrow">THE OBSERVATORY · INTELLIGENCE INFRASTRUCTURE</span>
+          <h1>Market Data <em>Desk</em></h1>
+          <p>Every authorized feed, one clear place. Our scanner listens across providers; this desk keeps the connections honest.</p>
+          <div class="mdd-chips"><span>Owner-only source design</span><span>Read-only monitoring</span><span class="mdd-warning">No automatic orders</span></div>
+        </div>
+        <section class="mdd-soulaana" aria-labelledby="mddSoulaanaTitle">
+          <span class="mdd-eyebrow">SOULAANA · YOUR CONNECTION GUIDE</span>
+          <h2 id="mddSoulaanaTitle">What needs attention</h2>
+          <strong id="mddSoulaanaHeadline">Checking whether the protected connection snapshot is available.</strong>
+          <p id="mddSoulaanaMeaning">A product listed here is not proof of an active market-data entitlement.</p>
+          <div class="mdd-soulaana-next"><span>Next useful action</span><p id="mddSoulaanaNext">Review provider rights before activating any feed.</p></div>
+        </section>
+      </header>
+
+      <section class="mdd-truth-banner" role="status" aria-live="polite">
+        <span class="mdd-dot" aria-hidden="true"></span>
+        <strong id="mddTruth">Protected provider snapshot not attached</strong>
+        <span id="mddAsOf">No live quote or connection-health claims are available.</span>
+      </section>
+
+      <section class="mdd-metrics" aria-label="Connection summary">
+        <article class="mdd-metric"><span>Products cataloged</span><strong id="mddProducts">—</strong><small>Potential integrations, not active feeds</small></article>
+        <article class="mdd-metric"><span>Verified live feeds</span><strong id="mddLive">—</strong><small>Unknown until trusted runtime connects</small></article>
+        <article class="mdd-metric"><span>Needs review</span><strong id="mddAttention">—</strong><small>Rights, evidence and owner decisions</small></article>
+        <article class="mdd-metric"><span>API capacity</span><strong id="mddTraffic">—</strong><small>No invented vendor limits or traffic</small></article>
+      </section>
+
+      <section class="mdd-section" aria-labelledby="mddPublicConnectTitle">
+        <div class="mdd-heading"><div><span class="mdd-eyebrow">OWNER CONNECTION · PUBLIC BUSINESS API</span>
+          <h2 id="mddPublicConnectTitle">Connect your Public account</h2>
+          <p>Use your key through a fresh Tower-protected form. A temporary token is held in server memory, never in this page or a browser cookie. This does not authorize trades or activate an OB live feed.</p></div>
+          <a href="/ob/data-desk/public" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open Public connection →</a></div>
+      </section>
+
+      <section class="mdd-section" aria-labelledby="mddApiKeysTitle">
+        <div class="mdd-heading"><div><span class="mdd-eyebrow">RESEARCH PROVIDERS · PROTECTED OWNER ENTRY</span>
+          <h2 id="mddApiKeysTitle">API Key Desk</h2>
+          <p>Use the Tower-protected page to enter Finnhub or Alpha Vantage keys separately. Temporary key acceptance and a read-only provider test never activate a quote feed, display license, or trading permission.</p></div>
+          <a href="/ob/data-desk/api-keys" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open API Key Desk →</a></div>
+      </section>
+
+      <section class="mdd-section" aria-labelledby="mddProviderTruthTitle">
+        <div class="mdd-heading"><div><span class="mdd-eyebrow">TOWER · CONNECTION TRUTH</span>
+          <h2 id="mddProviderTruthTitle">One status per source</h2>
+          <p>The status desk distinguishes temporary credential receipt, source review, live transport, and publishable information. It does not reveal keys, tokens, account IDs, quotes or protected records.</p></div>
+          <a href="/ob/data-desk/connections.json" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open sanitized connection status →</a></div>
+      </section>
+
+      <div id="mddConnectionStatus" role="status" aria-live="polite" class="mdd-provider-grid">Reading authorized Tower source status…</div>
+
+      <section class="mdd-section" aria-labelledby="mddEventJourneyTitle">
+        <div class="mdd-heading"><div><span class="mdd-eyebrow">OBSERVATORY EVENT FABRIC · PROOF OF CONSUMPTION</span>
+          <h2 id="mddEventJourneyTitle">Did the information actually make it through?</h2>
+          <p>These receipts show only internal lifecycle status. A stage stays pending until that component actually handled the event; provider values, credentials, positions and orders never appear here.</p></div>
+          <a href="/ob/data-desk/event-traces.json" class="mdd-public-connect-link" style="color:#eddaff;font-weight:800;border:1px solid #a18bbc;border-radius:24px;padding:13px 18px;text-decoration:none">Open sanitized event traces →</a></div>
+        <div id="mddEventTraceStatus" class="mdd-trace-grid" role="status" aria-live="polite">
+          <p class="mdd-empty">Reading the protected Observatory event ledger…</p>
+        </div>
+      </section>
+
+      <section class="mdd-section" aria-labelledby="mddProvidersTitle">
+        <div class="mdd-heading"><div><span class="mdd-eyebrow">CONNECTION CONSTELLATION</span><h2 id="mddProvidersTitle">Provider connections</h2><p>Open a card to see the feed's role, status, and the proof required before use.</p></div>
+        <div class="mdd-filter" role="group" aria-label="Filter providers">
+          <button type="button" class="is-active" data-mdd-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-mdd-filter="equity" aria-pressed="false">Stocks</button>
+          <button type="button" data-mdd-filter="option" aria-pressed="false">Options</button>
+          <button type="button" data-mdd-filter="reference" aria-pressed="false">Research sources</button>
+        </div></div>
+        <div id="mddProviderGrid" class="mdd-provider-grid" aria-live="polite">
+          <p class="mdd-empty">Loading the catalog. No feed is assumed connected.</p>
+        </div>
+      </section>
+
+      <section class="mdd-workflow mdd-section" aria-labelledby="mddWorkflowTitle">
+        <div class="mdd-heading"><div><span class="mdd-eyebrow">THE PROCESS</span><h2 id="mddWorkflowTitle">From discovery to trusted observation</h2></div></div>
+        <ol class="mdd-steps">
+          <li><span>01</span><strong>Discover</strong><small>Find a provider, official directory or research source.</small></li>
+          <li><span>02</span><strong>Review rights</strong><small>Check product, venue, business use, display, redistribution and expiry.</small></li>
+          <li><span>03</span><strong>Configure</strong><small>Server-held credentials and independent source/product mapping.</small></li>
+          <li><span>04</span><strong>Verify</strong><small>Authenticated feed, timestamp, coverage, quotas and canonical market clock.</small></li>
+          <li><span>05</span><strong>Owner approval</strong><small>Fresh Tower step-up and an auditable, narrow read-only decision.</small></li>
+          <li><span>06</span><strong>Observe</strong><small>Check traffic, quote freshness, options identity, and source conflicts.</small></li>
+          <li><span>07</span><strong>Hold or revoke</strong><small>Isolate failing feeds; never silently replace live data with delayed prices.</small></li>
+        </ol>
+      </section>
+
+      <section class="mdd-duo">
+        <article class="mdd-section" aria-labelledby="mddQueueTitle"><span class="mdd-eyebrow">OWNER REVIEW</span><h2 id="mddQueueTitle">Connection queue</h2><div id="mddCases" class="mdd-case-list"><p class="mdd-empty">No protected approval cases attached. Nothing can be approved in this browser view.</p></div></article>
+        <article class="mdd-section" aria-labelledby="mddPulseTitle"><span class="mdd-eyebrow">SOURCE HEALTH</span><h2 id="mddPulseTitle">Traffic &amp; pulse</h2><div class="mdd-pulse-grid">
+          <div><span>Live transport</span><strong id="mddTransport">Not verified</strong></div>
+          <div><span>Request budget</span><strong id="mddBudget">Unattached</strong></div>
+          <div><span>Streaming sessions</span><strong id="mddStreams">Unattached</strong></div>
+          <div><span>Current options tape</span><strong id="mddOptionHealth">Unverified</strong></div>
+        </div><p class="mdd-notice">The traffic planner proposes bounded requests; it does not open an API session. Outages, disagreements and rights expiry must HOLD the affected feed.</p></article>
+      </section>
+
+      <section class="mdd-section mdd-boundary"><span class="mdd-eyebrow">TRUTH BEFORE ACTION</span><h2>One market. Different kinds of evidence.</h2><p>Nasdaq directories, OCC reports and SEC filings help us discover and identify instruments. They are not live quotes. IEX is not consolidated SIP; indicative options are not OPRA. Two resellers of the same upstream data are not independent proof. No data here unlocks Manual Live or automated execution.</p></section>
+      <footer class="mdd-footer"><a href="/ob/dashboard">Return to Dashboard</a><span>Market Data Desk · Proposed protected owner room · no live data presumed</span></footer>
+    </main>
+  </div>
+
+  <div class="mdd-backdrop" id="mddBackdrop" hidden></div>
+  <aside id="mddDrawer" class="mdd-drawer" role="dialog" aria-modal="true" aria-labelledby="mddDrawerTitle" aria-hidden="true" hidden>
+    <button type="button" class="mdd-close" id="mddClose" aria-label="Close provider details">×</button>
+    <span class="mdd-eyebrow">SOURCE DETAIL · READ ONLY</span>
+    <h2 id="mddDrawerTitle">Provider</h2>
+    <p id="mddDrawerDescription"></p>
+    <dl class="mdd-detail">
+      <div><dt>Data lane</dt><dd id="mddDetailLane"></dd></div>
+      <div><dt>Coverage</dt><dd id="mddDetailCoverage"></dd></div>
+      <div><dt>Connection truth</dt><dd id="mddDetailState"></dd></div>
+      <div><dt>Next proof</dt><dd id="mddDetailNext"></dd></div>
+    </dl>
+    <p class="mdd-notice">Provider rights and owner approval require a protected backend workflow and Tower step-up. This drawer cannot connect, approve or trade.</p>
+  </aside>
+
+  <script id="mddSnapshot" type="application/json">{{ (data_desk_snapshot if data_desk_snapshot is defined else none) | tojson }}</script>
+  <script src="{{ url_for('static', filename='ob/ob_market_data_desk.js') }}"></script>
+  <script defer src="/static/ob/ob_connection_truth.js?v=truth001"></script>
+  <script defer src="/static/ob/ob_event_trace.js?v=grpc001"></script>
+  <script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
+</body>
+</html>

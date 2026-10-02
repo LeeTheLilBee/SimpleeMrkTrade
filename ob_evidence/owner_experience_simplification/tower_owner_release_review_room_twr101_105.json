@@ -1,0 +1,36 @@
+{
+  "broker_submission_authorized": false,
+  "capital_movement_authorized": false,
+  "client_supplied_packets_trusted": false,
+  "csrf_required": true,
+  "dedicated_release_step_up_remains_in_tower": true,
+  "deployment_authorized": false,
+  "durable_receipt_requirement_bypassed": false,
+  "layers": {
+    "TWR101": "Canonical sealed, fresh, revision-bound server-owned packet provider",
+    "TWR102": "Actual owner-only, step-up-protected release review room",
+    "TWR103": "Owner dashboard release card and canonical Flask navigation",
+    "TWR104": "Protected approve, hold, reject routes with same-origin and CSRF gates",
+    "TWR105": "Integrity-verified owner receipt confirmation and locked execution boundaries"
+  },
+  "live_auto_authorized": false,
+  "manual_live_authorized": false,
+  "missing_stale_tampered_packet_fails_closed": true,
+  "observatory_modified": false,
+  "owner_review_required": true,
+  "production_promotion_authorized": false,
+  "promotion_authorized": false,
+  "routes": {
+    "decision": "/tower/owner/release-review/decision",
+    "receipt": "/tower/owner/release-review/receipt/<receipt_id>",
+    "review": "/tower/owner/release-review",
+    "review_json": "/tower/owner/release-review.json",
+    "tower_only_step_up": "/tower/owner/release-review/step-up"
+  },
+  "same_origin_required": true,
+  "schema_version": "tower.owner-release-review-room.twr101-105.v1",
+  "separate_release_execution_gate_required": true,
+  "staging_ready_changed": false,
+  "tower_branch": "tower-hosted-runtime-identity-twr081-085",
+  "tower_parent_commit": "267566f1e14f20cb905ea309003a320a900656d4"
+}

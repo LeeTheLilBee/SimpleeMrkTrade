@@ -1,0 +1,35 @@
+name: Tower OBBETA016-020 owner source labels fail closed
+on:
+  push:
+    branches:
+      - twr-obbeta016-020-dormant-owner-proof-parity
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - 'web/static/ob/ob_owner_dashboard_contract.js'
+      - 'tests/test_twr_obbeta016_020_owner_proof_parity.js'
+      - 'docs/owner_experience/TWR_OBBETA016_020_DORMANT_OWNER_PROOF_PARITY.md'
+      - '.github/workflows/twr-obbeta016-020-owner-proof.yml'
+permissions:
+  contents: read
+jobs:
+  legacy-owner-truth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing focused test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Actual owner browser module spoof negative regression
+        run: |
+          node --check web/static/ob/ob_owner_dashboard_contract.js
+          node tests/test_twr_obbeta016_020_owner_proof_parity.js
+      - name: Existing Tower owner dashboard, protected entry and hosted rehearsal contracts
+        run: |
+          python -m pytest -q tests/test_owner_dashboard_obux021_contract.py tests/test_owner_dashboard_activation_handoff.py tests/test_obsim056_060_hosted_owner_rehearsal.py tests/test_obsim061_065_hosted_token_lifecycle.py tests/test_tower_ob_web_route_enforcement.py

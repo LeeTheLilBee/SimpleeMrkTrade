@@ -1,0 +1,39 @@
+name: OBSIM076-080 final owner ephemeral evidence export
+on:
+  push:
+    branches:
+      - 'obsim076-080-*'
+  pull_request:
+    branches:
+      - 'tower-hosted-runtime-identity-twr081-085'
+    paths:
+      - 'tower/ob_hosted_owner_evidence.py'
+      - 'tower/ob_hosted_owner_rehearsal.py'
+      - 'tower/ob_web_route_enforcement.py'
+      - 'web/static/ob/ob_hosted_owner_rehearsal.js'
+      - 'web/templates/hosted_owner_rehearsal.html'
+      - 'scripts/ob_verify_owner_evidence.py'
+      - 'tests/test_obsim076_080_owner_final_evidence_export.py'
+      - '.github/workflows/obsim076-080-owner-evidence-export.yml'
+permissions:
+  contents: read
+jobs:
+  guarded-owner-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Syntax and browser checks
+        run: |
+          python -m py_compile tower/ob_hosted_owner_evidence.py tower/ob_hosted_owner_rehearsal.py scripts/ob_verify_owner_evidence.py tests/test_obsim076_080_owner_final_evidence_export.py
+          node --check web/static/ob/ob_hosted_owner_rehearsal.js
+      - name: Real HTTP denied cases, synthetic owner workflow, and source isolation
+        run: |
+          python -m pytest -q tests/test_obsim076_080_owner_final_evidence_export.py tests/test_obsim056_060_hosted_owner_rehearsal.py tests/test_obsim061_065_hosted_token_lifecycle.py tests/test_obsim066_070_anonymous_release_probe.py tests/test_obsim071_075_two_host_anonymous_inventory.py tests/test_tower_ob_web_route_enforcement.py tests/test_obsim046_050_loopback_owner_rehearsal_ui.py

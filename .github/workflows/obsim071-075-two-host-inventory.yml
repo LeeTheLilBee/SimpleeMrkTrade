@@ -1,0 +1,47 @@
+name: OBSIM071-075 existing Tower two-host anonymous inventory
+on:
+  push:
+    branches:
+      - 'obsim071-075-*'
+  pull_request:
+    branches:
+      - 'tower-hosted-runtime-identity-twr081-085'
+    paths:
+      - 'scripts/ob_anonymous_two_host_inventory.py'
+      - 'tests/test_obsim071_075_two_host_anonymous_inventory.py'
+      - '.github/workflows/obsim071-075-two-host-inventory.yml'
+permissions:
+  contents: read
+jobs:
+  passive-two-host-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: No credential dry-run behavior
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_obsim066_070_anonymous_release_probe.py tests/test_obsim071_075_two_host_anonymous_inventory.py
+      - name: Anonymous four-GET-per-host snapshot (NO RELEASE PERMISSION)
+        shell: bash
+        run: |
+          python -m scripts.ob_anonymous_two_host_inventory \
+            --canonical-origin https://simplee-tower-ob.onrender.com \
+            --secondary-origin https://simplee-tower-ob-tunv.onrender.com \
+            --expected-revision 7199a702a9ed9169c155ff24d4014a764a542ab4 \
+            > anonymous-two-host-snapshot.json
+          cat anonymous-two-host-snapshot.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("anonymous-two-host-snapshot.json").read_text())
+          assert data["release_status"] == "HOLD_OWNER_SITE_AND_AUTHENTICATED_WALKTHROUGH"
+          assert data["credentials_sent"] is False
+          assert data["hosted_rehearsal_feature_enabled_by_probe"] is False
+          print("Inventory observed. Exit-zero means snapshot only; hosted release remains HOLD.")
+          PY

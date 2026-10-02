@@ -1,0 +1,16 @@
+{
+  "default_denied_when_unknown": true,
+  "lock_state": "protected_handoff_pending",
+  "name": "Teller Owner Launch Reservation",
+  "owner_only": true,
+  "pack": "TWR186",
+  "requires_owner_session": true,
+  "requires_step_up": true,
+  "reserved_route": "/tower/launch/teller",
+  "route_id": "teller_owner_launch_reserved",
+  "sealed_parent": "9e39259943aa4e6e36708dba41f4e0d36fc56e0e",
+  "status": "source_ready_unsealed",
+  "teller_app_status": "registered_future_room",
+  "teller_launchable": false,
+  "temporary_placeholder": true
+}

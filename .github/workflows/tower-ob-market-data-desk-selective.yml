@@ -1,0 +1,97 @@
+name: Tower OB Market Data Desk selective integration
+
+on:
+  pull_request:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "engine/market_intake/**"
+      - "web/ob_market_data_desk_route.py"
+      - "web/static/ob/ob_market_data_desk.*"
+      - "web/static/ob/ob_nav_shell.js"
+      - "web/templates/*"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_route_guard.py"
+      - "tower/ob_web_route_enforcement.py"
+      - "tower/tower_access_home_ui_v2.py"
+      - "tower/test_tower_ob_return_handoff.py"
+      - "web/hosted_tower.py"
+      - "tests/test_obscan*.py"
+      - "tests/test_tower_ob_market_data_desk_selective.py"
+      - "tests/test_ob_canonical_nav_corridors.py"
+      - "tests/ob_return_handoff_node.cjs"
+      - ".github/workflows/tower-ob-market-data-desk-selective.yml"
+  push:
+    branches:
+      - tower-hosted-runtime-identity-twr081-085
+    paths:
+      - "engine/market_intake/**"
+      - "web/ob_market_data_desk_route.py"
+      - "web/static/ob/ob_market_data_desk.*"
+      - "web/static/ob/ob_nav_shell.js"
+      - "web/templates/*"
+      - "tower/ob_market_data_desk_integration.py"
+      - "tower/ob_route_guard.py"
+      - "tower/ob_web_route_enforcement.py"
+      - "tower/tower_access_home_ui_v2.py"
+      - "tower/test_tower_ob_return_handoff.py"
+      - "web/hosted_tower.py"
+      - "tests/test_obscan*.py"
+      - "tests/test_tower_ob_market_data_desk_selective.py"
+      - "tests/test_ob_canonical_nav_corridors.py"
+      - "tests/ob_return_handoff_node.cjs"
+      - ".github/workflows/tower-ob-market-data-desk-selective.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  source-only-owner-desk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: python -m pip install -r deploy/hosted_tower/requirements.txt "pytest>=8,<10"
+      - name: Compile market and integration modules
+        run: python -m compileall -q engine/market_intake web/ob_market_data_desk_route.py tower/ob_market_data_desk_integration.py
+      - name: Scanner, gateway, desk, and Tower exact corridor regressions
+        run: |
+          python -m pytest -q \
+            tests/test_obscan001_025_sovereign_intake.py \
+            tests/test_obscan026_040_universal_gateway.py \
+            tests/test_obscan041_055_market_data_desk.py \
+            tests/test_tower_ob_market_data_desk_selective.py \
+            tests/test_ob_canonical_nav_corridors.py \
+            tower/test_tower_ob_return_handoff.py
+      - name: Shared nav and return DOM syntax
+        run: |
+          node --check web/static/ob/ob_market_data_desk.js
+          node --check web/static/ob/ob_nav_shell.js
+          node tests/ob_return_handoff_node.cjs
+      - name: Hosted app has exact read-only source-only route, no generic OB bypass
+        run: |
+          python - <<'PY'
+          from web.hosted_tower import app
+          from tower.ob_market_data_desk_integration import MARKET_DATA_DESK_PATH
+          from tower.ob_web_route_enforcement import PROTECTED_EXACT_OB_ROUTES, OWNER_ONLY_OB_ROUTES
+          rules = {x.rule: x for x in app.url_map.iter_rules()}
+          assert MARKET_DATA_DESK_PATH in rules
+          assert {'GET','HEAD'} <= rules[MARKET_DATA_DESK_PATH].methods
+          assert 'POST' not in rules[MARKET_DATA_DESK_PATH].methods
+          assert MARKET_DATA_DESK_PATH in PROTECTED_EXACT_OB_ROUTES
+          assert MARKET_DATA_DESK_PATH not in OWNER_ONLY_OB_ROUTES
+          for path in ('/ob/data-desk/connect','/ob/data-desk/approve'):
+              assert path not in rules
+          # Existing legacy compatibility paths may remain registered, but the
+          # independent Tower default-deny layer must not make them accessible.
+          assert app.test_client().get('/trade-center').status_code == 403
+          assert app.extensions['tower_ob_market_data_desk_source_only_v1']['runtime_provider_attached'] is False
+          assert app.test_client().get(MARKET_DATA_DESK_PATH).status_code != 200
+          print('Exact owner-only read route mounted with no live transport, browser approval or pricing.')
+          PY

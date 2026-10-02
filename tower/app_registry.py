@@ -44,7 +44,7 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_id="observatory",
         app_name="The Observatory",
         app_label="OB",
-        app_status="protected_staging",
+        app_status="protected_hosted",
         tower_launch_route="/tower/launch/observatory",
         primary_room_route="/ob/dashboard",
         owner_only=True,
@@ -62,8 +62,8 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_id="teller",
         app_name="The Teller",
         app_label="Teller",
-        app_status="registered_future_room",
-        tower_launch_route="/tower/app-registry",
+        app_status="protected_hosted",
+        tower_launch_route="/tower/launch/teller",
         primary_room_route="/teller",
         owner_only=False,
         requires_tower_handoff=True,
@@ -72,8 +72,9 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "The Teller is registered as a future Tower-controlled money/workflow app. "
-            "This layer does not grant Teller access yet."
+            "The Teller has an active protected Tower owner launch corridor. "
+            "The application remains multi-role, but employee and manager hosted "
+            "access are not activated by the owner launch."
         ),
     ),
     TowerAppRegistration(
@@ -117,7 +118,7 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         app_name="The Grounds",
         app_label="Grounds",
         app_status="registered_future_room",
-        tower_launch_route="/tower/app-registry",
+        tower_launch_route="/tower/launch/grounds",
         primary_room_route="/grounds",
         owner_only=True,
         requires_tower_handoff=True,
@@ -126,9 +127,198 @@ TOWER_APP_REGISTRY: Tuple[TowerAppRegistration, ...] = (
         broker_execution_enabled=False,
         capital_action_enabled=False,
         explanation=(
-            "The Grounds is registered as a future property/operations room. "
-            "This layer does not open property workflows."
+            "The Grounds has an exact owner Tower launch gate, but real property "
+            "workflows remain blocked until the same-origin runtime, certified "
+            "Tower receiver, and independent operational release are verified."
         ),
+    ),
+
+    # BuyBox is a known ecosystem application with a real Tower-side
+    # fail-closed launch gate. The product runtime itself is still unreleased;
+    # do not represent route registration as hosted BuyBox availability.
+    TowerAppRegistration(
+        app_id="buybox",
+        app_name="BuyBox",
+        app_label="BuyBox",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/launch/buybox",
+        primary_room_route="/buybox",
+        owner_only=True,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation=(
+            "BuyBox has an exact owner Tower launch gate, signed issuer preflight, "
+            "and a reviewed POST-only browser bootstrap into its same-origin "
+            "exchange. The crossing still requires current publication/health, "
+            "explicit owner entitlement, private storage/restore evidence, and "
+            "live Tower session introspection on the BuyBox runtime. No external "
+            "acquisition readiness, Vault archival, closing, funding, or "
+            "handoff authority is activated here. "
+            "Teller owns financial and capacity readiness; Grounds owns "
+            "owned-property operations; Vault proof is mediated by Tower."
+        ),
+    ),
+    TowerAppRegistration(
+        app_id="simplee_on_the_go",
+        app_name="SimpleeOnTheGo",
+        app_label="ATMs",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/simplee-on-the-go",
+        owner_only=True,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation=(
+            "SimpleeOnTheGo is registered as the ATM operations and acquisition "
+            "system. No hosted Tower launch is published from this registry yet."
+        ),
+    ),
+    TowerAppRegistration(
+        app_id="crown_calendar",
+        app_name="Crown Calendar",
+        app_label="Crown",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/crown-calendar",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation=(
+            "Crown Calendar is registered in the Simplee consumer-app portfolio. "
+            "Its hosted runtime and Tower launch corridor are not published yet."
+        ),
+    ),
+    TowerAppRegistration(
+        app_id="beauty",
+        app_name="Simplee Beauty",
+        app_label="Beauty",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/beauty",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation=(
+            "The merged beauty application is registered for future Tower entry. "
+            "Booking and Teller-led payment handoffs remain unpublished."
+        ),
+    ),
+    TowerAppRegistration(
+        app_id="sunday_table",
+        app_name="Sunday Table",
+        app_label="Table",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/sunday-table",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation="Sunday Table is registered for future protected Tower entry.",
+    ),
+    TowerAppRegistration(
+        app_id="our_oral_traditions",
+        app_name="Our Oral Traditions",
+        app_label="Traditions",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/our-oral-traditions",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation="Our Oral Traditions is registered for future protected Tower entry.",
+    ),
+    TowerAppRegistration(
+        app_id="cookout_ready",
+        app_name="Cookout Ready",
+        app_label="Cookout",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/cookout-ready",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation="Cookout Ready is registered for future protected Tower entry.",
+    ),
+    TowerAppRegistration(
+        app_id="sunday_best",
+        app_name="Sunday Best",
+        app_label="Sunday Best",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/sunday-best",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation="Sunday Best is registered for future protected Tower entry.",
+    ),
+    TowerAppRegistration(
+        app_id="the_village",
+        app_name="The Village",
+        app_label="Village",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/the-village",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation="The Village is registered for future protected Tower entry.",
+    ),
+    TowerAppRegistration(
+        app_id="simplee_fitness",
+        app_name="Simplee Fitness",
+        app_label="Fitness",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/simplee-fitness",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation="Simplee Fitness is registered for future protected Tower entry.",
+    ),
+    TowerAppRegistration(
+        app_id="simplee_skincare",
+        app_name="Simplee Skincare",
+        app_label="Skincare",
+        app_status="registered_future_room",
+        tower_launch_route="/tower/app-registry",
+        primary_room_route="/apps/simplee-skincare",
+        owner_only=False,
+        requires_tower_handoff=True,
+        dangerous_actions_locked=True,
+        live_auto_locked=True,
+        broker_execution_enabled=False,
+        capital_action_enabled=False,
+        explanation="Simplee Skincare is registered for future protected Tower entry.",
     ),
 )
 
@@ -250,6 +440,69 @@ TOWER_ROUTE_REGISTRY: Tuple[TowerRouteRegistration, ...] = (
         explanation=(
             "Owner Dashboard is the dedicated Observatory owner intelligence surface "
             "behind Tower owner-session protection. Owner Console remains separate."
+        ),
+    ),
+    TowerRouteRegistration(
+        route_id="teller_owner_launch",
+        route="/tower/launch/teller",
+        label="Open The Teller",
+        app_id="teller",
+        room_id="owner_launch",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="high",
+        lock_state="protected_owner_handoff",
+        explanation=(
+            "Active owner-only Tower launch corridor for The Teller. "
+            "A current owner session, step-up, effective entitlement, "
+            "verified publication truth, and one-time Tower handoff are required."
+        ),
+    ),
+    TowerRouteRegistration(
+        route_id="grounds_owner_launch",
+        route="/tower/launch/grounds",
+        label="Open The Grounds",
+        app_id="grounds",
+        room_id="owner_launch",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="high",
+        lock_state="protected_fail_closed_launch_gate",
+        explanation=(
+            "Tower owns the Grounds owner launch gate. The crossing remains "
+            "blocked unless the same-origin Grounds runtime, certified current "
+            "Tower receiver, publication truth, entitlement, and independent "
+            "operational release are all verified."
+        ),
+    ),
+    TowerRouteRegistration(
+        route_id="buybox_owner_launch",
+        route="/tower/launch/buybox",
+        label="Open BuyBox",
+        app_id="buybox",
+        room_id="owner_launch",
+        route_type="exact",
+        owner_only=True,
+        requires_owner_session=True,
+        requires_step_up=True,
+        default_denied_when_unknown=True,
+        temporary_placeholder=False,
+        risk_level="high",
+        lock_state="protected_fail_closed_launch_gate",
+        explanation=(
+            "Tower owns the BuyBox owner launch gate, signed issuer preflight, and "
+            "POST-only browser bootstrap. The crossing remains fail-closed unless "
+            "current entitlement, publication/health, exact HTTPS BuyBox origin, "
+            "Tower session introspection, and private storage/restore evidence are "
+            "independently verified."
         ),
     ),
 )

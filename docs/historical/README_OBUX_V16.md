@@ -1,0 +1,5 @@
+# Historical Observatory V16 Dashboard source — not the current product
+
+These exact source snapshots are frozen from Tower revision `26f695c06e77284c41000dcb49bb04a6c7433498` only for source-history testing. Original blob IDs: `obux_v16_dashboard.html` = `cc07063045c3ecc86e6f7357e57c1f5d6c9c5467`; `obux_v16_dashboard.js` = `e7bdae15134eb349af1ea577ee1e75379432f6a0`.
+
+The OBUX006–020 tests inspect these **frozen historical records** to preserve their original design/guard claims. They do not certify the active product. Never mount or import them in a hosted Observatory route. The active protected Dashboard and its source/test assertions are in `web/templates/dashboard.html`, `web/static/ob/ob_dashboard.js`, `tower/ob_product_landing.py`, and `tests/test_tower_ob_modern_dashboard_retirement_0928.py`. The new source/route tests affirm hard legacy UI retirement, real check-in mount, permission separation and fail-closed final response. No failed test is skipped or ignored. Historical CSS/organizer files remain in repository but are not loaded by the modern normal Dashboard.

@@ -1,0 +1,37 @@
+{
+  "archive_vault_route_diagnostics": true,
+  "broker_submission": false,
+  "capital_movement": false,
+  "created_at_utc": "2026-08-21T14:27:03.286434+00:00",
+  "critical_route_boolean_manifest": true,
+  "deploy_render": false,
+  "environment_dump_exposed": false,
+  "live_auto_authorized": false,
+  "manual_live_authorized": false,
+  "middleware_order": {
+    "canonical_app": "web.app",
+    "health_fast_path_gets_identity_headers": true,
+    "inner": "_SimpleeManagedStagingHealthMiddleware",
+    "outermost": "_SimpleeRuntimeIdentityHeadersMiddleware"
+  },
+  "middleware_order_repair": true,
+  "owner_data_exposed": false,
+  "parent": "e128bfd7df99cf7094b4642da1f2974fce3418f1",
+  "promote_to_main": false,
+  "render_entrypoint": "web.managed_staging:app",
+  "revision_sources": [
+    "RENDER_GIT_COMMIT",
+    "GIT_COMMIT",
+    "COMMIT_SHA",
+    "SOURCE_VERSION",
+    "git:HEAD"
+  ],
+  "runtime_headers": [
+    "X-Simplee-Entrypoint",
+    "X-Simplee-Revision",
+    "X-Simplee-Revision-Source"
+  ],
+  "runtime_manifest_route": "/tower/runtime-manifest.json",
+  "secrets_exposed": false,
+  "title": "Tower Hosted Revision Identity + Runtime Manifest / TWR081-TWR085"
+}

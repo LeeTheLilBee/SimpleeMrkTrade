@@ -1,0 +1,55 @@
+{
+  "missions": {
+    "TWR166": "Release Review hierarchy",
+    "TWR167": "Candidate decision surface",
+    "TWR168": "Readiness and prerequisite summary",
+    "TWR169": "Owner decision boundaries",
+    "TWR170": "Release Review anti-regression wall"
+  },
+  "owner_experience": {
+    "approval_is_decision_recording_only": true,
+    "candidate_evidence_progressively_disclosed": true,
+    "candidate_identity_is_primary": true,
+    "evidence_basement_remains_backstage": true,
+    "hold_is_decision_recording_only": true,
+    "no_candidate_state_fails_closed": true,
+    "owner_decision_choices_are_primary": true,
+    "prerequisite_meaning_is_summarized": true,
+    "prerequisite_proof_not_primary_navigation": true,
+    "readiness_meaning_is_summarized": true,
+    "rejection_is_decision_recording_only": true,
+    "release_review_is_owner_decision_room": true,
+    "walkthrough_not_primary_navigation": true
+  },
+  "pack": "TWR166-TWR170",
+  "parent_commit": "ecb281eb5ffaa2f1363e13ec95968c02903ff943",
+  "safety": {
+    "broker_submission_authorized": false,
+    "capital_movement_authorized": false,
+    "deployment_authorized": false,
+    "direct_vault_write_authorized": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "promotion_authorized": false,
+    "release_execution_authorized": false
+  },
+  "schema_version": "tower.release-review-product-surface.twr166-170.v1",
+  "sealed_boundaries": {
+    "access_home_modified": false,
+    "app_registry_modified": false,
+    "candidate_publication_engine_modified": false,
+    "candidate_state_engine_modified": false,
+    "evidence_basement_modified": false,
+    "identity_authority_modified": false,
+    "observatory_modified": false,
+    "owner_headquarters_modified": false,
+    "packet_provider_modified": false,
+    "prerequisite_engine_modified": false,
+    "publication_authority_modified": false,
+    "readiness_engine_modified": false,
+    "release_review_engine_modified": false,
+    "tower_ob_handoff_modified": false,
+    "truth_contract_modified": false
+  },
+  "title": "Release Review Product Surface"
+}

@@ -1,0 +1,49 @@
+{
+  "baseline_truth_debt_findings": 66,
+  "broker_submission_authorized": false,
+  "capital_movement_authorized": false,
+  "first_wave_focus_findings": 0,
+  "layers": {
+    "TWR126": "Removed sample human/account state from the hosted Owner people boundary and replaced absent authority with explicit NOT_CONFIGURED truth.",
+    "TWR127": "Converted Owner Dashboard into truthful Owner Headquarters with unknown people/access counts and no normal walkthrough navigation.",
+    "TWR128": "Removed unpublished app cards, preview/simulated controls, security-map shortcut, and proof drawers from normal Access Home.",
+    "TWR129": "Expanded product truth audit to Access Home UI and established zero-debt first-wave focus plus explicitly deferred machinery.",
+    "TWR130": "Acceptance wall plus evolved legacy tests prevents restoration of retired product theater."
+  },
+  "live_auto_authorized": false,
+  "manual_live_authorized": false,
+  "missing_access_count": null,
+  "missing_invitation_count": null,
+  "missing_people_count": null,
+  "next_pack": "TWR131\u2013TWR135 \u2014 Real Identity + People Source",
+  "observatory_modified": false,
+  "pack_label": "TWR126\u2013TWR130 \u2014 Practice Surface Retirement",
+  "people_authority_state": "NOT_CONFIGURED",
+  "post_cutover_extended_findings": 27,
+  "post_cutover_old_scope_findings": 27,
+  "preserved": {
+    "app_registry": true,
+    "future_app_registrations": true,
+    "hosted_release_readiness_backend": true,
+    "hosted_walkthrough_backend_for_later_evidence_cutover": true,
+    "prerequisite_certificate": true,
+    "real_safety_locks": true,
+    "tower_ob_launcher_for_later_product_handoff_cutover": true
+  },
+  "release_execution_authorized": false,
+  "retired_from_primary_product": {
+    "access_home_proof_drawers": true,
+    "future_app_cards": true,
+    "owner_dashboard_walkthrough_link": true,
+    "product_preview_controls": true,
+    "sample_people_counts": true,
+    "sample_people_records": true,
+    "security_map_primary_shortcut": true,
+    "simulated_return_control": true,
+    "synthetic_access_request_counts": true,
+    "synthetic_invitation_counts": true
+  },
+  "schema_version": "tower.practice-surface-retirement.twr126-130.v1",
+  "tower_branch": "tower-hosted-runtime-identity-twr081-085",
+  "tower_parent_commit": "4f9d0961d3903e7e8a5038ac9ef046a6fcc7d96b"
+}

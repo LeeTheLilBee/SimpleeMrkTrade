@@ -1,120 +1,294 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>OB Dashboard</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_theme.css') }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_dashboard_soulaana_obux.css') }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='ob/ob_atmosphere.css') }}" />
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <title>
+    The Observatory · Dashboard
+  </title>
+  <script>
+    // The real Dashboard remains covered until the Tower-launched check-in completes.
+    document.documentElement.classList.add("ob-entry-pending");
+  </script>
+
+  <script>
+    /*
+      OBUX091–095
+      First-paint Observatory theme authority.
+    */
+    (function () {
+      var key =
+        "ob.appearance.theme.v2";
+
+      var allowed = {
+        "aurora-ink": true,
+        "deep-field": true,
+        "lunar-sage": true
+      };
+
+      var theme =
+        "aurora-ink";
+
+      try {
+        var stored =
+          window.localStorage
+            .getItem(
+              key
+            );
+
+        if (
+          stored
+          && allowed[stored]
+        ) {
+          theme = stored;
+        }
+      } catch (_) {}
+
+      document
+        .documentElement
+        .setAttribute(
+          "data-ob-theme",
+          theme
+        );
+    })();
+  </script>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_theme.css') }}"
+  />
+
+  <link
+    rel="stylesheet"
+    href="/static/ob/ob_interchangeable_themes.css?v=obux081085"
+  />
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ob/ob_dashboard_obux.css') }}?v=obux091095"
+  />
+
+  <script src="/static/ob/ob_product_surface_policy.js?v=obux086090"></script>
+  <link rel="stylesheet" href="/static/ob/ob_checkin_entry.css?v=obux106110" />
 </head>
-<body data-ob-dashboard-role="normal" data-ob-room="dashboard">
-<div
-  class="ob-sky"
-  data-ob-atmosphere-version="OBUX026-OBUX030"
-  aria-hidden="true"
+
+<body
+  data-ob-data-desk-route-enabled="true"
+  data-ob-room="dashboard"
+  data-ob-surface="user-dashboard"
+  data-ob-dashboard-role="normal"
+  data-ob-owner-dashboard="false"
+  data-ob-owner-console="false"
+  data-ob-beta="true"
+  data-ob-entry="checkin-carousel-then-dashboard"
+  data-ob-build="OBUX091-095"
+  data-ob-advisory-surface="self-directed-observation-and-paper"
+  data-ob-owner-grade-candidates="false"
+  data-ob-personalized-security-recommendations="false"
+  data-ob-option-contract-recommendations="false"
+  data-ob-live-recommendations="false"
+  data-ob-live-auto-locked="true"
+  data-ob-sop-version="beta-sop-v2"
+  data-ob-whats-new-version="obux091-095-v1"
+  data-ob-tower-return="/tower/return/observatory"
 >
-  <div class="ob-sky__weather"></div>
-  <div class="ob-sky__horizon"></div>
-  <div class="ob-sky__grid"></div>
-</div>
-
-<!-- OBSERVATORY_DASHBOARD_V16_REAL_ROOM -->
-<div id="ob-app">
-<div class="ob-v23-lock-marker" hidden>Live Auto Locked</div>
-  <div class="ob-layer">
-    <div class="ob-header">
-      <div>
-        <h1 class="ob-title-xl">Dashboard</h1>
-        <div class="ob-subtitle">OB://Dashboard · What matters right now · Tower controlled · Private room</div>
-      </div>
-
-      <!-- OBUX006-OBUX010 DASHBOARD SIMPLIFICATION -->
-      <div class="obux-dashboard-header-status">
-        <span>Soulaana explanation-first</span>
-        <span>Private room</span>
-        <span>Live Auto locked</span>
-      </div>
-    </div>
-
-    <div id="obNormalDashboardRole" data-dashboard-role="normal" data-owner-dashboard="false" data-owner-console="false" hidden>NORMAL_OB_DASHBOARD_ONLY</div>
-
-    <div id="dashboardMount"></div>
+  <div
+    class="ob-sky ob-user-sky"
+    aria-hidden="true"
+  >
+    <div class="ob-sky__weather"></div>
+    <div class="ob-sky__horizon"></div>
+    <div class="ob-sky__grid"></div>
   </div>
-</div>
 
-<script src="{{ url_for('static', filename='ob/ob_market_data.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_dashboard.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_mission_accounts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_notifications_settings.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_readiness.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_visual_consistency.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_snapshot_display.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_room_data_polish.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_candidate_cards.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_receipts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_beta_tester_ops.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_qa.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_expansion.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_feed_diagnostics.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_trust_labels.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_engine_room_mapping.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_source_audit.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_launch_control.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_invite_packet.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_feedback_intake.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_feedback_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_session_runbook.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_issue_triage.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_session_closeout.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_fix_verification.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_next_tester_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_account_experience.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_level1_operating_room.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_receipts_review_foundation.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_private_beta_tower_lock_polish.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_safety_preflight_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_decision_packet.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_broker_checklist_fill_capture.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_position_monitor_exit_close_capture.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_final_trade_review_performance_receipt.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_l1_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_rehearsal_engine.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_record_contracts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_review_center_rehearsal_command_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_input_persistence_prep.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_mission_account_capital_rule_rehearsal_overlay.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_tower_step_up_enforcement_prep.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_real_candidate_rehearsal_adapter.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_owner_rehearsal_final_readiness.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_quality_freshness_gate.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_pre_live_lock_wall.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_rehearsal_persistence_adapter_dry_run.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_loop_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_session_detail_drawer.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_lesson_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_loop_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_repetition_metrics_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_review_polish_guidance.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_owner_practice_focus_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_review_compact_snapshot.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_practice_review_polish_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_board.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_step_confidence_checklist.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_scenario_confidence_review.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_improvement_plan.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_operator_confidence_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_persistence.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_history_review.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_dry_run_receipts.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_proof_packet_review_queue.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_evidence_readiness_checkpoint.js') }}"></script>
-<script src="{{ url_for('static', filename='ob/ob_manual_live_candidate_decision_handoff.js') }}"></script>
-  <script src="/static/ob/ob_manual_live_checklist_record_save_flow.js"></script>
+  <div id="obArrivalRoot" aria-live="polite"></div>
+  <div
+    id="ob-app"
+    class="ob-user-app"
+  >
+    <div
+      class="ob-user-shell"
+    >
+      <header
+        class="ob-user-header"
+      >
+        <div>
+          <span
+            class="ob-user-eyebrow"
+          >
+            THE OBSERVATORY · PRIVATE BETA
+          </span>
 
-<script src="{{ url_for('static', filename='ob/ob_dashboard_simplification_obux.js') }}"></script>
+          <h1>
+            Dashboard
+          </h1>
+
+        </div>
+
+        <div
+          class="ob-user-boundary"
+          aria-label="Dashboard mode boundary"
+        >
+          <span>
+            Survey
+          </span>
+
+          <span>
+            Paper
+          </span>
+
+          <span class="locked">
+            Live Auto Locked
+          </span>
+        </div>
+      </header>
+
+      <main
+        class="ob-user-dashboard ob-command-dashboard"
+      >
+        <section class="ob-command-top">
+          <article class="ob-command-brief">
+            <span class="ob-kicker">SOULAANA · RIGHT NOW</span>
+            <h2 id="obUserBriefingTitle">Checking the market.</h2>
+            <p id="obUserBriefingSummary">I’ll surface what deserves your attention.</p>
+            <div class="ob-user-focus-actions">
+              <a class="ob-primary-action" href="/ob/market-map">Market Map</a>
+              <a class="ob-secondary-action" href="/ob/trade-center">Paper Practice</a>
+            </div>
+          </article>
+
+          <article class="ob-command-card ob-account-health">
+            <span class="ob-kicker">ACCOUNT HEALTH</span>
+            <strong id="obAccountHealthLabel">Checking account truth…</strong>
+            <p id="obAccountHealthSummary">Waiting for the verified account snapshot.</p>
+            <div id="obAccountHealthFacts" class="ob-command-mini-facts"></div>
+            <small id="obAccountHealthSoulaana">Soulaana: I only show account facts OB actually received.</small>
+          </article>
+        </section>
+
+        <section class="ob-command-grid">
+          <article class="ob-command-card">
+            <span class="ob-kicker">MARKET GLANCE</span>
+            <div id="obUserMarketGlance" class="ob-user-glance-grid"></div>
+            <a class="ob-card-link" href="/ob/market-map">Open Market Map →</a>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">RISK / DANGER</span>
+            <strong id="obRiskLabel">Checking…</strong>
+            <p id="obRiskSummary">Soulaana is checking whether anything needs a hold.</p>
+            <small id="obRiskSoulaana">Soulaana: calm unless verified truth says otherwise.</small>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">WHAT CHANGED</span>
+            <strong id="obChangedLabel">Checking changes…</strong>
+            <p id="obChangedSummary">Looking for new reviewed market context.</p>
+            <small>Soulaana: changes first, history only when you ask.</small>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">WATCH / ATTENTION</span>
+            <strong id="obAttentionLabel">Nothing queued yet.</strong>
+            <div id="obAttentionList" class="ob-command-list"></div>
+            <small>Soulaana: only items that may deserve your eyes.</small>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">ACTIVE TRADES</span>
+            <strong id="obPositionsLabel">Checking positions…</strong>
+            <div id="obPositionsList" class="ob-command-list"></div>
+            <a class="ob-card-link" href="/ob/trade-center">Practice · Paper Trade Center →</a>
+          </article>
+
+          <article class="ob-command-card">
+            <span class="ob-kicker">UPCOMING CATALYSTS</span>
+            <strong id="obCatalystLabel">Checking catalysts…</strong>
+            <div id="obCatalystList" class="ob-command-list"></div>
+            <small>Soulaana: only reviewed events make this card.</small>
+          </article>
+        </section>
+
+        <section class="ob-command-bottom">
+          <article class="ob-command-strip-item">
+            <span>DATA HEALTH</span>
+            <div id="obDataPulseChips" class="ob-data-pulse-chips" role="status" aria-live="polite">
+              <span class="ob-data-chip">Checking sources…</span>
+            </div>
+            <a href="/ob/data-desk">Data Desk →</a>
+          </article>
+
+          <article class="ob-command-strip-item">
+            <span>MODE</span>
+            <strong id="obModeLabel">Survey</strong>
+            <small id="obModeSummary">Observe first.</small>
+          </article>
+
+          <article class="ob-command-strip-item ob-next-action">
+            <span>SOULAANA · NEXT</span>
+            <strong id="obNextActionLabel">Checking…</strong>
+            <small id="obNextActionDetail"></small>
+            <a id="obNextActionLink" href="/ob/market-map">Open →</a>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="ob-noscript">
+      OB needs JavaScript for this private beta experience.
+    </div>
+  </noscript>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_data_contracts.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_engine_feed_adapter.js') }}?v=autoscan001"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_engine_feed_diagnostics.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_engine_trust_labels.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_session_state.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_dashboard_projection.js') }}?v=autoscan001"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_checkin_entry.js') }}?v=obux106110"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_dashboard.js') }}?v=obux091095"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_nav_shell.js') }}"
+  ></script>
+
+  <script
+    src="{{ url_for('static', filename='ob/ob_global_session_shell.js') }}"
+  ></script>
+
+  <script src="/static/ob/ob_theme_switcher.js?v=obux081085"></script>
+  <script src="/static/ob/ob_beta_surface_cleanup.js?v=obux081085"></script>
+
+  <script defer src="/static/ob/ob_dashboard_data_pulse.js?v=autoscan001"></script>
 </body>
 </html>

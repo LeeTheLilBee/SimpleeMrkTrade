@@ -1,0 +1,31 @@
+{
+  "canonical_aliases": {
+    "/": "/tower/start",
+    "/tower": "/tower/start",
+    "/tower/": "/tower/start"
+  },
+  "name": "Canonical Hosted Front Door and Legacy Tower Return Repair",
+  "observed_live_failure": {
+    "/": "200_OB_ROOT",
+    "/tower": "403_CLEARANCE_REQUIRED"
+  },
+  "pack": "TWR192",
+  "parent": "ba75ebd33ee978f4051bf1fad7b97caee146490f",
+  "runtime_test_side_effects_excluded": [
+    "data/market_universe.json",
+    "data/pipeline_status.json"
+  ],
+  "security": {
+    "authentication_bypass": false,
+    "broker_authority": false,
+    "capital_authority": false,
+    "live_auto_authorized": false,
+    "manual_live_authorized": false,
+    "payroll_execution_authority": false,
+    "step_up_bypass": false
+  },
+  "tower_start": {
+    "authenticated_owner": "/tower/access-home",
+    "unauthenticated": "/tower/login"
+  }
+}

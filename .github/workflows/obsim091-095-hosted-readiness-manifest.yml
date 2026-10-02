@@ -1,0 +1,35 @@
+name: OBSIM091-095 hosted owner release evidence separation
+on:
+  push:
+    branches:
+      - 'obsim091-095-*'
+  pull_request:
+    branches:
+      - 'tower-hosted-runtime-identity-twr081-085'
+    paths:
+      - 'web/hosted_tower.py'
+      - 'tests/test_obsim091_095_hosted_readiness_manifest.py'
+      - '.github/workflows/obsim091-095-hosted-readiness-manifest.yml'
+permissions:
+  contents: read
+jobs:
+  owner-readiness-manifest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install accepted runtime and test dependencies
+        run: python -m pip install pytest tzdata flask requests yfinance
+      - name: Compile and verify source activation does not assert hosted owner acceptance
+        run: |
+          python -m py_compile web/hosted_tower.py tests/test_obsim091_095_hosted_readiness_manifest.py
+          python -m pytest -q tests/test_obsim091_095_hosted_readiness_manifest.py tests/test_tower_hosted_runtime_identity_twr081_085.py tests/test_obsim056_060_hosted_owner_rehearsal.py tests/test_obsim061_065_hosted_token_lifecycle.py tests/test_obsim066_070_anonymous_release_probe.py tests/test_obsim071_075_two_host_anonymous_inventory.py tests/test_obsim081_085_anonymous_final_evidence_denial.py
+      - name: Complete repository diagnostic (does not mask failures as green)
+        if: always()
+        continue-on-error: true
+        run: python -m pytest -q tests

@@ -1,551 +1,1291 @@
-// OBSERVATORY_REVIEW_CENTER_V15_REAL_ROOM_JS
+(function () {
+  "use strict";
 
-const OB_REVIEW_TABS = [
-  { key: "performance", label: "Performance" },
-  { key: "replay", label: "Trade Replay" },
-  { key: "reports", label: "Reports" },
-  { key: "journal", label: "Journal / Receipts" },
-  { key: "proof", label: "Proof / Demo Records" }
-];
+  const PROJECTION =
+    window.OBReviewCenterProjection;
 
-const OB_REVIEW_ROWS = {
-  performance: [
-    {
-      title: "Account Performance Snapshot",
-      subtitle: "Official paper account review",
-      status: "Official",
-      result: "+8.4%",
-      quality: "Clean",
-      scope: "Paper",
-      risk: "Controlled",
-      lesson: "The system performed best when it respected position limits and did not over-repeat crowded tech names.",
-      soulaana: "Good. But do not let a good snapshot make you arrogant. The lesson is discipline, not celebration.",
-      symbol: "MU"
-    },
-    {
-      title: "Sector Performance",
-      subtitle: "Semiconductor lane led the review period",
-      status: "Needs Review",
-      result: "+5.1%",
-      quality: "Strong but crowded",
-      scope: "Sector",
-      risk: "Crowding",
-      lesson: "Semiconductors helped performance, but correlation risk rose when too many names leaned the same direction.",
-      soulaana: "The lane was bright, yes. But bright lanes can still get crowded. We keep the blessing and check the weight.",
-      symbol: "AMD"
-    }
-  ],
-  replay: [
-    {
-      title: "MU Option Premium Replay",
-      subtitle: "Entry, hold, and target review",
-      status: "Clean replay",
-      result: "Target zone",
-      quality: "Good discipline",
-      scope: "Trade",
-      risk: "Moderate",
-      lesson: "Premium-mode tracking kept the trade review focused on contract movement instead of confusing it with stock-only logic.",
-      soulaana: "This is the kind of replay I like. Clear reason, clear premium path, clear boundary. Keep that.",
-      symbol: "MU"
-    },
-    {
-      title: "AMD Watch-to-Candidate Replay",
-      subtitle: "Signal formed but required confirmation",
-      status: "Learning",
-      result: "Watched",
-      quality: "Patient",
-      scope: "Signal",
-      risk: "Crowding",
-      lesson: "The watch state prevented early action before confirmation was clean.",
-      soulaana: "Patience counted as a win here. Not every win is money. Sometimes the win is not touching something too early.",
-      symbol: "AMD"
-    }
-  ],
-  reports: [
-    {
-      title: "Weekly OB Report",
-      subtitle: "Performance, open risk, and candidate behavior",
-      status: "Generated",
-      result: "Ready",
-      quality: "Private",
-      scope: "Report",
-      risk: "Low",
-      lesson: "Weekly reporting should separate official, test, quarantined, and excluded records before showing totals.",
-      soulaana: "Numbers without labels will lie to you. Official is official. Test is test. Keep the truth clean.",
-      symbol: "NVDA"
-    },
-    {
-      title: "Risk Discipline Report",
-      subtitle: "Crowding, duplicate risk, and cooldown behavior",
-      status: "Needs Review",
-      result: "Guarded",
-      quality: "Useful",
-      scope: "Risk",
-      risk: "Moderate",
-      lesson: "Duplicate protection and cooldowns need to stay visible before Manual Live action.",
-      soulaana: "This is one of those boring reports that saves money. Respect it.",
-      symbol: "SMCI"
-    }
-  ],
-  journal: [
-    {
-      title: "Decision Receipt Chain",
-      subtitle: "Approved / rejected / snoozed action records",
-      status: "Audit",
-      result: "Receipts visible",
-      quality: "Traceable",
-      scope: "Receipt",
-      risk: "Low",
-      lesson: "Every manual action needs a receipt that separates OB recommendation, owner approval, broker fill, and monitoring state.",
-      soulaana: "Receipts are not clutter. Receipts are memory. Memory keeps you from rewriting the story later.",
-      symbol: "MU"
-    },
-    {
-      title: "Quarantine Notes",
-      subtitle: "Excluded rows and test artifacts",
-      status: "Protected",
-      result: "Separated",
-      quality: "Clean",
-      scope: "Journal",
-      risk: "Misreporting",
-      lesson: "Quarantined/test rows should never blend with official performance.",
-      soulaana: "We do not let messy data sit at the dinner table with official numbers. Separate it.",
-      symbol: "INTC"
-    }
-  ],
-  proof: [
-    {
-      title: "Private Proof Account",
-      subtitle: "Internal demo/proof records only",
-      status: "Private",
-      result: "Not public",
-      quality: "Redacted",
-      scope: "Proof",
-      risk: "Privacy",
-      lesson: "Proof records stay private unless The Tower explicitly clears what can be shown.",
-      soulaana: "Private proof is still proof. It does not need to be public to be real.",
-      symbol: "AMZN"
-    },
-    {
-      title: "Demo Record Snapshot",
-      subtitle: "Educational behavior without private exposure",
-      status: "Demo",
-      result: "Safe",
-      quality: "Clean",
-      scope: "Demo",
-      risk: "Exposure",
-      lesson: "Demo/proof records need redaction and separation from trust, business, and personal accounts.",
-      soulaana: "Show the lesson, not the family wallet. That is the rule.",
-      symbol: "MSFT"
-    }
-  ]
-};
-
-function obReviewRows(tab) {
-  return OB_REVIEW_ROWS[tab] || OB_REVIEW_ROWS.performance;
-}
-
-function obReviewSummary() {
-  return [
-    { label: "Official Results", value: "+8.4%" },
-    { label: "Reviewed Trades", value: "14" },
-    { label: "Clean Receipts", value: "21" },
-    { label: "Quarantined", value: "3" },
-    { label: "Tower State", value: "Private" }
-  ];
-}
-
-function obReviewChipClass(row) {
-  const status = String(row.status || "").toLowerCase();
-  if (status.includes("official") || status.includes("clean") || status.includes("generated")) return "green";
-  if (status.includes("quarantine") || status.includes("protected")) return "red";
-  return "gold";
-}
-
-function obReviewTimeline(row) {
-  return [
-    ["Signal / record", row.subtitle],
-    ["Review truth", row.lesson],
-    ["Soulaana read", row.soulaana],
-    ["Next step", row.risk === "Misreporting" || row.risk === "Privacy" ? "Keep separated and gated." : "Keep reviewing with clean labels."]
-  ];
-}
-
-function obOpenReviewSymbol(row) {
-  if (!row.symbol) return;
-  window.location.href = "/ob/symbol/" + encodeURIComponent(row.symbol);
-}
-
-function obRecordReviewAction(title, action) {
-  const receipt = document.getElementById("reviewReceiptBox");
-  if (!receipt) return;
-
-  const now = new Date().toLocaleString();
-
-  receipt.innerHTML = `
-    <strong>Review receipt updated:</strong><br>
-    Record: ${title}<br>
-    Action: ${action}<br>
-    Time: ${now}<br>
-    Review state: ${action}<br>
-    Note: Review Center records are private unless Tower clears export or proof use.
-  `;
-}
-
-function obRenderSelectedReview(row, tab) {
-  const panel = document.getElementById("reviewDetailPanel");
-  const timeline = obReviewTimeline(row);
-
-  panel.innerHTML = `
-    <div class="review-detail-title">${row.title}</div>
-    <div class="review-detail-subtitle">${row.subtitle}</div>
-
-    <div class="review-detail-stack">
-      <div class="review-detail-card gold">
-        <span>Status</span>
-        <strong>${row.status}</strong>
-      </div>
-
-      <div class="review-detail-card green">
-        <span>Result / quality</span>
-        <strong>${row.result} · ${row.quality}</strong>
-      </div>
-
-      <div class="review-detail-card">
-        <span>Scope</span>
-        <strong>${row.scope}</strong>
-      </div>
-
-      <div class="review-detail-card red">
-        <span>Risk to watch</span>
-        <strong>${row.risk}</strong>
-      </div>
-
-      <div class="review-soulaana-note">
-        <strong style="color: var(--ob-gold);">Soulaana:</strong><br>
-        ${row.soulaana}
-      </div>
-
-      <div class="review-detail-card">
-        <span>Replay / receipt timeline</span>
-        <div class="review-timeline">
-          ${timeline.map((item, index) => `
-            <div class="review-timeline-item">
-              <div class="review-timeline-dot">${index + 1}</div>
-              <div class="review-timeline-copy">
-                <strong>${item[0]}</strong>
-                <p>${item[1]}</p>
-              </div>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-
-      <div class="review-action-stack">
-        <button class="review-action-button" onclick="obOpenReviewSymbol(${JSON.stringify(row).replace(/"/g, '&quot;')})">Open Symbol Context</button>
-        <button class="review-action-button aqua" onclick="obRecordReviewAction('${row.title}', 'Marked reviewed')">Mark reviewed</button>
-        <button class="review-action-button" onclick="obRecordReviewAction('${row.title}', 'Add owner note')">Add owner note</button>
-        <button class="review-action-button red" onclick="obRecordReviewAction('${row.title}', 'Quarantine / exclude')">Quarantine / exclude</button>
-      </div>
-
-      <div class="review-receipt-box" id="reviewReceiptBox">
-        <strong>No review receipt yet.</strong><br>
-        Choose an action to create a Review Center receipt preview.
-      </div>
-    </div>
-  `;
-}
-
-function obRenderReviewRows(tab) {
-  const rows = obReviewRows(tab);
-  const list = document.getElementById("reviewRowList");
-
-  list.innerHTML = rows.map((row, index) => `
-    <div class="review-row ${index === 0 ? "active" : ""}" data-index="${index}">
-      <div class="review-row-top">
-        <div>
-          <div class="review-row-title">${row.title}</div>
-          <div class="review-row-subtitle">${row.subtitle}</div>
-        </div>
-
-        <div class="review-row-state">
-          <span class="review-mini-chip ${obReviewChipClass(row)}">${row.status}</span>
-          <span class="review-mini-chip gold">Private</span>
-        </div>
-      </div>
-
-      <div class="review-row-metrics">
-        <div class="review-row-metric"><span>Result</span><strong>${row.result}</strong></div>
-        <div class="review-row-metric"><span>Quality</span><strong>${row.quality}</strong></div>
-        <div class="review-row-metric"><span>Scope</span><strong>${row.scope}</strong></div>
-        <div class="review-row-metric"><span>Risk</span><strong>${row.risk}</strong></div>
-      </div>
-    </div>
-  `).join("");
-
-  list.querySelectorAll(".review-row").forEach((item) => {
-    item.addEventListener("click", () => {
-      list.querySelectorAll(".review-row").forEach(row => row.classList.remove("active"));
-      item.classList.add("active");
-      obRenderSelectedReview(rows[Number(item.dataset.index)], tab);
-    });
-  });
-
-  if (rows[0]) {
-    obRenderSelectedReview(rows[0], tab);
+  if (!PROJECTION) {
+    console.error(
+      "Canonical Review Center projection unavailable."
+    );
+    return;
   }
-}
 
-function obSetReviewTab(tab) {
-  document.querySelectorAll(".review-tab").forEach(button => {
-    button.classList.toggle("active", button.dataset.tab === tab);
-  });
 
-  const title = document.getElementById("reviewListTitle");
-  const subtitle = document.getElementById("reviewListSubtitle");
+  const state = {
+    filter: "attention",
+    records: [],
+    selectedId: null,
+  };
 
-  const label = OB_REVIEW_TABS.find(item => item.key === tab).label;
-  title.textContent = label;
 
-  subtitle.textContent = tab === "proof"
-    ? "Private proof and demo records stay gated unless Tower clears them."
-    : "Click a record to review the lesson, receipt, and next action.";
+  // ================================================================================================
+  // UTILS
+  // ================================================================================================
 
-  obRenderReviewRows(tab);
-}
+  function el(id) {
+    return document.getElementById(id);
+  }
 
-function obRenderReviewCenter() {
-  const mount = document.getElementById("reviewCenterMount");
 
-  mount.innerHTML = `
-    <div class="review-center-shell">
-      <div class="ob-panel trade-control-strip">
-        <div class="ob-label">Review Snapshot</div>
+  function obj(value) {
+    return (
+      value
+      && typeof value === "object"
+      && !Array.isArray(value)
+    ) ? value : {};
+  }
 
-        <div class="review-summary-grid">
-          ${obReviewSummary().map(item => `
-            <div class="review-summary-card">
-              <span>${item.label}</span>
-              <strong>${item.value}</strong>
+
+  function arr(value) {
+    return Array.isArray(value)
+      ? value
+      : [];
+  }
+
+
+  function num(value) {
+    const parsed = Number(value);
+
+    return Number.isFinite(parsed)
+      ? parsed
+      : null;
+  }
+
+
+  function txt(value, fallback = "—") {
+    return (
+      value === undefined
+      || value === null
+      || value === ""
+    ) ? fallback : String(value);
+  }
+
+
+  function esc(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+
+  function money(value) {
+    const parsed = num(value);
+
+    if (parsed === null) {
+      return "Unavailable";
+    }
+
+    return new Intl.NumberFormat(
+      "en-US",
+      {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2,
+      }
+    ).format(parsed);
+  }
+
+
+  function pct(value) {
+    const parsed = num(value);
+
+    if (parsed === null) {
+      return "Unavailable";
+    }
+
+    const sign = parsed > 0
+      ? "+"
+      : "";
+
+    return `${sign}${parsed.toFixed(1)}%`;
+  }
+
+
+  function duration(minutes) {
+    const parsed = num(minutes);
+
+    if (parsed === null) {
+      return "Unavailable";
+    }
+
+    const rounded =
+      Math.max(
+        0,
+        Math.round(parsed)
+      );
+
+    const hours =
+      Math.floor(
+        rounded / 60
+      );
+
+    const mins =
+      rounded % 60;
+
+    if (!hours) {
+      return `${mins}m`;
+    }
+
+    return `${hours}h ${String(mins).padStart(2, "0")}m`;
+  }
+
+
+  function tone(record) {
+    if (
+      record.process_quality === "POOR"
+      || arr(record.rule_violations).length
+      || (
+        record.negative_dive.time_below_stop_minutes !== null
+        && record.negative_dive.time_below_stop_minutes > 0
+      )
+    ) {
+      return "danger";
+    }
+
+    if (
+      record.process_quality === "NEEDS_REVIEW"
+      || record.overtime.overtime === true
+      || arr(record.causes).length
+    ) {
+      return "warn";
+    }
+
+    if (
+      record.process_quality === "CLEAN"
+    ) {
+      return "clean";
+    }
+
+    return "neutral";
+  }
+
+
+  function needsAttention(record) {
+    return (
+      tone(record) === "danger"
+      || tone(record) === "warn"
+      || record.outcome_class === "UNKNOWN"
+      || record.process_quality === "UNKNOWN"
+    );
+  }
+
+
+  function contractTitle(record) {
+    const contract = obj(
+      record.contract
+    );
+
+    if (contract.contract_symbol) {
+      return contract.contract_symbol;
+    }
+
+    const pieces = [];
+
+    if (record.symbol) {
+      pieces.push(record.symbol);
+    }
+
+    if (contract.strike !== null) {
+      pieces.push(
+        `$${contract.strike}`
+      );
+    }
+
+    if (contract.right) {
+      pieces.push(
+        contract.right
+      );
+    }
+
+    if (contract.expiration) {
+      pieces.push(
+        contract.expiration
+      );
+    }
+
+    return pieces.length
+      ? pieces.join(" · ")
+      : "Trade review";
+  }
+
+
+  function truthLabel(mode) {
+    const labels = {
+      manual_live: "MANUAL LIVE",
+      paper: "PAPER",
+      rehearsal: "REHEARSAL",
+      proof: "PROOF / UNCLASSIFIED",
+      quarantined: "QUARANTINED",
+    };
+
+    return labels[mode]
+      || String(mode || "UNKNOWN").toUpperCase();
+  }
+
+
+  // ================================================================================================
+  // FILTERING
+  // ================================================================================================
+
+  function filteredRecords() {
+    const records = state.records;
+
+    if (state.filter === "attention") {
+      return records.filter(
+        needsAttention
+      );
+    }
+
+    if (state.filter === "official") {
+      return records.filter(
+        item =>
+          item.official_performance
+      );
+    }
+
+    if (state.filter === "manual_live") {
+      return records.filter(
+        item =>
+          item.truth_mode === "manual_live"
+      );
+    }
+
+    if (state.filter === "paper") {
+      return records.filter(
+        item =>
+          item.truth_mode === "paper"
+      );
+    }
+
+    if (state.filter === "practice") {
+      return records.filter(
+        item =>
+          item.truth_mode === "rehearsal"
+          || item.truth_mode === "proof"
+      );
+    }
+
+    return records;
+  }
+
+
+  function selectedRecord() {
+    const filtered =
+      filteredRecords();
+
+    const selected =
+      filtered.find(
+        item =>
+          item.review_id === state.selectedId
+      );
+
+    if (selected) {
+      return selected;
+    }
+
+    return filtered[0] || null;
+  }
+
+
+  // ================================================================================================
+  // SUMMARY
+  // ================================================================================================
+
+  function renderSummary() {
+    const official =
+      state.records.filter(
+        item =>
+          item.official_performance
+      );
+
+    const attention =
+      state.records.filter(
+        needsAttention
+      );
+
+    const overtime =
+      state.records.filter(
+        item =>
+          item.overtime.overtime === true
+      );
+
+    const clean =
+      state.records.filter(
+        item =>
+          item.process_quality === "CLEAN"
+      );
+
+    el("reviewSummary").innerHTML = `
+      <div class="obux-review-stat">
+        <span>Reviewed</span>
+        <strong>${state.records.length}</strong>
+      </div>
+
+      <div class="obux-review-stat">
+        <span>Needs attention</span>
+        <strong>${attention.length}</strong>
+      </div>
+
+      <div class="obux-review-stat">
+        <span>Official</span>
+        <strong>${official.length}</strong>
+      </div>
+
+      <div class="obux-review-stat">
+        <span>Overtime</span>
+        <strong>${overtime.length}</strong>
+      </div>
+
+      <div class="obux-review-stat">
+        <span>Clean process</span>
+        <strong>${clean.length}</strong>
+      </div>
+    `;
+  }
+
+
+  // ================================================================================================
+  // REVIEW QUEUE
+  // ================================================================================================
+
+  function queueCard(record) {
+    const active =
+      record.review_id === state.selectedId
+        ? "active"
+        : "";
+
+    const t = tone(record);
+
+    const overtime =
+      record.overtime.overtime === true
+        ? `<span class="obux-review-queue-alert">
+             +${duration(record.overtime.overtime_minutes)} overtime
+           </span>`
+        : "";
+
+    return `
+      <button
+        class="obux-review-queue-card ${t} ${active}"
+        data-review-id="${esc(record.review_id)}"
+      >
+        <div class="obux-review-card-top">
+          <span class="obux-review-truth ${esc(record.truth_mode)}">
+            ${esc(truthLabel(record.truth_mode))}
+          </span>
+
+          <span class="obux-review-process ${t}">
+            ${esc(record.process_quality)}
+          </span>
+        </div>
+
+        <strong class="obux-review-symbol">
+          ${esc(contractTitle(record))}
+        </strong>
+
+        <span class="obux-review-account">
+          ${esc(txt(record.mission_account, "Account unavailable"))}
+        </span>
+
+        <div class="obux-review-card-bottom">
+          <span>
+            ${esc(record.outcome_class)}
+          </span>
+
+          <span>
+            ${esc(
+              record.realized_return_pct !== null
+                ? pct(record.realized_return_pct)
+                : money(record.realized_pnl)
+            )}
+          </span>
+        </div>
+
+        ${overtime}
+      </button>
+    `;
+  }
+
+
+  function renderQueue() {
+    const records =
+      filteredRecords();
+
+    const mount =
+      el("reviewQueue");
+
+    if (!records.length) {
+      mount.innerHTML = `
+        <div class="obux-review-empty">
+          <strong>No records in this view.</strong>
+          <span>
+            Review Center will not manufacture example trades.
+            When canonical review records arrive, they will appear here.
+          </span>
+        </div>
+      `;
+
+      state.selectedId = null;
+
+      return;
+    }
+
+    if (
+      !records.some(
+        item =>
+          item.review_id === state.selectedId
+      )
+    ) {
+      state.selectedId =
+        records[0].review_id;
+    }
+
+    mount.innerHTML =
+      records.map(queueCard).join("");
+
+    mount
+      .querySelectorAll(
+        "[data-review-id]"
+      )
+      .forEach(button => {
+        button.addEventListener(
+          "click",
+          () => {
+            state.selectedId =
+              button.dataset.reviewId;
+
+            renderQueue();
+            renderDetail();
+          }
+        );
+      });
+  }
+
+
+  // ================================================================================================
+  // NEGATIVE DIVE
+  // ================================================================================================
+
+  function metric(label, value, extraClass = "") {
+    return `
+      <div class="obux-review-metric ${extraClass}">
+        <span>${esc(label)}</span>
+        <strong>${esc(value)}</strong>
+      </div>
+    `;
+  }
+
+
+  function renderNegativeDive(record) {
+    const neg =
+      record.negative_dive;
+
+    const overtime =
+      record.overtime;
+
+    return `
+      <section class="obux-review-section obux-negative-dive">
+        <div class="obux-section-heading">
+          <div>
+            <span class="obux-eyebrow">
+              Negative Dive
+            </span>
+
+            <h3>
+              What happened below the pretty result?
+            </h3>
+          </div>
+
+          ${
+            overtime.overtime === true
+              ? `<span class="obux-danger-chip">
+                   OVERTIME +${duration(overtime.overtime_minutes)}
+                 </span>`
+              : `<span class="obux-muted-chip">
+                   ${overtime.overtime === false
+                     ? "WITHIN HOLD WINDOW"
+                     : "HOLD WINDOW UNKNOWN"}
+                 </span>`
+          }
+        </div>
+
+        <div class="obux-review-metrics-grid">
+          ${metric(
+            "Planned hold",
+            duration(
+              overtime.intended_hold_minutes
+            )
+          )}
+
+          ${metric(
+            "Actual hold",
+            duration(
+              overtime.actual_hold_minutes
+            )
+          )}
+
+          ${metric(
+            "Overtime",
+            duration(
+              overtime.overtime_minutes
+            ),
+            overtime.overtime === true
+              ? "danger"
+              : ""
+          )}
+
+          ${metric(
+            "MAE",
+            pct(
+              neg.mae_pct
+            ),
+            neg.mae_pct !== null
+              && neg.mae_pct < 0
+                ? "danger"
+                : ""
+          )}
+
+          ${metric(
+            "MFE",
+            pct(
+              neg.mfe_pct
+            )
+          )}
+
+          ${metric(
+            "Deepest drawdown",
+            pct(
+              neg.deepest_drawdown_pct
+            ),
+            neg.deepest_drawdown_pct !== null
+              ? "danger"
+              : ""
+          )}
+
+          ${metric(
+            "Time negative",
+            duration(
+              neg.time_negative_minutes
+            )
+          )}
+
+          ${metric(
+            "Time under stop",
+            duration(
+              neg.time_below_stop_minutes
+            ),
+            neg.time_below_stop_minutes !== null
+              && neg.time_below_stop_minutes > 0
+                ? "danger"
+                : ""
+          )}
+        </div>
+
+        <div class="obux-review-truth-note">
+          Missing excursion metrics are shown as
+          <strong>Unavailable</strong>.
+          Review Center does not estimate MAE, MFE, drawdown or
+          negative duration from the final result alone.
+        </div>
+      </section>
+    `;
+  }
+
+
+  // ================================================================================================
+  // CAUSES / LESSONS
+  // ================================================================================================
+
+  function renderCauses(record) {
+    const causes =
+      arr(record.causes);
+
+    const violations =
+      arr(record.rule_violations);
+
+    return `
+      <section class="obux-review-section">
+        <span class="obux-eyebrow">
+          Why it went sideways
+        </span>
+
+        <h3>
+          Cause + discipline review
+        </h3>
+
+        ${
+          causes.length
+            ? `
+              <div class="obux-cause-grid">
+                ${causes.map(
+                  cause => `
+                    <div class="obux-cause-chip">
+                      <span>●</span>
+                      ${esc(cause.label)}
+                    </div>
+                  `
+                ).join("")}
+              </div>
+            `
+            : `
+              <div class="obux-review-empty compact">
+                No evidence-supported cause classification yet.
+              </div>
+            `
+        }
+
+        ${
+          violations.length
+            ? `
+              <div class="obux-violation-box">
+                <strong>
+                  Rule violations
+                </strong>
+
+                ${violations.map(
+                  violation => `
+                    <span>
+                      ${esc(violation)}
+                    </span>
+                  `
+                ).join("")}
+              </div>
+            `
+            : ""
+        }
+      </section>
+    `;
+  }
+
+
+  function lessonRow(label, value) {
+    return `
+      <div class="obux-lesson-row">
+        <span>${esc(label)}</span>
+        <strong>
+          ${esc(txt(value, "Not recorded yet"))}
+        </strong>
+      </div>
+    `;
+  }
+
+
+  function renderLesson(record) {
+    const lesson =
+      obj(record.lesson);
+
+    return `
+      <section class="obux-review-section obux-lesson-section">
+        <span class="obux-eyebrow">
+          What changes
+        </span>
+
+        <h3>
+          Turn the trade into a rule.
+        </h3>
+
+        <div class="obux-lesson-grid">
+          ${lessonRow(
+            "What worked",
+            lesson.what_worked
+          )}
+
+          ${lessonRow(
+            "What failed",
+            lesson.what_failed
+          )}
+
+          ${lessonRow(
+            "Missed warning",
+            lesson.missed_warning
+          )}
+
+          ${lessonRow(
+            "Repeat",
+            lesson.what_to_repeat
+          )}
+
+          ${lessonRow(
+            "Avoid",
+            lesson.what_to_avoid
+          )}
+
+          ${lessonRow(
+            "Best next rule",
+            lesson.best_next_rule
+          )}
+        </div>
+
+        <div class="obux-owner-note">
+          <span>Owner note</span>
+          <p>
+            ${esc(
+              txt(
+                lesson.owner_notes,
+                "No owner note recorded yet."
+              )
+            )}
+          </p>
+        </div>
+      </section>
+    `;
+  }
+
+
+  // ================================================================================================
+  // LIFECYCLE REPLAY
+  // ================================================================================================
+
+  function renderTimeline(record) {
+    const timeline =
+      arr(record.lifecycle);
+
+    if (!timeline.length) {
+      return `
+        <div class="obux-review-empty compact">
+          No canonical lifecycle events were supplied for this record.
+        </div>
+      `;
+    }
+
+    return `
+      <div class="obux-review-timeline">
+        ${timeline.map(
+          (item, index) => {
+            const safe = obj(item);
+
+            return `
+              <div class="obux-timeline-node">
+                <div class="obux-timeline-number">
+                  ${index + 1}
+                </div>
+
+                <div>
+                  <strong>
+                    ${esc(
+                      txt(
+                        safe.label,
+                        safe.event_type || "Event"
+                      )
+                    )}
+                  </strong>
+
+                  <span>
+                    ${esc(
+                      txt(
+                        safe.timestamp,
+                        safe.time || safe.created_at || "Time unavailable"
+                      )
+                    )}
+                  </span>
+
+                  ${
+                    safe.result
+                      ? `<p>${esc(safe.result)}</p>`
+                      : ""
+                  }
+                </div>
+              </div>
+            `;
+          }
+        ).join("")}
+      </div>
+    `;
+  }
+
+
+  // ================================================================================================
+  // SOULAANA
+  // ================================================================================================
+
+  function soulaana(record) {
+    const bits = [];
+
+    bits.push(
+      `${record.outcome_class} is the money result.`
+    );
+
+    bits.push(
+      `${record.process_quality} is the process result.`
+    );
+
+    if (
+      record.outcome_class === "WIN"
+      && (
+        record.process_quality === "POOR"
+        || record.process_quality === "NEEDS_REVIEW"
+      )
+    ) {
+      bits.push(
+        "Do not confuse getting paid with trading clean. A profitable violation still gets reviewed."
+      );
+    }
+
+    if (
+      record.outcome_class === "LOSS"
+      && record.process_quality === "CLEAN"
+    ) {
+      bits.push(
+        "A clean loss is not the same thing as a bad decision. The system can do the right thing and still lose."
+      );
+    }
+
+    if (
+      record.overtime.overtime === true
+    ) {
+      bits.push(
+        `This position exceeded its intended hold window by ${duration(record.overtime.overtime_minutes)}.`
+      );
+    }
+
+    if (
+      record.negative_dive.time_below_stop_minutes !== null
+      && record.negative_dive.time_below_stop_minutes > 0
+    ) {
+      bits.push(
+        `It remained beyond the recorded stop boundary for ${duration(record.negative_dive.time_below_stop_minutes)}.`
+      );
+    }
+
+    if (arr(record.causes).length) {
+      bits.push(
+        `Evidence-backed causes: ${record.causes.map(item => item.label).join(", ")}.`
+      );
+    }
+
+    if (
+      !arr(record.causes).length
+      && record.process_quality === "UNKNOWN"
+    ) {
+      bits.push(
+        "I do not have enough source evidence to blame the market, the system, or you. That stays unknown until the record supports an answer."
+      );
+    }
+
+    return bits.join(" ");
+  }
+
+
+  // ================================================================================================
+  // HERO REVIEW
+  // ================================================================================================
+
+  function renderDetail() {
+    const record =
+      selectedRecord();
+
+    const mount =
+      el("reviewHero");
+
+    if (!record) {
+      mount.innerHTML = `
+        <div class="obux-review-empty hero">
+          <strong>
+            Nothing selected.
+          </strong>
+
+          <span>
+            Review Center is waiting for canonical review truth.
+          </span>
+        </div>
+      `;
+
+      return;
+    }
+
+    state.selectedId =
+      record.review_id;
+
+    const contract =
+      obj(record.contract);
+
+    const resultValue =
+      record.realized_return_pct !== null
+        ? pct(record.realized_return_pct)
+        : money(record.realized_pnl);
+
+    mount.innerHTML = `
+      <article class="obux-review-hero-card">
+
+        <header class="obux-review-hero-header">
+          <div>
+            <div class="obux-review-kickers">
+              <span class="obux-review-truth ${esc(record.truth_mode)}">
+                ${esc(truthLabel(record.truth_mode))}
+              </span>
+
+              <span class="obux-review-source">
+                ${esc(record.source_name)}
+              </span>
             </div>
-          `).join("")}
-        </div>
-      </div>
 
-      <div class="ob-panel review-tabs">
-        ${OB_REVIEW_TABS.map((tab, index) => `
-          <button class="review-tab ${index === 0 ? "active" : ""}" data-tab="${tab.key}">
-            ${tab.label}
-          </button>
-        `).join("")}
-      </div>
-
-      <div class="review-main-grid">
-        <div class="ob-panel review-list-panel">
-          <div class="ob-label">Review Center</div>
-          <div class="detail-title" id="reviewListTitle">Performance</div>
-          <div class="detail-sub" id="reviewListSubtitle">Click a record to review the lesson, receipt, and next action.</div>
-          <div class="review-row-list" id="reviewRowList"></div>
-        </div>
-
-        <div class="ob-panel review-detail-panel" id="reviewDetailPanel"></div>
-      </div>
-    </div>
-  `;
-
-  document.querySelectorAll(".review-tab").forEach(button => {
-    button.addEventListener("click", () => obSetReviewTab(button.dataset.tab));
-  });
-
-  obSetReviewTab("performance");
-}
-
-document.addEventListener("DOMContentLoaded", obRenderReviewCenter);
-
-// OBSERVATORY_V22_REAL_ENGINE_DATA_WIRING_PREP_CONTRACT_HOOK
-if (window.OB_DATA_CONTRACTS_V22 && window.OB_DATA_CONTRACTS_V22.reviewCenterContract) {
-  window.OB_REVIEW_CENTER_CONTRACT_V22 = window.OB_DATA_CONTRACTS_V22.reviewCenterContract();
-}
-
-// OBSERVATORY_V23_FINAL_VISUAL_CONSISTENCY_PASS_ROOM_FLAG
-window.OB_V23_ROOM_VISUAL_READY = true;
-
-// OBSERVATORY_V25_SAFE_ENGINE_FEED_ADAPTER_ROOM_FLAG
-window.OB_V25_ENGINE_FEED_READY = true;
-
-// OBSERVATORY_V26_REAL_SNAPSHOT_DISPLAY_WIRING_ROOM_FLAG
-window.OB_V26_SNAPSHOT_DISPLAY_READY = true;
-
-// OBSERVATORY_V27_ROOM_LEVEL_REAL_DATA_POLISH_ROOM_FLAG
-window.OB_V27_ROOM_DATA_POLISH_READY = true;
-
-// OBSERVATORY_V28_CANDIDATE_SIGNAL_CARD_NORMALIZATION_ROOM_FLAG
-window.OB_V28_CANDIDATE_CARDS_READY = true;
-
-// OBSERVATORY_V29_MANUAL_LIVE_RECEIPTS_REVIEW_INTEGRATION_ROOM_FLAG
-window.OB_V29_MANUAL_LIVE_RECEIPTS_READY = true;
-
-// OBSERVATORY_V31_FINAL_PRIVATE_BETA_QA_PASS_ROOM_FLAG
-window.OB_V31_PRIVATE_BETA_QA_READY = true;
-
-// OBSERVATORY_V32_REAL_ENGINE_FEED_EXPANSION_READ_ONLY_ROOM_FLAG
-window.OB_V32_ENGINE_FEED_EXPANSION_READY = true;
-
-// OBSERVATORY_V34_ENGINE_FEED_TRUST_LABELS_ROOM_WARNINGS_ROOM_FLAG
-window.OB_V34_ENGINE_TRUST_LABELS_READY = true;
-
-// OBSERVATORY_V35_ENGINE_FEED_CANONICAL_ROOM_MAPPING_ROOM_FLAG
-window.OB_V35_ENGINE_ROOM_MAPPING_READY = true;
-
-// OBSERVATORY_V36_OWNER_CONSOLE_SOURCE_AUDIT_ACTION_PLAN_ROOM_FLAG
-window.OB_V36_OWNER_SOURCE_AUDIT_READY = true;
-
-// OBSERVATORY_V37_PRIVATE_BETA_LAUNCH_CONTROL_CHECKLIST_ROOM_FLAG
-window.OB_V37_PRIVATE_BETA_LAUNCH_CONTROL_READY = true;
-
-// OBSERVATORY_V38_PRIVATE_BETA_TESTER_INVITE_PACKET_BUILDER_ROOM_FLAG
-window.OB_V38_PRIVATE_BETA_INVITE_PACKET_READY = true;
-
-// OBSERVATORY_V39_TESTER_FEEDBACK_INTAKE_CONFUSION_REPORT_PACKET_ROOM_FLAG
-window.OB_V39_PRIVATE_BETA_FEEDBACK_INTAKE_READY = true;
-
-// OBSERVATORY_V40_OWNER_TESTER_FEEDBACK_REVIEW_QUEUE_ROOM_FLAG
-window.OB_V40_PRIVATE_BETA_FEEDBACK_REVIEW_QUEUE_READY = true;
-
-// OBSERVATORY_V41_GUIDED_PRIVATE_BETA_SESSION_RUNBOOK_ROOM_FLAG
-window.OB_V41_PRIVATE_BETA_SESSION_RUNBOOK_READY = true;
-
-// OBSERVATORY_V42_PRIVATE_BETA_ISSUE_TRIAGE_FIX_PRIORITY_ROOM_FLAG
-window.OB_V42_PRIVATE_BETA_ISSUE_TRIAGE_READY = true;
-
-// OBSERVATORY_V43_PRIVATE_BETA_SESSION_CLOSEOUT_REPORT_ROOM_FLAG
-window.OB_V43_PRIVATE_BETA_SESSION_CLOSEOUT_READY = true;
-
-// OBSERVATORY_V44_PRIVATE_BETA_FIX_VERIFICATION_CHECKLIST_ROOM_FLAG
-window.OB_V44_PRIVATE_BETA_FIX_VERIFICATION_READY = true;
-
-// OBSERVATORY_V45_NEXT_TESTER_CLEARANCE_GATE_ROOM_FLAG
-window.OB_V45_PRIVATE_BETA_NEXT_TESTER_GATE_READY = true;
-
-// OB_GIANT_PACK_001_OWNER_USER_ACCOUNT_EXPERIENCE_ROOM_FLAG
-window.OB_GIANT_PACK_001_ACCOUNT_EXPERIENCE_READY = true;
-
-// OB_GIANT_PACK_002_MANUAL_LIVE_LEVEL_1_OPERATING_ROOM_FLAG
-window.OB_GIANT_PACK_002_MANUAL_LIVE_L1_READY = true;
-
-// OB_GIANT_PACK_003_RECEIPTS_REVIEW_CENTER_FOUNDATION_FLAG
-window.OB_GIANT_PACK_003_RECEIPTS_REVIEW_READY = true;
-
-// OB_GIANT_PACK_004_PRIVATE_BETA_TOWER_LOCK_POLISH_FLAG
-window.OB_GIANT_PACK_004_PRIVATE_BETA_TOWER_LOCK_READY = true;
-
-// OB_GIANT_PACK_005_MANUAL_LIVE_SAFETY_PREFLIGHT_GATE_FLAG
-window.OB_GIANT_PACK_005_MANUAL_LIVE_PREFLIGHT_READY = true;
-
-// OB_GIANT_PACK_006_MANUAL_LIVE_DECISION_PACKET_FLAG
-window.OB_GIANT_PACK_006_MANUAL_LIVE_DECISION_PACKET_READY = true;
-
-// OB_GIANT_PACK_007_MANUAL_BROKER_CHECKLIST_FILL_CAPTURE_FLAG
-window.OB_GIANT_PACK_007_MANUAL_BROKER_CHECKLIST_FILL_CAPTURE_READY = true;
-
-// OB_GIANT_PACK_008_POSITION_MONITOR_EXIT_CLOSE_CAPTURE_FLAG
-window.OB_GIANT_PACK_008_POSITION_MONITOR_EXIT_CLOSE_CAPTURE_READY = true;
-
-// OB_GIANT_PACK_009_FINAL_TRADE_REVIEW_PERFORMANCE_RECEIPT_FLAG
-window.OB_GIANT_PACK_009_FINAL_TRADE_REVIEW_PERFORMANCE_READY = true;
-
-// OB_GIANT_PACK_010_MANUAL_LIVE_L1_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_010_MANUAL_LIVE_L1_READINESS_READY = true;
-
-// OB_GIANT_PACK_011_OWNER_REHEARSAL_ENGINE_FLAG
-window.OB_GIANT_PACK_011_OWNER_REHEARSAL_ENGINE_READY = true;
-
-// OB_GIANT_PACK_012_REHEARSAL_RECORD_PERSISTENCE_CONTRACT_FLAG
-window.OB_GIANT_PACK_012_REHEARSAL_RECORD_CONTRACTS_READY = true;
-
-// OB_GIANT_PACK_013_REVIEW_CENTER_REHEARSAL_COMMAND_BOARD_FLAG
-window.OB_GIANT_PACK_013_REVIEW_CENTER_REHEARSAL_COMMAND_BOARD_READY = true;
-
-// OB_GIANT_PACK_014_OWNER_INPUT_PERSISTENCE_PREP_FLAG
-window.OB_GIANT_PACK_014_OWNER_INPUT_PERSISTENCE_PREP_READY = true;
-
-// OB_GIANT_PACK_015_MISSION_ACCOUNT_CAPITAL_RULE_REHEARSAL_OVERLAY_FLAG
-window.OB_GIANT_PACK_015_MISSION_ACCOUNT_CAPITAL_RULE_REHEARSAL_OVERLAY_READY = true;
-
-// OB_GIANT_PACK_016_TOWER_STEP_UP_ENFORCEMENT_WIRING_PREP_FLAG
-window.OB_GIANT_PACK_016_TOWER_STEP_UP_ENFORCEMENT_PREP_READY = true;
-
-// OB_GIANT_PACK_017_REAL_CANDIDATE_REHEARSAL_ADAPTER_FLAG
-window.OB_GIANT_PACK_017_REAL_CANDIDATE_REHEARSAL_ADAPTER_READY = true;
-
-// OB_GIANT_PACK_018_MANUAL_LIVE_OWNER_REHEARSAL_FINAL_READINESS_FLAG
-window.OB_GIANT_PACK_018_MANUAL_LIVE_OWNER_REHEARSAL_FINAL_READINESS_READY = true;
-
-// OB_GIANT_PACK_019_REHEARSAL_QUALITY_FRESHNESS_GATE_FLAG
-window.OB_GIANT_PACK_019_REHEARSAL_QUALITY_FRESHNESS_GATE_READY = true;
-
-// OB_GIANT_PACK_020_MANUAL_LIVE_PRE_LIVE_LOCK_WALL_FLAG
-window.OB_GIANT_PACK_020_MANUAL_LIVE_PRE_LIVE_LOCK_WALL_READY = true;
-
-// OB_GIANT_PACK_021_REHEARSAL_PERSISTENCE_ADAPTER_DRY_RUN_CONTRACT_FLAG
-window.OB_GIANT_PACK_021_REHEARSAL_PERSISTENCE_ADAPTER_DRY_RUN_READY = true;
-
-// OB_GIANT_PACK_022_OWNER_PRACTICE_LOOP_BOARD_FLAG
-window.OB_GIANT_PACK_022_OWNER_PRACTICE_LOOP_BOARD_READY = true;
-
-// OB_GIANT_PACK_023_PRACTICE_SESSION_DETAIL_DRAWER_FLAG
-window.OB_GIANT_PACK_023_PRACTICE_SESSION_DETAIL_DRAWER_READY = true;
-
-// OB_GIANT_PACK_024_PRACTICE_LESSON_REVIEW_QUEUE_FLAG
-window.OB_GIANT_PACK_024_PRACTICE_LESSON_REVIEW_QUEUE_READY = true;
-
-// OB_GIANT_PACK_025_OWNER_PRACTICE_LOOP_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_025_OWNER_PRACTICE_LOOP_READINESS_CHECKPOINT_READY = true;
-
-// OB_GIANT_PACK_026_PRACTICE_REPETITION_METRICS_BOARD_FLAG
-window.OB_GIANT_PACK_026_PRACTICE_REPETITION_METRICS_BOARD_READY = true;
-
-// OB_GIANT_PACK_027_OWNER_REVIEW_POLISH_GUIDANCE_FLAG
-window.OB_GIANT_PACK_027_OWNER_REVIEW_POLISH_GUIDANCE_READY = true;
-
-// OB_GIANT_PACK_028_OWNER_PRACTICE_FOCUS_QUEUE_FLAG
-window.OB_GIANT_PACK_028_OWNER_PRACTICE_FOCUS_QUEUE_READY = true;
-
-// OB_GIANT_PACK_029_PRACTICE_REVIEW_COMPACT_SNAPSHOT_FLAG
-window.OB_GIANT_PACK_029_PRACTICE_REVIEW_COMPACT_SNAPSHOT_READY = true;
-
-// OB_GIANT_PACK_030_PRACTICE_REVIEW_POLISH_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_030_PRACTICE_REVIEW_POLISH_READINESS_CHECKPOINT_READY = true;
-
-// OB_GIANT_PACK_031_MANUAL_LIVE_OPERATOR_CONFIDENCE_BOARD_FLAG
-window.OB_GIANT_PACK_031_MANUAL_LIVE_OPERATOR_CONFIDENCE_BOARD_READY = true;
-
-// OB_GIANT_PACK_032_MANUAL_LIVE_OPERATOR_STEP_CONFIDENCE_CHECKLIST_FLAG
-window.OB_GIANT_PACK_032_MANUAL_LIVE_OPERATOR_STEP_CONFIDENCE_CHECKLIST_READY = true;
-
-// OB_GIANT_PACK_033_MANUAL_LIVE_OPERATOR_SCENARIO_CONFIDENCE_REVIEW_FLAG
-window.OB_GIANT_PACK_033_MANUAL_LIVE_OPERATOR_SCENARIO_CONFIDENCE_REVIEW_READY = true;
-
-// OB_GIANT_PACK_034_MANUAL_LIVE_OPERATOR_CONFIDENCE_IMPROVEMENT_PLAN_FLAG
-window.OB_GIANT_PACK_034_MANUAL_LIVE_OPERATOR_CONFIDENCE_IMPROVEMENT_PLAN_READY = true;
-
-// OB_GIANT_PACK_035_MANUAL_LIVE_OPERATOR_CONFIDENCE_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_035_MANUAL_LIVE_OPERATOR_CONFIDENCE_READINESS_CHECKPOINT_READY = true;
-
-// OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE_FLAG
-window.OB_GIANT_PACK_036_REAL_MANUAL_LIVE_DRY_RUN_PERSISTENCE_ENGINE_READY = true;
-
-// OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW_FLAG
-window.OB_GIANT_PACK_037_REAL_MANUAL_LIVE_DRY_RUN_RECORD_DETAIL_HISTORY_REVIEW_READY = true;
-
-// OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE_FLAG
-window.OB_GIANT_PACK_038_REAL_MANUAL_LIVE_DRY_RUN_RECEIPT_PACKET_ENGINE_READY = true;
-
-// OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE_FLAG
-window.OB_GIANT_PACK_039_REAL_MANUAL_LIVE_PROOF_PACKET_OWNER_REVIEW_QUEUE_READY = true;
-
-// OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT_FLAG
-window.OB_GIANT_PACK_040_MANUAL_LIVE_EVIDENCE_RECEIPT_LAYER_READINESS_CHECKPOINT_READY = true;
-
-// OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF_FLAG
-window.OB_GIANT_PACK_041_REAL_CANDIDATE_TO_DECISION_HANDOFF_READY = true;
+            <h2>
+              ${esc(contractTitle(record))}
+            </h2>
+
+            <p>
+              ${esc(
+                txt(
+                  record.mission_account,
+                  "Mission account unavailable"
+                )
+              )}
+              ${
+                record.strategy
+                  ? ` · ${esc(record.strategy)}`
+                  : ""
+              }
+            </p>
+          </div>
+
+          <div class="obux-result-stack">
+            <div>
+              <span>Outcome</span>
+              <strong class="${record.outcome_class.toLowerCase()}">
+                ${esc(record.outcome_class)}
+              </strong>
+            </div>
+
+            <div>
+              <span>Result</span>
+              <strong>
+                ${esc(resultValue)}
+              </strong>
+            </div>
+
+            <div>
+              <span>Process</span>
+              <strong class="${tone(record)}">
+                ${esc(record.process_quality)}
+              </strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="obux-soulaana-review">
+          <div class="obux-soulaana-mark">
+            S
+          </div>
+
+          <div>
+            <span>Soulaana</span>
+            <p>
+              ${esc(soulaana(record))}
+            </p>
+          </div>
+        </section>
+
+        <section class="obux-review-section">
+          <div class="obux-section-heading">
+            <div>
+              <span class="obux-eyebrow">
+                Trade replay
+              </span>
+
+              <h3>
+                How we got here
+              </h3>
+            </div>
+
+            ${
+              contract.contract_symbol
+                ? `
+                  <span class="obux-contract-pill">
+                    ${esc(contract.contract_symbol)}
+                  </span>
+                `
+                : ""
+            }
+          </div>
+
+          ${renderTimeline(record)}
+        </section>
+
+        <section class="obux-review-section">
+          <span class="obux-eyebrow">
+            Entry → Exit
+          </span>
+
+          <div class="obux-review-metrics-grid">
+            ${metric(
+              "Planned entry",
+              money(
+                record.entry.planned_price
+              )
+            )}
+
+            ${metric(
+              "Actual entry",
+              money(
+                record.entry.actual_price
+              )
+            )}
+
+            ${metric(
+              "Stop",
+              money(
+                record.exit.stop
+              )
+            )}
+
+            ${metric(
+              "Planned exit",
+              money(
+                record.exit.planned_price
+              )
+            )}
+
+            ${metric(
+              "Actual exit",
+              money(
+                record.exit.actual_price
+              )
+            )}
+
+            ${metric(
+              "Exit reason",
+              txt(
+                record.exit.reason,
+                "Unavailable"
+              )
+            )}
+          </div>
+        </section>
+
+        ${
+          contract.contract_symbol
+          || record.premium.entry_premium !== null
+          || record.premium.exit_premium !== null
+            ? `
+              <section class="obux-review-section">
+                <span class="obux-eyebrow">
+                  Contract economics
+                </span>
+
+                <div class="obux-review-metrics-grid">
+                  ${metric(
+                    "Contract",
+                    txt(
+                      contract.contract_symbol,
+                      contractTitle(record)
+                    )
+                  )}
+
+                  ${metric(
+                    "Entry premium",
+                    money(
+                      record.premium.entry_premium
+                    )
+                  )}
+
+                  ${metric(
+                    "Exit premium",
+                    money(
+                      record.premium.exit_premium
+                    )
+                  )}
+
+                  ${metric(
+                    "Contracts",
+                    txt(
+                      record.premium.contracts,
+                      "Unavailable"
+                    )
+                  )}
+
+                  ${metric(
+                    "Premium P&L",
+                    money(
+                      record.premium.premium_pnl
+                    )
+                  )}
+
+                  ${metric(
+                    "Premium return",
+                    pct(
+                      record.premium.premium_return_pct
+                    )
+                  )}
+                </div>
+              </section>
+            `
+            : ""
+        }
+
+        ${renderNegativeDive(record)}
+
+        ${renderCauses(record)}
+
+        ${renderLesson(record)}
+
+        <footer class="obux-review-footer">
+          <div>
+            <span>
+              REVIEW ID
+            </span>
+            <strong>
+              ${esc(record.review_id)}
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              OFFICIAL PERFORMANCE
+            </span>
+            <strong>
+              ${record.official_performance
+                ? "YES"
+                : "NO"}
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              LIVE AUTO
+            </span>
+            <strong>
+              LOCKED
+            </strong>
+          </div>
+        </footer>
+      </article>
+    `;
+  }
+
+
+  // ================================================================================================
+  // FILTER BUTTONS
+  // ================================================================================================
+
+  function wireFilters() {
+    document
+      .querySelectorAll(
+        "[data-review-filter]"
+      )
+      .forEach(button => {
+        button.addEventListener(
+          "click",
+          () => {
+            state.filter =
+              button.dataset.reviewFilter;
+
+            document
+              .querySelectorAll(
+                "[data-review-filter]"
+              )
+              .forEach(item =>
+                item.classList.toggle(
+                  "active",
+                  item === button
+                )
+              );
+
+            state.selectedId = null;
+
+            renderQueue();
+            renderDetail();
+          }
+        );
+      });
+  }
+
+
+  // ================================================================================================
+  // RENDER
+  // ================================================================================================
+
+  function render() {
+    renderSummary();
+    renderQueue();
+    renderDetail();
+  }
+
+
+  async function boot() {
+    wireFilters();
+
+    const loading =
+      el("reviewLoading");
+
+    try {
+      const snapshot =
+        await PROJECTION.refresh();
+
+      state.records =
+        arr(snapshot.records);
+
+      if (loading) {
+        loading.remove();
+      }
+
+      render();
+
+    } catch (error) {
+      if (loading) {
+        loading.innerHTML = `
+          <strong>
+            Review Center could not load canonical review data.
+          </strong>
+
+          <span>
+            ${esc(
+              error
+              && error.message
+                ? error.message
+                : String(error)
+            )}
+          </span>
+        `;
+      }
+    }
+  }
+
+
+  window.addEventListener(
+    "ob:review-center-projection-updated",
+    event => {
+      const detail =
+        obj(event.detail);
+
+      state.records =
+        arr(detail.records);
+
+      render();
+    }
+  );
+
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    boot
+  );
+
+
+  window.OBReviewCenter =
+    Object.freeze({
+      refresh: boot,
+      getState: () => ({
+        ...state,
+        records: [...state.records],
+      }),
+    });
+
+
+  window.dispatchEvent(
+    new CustomEvent(
+      "ob:obux046-050-review-center-ready",
+      {
+        detail: {
+          canonicalReviewCenter: true,
+          negativeDiveEnabled: true,
+          overtimeReviewEnabled: true,
+          fakePerformanceFallbackEnabled: false,
+          liveAutoLocked: true,
+        },
+      }
+    )
+  );
+})();

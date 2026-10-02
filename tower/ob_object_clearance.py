@@ -312,7 +312,7 @@ def evaluate_ob_object_clearance(
             'risk_score': max(current_risk_score, 70),
             'required_actions': ['upgrade_clearance', 'owner_review'],
             'human_reason': 'User clearance is not high enough for this OB object.',
-            'soulaana_translation': f'Soulaana: {policy.get('label')} needs {required_level} clearance. This user only has {user_clearance_level}.',
+            'soulaana_translation': f"Soulaana: {policy.get('label')} needs {required_level} clearance. This user only has {user_clearance_level}.",
             'metadata': {
                 'user_id': user_id,
                 'object_type': object_type,
@@ -332,7 +332,7 @@ def evaluate_ob_object_clearance(
         'risk_score': current_risk_score,
         'required_actions': [],
         'human_reason': 'The Tower allowed this OB object action.',
-        'soulaana_translation': f'Soulaana: {policy.get('label')} {object_id} is cleared for {action}. This opens only this object, not the whole room.',
+        'soulaana_translation': f"Soulaana: {policy.get('label')} {object_id} is cleared for {action}. This opens only this object, not the whole room.",
         'metadata': {
             'user_id': user_id,
             'role': role,

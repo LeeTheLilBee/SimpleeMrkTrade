@@ -53,3 +53,9 @@ def test_obux033_live_change_detection_exists():
 def test_obux033_no_action_state_exists():
     assert "Nothing needs market action from this room" in SOULAANA
     assert "No move is required" in SOULAANA
+
+
+def test_obux033_soulaana_explains_multi_provider_source_coverage():
+    assert "providerNames" in SOULAANA
+    assert "provider lane" in SOULAANA
+    assert "one provider overwrite the others" in SOULAANA
