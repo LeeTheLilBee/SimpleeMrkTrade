@@ -34,6 +34,8 @@ def _key_rows(_sid):
          "probe": "NOT_CONFIGURED", "secret": SECRET},
         {"id": "bea", "name": "U.S. BEA", "present": False,
          "probe": "NOT_CONFIGURED", "secret": SECRET},
+        {"id": "twelve_data", "name": "Twelve Data", "present": True,
+         "probe": "READ_ONLY_CHECK_PASSED", "secret": SECRET},
         {"id": "alpaca", "name": "Alpaca", "present": False,
          "probe": "NOT_CONFIGURED", "secret": SECRET},
     )
@@ -57,7 +59,7 @@ def test_safe_projection_never_conflates_connection_and_data_license(monkeypatch
     assert result["live_feed_count_verified"] is None
     assert result["prices_attached"] is False
     assert result["may_authorize_order"] is False
-    assert len(result["provider_status"]) == 11
+    assert len(result["provider_status"]) == 12
     states = {x["provider"]: x for x in result["provider_status"]}
     assert states["finnhub"]["state"] == "READ_ONLY_CHECK_PASSED"
     assert states["finnhub"]["source_use_rights_verified"] is False
@@ -66,6 +68,9 @@ def test_safe_projection_never_conflates_connection_and_data_license(monkeypatch
     assert states["finazon"]["state"] == "NOT_CONFIGURED"
     assert states["eia"]["state"] == "NOT_CONFIGURED"
     assert states["bea"]["state"] == "NOT_CONFIGURED"
+    assert states["twelve_data"]["state"] == "READ_ONLY_CHECK_PASSED"
+    assert states["twelve_data"]["source_use_rights_verified"] is False
+    assert states["twelve_data"]["quote_feed_activated"] is False
     assert states["public"]["state"] == "TEMPORARY_AUTH_ONLY"
     assert states["public"]["account_linked"] is False
     assert states["bls"]["state"] == "RIGHTS_REVIEW_HOLD"
