@@ -124,7 +124,10 @@ def test_runtime_owner_navigation_then_independent_step_up_and_denied_spoof(app,
     # redirects through Tower, not a false "clearance too low" page.
     expired = client.get(path + "?ob_role=beta&ob_clearance=internal")
     assert expired.status_code == 302
-    assert expired.location.endswith("/tower/access-home")
+    assert expired.location == (
+        "/tower/step-up/observatory?next="
+        + path.replace("/", "%2F")
+    )
     with client.session_transaction() as signed:
         signed["tower_step_up_until"] = (datetime.now(timezone.utc) +
                                          timedelta(minutes=5)).isoformat()

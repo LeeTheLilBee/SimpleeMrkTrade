@@ -71,8 +71,8 @@ def test_real_app_direct_owner_dashboard_redirects_to_tower_login():
         308,
     }
 
-    assert response.headers["Location"].endswith(
-        "/tower/login"
+    assert response.headers["Location"] == (
+        "/tower/login?next=%2Fob%2Fowner-dashboard"
     )
 
 
@@ -94,8 +94,8 @@ def test_real_app_direct_owner_console_redirects_to_tower_login():
         308,
     }
 
-    assert response.headers["Location"].endswith(
-        "/tower/login"
+    assert response.headers["Location"] == (
+        "/tower/login?next=%2Fob%2Fowner-console"
     )
 
 

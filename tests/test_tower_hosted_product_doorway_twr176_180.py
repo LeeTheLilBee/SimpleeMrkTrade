@@ -45,9 +45,9 @@ def test_real_template_and_assets_survive(monkeypatch):
 
 
 @pytest.mark.parametrize('owner,elevated,receipt,destination', [
-    (False, False, False, '/tower/login'),
-    (True, False, False, '/tower/access-home'),
-    (True, True, False, '/tower/launch/observatory'),
+    (False, False, False, '/tower/login?next=%2Fob%2Fdashboard'),
+    (True, False, False, '/tower/step-up/observatory?next=%2Fob%2Fdashboard'),
+    (True, True, False, '/tower/launch/observatory?next=%2Fob%2Fdashboard'),
 ])
 def test_existing_security_boundaries(monkeypatch, owner, elevated, receipt, destination):
     response = make_app(monkeypatch, owner, elevated, receipt).test_client().get('/ob/dashboard')

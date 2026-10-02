@@ -122,13 +122,19 @@ def test_056_default_disabled_and_exact_security_registry(monkeypatch):
 def test_057_cannot_enter_on_missing_owner_step_up_or_operational_receipt(monkeypatch):
     _, client, state = build_app(monkeypatch)
     state["owner"] = False
-    assert get(client, hosted.ENTRY).headers["Location"].endswith("/tower/login")
+    location = get(client, hosted.ENTRY).headers["Location"]
+    assert "/tower/login?" in location
+    assert "next=%2Fob%2Fowner-rehearsal" in location
     state["owner"] = True
     state["step"] = False
-    assert get(client, hosted.ENTRY).headers["Location"].endswith("/tower/access-home")
+    location = get(client, hosted.ENTRY).headers["Location"]
+    assert "/tower/step-up/observatory?" in location
+    assert "next=%2Fob%2Fowner-rehearsal" in location
     state["step"] = True
     state["access"] = False
-    assert get(client, hosted.ENTRY).headers["Location"].endswith("/tower/launch/observatory")
+    location = get(client, hosted.ENTRY).headers["Location"]
+    assert "/tower/launch/observatory?" in location
+    assert "next=%2Fob%2Fowner-rehearsal" in location
     state["access"] = True
     token = setup_page(client)
     state["access"] = False

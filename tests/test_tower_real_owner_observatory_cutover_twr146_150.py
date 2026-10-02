@@ -842,10 +842,8 @@ def test_twr149_direct_normal_ob_room_requires_consumed_operational_handoff(
         308,
     }
 
-    assert response.headers[
-        "Location"
-    ].endswith(
-        "/tower/launch/observatory"
+    assert response.headers["Location"] == (
+        "/tower/launch/observatory?next=%2Fob%2Fdashboard"
     )
 
 
@@ -891,10 +889,8 @@ def test_twr150_real_end_to_end_owner_cutover_reaches_actual_ob_dashboard(
         308,
     }
 
-    assert direct.headers[
-        "Location"
-    ].endswith(
-        "/tower/launch/observatory"
+    assert direct.headers["Location"] == (
+        "/tower/launch/observatory?next=%2Fob%2Fdashboard"
     )
 
     launch_response = (
