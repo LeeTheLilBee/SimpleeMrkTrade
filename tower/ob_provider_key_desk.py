@@ -29,7 +29,7 @@ from tower.ob_provider_diagnostics import (
 PATH = "/ob/data-desk/api-keys"
 TTL = timedelta(minutes=30)
 MAX_BODY = 8192
-MAX_KEYS_PER_SESSION = 6
+MAX_KEYS_PER_SESSION = 7
 PROVIDERS = {
     "finnhub": {"name": "Finnhub", "purpose": "Company and market research; exact endpoint and rights review still required.",
                 "docs": "https://finnhub.io/docs/api"},
@@ -37,6 +37,8 @@ PROVIDERS = {
                       "docs": "https://www.alphavantage.co/documentation/"},
     "finazon": {"name": "Finazon", "purpose": "US Equities Basic derived market data; free-forever trial is limited to AAPL, TSLA and GOOG.",
                 "docs": "https://finazon.io/dataset/us_stocks_essential/docs/api/latest"},
+    "twelve_data": {"name": "Twelve Data", "purpose": "Credential/authentication status only until exact account/use rights are independently resolved; no market values are promoted by the Key Desk.",
+                    "docs": "https://twelvedata.com/pricing-business"},
     "eia": {"name": "U.S. EIA", "purpose": "Free official U.S. energy data; used as economic/catalyst context, never a stock or option quote.",
             "docs": "https://www.eia.gov/opendata/documentation.php"},
     "bea": {"name": "U.S. BEA", "purpose": "Free official U.S. economic statistics; macro context only, never a security quote.",
@@ -221,6 +223,12 @@ def probe_one(provider: str, secret: str, *, key_id=None, opener=None) -> str:
         url = "https://api.finazon.io/v2.0/finazon/us_stocks_essential/api_usage?" + urlencode({
             "apikey": secret})
         headers = {"Accept": "application/json"}
+    elif provider == "twelve_data":
+        # Authentication/quota probe only. /api_usage returns account usage,
+        # not a quote. This intentionally does NOT establish commercial/display
+        # rights or install Twelve Data into the canonical market projection.
+        url = "https://api.twelvedata.com/api_usage?" + urlencode({"apikey": secret})
+        headers = {"Accept": "application/json"}
     elif provider == "eia":
         url = "https://api.eia.gov/v2/electricity?" + urlencode({"api_key": secret})
         headers = {"Accept": "application/json"}
@@ -280,6 +288,14 @@ def probe_one(provider: str, secret: str, *, key_id=None, opener=None) -> str:
         calls = document.get("api_calls")
         if not isinstance(calls, dict) or not isinstance(calls.get("limit"), int) or not isinstance(calls.get("usage"), int):
             return "RESPONSE_SHAPE_HOLD"
+    elif provider == "twelve_data":
+        if document.get("status") == "error":
+            code = document.get("code")
+            return classify_http_status(code) if isinstance(code, int) else classify_provider_message(document.get("message"))
+        if not document:
+            return "RESPONSE_SHAPE_HOLD"
+        # Keep the success criterion authentication-only: do not retain or
+        # disseminate plan/quota values here.
     elif provider == "eia":
         response = document.get("response")
         if not isinstance(response, dict) or not isinstance(response.get("routes"), list):

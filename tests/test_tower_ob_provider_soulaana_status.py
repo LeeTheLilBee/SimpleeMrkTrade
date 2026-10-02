@@ -1,4 +1,4 @@
-"""Eleven-provider owner-session status → Soulaana, with no raw source/AI authority."""
+"""Twelve-provider owner-session status → Soulaana, with no raw source/AI authority."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SID = "tower_session_fictional_owner_source_status_1234"
 SECRET = "FICTIONAL-TEST-SECRET-DO-NOT-EXPOSE"
 ACCOUNT = "fictional-private-account-1234"
-PROVIDERS = ("public", "finnhub", "alpha_vantage", "finazon", "eia", "bea", "alpaca", "sec", "bls", "treasury", "openfigi")
+PROVIDERS = ("public", "finnhub", "alpha_vantage", "finazon", "twelve_data", "eia", "bea", "alpaca", "sec", "bls", "treasury", "openfigi")
 
 
 def keys(_sid):
@@ -24,6 +24,8 @@ def keys(_sid):
         {"id": "alpha_vantage", "present": False, "probe": "NOT_CONFIGURED",
          "secret": SECRET},
         {"id": "finazon", "present": False, "probe": "NOT_CONFIGURED",
+         "secret": SECRET},
+        {"id": "twelve_data", "present": True, "probe": "READ_ONLY_CHECK_PASSED",
          "secret": SECRET},
         {"id": "eia", "present": False, "probe": "NOT_CONFIGURED",
          "secret": SECRET},
@@ -60,6 +62,7 @@ def test_all_provider_statuses_reach_soulaana_without_credentials_or_vendor_data
     assert {r["provider"]: r["state"] for r in brief["provider_register"]}["public"] == "TEMPORARY_AUTH_ONLY"
     assert {r["provider"]: r["state"] for r in brief["provider_register"]}["finnhub"] == "READ_ONLY_CHECK_PASSED"
     assert {r["provider"]: r["state"] for r in brief["provider_register"]}["alpaca"] == "READ_ONLY_CHECK_PASSED"
+    assert {r["provider"]: r["state"] for r in brief["provider_register"]}["twelve_data"] == "READ_ONLY_CHECK_PASSED"
     assert all(r["meaning"] for r in brief["provider_register"])
     for forbidden in (SECRET, ACCOUNT, '"expires_at":', '"access_token":', '"account_id":'):
         assert forbidden not in json.dumps(result)

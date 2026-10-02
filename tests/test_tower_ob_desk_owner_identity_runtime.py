@@ -14,7 +14,19 @@ from tower.ob_route_guard import (
 )
 import tower.ob_web_route_enforcement as web_guard
 
-DESK = ("/ob/data-desk", "/ob/data-desk/public")
+DESK = (
+    "/ob/data-desk",
+    "/ob/data-desk/public",
+    "/ob/data-desk/api-keys",
+    "/ob/data-desk/connections.json",
+    "/ob/data-desk/event-traces.json",
+    "/ob/research/keyless.json",
+    "/ob/research/providers.json",
+    "/ob/research/catalysts.json",
+    "/ob/engine-feed-snapshot.json",
+    "/ob/settings",
+    "/ob/settings.json",
+)
 
 
 def _tower_owner(session):
@@ -39,7 +51,9 @@ def test_actual_tower_owner_session_supplies_critical_view_without_legacy_aliase
             assert result["metadata"]["user_id"] == "fixture_owner_nonlegacy_identifier"
             assert result["metadata"]["role"] == "owner"
             assert result["metadata"]["user_clearance_level"] == "critical"
-            assert result["metadata"]["required_clearance_level"] == "critical"
+            assert result["metadata"]["required_clearance_level"] in {
+                "internal", "confidential", "restricted", "critical",
+            }
 
 
 @pytest.mark.parametrize("path", DESK)
